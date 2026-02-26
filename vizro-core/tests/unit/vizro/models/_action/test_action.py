@@ -712,6 +712,90 @@ class TestBaseActionCallbackFunction:
         # as the output of the action_with_mock_outputs.
         assert action._action_callback_function(inputs={}, outputs=callback_outputs) == action_with_mock_outputs()()
 
+    # TODO PP NOW: Cover all use-cases where action returns a notification too.
+    #  Use-cases (It's valid only if ret_value is tuple with one element more than cb_outputs and where last element
+    #    key matches defined action notification key):
+    # TODO PP NOW: Remove redundant cases that are already covered with other exception (below) or valid (up) tests.
+    #  - No cb_outputs --
+    #  - 1 RV - notification as a correct string (str is key) - OK
+    #  - 1 RV - notification as a incorrect string (str is not key) - Error
+    #  - 1 RV - notification as a correct tuple (tuple[0] is key) - OK
+    #  - 1 RV - notification as a incorrect tuple (tuple[0] is not key) - Error
+    #  -- Single cb_output --
+    #  - 1 RV - notification as a correct string (str is key) - OK - return str to cb_output
+    #  - 1 RV - notification as a incorrect string (str is not key) - OK - return str to cb_output
+    #  - 1 RV - notification as a correct tuple (tuple[0] is key) - OK - return tuple to cb_output
+    #  - 1 RV - notification as a incorrect tuple (tuple[0] is not key) - OK - return tuple to cb_output
+    #  - 2 RV - last value notification as a correct string (str is key) - OK
+    #  - 2 RV - last value notification as a incorrect string (str is not key) - OK - return all to cb_output
+    #  - 2 RV - last value notification as a correct tuple (tuple[0] is key) - OK
+    #  - 2 RV - last value notification as a incorrect tuple (tuple[0] is not key) - OK - return all to cb_output
+    #  - 2+RV - last value notification as a correct string (str is key) - OK
+    #  - 2+RV - last value notification as a incorrect string (str is not key) - OK - return all to cb_output
+    #  - 2+RV - last value notification as a correct tuple (tuple[0] is key) - OK
+    #  - 2+RV - last value notification as a incorrect tuple (tuple[0] is not key) - OK - return all to cb_output
+    #  -- X (2+) cb_outputs --
+    #  - <X RV - Error
+    #  - X RV - last value notification as a correct string (str is key) - OK - return all to last cb_output
+    #  - X RV - last value notification as a incorrect string (str is not key) - OK - return all to cb_output
+    #  - X RV - last value notification as a correct tuple (tuple[0] is key) - OK - return all to last cb_output
+    #  - X RV - last value notification as a incorrect tuple (tuple[0] is not key) - OK - return all to cb_output
+    #  - X+1 RV - last value notification as a correct string (str is key) - OK -
+    #  - X+1 RV - last value notification as a incorrect string (str is not key) - Error length mismatch
+    #  - X+1 RV - last value notification as a correct tuple (tuple[0] is key) - OK
+    #  - X+1 RV - last value notification as a incorrect tuple (tuple[0] is not key) - Error length mismatch
+    #  -- dict cb_outputs --
+    #  - 1 RV - notification as a correct string (str is key) - Error - return value is not a dict
+    #  - 1 RV - notification as a incorrect string (str is not key) - Error - return value is not a dict
+    #  - 1 RV - notification as a correct tuple (tuple[0] is key) - Error - return value is not a dict
+    #  - 1 RV - notification as a incorrect tuple (tuple[0] is not key) - Error - return value is not a dict
+    #  - 2 RV - last value notification as a correct string (str is key) - OK
+    #  - 2 RV - last value notification as a incorrect string (str is not key) - Error
+    #  - 2 RV - last value notification as a correct tuple (tuple[0] is key) - OK
+    #  - 2 RV - last value notification as a incorrect tuple (tuple[0] is not key) - Error
+    #  - 2+RV - last value notification as a correct string (str is key) - Error
+    #  - 2+RV - last value notification as a incorrect string (str is not key) - Error
+    #  - 2+RV - last value notification as a correct tuple (tuple[0] is key) - Error
+    #  - 2+RV - last value notification as a incorrect tuple (tuple[0] is not key) - Error
+    # @pytest.mark.parametrize(
+    #     "action_with_mock_outputs, callback_outputs",
+    #     [
+    #         # no outputs
+    #         (None, []),
+    #         (None, {}),
+    #         (None, None),
+    #         # single output - note this is not [Output(...)] in a list
+    #         (None, Output("component", "property")),
+    #         (["value_1", "value_2"], Output("component", "property")),
+    #         ({"key_1": "value_1"}, Output("component", "property")),
+    #         ("abc", Output("component", "property")),
+    #         # multiple list outputs
+    #         ("ab", [Output("component_1", "property"), Output("component_2", "property")]),
+    #         (["value_1", "value_2"], [Output("component_1", "property"), Output("component_2", "property")]),
+    #         (
+    #             {"component_1": "value_1", "component_2": "value_2"},
+    #             [Output("component", "property"), Output("component_2", "property")],
+    #         ),
+    #         # multiple dict outputs
+    #         ({"component_1": "value_1"}, {"component_1": Output("component", "property")}),
+    #         (
+    #             {"component_1": "value_1", "component_2": "value_2"},
+    #             {"component_1": Output("component_1", "property"), "component_2": Output("component_2", "property")},
+    #         ),
+    #     ],
+    #     indirect=["action_with_mock_outputs"],
+    # )
+    # def test_action_callback_function_return_value_with_notification_valid(
+    #     self,
+    #     action_with_mock_outputs,
+    #     callback_outputs
+    # ):
+    #     action = Action(function=action_with_mock_outputs())
+    #     # If no error is raised by _action_callback_function then running it should return exactly the same
+    #     # as the output of the action_with_mock_outputs.
+    #     assert action._action_callback_function(inputs={}, outputs=callback_outputs) == action_with_mock_outputs()()
+
+
     @pytest.mark.parametrize("callback_outputs", [[], {}, None])
     @pytest.mark.parametrize("action_with_mock_outputs", [False, 0, "", [], (), {}], indirect=True)
     def test_action_callback_function_no_outputs_return_value_not_none(

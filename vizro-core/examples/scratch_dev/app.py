@@ -11,13 +11,15 @@ from vizro.models.types import capture
 
 
 # TODO:
-#  Pass through todos and done or open question.
+#  Refactor output return value in _action.py
 #  If we enable `text -> va.show_notification(...)` conversion, this would look like:
 #  notifications={
 #      "progress": "Exporting data...",
 #      "success": "Data exported successfully!",
 #      "error": "Export failed!",
 #  },
+#  Enable providing a second argument of exception containing results.
+#  Pass through todos and done or open question.
 #  See ticket issue and cover other edge cases if any.
 #  Check other actions like filter/parameter. What happens if they fail.
 #     One pros of introducing update_figures is that we don't have to copy-paste similar code for many actions.
@@ -443,6 +445,7 @@ page_5 = vm.Page(
                             max=3,
                             step=1,
                             value=1,
+                            marks={1: "1", 2: "2", 3: "3"},
                             extra=dict(className="cond-notification-slider"),
                         ),
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
