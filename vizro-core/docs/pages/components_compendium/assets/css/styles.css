@@ -254,7 +254,7 @@ a {
   background-color: var(--color-bg-alt);
   cursor: pointer;
   display: flex;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
   justify-content: space-between;
   margin: 0;
@@ -537,7 +537,7 @@ a {
   justify-content: center;
   padding: var(--spacing-xs);
   position: absolute;
-  right: var(--spacing-md);
+  right: var(--spacing-xs);
   top: 50%;
   transform: translateY(-50%);
   transition: all var(--transition);
@@ -662,7 +662,7 @@ a {
   box-shadow: var(--shadow-sm);
   color: var(--text-secondary);
   display: flex;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   gap: 6px;
   padding: 8px 16px;
@@ -1094,7 +1094,7 @@ a {
   flex-shrink: 0;
   height: 100vh;
   overflow-y: auto;
-  padding: 32px 16px;
+  padding: 24px 12px;
   position: sticky;
   top: 0;
   width: 260px;
@@ -1134,7 +1134,7 @@ a {
   border-radius: 6px;
   color: var(--text-secondary);
   display: flex;
-  font-size: 16px;
+  font-size: 14px;
   padding: 8px 12px;
   position: relative;
   text-decoration: none;
@@ -1273,7 +1273,7 @@ html {
   color: var(--text-secondary);
   cursor: pointer;
   display: flex;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   padding: 8px 12px;
   transition: all 0.2s ease;
@@ -1318,8 +1318,7 @@ html {
   color: var(--text-secondary);
   cursor: pointer;
   display: flex;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
   margin-top: 4px;
   padding: 6px 12px 6px 24px;
   transition: all 0.2s ease;
@@ -1362,7 +1361,7 @@ html {
 
 /* Sub-links styling */
 .nav-link-sub {
-  font-size: 14px;
+  font-size: 12px;
   padding: 6px 12px 6px 36px;
 }
 
@@ -1371,7 +1370,7 @@ html {
 }
 
 .nav-subcategory-content .nav-link-sub {
-  font-size: 14px;
+  font-size: 12px;
   padding-left: 36px;
 }
 
