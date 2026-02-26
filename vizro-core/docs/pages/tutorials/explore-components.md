@@ -548,7 +548,7 @@ The following layout configuration is divided into **four columns** and **four r
 <!-- Don't change below to python code, as otherwise it will be put on one line. -->
 
 ```
-grid = [[0, 1,-1,-1],
+grid = [[0, 1, -1, -1],
         [2, 2, 2, 2],
         [2, 2, 2, 2],
         [2, 2, 2, 2]]
