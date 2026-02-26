@@ -1,3 +1,9 @@
+/**
+ * Code highlighting uses dash-mantine-components (DMC) components (CodeHighlight, InlineCodeHighlight)
+ * accessed via the `window.dash_mantine_components` global. This avoids bundling Mantine twice and
+ * ensures consistent theming with the host app's MantineProvider. The host Dash app must wrap its
+ * layout in `dmc.MantineProvider` for proper styling.
+ */
 import React from "react";
 
 const POLL_INTERVAL_MS = 50;

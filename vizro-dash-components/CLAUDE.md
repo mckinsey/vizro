@@ -52,12 +52,6 @@ Each `.tsx` file in `src/ts/components/` becomes a Dash component. Key patterns:
 - JSDoc comments on the component and its props become Python docstrings
 - `defaultProps` on the component set Python default values
 
-### Architecture notes
-
-**Lazy loading**: The Markdown component follows the same lazy loading pattern as `dash-core-components` (DCC). It uses `@plotly/dash-component-plugins` `asyncDecorator` and `@plotly/webpack-dash-dynamic-import` to create separate webpack chunks (`async-markdown.js`, `async-mathjax.js`) that are loaded on demand. See DCC's `Markdown.react.js` for the reference implementation.
-
-**DMC integration**: Code highlighting uses `dash-mantine-components` (DMC) components (`CodeHighlight`, `InlineCodeHighlight`) accessed via `window.dash_mantine_components` global. This avoids bundling Mantine twice and ensures consistent theming with the host app's `MantineProvider`. The host Dash app must wrap its layout in `dmc.MantineProvider` for proper styling.
-
 ## Testing with vizro-core
 
 `vizro-core` already depends on the released `vizro-dash-components` package. To test local changes:

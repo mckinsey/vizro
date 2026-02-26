@@ -9,6 +9,11 @@ import lazyLoadMathJax from "../utils/LazyLoader/mathjax";
  * A component that renders Markdown text as specified by the
  * GitHub Markdown spec. These component uses
  * [react-markdown](https://rexxars.github.io/react-markdown/) under the hood.
+ *
+ * Follows the same lazy loading pattern as dash-core-components (DCC).
+ * Uses `@plotly/dash-component-plugins` `asyncDecorator` and `@plotly/webpack-dash-dynamic-import`
+ * to create separate webpack chunks (async-markdown.js, async-mathjax.js) loaded on demand.
+ * See DCC's Markdown.react.js for the reference implementation.
  */
 export default class DashMarkdown extends Component<DashMarkdownProps> {
   static _loadMathjax: boolean;
