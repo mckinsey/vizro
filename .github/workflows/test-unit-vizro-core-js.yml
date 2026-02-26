@@ -41,7 +41,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install Hatch
-        run: pip install hatch
+        run: pip install hatch 'virtualenv!=21.0.0'
 
       - name: Run JavaScript tests
         run: hatch run test-js
