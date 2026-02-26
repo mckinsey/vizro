@@ -32,7 +32,7 @@ class NavLink(VizroBaseModel):
     ]
     accordion: Accordion | None = Field(
         default=None,
-        description="When pages is a dict (grouped), optional Accordion to customize the nested accordion (e.g. icons). Pages are taken from this NavLink.",
+        description="When pages is a dict (grouped), optional Accordion to customize nested accordion (e.g. icons).",
     )
     _nav_selector: Accordion = PrivateAttr()
 

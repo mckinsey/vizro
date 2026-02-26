@@ -33,8 +33,7 @@ def coerce_pages_type(pages: Any) -> dict[Any, Any]:
 
 
 class Accordion(VizroBaseModel):
-    """Accordion to be used as `nav_selector` in [`Navigation`][vizro.models.Navigation]
-    or as the nested accordion in a [`NavLink`][vizro.models.NavLink] (when pages is a dict).
+    """Accordion as nav_selector in Navigation or nested in NavLink (when pages is a dict).
 
     Abstract: Usage documentation
         [How to use an accordion](../user-guides/navigation.md/#group-pages)
@@ -76,9 +75,6 @@ class Accordion(VizroBaseModel):
 
     @_log_call
     def build(self, *, active_page_id=None):
-        # Build contract: return a single component with id="nav-panel" (Navigation wraps with nav-bar placeholder).
-        # UI is implemented with dbc; the Accordion model API (pages, icons) is stable for a future dmc swap.
-        # Hide navigation panel if there is only one page
         if len(list(itertools.chain(*self.pages.values()))) == 1:
             return dbc.Nav(id="nav-panel", className="d-none invisible")
 
@@ -86,7 +82,7 @@ class Accordion(VizroBaseModel):
         for page_group, page_members in self.pages.items():
             nav_links = self._create_nav_links(pages=page_members)
             icon_name = self.icons.get(page_group)
-            title_content: str | list = (
+            title_content: str | list[Any] = (
                 [html.Span(icon_name, className="material-symbols-outlined accordion-item-icon"), " ", page_group]
                 if icon_name
                 else page_group
@@ -113,8 +109,6 @@ class Accordion(VizroBaseModel):
                     persistence=True,
                     persistence_type="session",
                     always_open=True,
-                    # `active_item` is required to open the accordion automatically when navigating from a homepage
-                    # to any of the pages in the accordion.
                     active_item=active_item,
                 )
             ],

@@ -48,6 +48,18 @@ class TestAccordionInstantiation:
         ):
             vm.Accordion(pages=pages)
 
+    def test_icons_keys_must_be_page_groups(self, pages_as_dict):
+        with pytest.raises(ValidationError, match=r"icons.*keys must be page group names"):
+            vm.Accordion(pages=pages_as_dict, icons={"Unknown Group": "widgets"})
+
+    def test_icons_keys_valid(self, pages_as_dict):
+        accordion = vm.Accordion(pages=pages_as_dict, icons={"Group": "folder"})
+        assert accordion.icons == {"Group": "folder"}
+
+    def test_icons_empty_value_invalid(self, pages_as_dict):
+        with pytest.raises(ValidationError, match="non-empty Material icon names"):
+            vm.Accordion(pages=pages_as_dict, icons={"Group": ""})
+
 
 class TestAccordionBuild:
     """Tests accordion build method."""

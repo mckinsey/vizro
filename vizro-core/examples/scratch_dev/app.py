@@ -25,7 +25,7 @@ dashboard = vm.Dashboard(
                 "Group A": "article",
                 "Group B": "dashboard",
                 "Group C": "info",
-            }
+            },
         ),
     ),
 )
