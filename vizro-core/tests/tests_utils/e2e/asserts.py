@@ -3,6 +3,7 @@ import json
 import os
 import shutil
 import subprocess
+import time
 from pathlib import Path
 from urllib.parse import parse_qs, urlencode, urlparse
 
@@ -123,3 +124,12 @@ def get_url_params(driver):
 
 def param_to_url(decoded_map, apply_on_keys):
     return urlencode(encode_url_params(decoded_map=decoded_map, apply_on_keys=apply_on_keys), doseq=True)
+
+
+def wait_until_equal(get_actual, expected, timeout=5, interval=0.1):
+    """Waits until get_actual() == expected or timeout is reached. Raises AssertionError if not equal after timeout."""
+    end = time.time() + timeout
+    while time.time() < end and get_actual() != expected:
+        time.sleep(interval)
+    # Final check and assertion
+    assert_that(get_actual(), equal_to(expected))

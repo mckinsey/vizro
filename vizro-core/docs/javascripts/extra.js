@@ -13,11 +13,11 @@ function generateMarkdownUrl() {
 
   let markdownUrl;
   if (cleanUrl.endsWith("/")) {
-    markdownUrl = cleanUrl + "index.md";
+    markdownUrl = `${cleanUrl}index.md`;
   } else if (cleanUrl.endsWith(".html")) {
     markdownUrl = cleanUrl.replace(".html", ".md");
   } else {
-    markdownUrl = cleanUrl + "/index.md";
+    markdownUrl = `${cleanUrl}/index.md`;
   }
 
   return markdownUrl;
@@ -155,7 +155,7 @@ function addMarkdownButtons() {
   h1Title.parentNode.insertBefore(buttonsDiv, h1Title.nextSibling);
 }
 
-document$.subscribe(function () {
+document$.subscribe(() => {
   console.log("Page loaded/changed - checking for buttons");
   addMarkdownButtons();
 });

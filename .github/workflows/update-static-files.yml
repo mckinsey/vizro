@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: ${{ matrix.config.python-version }}
       - name: Install Hatch
-        run: pip install hatch
+        run: pip install hatch 'virtualenv!=21.0.0'
 
       - name: Show dependency tree
         run: hatch run pip tree

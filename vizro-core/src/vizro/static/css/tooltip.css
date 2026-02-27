@@ -8,7 +8,7 @@
   color: var(--bs-primary-text-emphasis);
 }
 
-.tooltip-inner  {
+.tooltip-inner {
   max-width: 400px;
 }
 
@@ -24,13 +24,15 @@
   color: var(--text-primaryHover-inverted);
 }
 
-.form-label, .btn {
+.form-label,
+.btn {
   align-items: center;
   display: flex;
   gap: 0.5rem;
 }
 
-.btn .tooltip-icon, .form-label .tooltip-icon {
+.btn .tooltip-icon,
+.form-label .tooltip-icon {
   color: inherit;
   font-size: 1rem;
 }
@@ -47,7 +49,9 @@
   text-decoration: underline;
 }
 
-#dashboard-title, #page-title, .form-label {
+#dashboard-title,
+#page-title,
+.form-label {
   align-items: center;
   display: flex;
   gap: 0.5rem;

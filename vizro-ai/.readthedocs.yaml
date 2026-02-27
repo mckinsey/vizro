@@ -11,7 +11,7 @@ build:
     python: "3.13"
 
   commands:
-    - pip install hatch
+    - pip install hatch 'virtualenv!=21.0.0'
     - cd vizro-ai/ && hatch run docs:pip tree
     - cd vizro-ai/ && hatch run docs:build
     - mkdir --parents $READTHEDOCS_OUTPUT
