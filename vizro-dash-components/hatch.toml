@@ -10,8 +10,7 @@ dependencies = [
   "dash-iconify",  # just for the example usage.py
   "dash[dev,testing]>=4,<5",  # provides dash-generate-components + dash_duo fixture
   "chromedriver-autoinstaller>=0.6.4",
-  "pytest",
-  "vizro"
+  "pytest"
 ]
 installer = "uv"
 
