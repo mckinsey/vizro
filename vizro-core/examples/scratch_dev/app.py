@@ -11,13 +11,10 @@ from vizro.models.types import capture
 
 
 # TODO:
-#  Refactor output return value in _action.py
-#  If we enable `text -> va.show_notification(...)` conversion, this would look like:
-#  notifications={
-#      "progress": "Exporting data...",
-#      "success": "Data exported successfully!",
-#      "error": "Export failed!",
-#  },
+#  ALMOST DONE - Refactor output return value in _action.py
+#  DONE - If we enable `text -> va.show_notification(...)` conversion, this would look like:
+#  Clean notifications from the notification panel when the same action is triggered again.
+#  refactor and merge validators in types.
 #  Enable providing a second argument of exception containing results.
 #  Pass through todos and done or open question.
 #  See ticket issue and cover other edge cases if any.
@@ -76,7 +73,7 @@ def random_pipeline(
 
 vm.Container.add_type("components", vm.Switch)
 vm.Container.add_type("components", vm.Slider)
-
+"""
 pre = "p0"
 page_0 = vm.Page(
     title="Action without notifications",
@@ -542,9 +539,95 @@ page_5 = vm.Page(
     ],
     controls=[vm.Filter(column="species")],
 )
+"""
+
+pre = "p6"
+page_6 = vm.Page(
+    id="page_6",
+    title="(str)Progress{{}}-> Action-> (str)Success1/2/3{{}}/(str)Error1/2/3{{}}",
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="(str)Progress{{switch_successfulness}}{{exit_path}} - Pipeline (1->2s) (Choose to fail) -> (str)Info{{}}/(str)Success1/2/3{{}}(str)Error 1/2/3{{}}",
+                    layout=vm.Flex(),
+                    components=[
+                        vm.Slider(
+                            id=f"{pre}_exit_path_slider",
+                            title="Choose exit path",
+                            min=1,
+                            max=3,
+                            step=1,
+                            value=1,
+                            marks={1: "1", 2: "2", 3: "3"},
+                            extra=dict(className="cond-notification-slider"),
+                        ),
+                        vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
+                        vm.Switch(
+                            id=f"{pre}_return_action_notification",
+                            value=True,
+                            title="Return custom success/warning/info notification from action",
+                        ),
+                        vm.Button(
+                            text="Run pipeline",
+                            actions=[
+                                vm.Action(
+                                    function=random_pipeline(
+                                        switch_successfulness=f"{pre}_raise_exc_switch",
+                                        return_action_notification=f"{pre}_return_action_notification",
+                                        exit_path_slider=f"{pre}_exit_path_slider",
+                                    ),
+                                    outputs=f"{pre}_text",
+                                    notifications={
+                                        "progress": "Running custom pipeline.\n\n Exception will happen: {{switch_successfulness}}.\n\n Exit path: {{exit_path_slider}}",
+                                        "success": "Custom pipeline completed! {{result}}",
+                                        "my_info": "Pipeline is redirected and will be manually handled! Call GHD to get the status.",
+                                        "my_warning": "Pipeline completed, neither success nor failure! {{result}}",
+                                        "error": "Custom pipeline failed! Exception: {{error_msg}}",
+                                    }
+                                )
+                            ],
+                        ),
+                        vm.Text(id=f"{pre}_text", text="Click the button to run action."),
+                    ],
+                ),
+                vm.Container(
+                    title="Progress - Export (2s) (50% to fail) - Success/Error{{error_msg}}",
+                    components=[
+                        vm.Graph(
+                            figure=px.scatter(
+                                df,
+                                x="sepal_width",
+                                y="sepal_length",
+                                color="species",
+                                color_discrete_map=SPECIES_COLORS,
+                            )
+                        ),
+                        vm.Button(
+                            text="Export data",
+                            actions=[
+                                va.export_data(
+                                    notifications={
+                                        "progress": "Exporting data...",
+                                        "success": "Data exported successfully!",
+                                        "error": "Export failed! {{error_msg}}",
+                                    }
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+            ]
+        )
+    ],
+    controls=[vm.Filter(column="species")],
+)
 
 
-dashboard = vm.Dashboard(pages=[page_0, page_1, page_2, page_3, page_4, page_5])
+dashboard = vm.Dashboard(pages=[
+    # page_0, page_1, page_2, page_3, page_4, page_5,
+    page_6,
+])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

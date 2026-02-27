@@ -101,8 +101,34 @@ def _coerce_to_list(value: Any) -> Any:
     return [value]
 
 
+# TODO PP NOW: Merge validators and make it shorter.
+def _convert_to_action_notification_dict(value: Any) -> Any:
+    """Converts action notification specified as a dict[str, str | None] to a dict[str, va.show_notification | None]."""
+    from vizro.actions import show_notification, update_notification
+
+    if progress_notification := value.get("progress"):
+        if isinstance(progress_notification, str):
+            progress_notification = value["progress"] = show_notification(text=progress_notification, variant="progress")
+
+    for notif_key, notif_value in value.items():
+        if not isinstance(notif_value, str):
+            continue
+
+        variant = notif_key if notif_key in {"progress", "error", "success"} else "info"
+
+        defaults = dict(text=notif_value, variant=variant)
+        if notif_key != "progress" and progress_notification:
+            notification = update_notification(**defaults, notification=progress_notification.id)
+        else:
+            notification = show_notification(**defaults)
+
+        notification._is_conditional = True
+        value[notif_key] = notification
+
+    return value
+
 def _set_conditional_notification_flag(value):
-    # Mark action notifications as _is_conditional = True
+    """ Set _is_conditional flag for all action notifications."""
     for conditional_notification in value.values():
         if conditional_notification is not None:
             conditional_notification._is_conditional = True
@@ -111,7 +137,7 @@ def _set_conditional_notification_flag(value):
 
 
 def _set_default_error_notification(value):
-    # Default the action.notification for the "error" key
+    """ Default the action.notification for the "error" key. """
     from vizro.actions import show_notification, update_notification
 
     defaults = dict(text="Action failed.", variant="error")
@@ -756,7 +782,8 @@ a list of strings, or a dictionary mapping strings to strings. Each output can b
 
 # TODO OQ: What to do with AfterValidator, discriminator and the description here?
 ActionNotificationType = Annotated[
-    "dict[str, show_notification | update_notification | None]",
+    "dict[str, str | show_notification | update_notification | None]",
+    AfterValidator(_convert_to_action_notification_dict),
     AfterValidator(_set_conditional_notification_flag),
     AfterValidator(_set_default_error_notification),
     Field(default_factory=dict, description="Conditional notifications", validate_default=True),
