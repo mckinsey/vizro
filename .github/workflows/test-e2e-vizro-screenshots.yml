@@ -43,7 +43,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install Hatch
-        run: pip install hatch 'virtualenv!=21.0.0'
+        run: pip install hatch
 
       - name: Install pixelmatch
         run: sudo npm install pixelmatch -g
