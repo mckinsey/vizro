@@ -13,8 +13,10 @@ from vizro.models.types import capture
 # TODO:
 #  ALMOST DONE - Refactor output return value in _action.py
 #  DONE - If we enable `text -> va.show_notification(...)` conversion, this would look like:
-#  Clean notifications from the notification panel when the same action is triggered again.
-#  refactor and merge validators in types.
+#  DONE - Clean notifications from the notification panel when the same action is triggered again.
+#    - See whether we should introduce hideNotification so that users can hide it before showing explicit notification.
+#  Refactor and merge validators in types.
+#  Test by assigning a warning notif to the progress key.
 #  Enable providing a second argument of exception containing results.
 #  Pass through todos and done or open question.
 #  See ticket issue and cover other edge cases if any.
@@ -73,7 +75,7 @@ def random_pipeline(
 
 vm.Container.add_type("components", vm.Switch)
 vm.Container.add_type("components", vm.Slider)
-"""
+
 pre = "p0"
 page_0 = vm.Page(
     title="Action without notifications",
@@ -539,7 +541,6 @@ page_5 = vm.Page(
     ],
     controls=[vm.Filter(column="species")],
 )
-"""
 
 pre = "p6"
 page_6 = vm.Page(
@@ -625,7 +626,12 @@ page_6 = vm.Page(
 
 
 dashboard = vm.Dashboard(pages=[
-    # page_0, page_1, page_2, page_3, page_4, page_5,
+    page_0,
+    page_1,
+    page_2,
+    page_3,
+    page_4,
+    page_5,
     page_6,
 ])
 

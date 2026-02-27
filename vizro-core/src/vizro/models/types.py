@@ -101,7 +101,6 @@ def _coerce_to_list(value: Any) -> Any:
     return [value]
 
 
-# TODO PP NOW: Merge validators and make it shorter.
 def _convert_to_action_notification_dict(value: Any) -> Any:
     """Converts action notification specified as a dict[str, str | None] to a dict[str, va.show_notification | None]."""
     from vizro.actions import show_notification, update_notification
