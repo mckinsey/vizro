@@ -101,53 +101,46 @@ def _coerce_to_list(value: Any) -> Any:
     return [value]
 
 
-def _convert_to_action_notification_dict(value: Any) -> Any:
-    """Converts action notification specified as a dict[str, str | None] to a dict[str, va.show_notification | None]."""
+# TODO PP NOW: Test whether everything works if progress=None, or error=None, or custom_key=None.
+def _normalize_action_notifications(value: Any) -> Any:
+    """Normalize action notifications dict.
+
+    Input value: dict[str, str | show_notification | update_notification | None]
+    Return value: dict[str, show_notification | update_notification | None] with the following transformations:
+
+    - If "error" missing, default to "Action failed." (show vs update depends on presence of a "progress" notification).
+    - Convert existing string dict values to show_notification or update_notification:
+        * "progress" string key -> show_notification(variant="progress")
+        * other string keys -> update_notification(...) if progress exists, else show_notification(...)
+    - Mark all non-None notifications as conditional.
+    """
     from vizro.actions import show_notification, update_notification
 
-    if progress_notification := value.get("progress"):
-        if isinstance(progress_notification, str):
-            progress_notification = value["progress"] = show_notification(text=progress_notification, variant="progress")
+    # If present, ensure that the "progress" is a notification action and not a string.
+    if isinstance(progress := value.get("progress"), str):
+        progress = value["progress"] = show_notification(text=progress, variant="progress")
 
+    # Default "error" to string first. It will be converted to notificaiton action below.
+    value.setdefault("error", "Action failed.")
+
+    # Convert all string notifications to actions and set _is_conditional=True.
     for notif_key, notif_value in value.items():
-        if not isinstance(notif_value, str):
-            continue
+        if isinstance(notif_value, str):
+            defaults = {
+                "text": notif_value,
+                "variant": notif_key if notif_key in {"progress", "success", "error"} else "info",
+            }
 
-        variant = notif_key if notif_key in {"progress", "error", "success"} else "info"
+            if notif_key != "progress" and progress is not None:
+                notif_value = update_notification(**defaults, notification=progress.id)
+            else:
+                notif_value = show_notification(**defaults)
 
-        defaults = dict(text=notif_value, variant=variant)
-        if notif_key != "progress" and progress_notification:
-            notification = update_notification(**defaults, notification=progress_notification.id)
-        else:
-            notification = show_notification(**defaults)
+            value[notif_key] = notif_value
 
-        notification._is_conditional = True
-        value[notif_key] = notification
+        if value[notif_key] is not None:
+            value[notif_key]._is_conditional = True
 
-    return value
-
-def _set_conditional_notification_flag(value):
-    """ Set _is_conditional flag for all action notifications."""
-    for conditional_notification in value.values():
-        if conditional_notification is not None:
-            conditional_notification._is_conditional = True
-
-    return value
-
-
-def _set_default_error_notification(value):
-    """ Default the action.notification for the "error" key. """
-    from vizro.actions import show_notification, update_notification
-
-    defaults = dict(text="Action failed.", variant="error")
-    if "progress" in value:
-        notification = update_notification(**defaults, notification=value["progress"].id)
-    else:
-        notification = show_notification(**defaults)
-
-    notification._is_conditional = True
-
-    value.setdefault("error", notification)
     return value
 
 
@@ -782,9 +775,7 @@ a list of strings, or a dictionary mapping strings to strings. Each output can b
 # TODO OQ: What to do with AfterValidator, discriminator and the description here?
 ActionNotificationType = Annotated[
     "dict[str, str | show_notification | update_notification | None]",
-    AfterValidator(_convert_to_action_notification_dict),
-    AfterValidator(_set_conditional_notification_flag),
-    AfterValidator(_set_default_error_notification),
+    AfterValidator(_normalize_action_notifications),
     Field(default_factory=dict, description="Conditional notifications", validate_default=True),
 ]
 

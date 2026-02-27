@@ -15,6 +15,7 @@ from vizro.models.types import capture
 #  DONE - If we enable `text -> va.show_notification(...)` conversion, this would look like:
 #  DONE - Clean notifications from the notification panel when the same action is triggered again.
 #    - See whether we should introduce hideNotification so that users can hide it before showing explicit notification.
+#      or to do so even before every show_notification action.
 #  Refactor and merge validators in types.
 #  Test by assigning a warning notif to the progress key.
 #  Enable providing a second argument of exception containing results.
