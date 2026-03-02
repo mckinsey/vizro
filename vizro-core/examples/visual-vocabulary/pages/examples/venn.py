@@ -1,3 +1,4 @@
+import pandas as pd
 import plotly.graph_objects as go
 from vizro.models.types import capture
 
@@ -29,17 +30,15 @@ def venn_diagram(data_frame=None, **kwargs) -> go.Figure:
     )
 
     # Add annotations
-    fig.add_annotation(x=1.5, y=2, text="Group A", showarrow=False, font=dict(size=16))
-    fig.add_annotation(x=3.5, y=2, text="Group B", showarrow=False, font=dict(size=16))
-    fig.add_annotation(x=2.5, y=2, text="A & B", showarrow=False, font=dict(size=16))
+    fig.add_annotation(x=1.5, y=2, text="Group A", showarrow=False, font={"size": 16})
+    fig.add_annotation(x=3.5, y=2, text="Group B", showarrow=False, font={"size": 16})
+    fig.add_annotation(x=2.5, y=2, text="A & B", showarrow=False, font={"size": 16})
 
     # Hide axes and set layout
     fig.update_xaxes(showline=False, showgrid=False, zeroline=False, visible=False)
     fig.update_yaxes(showline=False, showgrid=False, zeroline=False, visible=False)
-    fig.update_layout(margin=dict(l=20, r=20, b=20), showlegend=False)
+    fig.update_layout(margin={"l": 20, "r": 20, "b": 20}, showlegend=False)
     return fig
 
-
-import pandas as pd
 
 fig = venn_diagram(data_frame=pd.DataFrame())

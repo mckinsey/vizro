@@ -266,9 +266,9 @@ venn_page = vm.Page(
 
             Use a Venn diagram when you want to compare and contrast groups of things. They are effective for showing
             points of commonality and difference between discrete groups or categories. They are widely used to show
-            overlaps in data sets, organizational intersections, or conceptual similarities. Note that true Venn diagrams
-            show all possible logical relations between a finite collection of different sets, though simplified versions
-            (like the two-circle version) are most common for presentations.
+            overlaps in data sets, organizational intersections, or conceptual similarities. Note that true Venn
+            diagrams show all possible logical relations between a finite collection of different sets, though
+            simplified versions (like the two-circle version) are most common for presentations.
         """
         ),
         vm.Graph(figure=venn.fig),
