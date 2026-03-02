@@ -318,7 +318,6 @@ class Dashboard(VizroBaseModel):
         # children=[layout] as a list rather than children=layout, so that app.dash.layout.children.append works to
         # easily add things to the Dash layout. In future we might have a neater function for patching components into
         # the Dash layout in which case this could change.
-        # DMC components are aligned to vizro-bootstrap via CSS variables in dmc_vizro_theme.css.
         return dmc.MantineProvider(children=[layout], theme=MANTINE_THEME)
 
     def _validate_logos(self):
