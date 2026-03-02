@@ -9,7 +9,7 @@ from e2e.vizro.paths import (
     page_title_path,
 )
 from e2e.vizro.waiters import graph_load_waiter
-from selenium.webdriver import ActionChains
+from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
@@ -76,11 +76,18 @@ def page_select_selenium(driver, page_path, page_name, timeout=cnst.SELENIUM_WAI
         )
 
 
-def select_slider_value(driver, elem_id, value):
-    slider_values = driver.find_elements(f"div[id='{elem_id}'] div div")
-    for slider_value in slider_values:
-        if slider_value.text == value:
-            driver.click_at_coord_fractions(slider_value, fx=0, fy=0)
+def select_slider_value(driver, elem_id, min_value=None, max_value=None):
+    if min_value:
+        min_value_elem = driver.find_element(f"div[id='{elem_id}'] input[class$='dash-range-slider-min-input']")
+        driver.clear_input(min_value_elem)
+        min_value_elem.send_keys(str(min_value))
+        min_value_elem.send_keys(Keys.TAB)
+    # set `max_value` for setting single vm.Slider value
+    else:
+        max_value_elem = driver.find_element(f"div[id='{elem_id}'] input[class$='dash-range-slider-max-input']")
+        driver.clear_input(max_value_elem)
+        max_value_elem.send_keys(str(max_value))
+        max_value_elem.send_keys(Keys.TAB)
 
 
 def clear_dropdown(driver, dropdown_id):

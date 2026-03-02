@@ -2,8 +2,9 @@ import e2e.vizro.constants as cnst
 import pytest
 from e2e.vizro.checkers import (
     check_graph_is_empty,
-    check_graph_is_loaded,
+    check_graph_x_axis_value,
     check_graph_y_axis_value,
+    check_range_slider_value,
     check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
@@ -39,7 +40,7 @@ def test_dropdown_select_all(dash_br):
     """
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     select_dropdown_deselect_all(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
+    check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
@@ -47,7 +48,7 @@ def test_dropdown_select_all(dash_br):
         expected_unselected_options=["setosa", "versicolor", "virginica"],
     )
     select_dropdown_select_all(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_GRAPH_ID, tick_index="5", value="5.2")
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
@@ -59,24 +60,22 @@ def test_dropdown_select_all(dash_br):
 def test_dropdown_options_value(dash_br):
     """Test interacts with options values in dropdown.
 
-    1. Delete 'virginica' option.
+    1. Unselect 'virginica' option.
     2. Check how options in dropdown looks like.
     3. Select 'virginica' again.
     4. Check how options in dropdown looks like.
     """
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    # uncheck 'virginica'
+    # unselect 'virginica'
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE, value="virginica")
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
         expected_selected_options=["setosa", "versicolor"],
         expected_unselected_options=["virginica"],
     )
-    # choose 'virginica' again
+    # select 'virginica'
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE, value="virginica")
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
@@ -88,9 +87,8 @@ def test_dropdown_options_value(dash_br):
 def test_dropdown_persistence_with_two_values(dash_br):
     """Check that chosen values persistent after page reload."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    # uncheck 'virginica'
+    # unselect 'virginica'
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE, value="virginica")
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     check_selected_dropdown(
@@ -107,7 +105,7 @@ def test_dropdown_persistence_with_all_values(dash_br):
     clear_dropdown(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
     check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     select_dropdown_select_all(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
-    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_GRAPH_ID, axis_value_number="4", axis_value="1")
+    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_GRAPH_ID, tick_index="4", value="1")
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     check_selected_dropdown(
@@ -122,7 +120,7 @@ def test_dropdown_persistence_with_no_values(dash_br):
     """Check that chosen values persistent after page reload."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     clear_dropdown(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
+    check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     check_selected_dropdown(
@@ -134,17 +132,17 @@ def test_dropdown_persistence_with_no_values(dash_br):
 
 
 @pytest.mark.parametrize(
-    "filter_id",
-    [cnst.CHECK_LIST_FILTER_FILTERS_PAGE, cnst.RADIO_ITEMS_FILTER_FILTERS_PAGE],
+    "filter_id, filter_value",
+    [(cnst.CHECK_LIST_FILTER_FILTERS_PAGE, 1), (cnst.RADIO_ITEMS_FILTER_FILTERS_PAGE, 2)],
     ids=["checklist", "radio_items"],
 )
-def test_categorical_filters(dash_br, filter_id):
+def test_categorical_filters(dash_br, filter_id, filter_value):
     """Test simple checklist and radio_items filters."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
 
-    # select 'setosa'
-    dash_br.multiple_click(categorical_components_value_path(elem_id=filter_id, value=2), 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
+    # unselect 'setosa'
+    dash_br.multiple_click(categorical_components_value_path(elem_id=filter_id, value=filter_value), 1)
+    check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
 
 
 @pytest.mark.parametrize(
@@ -209,11 +207,11 @@ def test_categorical_filters(dash_br, filter_id):
         ),
     ],
     ids=[
-        "unchecked one option",
-        "unchecked all options",
-        "unchecked 'Select All' only",
-        "checked 'Select All' only",
-        "check all options manually",
+        "unselected one option",
+        "unselected all options",
+        "unselected 'Select All' only",
+        "selected 'Select All' only",
+        "selected all options manually",
     ],
 )
 def test_checklist(dash_br, value_paths, select_all_status, options_value_status):
@@ -222,7 +220,6 @@ def test_checklist(dash_br, value_paths, select_all_status, options_value_status
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     for path in value_paths:
         dash_br.multiple_click(path, 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     check_selected_categorical_component(
         dash_br,
         component_id=filter_id,
@@ -271,9 +268,9 @@ def test_checklist(dash_br, value_paths, select_all_status, options_value_status
         ),
     ],
     ids=[
-        "unchecked one option",
-        "unchecked all options",
-        "checked 'Select All' only",
+        "unselected one option",
+        "unselected all options",
+        "selected 'Select All' only",
     ],
 )
 def test_checklist_persistence(dash_br, value_paths, select_all_status, options_value_status):
@@ -284,10 +281,8 @@ def test_checklist_persistence(dash_br, value_paths, select_all_status, options_
         page_path=cnst.FILTERS_PAGE_PATH,
         page_name=cnst.FILTERS_PAGE,
     )
-    # dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=2), 1)
     for path in value_paths:
         dash_br.multiple_click(path, 1)
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     check_selected_categorical_component(
@@ -302,18 +297,22 @@ def test_checklist_persistence(dash_br, value_paths, select_all_status, options_
 def test_slider(dash_br):
     """Test simple slider filter."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    select_slider_value(dash_br, elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, value="1.1")
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
-    check_slider_value(dash_br, expected_end_value="1.1", elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE)
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, max_value="0.6")
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_GRAPH_ID, tick_index="5", value="6")
+    check_slider_value(
+        dash_br,
+        elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE,
+        expected_max_value="0.6",
+    )
 
 
 def test_range_slider(dash_br):
     """Test simple range slider filter."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
-    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_FILTER_FILTERS_PAGE, value="7.3")
-    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
-    check_slider_value(
-        dash_br, elem_id=cnst.RANGE_SLIDER_FILTER_FILTERS_PAGE, expected_start_value="4.3", expected_end_value="7"
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_FILTER_FILTERS_PAGE, min_value="5.3")
+    check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_GRAPH_ID, tick_index="4", value="6")
+    check_range_slider_value(
+        dash_br, elem_id=cnst.RANGE_SLIDER_FILTER_FILTERS_PAGE, expected_min_value="5", expected_max_value="7.9"
     )
 
 
@@ -323,7 +322,7 @@ def test_dropdown_multi_false_homepage(dash_br):
 
     # select 'versicolor'
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_HOMEPAGEPAGE, value="versicolor")
-    check_graph_is_loaded(dash_br, cnst.AREA_GRAPH_ID)
+    check_graph_x_axis_value(dash_br, graph_id=cnst.AREA_GRAPH_ID, tick_index="5", value="7")
     check_selected_dropdown(
         dash_br, dropdown_id=cnst.DROPDOWN_FILTER_HOMEPAGEPAGE, expected_selected_options=["versicolor"], multi=False
     )

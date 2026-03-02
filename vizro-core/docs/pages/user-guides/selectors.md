@@ -25,15 +25,15 @@ If you have binary data (such as `False`/`True` or `0`/`1`), you might prefer to
 
     The later is required if you want to provide different display labels to your option values or in case you want to provide boolean values as options. In this case, you need to provide a string label for your boolean values as boolean values cannot be displayed properly as labels in the underlying Dash components.
 
-### Styled dropdown
+### Styled dropdowns
 
 You can customize two predefined dropdown styles that can be customized using the variant argument. If no `variant` is specified, the default style applied is `variant="filled"`.
 
-!!! example "Styled dropdown"
+!!! example "Styled dropdowns"
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="13"}
+        ```{.python pycafe-link hl_lines="13-14"}
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm

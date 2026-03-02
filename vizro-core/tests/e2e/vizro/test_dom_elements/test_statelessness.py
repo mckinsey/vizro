@@ -5,7 +5,6 @@ from e2e.vizro.checkers import (
     check_exported_file_exists,
     check_graph_color,
     check_graph_color_selenium,
-    check_graph_is_loaded,
     check_graph_is_loading_selenium,
     check_theme_color,
 )
@@ -49,9 +48,8 @@ def test_parameters_title(chrome_driver, dash_br):
         expected_conditions.text_to_be_present_in_element((By.CSS_SELECTOR, ".gtitle"), "red")
     )
 
-    # change slider value from the second user and check that bar graph title is default ('blue')
-    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, value="0.4")
-    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
+    # select slider value from the second user and check that bar graph title is default ('blue')
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, max_value="0.4")
     dash_br.wait_for_text_to_equal(".gtitle", "blue")
 
 
@@ -80,9 +78,8 @@ def test_theme_color(chrome_driver, dash_br):
         expected_conditions.presence_of_element_located((By.CSS_SELECTOR, f"html[data-bs-theme='{cnst.THEME_DARK}']"))
     )
 
-    # change slider value for the second user and check that theme is default ('light')
-    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, value="0.4")
-    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
+    # select slider value for the second user and check that theme is default ('light')
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_PARAMETERS, max_value="0.4")
     check_graph_color(dash_br, style_background=cnst.STYLE_LIGHT, color=cnst.RGBA_LIGHT)
     check_theme_color(dash_br, color=cnst.THEME_LIGHT)
 
@@ -104,7 +101,7 @@ def test_export_action(chrome_driver, dash_br):
     )
 
     # change slider values for scatter graph for the first user
-    slider_path = slider_value_path(elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, value=1)
+    slider_path = slider_value_path(elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, value=2)
     WebDriverWait(chrome_driver, cnst.SELENIUM_WAITERS_TIMEOUT).until(
         expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, slider_path))
     )

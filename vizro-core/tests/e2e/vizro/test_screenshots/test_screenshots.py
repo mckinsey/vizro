@@ -10,6 +10,7 @@ from e2e.vizro.navigation import (
     hover_over_element_by_css_selector_selenium,
     hover_over_element_by_xpath_selenium,
     page_select,
+    select_dropdown_select_all,
 )
 from e2e.vizro.paths import (
     button_id_path,
@@ -396,8 +397,10 @@ def test_reset_controls_page(dash_br):
         page_name=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
     )
     # change dropdown controls on the page
+    # dropdown change from "2007" to "Select All"
+    select_dropdown_select_all(dash_br, dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID)
+    # close dropdown to avoid errors with checking other controls
     dash_br.multiple_click(dropdown_id_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
-    dash_br.multiple_click(f"#{cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID}_select_all", 1)
 
     # click reset controls button
     dash_br.multiple_click("button[id$='reset-button']", 1, delay=0.1)

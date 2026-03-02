@@ -1,5 +1,10 @@
 import e2e.vizro.constants as cnst
-from e2e.vizro.checkers import check_selected_categorical_component, check_selected_dropdown, check_slider_value
+from e2e.vizro.checkers import (
+    check_range_slider_value,
+    check_selected_categorical_component,
+    check_selected_dropdown,
+    check_slider_value,
+)
 from e2e.vizro.navigation import (
     accordion_select,
     clear_dropdown,
@@ -39,9 +44,9 @@ def test_reset_controls_header(dash_br):
     # radioitems change from "setosa" to "versicolor"
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIO_ITEMS_INSIDE_CONTAINERS, value=2), 1)
     # slider change from "0.1" to "1.1"
-    select_slider_value(dash_br, elem_id=cnst.SLIDER_INSIDE_CONTAINERS, value="1.1")
+    select_slider_value(dash_br, elem_id=cnst.SLIDER_INSIDE_CONTAINERS, max_value="1.1")
     # range_slider change from "4.3 - 7.9" to "4.3 - 7"
-    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, value="7.3")
+    select_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, max_value="7.3")
     # date_picker change from "2024/01/01 - 2024/05/29" to "2024/01/10 - 2024/01/26"
     dash_br.multiple_click(f'button[id="{cnst.RANGE_DATEPICKER_INSIDE_CONTAINERS}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
@@ -86,10 +91,10 @@ def test_reset_controls_header(dash_br):
         ],
     )
     # slider
-    check_slider_value(dash_br, expected_end_value="0.1", elem_id=cnst.SLIDER_INSIDE_CONTAINERS)
+    check_slider_value(dash_br, expected_max_value="0.1", elem_id=cnst.SLIDER_INSIDE_CONTAINERS)
     # range_slider
-    check_slider_value(
-        dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, expected_start_value="4.3", expected_end_value="7.9"
+    check_range_slider_value(
+        dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, expected_min_value="4.3", expected_max_value="7.9"
     )
     # date_picker
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.RANGE_DATEPICKER_INSIDE_CONTAINERS}"]', "2024/01/01 – 2024/05/29")  # noqa: RUF001
@@ -124,7 +129,6 @@ def test_reset_controls_page(dash_br):
         dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID,
         expected_selected_options=["2007"],
         expected_unselected_options=[
-            "SelectAll",
             "1952",
             "1957",
             "1962",

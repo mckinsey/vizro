@@ -33,7 +33,6 @@ from typing_extensions import TypedDict
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
-from vizro._themes._templates import dashboard_overrides
 from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
@@ -42,6 +41,7 @@ from vizro.models._models_utils import _all_hidden, _log_call, warn_description_
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ControlType
+from vizro.themes._templates import dashboard_overrides
 
 if TYPE_CHECKING:
     from vizro.models import Page

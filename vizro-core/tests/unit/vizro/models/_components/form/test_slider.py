@@ -19,7 +19,7 @@ def expected_slider():
                 min=0.0,
                 max=10.0,
                 step=1.0,
-                marks={},
+                marks={0.0: "0", 10.0: "10"},
                 value=5.0,
                 persistence=True,
                 persistence_type="session",
@@ -30,7 +30,27 @@ def expected_slider():
 
 
 @pytest.fixture()
-def expected_slider_extra():
+def expected_slider_with_marks_none():
+    return html.Div(
+        [
+            dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
+            dcc.Slider(
+                id="slider_id",
+                min=0.0,
+                max=10.0,
+                step=1.0,
+                marks=None,
+                value=5.0,
+                persistence=True,
+                persistence_type="session",
+                dots=True,
+            ),
+        ]
+    )
+
+
+@pytest.fixture()
+def expected_slider_with_extra():
     return html.Div(
         [
             dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
@@ -39,7 +59,7 @@ def expected_slider_extra():
                 min=0.0,
                 max=10.0,
                 step=1.0,
-                marks={},
+                marks={0.0: "0", 10.0: "10"},
                 value=5.0,
                 persistence=True,
                 persistence_type="session",
@@ -72,7 +92,7 @@ def expected_slider_with_description():
                 min=0.0,
                 max=10.0,
                 step=1.0,
-                marks={},
+                marks={0.0: "0", 10.0: "10"},
                 value=5.0,
                 persistence=True,
                 persistence_type="session",
@@ -198,7 +218,12 @@ class TestBuildMethod:
 
         assert_component_equal(slider, expected_slider)
 
-    def test_slider_build_with_extra(self, expected_slider_extra):
+    def test_slider_build_with_marks_none(self, expected_slider_with_marks_none):
+        slider = vm.Slider(id="slider_id", min=0, max=10, step=1, value=5, title="Title", marks=None).build()
+
+        assert_component_equal(slider, expected_slider_with_marks_none)
+
+    def test_slider_build_with_extra(self, expected_slider_with_extra):
         """Test that extra arguments correctly override defaults."""
         slider = vm.Slider(
             id="slider_id",
@@ -213,7 +238,7 @@ class TestBuildMethod:
             },
         ).build()
 
-        assert_component_equal(slider, expected_slider_extra)
+        assert_component_equal(slider, expected_slider_with_extra)
 
     def test_slider_build_with_description(self, expected_slider_with_description):
         slider = vm.Slider(

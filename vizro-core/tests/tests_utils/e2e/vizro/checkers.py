@@ -7,11 +7,10 @@ from e2e.vizro.paths import (
     categorical_components_value_name_path,
     categorical_components_value_path,
     dropdown_id_path,
-    graph_x_axis_value_path,
-    graph_y_axis_value_path,
+    graph_axis_value_path,
     select_all_path,
 )
-from e2e.vizro.waiters import graph_load_waiter, graph_load_waiter_selenium
+from e2e.vizro.waiters import graph_load_waiter_selenium
 from hamcrest import any_of, assert_that, contains_string, equal_to
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -38,12 +37,6 @@ def browser_console_warnings_checker(log_level, log_levels):
     )
 
 
-def check_graph_is_loaded(driver, graph_id):
-    """Waiting for graph to start reloading."""
-    driver.wait_for_element(f"div[id='{graph_id}'][data-dash-is-loading='true']")
-    graph_load_waiter(driver)
-
-
 def check_graph_is_loading_selenium(driver, graph_id, timeout=cnst.SELENIUM_WAITERS_TIMEOUT):
     """Waiting for graph to start reloading for pure selenium."""
     WebDriverWait(driver, timeout).until(
@@ -56,45 +49,49 @@ def check_graph_is_loading_selenium(driver, graph_id, timeout=cnst.SELENIUM_WAIT
 
 def check_graph_is_empty(driver, graph_id):
     driver.wait_for_text_to_equal(
-        graph_y_axis_value_path(
+        graph_axis_value_path(
             graph_id=graph_id,
-            axis_value_number="1",
-            axis_value="−1",  # noqa: RUF001
+            axis="y",
+            tick_index="1",
+            value="−1",  # noqa: RUF001
         ),
         "−1",  # noqa: RUF001
     )
 
 
-def check_graph_y_axis_value(driver, graph_id, axis_value_number, axis_value):
+def check_graph_y_axis_value(driver, graph_id, tick_index, value):
     driver.wait_for_text_to_equal(
-        graph_y_axis_value_path(
+        graph_axis_value_path(
             graph_id=graph_id,
-            axis_value_number=axis_value_number,
-            axis_value=axis_value,
+            axis="y",
+            tick_index=tick_index,
+            value=value,
         ),
-        axis_value,
+        value,
     )
 
 
-def check_graph_x_axis_value(driver, graph_id, axis_value_number, axis_value):
+def check_graph_x_axis_value(driver, graph_id, tick_index, value):
     driver.wait_for_text_to_equal(
-        graph_x_axis_value_path(
+        graph_axis_value_path(
             graph_id=graph_id,
-            axis_value_number=axis_value_number,
-            axis_value=axis_value,
+            axis="x",
+            tick_index=tick_index,
+            value=value,
         ),
-        axis_value,
+        value,
     )
 
 
-def check_slider_value(driver, elem_id, expected_end_value, expected_start_value=None):
-    driver.wait_for_element(
-        f"div[id='{elem_id}'] input[class$='dash-range-slider-max-input'][value='{expected_end_value}']"
-    )
-    if expected_start_value:
-        driver.wait_for_element(
-            f"div[id='{elem_id}'] input[class$='dash-range-slider-min-input'][value='{expected_start_value}']"
-        )
+def check_slider_value(driver, elem_id, expected_max_value):
+    driver.wait_for_element(f"div[id='{elem_id}'] span[aria-valuenow='{expected_max_value}']")
+
+
+def check_range_slider_value(driver, elem_id, expected_min_value=None, expected_max_value=None):
+    if expected_min_value:
+        driver.wait_for_element(f"div[id='{elem_id}'] span[aria-valuenow='{expected_min_value}'][aria-label='Minimum']")
+    else:
+        driver.wait_for_element(f"div[id='{elem_id}'] span[aria-valuenow='{expected_max_value}'][aria-label='Maximum']")
 
 
 def check_accordion_active(driver, accordion_name):
@@ -170,21 +167,25 @@ def check_selected_categorical_component(
 
 
 def check_selected_dropdown(
-    driver, dropdown_id, expected_selected_options, expected_unselected_options=False, multi=True
+    driver, dropdown_id, expected_selected_options, expected_unselected_options=None, multi=True
 ):
     # if dropdown is closed, open it to avoid errors with values checking
     if driver.find_elements(f"{dropdown_id_path(dropdown_id)}[aria-expanded='false']"):
         driver.multiple_click(dropdown_id_path(dropdown_id), 1)
-    if multi is False:
-        selected_options = driver.find_elements(f"{dropdown_id_path(dropdown_id)} .dash-dropdown-value-item span")
-    if multi is True:
+    if multi:
         selected_options = driver.find_elements(
             f"{dropdown_id_path(dropdown_id)} + div "
-            f"label[class='dash-options-list-option selected dash-dropdown-option'] "
-            f".dash-options-list-option-text span"
+            "label[class='dash-options-list-option selected dash-dropdown-option'] "
+            ".dash-options-list-option-text span"
         )
+    else:
+        selected_options = driver.find_elements(f"{dropdown_id_path(dropdown_id)} .dash-dropdown-value-item span")
+
+    # creating list of selected options
     selected_options_list = ["".join(option.text.split()) for option in selected_options]
+    # comparing selected options with expected
     assert_that(selected_options_list, equal_to(expected_selected_options))
+
     if expected_unselected_options:
         unselected_options = driver.find_elements(
             f"{dropdown_id_path(dropdown_id)} + div "
