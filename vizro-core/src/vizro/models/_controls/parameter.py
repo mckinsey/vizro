@@ -6,8 +6,9 @@ from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions._parameter_action import _parameter
-from vizro.managers import model_manager
+from vizro.managers._model_manager import get_tree
 from vizro.models import VizroBaseModel
+from vizro.models._base import _validate_with_tree_context
 from vizro.models._controls._controls_utils import (
     _is_categorical_selector,
     _is_numerical_temporal_selector,
@@ -45,7 +46,7 @@ def check_data_frame_as_target_argument(target):
 
 def check_duplicate_parameter_target(targets):
     all_targets = targets.copy()
-    for param in cast(Iterable[Parameter], model_manager._get_models(Parameter)):
+    for param in cast(Iterable[Parameter], get_tree().get_models(Parameter)):
         all_targets.extend(param.targets)
     duplicate_targets = {item for item in all_targets if all_targets.count(item) > 1}
     if duplicate_targets:
@@ -69,17 +70,16 @@ class Parameter(VizroBaseModel):
     """
 
     type: Literal["parameter"] = "parameter"
-    targets: Annotated[  # TODO[MS]: check if the double annotation is the best way to do this
-        list[
-            Annotated[
-                str,
-                AfterValidator(check_dot_notation),
-                AfterValidator(check_data_frame_as_target_argument),
-                Field(description="Targets in the form of `<target_component>.<target_argument>`."),
-            ]
-        ],
-        AfterValidator(check_duplicate_parameter_target),
-    ]
+    targets: list[  # Annotated[  # TODO[MS]: check if the double annotation is the best way to do this
+        Annotated[
+            str,
+            AfterValidator(check_dot_notation),
+            AfterValidator(check_data_frame_as_target_argument),
+            Field(description="Targets in the form of `<target_component>.<target_argument>`."),
+        ]
+    ]  # , needs to move to pre-build, then probably doesn't need get_tree anymore
+    # AfterValidator(check_duplicate_parameter_target),
+    # ]
     selector: SelectorType
     show_in_url: bool = Field(
         default=False,
@@ -156,7 +156,7 @@ class Parameter(VizroBaseModel):
             page_dynamic_filters = [
                 filter
                 for filter in cast(
-                    Iterable[Filter], model_manager._get_models(Filter, root_model=model_manager._get_model_page(self))
+                    Iterable[Filter], self._tree.get_models(Filter, root_model=self._tree.get_model_page(self))
                 )
                 if filter._dynamic
             ]
@@ -178,7 +178,16 @@ class Parameter(VizroBaseModel):
             # pydantic validator like `check_dot_notation` on the `self.targets` again.
             # We do the update to ensure that `self.targets` is consistent with the targets passed to `_parameter`.
             self.targets.extend(list(filter_targets))
-            self.selector.actions = [_parameter(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
+            self.selector.actions = [
+                _validate_with_tree_context(
+                    _parameter(
+                        id=f"{PARAMETER_ACTION_PREFIX}_{self.id}",
+                        targets=self.targets,
+                    ),
+                    parent_model=self.selector,
+                    field_name="actions",
+                )
+            ]
 
     @_log_call
     def build(self):

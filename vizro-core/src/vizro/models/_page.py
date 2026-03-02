@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from itertools import chain
-from typing import Annotated, cast
+from typing import Annotated, Literal, cast
 
 import dash_mantine_components as dmc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
@@ -17,9 +17,9 @@ from typing_extensions import TypedDict
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions._on_page_load import _on_page_load
-from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Filter, Parameter, Tooltip, VizroBaseModel
+from vizro.models._base import _validate_with_tree_context
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
     _all_hidden,
@@ -29,7 +29,7 @@ from vizro.models._models_utils import (
     make_actions_chain,
     warn_description_without_title,
 )
-from vizro.models.types import ActionsType, _IdProperty
+from vizro.models.types import ActionsType, _IdProperty, make_discriminated_union
 
 from ._action._action import _BaseAction
 from ._tooltip import coerce_str_to_tooltip
@@ -59,13 +59,14 @@ class Page(VizroBaseModel):
     """
 
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
+    type: Literal["page"] = "page"
     components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
     title: str = Field(description="Title of the `Page`")
     layout: Annotated[LayoutType | None, AfterValidator(set_layout), Field(default=None, validate_default=True)]
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Tooltip | None,
+        make_discriminated_union(Tooltip) | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(
@@ -95,10 +96,10 @@ class Page(VizroBaseModel):
             new_path = clean_path(self.title, "-_")
 
         # Check for duplicate path - will move to pre_build in next PR
-        for page in cast(Iterable[Page], model_manager._get_models(Page)):
-            # Need to check for id equality to avoid checking the same page against itself
-            if not self.id == page.id and new_path == page.path:
-                raise ValueError(f"Path {new_path} cannot be used by more than one page.")
+        # for page in cast(Iterable[Page], model_manager._get_models(Page)):
+        #     # Need to check for id equality to avoid checking the same page against itself
+        #     if not self.id == page.id and new_path == page.path:
+        #         raise ValueError(f"Path {new_path} cannot be used by more than one page.")
 
         # We should do self.path = new_path but this leads to a recursion error. The below is a workaround
         # until the pydantic bug is fixed. See https://github.com/pydantic/pydantic/issues/6597.
@@ -130,21 +131,30 @@ class Page(VizroBaseModel):
         #  get_all_targets_on_page() that's used in many actions. So maybe it makes sense to put it in the action for
         #  on_page_load/filter/parameter too.
         figure_targets = [
-            model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, root_model=self))
+            model.id for model in cast(Iterable[FigureType], self._tree.get_models(FIGURE_MODELS, root_model=self))
         ]
         filter_targets = [
             filter.id
-            for filter in cast(Iterable[Filter], model_manager._get_models(Filter, root_model=self))
+            for filter in cast(Iterable[Filter], self._tree.get_models(Filter, root_model=self))
             if filter._dynamic
         ]
         targets = figure_targets + filter_targets
 
         if targets:
-            self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
+            self.actions = [
+                _validate_with_tree_context(
+                    _on_page_load(
+                        id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
+                        targets=targets,
+                    ),
+                    parent_model=self,
+                    field_name="actions",
+                )
+            ]
 
         # Convert generator to list as it's going to be iterated multiple times.
         # Use "root_model=self" as controls can be defined inside a "Container.controls" under the "Page.components".
-        controls = list(cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter), root_model=self)))
+        controls = list(cast(Iterable[ControlType], self._tree.get_models((Filter, Parameter), root_model=self)))
 
         if controls:
             # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.
@@ -216,7 +226,7 @@ class Page(VizroBaseModel):
         action_components = list(
             chain.from_iterable(
                 action._dash_components
-                for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction, root_model=self))
+                for action in cast(Iterable[_BaseAction], self._tree.get_models(_BaseAction, root_model=self))
             )
         )
 

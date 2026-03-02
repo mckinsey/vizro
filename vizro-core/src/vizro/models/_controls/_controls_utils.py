@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import warnings
-from collections.abc import Generator
-from typing import TYPE_CHECKING, Any
+from collections.abc import Generator, Iterable
+from typing import TYPE_CHECKING, Any, cast
 
 from typing_extensions import TypeIs
 
-from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import (
     Checklist,
@@ -47,7 +46,7 @@ def _is_boolean_selector(x: object) -> TypeIs[Switch]:
 
 
 def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
-    component_figures: Generator[VizroBaseModel] = model_manager._get_models(FIGURE_MODELS, root_model)
+    component_figures: Generator[VizroBaseModel, None, None] = root_model._tree.get_models(FIGURE_MODELS, root_model)
     component_figure_ids = [model.id for model in component_figures]
     for target in targets:
         target_id = target.split(".")[0]
@@ -62,13 +61,13 @@ def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
 def get_control_parent(control: ControlType) -> Page | Container | None:
     """Get the nearest ancestor Container or Page for the given control."""
     # Return None if the control is not part of any page.
-    if (page := model_manager._get_model_page(model=control)) is None:
+    if (page := control._tree.get_model_page(control)) is None:
         return None
 
     nearest_ancestor_container = None
-    # Find the deepest Container that contains this control (DFS pre-order in `_get_models` gives deepest match last).
-    for container in model_manager._get_models(model_type=Container, root_model=page):
-        if control in model_manager._get_models(model_type=type(control), root_model=container):
+    # Find the deepest Container that contains this control (DFS pre-order in `get_models` gives deepest match last).
+    for container in cast(Iterable[Container], control._tree.get_models(model_type=Container, root_model=page)):
+        if control in control._tree.get_models(model_type=type(control), root_model=container):
             nearest_ancestor_container = container
 
     # Fallback to the page if not nested inside any container.
@@ -77,8 +76,8 @@ def get_control_parent(control: ControlType) -> Page | Container | None:
 
 def check_control_targets(control: ControlType) -> None:
     root_model = get_control_parent(control=control)
-    # Search by using "_get_models" instead of "if control not in root_model.controls" to handle nested custom controls.
-    if root_model is None or control not in model_manager._get_models(root_model=root_model.controls):
+    # Search by using "get_models" instead of "if control not in root_model.controls" to handle nested custom controls.
+    if root_model is None or control not in control._tree.get_models(root_model=root_model.controls):
         raise ValueError(f"Control {control.id} should be defined within Page.controls or Container.controls.")
 
     _validate_targets(targets=control.targets, root_model=root_model)

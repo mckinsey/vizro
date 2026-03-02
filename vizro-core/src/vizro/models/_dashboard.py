@@ -33,18 +33,17 @@ from typing_extensions import TypedDict
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
-from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
 from vizro.models._controls import Filter, Parameter
 from vizro.models._models_utils import _all_hidden, _log_call, warn_description_without_title
 from vizro.models._navigation._navigation_utils import _NavBuildType
+from vizro.models._page import Page
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ControlType
+from vizro.models.types import ControlType, make_discriminated_union
 from vizro.themes._templates import dashboard_overrides
 
 if TYPE_CHECKING:
-    from vizro.models import Page
     from vizro.models._page import _PageBuildType
 
 logger = logging.getLogger(__name__)
@@ -92,21 +91,23 @@ class Dashboard(VizroBaseModel):
 
     Abstract: Usage documentation
         [How to create a dashboard](../user-guides/dashboard.md)
-
     """
 
-    pages: list[Page]
+    type: Literal["dashboard"] = "dashboard"
+    pages: list[make_discriminated_union(Page)]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         default="vizro_dark", description="Theme to be applied across dashboard."
     )
     navigation: Annotated[
-        Navigation | None, AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
+        make_discriminated_union(Navigation) | None,
+        AfterValidator(set_navigation_pages),
+        Field(default=None, validate_default=True),
     ]
     title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Tooltip | None,
+        make_discriminated_union(Tooltip) | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(
@@ -150,7 +151,8 @@ class Dashboard(VizroBaseModel):
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
 
         # Define callbacks when the dashboard is built but not every time the page is changed.
-        for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
+        # Use tree-based iteration instead of global model_manager
+        for action in cast(Iterable[_BaseAction], self._tree.get_models(_BaseAction)):
             action._define_callback()
 
         clientside_callback(
@@ -190,7 +192,8 @@ class Dashboard(VizroBaseModel):
                     data={
                         control.id: {"originalValue": control.selector.value, "pageId": page.id}
                         for page in self.pages
-                        for control in cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter), page))
+                        # Use tree-based iteration instead of global model_manager
+                        for control in cast(Iterable[ControlType], self._tree.get_models((Filter, Parameter), page))
                     },
                 ),
                 dash.page_container,
@@ -304,9 +307,8 @@ class Dashboard(VizroBaseModel):
         page_header_content = [page_title]
         page_header = html.Div(id="page-header", children=page_header_content)
 
-        has_page_controls = bool(
-            [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)]
-        )
+        # Use tree-based iteration instead of global model_manager
+        has_page_controls = bool([*self._tree.get_models(Parameter, page), *self._tree.get_models(Filter, page)])
 
         # Page header controls that appear on the right side of the header.
         action_progress_indicator = dcc.Loading(

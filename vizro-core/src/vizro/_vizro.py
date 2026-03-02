@@ -16,7 +16,7 @@ from typing_extensions import Self
 
 import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
-from vizro.managers import data_manager, model_manager
+from vizro.managers import data_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Dashboard, Filter
 from vizro.models.types import FigureType
@@ -139,7 +139,20 @@ class Vizro:
         pio.templates.default = dashboard.theme
 
         # Note that model instantiation and pre_build are independent of Dash.
-        self._pre_build()
+        # Build the tree - this attaches _tree to every model
+        dashboard = dashboard.__class__.model_validate(dashboard, context={"build_tree": True})
+
+        # Store the tree on the Dash app for runtime access via get_tree().
+        # This is the primary way runtime callbacks should access models.
+        # Options considered for runtime tree storage, not tried all of course:
+        #   1. Dashboard model (self._dashboard) - requires navigating from action to dashboard
+        #   2. Vizro instance (self) - no clean way to access from callbacks
+        #   3. Flask current_app - probably best alternative, but Dash-level is more appropriate
+        #   4. Flask g - per-request, wrong lifecycle for app-scoped tree
+        #   5. Dash app (get_app()) - CHOSEN as it seems the correct scope and callback-friendly
+        self.dash.vizro_tree = dashboard._tree
+
+        self._pre_build(dashboard)
         self.dash.layout = dashboard.build()
 
         # Store the dashboard object for later use in the run method.
@@ -167,7 +180,7 @@ class Vizro:
             [How to develop in Python script](../user-guides/run-deploy.md#develop-in-python-script)
         """
         data_manager._frozen_state = True
-        model_manager._frozen_state = True
+        # TODO: _frozen_state was on ModelManager - consider if we still need this concept
 
         # Check if there are undefined captured callables in the dashboard.
         # TODO: In the future we may want to try importing these, do users don't have to create an entirely
@@ -175,7 +188,8 @@ class Vizro:
         _undefined_captured_callables: set[str] = {
             model.figure._function
             for model in cast(
-                Iterable[FigureType], model_manager._get_models(root_model=self._dashboard, model_type=FIGURE_MODELS)
+                Iterable[FigureType],
+                self._dashboard._tree.get_models(model_type=FIGURE_MODELS, root_model=self._dashboard),
             )
             if model.figure._prevent_run
         }
@@ -196,15 +210,17 @@ Provide a valid import path for these in your dashboard configuration."""
         self.dash.run(**kwargs)
 
     @staticmethod
-    def _pre_build():
-        """Runs pre_build method on all models in the model_manager."""
-        # Note that a pre_build method can itself add a model (e.g. an Action) to the model manager, and so we need to
-        # iterate through set(model_manager) rather than model_manager itself or we loop through something that
+    def _pre_build(dashboard: Dashboard):
+        """Runs pre_build method on all models in the dashboard."""
+        # Note that a pre_build method can itself add a model (e.g. an Action) to the tree, and so we need to
+        # iterate through a snapshot (set/list) rather than the iterator itself or we loop through something that
         # changes size.
         # Any models that are created during the pre-build process *will not* themselves have pre_build run on them.
         # In future may add a second pre_build loop after the first one.
 
-        for filter in cast(Iterable[Filter], model_manager._get_models(Filter)):
+        # TODO: Things fail here because the MM copy of the model is outdated - fix in next iteration
+        # This is also the reason why this is not replicated in fake Vizro
+        for filter in cast(Iterable[Filter], dashboard._tree.get_models(Filter)):
             # Run pre_build on all filters first, then on all other models. This handles dependency between Filter
             # and Page pre_build and ensures that filters are pre-built before the Page objects that use them.
             # This is important because the Page pre_build method checks whether filters are dynamic or not, which is
@@ -213,8 +229,8 @@ Provide a valid import path for these in your dashboard configuration."""
             # It's also essential for filters to be pre-built before Container.pre_build runs or otherwise
             # control.selector won't be set.
             filter.pre_build()
-        for model_id in set(model_manager):
-            model = model_manager[model_id]
+        for model_id in set(dashboard._tree.iter_model_ids()):
+            model = dashboard._tree.get_model(model_id)
             if hasattr(model, "pre_build") and not isinstance(model, Filter):
                 model.pre_build()
 
@@ -233,7 +249,6 @@ Provide a valid import path for these in your dashboard configuration."""
         explanation.
         """
         data_manager._clear()
-        model_manager._clear()
         dash._callback.GLOBAL_CALLBACK_LIST = []
         dash._callback.GLOBAL_CALLBACK_MAP = {}
         dash._callback.GLOBAL_INLINE_SCRIPTS = []
@@ -306,3 +321,20 @@ def _make_resource_spec(path: Path) -> _ResourceType:
         resource_spec["dynamic"] = True
 
     return resource_spec
+
+
+"""FURTHER PLAN OF ACTION
+
+- [DONE] convert MM from dictionary to just tree reference, populate at correct moment
+- [DONE] replace all methods with tree lookups
+- [DONE] remove the MM from its global state
+  - Global model_manager singleton no longer imported or used in src/
+  - Build-time: models access tree via self._tree
+  - Runtime (callbacks): models access tree via get_tree() -> dash.get_app().vizro_tree
+  - Tree stored on Dash app instance (Option 5)
+- [TODO] update tests to work without global model_manager
+- [TODO] clean up ModelManager class and deprecation shims in _model_manager.py
+- [TODO] Dash PAGE_REGISTRY is global and not cleared between
+  dashboard instances, causing "duplicate paths" error when building a second dashboard in the same
+  notebook.
+"""

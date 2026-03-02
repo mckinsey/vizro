@@ -19,6 +19,7 @@ from vizro.models.types import (
     OptionsType,
     SingleValueType,
     _IdProperty,
+    make_discriminated_union,
 )
 
 
@@ -62,7 +63,7 @@ class Dropdown(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Tooltip | None,
+        make_discriminated_union(Tooltip) | None,
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,

@@ -11,10 +11,11 @@ from pydantic import Field, PrivateAttr, model_validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
 from vizro.actions._filter_action import _filter
-from vizro.managers import data_manager, model_manager
+from vizro.managers import data_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
+from vizro.models._base import _validate_with_tree_context
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch
 from vizro.models._controls._controls_utils import (
     SELECTORS,
@@ -206,7 +207,7 @@ class Filter(VizroBaseModel):
         proposed_targets = self.targets or [
             model.id
             for model in cast(
-                Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, get_control_parent(control=self))
+                Iterable[FigureType], self._tree.get_models(FIGURE_MODELS, get_control_parent(control=self))
             )
         ]
 
@@ -214,12 +215,12 @@ class Filter(VizroBaseModel):
         #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
         #  column type (and hence selector) and initial values. There are three ways to handle this:
         #  1. (Current approach) - Propagate {} and use only default arguments value in the dynamic data function.
-        #  2. Propagate values from the model_manager and relax the limitation of requiring argument default values.
+        #  2. Propagate values from the tree and relax the limitation of requiring argument default values.
         #  3. Skip the pre-build and do everything in the build method (if possible).
         #  Find more about the mentioned limitation at: https://github.com/mckinsey/vizro/pull/879/files#r1846609956
         # Even if the solution changes for dynamic data, static data should still use {} as the arguments here.
         multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [
-            (cast(FigureType, model_manager[target])["data_frame"], {}) for target in proposed_targets
+            (cast(FigureType, self._tree.get_model(target))["data_frame"], {}) for target in proposed_targets
         ]
 
         target_to_data_frame = dict(zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
@@ -230,7 +231,10 @@ class Filter(VizroBaseModel):
 
         # Set default selector according to column type.
         self._column_type = self._validate_column_type(targeted_data)
-        self.selector = self.selector or DEFAULT_SELECTORS[self._column_type]()
+        if not self.selector:
+            self.selector = _validate_with_tree_context(
+                DEFAULT_SELECTORS[self._column_type](), parent_model=self, field_name="selector"
+            )
         self.selector.title = self.selector.title or self.column.title()
 
         if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
@@ -251,7 +255,7 @@ class Filter(VizroBaseModel):
             and getattr(self.selector, "max", None) is None
         ):
             for target_id in self.targets:
-                data_source_name = cast(FigureType, model_manager[target_id])["data_frame"]
+                data_source_name = cast(FigureType, self._tree.get_model(target_id))["data_frame"]
                 if isinstance(data_manager[data_source_name], _DynamicData):
                     self._dynamic = True
                     self.selector._dynamic = True
@@ -279,12 +283,16 @@ class Filter(VizroBaseModel):
                 filter_function = _filter_isin
 
             self.selector.actions = [
-                _filter(
-                    id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                    column=self.column,
-                    filter_function=filter_function,
-                    targets=self.targets,
-                ),
+                _validate_with_tree_context(
+                    _filter(
+                        id=f"{FILTER_ACTION_PREFIX}_{self.id}",
+                        column=self.column,
+                        filter_function=filter_function,
+                        targets=self.targets,
+                    ),
+                    parent_model=self,
+                    field_name="actions",
+                )
             ]
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).

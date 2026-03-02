@@ -9,7 +9,6 @@ from pydantic import AfterValidator, BeforeValidator, Field, conlist, model_vali
 from pydantic.json_schema import SkipJsonSchema
 from pydantic_core.core_schema import ValidationInfo
 
-from vizro.managers import model_manager
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
@@ -20,7 +19,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ComponentType, ControlType, LayoutType, _IdProperty
+from vizro.models.types import ComponentType, ControlType, LayoutType, _IdProperty, make_discriminated_union
 
 
 # TODO: this could be done with default_factory once we bump to pydantic>=2.10.0.
@@ -65,7 +64,7 @@ class Container(VizroBaseModel):
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
     description: Annotated[
-        Tooltip | None,
+        make_discriminated_union(Tooltip) | None,
         BeforeValidator(coerce_str_to_tooltip),
         AfterValidator(warn_description_without_title),
         Field(
@@ -108,10 +107,10 @@ underlying component may change in the future.""",
 
         # Mark controls under this container as `_in_container`. Note this relies on the fact that filters are pre-built
         # upfront in Vizro._pre_build. Otherwise, control.selector might not be set.
-        # Use "_get_models" instead of "for control in self.controls" to handle nested custom controls.
+        # Use "_iter_models" instead of "for control in self.controls" to handle nested custom controls.
         # Use root_model=self.controls so only its own self.controls are marked, not these nested under self.components.
         for control in cast(
-            Iterable[ControlType], model_manager._get_models(model_type=(Filter, Parameter), root_model=self.controls)
+            Iterable[ControlType], self._tree.get_models(model_type=(Filter, Parameter), root_model=self.controls)
         ):
             control.selector._in_container = True
 

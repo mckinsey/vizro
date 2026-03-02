@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from collections.abc import Collection, Generator, Iterable, Mapping
-from typing import TYPE_CHECKING, TypeVar, cast
+from collections.abc import Collection, Generator, Mapping
+from typing import TYPE_CHECKING, TypeVar
 
-from vizro.managers._managers_utils import _state_modifier
+from nutree.typed_tree import TypedTree
 
 if TYPE_CHECKING:
     from vizro.models import Page, VizroBaseModel
@@ -22,94 +22,143 @@ class FIGURE_MODELS:
     pass
 
 
+# TODO: Re-implement the duplicate ID error and investigate further why things (atm) are working nonetheless:
+# Duplicate ID on Tabs Containers caused the duplicate not to appear in the tree, BUT the page worked as intended, why?
+# Very likely because we still get to the model via the parent model when we iterate over the tabs field
 class DuplicateIDError(ValueError):
     """Useful for providing a more explicit error message when a model has id set automatically, e.g. Page."""
 
 
-class ModelManager:
-    def __init__(self):
-        self.__models: dict[ModelID, VizroBaseModel] = {}
-        self._frozen_state = False
+class ModelNotFoundError(KeyError):
+    """Raised when a model ID is not found in the tree."""
 
-    # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
-    @_state_modifier
-    def __setitem__(self, model_id: ModelID, model: Model):
-        if model_id in self.__models:
-            raise DuplicateIDError(
-                f"Model with id={model_id} already exists. Models must have a unique id across the whole dashboard. "
-                f"If you are working from a Jupyter Notebook, please either restart the kernel, or "
-                f"use 'from vizro import Vizro; Vizro._reset()`."
-            )
-        self.__models[model_id] = model
 
-    @_state_modifier
-    def __delitem__(self, model_id: ModelID):
-        # Only required to handle legacy actions and could be removed when those are no longer needed.
-        del self.__models[model_id]
+class VizroTree(TypedTree):
+    """Thin subclass of TypedTree with model iteration methods.
 
-    def __getitem__(self, model_id: ModelID) -> VizroBaseModel:
-        # Do we need to return deepcopy(self.__models[model_id]) to avoid adjusting element by accident?
-        return self.__models[model_id]
+    Note: We do NOT override __getitem__ because the parent TypedTree uses it to access nodes
+    during tree building. Use get_model() to look up models by ID instead.
+    """
 
-    def __iter__(self) -> Generator[ModelID, None, None]:
-        """Iterates through all models.
+    def get_model(self, model_id: ModelID) -> VizroBaseModel:
+        """Look up a model by its ID.
 
-        Note this yields model IDs rather key/value pairs to match the interface for a dictionary.
+        Raises:
+            ModelNotFoundError: If the model ID is not found in the tree.
         """
-        # TODO: should this yield models rather than model IDs? Should model_manager be more like set with a special
-        #  lookup by model ID or more like dictionary?
-        yield from self.__models
+        node = self.find_first(data_id=model_id)
+        if node is None:
+            raise ModelNotFoundError(f"Model with ID '{model_id}' not found in the tree.")
+        return node.data
 
-    def _get_models(
+    def iter_model_ids(self) -> Generator[ModelID, None, None]:
+        """Iterate through all model IDs."""
+        for node in self.iterator():
+            yield node.data.id
+
+    def _get_model_children(self, model: Model) -> Generator[Model, None, None]:
+        """Iterate through children of `model` with depth-first pre-order traversal."""
+        node = self.find_first(data_id=model.id)
+        yield from (n.data for n in node.iterator(add_self=True))
+
+    def get_models(
         self,
         model_type: type[Model] | tuple[type[Model], ...] | type[FIGURE_MODELS] | None = None,
         root_model: VizroBaseModel | Mapping[str, Model] | Collection[Model] | None = None,
     ) -> Generator[Model, None, None]:
-        """Iterates through all models of type `model_type` (including subclasses).
+        """Iterate through all models of type `model_type` (including subclasses).
 
         If `model_type` is specified, return only models matching that type. Otherwise, include all types.
         If `root_model` is specified, return only models that are descendants of the given `root_model`.
+
+        Note: For figure models, pass `FIGURE_MODELS` sentinel which will be resolved to the actual types.
         """
+        # Imported inside method to avoid circular imports at module level.
         import vizro.models as vm
+        from vizro.models import VizroBaseModel
 
         if model_type is FIGURE_MODELS:
             model_type = (vm.Graph, vm.AgGrid, vm.Table, vm.Figure)  # type: ignore[assignment]
-        models = self.__get_model_children(root_model) if root_model is not None else self.__models.values()  # type: ignore[type-var]
 
-        # Convert to list to avoid changing size when looping through at runtime.
-        for model in list(models):
+        # Get models from tree based on root_model
+        if root_model is None:
+            # Iterate entire tree
+            models = (n.data for n in self.iterator() if isinstance(n.data, VizroBaseModel))
+        elif isinstance(root_model, VizroBaseModel):
+            # Single model - get its descendants
+            models = self._get_model_children(root_model)
+        elif isinstance(root_model, Mapping):
+            # Mapping - extract VizroBaseModel instances and get descendants for each
+            models_list: list[VizroBaseModel] = []
+            for child in root_model.values():
+                if isinstance(child, VizroBaseModel):
+                    models_list.extend(list(self._get_model_children(child)))
+            models = iter(models_list)
+        elif isinstance(root_model, Collection) and not isinstance(root_model, str):
+            # Collection - extract VizroBaseModel instances and get descendants for each
+            models_list = []
+            for child in root_model:
+                if isinstance(child, VizroBaseModel):
+                    models_list.extend(list(self._get_model_children(child)))
+            models = iter(models_list)
+        else:
+            return  # return empty generator
+
+        for model in models:
             if model_type is None or isinstance(model, model_type):
                 yield model  # type: ignore[misc]
 
-    def __get_model_children(self, model: Model) -> Generator[Model, None, None]:
-        """Iterates through children of `model` with depth-first pre-order traversal."""
-        from vizro.models import VizroBaseModel
-
-        if isinstance(model, VizroBaseModel):
-            yield model
-            for model_field in model.__class__.model_fields:
-                yield from self.__get_model_children(getattr(model, model_field))
-        elif isinstance(model, Mapping):
-            # We don't look through keys because Vizro models aren't hashable.
-            for child in model.values():
-                yield from self.__get_model_children(child)
-        elif isinstance(model, Collection) and not isinstance(model, str):
-            for child in model:
-                yield from self.__get_model_children(child)
-
-    def _get_model_page(self, model: Model) -> Page:  # type: ignore[return]
-        """Gets the page containing `model`."""
+    def get_model_page(self, model: Model) -> Page | None:
+        """Get the page containing `model`."""
+        # Imported inside method to avoid circular imports at module level.
         from vizro.models import Page
 
         if isinstance(model, Page):
             return model
 
-        for page in cast(Iterable[Page], self._get_models(Page)):
-            if model in self.__get_model_children(page):  # type: ignore[operator]
+        for page in self.get_models(Page):
+            # Check if model is in page's descendants by comparing IDs (not object identity)
+            page_descendant_ids = {n.data.id for n in self.find_first(data_id=page.id).iterator(add_self=True)}
+            if model.id in page_descendant_ids:
                 return page
 
-    def _clear(self):
-        self.__init__()  # type: ignore[misc]
+        return None
+
+    def has_model(self, model_id: ModelID) -> bool:
+        """Check if a model with the given ID exists in the tree."""
+        return self.find_first(data_id=model_id) is not None
+
+    def remove_model(self, model_id: ModelID) -> None:
+        """Remove a model from the tree by its ID.
+
+        Args:
+            model_id: The ID of the model to remove.
+
+        Note:
+            If the model is not found, this is a no-op.
+        """
+        node = self.find_first(data_id=model_id)
+        if node is not None:
+            node.remove()
 
 
-model_manager = ModelManager()
+def get_tree() -> VizroTree:
+    """Get the VizroTree for the current Dash app.
+
+    This function is used at runtime (inside Dash callbacks) to access models.
+    The tree is stored on the Dash app instance during `Vizro.build()`.
+    """
+    from dash import get_app
+
+    try:
+        app = get_app()
+    except RuntimeError as e:
+        raise RuntimeError(
+            "get_tree() must be called within a Dash callback context. "
+            "If you're in build-time code, use model._tree instead."
+        ) from e
+
+    if not hasattr(app, "vizro_tree"):
+        raise RuntimeError("VizroTree not found on Dash app. Make sure Vizro.build() has been called.")
+
+    return app.vizro_tree

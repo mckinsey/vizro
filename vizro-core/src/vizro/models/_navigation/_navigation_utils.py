@@ -6,7 +6,7 @@ from itertools import chain
 import dash_bootstrap_components as dbc
 from typing_extensions import TypedDict
 
-from vizro.managers import model_manager
+from vizro.managers._model_manager import VizroTree
 from vizro.models.types import ModelID, NavPagesType
 
 # Error message constants
@@ -56,15 +56,13 @@ def _resolve_list_of_page_references(
     return unknown_pages, validated_list
 
 
-# TODO[MS]: This will need to move to pre-build in next PR - hopefully there is no problems
-# introduced with handling things this way
-def _validate_pages(pages: NavPagesType) -> NavPagesType:
+def _validate_pages(pages: NavPagesType, tree: VizroTree) -> NavPagesType:
     """Reusable validator to check if provided Page titles exist as registered pages."""
     from vizro.models import Page
 
     # Build lookup map for pages by title
     title_to_ids: dict[str, list[ModelID]] = defaultdict(list)
-    for page in model_manager._get_models(Page):
+    for page in tree.get_models(Page):
         title_to_ids[page.title].append(page.id)
 
     # Process pages based on structure (dict or list)

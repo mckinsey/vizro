@@ -7,7 +7,7 @@ from dash import html
 from dash.development.base_component import Component
 from pydantic import ValidationInfo
 
-from vizro.managers import model_manager
+from vizro.managers._model_manager import get_tree
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 
 logger = logging.getLogger(__name__)
@@ -146,8 +146,8 @@ def make_actions_chain(self):
                 category=FutureWarning,
                 stacklevel=4,
             )
-
-            del model_manager[action.id]
+            # TODO: check below
+            get_tree().remove_model(action.id)
             converted_actions.append(action.function)
         else:
             converted_actions.append(action)
