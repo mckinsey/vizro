@@ -256,18 +256,18 @@ venn_page = vm.Page(
 
             #### What is a Venn chart?
 
-            A Venn diagram uses overlapping circles or other shapes to illustrate the logical relationships between two 
-            or more sets of items. Often, they serve to graphically organize things, highlighting how the items are 
+            A Venn diagram uses overlapping circles or other shapes to illustrate the logical relationships between two
+            or more sets of items. Often, they serve to graphically organize things, highlighting how the items are
             similar and different.
 
             &nbsp;
 
             #### When should I use it?
 
-            Use a Venn diagram when you want to compare and contrast groups of things. They are effective for showing 
-            points of commonality and difference between discrete groups or categories. They are widely used to show 
-            overlaps in data sets, organizational intersections, or conceptual similarities. Note that true Venn diagrams 
-            show all possible logical relations between a finite collection of different sets, though simplified versions 
+            Use a Venn diagram when you want to compare and contrast groups of things. They are effective for showing
+            points of commonality and difference between discrete groups or categories. They are widely used to show
+            overlaps in data sets, organizational intersections, or conceptual similarities. Note that true Venn diagrams
+            show all possible logical relations between a finite collection of different sets, though simplified versions
             (like the two-circle version) are most common for presentations.
         """
         ),
@@ -288,4 +288,13 @@ venn_page = vm.Page(
 
 waterfall_page = waterfall_factory("part-to-whole")
 
-pages = [donut_page, pie_page, treemap_page, stacked_bar_page, stacked_column_page, funnel_page, venn_page, waterfall_page]
+pages = [
+    donut_page,
+    pie_page,
+    treemap_page,
+    stacked_bar_page,
+    stacked_column_page,
+    funnel_page,
+    venn_page,
+    waterfall_page,
+]

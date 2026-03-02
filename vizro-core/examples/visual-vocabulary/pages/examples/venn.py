@@ -1,6 +1,7 @@
 import plotly.graph_objects as go
 from vizro.models.types import capture
 
+
 @capture("graph")
 def venn_diagram(data_frame=None, **kwargs) -> go.Figure:
     fig = go.Figure()
@@ -10,14 +11,20 @@ def venn_diagram(data_frame=None, **kwargs) -> go.Figure:
         type="circle",
         line_color="blue",
         fillcolor="blue",
-        x0=1, y0=1, x1=3, y1=3,
+        x0=1,
+        y0=1,
+        x1=3,
+        y1=3,
         opacity=0.3,
     )
     fig.add_shape(
         type="circle",
         line_color="gray",
         fillcolor="gray",
-        x0=2, y0=1, x1=4, y1=3,
+        x0=2,
+        y0=1,
+        x1=4,
+        y1=3,
         opacity=0.3,
     )
 
@@ -29,11 +36,9 @@ def venn_diagram(data_frame=None, **kwargs) -> go.Figure:
     # Hide axes and set layout
     fig.update_xaxes(showline=False, showgrid=False, zeroline=False, visible=False)
     fig.update_yaxes(showline=False, showgrid=False, zeroline=False, visible=False)
-    fig.update_layout(
-        margin=dict(l=20, r=20, b=20),
-        showlegend=False
-    )
+    fig.update_layout(margin=dict(l=20, r=20, b=20), showlegend=False)
     return fig
+
 
 import pandas as pd
 
