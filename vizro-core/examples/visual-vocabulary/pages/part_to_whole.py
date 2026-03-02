@@ -4,7 +4,7 @@ import vizro.models as vm
 
 from pages._factories import waterfall_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import donut, funnel, pie, stacked_bar, stacked_column, treemap
+from pages.examples import donut, funnel, pie, stacked_bar, stacked_column, treemap, venn
 
 pie_page = vm.Page(
     title="Pie",
@@ -246,6 +246,46 @@ funnel_page = vm.Page(
     ],
 )
 
+venn_page = vm.Page(
+    title="Venn",
+    path="part-to-whole/venn",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a Venn chart?
+
+            A Venn diagram uses overlapping circles or other shapes to illustrate the logical relationships between two 
+            or more sets of items. Often, they serve to graphically organize things, highlighting how the items are 
+            similar and different.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a Venn diagram when you want to compare and contrast groups of things. They are effective for showing 
+            points of commonality and difference between discrete groups or categories. They are widely used to show 
+            overlaps in data sets, organizational intersections, or conceptual similarities. Note that true Venn diagrams 
+            show all possible logical relations between a finite collection of different sets, though simplified versions 
+            (like the two-circle version) are most common for presentations.
+        """
+        ),
+        vm.Graph(figure=venn.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("venn.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("venn.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
 waterfall_page = waterfall_factory("part-to-whole")
 
-pages = [donut_page, pie_page, treemap_page, stacked_bar_page, stacked_column_page, funnel_page, waterfall_page]
+pages = [donut_page, pie_page, treemap_page, stacked_bar_page, stacked_column_page, funnel_page, venn_page, waterfall_page]

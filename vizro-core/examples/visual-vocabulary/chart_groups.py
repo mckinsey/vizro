@@ -153,7 +153,6 @@ part_to_whole_chart_group = ChartGroup(
         IncompletePage("Marimekko"),
         IncompletePage("Arc"),
         IncompletePage("Gridplot"),
-        IncompletePage("Venn"),
     ],
     icon="Donut Small",
     intro_text=part_to_whole_intro_text,
