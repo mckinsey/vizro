@@ -248,7 +248,6 @@ Provide a valid import path for these in your dashboard configuration."""
         This deliberately does not clear the data manager cache - see comments in data_manager._clear for
         explanation.
         """
-
         data_manager._clear()
         dash._callback.GLOBAL_CALLBACK_LIST = []
         dash._callback.GLOBAL_CALLBACK_MAP = {}
