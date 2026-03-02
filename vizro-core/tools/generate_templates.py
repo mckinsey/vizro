@@ -10,14 +10,129 @@ import plotly.io as pio
 from plotly import graph_objects as go
 from plotly.utils import PlotlyJSONEncoder
 
-from vizro._themes._templates import create_template_common
+import vizro
+from vizro.themes import colors, palettes
 
-THEMES_FOLDER = Path(__file__).parent
-CSS_PATH = THEMES_FOLDER.parent / "static/css/vizro-bootstrap.min.css"
+VIZRO_SRC_PATH = Path(vizro.__file__).parent
+
+THEMES_FOLDER = VIZRO_SRC_PATH / "themes"
+CSS_PATH = VIZRO_SRC_PATH / "static" / "css" / "vizro-bootstrap.min.css"
 VARIABLES = ["--bs-primary", "--bs-secondary", "--bs-tertiary-color", "--bs-border-color", "--bs-body-bg"]
 
 
-def _extract_last_two_occurrences(variable: str, css_content: str) -> tuple[str | None, str | None]:
+def create_template_common() -> go.layout.Template:
+    """Creates template with common values for dark and light theme.
+
+    Returns: A plotly template object, see https://plotly.com/python/reference/layout/.
+    """
+    return go.layout.Template(
+        layout=go.Layout(
+            annotationdefaults_font_size=14,
+            annotationdefaults_showarrow=False,
+            bargroupgap=0.1,
+            # coloraxis_autocolorscale = False as otherwise users cannot customize
+            # via `color_continuous_scale`. See https://github.com/plotly/plotly.py/issues/5433
+            coloraxis_autocolorscale=False,
+            coloraxis_colorbar_outlinewidth=0,
+            coloraxis_colorbar_showticklabels=True,
+            coloraxis_colorbar_thickness=20,
+            coloraxis_colorbar_tickfont_size=14,
+            coloraxis_colorbar_ticklabelposition="outside",
+            coloraxis_colorbar_ticklen=8,
+            coloraxis_colorbar_ticks="outside",
+            coloraxis_colorbar_tickwidth=1,
+            coloraxis_colorbar_title_font_size=14,
+            # Diverging, sequential and sequential_minus colorscale will only be applied
+            # automatically if `coloraxis_autocolorscale=True`. Otherwise, they have no
+            # effect, and the default for continuous color scales will be the color
+            # sequence applied to ["colorscale"]["sequential"].
+            colorscale_diverging=palettes.diverging,
+            colorscale_sequential=palettes.sequential,
+            colorscale_sequentialminus=palettes.sequential_minus,
+            colorway=palettes.qualitative,
+            font_family="Inter, sans-serif, Arial",
+            font_size=14,
+            legend_bgcolor=colors.transparent,
+            legend_font_size=14,
+            legend_orientation="h",
+            legend_title_font_size=14,
+            legend_y=-0.20,
+            map_style="carto-darkmatter",
+            margin_autoexpand=True,
+            margin_b=64,
+            margin_l=80,
+            margin_pad=0,
+            margin_r=24,
+            margin_t=64,
+            # Normally, we should use the primary and secondary color for activecolor and color.
+            # However, our rgba values are not displayed correctly with a transparent bg color.
+            # Hence, we use darkgrey and dimgrey for now, which seems to work fine.
+            modebar_activecolor="darkgrey",
+            modebar_bgcolor=colors.transparent,
+            modebar_color="dimgrey",
+            showlegend=True,
+            title_font_size=20,
+            title_pad_b=0,
+            title_pad_l=24,
+            title_pad_r=24,
+            title_pad_t=24,
+            title_x=0,
+            title_xanchor="left",
+            title_xref="container",
+            title_y=1,
+            title_yanchor="top",
+            title_yref="container",
+            uniformtext_minsize=12,
+            uniformtext_mode="hide",
+            xaxis_automargin=True,
+            xaxis_layer="below traces",
+            xaxis_linewidth=1,
+            xaxis_showline=True,
+            xaxis_showticklabels=True,
+            xaxis_tickfont_size=14,
+            xaxis_ticklabelposition="outside",
+            xaxis_ticklen=8,
+            xaxis_ticks="outside",
+            xaxis_tickwidth=1,
+            xaxis_title_font_size=16,
+            xaxis_title_standoff=8,
+            xaxis_visible=True,
+            xaxis_zeroline=False,
+            yaxis_automargin=True,
+            yaxis_layer="below traces",
+            yaxis_linewidth=1,
+            yaxis_showline=False,
+            yaxis_showticklabels=True,
+            yaxis_tickfont_size=14,
+            yaxis_ticklabelposition="outside",
+            yaxis_ticklen=8,
+            yaxis_ticks="outside",
+            yaxis_tickwidth=1,
+            yaxis_title_font_size=16,
+            yaxis_title_standoff=8,
+            yaxis_visible=True,
+            yaxis_zeroline=False,
+        ),
+        data=go.layout.template.Data(
+            # Unfortunately, this doesn't apply to px charts and there doesn't
+            # seem to be a way to set that default in px.
+            pie=[go.Pie(textposition="auto", hole=0.5)],
+            # Note theme-specific parts of the waterfall template are also
+            # defined in this script.
+            waterfall=[
+                go.Waterfall(
+                    decreasing_marker_color=colors.dark_purple,
+                    increasing_marker_color=colors.blue,
+                    totals_marker_color=colors.gray,
+                    textposition="outside",
+                    connector_line_width=1,
+                )
+            ],
+        ),
+    )
+
+
+def extract_last_two_occurrences(variable: str, css_content: str) -> tuple[str | None, str | None]:
     """Extracts the last two occurrences of a variable from the CSS content.
 
     Within the `vizro-bootstrap.min.css` file, variables appear multiple times: initially from the default Bootstrap
@@ -36,7 +151,7 @@ def extract_bs_variables_from_css(variables: list[str], css_content: str) -> tup
     extracted_light = {}
 
     for variable in variables:
-        dark_value, light_value = _extract_last_two_occurrences(variable, css_content)
+        dark_value, light_value = extract_last_two_occurrences(variable, css_content)
         cleaned_variable = variable.replace("--", "").upper()
         if dark_value and light_value:
             extracted_dark[cleaned_variable] = dark_value
@@ -97,6 +212,7 @@ def create_theme_overrides(extracted_values: dict[str, str]) -> go.layout.Templa
         data=go.layout.template.Data(
             bar=[go.Bar(marker_line_color=BG_COLOR)],
             waterfall=[go.Waterfall(textfont_color=FONT_COLOR_PRIMARY, connector_line_color=AXIS_COLOR)],
+            sankey=[go.Sankey(link={"color": AXIS_COLOR})],
         ),
     )
 

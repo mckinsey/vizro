@@ -27,12 +27,6 @@ class Tabs(VizroBaseModel):
     Abstract: Usage documentation
         [How to use tabs](../user-guides/tabs.md)
 
-    Args:
-        tabs (list[Container]): See [`Container`][vizro.models.Container].
-        title (str): Title displayed above Tabs. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-
     """
 
     type: Literal["tabs"] = "tabs"
@@ -46,7 +40,7 @@ class Tabs(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
 

@@ -1,5 +1,8 @@
 name: Lint
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: vizro-core # but could be any folder

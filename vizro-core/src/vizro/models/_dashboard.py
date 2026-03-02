@@ -23,7 +23,12 @@ from dash import (
     html,
 )
 from dash.development.base_component import Component
-from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
+from pydantic import (
+    AfterValidator,
+    BeforeValidator,
+    Field,
+    ValidationInfo,
+)
 from typing_extensions import TypedDict
 
 import vizro
@@ -86,23 +91,12 @@ class Dashboard(VizroBaseModel):
 
     Abstract: Usage documentation
         [How to create a dashboard](../user-guides/dashboard.md)
-
-    Args:
-        pages (list[Page]): See [`Page`][vizro.models.Page].
-        theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
-            Defaults to `vizro_dark`.
-        navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
-        title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.
-
     """
 
     type: Literal["dashboard"] = "dashboard"
     pages: list[make_discriminated_union(Page)]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
-        default="vizro_dark", description="Theme to be applied across dashboard. Defaults to `vizro_dark`."
+        default="vizro_dark", description="Theme to be applied across dashboard."
     )
     navigation: Annotated[
         make_discriminated_union(Navigation) | None,
@@ -120,7 +114,7 @@ class Dashboard(VizroBaseModel):
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.""",
+            tags.""",
         ),
     ]
 

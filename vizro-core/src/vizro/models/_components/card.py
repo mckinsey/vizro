@@ -17,23 +17,6 @@ class Card(VizroBaseModel):
     Abstract: Usage documentation
         [How to use cards](../user-guides/card.md)
 
-    Args:
-        text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.
-        header (str): Markdown text positioned above the card text. Follows the CommonMark specification.
-            Ideal for adding supplementary information. Defaults to `""`.
-        footer (str): Markdown text positioned at the bottom of the `Card`. Follows the CommonMark specification.
-            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card
-            only. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon in the top-right corner of the Card.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Card` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/card/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-
     """
 
     type: Literal["card"] = "card"
@@ -62,7 +45,7 @@ class Card(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon in the top-right corner of the Card.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     extra: SkipJsonSchema[
@@ -71,10 +54,10 @@ class Card(VizroBaseModel):
             Field(
                 default={},
                 description="""Extra keyword arguments that are passed to `dbc.Card` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/card/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.""",
+defaults chosen by the Vizro team. This may have unexpected behavior.
+Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/card/)
+to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+underlying component may change in the future.""",
             ),
         ]
     ]
@@ -82,6 +65,7 @@ class Card(VizroBaseModel):
 
     @model_validator(mode="after")
     def validate_href_and_actions(self):
+        """Validate that `href` and `actions` are not defined together."""
         if self.href and self.actions:
             raise ValueError("Card cannot have both `href` and `actions` defined.")
 

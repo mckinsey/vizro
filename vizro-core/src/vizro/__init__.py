@@ -12,12 +12,12 @@ from ._vizro import Vizro, _make_resource_spec
 
 logging.basicConfig(level=os.getenv("VIZRO_LOG_LEVEL", "WARNING"))
 
-base_path = Path(__file__).parent / "_themes"
+base_path = Path(__file__).parent / "themes"
 pio.templates["vizro_dark"] = json.loads((base_path / "vizro_dark.json").read_text())
 pio.templates["vizro_light"] = json.loads((base_path / "vizro_light.json").read_text())
 
 __all__ = ["Vizro"]
-__version__ = "0.1.52.dev0"
+__version__ = "0.1.53.dev0"
 
 # For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
 # to main instead, but this can be manually overridden to the current feature branch name if required.

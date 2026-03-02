@@ -21,11 +21,6 @@ class NavLink(VizroBaseModel):
     Abstract: Usage documentation
         [How to customize the NavBar icons](../user-guides/navigation.md#change-icons)
 
-    Args:
-        pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
-        label (str): Text description of the icon for use in tooltip.
-        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
-
     """
 
     type: Literal["nav_link"] = "nav_link"

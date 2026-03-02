@@ -1,5 +1,8 @@
 name: Unit tests for VizroAI
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: vizro-ai

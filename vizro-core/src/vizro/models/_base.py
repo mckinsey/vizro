@@ -242,18 +242,15 @@ def _validate_with_tree_context(
     )
 
 
+def _generate_model_id() -> str:
+    return str(uuid.UUID(int=rd.getrandbits(128)))
+
+
 class VizroBaseModel(BaseModel):
     """All Vizro models inherit from this class.
 
     Abstract: Usage documentation
         [Custom components](../user-guides/custom-components.md)
-
-    Args:
-        id (ModelID): ID to identify model. Must be unique throughout the whole dashboard.
-            When no ID is chosen, ID will be automatically generated.
-        type: Type identifier for the model. Defaults to "vizro_base_model" for the base class.
-            Subclasses should override with their specific Literal type.
-            Custom components should set type: str = "custom_component" or type: Literal["custom_component"] = "custom_component"
 
     """
 
@@ -264,7 +261,7 @@ class VizroBaseModel(BaseModel):
     id: Annotated[
         ModelID,
         Field(
-            default_factory=lambda: str(uuid.UUID(int=rd.getrandbits(128))),
+            default_factory=_generate_model_id,
             description="ID to identify model. Must be unique throughout the whole dashboard. "
             "When no ID is chosen, ID will be automatically generated.",
             validate_default=True,
