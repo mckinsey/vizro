@@ -10,7 +10,7 @@ build:
   tools:
     python: "3.13"
   commands:
-    - pip install hatch 'virtualenv!=21.0.0'
+    - pip install hatch
     - cd vizro-mcp/ && hatch run docs:pip tree
     - cd vizro-mcp/ && hatch run docs:build
     - mkdir --parents $READTHEDOCS_OUTPUT
