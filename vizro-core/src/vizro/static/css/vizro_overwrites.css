@@ -351,6 +351,8 @@ legend {
   --mantine-primary-color-filled: var(--bs-primary);
   --mantine-primary-color-light: var(--bs-highlight-bg);
   --mantine-primary-color-light-hover: var(--bs-highlight-bg);
+  --mantine-color-disabled: var(--bs-primary-bg-subtle);
+  --mantine-color-disabled-color: var(--bs-tertiary-color);
 }
 
 /* Radio / Checkbox indicator color (overrides inline --radio-color) */
@@ -417,9 +419,7 @@ legend {
 }
 
 .mantine-Checkbox-icon {
-  width: 50%;
-}
-
-.m_bf2d988c:where([data-variant="filled"]) {
   --checkbox-icon-color: var(--bs-primary) !important;
+
+  width: 50%;
 }
