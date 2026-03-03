@@ -33,7 +33,7 @@
     "prop-types": "^15.8.1",
     "ramda": "^0.30.0",
     "react-jsx-parser": "^2.4.1",
-    "react-markdown": "^4.3.1",
+    "react-markdown": "^10.1.0",
     "remark-math": "^3.0.1"
   },
   "peerDependencies": {
