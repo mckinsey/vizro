@@ -24,7 +24,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Changed
 
-- Extended global Mantine theme so DMC components added will align closer with Vizro's design. ([#1623](https://github.com/mckinsey/vizro/pull/1623))
+- Extend global Mantine theme so that DMC-based custom components better match Vizro's theme. ([#1623](https://github.com/mckinsey/vizro/pull/1623))
 
 <!--
 ### Deprecated

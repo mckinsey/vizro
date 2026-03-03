@@ -19,6 +19,11 @@ def coerce_pages_type(pages: Any) -> dict[Any, Any]:
     return {ACCORDION_DEFAULT_TITLE: pages}
 
 
+class AccordionItem(VizroBaseModel):
+    title: str
+    pages: list[ModelID]
+
+
 class Accordion(VizroBaseModel):
     """Accordion to be used as `nav_selector` in [`Navigation`][vizro.models.Navigation].
 
@@ -37,6 +42,7 @@ class Accordion(VizroBaseModel):
         BeforeValidator(coerce_pages_type),
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs/titles."),
     ]
+    items: list[AccordionItem] = []
 
     @_log_call
     def build(self, *, active_page_id=None):
