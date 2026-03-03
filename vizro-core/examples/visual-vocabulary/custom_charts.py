@@ -375,8 +375,8 @@ def surplus_deficit_filled_line(data_frame: pd.DataFrame, x: str, y: str) -> go.
     Returns:
         go.Figure: Surplus deficit filled line chart.
     """
-    x_labels = data_frame[x].values
-    y_vals = data_frame[y].values.astype(float)
+    x_labels = data_frame[x].to_numpy()
+    y_vals = data_frame[y].to_numpy().astype(float)
     x_idx = np.arange(len(y_vals), dtype=float)
 
     # Build x/y arrays with zero-crossing points inserted so filled areas
