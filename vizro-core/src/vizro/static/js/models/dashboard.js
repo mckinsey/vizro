@@ -18,8 +18,8 @@ function update_dashboard_theme(theme_selector_checked) {
 // Reference: https://www.ag-grid.com/theme-builder/
 // This theme automatically adapts to light/dark mode via Bootstrap's data-bs-theme attribute
 var dashAgGridFunctions = window.dashAgGridFunctions || {};
-dashAgGridFunctions.vizroTheme = function (theme, agGrid) {
-  return theme.withPart(agGrid.createPart(agGrid.iconSetMaterial)).withParams({
+dashAgGridFunctions.vizroTheme = (theme, agGrid) =>
+  theme.withPart(agGrid.createPart(agGrid.iconSetMaterial)).withParams({
     accentColor: "var(--bs-primary)",
     advancedFilterBuilderColumnPillColor: "var(--bs-success)",
     advancedFilterBuilderJoinPillColor: "var(--bs-danger)",
@@ -89,7 +89,6 @@ dashAgGridFunctions.vizroTheme = function (theme, agGrid) {
     wrapperBorder: false,
     wrapperBorderRadius: 0,
   });
-};
 
 window.dashAgGridFunctions = dashAgGridFunctions;
 

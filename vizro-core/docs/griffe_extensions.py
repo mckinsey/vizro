@@ -221,7 +221,7 @@ class PydanticDocsCleaner(griffe.Extension):
                 stored_fields[name] = member
                 fields_to_remove.append(name)
 
-        # Add inherited fields at the top (e.g., 'id' from VizroBaseModel)
+        # Add inherited fields at the top (for example, 'id' from VizroBaseModel)
         inherited_fields = self._get_inherited_fields(cls)
         if inherited_fields:
             stored_fields = {**inherited_fields, **stored_fields}

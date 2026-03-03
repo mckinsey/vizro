@@ -7,9 +7,9 @@ describe("page.js functions", () => {
   describe("encodeUrlParams", () => {
     beforeEach(() => {
       // Mock btoa and TextEncoder for encoding tests
-      global.btoa = jest.fn((str) => "encoded_" + str);
+      global.btoa = jest.fn((str) => `encoded_${str}`);
       global.TextEncoder = jest.fn(() => ({
-        encode: jest.fn((str) => new Uint8Array([1, 2, 3])), // Mock byte array
+        encode: jest.fn((_str) => new Uint8Array([1, 2, 3])), // Mock byte array
       }));
     });
 
@@ -69,9 +69,9 @@ describe("page.js functions", () => {
       originalConsole = global.console;
 
       // Mock atob and TextDecoder for decoding tests
-      global.atob = jest.fn((str) => "decoded_" + str);
+      global.atob = jest.fn((str) => `decoded_${str}`);
       global.TextDecoder = jest.fn(() => ({
-        decode: jest.fn((bytes) => '{"test": "value"}'),
+        decode: jest.fn((_bytes) => '{"test": "value"}'),
       }));
     });
 
@@ -164,7 +164,7 @@ describe("page.js functions", () => {
 
       // Setup history mock
       if (!global.window.history) {
-        global.window.history = { replaceState: function () {} };
+        global.window.history = { replaceState: () => {} };
       }
       if (!global.history) {
         global.history = global.window.history;

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.3/schema.json",
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "complexity": {
+        "noImportantStyles": "off"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "javascript": {
+    "formatter": {
+      "semicolons": "always",
+      "quoteStyle": "double"
+    }
+  },
+  "files": {
+    "includes": ["**", "!**/*.min.css", "!**/*.min.js", "!**/webpack.config.js"]
+  }
+}
