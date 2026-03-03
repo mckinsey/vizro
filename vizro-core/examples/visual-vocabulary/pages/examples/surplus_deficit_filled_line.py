@@ -5,54 +5,28 @@ from vizro.models.types import capture
 
 
 @capture("graph")
-def surplus_deficit_filled_line(
-    data_frame: pd.DataFrame,
-    x: str,
-    y: str,
-) -> go.Figure:
-    x_data = data_frame[x]
-    y_data = data_frame[y]
+def surplus_deficit_filled_line(data_frame: pd.DataFrame, x: str, y: str) -> go.Figure:
+    x_labels = data_frame[x].values
+    y_vals = data_frame[y].values.astype(float)
+    x_idx = np.arange(len(y_vals), dtype=float)
+
+    # Build x/y arrays with zero-crossing points inserted so filled areas
+    # meet y=0 exactly where the line crosses, not at the next data point.
+    xs, ys = [x_idx[0]], [y_vals[0]]
+    for i in range(1, len(y_vals)):
+        if y_vals[i - 1] * y_vals[i] < 0:
+            frac = -y_vals[i - 1] / (y_vals[i] - y_vals[i - 1])
+            xs.append(x_idx[i - 1] + frac)
+            ys.append(0.0)
+        xs.append(x_idx[i])
+        ys.append(y_vals[i])
+    xs, ys = np.array(xs), np.array(ys)
 
     fig = go.Figure()
-
-    # Create surplus (positive) filled area
-    y_surplus = np.where(y_data >= 0, y_data, 0)
-    fig.add_trace(
-        go.Scatter(
-            x=x_data,
-            y=y_surplus,
-            fill="tozeroy",
-            mode="none",
-            name="Surplus",
-        )
-    )
-
-    # Create deficit (negative) filled area
-    y_deficit = np.where(y_data <= 0, y_data, 0)
-    fig.add_trace(
-        go.Scatter(
-            x=x_data,
-            y=y_deficit,
-            fill="tozeroy",
-            mode="none",
-            name="Deficit",
-        )
-    )
-
-    # Add the actual line on top
-    fig.add_trace(
-        go.Scatter(
-            x=x_data,
-            y=y_data,
-            mode="lines",
-            line={"color": "black", "width": 2},
-            showlegend=False,
-        )
-    )
-
-    # Add a zero baseline
-    fig.add_hline(y=0, line_width=1, line_color="grey", line_dash="dash")
-
+    fig.add_trace(go.Scatter(x=xs, y=np.where(ys >= 0, ys, 0), fill="tozeroy", mode="none"))
+    fig.add_trace(go.Scatter(x=xs, y=np.where(ys <= 0, ys, 0), fill="tozeroy", mode="none"))
+    fig.update_xaxes(tickvals=x_idx, ticktext=x_labels)
+    fig.update_layout(showlegend=False)
     return fig
 
 
