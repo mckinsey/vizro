@@ -61,11 +61,20 @@ def random_pipeline(switch_successfulness: bool = False, exit_path_slider: int =
         case 1:
             return f"Pipeline completed successfully! Execution duration: {sleep_duration:.2f}"
         case 2:
-            return f"Pipeline completed successfully! Execution duration: {sleep_duration:.2f}", ("success", f"Duration: {sleep_duration:.2f}s")
+            return f"Pipeline completed successfully! Execution duration: {sleep_duration:.2f}", (
+                "success",
+                f"Duration: {sleep_duration:.2f}s",
+            )
         case 3:
-            return f"Pipeline completed, neither success nor failure! Duration: {sleep_duration:.2f}s", "my_custom_success"
+            return (
+                f"Pipeline completed, neither success nor failure! Duration: {sleep_duration:.2f}s",
+                "my_custom_success",
+            )
         case 4:
-            return f"Pipeline completed, neither success nor failure! Duration: {sleep_duration:.2f}s", ("my_custom_success", f"Duration: {sleep_duration:.2f}s")
+            return f"Pipeline completed, neither success nor failure! Duration: {sleep_duration:.2f}s", (
+                "my_custom_success",
+                f"Duration: {sleep_duration:.2f}s",
+            )
 
     return None
 
@@ -478,7 +487,7 @@ page_5 = vm.Page(
                                             text="Custom pipeline failed! \n\n Error Message: {{error_msg}} {{result}}",
                                             variant="error",
                                             title="My custom error",
-                                        )
+                                        ),
                                     },
                                 )
                             ],
@@ -567,7 +576,7 @@ page_6 = vm.Page(
                                         "my_custom_success": "Pipeline completed, neither success nor failure! {{result}}",
                                         "error": "Custom pipeline failed! Exception: {{error_msg}}",
                                         "my_custom_err": "Custom pipeline failed! \n\n Error Message: {{error_msg}} {{result}}",
-                                    }
+                                    },
                                 )
                             ],
                         ),
@@ -607,15 +616,17 @@ page_6 = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(pages=[
-    page_0,
-    page_1,
-    page_2,
-    page_3,
-    page_4,
-    page_5,
-    page_6,
-])
+dashboard = vm.Dashboard(
+    pages=[
+        page_0,
+        page_1,
+        page_2,
+        page_3,
+        page_4,
+        page_5,
+        page_6,
+    ]
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

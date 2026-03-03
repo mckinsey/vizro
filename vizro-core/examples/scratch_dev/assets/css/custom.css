@@ -1,7 +1,8 @@
 /* Custom CSS  */
 
-#logo-dark, #logo-light {
-    height: 30px;
+#logo-dark,
+#logo-light {
+  height: 30px;
 }
 
 #page-header {

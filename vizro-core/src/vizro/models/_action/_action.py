@@ -352,7 +352,11 @@ class _BaseAction(VizroBaseModel):
                     "in the action's notifications."
                 )
         elif isinstance(outputs, dict):
-            if isinstance(return_value, tuple) and len(return_value) == 2 and self._is_value_action_notification_type(return_value[1]):
+            if (
+                isinstance(return_value, tuple)
+                and len(return_value) == 2
+                and self._is_value_action_notification_type(return_value[1])
+            ):
                 return_value, external_notification = return_value[0], return_value[1]
             if not isinstance(return_value, Mapping):
                 raise ValueError(
@@ -371,7 +375,11 @@ class _BaseAction(VizroBaseModel):
                 raise ValueError(
                     "Action function has not returned a list-like object but the action's defined outputs are a list."
                 )
-            if isinstance(return_value, tuple) and len(return_value) == (len(outputs) + 1) and self._is_value_action_notification_type(return_value[-1]):
+            if (
+                isinstance(return_value, tuple)
+                and len(return_value) == (len(outputs) + 1)
+                and self._is_value_action_notification_type(return_value[-1])
+            ):
                 *return_value, external_notification = return_value
             if len(return_value) != len(outputs):
                 raise ValueError(
@@ -517,17 +525,19 @@ class _BaseAction(VizroBaseModel):
                 # TODO PP NOW: Handle notification_error_msg vs notification_result. Make that result could be returned
                 #  from the action even when exception is raised.
                 exception_notification = (
-                    exc.args[1]
-                    if len(exc.args) == 2 and self._is_value_action_notification_type(exc.args[1])
-                    else None
+                    exc.args[1] if len(exc.args) == 2 and self._is_value_action_notification_type(exc.args[1]) else None
                 )
                 if isinstance(exception_notification, tuple):
-                    notification_key, error_msg, notification_result = exception_notification[0], exc.args[0], exception_notification[1]
+                    notification_key, error_msg, notification_result = (
+                        exception_notification[0],
+                        exc.args[0],
+                        exception_notification[1],
+                    )
                 elif isinstance(exception_notification, str):
                     notification_key, error_msg, notification_result = exception_notification, exc.args[0], ""
                 else:
                     notification_key, error_msg, notification_result = "error", exc, ""
-                     
+
                 # return no_update for all external outputs on error
                 if isinstance(callback_outputs["external"], list):
                     external_return = [no_update] * len(callback_outputs["external"])

@@ -795,7 +795,6 @@ class TestBaseActionCallbackFunction:
     #     # as the output of the action_with_mock_outputs.
     #     assert action._action_callback_function(inputs={}, outputs=callback_outputs) == action_with_mock_outputs()()
 
-
     @pytest.mark.parametrize("callback_outputs", [[], {}, None])
     @pytest.mark.parametrize("action_with_mock_outputs", [False, 0, "", [], (), {}], indirect=True)
     def test_action_callback_function_no_outputs_return_value_not_none(
