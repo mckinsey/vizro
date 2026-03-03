@@ -1,5 +1,6 @@
 """Contains custom charts used inside the dashboard."""
 
+import numpy as np
 import pandas as pd
 import vizro.plotly.express as px
 from plotly import graph_objects as go
@@ -356,3 +357,70 @@ def lollipop(data_frame: pd.DataFrame, **kwargs):
         },
     )
     return fig
+
+
+@capture("graph")
+def surplus_deficit_filled_line(
+    data_frame: pd.DataFrame,
+    x: str,
+    y: str,
+) -> go.Figure:
+    """Creates a surplus deficit filled line chart based on go.Scatter.
+
+    A surplus deficit filled line chart shows a line against a baseline (typically zero), with the area
+    between the line and baseline filled using two colors — one for positive (surplus) values and another
+    for negative (deficit) values.
+
+    Args:
+        data_frame: DataFrame for the chart.
+        x: Column name in data_frame for x-axis values.
+        y: Column name in data_frame for y-axis values.
+
+    Returns:
+        go.Figure: Surplus deficit filled line chart.
+    """
+    x_data = data_frame[x]
+    y_data = data_frame[y]
+
+    fig = go.Figure()
+
+    # Create surplus (positive) filled area
+    y_surplus = np.where(y_data >= 0, y_data, 0)
+    fig.add_trace(
+        go.Scatter(
+            x=x_data,
+            y=y_surplus,
+            fill="tozeroy",
+            mode="none",
+            name="Surplus",
+        )
+    )
+
+    # Create deficit (negative) filled area
+    y_deficit = np.where(y_data <= 0, y_data, 0)
+    fig.add_trace(
+        go.Scatter(
+            x=x_data,
+            y=y_deficit,
+            fill="tozeroy",
+            mode="none",
+            name="Deficit",
+        )
+    )
+
+    # Add the actual line on top
+    fig.add_trace(
+        go.Scatter(
+            x=x_data,
+            y=y_data,
+            mode="lines",
+            line={"color": "black", "width": 2},
+            showlegend=False,
+        )
+    )
+
+    # Add a zero baseline
+    fig.add_hline(y=0, line_width=1, line_color="grey", line_dash="dash")
+
+    return fig
+

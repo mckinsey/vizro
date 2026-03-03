@@ -4,7 +4,7 @@ import vizro.models as vm
 
 from pages._factories import butterfly_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import diverging_bar, diverging_stacked_bar
+from pages.examples import diverging_bar, diverging_stacked_bar, surplus_deficit_filled_line
 
 butterfly_page = butterfly_factory("deviation")
 
@@ -94,4 +94,50 @@ diverging_stacked_bar_page = vm.Page(
     ],
 )
 
-pages = [butterfly_page, diverging_bar_page, diverging_stacked_bar_page]
+surplus_deficit_filled_line_page = vm.Page(
+    title="Surplus deficit filled line",
+    path="deviation/surplus-deficit-filled-line",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a surplus deficit filled line?
+
+            A surplus deficit filled line chart is a type of line chart that highlights positive (surplus) and
+            negative (deficit) deviations from a baseline, typically zero. The area between the line and the
+            baseline is filled with different colors to visually distinguish between surplus and deficit regions.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a surplus deficit filled line chart to emphasize the magnitude and direction of deviations from a
+            reference value over time or across categories. It is particularly effective for financial data such as
+            profit and loss, budget variance, or any scenario where understanding positive versus negative performance
+            is important. The filled areas make it easy to quickly assess the overall balance between surplus and
+            deficit periods.
+        """
+        ),
+        vm.Graph(figure=surplus_deficit_filled_line.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[
+                        make_code_clipboard_from_py_file("surplus_deficit_filled_line.py", mode="vizro")
+                    ],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[
+                        make_code_clipboard_from_py_file("surplus_deficit_filled_line.py", mode="plotly")
+                    ],
+                ),
+            ]
+        ),
+    ],
+)
+
+pages = [butterfly_page, diverging_bar_page, diverging_stacked_bar_page, surplus_deficit_filled_line_page]
+
