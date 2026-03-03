@@ -1,4 +1,5 @@
 /* Custom CSS  */
+
 #logo-dark,
 #logo-light {
   height: 30px;
@@ -6,4 +7,8 @@
 
 #page-header {
   display: none;
+}
+
+.cond-notification-slider {
+  width: 240px;
 }
