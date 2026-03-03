@@ -117,7 +117,7 @@ class _StaticData:
 
     def __setattr__(self, name, value):
         # Any attributes that are only relevant for _DynamicData should go here to raise a clear error message.
-        if name in ["timeout"]:
+        if name == "timeout":
             raise AttributeError(
                 f"Static data that is a pandas.DataFrame itself does not support {name}; you should instead use a "
                 "dynamic data source that is a function that returns a pandas.DataFrame."

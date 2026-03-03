@@ -41,6 +41,7 @@ from vizro.models._models_utils import _all_hidden, _log_call, warn_description_
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ControlType
+from vizro.themes._mantine_theme import mantine_theme
 from vizro.themes._templates import dashboard_overrides
 
 if TYPE_CHECKING:
@@ -48,7 +49,6 @@ if TYPE_CHECKING:
     from vizro.models._page import _PageBuildType
 
 logger = logging.getLogger(__name__)
-
 
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
@@ -200,25 +200,7 @@ class Dashboard(VizroBaseModel):
         # children=[layout] as a list rather than children=layout, so that app.dash.layout.children.append works to
         # easily add things to the Dash layout. In future we might have a neater function for patching components into
         # the Dash layout in which case this could change.
-        return dmc.MantineProvider(
-            children=[layout],
-            # Change global mantine settings here. For component specific styling, see Card example below.
-            # Reference: https://www.dash-mantine-components.com/theme-object
-            theme={
-                "primaryColor": "gray",
-                "defaultRadius": 0,
-                "components": {
-                    "Card": {
-                        "styles": {
-                            "root": {
-                                "backgroundColor": "var(--surfaces-bg-card)",
-                                "boxShadow": "var(--bs-box-shadow)",
-                            }
-                        }
-                    },
-                },
-            },
-        )
+        return dmc.MantineProvider(children=[layout], theme=mantine_theme)
 
     def _validate_logos(self):
         logo_img = self._infer_image(filename="logo")
