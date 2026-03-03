@@ -39,10 +39,10 @@ def venn_diagram_2(
         type="circle",
         line_color=qualitative[0],
         fillcolor=qualitative[0],
-        x0=0,
-        y0=0,
-        x1=3.5,
-        y1=3.5,
+        x0=1,
+        y0=1,
+        x1=3,
+        y1=3,
         opacity=0.3,
     )
     fig.add_shape(
@@ -50,26 +50,36 @@ def venn_diagram_2(
         line_color=qualitative[1],
         fillcolor=qualitative[1],
         x0=2,
-        y0=0,
-        x1=5.5,
-        y1=3.5,
+        y0=1,
+        x1=4,
+        y1=3,
         opacity=0.3,
     )
 
     # Add annotations
-    fig.add_annotation(x=0.45, y=1.75, text=display_a, showarrow=False, font={"size": 16})
-    fig.add_annotation(x=5.05, y=1.75, text=display_b, showarrow=False, font={"size": 16})
+    fig.add_annotation(x=1.35, y=2, text=display_a, showarrow=False, font={"size": 13})
+    fig.add_annotation(x=3.65, y=2, text=display_b, showarrow=False, font={"size": 13})
     fig.add_annotation(
-        x=2.75, y=1.75, text=display_intersection, showarrow=False, font={"size": 16}
+        x=2.5, y=2, text=display_intersection, showarrow=False, font={"size": 13}
     )
 
     # Hide axes and set layout
-    fig.update_xaxes(showline=False, showgrid=False, zeroline=False, visible=False, range=[0, 5.5])
-    fig.update_yaxes(showline=False, showgrid=False, zeroline=False, visible=False, range=[0.5, 3])
+    fig.update_xaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True, range=[0.5, 4.5])
+    fig.update_yaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True, range=[0.5, 3.5])
     fig.update_layout(
         margin={"l": 20, "r": 20, "b": 20},
         showlegend=False,
         yaxis={"scaleanchor": "x", "scaleratio": 1},
+        modebar_remove=[
+            "zoom2d",
+            "pan2d",
+            "select2d",
+            "lasso2d",
+            "zoomIn2d",
+            "zoomOut2d",
+            "autoScale2d",
+            "resetScale2d",
+        ],
     )
     return fig
 
