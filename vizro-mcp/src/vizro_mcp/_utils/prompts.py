@@ -201,6 +201,6 @@ def get_chart_prompt(file_path_or_url: str, user_context: str | None = None) -> 
 Create a Vizro chart using the following instructins:
 - Make sure to analyze the data using the `load_and_analyze_data` tool using the file path or github url `{file_path_or_url}` OR by any other data analysis means available to you.
 - Create a chart using the following description:
-{user_context if user_context else FALLBACK_INSTRUCTIONS}
+{user_context or FALLBACK_INSTRUCTIONS}
 - Then you MUST use the `validate_chart_code` tool to validate the chart code.
 """
