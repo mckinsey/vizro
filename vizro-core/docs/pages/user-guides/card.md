@@ -404,7 +404,7 @@ Use the following URL hashes in your image path to apply Vizro's default styling
 
 To float an image for example to the right of the text, use the `src` attribute as a CSS selector. Follow these steps:
 
-1. Add a hash (#) to the image URL, e.g., `![](assets/images/continents/europe.svg#my-image)`
+1. Add a hash (#) to the image URL, for example, `![](assets/images/continents/europe.svg#my-image)`
 1. Target that hash in your custom CSS file `img[src*="#my-image"] { float: right; }`
 
 !!! example "Card with floating image"

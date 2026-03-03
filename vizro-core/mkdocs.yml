@@ -37,7 +37,7 @@ nav:
       - Visual formatting:
           - Overview: pages/user-guides/visual-formatting.md
           - Layout: pages/user-guides/layouts.md
-          - Theme: pages/user-guides/themes.md
+          - Themes and colors: pages/user-guides/themes.md
           - Assets: pages/user-guides/assets.md
           - Custom CSS: pages/user-guides/custom-css.md
       - Data:
@@ -54,6 +54,7 @@ nav:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
       - Actions: pages/API-reference/actions.md
+      - Themes: pages/API-reference/themes.md
       - Table functions: pages/API-reference/table-callables.md
       - Figure functions: pages/API-reference/figure-callables.md
       - Kedro integration: pages/API-reference/kedro-integration.md
@@ -128,7 +129,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.51
+                vizro==0.1.52
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
@@ -155,7 +156,7 @@ plugins:
         Configuration can be written in multiple formats including Pydantic models, JSON, YAML or Python dictionaries for added flexibility of implementation.
 
         Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
-      base_url: https://vizro.readthedocs.io/en/0.1.51/
+      base_url: https://vizro.readthedocs.io/en/0.1.52/
       full_output: llms-full.txt
       sections:
         "TUTORIALS":
@@ -186,7 +187,7 @@ plugins:
         "HOW TO APPLY VISUAL FORMATTING":
           - pages/user-guides/visual-formatting.md: "Formatting overview"
           - pages/user-guides/layouts.md: "Layouts"
-          - pages/user-guides/themes.md: "Themes"
+          - pages/user-guides/themes.md: "Themes and colors"
           - pages/user-guides/assets.md: "Assets"
           - pages/user-guides/custom-css.md: "Custom CSS"
         "ACTIONS":

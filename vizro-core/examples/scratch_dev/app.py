@@ -11,13 +11,15 @@ from vizro.models.types import capture
 
 
 # TODO:
+#  ALMOST DONE - Refactor output return value in _action.py
+#  DONE - If we enable `text -> va.show_notification(...)` conversion, this would look like:
+#  DONE - Clean notifications from the notification panel when the same action is triggered again.
+#    - See whether we should introduce hideNotification so that users can hide it before showing explicit notification.
+#      Or to do so even before every show_notification action. With it hiding the progress would be automatically solved
+#  DONE - Refactor and merge validators in types.
+#  Enable providing a second argument of exception containing results.
+#  Test by assigning a warning notif to the progress key.
 #  Pass through todos and done or open question.
-#  If we enable `text -> va.show_notification(...)` conversion, this would look like:
-#  notifications={
-#      "progress": "Exporting data...",
-#      "success": "Data exported successfully!",
-#      "error": "Export failed!",
-#  },
 #  See ticket issue and cover other edge cases if any.
 #  Check other actions like filter/parameter. What happens if they fail.
 #     One pros of introducing update_figures is that we don't have to copy-paste similar code for many actions.
@@ -35,9 +37,7 @@ SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3
 
 # Custom mock pipeline with set or random success/failure
 @capture("action")
-def random_pipeline(
-    switch_successfulness: bool = False, return_action_notification: bool = False, exit_path_slider: int = 1
-) -> str:
+def random_pipeline(switch_successfulness: bool = False, exit_path_slider: int = 1) -> str:
     sleep(sleep_duration := random.uniform(a=1, b=2))
 
     if switch_successfulness:
@@ -51,25 +51,32 @@ def random_pipeline(
             case 1:
                 raise Exception("Random error occurred!")
             case 2:
-                raise ValueError("It's value error!")
+                raise Exception("Random error occurred!", ("error", f"Duration: {sleep_duration:.2f}s"))
             case 3:
-                raise IndexError("Index error occured!")
+                raise ValueError("It's value error!", "my_custom_err")
+            case 4:
+                raise IndexError("Index error occurred!", ("my_custom_err", f"Duration: {sleep_duration:.2f}s"))
 
     match exit_path_slider:
         case 1:
-            output_text_msg = f"Pipeline completed successfully! Execution duration: {sleep_duration:.2f}"
-            action_notification = ("success", f"Duration: {sleep_duration:.2f}s")
+            return f"Pipeline completed successfully! Execution duration: {sleep_duration:.2f}"
         case 2:
-            output_text_msg = f"Pipeline is redirected and will be manually handled! Call GHD to get the status."
-            action_notification = "my_info"
+            return f"Pipeline completed successfully! Execution duration: {sleep_duration:.2f}", (
+                "success",
+                f"Duration: {sleep_duration:.2f}s",
+            )
         case 3:
-            output_text_msg = f"Pipeline completed, neither success nor failure!"
-            action_notification = ("my_warning", f"Duration: {sleep_duration:.2f}s")
+            return (
+                f"Pipeline completed, neither success nor failure! Duration: {sleep_duration:.2f}s",
+                "my_custom_success",
+            )
+        case 4:
+            return f"Pipeline completed, neither success nor failure! Duration: {sleep_duration:.2f}s", (
+                "my_custom_success",
+                f"Duration: {sleep_duration:.2f}s",
+            )
 
-    if return_action_notification:
-        return output_text_msg, action_notification
-
-    return output_text_msg
+    return None
 
 
 vm.Container.add_type("components", vm.Switch)
@@ -88,7 +95,7 @@ page_0 = vm.Page(
                     components=[
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
                         vm.Button(
-                            text="Run pipeline data",
+                            text="Run pipeline",
                             actions=vm.Action(
                                 function=random_pipeline(f"{pre}_raise_exc_switch"),
                                 outputs=f"{pre}_text",
@@ -131,7 +138,7 @@ page_1 = vm.Page(
                     components=[
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
                         vm.Button(
-                            text="Run pipeline data",
+                            text="Run pipeline",
                             actions=[
                                 show_notification(
                                     id=f"{pre}_progress_2", variant="progress", text="Running pipeline..."
@@ -193,7 +200,7 @@ page_2 = vm.Page(
                     components=[
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
                         vm.Button(
-                            text="Run pipeline data",
+                            text="Run pipeline",
                             actions=[
                                 show_notification(
                                     id=f"{pre}_progress_2", variant="progress", text="Running pipeline..."
@@ -343,16 +350,11 @@ page_4 = vm.Page(
                     layout=vm.Flex(),
                     components=[
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
-                        vm.Switch(
-                            id=f"{pre}_return_action_notification", value=False, title="Return notification from action"
-                        ),
                         vm.Button(
                             text="Run pipeline",
                             actions=[
                                 vm.Action(
-                                    function=random_pipeline(
-                                        f"{pre}_raise_exc_switch", f"{pre}_return_action_notification"
-                                    ),
+                                    function=random_pipeline(f"{pre}_raise_exc_switch"),
                                     outputs=f"{pre}_text",
                                     notifications={
                                         "progress": va.show_notification(
@@ -428,36 +430,31 @@ page_4 = vm.Page(
 pre = "p5"
 page_5 = vm.Page(
     id="page_5",
-    title="Progress{{}}-> Action-> Success1/2/3{{}}/Error1/2/3{{}}",
+    title="Progress{{}}-> Action-> Success{1-4}/Error{1-4}",
     components=[
         vm.Tabs(
             tabs=[
                 vm.Container(
-                    title="Progress{{switch_successfulness}}{{exit_path}} - Pipeline (1->2s) (Choose to fail) -> Info{{}}/Success1/2/3{{}}Error 1/2/3{{}}",
+                    title="Progress{{switch_successfulness}}{{exit_path}} - Pipeline (1->2s) (Choose to fail) -> Success{1-4}/Error{1-4}",
                     layout=vm.Flex(),
                     components=[
                         vm.Slider(
                             id=f"{pre}_exit_path_slider",
                             title="Choose exit path",
                             min=1,
-                            max=3,
+                            max=4,
                             step=1,
                             value=1,
+                            marks={1: "1", 2: "2", 3: "3", 4: "4"},
                             extra=dict(className="cond-notification-slider"),
                         ),
                         vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
-                        vm.Switch(
-                            id=f"{pre}_return_action_notification",
-                            value=True,
-                            title="Return custom success/warning/info notification from action",
-                        ),
                         vm.Button(
                             text="Run pipeline",
                             actions=[
                                 vm.Action(
                                     function=random_pipeline(
                                         switch_successfulness=f"{pre}_raise_exc_switch",
-                                        return_action_notification=f"{pre}_return_action_notification",
                                         exit_path_slider=f"{pre}_exit_path_slider",
                                     ),
                                     outputs=f"{pre}_text",
@@ -474,20 +471,22 @@ page_5 = vm.Page(
                                             text="Custom pipeline completed! {{result}}",
                                             variant="success",
                                         ),
-                                        "my_info": va.update_notification(
-                                            notification=f"{pre}_progress_2",
-                                            text="Pipeline is redirected and will be manually handled! Call GHD to get the status.",
-                                            variant="info",
-                                        ),
-                                        "my_warning": va.update_notification(
+                                        "my_custom_success": va.update_notification(
                                             notification=f"{pre}_progress_2",
                                             text="Pipeline completed, neither success nor failure! {{result}}",
                                             variant="warning",
+                                            title="My warning",
                                         ),
                                         "error": va.update_notification(
                                             notification=f"{pre}_progress_2",
-                                            text="Custom pipeline failed! Exception: {{error_msg}}",
+                                            text="Custom pipeline failed! Exception: {{error_msg}} {{result}}",
                                             variant="error",
+                                        ),
+                                        "my_custom_err": va.update_notification(
+                                            notification=f"{pre}_progress_2",
+                                            text="Custom pipeline failed! \n\n Error Message: {{error_msg}} {{result}}",
+                                            variant="error",
+                                            title="My custom error",
                                         ),
                                     },
                                 )
@@ -540,8 +539,94 @@ page_5 = vm.Page(
     controls=[vm.Filter(column="species")],
 )
 
+pre = "p6"
+page_6 = vm.Page(
+    id="page_6",
+    title="(str)Progress{{}}-> Action-> (str)Success{1-4}/(str)Error{1-4}",
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="(str)Progress{{switch_successfulness}}{{exit_path}} - Pipeline (1->2s) (Choose to fail) -> (str)Success{1-4}/(str)Error{1-4}",
+                    layout=vm.Flex(),
+                    components=[
+                        vm.Slider(
+                            id=f"{pre}_exit_path_slider",
+                            title="Choose exit path",
+                            min=1,
+                            max=4,
+                            step=1,
+                            value=1,
+                            marks={1: "1", 2: "2", 3: "3", 4: "4"},
+                            extra=dict(className="cond-notification-slider"),
+                        ),
+                        vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
+                        vm.Button(
+                            text="Run pipeline",
+                            actions=[
+                                vm.Action(
+                                    function=random_pipeline(
+                                        switch_successfulness=f"{pre}_raise_exc_switch",
+                                        exit_path_slider=f"{pre}_exit_path_slider",
+                                    ),
+                                    outputs=f"{pre}_text",
+                                    notifications={
+                                        "progress": "Running custom pipeline.\n\n Exception will happen: {{switch_successfulness}}.\n\n Exit path: {{exit_path_slider}}",
+                                        "success": "Custom pipeline completed! {{result}}",
+                                        "my_custom_success": "Pipeline completed, neither success nor failure! {{result}}",
+                                        "error": "Custom pipeline failed! Exception: {{error_msg}}",
+                                        "my_custom_err": "Custom pipeline failed! \n\n Error Message: {{error_msg}} {{result}}",
+                                    },
+                                )
+                            ],
+                        ),
+                        vm.Text(id=f"{pre}_text", text="Click the button to run action."),
+                    ],
+                ),
+                vm.Container(
+                    title="Progress - Export (2s) (50% to fail) - Success/Error{{error_msg}}",
+                    components=[
+                        vm.Graph(
+                            figure=px.scatter(
+                                df,
+                                x="sepal_width",
+                                y="sepal_length",
+                                color="species",
+                                color_discrete_map=SPECIES_COLORS,
+                            )
+                        ),
+                        vm.Button(
+                            text="Export data",
+                            actions=[
+                                va.export_data(
+                                    notifications={
+                                        "progress": "Exporting data...",
+                                        "success": "Data exported successfully!",
+                                        "error": "Export failed! {{error_msg}}",
+                                    }
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+            ]
+        )
+    ],
+    controls=[vm.Filter(column="species")],
+)
 
-dashboard = vm.Dashboard(pages=[page_0, page_1, page_2, page_3, page_4, page_5])
+
+dashboard = vm.Dashboard(
+    pages=[
+        page_0,
+        page_1,
+        page_2,
+        page_3,
+        page_4,
+        page_5,
+        page_6,
+    ]
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

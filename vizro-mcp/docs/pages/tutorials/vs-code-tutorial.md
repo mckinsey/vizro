@@ -28,7 +28,7 @@ You should receive a response similar to the following:
 
 ### Set up your environment
 
-To set up your environment in VS Code, first create a Workspace. Select **File > Open Folder…**, create a new folder (e.g., `lighting`), then click **Open**.
+To set up your environment in VS Code, first create a Workspace. Select **File > Open Folder…**, create a new folder (for example, `lighting`), then click **Open**.
 
 Next, open the Chat view and use **Agent mode**. We used Claude Sonnet 4 when writing this tutorial.
 

@@ -1,4 +1,3 @@
-import os
 import time
 
 import pytest
@@ -11,10 +10,11 @@ from e2e.vizro.navigation import (
     hover_over_element_by_css_selector_selenium,
     hover_over_element_by_xpath_selenium,
     page_select,
+    select_dropdown_select_all,
 )
 from e2e.vizro.paths import (
     button_id_path,
-    dropdown_arrow_path,
+    dropdown_id_path,
     kpi_card_path,
     nav_card_link_path,
     scatter_point_path,
@@ -169,14 +169,14 @@ def test_container_variants_light_theme(dash_br):
 
 @image_assertion
 def test_container_variants_dark_theme(dash_br):
-    style_background = cnst.STYLE_TRANSPARENT_FIREFOX if os.getenv("BROWSER") == "firefox" else cnst.STYLE_TRANSPARENT
+    style_background = cnst.STYLE_DARK
     accordion_select(dash_br, accordion_name=cnst.CONTAINER_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.CONTAINER_VARIANTS_PAGE,
     )
     dash_br.multiple_click(theme_toggle_path(), 1)
-    check_graph_color(dash_br, style_background=style_background, color=cnst.RGBA_TRANSPARENT)
+    check_graph_color(dash_br, style_background=style_background, color=cnst.RGBA_DARK)
     check_theme_color(dash_br, color=cnst.THEME_DARK)
 
 
@@ -256,7 +256,7 @@ def test_controls_tooltip_and_icon_light_theme(dash_br):
 
     # hover over dropdown icon and wait for the tooltip appear
     hover_over_element_by_xpath_selenium(
-        dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.DROPDOWN_TOOLTIP_ICON}']"
+        dash_br.driver, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.DROPDOWN_TOOLTIP_ICON}']"
     )
     dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.DROPDOWN_TOOLTIP_TEXT)
 
@@ -293,7 +293,7 @@ def test_controls_tooltip_and_icon_dark_theme(dash_br):
 
     # hover over dropdown icon and wait for the tooltip appear
     hover_over_element_by_xpath_selenium(
-        dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.CHECKLIST_TOOLTIP_ICON}']"
+        dash_br.driver, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.CHECKLIST_TOOLTIP_ICON}']"
     )
     dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.CHECKLIST_TOOLTIP_TEXT)
 
@@ -316,11 +316,15 @@ def test_collapsible_containers_grid_switched(dash_br):
     page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_GRID)
 
     # close one container and open another
-    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]')
-    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
+    click_element_by_xpath_selenium(
+        dash_br.driver, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]'
+    )
+    click_element_by_xpath_selenium(
+        dash_br.driver, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]'
+    )
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
+    hover_over_element_by_css_selector_selenium(dash_br.driver, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
@@ -336,11 +340,15 @@ def test_collapsible_containers_flex_switched(dash_br):
     page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_FLEX)
 
     # close one container and open another
-    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]')
-    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
+    click_element_by_xpath_selenium(
+        dash_br.driver, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]'
+    )
+    click_element_by_xpath_selenium(
+        dash_br.driver, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]'
+    )
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
+    hover_over_element_by_css_selector_selenium(dash_br.driver, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
@@ -354,7 +362,7 @@ def test_collapsible_subcontainers_flex(dash_br):
     dash_br.multiple_click("#flex_subcontainer_icon", 1)
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
+    hover_over_element_by_css_selector_selenium(dash_br.driver, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
@@ -389,14 +397,16 @@ def test_reset_controls_page(dash_br):
         page_name=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
     )
     # change dropdown controls on the page
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
-    dash_br.multiple_click(f"#{cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID}_select_all", 1)
+    # dropdown change from "2007" to "Select All"
+    select_dropdown_select_all(dash_br, dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID)
+    # close dropdown to avoid errors with checking other controls
+    dash_br.multiple_click(dropdown_id_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
 
     # click reset controls button
     dash_br.multiple_click("button[id$='reset-button']", 1, delay=0.1)
 
     # open dropdown menu to check on the screenshot if select_all is unchecked
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
+    dash_br.multiple_click(dropdown_id_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
 
 
 @image_assertion
@@ -509,7 +519,7 @@ def test_aggrid_click_without_set_control(dash_br):
     dash_br.multiple_click(table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_ID, row_index=2, col_id="continent"), 1)
 
     # move mouse to different location to see what exactly was selected on aggrid
-    hover_over_element_by_css_selector_selenium(dash_br, theme_toggle_path())
+    hover_over_element_by_css_selector_selenium(dash_br.driver, theme_toggle_path())
 
 
 @pytest.mark.mobile_screenshots
@@ -535,7 +545,7 @@ def test_filter_interactions_page(dash_br_driver):
 def test_filter_interactions_dark_theme_page(dash_br_driver):
     graph_load_waiter(dash_br_driver)
     dash_br_driver.multiple_click(theme_toggle_path(), 1)
-    check_graph_color(dash_br_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+    check_graph_color(dash_br_driver, style_background=cnst.STYLE_DARK, color=cnst.RGBA_DARK)
     check_theme_color(dash_br_driver, color=cnst.THEME_DARK)
 
 

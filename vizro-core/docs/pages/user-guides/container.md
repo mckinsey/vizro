@@ -183,35 +183,55 @@ vm.Container(
 
 To make the `Container` stand out as a distinct section in your dashboard, you can select from the predefined styles available in its `variant` argument. This can be set to `"plain"` (the default), `"filled"` or `"outlined"`.
 
+!!! tip "Using filled containers"
+
+    When you use `"filled"` containers on a `Page`, the page background adjusts so that content inside those containers is best visible. We recommend using `"filled"` for all containers on that page rather than mixing variants. Using a single variant across the page keeps the layout visually consistent, avoids distracting contrast between container styles, and ensures that visual components (such as graphs and charts) are best visible in every container.
+
 !!! example "Container with different styles"
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="14 19"}
+        ```{.python pycafe-link hl_lines="13 18 29 34"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
 
         iris = px.data.iris()
 
-        page = vm.Page(
-            title="Containers with different styles",
-            layout=vm.Grid(grid=[[0, 1]]),
+        filled = vm.Page(
+            title="Variant: filled",
             components=[
                 vm.Container(
-                    title="Container with background color",
+                    title="Container I",
                     components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
                     variant="filled",
                 ),
                 vm.Container(
-                    title="Container with borders",
+                    title="Container II",
                     components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
-                    variant="outlined",
-                )
+                    variant="filled",
+                ),
             ],
         )
 
-        dashboard = vm.Dashboard(pages=[page])
+        outlined = vm.Page(
+            title="Variant: outlined",
+            components=[
+                vm.Container(
+                    title="Container I",
+                    components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
+                    variant="outlined",
+                ),
+                vm.Container(
+                    title="Container II",
+                    components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
+                    variant="outlined",
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[filled, outlined])
+
         Vizro().build(dashboard).run()
         ```
 
@@ -221,13 +241,10 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
-          - title: Containers with different styles
-            layout:
-              grid: [[0, 1]]
-              type: grid
+          - title: Variant: filled
             components:
               - type: container
-                title: Container with background color
+                title: Container I
                 components:
                   - type: graph
                     figure:
@@ -238,7 +255,31 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
                       color: species
                 variant: filled
               - type: container
-                title: Container with borders
+                title: Container II
+                components:
+                  - type: graph
+                    figure:
+                      _target_: box
+                      data_frame: iris
+                      x: species
+                      y: sepal_length
+                      color: species
+                variant: filled
+          - title: Variant: outlined
+            components:
+              - type: container
+                title: Container I
+                components:
+                  - type: graph
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_width
+                      y: sepal_length
+                      color: species
+                variant: outlined
+              - type: container
+                title: Container II
                 components:
                   - type: graph
                     figure:
@@ -606,4 +647,4 @@ For examples of how to use the `extra` argument, see an example in the documenta
 [container]: ../../assets/user_guides/components/containers.png
 [containerinfoicon]: ../../assets/user_guides/components/container-info-icon.png
 [containerwithcontrols]: ../../assets/user_guides/components/container-with-controls.png
-[stylecontainer]: ../../assets/user_guides/components/container-styled.png
+[stylecontainer]: ../../assets/user_guides/components/container-styled.gif

@@ -58,7 +58,7 @@ function replaceTemplateVariables(text, valuesMap) {
   if (typeof text !== "string") return text;
 
   return text.replace(/\{\{(\w+)\}\}/g, (match, key) => {
-    if (Object.prototype.hasOwnProperty.call(valuesMap, key)) {
+    if (Object.hasOwn(valuesMap, key)) {
       return String(valuesMap[key]);
     }
 
@@ -86,7 +86,11 @@ function show_progress_notification(
 ) {
   console.debug("Showing progress notification");
 
-  // Map of action function parameter names and the current runtime values. For example: {"btn_n_clicks": 10}
+  // Clear existing notification to enable showing the notification with the same ID again.
+  dash_mantine_components.appNotifications.api.hide(notificationObject[0].id);
+
+  // Map of action function parameter names with the current runtime values. For example:
+  // actionParameters=["btn_n_click"], actionRuntimeArguments=[10] -> {"btn_n_clicks": 10}
   const actionParameterToRuntimeValueMap = Object.fromEntries(
     actionParameters.map((key, i) => [key, actionRuntimeArguments[i]]),
   );

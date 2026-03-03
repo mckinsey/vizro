@@ -43,7 +43,7 @@ A custom graph can act as a source for [interactions with other components](grap
 
 ## Enhanced `plotly.express` chart with reference line
 
-The below examples shows a case where we enhance an existing `plotly.express` chart. We add a new argument (`hline`), that is used to draw a grey reference line at the height determined by the value of `hline`. The important thing to note is that we then add a `Parameter` that enables the dashboard user to interact with the argument, and hence move the line in this case. See the `Result` tab for an animation.
+The below examples shows a case where we enhance an existing `plotly.express` chart. We add a new argument (`hline`), that is used to draw a gray reference line at the height determined by the value of `hline`. The important thing to note is that we then add a `Parameter` that enables the dashboard user to interact with the argument, and hence move the line in this case. See the `Result` tab for an animation.
 
 !!! example "Custom `plotly.express` scatter chart with a `Parameter`"
 

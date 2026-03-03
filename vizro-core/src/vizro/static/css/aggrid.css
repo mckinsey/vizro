@@ -1,4 +1,3 @@
-
 .ag-picker-field-wrapper {
   background-color: var(--input-field-bg);
   border-radius: 0;
@@ -37,7 +36,6 @@
 [data-bs-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
-
 
 .ag-select-list,
 [id^="ag-select-list-"] {

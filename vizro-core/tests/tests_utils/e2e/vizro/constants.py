@@ -399,9 +399,22 @@ DASHBOARD_YAML = "dashboard_yaml_gunicorn"
 THEME_DARK = "dark"
 THEME_LIGHT = "light"
 RGBA_TRANSPARENT = "rgba(0, 0, 0, 0)"
+RGBA_LIGHT = "rgba(255, 255, 255, 1)"
+RGBA_DARK = "rgba(20, 23, 33, 1)"
 STYLE_TRANSPARENT = "background: rgba(0, 0, 0, 0);"
+STYLE_LIGHT = "background: white;"
+STYLE_DARK = "background: rgb(20, 23, 33);"
 STYLE_TRANSPARENT_FIREFOX = "background: none;"
 AG_GRID = "ag-theme-vizro"
+
+# Theme colors (RGB values for E2E testing)
+# Qualitative colors - used for categorical/discrete data in charts
+COLOR_QUALITATIVE_FIRST = "rgb(9, 125, 254)"  # 1st color in colorway (currently: blue)
+COLOR_QUALITATIVE_SECOND = "rgb(111, 57, 227)"  # 2nd color in colorway (currently: dark purple)
+COLOR_QUALITATIVE_THIRD = "rgb(5, 208, 240)"  # 3rd color in colorway (currently: turquoise)
+
+# Sequential colors - used for continuous numerical data
+COLOR_SEQUENTIAL_MID = "rgb(9, 125, 254)"  # Middle position (0.5) in sequential palette
 
 # Configs
 
