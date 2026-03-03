@@ -20,6 +20,6 @@
     }
   },
   "files": {
-    "includes": ["**", "!**/*.min.css", "!**/*.min.js"]
+    "includes": ["**", "!**/*.min.css", "!**/*.min.js", "!**/webpack.config.js"]
   }
 }
