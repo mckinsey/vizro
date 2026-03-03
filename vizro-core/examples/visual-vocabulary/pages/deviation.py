@@ -124,15 +124,11 @@ surplus_deficit_filled_line_page = vm.Page(
             tabs=[
                 vm.Container(
                     title="Vizro dashboard",
-                    components=[
-                        make_code_clipboard_from_py_file("surplus_deficit_filled_line.py", mode="vizro")
-                    ],
+                    components=[make_code_clipboard_from_py_file("surplus_deficit_filled_line.py", mode="vizro")],
                 ),
                 vm.Container(
                     title="Plotly figure",
-                    components=[
-                        make_code_clipboard_from_py_file("surplus_deficit_filled_line.py", mode="plotly")
-                    ],
+                    components=[make_code_clipboard_from_py_file("surplus_deficit_filled_line.py", mode="plotly")],
                 ),
             ]
         ),
@@ -140,4 +136,3 @@ surplus_deficit_filled_line_page = vm.Page(
 )
 
 pages = [butterfly_page, diverging_bar_page, diverging_stacked_bar_page, surplus_deficit_filled_line_page]
-

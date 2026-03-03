@@ -423,4 +423,3 @@ def surplus_deficit_filled_line(
     fig.add_hline(y=0, line_width=1, line_color="grey", line_dash="dash")
 
     return fig
-
