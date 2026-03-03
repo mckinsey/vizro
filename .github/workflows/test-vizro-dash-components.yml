@@ -1,4 +1,4 @@
-name: Integration tests for Vizro Dash Components
+name: Tests for Vizro Dash Components
 
 permissions:
   contents: read
@@ -23,7 +23,7 @@ env:
   PYTHON_VERSION: "3.13"
 
 jobs:
-  test-integration-vizro-dash-components:
+  test-vizro-dash-components:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -46,12 +46,12 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
 
+      - name: Show dependency tree
+        run: hatch run pip tree
+
       - name: Generate Python components from TypeScript source
         # Generated Python code and JS bundles are gitignored, so we must rebuild before testing.
         run: hatch run generate-components
-
-      - name: Show dependency tree
-        run: hatch run pip tree
 
       - name: Run tests
         run: hatch run test

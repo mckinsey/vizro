@@ -7,7 +7,6 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-
 [envs.default]
 dependencies = [
   "pre-commit",
-  "dash-iconify",  # just for the example usage.py
   "dash[dev,testing]>=4,<5",  # provides dash-generate-components + dash_duo fixture
   "chromedriver-autoinstaller>=0.6.4",
   "pytest"
@@ -27,4 +26,3 @@ prep-release = [
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
 test = "pytest tests --headless {args}"
-test-unit = "pytest tests --headless {args}"

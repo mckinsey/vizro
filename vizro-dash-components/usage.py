@@ -2,8 +2,7 @@
 
 import dash_mantine_components as dmc
 import vizro_dash_components as vdc
-from dash import Dash
-from dash_iconify import DashIconify
+from dash import Dash, html
 
 app = Dash(__name__)
 
@@ -94,8 +93,8 @@ app.layout = dmc.MantineProvider(
                 [
                     dmc.Title("Vizro Dash Components Demo", order=1),
                     dmc.ColorSchemeToggle(
-                        lightIcon=DashIconify(icon="radix-icons:sun", width=20),
-                        darkIcon=DashIconify(icon="radix-icons:moon", width=20),
+                        lightIcon=html.Span("☀", style={"fontSize": 20}),
+                        darkIcon=html.Span("☾", style={"fontSize": 20}),
                         size="lg",
                     ),
                 ],

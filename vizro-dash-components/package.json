@@ -7,9 +7,7 @@
     "build:js": "webpack",
     "build:backends": "dash-generate-components ./src/ts/components vizro_dash_components -p package-info.json  --ignore \\.test\\.",
     "build": "npm run build:js && npm run build:backends",
-    "watch": "webpack --mode development -- --watch",
-    "lint:js": "npx @biomejs/biome check src/",
-    "fmt:js": "npx @biomejs/biome check --write src/"
+    "watch": "webpack --mode development -- --watch"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.14",
