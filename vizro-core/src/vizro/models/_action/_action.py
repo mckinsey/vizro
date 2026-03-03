@@ -500,21 +500,34 @@ class _BaseAction(VizroBaseModel):
 
                 if isinstance(_action_notification, tuple):
                     notification_key = _action_notification[0]
+                    error_msg = ""
                     notification_result = _action_notification[1]
                 elif isinstance(_action_notification, str):
                     notification_key = _action_notification
-                    notification_result = None
+                    error_msg = ""
+                    notification_result = ""
                 else:
                     notification_key = "success"
-                    notification_result = None
+                    error_msg = ""
+                    notification_result = ""
             except Exception as exc:
                 # TODO OQ: Should we continue executing actions loop? What happens with no_update, PreventUpdate,
                 #  or any other Exception
                 notification_key = "error"
                 # TODO PP NOW: Handle notification_error_msg vs notification_result. Make that result could be returned
                 #  from the action even when exception is raised.
-                notification_error_msg = exc
-                notification_result = exc
+                exception_notification = (
+                    exc.args[1]
+                    if len(exc.args) == 2 and self._is_value_action_notification_type(exc.args[1])
+                    else None
+                )
+                if isinstance(exception_notification, tuple):
+                    notification_key, error_msg, notification_result = exception_notification[0], exc.args[0], exception_notification[1]
+                elif isinstance(exception_notification, str):
+                    notification_key, error_msg, notification_result = exception_notification, exc.args[0], ""
+                else:
+                    notification_key, error_msg, notification_result = "error", exc, ""
+                     
                 # return no_update for all external outputs on error
                 if isinstance(callback_outputs["external"], list):
                     external_return = [no_update] * len(callback_outputs["external"])
@@ -523,22 +536,17 @@ class _BaseAction(VizroBaseModel):
                 else:
                     external_return = no_update
 
-            return_value = {
-                "internal": {
-                    "action_finished": time.time(),
-                    "action_progress_indicator": no_update,
-                }
-            }
+            return_value = {"internal": {"action_finished": time.time(), "action_progress_indicator": no_update}}
 
             if hasattr(self, "notifications"):
                 if notification_obj := self.notifications.get(notification_key):
                     notification = notification_obj.function()
 
-                    # TODO OQ: Should I replace {{key}} with '' or keep it as it is. I suggest replacing with ''.
-                    #  That's more user friendly in my opinion.
-                    notification_result = notification_result or ""
                     notification[0]["message"].children = notification[0]["message"].children.replace(
-                        "{{error_msg}}" if notification_key == "error" else "{{result}}", str(notification_result)
+                        "{{result}}", str(notification_result)
+                    )
+                    notification[0]["message"].children = notification[0]["message"].children.replace(
+                        "{{error_msg}}", str(error_msg)
                     )
 
                     return_value["internal"]["vizro_notification"] = [notification]
