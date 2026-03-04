@@ -17,7 +17,7 @@ Copy this checklist and track your progress:
 
 ```
 Dashboard Development Progress:
-- [ ] Step 1: Understand Requirements (discuss with user, document decisions)
+- [ ] Step 1: Understand Requirements (define end user, dashboard goals, document decisions)
 - [ ] Step 2: Design Layout & Interactions (wireframes, filter placement)
 - [ ] Step 3: Select Visualizations (chart types, colors, KPIs)
 - [ ] Next: Use dashboard-build skill for implementation and testing
@@ -26,9 +26,10 @@ Dashboard Development Progress:
 **Do not skip steps.** Handle partial context as follows:
 
 - User has data but no requirements → Start at Step 1
+- User has requirements but no data → Ask for data or suggest sample data
 - User has wireframes → Validate Step 1 decisions, then proceed from Step 2
 - User has visual designs/mockups → Validate Steps 1-2 decisions, then proceed from Step 3
-- User asks to "just build it" → Explain value of steps, offer to streamline but not skip
+- User asks to "just build it" → Explain value of steps, offer to streamline but not skip, ask for data or suggest sample data
 
 **For simple dashboards** (single page, less than 5 charts): Steps 1-3 can be abbreviated but not skipped entirely.
 
@@ -46,14 +47,14 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 
 ### Key Questions to Discuss
 
-1. **Users**: Who uses this dashboard? What decisions do they make?
-1. **Questions**: What are the 3-5 most important questions this answers?
-1. **Data**: What sources are available? What's the refresh frequency?
-1. **Structure**: How many pages? What's the logical grouping?
+1. **Users**: Who are the end users of this dashboard? Per user type: What decisions do they need to make? What task/job do they need to accomplish?
+2. **Goals**: What is the current problem to solve? What is the goal of this dashboard?
+3. **Data**: What sources are available? What's the refresh frequency?
+4. **Structure**: How many pages or views? What's the logical grouping?
 
 ### Design Principles
 
-- **Limit KPIs**: 5-7 primary metrics per page maximum
+- **Limit KPIs**: 5 primary metrics per page maximum
 - **Clear hierarchy**: Overview → Detail → Granular (max 3 levels)
 - **Persona-based**: Different users may need different views
 - **Decision-focused**: Every metric should inform a decision
@@ -70,7 +71,7 @@ dashboard:
 pages:
   - name: [Page Name]
     purpose: [What question does this answer?]
-    kpis: [List of 3-7 key metrics]
+    kpis: [List of 3-5 key metrics]
 data_sources:
   - name: [Source Name]
     type: [csv/database/api]
@@ -137,7 +138,7 @@ Tier 3: Component-level
 
 **Layout Rules**:
 
-- Place 2-3 charts per row (side-by-side)
+- Place 2-3 charts maximum per row (side-by-side)
 - Full-width ONLY for time-series line charts
 - Give charts minimum 3 rows (use `*[[...]] * 3` pattern)
 - Use `-1` for intentional empty cells
@@ -180,7 +181,7 @@ pages:
       page_level: [columns with selector types]
       container_level: [columns with selector types]
 wireframe: |
-  [ASCII wireframe for ALL pages]
+  [ASCII wireframe for ALL pages and tab views]
 decisions:
   - decision: [What was decided]
     reasoning: [Why this choice was made]
@@ -230,9 +231,9 @@ Before proceeding to Step 3:
 **Vizro Semantic Colors**:
 
 ```python
-success_color = "#689f38"  # Green - positive
-warning_color = "#ff9222"  # Orange - caution
-error_color = "#ff5267"  # Pink/red - negative
+success_color = "#26BF56"  # Green - positive
+warning_color = "#FFC107"  # Orange - caution
+error_color = "#F03B3A"  # Pink/red - negative
 neutral_color = "gray"  # Inactive
 ```
 
