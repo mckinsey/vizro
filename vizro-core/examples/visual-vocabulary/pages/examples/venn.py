@@ -76,10 +76,10 @@ def venn_diagram_2(
     )
 
     # Hide axes and set layout
-    fig.update_xaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True, range=[0.75, 4.25])
-    fig.update_yaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True, range=[0.75, 3.25])
+    fig.update_xaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True, range=[0.9, 4.1])
+    fig.update_yaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True, range=[0.9, 3.1])
     fig.update_layout(
-        margin={"l": 20, "r": 20, "b": 20},
+        margin={"l": 0, "r": 0, "t": 0, "b": 0},
         showlegend=False,
         yaxis={"scaleanchor": "x", "scaleratio": 1},
         modebar_remove=[
