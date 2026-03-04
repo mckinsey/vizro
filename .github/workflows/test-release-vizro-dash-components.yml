@@ -2,6 +2,7 @@ name: Test release vizro-dash-components to TestPyPI
 
 permissions:
   contents: read
+  id-token: write
 
 defaults:
   run:
