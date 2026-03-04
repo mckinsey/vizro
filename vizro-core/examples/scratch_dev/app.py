@@ -11,6 +11,7 @@ from vizro.models.types import capture
 
 
 # TODO:
+#  Solve model_rebuild in export_data issue. Open the file at the end and see an ugly hack I did.
 #  ALMOST DONE - Refactor output return value in _action.py
 #  DONE - If we enable `text -> va.show_notification(...)` conversion, this would look like:
 #  DONE - Clean notifications from the notification panel when the same action is triggered again.

@@ -779,8 +779,7 @@ a list of strings, or a dictionary mapping strings to strings. Each output can b
 #     then call `export_data.model_rebuild()`.
 
 ActionNotificationType = Annotated[
-    dict,
-    # "dict[str, str | show_notification | update_notification | None]",
+    "dict[str, str | show_notification | update_notification | None]",
     AfterValidator(_normalize_action_notifications),
     Field(default_factory=dict, description="Conditional notifications", validate_default=True),
 ]
