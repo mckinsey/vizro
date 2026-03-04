@@ -224,7 +224,7 @@ class TestNavBarBuildMethod:
         expected_navigation = dbc.Navbar(
             children=[
                 dbc.NavLink(
-                    children=[html.Span("Group")],
+                    children="Group",
                     active=True,
                     href="/",
                 )
@@ -241,12 +241,12 @@ class TestNavBarBuildMethod:
         expected_navigation = dbc.Navbar(
             children=[
                 dbc.NavLink(
-                    children=[html.Span("Page 1")],
+                    children="Page 1",
                     active=True,
                     href="/",
                 ),
                 dbc.NavLink(
-                    children=[html.Span("Page 2")],
+                    children="Page 2",
                     active=False,
                     href="/page_2",
                 ),

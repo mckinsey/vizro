@@ -77,7 +77,8 @@ class TestNavLinkPreBuildMethod:
 
         with pytest.raises(
             ValueError,
-            match=r"You cannot use icons with top navigation. Icons are only supported for the left navigation.",
+            match=r'You cannot use icons when the `vm.NavBar` has `position="top"`. '
+            'Icons are only supported for `position="left"`.',
         ):
             nav_link.pre_build()
 
@@ -136,7 +137,7 @@ class TestNavLinkBuildMethod:
         built_nav_link = nav_link.build(active_page_id=page_1_id)
 
         expected_nav_link = dbc.NavLink(
-            children=[html.Span("Label")],
+            children="Label",
             active=True,
             href="/",
             id="nav-link",

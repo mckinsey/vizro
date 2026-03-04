@@ -41,7 +41,8 @@ class NavLink(VizroBaseModel):
 
         if self.icon and self._nav_position == "top":
             raise ValueError(
-                "You cannot use icons with top navigation. Icons are only supported for the left navigation."
+                'You cannot use icons when the `vm.NavBar` has `position="top"`. '
+                'Icons are only supported for `position="left"`.'
             )
 
     @_log_call
@@ -66,7 +67,7 @@ class NavLink(VizroBaseModel):
                 ),
             ]
             if self._nav_position == "left"
-            else [html.Span(self.label)]
+            else self.label
         )
         nav_link = dbc.NavLink(
             nav_link_children,

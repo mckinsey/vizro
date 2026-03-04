@@ -80,7 +80,7 @@ class NavBar(VizroBaseModel):
             nav_panel = dbc.Nav(id="nav-panel", className="d-none invisible")
 
         # `flex-column` ensures that we return a vertical NavBar. For top position, we use `navbar-top` className.
-        navbar_class = "navbar-top" if self.position == "top" else "flex-column"
+        navbar_class = "flex-column" if self.position == "left" else "navbar-top"
         return html.Div(children=[dbc.Navbar(id="nav-bar", children=nav_links, className=navbar_class), nav_panel])
 
     def _create_items_from_pages(self):

@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add `position` argument to `vm.NavBar` model to enable horizontal navigation. See the [user guide on horizontal navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/#use-a-horizontal-navigation-bar) ([#1576](https://github.com/mckinsey/vizro/pull/1576))
+- Add `position` argument to `vm.NavBar` model to enable horizontal navigation. See the [user guide on horizontal navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/#use-a-horizontal-navigation-bar). ([#1576](https://github.com/mckinsey/vizro/pull/1576))
 
 
 <!--

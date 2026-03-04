@@ -46,14 +46,14 @@ class TestDashboardInstantiation:
 
     def test_is_left_navigation_property_true(self, page_1, page_2):
         dashboard = vm.Dashboard(pages=[page_1, page_2], navigation=vm.Navigation(pages=["Page 1", "Page 2"]))
-        assert dashboard._is_left_navigation is True
+        assert dashboard._is_top_navigation is False
 
     def test_is_left_navigation_property_false(self, page_1, page_2):
         dashboard = vm.Dashboard(
             pages=[page_1, page_2],
             navigation=vm.Navigation(nav_selector=vm.NavBar(pages=["Page 1", "Page 2"], position="top")),
         )
-        assert dashboard._is_left_navigation is False
+        assert dashboard._is_top_navigation is True
 
     def test_mandatory_pages_missing(self):
         with pytest.raises(ValidationError, match="Field required"):

@@ -34,7 +34,7 @@ from typing_extensions import TypedDict
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro.managers import model_manager
-from vizro.models import Accordion, Navigation, Tooltip, VizroBaseModel
+from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
 from vizro.models._controls import Filter, Parameter
 from vizro.models._models_utils import _all_hidden, _log_call, warn_description_without_title
@@ -118,14 +118,11 @@ class Dashboard(VizroBaseModel):
     ]
 
     @property
-    def _is_left_navigation(self) -> bool:
-        """Returns True if navigation is positioned on the left side."""
-        if self.navigation is None:
-            raise ValueError("Navigation must be initialized")
+    def _is_top_navigation(self) -> bool:
+        """Returns True if navigation is positioned on the top side."""
+        nav_selector = getattr(self.navigation, "nav_selector", None)
 
-        nav_selector = self.navigation.nav_selector
-
-        return nav_selector is None or isinstance(nav_selector, Accordion) or nav_selector.position == "left"
+        return getattr(nav_selector, "position", None) == "top"
 
     @_log_call
     def pre_build(self):
@@ -326,7 +323,7 @@ class Dashboard(VizroBaseModel):
 
         header_left_content = [logo, logo_dark, logo_light, dashboard_title]
         # Add nav-bar to header_left for top navigation
-        if not self._is_left_navigation:
+        if self._is_top_navigation:
             header_left_content.append(nav_bar)
 
         header_left = html.Div(id="header-left", children=header_left_content, hidden=_all_hidden(header_left_content))
@@ -429,7 +426,7 @@ class Dashboard(VizroBaseModel):
         return html.Div(
             [
                 header,
-                nav_bar if self._is_left_navigation else None,
+                nav_bar,
                 right_side,
                 collapse_left_side,
                 collapse_icon_outer,
@@ -456,7 +453,7 @@ class Dashboard(VizroBaseModel):
         page_main = html.Div(
             id="page-main",
             children=[nav_bar, collapse_left_side, collapse_icon_outer, right_side]
-            if self._is_left_navigation
+            if not self._is_top_navigation
             else [collapse_left_side, collapse_icon_outer, right_side],
         )
 

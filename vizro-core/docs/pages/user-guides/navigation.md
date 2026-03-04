@@ -428,7 +428,7 @@ For a more compact layout, you can position the navigation bar horizontally at t
 
 ### Basic horizontal navigation
 
-To create a horizontal navigation bar, set the position argument to `top` in your `NavBar` model. In this scenario, individual page titles are displayed as navigation links across the top of the dashboard..
+To create a horizontal navigation bar, set `position="top"` in your `NavBar` model. In this scenario, individual page titles are displayed as navigation links across the top of the dashboard.
 
 !!! example "Basic Horizontal navigation"
 
@@ -464,7 +464,6 @@ To create a horizontal navigation bar, set the position argument to `top` in you
             pages=[page_1, page_2, page_3],
             navigation=vm.Navigation(
                 nav_selector=vm.NavBar(
-                    pages=["My first page", "My second page", "My third page"],
                     position="top",
                 )
             ),
@@ -483,10 +482,6 @@ To create a horizontal navigation bar, set the position argument to `top` in you
           nav_selector:
             type: nav_bar
             position: top
-            pages:
-              - My first page
-              - My second page
-              - My third page
         ```
 
     === "Result"
@@ -497,7 +492,7 @@ To create a horizontal navigation bar, set the position argument to `top` in you
 
 You can group multiple pages under a single navigation item in horizontal mode either by specifying `pages` as a dictionary or providing `NavLink` models in `items`.
 
-- By using a dictionary: When you provide pages as a dictionary to the `NavBar` model, the dictionary keys become the horizontal navigation item labels, and the associated pages appear in an accordion in the side panel below:
+- By using a dictionary: When you provide `pages` as a dictionary to the `NavBar` model, the dictionary keys become the horizontal navigation item labels, and the associated pages appear in an accordion in the side panel below.
 - By using `NavLink` items: Alternatively, you can define `NavBar` items using `NavLink`. In this case, the label argument of each `NavLink` becomes the horizontal navigation item text.
 
 !!! example "Grouped horizontal navigation"
