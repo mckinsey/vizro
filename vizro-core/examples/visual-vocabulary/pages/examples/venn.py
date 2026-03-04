@@ -26,15 +26,9 @@ def venn_diagram_2(
 
     display_a = get_label(label_a, "A")
     display_b = get_label(label_b, "B")
-    
-    # intersection display - keep it simple, or combine
-    val_intersection = get_label(label_intersection, None)
-    if val_intersection is None:
-        display_intersection = f"{display_a} & {display_b}"
-    else:
-        display_intersection = val_intersection
+    display_intersection = get_label(label_intersection, f"{display_a} & {display_b}")
 
-    # Add an invisible trace so Plotly correctly renders the custom Cartesian modebar configurations
+    # Add an invisible trace so Plotly correctly applies Cartesian modebar configuration
     fig.add_trace(
         go.Scatter(
             x=[2.5],
@@ -69,17 +63,15 @@ def venn_diagram_2(
     )
 
     # Add annotations
-    fig.add_annotation(x=1.35, y=2, text=display_a, showarrow=False, font={"size": 13})
-    fig.add_annotation(x=3.65, y=2, text=display_b, showarrow=False, font={"size": 13})
-    fig.add_annotation(
-        x=2.5, y=2, text=display_intersection, showarrow=False, font={"size": 13}
-    )
+    fig.add_annotation(x=1.5, y=2, text=display_a, showarrow=False, font={"size": 16})
+    fig.add_annotation(x=3.5, y=2, text=display_b, showarrow=False, font={"size": 16})
+    fig.add_annotation(x=2.5, y=2, text=display_intersection, showarrow=False, font={"size": 16})
 
     # Hide axes and set layout
-    fig.update_xaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True, range=[0.9, 4.1])
-    fig.update_yaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True, range=[0.9, 3.1])
+    fig.update_xaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True)
+    fig.update_yaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True)
     fig.update_layout(
-        margin={"l": 0, "r": 0, "t": 0, "b": 0},
+        margin={"l": 20, "r": 20, "b": 20},
         showlegend=False,
         yaxis={"scaleanchor": "x", "scaleratio": 1},
         modebar_remove=[
