@@ -233,7 +233,7 @@ Before proceeding to Step 3:
 ```python
 success_color = "#26BF56"  # Green - positive
 warning_color = "#FFC107"  # Orange - caution
-error_color = "#F03B3A"  # Pink/red - negative
+error_color = "#E84A3A"  # Pink/red - negative
 neutral_color = "gray"  # Inactive
 ```
 
