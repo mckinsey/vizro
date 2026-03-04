@@ -19,7 +19,7 @@ from vizro.models.types import capture
 #      Or to do so even before every show_notification action. With it hiding the progress would be automatically solved
 #  DONE - Refactor and merge validators in types.
 #  Enable providing a second argument of exception containing results.
-#  Test by assigning a warning notif to the progress key.
+#  Test by assigning a variant="warning" notification to the "progress" key.
 #  Pass through todos and done or open question.
 #  See ticket issue and cover other edge cases if any.
 #  Check other actions like filter/parameter. What happens if they fail.
@@ -355,7 +355,7 @@ page_4 = vm.Page(
                             text="Run pipeline",
                             actions=[
                                 vm.Action(
-                                    function=random_pipeline(f"{pre}_raise_exc_switch"),
+                                    function=random_pipeline(f"{pre}_raise_exc_switch", f"{pre}_exit_path_slider"),
                                     outputs=f"{pre}_text",
                                     notifications={
                                         "progress": va.show_notification(
@@ -379,6 +379,10 @@ page_4 = vm.Page(
                             ],
                         ),
                         vm.Text(id=f"{pre}_text", text="Click the button to run action."),
+                        vm.Slider(
+                            id=f"{pre}_exit_path_slider", min=1, max=4, value=2,
+                            extra=dict(className="cond-notification-slider"),
+                        ),
                     ],
                 ),
                 vm.Container(
@@ -485,7 +489,7 @@ page_5 = vm.Page(
                                         ),
                                         "my_custom_err": va.update_notification(
                                             notification=f"{pre}_progress_2",
-                                            text="Custom pipeline failed! \n\n Error Message: {{error_msg}} {{result}}",
+                                            text="Custom pipeline failed! \n\n Error Message: {{error_msg}} \n\n {{result}}",
                                             variant="error",
                                             title="My custom error",
                                         ),
@@ -575,8 +579,8 @@ page_6 = vm.Page(
                                         "progress": "Running custom pipeline.\n\n Exception will happen: {{switch_successfulness}}.\n\n Exit path: {{exit_path_slider}}",
                                         "success": "Custom pipeline completed! {{result}}",
                                         "my_custom_success": "Pipeline completed, neither success nor failure! {{result}}",
-                                        "error": "Custom pipeline failed! Exception: {{error_msg}}",
-                                        "my_custom_err": "Custom pipeline failed! \n\n Error Message: {{error_msg}} {{result}}",
+                                        "error": "Custom pipeline failed! \n\n Exception: {{error_msg}}",
+                                        "my_custom_err": "Custom pipeline failed! \n\n Error Message: {{error_msg}} \n\n {{result}}",
                                     },
                                 )
                             ],

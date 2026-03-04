@@ -76,7 +76,7 @@ class export_data(_AbstractAction):
 
     def function(self, _controls: _Controls) -> dict[str, Any]:
         """Exports data after applying _controls."""
-        # TODO IMPORTANT: REMOVE SLEEP AFTER TESTING
+        # TODO IMPORTANT: REMOVE SLEEP AND EXCEPTION AFTER TESTING
         sleep(2)
         import random
 

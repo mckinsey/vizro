@@ -521,9 +521,6 @@ class _BaseAction(VizroBaseModel):
             except Exception as exc:
                 # TODO OQ: Should we continue executing actions loop? What happens with no_update, PreventUpdate,
                 #  or any other Exception
-                notification_key = "error"
-                # TODO PP NOW: Handle notification_error_msg vs notification_result. Make that result could be returned
-                #  from the action even when exception is raised.
                 exception_notification = (
                     exc.args[1] if len(exc.args) == 2 and self._is_value_action_notification_type(exc.args[1]) else None
                 )

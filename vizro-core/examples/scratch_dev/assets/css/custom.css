@@ -12,3 +12,7 @@
 .cond-notification-slider {
   width: 240px;
 }
+
+#p4_exit_path_slider {
+  display: none;
+}
