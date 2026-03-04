@@ -32,6 +32,7 @@ class export_data(_AbstractAction):
     """
 
     type: Literal["export_data"] = "export_data"
+    # TODO PP NOW: Think about default_factory=list instead.
     targets: list[ModelID] = Field(
         default=[],
         description="List of target component ids for which to download data. If none are given then "
