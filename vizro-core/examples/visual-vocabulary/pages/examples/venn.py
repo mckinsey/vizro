@@ -34,6 +34,18 @@ def venn_diagram_2(
     else:
         display_intersection = val_intersection
 
+    # Add an invisible trace so Plotly correctly renders the custom Cartesian modebar configurations
+    fig.add_trace(
+        go.Scatter(
+            x=[2.5],
+            y=[2],
+            mode="markers",
+            marker_color="rgba(0,0,0,0)",
+            showlegend=False,
+            hoverinfo="skip",
+        )
+    )
+
     # Add circles
     fig.add_shape(
         type="circle",
@@ -64,13 +76,21 @@ def venn_diagram_2(
     )
 
     # Hide axes and set layout
-    fig.update_xaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True, range=[0.5, 4.5])
-    fig.update_yaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True, range=[0.5, 3.5])
+    fig.update_xaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True, range=[0.75, 4.25])
+    fig.update_yaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True, range=[0.75, 3.25])
     fig.update_layout(
         margin={"l": 20, "r": 20, "b": 20},
         showlegend=False,
         yaxis={"scaleanchor": "x", "scaleratio": 1},
         modebar_remove=[
+            "zoom",
+            "pan",
+            "select",
+            "lasso",
+            "zoomIn",
+            "zoomOut",
+            "autoScale",
+            "resetScale",
             "zoom2d",
             "pan2d",
             "select2d",
