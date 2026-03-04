@@ -48,9 +48,9 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 ### Key Questions to Discuss
 
 1. **Users**: Who are the end users of this dashboard? Per user type: What decisions do they need to make? What task/job do they need to accomplish?
-2. **Goals**: What is the current problem to solve? What is the goal of this dashboard?
-3. **Data**: What sources are available? What's the refresh frequency?
-4. **Structure**: How many pages or views? What's the logical grouping?
+1. **Goals**: What is the current problem to solve? What is the goal of this dashboard?
+1. **Data**: What sources are available? What's the refresh frequency?
+1. **Structure**: How many pages or views? What's the logical grouping?
 
 ### Design Principles
 
