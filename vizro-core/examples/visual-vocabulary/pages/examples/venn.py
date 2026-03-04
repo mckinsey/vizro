@@ -14,12 +14,7 @@ def venn_diagram_2(
     fig = go.Figure()
 
     def get_label(column_name, default_value):
-        if (
-            column_name is None
-            or data_frame is None
-            or data_frame.empty
-            or column_name not in data_frame.columns
-        ):
+        if column_name is None or data_frame is None or data_frame.empty or column_name not in data_frame.columns:
             return default_value
         x = data_frame[column_name].dropna()
         return str(x.iloc[0]) if len(x) else default_value
