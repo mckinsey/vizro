@@ -1,5 +1,6 @@
 """Contains custom charts used inside the dashboard."""
 
+import numpy as np
 import pandas as pd
 import vizro.plotly.express as px
 from plotly import graph_objects as go
@@ -355,4 +356,44 @@ def lollipop(data_frame: pd.DataFrame, **kwargs):
             f"{x_or_y}axis_rangemode": "tozero",
         },
     )
+    return fig
+
+
+@capture("graph")
+def surplus_deficit_filled_line(data_frame: pd.DataFrame, x: str, y: str) -> go.Figure:
+    """Creates a surplus deficit filled line chart based on go.Scatter.
+
+    A surplus deficit filled line chart shows a line against a baseline (typically zero), with the area
+    between the line and baseline filled using two colors — one for positive (surplus) values and another
+    for negative (deficit) values.
+
+    Args:
+        data_frame: DataFrame for the chart.
+        x: Column name in data_frame for x-axis values.
+        y: Column name in data_frame for y-axis values.
+
+    Returns:
+        go.Figure: Surplus deficit filled line chart.
+    """
+    x_labels = data_frame[x].to_numpy()
+    y_vals = data_frame[y].to_numpy().astype(float)
+    x_idx = np.arange(len(y_vals), dtype=float)
+
+    # Build x/y arrays with zero-crossing points inserted so filled areas
+    # meet y=0 exactly where the line crosses, not at the next data point.
+    xs, ys = [x_idx[0]], [y_vals[0]]
+    for i in range(1, len(y_vals)):
+        if y_vals[i - 1] * y_vals[i] < 0:
+            frac = -y_vals[i - 1] / (y_vals[i] - y_vals[i - 1])
+            xs.append(x_idx[i - 1] + frac)
+            ys.append(0.0)
+        xs.append(x_idx[i])
+        ys.append(y_vals[i])
+    xs, ys = np.array(xs), np.array(ys)
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=xs, y=np.where(ys >= 0, ys, 0), fill="tozeroy", mode="none"))
+    fig.add_trace(go.Scatter(x=xs, y=np.where(ys <= 0, ys, 0), fill="tozeroy", mode="none"))
+    fig.update_xaxes(tickvals=x_idx, ticktext=x_labels)
+    fig.update_layout(showlegend=False)
     return fig
