@@ -28,18 +28,6 @@ def venn_diagram_2(
     display_b = get_label(label_b, "B")
     display_intersection = get_label(label_intersection, f"{display_a} & {display_b}")
 
-    # Add an invisible trace so Plotly correctly applies Cartesian modebar configuration
-    fig.add_trace(
-        go.Scatter(
-            x=[2.5],
-            y=[2],
-            mode="markers",
-            marker_color="rgba(0,0,0,0)",
-            showlegend=False,
-            hoverinfo="skip",
-        )
-    )
-
     # Add circles
     fig.add_shape(
         type="circle",
@@ -68,30 +56,10 @@ def venn_diagram_2(
     fig.add_annotation(x=2.5, y=2, text=display_intersection, showarrow=False, font={"size": 16})
 
     # Hide axes and set layout
-    fig.update_xaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True)
-    fig.update_yaxes(showline=False, showgrid=False, zeroline=False, visible=False, fixedrange=True)
+    fig.update_xaxes(showline=False, showgrid=False, zeroline=False, visible=False)
+    fig.update_yaxes(showline=False, showgrid=False, zeroline=False, visible=False)
     fig.update_layout(
-        margin={"l": 20, "r": 20, "b": 20},
-        showlegend=False,
         yaxis={"scaleanchor": "x", "scaleratio": 1},
-        modebar_remove=[
-            "zoom",
-            "pan",
-            "select",
-            "lasso",
-            "zoomIn",
-            "zoomOut",
-            "autoScale",
-            "resetScale",
-            "zoom2d",
-            "pan2d",
-            "select2d",
-            "lasso2d",
-            "zoomIn2d",
-            "zoomOut2d",
-            "autoScale2d",
-            "resetScale2d",
-        ],
     )
     return fig
 
