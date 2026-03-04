@@ -5,6 +5,7 @@ This is a monorepo containing multiple Vizro packages. The main packages are:
 - `vizro-core/`: The core Vizro dashboard framework
 - `vizro-ai/`: Framework for AI-assisted dashboard development
 - `vizro-mcp/`: Model Context Protocol server for AI-assisted dashboard development
+- `vizro-dash-components/`: Custom Dash components maintained by Vizro (TypeScript/React → Python).
 - `vizro-e2e-flow/`: (Anthropic) Claude Code plugin with skills for end-to-end dashboard development (no `hatch` commands)
 
 ## Development Setup (across all packages)
