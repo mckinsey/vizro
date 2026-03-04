@@ -773,8 +773,14 @@ a list of strings, or a dictionary mapping strings to strings. Each output can b
 
 
 # TODO OQ: What to do with AfterValidator, discriminator and the description here?
+#  When type is defined as "dict[str, str | show_notification | update_notification | None]", this test
+#  test_to_python_complete_dashboard raises
+#  E  pydantic.errors.PydanticUserError: `export_data` is not fully defined; you should define `show_notification`,
+#     then call `export_data.model_rebuild()`.
+
 ActionNotificationType = Annotated[
-    "dict[str, str | show_notification | update_notification | None]",
+    dict,
+    # "dict[str, str | show_notification | update_notification | None]",
     AfterValidator(_normalize_action_notifications),
     Field(default_factory=dict, description="Conditional notifications", validate_default=True),
 ]
