@@ -462,10 +462,7 @@ To create a horizontal navigation bar, set `position="top"` in your `NavBar` mod
 
         dashboard = vm.Dashboard(
             pages=[page_1, page_2, page_3],
-            navigation=vm.Navigation(
-                nav_selector=vm.NavBar(
-                    position="top",
-                )
+            navigation=vm.Navigation(nav_selector=vm.NavBar(position="top"),
             ),
         )
 

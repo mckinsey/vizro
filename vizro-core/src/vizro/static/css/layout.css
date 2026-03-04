@@ -367,7 +367,6 @@ Current logic:
   border: none;
   display: flex;
   gap: 2rem;
-  height: 100%;
   padding: 0;
   padding-left: 24px;
 }
