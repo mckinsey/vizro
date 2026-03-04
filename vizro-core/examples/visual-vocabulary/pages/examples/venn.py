@@ -59,15 +59,4 @@ def venn_diagram_2(
     return fig
 
 
-fig = venn_diagram_2(
-    data_frame=pd.DataFrame(
-        {
-            "label_a": ["Product A", "Product A", None],
-            "label_b": ["Product B", None, "Product B"],
-            "label_intersection": ["Both", "Both", "Both"],
-        }
-    ),
-    label_a="label_a",
-    label_b="label_b",
-    label_intersection="label_intersection",
-)
+fig = venn_diagram_2(data_frame=pd.DataFrame())
