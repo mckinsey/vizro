@@ -1,6 +1,6 @@
 # How to configure dashboard navigation
 
-This guide shows you how to use and customize the navigation that appears on the left of your dashboard.
+This guide shows you how to use and customize the navigation in your dashboard.
 
 The [`Dashboard`][vizro.models.Dashboard] model accepts a `navigation` argument, where you can enter a [`Navigation`][vizro.models.Navigation] model. This enables you to group pages together and customize how they appear in your navigation. The dashboard includes a collapsible side panel that users can minimize or expand by a button click. The collapse button, located in the top right corner of the side panel, is visible by default for user convenience.
 
@@ -422,9 +422,150 @@ You can alter the icons used by specifying the name of the icon in the [Google M
 
         [![CustomIcons]][customicons]
 
+## Horizontal navigation
+
+For a more compact layout, you can position the navigation bar horizontally at the top of your dashboard.
+
+### Basic horizontal navigation
+
+To create a horizontal navigation bar, set `position="top"` in your `NavBar` model. In this scenario, individual page titles are displayed as navigation links across the top of the dashboard.
+
+!!! example "Basic Horizontal navigation"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="31"}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        iris = px.data.iris()
+
+        page_1 = vm.Page(
+            title="My first page",
+            components=[
+                vm.Card(text="My text here"),
+            ],
+        )
+        page_2 = vm.Page(
+            title="My second page",
+            components=[
+                vm.Card(text="My text here"),
+            ],
+        )
+        page_3 = vm.Page(
+            title="My third page",
+            components=[
+                vm.Card(text="My text here"),
+            ],
+        )
+
+        dashboard = vm.Dashboard(
+            pages=[page_1, page_2, page_3],
+            navigation=vm.Navigation(nav_selector=vm.NavBar(position="top"),
+            ),
+        )
+
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        # pages defined as in default example
+        navigation:
+          nav_selector:
+            type: nav_bar
+            position: top
+        ```
+
+    === "Result"
+
+        [![BasicHorizontalNavigation]][basichorizontalnavigation]
+
+### Grouped pages with horizontal navigation
+
+You can group multiple pages under a single navigation item in horizontal mode either by specifying `pages` as a dictionary or providing `NavLink` models in `items`.
+
+- By using a dictionary: When you provide `pages` as a dictionary to the `NavBar` model, the dictionary keys become the horizontal navigation item labels, and the associated pages appear in an accordion in the side panel below.
+- By using `NavLink` items: Alternatively, you can define `NavBar` items using `NavLink`. In this case, the label argument of each `NavLink` becomes the horizontal navigation item text.
+
+!!! example "Grouped horizontal navigation"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="31"}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        iris = px.data.iris()
+
+        page_1 = vm.Page(
+            title="My first page",
+            components=[
+                vm.Card(text="My text here"),
+            ],
+        )
+        page_2 = vm.Page(
+            title="My second page",
+            components=[
+                vm.Card(text="My text here"),
+            ],
+        )
+        page_3 = vm.Page(
+            title="My third page",
+            components=[
+                vm.Card(text="My text here"),
+            ],
+        )
+
+        dashboard = vm.Dashboard(
+            pages=[page_1, page_2, page_3],
+            navigation=vm.Navigation(
+                nav_selector=vm.NavBar(
+                    items=[
+                        vm.NavLink(pages=["My first page", "My second page"], label="First Group"),
+                        vm.NavLink(pages=["My third page"], label="Second Group"),
+                    ],
+                    position="top",
+                )
+            ),
+        )
+
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        # pages defined as in default example
+        navigation:
+          nav_selector:
+            type: nav_bar
+            items:
+              - label: First Group
+                pages:
+                  - My first page
+                  - My second page
+              - label: Second Group
+                pages:
+                  - My third page
+        ```
+
+    === "Result"
+
+        [![GroupedHorizontalNavigation]][groupedhorizontalnavigation]
+
 [accordioninsidenavbar]: ../../assets/user_guides/navigation/accordion_inside_nav_bar.png
+[basichorizontalnavigation]: ../../assets/user_guides/navigation/basic_horizontal_navigation.png
 [customicons]: ../../assets/user_guides/navigation/custom_icons.png
 [defaultnavigation]: ../../assets/user_guides/navigation/default_navigation.png
+[groupedhorizontalnavigation]: ../../assets/user_guides/navigation/grouped_horizontal_navigation.png
 [groupednavigation]: ../../assets/user_guides/navigation/grouped_navigation.png
 [navbar]: ../../assets/user_guides/navigation/nav_bar.png
 [onlysomepages]: ../../assets/user_guides/navigation/only_some_pages.png
