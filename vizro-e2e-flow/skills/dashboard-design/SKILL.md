@@ -23,6 +23,8 @@ Dashboard Development Progress:
 - [ ] Next: Use dashboard-build skill for implementation and testing
 ```
 
+**Interaction style**: When gathering requirements or making design decisions, use the AskUserQuestion tool to present options as numbered choices. This enables interactive selection rather than walls of text. Break complex decisions into focused questions with 2-5 clear options each.
+
 **Do not skip steps.** Handle partial context as follows:
 
 - User has data but no requirements → Start at Step 1
@@ -205,14 +207,14 @@ Before proceeding to Step 3:
 
 ### Chart Type Quick Reference
 
-| Data Question           | Recommended Chart                   |
-| ----------------------- | ----------------------------------- |
-| Compare categories      | Bar chart (horizontal for 8+ items) |
-| Show trend over time    | Line chart (12+ points)             |
-| Part-to-whole (simple)  | Pie/donut (2-5 slices ONLY)         |
-| Part-to-whole (complex) | Stacked bar chart                   |
-| Distribution            | Histogram or box plot               |
-| Correlation             | Scatter plot                        |
+| Data Question           | Recommended Chart                |
+| ----------------------- | -------------------------------- |
+| Compare categories      | Bar chart (horizontal preferred) |
+| Show trend over time    | Line chart (12+ points)          |
+| Part-to-whole (simple)  | Pie/donut (2-5 slices ONLY)      |
+| Part-to-whole (complex) | Stacked bar chart                |
+| Distribution            | Histogram or box plot            |
+| Correlation             | Scatter plot                     |
 
 ### Chart Anti-Patterns (Never Use)
 

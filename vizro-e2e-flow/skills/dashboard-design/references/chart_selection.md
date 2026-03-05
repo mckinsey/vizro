@@ -41,7 +41,8 @@ What is your primary goal?
 
 - 3-15 categories
 - Significant differences between values
-- Category labels are short (vertical) or long (horizontal)
+
+**Prefer horizontal orientation (`orientation='h'`) by default** — horizontal bars prevent bars from appearing too wide and avoid crowded tick text on the axis.
 
 **Avoid when**:
 
@@ -51,11 +52,11 @@ What is your primary goal?
 **Requirements**: Always start Y-axis at zero
 
 ```python
-# Vertical bar (short labels)
-px.bar(df, x="category", y="value")
-
-# Horizontal bar (long labels or many categories)
+# Horizontal bar (preferred default)
 px.bar(df, x="value", y="category", orientation="h")
+
+# Vertical bar (only for 4-6 categories with short labels)
+px.bar(df, x="category", y="value")
 ```
 
 ### Grouped Bar Chart
