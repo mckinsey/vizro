@@ -1,47 +1,60 @@
 """Dev app to try things out."""
 
-from typing import Literal
-
-import dash_mantine_components as dmc
 import vizro.models as vm
+import vizro.plotly.express as px
+
 from vizro import Vizro
-from vizro.models import VizroBaseModel
-from vizro.models._models_utils import _log_call
+
+df = px.data.iris()
+
+page_1 = vm.Page(
+    title="Page One",
+    layout=vm.Flex(),
+    components=[vm.Card(text="placeholder")],
+)
 
 
-class Timeline(VizroBaseModel):
-    """Based on dmc.Timeline component."""
+page_two = vm.Page(
+    title="Page Two",
+    controls=[vm.Filter(column="species")],
+    components=[
+        vm.Graph(figure=px.histogram(df, x="sepal_length")),
+    ],
+)
 
-    type: Literal["timeline"] = "timeline"
-
-    @_log_call
-    def build(self):
-        """Return dmc.Timeline component."""
-        return dmc.Timeline(
-            active=1,
-            children=[
-                dmc.TimelineItem(
-                    title="Step one",
-                    children=dmc.Text("First event description.", c="dimmed", size="sm"),
-                ),
-                dmc.TimelineItem(
-                    title="Step two",
-                    children=dmc.Text("Second event description.", c="dimmed", size="sm"),
-                ),
-                dmc.TimelineItem(
-                    title="Step three",
-                    lineVariant="dashed",
-                    children=dmc.Text("Third event (dashed line).", c="dimmed", size="sm"),
-                ),
-            ],
+page_three = vm.Page(
+    title="Page Three",
+    controls=[
+        vm.Filter(
+            column="species",
+            # visible=False,
         )
+    ],
+    components=[
+        vm.Graph(figure=px.histogram(df, x="sepal_length")),
+    ],
+)
 
-
-vm.Page.add_type("components", Timeline)
+navigation = vm.Navigation(
+    nav_selector=vm.NavBar(
+        # pages=["Page One", "Page Two", "Page Three"],
+        # pages={
+        #     "First": ["Page One", "Page Two"],
+        #     "Second": ["Page Three"]
+        # },
+        items=[
+            vm.NavLink(pages=["Page One", "Page Two"], label="First Tab"),
+            vm.NavLink(pages=["Page Three"], label="Second Tab"),
+        ],
+        position="top",
+    ),
+)
 
 dashboard = vm.Dashboard(
-    pages=[vm.Page(title="Embed dmc component", components=[Timeline()])],
+    pages=[page_1, page_two, page_three],
+    navigation=navigation,
+    title="QB",
 )
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=True)
