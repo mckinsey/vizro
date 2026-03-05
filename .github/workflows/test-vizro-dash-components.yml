@@ -10,12 +10,8 @@ defaults:
 on:
   push:
     branches: [main]
-    paths:
-      - "vizro-dash-components/**"
   pull_request:
     branches:
-    paths:
-      - "vizro-dash-components/**"
 
 env:
   PYTHONUNBUFFERED: 1
