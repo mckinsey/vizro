@@ -18,7 +18,7 @@ from vizro.models.types import capture
 #    - See whether we should introduce hideNotification so that users can hide it before showing explicit notification.
 #      Or to do so even before every show_notification action. With it hiding the progress would be automatically solved
 #  DONE - Refactor and merge validators in types.
-#  Enable providing a second argument of exception containing results.
+#  DONE - Enable providing a second argument of exception containing results.
 #  Test by assigning a variant="warning" notification to the "progress" key.
 #  Pass through todos and done or open question.
 #  See ticket issue and cover other edge cases if any.
@@ -360,18 +360,18 @@ page_4 = vm.Page(
                                     notifications={
                                         "progress": va.show_notification(
                                             id=f"{pre}_progress_2",
-                                            text="Running custom pipeline. Exception will happen: {{switch_successfulness}}.",
+                                            text="Running custom pipeline.\n\nException will happen: {{switch_successfulness}}.",
                                             variant="progress",
                                         ),
                                         "success": va.update_notification(
                                             notification=f"{pre}_progress_2",
-                                            text="Custom pipeline completed! {{result}}",
+                                            text="Custom pipeline completed!\n\n{{result}}",
                                             variant="success",
                                         ),
                                         "error": va.update_notification(
                                             notification=f"{pre}_progress_2",
                                             # TODO OQ: Should we use {{error_msg}}, {{result}} or something else here?
-                                            text="Custom pipeline failed! Exception: {{error_msg}}",
+                                            text="Custom pipeline failed! Exception:\n\n{{error_msg}}",
                                             variant="error",
                                         ),
                                     },
@@ -417,7 +417,7 @@ page_4 = vm.Page(
                                         ),
                                         "error": va.update_notification(
                                             notification=f"{pre}_progress_1",
-                                            text="Export failed! {{error_msg}}",
+                                            text="Export failed!\n\n{{error_msg}}",
                                             variant="error",
                                         ),
                                     }
@@ -466,30 +466,30 @@ page_5 = vm.Page(
                                     notifications={
                                         "progress": va.show_notification(
                                             id=f"{pre}_progress_2",
-                                            text="Running custom pipeline.\n\n Exception will happen: {{switch_successfulness}}.\n\n Exit path: {{exit_path_slider}}",
+                                            text="Running custom pipeline.\n\nException will happen: {{switch_successfulness}}.\n\nExit path: {{exit_path_slider}}",
                                             variant="progress",
                                         ),
                                         # TODO OQ: We might need to introduce the hide_notification(notification=modelId).
                                         #  Could be useful if users don't want success message after progress for example.
                                         "success": va.update_notification(
                                             notification=f"{pre}_progress_2",
-                                            text="Custom pipeline completed! {{result}}",
+                                            text="Custom pipeline completed!\n\n{{result}}",
                                             variant="success",
                                         ),
                                         "my_custom_success": va.update_notification(
                                             notification=f"{pre}_progress_2",
-                                            text="Pipeline completed, neither success nor failure! {{result}}",
+                                            text="Pipeline completed, neither success nor failure!\n\n{{result}}",
                                             variant="warning",
                                             title="My warning",
                                         ),
                                         "error": va.update_notification(
                                             notification=f"{pre}_progress_2",
-                                            text="Custom pipeline failed! Exception: {{error_msg}} {{result}}",
+                                            text="Custom pipeline failed!\n\nException: {{error_msg}}\n\n{{result}}",
                                             variant="error",
                                         ),
                                         "my_custom_err": va.update_notification(
                                             notification=f"{pre}_progress_2",
-                                            text="Custom pipeline failed! \n\n Error Message: {{error_msg}} \n\n {{result}}",
+                                            text="Custom pipeline failed!\n\nError Message: {{error_msg}}\n\n{{result}}",
                                             variant="error",
                                             title="My custom error",
                                         ),
@@ -576,11 +576,11 @@ page_6 = vm.Page(
                                     ),
                                     outputs=f"{pre}_text",
                                     notifications={
-                                        "progress": "Running custom pipeline.\n\n Exception will happen: {{switch_successfulness}}.\n\n Exit path: {{exit_path_slider}}",
-                                        "success": "Custom pipeline completed! {{result}}",
-                                        "my_custom_success": "Pipeline completed, neither success nor failure! {{result}}",
-                                        "error": "Custom pipeline failed! \n\n Exception: {{error_msg}}",
-                                        "my_custom_err": "Custom pipeline failed! \n\n Error Message: {{error_msg}} \n\n {{result}}",
+                                        "progress": "Running custom pipeline.\n\nException will happen: {{switch_successfulness}}.\n\nExit path: {{exit_path_slider}}",
+                                        "success": "Custom pipeline completed!\n\n{{result}}",
+                                        "my_custom_success": "Pipeline completed, neither success nor failure!\n\n{{result}}",
+                                        "error": "Custom pipeline failed!\n\nException: {{error_msg}}",
+                                        "my_custom_err": "Custom pipeline failed!\n\nError Message: {{error_msg}}\n\n{{result}}",
                                     },
                                 )
                             ],
