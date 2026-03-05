@@ -54,6 +54,8 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     [:sparkles:Cheatsheet:sparkles:](pages/cheatsheet/cheatsheet.html)
 
+    [:sparkles:Components Compendium:sparkles:](pages/components_compendium/index.html)
+
 - :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Get involved__
 
     ---
