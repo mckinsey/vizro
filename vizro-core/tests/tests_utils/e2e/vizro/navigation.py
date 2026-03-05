@@ -52,7 +52,7 @@ def accordion_select(driver, accordion_name):
 
 def page_select(driver, page_name, graph_check=True, page_path=None):
     """Selecting page and checking if it has proper title."""
-    page_path = page_path if page_path else f"/{page_name}"
+    page_path = page_path or f"/{page_name}"
     driver.multiple_click(f"a[href='{page_path}']", 1)
 
     driver.wait_for_contains_text(page_title_path(), page_name)

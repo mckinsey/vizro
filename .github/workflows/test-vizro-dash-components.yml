@@ -1,0 +1,57 @@
+name: Tests for Vizro Dash Components
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: vizro-dash-components
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "vizro-dash-components/**"
+  pull_request:
+    branches:
+    paths:
+      - "vizro-dash-components/**"
+
+env:
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  test-vizro-dash-components:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Install npm dependencies
+        # --legacy-peer-deps needed because react-markdown@4 declares peer dep on react@^15||^16
+        # but works fine with react@18.
+        run: npm ci --legacy-peer-deps
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Show dependency tree
+        run: hatch run pip tree
+
+      - name: Generate Python components from TypeScript source
+        # Generated Python code and JS bundles are gitignored, so we must rebuild before testing.
+        run: hatch run generate-components
+
+      - name: Run tests
+        run: hatch run test

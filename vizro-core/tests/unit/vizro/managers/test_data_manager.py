@@ -65,7 +65,7 @@ class TestLoad:
         assert loaded_data is not data()
 
     def test_dynamic_lambda(self):
-        data = lambda: make_fixed_data()  # noqa: E731
+        data = make_fixed_data
         data_manager["data"] = data
         loaded_data = data_manager["data"].load()
         assert_frame_equal(loaded_data, data())
@@ -209,7 +209,7 @@ class RandomDataWithArgs:
         return make_random_data_with_args(label)
 
 
-make_random_data_lambda = lambda: make_random_data()  # noqa: E731
+make_random_data_lambda = make_random_data
 
 make_random_data_partial = partial(make_random_data)
 
