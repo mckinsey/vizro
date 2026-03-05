@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import itertools
+import warnings
 from typing import Annotated, Literal, cast
 
 import dash_bootstrap_components as dbc
@@ -40,9 +41,10 @@ class NavLink(VizroBaseModel):
         self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
 
         if self.icon and self._nav_position == "top":
-            raise ValueError(
-                'You cannot use icons when the `vm.NavBar` has `position="top"`. '
-                'Icons are only supported for `position="left"`.'
+            warnings.warn(
+                'Using the `icon` argument when `vm.NavBar(position="top")` is set is not currently supported. '
+                'Icons are only supported for `position="left"`.',
+                UserWarning,
             )
 
     @_log_call
