@@ -1,349 +1,60 @@
-import numpy as np
-import pandas as pd
+"""Dev app to try things out."""
+
 import vizro.models as vm
 import vizro.plotly.express as px
+
 from vizro import Vizro
-from vizro.managers import data_manager
 
 df = px.data.iris()
-df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq="D")
-df["is_setosa"] = df["species"] == "setosa"
-
-data_manager["static_df"] = df
-data_manager["dynamic_df"] = lambda number_of_points=10: df.head(number_of_points)
-
-
-SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
 
 page_1 = vm.Page(
-    title="Single/Multi static DD",
+    title="Page One",
+    layout=vm.Flex(),
+    components=[vm.Card(text="placeholder")],
+)
+
+
+page_two = vm.Page(
+    title="Page Two",
+    controls=[vm.Filter(column="species")],
     components=[
-        vm.Graph(
-            figure=px.scatter(
-                "static_df", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
-            )
-        ),
-        vm.Container(
-            title="Container title",
-            components=[
-                vm.Graph(
-                    figure=px.scatter(
-                        "static_df",
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        color_discrete_map=SPECIES_COLORS,
-                    )
-                ),
-            ],
-            controls=[
-                vm.Filter(column="species", selector=vm.Dropdown(multi=True)),
-            ],
-        ),
-    ],
-    controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="plain")),
-        vm.Filter(column="species", selector=vm.Dropdown(multi=False)),
+        vm.Graph(figure=px.histogram(df, x="sepal_length")),
     ],
 )
 
-page_2 = vm.Page(
-    title="Single/Multi dynamic DD",
-    components=[
-        vm.Graph(
-            id="graph_2",
-            figure=px.scatter(
-                "dynamic_df", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
-            ),
+page_three = vm.Page(
+    title="Page Three",
+    controls=[
+        vm.Filter(
+            column="species",
+            # visible=False,
         )
     ],
-    controls=[
-        # TODO-REVIEWER: To a bug with the standard _build_dynamic_placeholder:
-        #  1. Replace vm.Dropdown._build_dynamic_placeholder with vm.Checklist._build_dynamic_placeholder implementation
-        #  2. Run the app and open page_2
-        #  3. Select values ["setosa", "versicolor"] in the multi Dropdown, and "versicolor" in the single Dropdown
-        #  4. Refresh the page.
-        vm.Filter(column="species", selector=vm.Dropdown(multi=True)),
-        vm.Filter(column="species", selector=vm.Dropdown(multi=False)),
-        vm.Parameter(
-            targets=["graph_2.data_frame.number_of_points"], selector=vm.Slider(min=10, max=150, step=20, value=10)
-        ),
+    components=[
+        vm.Graph(figure=px.histogram(df, x="sepal_length")),
     ],
 )
 
-
-long_df = pd.DataFrame(
-    {
-        # TODO-UI: By setting max width of the Dropdown seems like option height is automatically adjusted.
-        "long_string": [
-            # List of 100 strings with variable number (1 -> 101) of characters "A"(95%) or space " "(5%).
-            "Value " + "".join(" " if np.random.rand() < 0.05 else "A" for _ in range(length))
-            for length in range(1, 101)
+navigation = vm.Navigation(
+    nav_selector=vm.NavBar(
+        # pages=["Page One", "Page Two", "Page Three"],
+        # pages={
+        #     "First": ["Page One", "Page Two"],
+        #     "Second": ["Page Three"]
+        # },
+        items=[
+            vm.NavLink(pages=["Page One", "Page Two"], label="First Tab"),
+            vm.NavLink(pages=["Page Three"], label="Second Tab"),
         ],
-        "x": range(1, 101),
-        "y": range(101, 201),
-    }
+        position="top",
+    ),
 )
 
-page_3 = vm.Page(
-    title="Long values in Dropdown",
-    components=[vm.Graph(figure=px.scatter(long_df, x="x", y="y"))],
-    controls=[vm.Filter(column="long_string")],
+dashboard = vm.Dashboard(
+    pages=[page_1, page_two, page_three],
+    navigation=navigation,
+    title="QB",
 )
 
-page_4 = vm.Page(
-    title="All dynamic selectors",
-    components=[
-        vm.Container(
-            controls=[
-                vm.Filter(column="species", selector=vm.RadioItems(title="RadioItems Single")),
-                vm.Filter(column="species", selector=vm.Dropdown(multi=False, title="Dropdown Single")),
-                vm.Filter(column="species", selector=vm.Dropdown(multi=True, title="Dropdown Multi")),
-                vm.Filter(column="species", selector=vm.Checklist(title="Checklist Multi")),
-                vm.Filter(column="is_setosa", selector=vm.Switch(title="Switch Single")),
-                vm.Filter(column="sepal_width", selector=vm.Slider(title="Slider Single")),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(title="Range Slider")),
-                vm.Filter(column="date_column", selector=vm.DatePicker(range=False, title="Single Dropdown")),
-                vm.Filter(column="date_column", selector=vm.DatePicker(range=True, title="Range DatePicker")),
-            ],
-            components=[
-                vm.Graph(
-                    id="graph_4",
-                    figure=px.scatter(
-                        "dynamic_df",
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        color_discrete_map=SPECIES_COLORS,
-                    ),
-                )
-            ],
-        )
-    ],
-    controls=[
-        vm.Parameter(
-            targets=["graph_4.data_frame.number_of_points"],
-            selector=vm.Slider(min=10, max=150, step=20, value=150, title="DataFrame Parameter"),
-        ),
-        vm.Filter(column="species", selector=vm.RadioItems(title="RadioItems Single")),
-        vm.Filter(column="species", selector=vm.Dropdown(multi=False, title="Dropdown Single")),
-        vm.Filter(column="species", selector=vm.Dropdown(multi=True, title="Dropdown Multi")),
-        vm.Filter(column="species", selector=vm.Checklist(title="Checklist Multi")),
-        vm.Filter(column="is_setosa", selector=vm.Switch(title="Switch Single")),
-        vm.Filter(column="sepal_width", selector=vm.Slider(title="Slider Single")),
-        vm.Filter(column="sepal_length", selector=vm.RangeSlider(title="Range Slider")),
-        vm.Filter(column="date_column", selector=vm.DatePicker(range=False, title="Single Dropdown")),
-        vm.Filter(column="date_column", selector=vm.DatePicker(range=True, title="Range DatePicker")),
-    ],
-)
-
-page_5 = vm.Page(
-    title="Sliders stress-test",
-    components=[
-        vm.Container(
-            controls=[
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(title="No Config")),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(min=0, max=10, title="Min/Max")),
-                vm.Filter(
-                    column="sepal_length", selector=vm.RangeSlider(min=0.13, max=10.13, title="Min-flot/Max-float")
-                ),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(min=4.3, max=7.9, step=1, title="Step")),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(step=0.5, title="Step-float")),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(marks={5: "5", 6.1: "6.1", 7.2: "7.2"}, title="Marks"),
-                ),
-                vm.Filter(
-                    column="sepal_length", selector=vm.RangeSlider(min=0, max=10, step=0.5, title="Min/Max/Step-float")
-                ),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(min=0.13, max=10.13, step=1, title="Min-float/Max-float/Step"),
-                ),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(min=0.13, max=10.13, step=0.5, title="Min-float/Max-float/Step-float"),
-                ),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(min=0, max=10, marks={0: "0", 5: "5", 10: "10"}, title="Min/Max/Marks"),
-                ),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(
-                        min=0.13,
-                        max=10.13,
-                        marks={0.13: "0.13", 5.13: "5.13", 10.13: "10.13"},
-                        title="Min-float/Max-float/Marks-float",
-                    ),
-                ),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(
-                        min=0, max=10, step=1, marks={0: "0", 5: "5", 10: "10"}, title="Min/Max/Step/Marks"
-                    ),
-                ),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(
-                        min=0.13,
-                        max=10.13,
-                        step=0.5,
-                        marks={0.13: "0.13", 5.13: "5.13", 10.13: "10.13"},
-                        title="Min-float/Max-float/Step-float/Marks-float",
-                    ),
-                ),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(marks=None, title="Marks=None")),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(step=1, marks=None, title="Step/Marks=None")),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(
-                        min=0.13,
-                        max=10.13,
-                        step=0.5,
-                        marks=None,
-                        title="Min-float/Max-float/Step-float/Marks=None",
-                    ),
-                ),
-            ],
-            components=[
-                vm.Graph(
-                    id="graph_5",
-                    figure=px.scatter(
-                        "dynamic_df",
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        color_discrete_map=SPECIES_COLORS,
-                    ),
-                )
-            ],
-        )
-    ],
-    controls=[
-        vm.Parameter(
-            targets=["graph_5.data_frame.number_of_points"],
-            selector=vm.Slider(min=10, max=150, step=10, title="DataFrame Parameter"),
-        ),
-        vm.Filter(column="sepal_length", selector=vm.Slider(title="No Config")),
-        vm.Filter(column="sepal_length", selector=vm.Slider(min=0, max=10, title="Min/Max")),
-        vm.Filter(column="sepal_length", selector=vm.Slider(min=0.13, max=10.13, title="Min-flot/Max-float")),
-        vm.Filter(column="sepal_length", selector=vm.Slider(step=1, title="Step")),
-        vm.Filter(column="sepal_length", selector=vm.Slider(step=0.5, title="Step-float")),
-        vm.Filter(column="sepal_length", selector=vm.Slider(marks={5: "5", 6.1: "6.1", 7.2: "7.2"}, title="Marks")),
-        vm.Filter(column="sepal_length", selector=vm.Slider(min=0, max=10, step=0.5, title="Min/Max/Step-float")),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(min=0.13, max=10.13, step=1, title="Min-float/Max-float/Step"),
-        ),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(min=0.13, max=10.13, step=0.5, title="Min-float/Max-float/Step-float"),
-        ),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(min=0, max=10, marks={0: "0", 5: "5", 10: "10"}, title="Min/Max/Marks"),
-        ),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(
-                min=0.13,
-                max=10.13,
-                marks={0.13: "0.13", 5.13: "5.13", 10.13: "10.13"},
-                title="Min-float/Max-float/Marks-float",
-            ),
-        ),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(min=0, max=10, step=1, marks={0: "0", 5: "5", 10: "10"}, title="Min/Max/Step/Marks"),
-        ),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(
-                min=0.13,
-                max=10.13,
-                step=0.5,
-                marks={0.13: "0.13", 5.13: "5.13", 10.13: "10.13"},
-                title="Min-float/Max-float/Step-float/Marks-float",
-            ),
-        ),
-        vm.Filter(column="sepal_length", selector=vm.Slider(marks=None, title="Marks=None")),
-        vm.Filter(column="sepal_length", selector=vm.Slider(step=1, marks=None, title="Step/Marks=None")),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(
-                min=0.13,
-                max=10.13,
-                step=0.5,
-                marks=None,
-                title="Min-float/Max-float/Step-float/Marks=None",
-            ),
-        ),
-    ],
-)
-
-
-page_6 = vm.Page(
-    title="Dropdown variants",
-    components=[
-        vm.Container(
-            controls=[
-                vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="plain", title="Single Plain")),
-                vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="filled", title="Single Filled")),
-                vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="plain", title="Multi Plain")),
-                vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="filled", title="Multi Filled")),
-                vm.Filter(
-                    column="long_string",
-                    selector=vm.Dropdown(multi=False, variant="plain", title="Long values - Single Plain"),
-                ),
-                vm.Filter(
-                    column="long_string",
-                    selector=vm.Dropdown(multi=False, variant="filled", title="Long values - Single Filled"),
-                ),
-                vm.Filter(
-                    column="long_string",
-                    selector=vm.Dropdown(multi=True, variant="plain", title="Long values - Multi Plain"),
-                ),
-                vm.Filter(
-                    column="long_string",
-                    selector=vm.Dropdown(multi=True, variant="filled", title="Long values - Multi Filled"),
-                ),
-            ],
-            components=[
-                vm.Graph(
-                    figure=px.scatter(
-                        "static_df",
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        color_discrete_map=SPECIES_COLORS,
-                    ),
-                ),
-                vm.Graph(figure=px.scatter(long_df, x="x", y="y")),
-            ],
-        )
-    ],
-    controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="plain", title="Plain")),
-        vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="filled", title="Filled")),
-        vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="plain", title="Plain")),
-        vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="filled", title="Filled")),
-        vm.Filter(
-            column="long_string", selector=vm.Dropdown(multi=False, variant="plain", title="Long values - Single Plain")
-        ),
-        vm.Filter(
-            column="long_string",
-            selector=vm.Dropdown(multi=False, variant="filled", title="Long values - Single Filled"),
-        ),
-        vm.Filter(
-            column="long_string", selector=vm.Dropdown(multi=True, variant="plain", title="Long values - Multi Plain")
-        ),
-        vm.Filter(
-            column="long_string", selector=vm.Dropdown(multi=True, variant="filled", title="Long values - Multi Filled")
-        ),
-    ],
-)
-
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6])
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=True)
