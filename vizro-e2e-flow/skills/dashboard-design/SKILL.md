@@ -230,16 +230,23 @@ Before proceeding to Step 3:
 - Consistent entity coloring across charts
 - Brand requirements
 
-**Vizro Semantic Colors** (separate from chart palette — use sparingly):
+**Vizro Semantic Colors** — two palettes available, pick one and use consistently:
 
 ```python
-success_color = "#26BF56"  # Green - positive
-warning_color = "#FFC107"  # Orange - caution
-error_color = "#E84A3A"  # Red - negative
-neutral_color = "gray"  # Inactive
+# Option A: Teal/Green palette (softer, recommended for chart-heavy dashboards)
+positive_color = "#00B5A9"  # Darkgreen-500
+negative_color = "#EA5748"  # Red
+warning_color = "#FFC107"  # Yellow
+sum_color = "#3E495B"  # Grey
+
+# Option B: Blue palette (bolder, recommended when positive = primary brand blue)
+positive_color = "#097DFE"  # Blue-500
+negative_color = "#EA5748"  # Red
+warning_color = "#FFC107"  # Yellow
+sum_color = "#3E495B"  # Grey
 ```
 
-**IMPORTANT**: Semantic colors are intentionally bold and high-contrast. Only use them for notifications, KPI status indicators, error highlights, and similar alert-like elements. NEVER use semantic colors in charts (bar charts, line charts, etc.) — they are too visually aggressive for data visualization and will make dashboards look garish. For charts, always choose from Vizro's built-in colorblind-safe palette colors.
+Semantic colors can be used in charts where the meaning is inherent to the visualization (e.g., waterfall charts for increase/decrease, bar charts showing profit vs loss). Use them for KPI status indicators, notifications, and any chart where positive/negative semantics are core to the message.
 
 ### KPI Card Pattern
 

@@ -401,15 +401,27 @@ palettes.diverging  # Diverging pink-to-blue scale
 
 ### Semantic Color Usage
 
-These colors are **separate from the chart palette** and intentionally bold. Use them ONLY for status indicators, notifications, KPI highlights, and error states — NOT in charts or data visualizations where they would be too visually aggressive.
+Two palettes available — pick one and use consistently across the dashboard:
 
-| Meaning           | Color  | Hex Code  |
-| ----------------- | ------ | --------- |
-| Positive/Success  | Green  | `#26BF56` |
-| Warning/Caution   | Orange | `#FFC107` |
-| Error/Negative    | Red    | `#E84A3A` |
-| Neutral/Info      | Blue   | `#097DFE` |
-| Inactive/Disabled | Gray   | `gray`    |
+**Option A: Teal/Green palette** (softer, recommended for chart-heavy dashboards):
+
+| Meaning          | Color     | Hex Code  |
+| ---------------- | --------- | --------- |
+| Positive/Success | Darkgreen | `#00B5A9` |
+| Negative/Error   | Red       | `#EA5748` |
+| Warning/Caution  | Yellow    | `#FFC107` |
+| Sum/Neutral      | Grey      | `#3E495B` |
+
+**Option B: Blue palette** (bolder, recommended when positive = primary brand blue):
+
+| Meaning          | Color  | Hex Code  |
+| ---------------- | ------ | --------- |
+| Positive/Success | Blue   | `#097DFE` |
+| Negative/Error   | Red    | `#EA5748` |
+| Warning/Caution  | Yellow | `#FFC107` |
+| Sum/Neutral      | Grey   | `#3E495B` |
+
+Semantic colors can be used in charts where positive/negative meaning is inherent to the visualization (e.g., waterfall charts for increase/decrease, bar charts showing profit vs loss). Also use them for KPI status indicators, notifications, and error states.
 
 ### Color Palette Rules
 
