@@ -71,13 +71,13 @@ class TestNavLinkPreBuildMethod:
         assert nav_link._nav_selector.pages == {group: [page_1_id, page_2_id] for group in pages_as_dict}
         assert nav_link._nav_position == "left"
 
-    def test_nav_link_icon_with_top_nav_position(self, page_1_id):
+    def test_nav_link_warning_raised_icon_top_nav_position(self, page_1_id):
         nav_link = vm.NavLink(pages=[page_1_id], label="Foo", icon="home")
         nav_link._nav_position = "top"
 
         with pytest.raises(
-            ValueError,
-            match=r'You cannot use icons when the `vm.NavBar` has `position="top"`. '
+            UserWarning,
+            match=r'Using the `icon` argument when `vm.NavBar\(position="top"\)` is set is not currently supported. '
             'Icons are only supported for `position="left"`.',
         ):
             nav_link.pre_build()

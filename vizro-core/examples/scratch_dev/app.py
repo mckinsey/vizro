@@ -37,12 +37,9 @@ page_three = vm.Page(
 
 navigation = vm.Navigation(
     nav_selector=vm.NavBar(
-        # pages=["Page One", "Page Two", "Page Three"],
-        # pages={
-        #     "First": ["Page One", "Page Two"],
-        #     "Second": ["Page Three"]
-        # },
         items=[
+            # This raises a warning:
+            # vm.NavLink(pages=["Page One", "Page Two"], label="First Tab", icon="home"),
             vm.NavLink(pages=["Page One", "Page Two"], label="First Tab"),
             vm.NavLink(pages=["Page Three"], label="Second Tab"),
         ],
