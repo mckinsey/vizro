@@ -1,6 +1,6 @@
 {
   "name": "vizro-dash-components",
-  "version": "0.1.0-dev0",
+  "version": "0.1.0",
   "description": "Vizro Dash Components are used by the Vizro framework but can be used in a pure Dash app",
   "main": "index.ts",
   "scripts": {
