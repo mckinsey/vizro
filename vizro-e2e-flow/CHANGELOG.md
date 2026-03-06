@@ -1,4 +1,10 @@
-<a id='changelog-0.1.2'></a>
+<a id='changelog-0.1.3'></a>
+
+# 0.1.3 — 2026-03-04
+
+## Changed
+
+- Update color references in dashboard-design skill to align with Vizro 0.1.52 colorblind-safe palette. <a id='changelog-0.1.2'></a>
 
 # 0.1.2 — 2026-02-17
 

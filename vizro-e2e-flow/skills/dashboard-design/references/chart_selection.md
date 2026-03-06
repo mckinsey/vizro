@@ -41,7 +41,8 @@ What is your primary goal?
 
 - 3-15 categories
 - Significant differences between values
-- Category labels are short (vertical) or long (horizontal)
+
+**Prefer horizontal orientation (`orientation='h'`) by default** — horizontal bars prevent bars from appearing too wide and avoid crowded tick text on the axis.
 
 **Avoid when**:
 
@@ -51,11 +52,11 @@ What is your primary goal?
 **Requirements**: Always start Y-axis at zero
 
 ```python
-# Vertical bar (short labels)
-px.bar(df, x="category", y="value")
-
-# Horizontal bar (long labels or many categories)
+# Horizontal bar (preferred default)
 px.bar(df, x="value", y="category", orientation="h")
+
+# Vertical bar (only for 4-6 categories with short labels)
+px.bar(df, x="category", y="value")
 ```
 
 ### Grouped Bar Chart
@@ -373,32 +374,54 @@ Custom charts are powerful. They let you:
 
 ### Vizro Core Color Palette
 
-When colors must be specified (semantic meaning, brand, consistency):
+When colors must be specified (semantic meaning, brand, consistency), use `vizro.themes`:
 
 ```python
-vizro_colors = [
-    "#00b4ff",  # Bright blue
-    "#ff9222",  # Orange
-    "#3949ab",  # Deep blue
-    "#ff5267",  # Pink/red
-    "#08bdba",  # Teal
-    "#fdc935",  # Yellow
-    "#689f38",  # Green
-    "#976fd1",  # Purple
-    "#f781bf",  # Light pink
-    "#52733e",  # Olive
-]
+from vizro.themes import colors, palettes
+
+# Access individual colors
+colors.blue  # "#097DFE"
+colors.dark_purple  # "#6F39E3"
+colors.turquoise  # "#05D0F0"
+colors.dark_green  # "#0F766E"
+colors.light_purple  # "#8C8DE9"
+colors.light_green  # "#11B883"
+colors.light_pink  # "#E77EC2"
+colors.dark_pink  # "#C84189"
+colors.yellow  # "#C0CA33"
+colors.gray  # "#3E495B"
+
+# Access full palettes
+palettes.qualitative  # 10-color categorical palette (colors above)
+palettes.sequential_blue  # Sequential blue scale (9 steps)
+palettes.sequential_green  # Sequential green scale (9 steps)
+palettes.sequential_pink  # Sequential pink scale (9 steps)
+palettes.diverging  # Diverging pink-to-blue scale
 ```
 
 ### Semantic Color Usage
 
-| Meaning           | Color    | Hex Code  |
-| ----------------- | -------- | --------- |
-| Positive/Success  | Green    | `#689f38` |
-| Warning/Caution   | Orange   | `#ff9222` |
-| Error/Negative    | Pink/Red | `#ff5267` |
-| Neutral/Info      | Blue     | `#00b4ff` |
-| Inactive/Disabled | Gray     | `gray`    |
+Two palettes available — pick one and use consistently across the dashboard:
+
+**Option A: Teal/Green palette** (softer, recommended for chart-heavy dashboards):
+
+| Meaning          | Color     | Hex Code  |
+| ---------------- | --------- | --------- |
+| Positive/Success | Darkgreen | `#00B5A9` |
+| Negative/Error   | Red       | `#EA5748` |
+| Warning/Caution  | Yellow    | `#FFC107` |
+| Sum/Neutral      | Grey      | `#3E495B` |
+
+**Option B: Blue palette** (bolder, recommended when positive = primary brand blue):
+
+| Meaning          | Color  | Hex Code  |
+| ---------------- | ------ | --------- |
+| Positive/Success | Blue   | `#097DFE` |
+| Negative/Error   | Red    | `#EA5748` |
+| Warning/Caution  | Yellow | `#FFC107` |
+| Sum/Neutral      | Grey   | `#3E495B` |
+
+Semantic colors can be used in charts where positive/negative meaning is inherent to the visualization (e.g., waterfall charts for increase/decrease, bar charts showing profit vs loss). Also use them for KPI status indicators, notifications, and error states.
 
 ### Color Palette Rules
 
@@ -411,14 +434,14 @@ vizro_colors = [
 
 **Sequential Scales** (continuous data):
 
-- Light to dark single hue
-- Derive from one Vizro core color
-- 3-7 steps with sufficient contrast
+- Use built-in palettes: `palettes.sequential_blue`, `palettes.sequential_green`, `palettes.sequential_pink`, `palettes.sequential_purple`, `palettes.sequential_turquoise`, `palettes.sequential_yellow`, `palettes.sequential_gray`
+- Pass via `color_continuous_scale` parameter
+- `palettes.sequential` is an alias for `palettes.sequential_blue`
 
 **Diverging Scales** (data with midpoint):
 
-- Two colors meeting at neutral
-- Example: `#ff5267` (negative) ← gray → `#689f38` (positive)
+- Use `palettes.diverging` (pink-to-blue via gray midpoint)
+- Pass via `color_continuous_scale` with `color_continuous_midpoint=0`
 
 ### Color Accessibility
 
