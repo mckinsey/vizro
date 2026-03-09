@@ -2,7 +2,6 @@ import pandas as pd
 import pytest
 from langchain_core.messages import HumanMessage
 from pydantic import ValidationError
-
 from vizro_ai.dashboard._graph.dashboard_creation import GraphState
 
 
