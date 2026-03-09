@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Updated default waterfall increase/decrease/total colors and KPI positive/negative indicator colors, and added these semantic colors to the theme palettes. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Updated default waterfall increase/decrease/total colors and KPI positive/negative indicator colors, and added these semantic colors to the theme palettes. ([#1650](https://github.com/mckinsey/vizro/pull/1650))
 
 
 <!--
