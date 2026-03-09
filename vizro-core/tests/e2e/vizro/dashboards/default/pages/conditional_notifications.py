@@ -11,12 +11,16 @@ iris = px.data.iris()
 @capture("action")
 def notifications_pipeline(exit_path_slider) -> str:
     match exit_path_slider:
+        # error
         case 1:
             raise Exception(cnst.CONDITIONAL_NOTIFICATION_CUSTOM_ERROR_MSG)
+        # success
         case 2:
             return "", ("success", cnst.CONDITIONAL_NOTIFICATION_CUSTOM_SUCCESS_MSG)
+        # info
         case 3:
             return "", ("my_info", cnst.CONDITIONAL_NOTIFICATION_CUSTOM_INFO_MSG)
+        # warning
         case 4:
             return "", ("my_warning", cnst.CONDITIONAL_NOTIFICATION_CUSTOM_WARNING_MSG)
 
@@ -44,7 +48,8 @@ conditional_notifications_page = vm.Page(
             id=cnst.CONDITIONAL_NOTIFICATION_ERROR_BUTTON,
             actions=[
                 vm.Action(
-                    function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID), outputs="text"
+                    function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
+                    outputs="text",
                 )
             ],
         ),
