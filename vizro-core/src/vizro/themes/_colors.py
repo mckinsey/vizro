@@ -81,11 +81,12 @@ colors = SimpleNamespace(
     transparent="rgba(0, 0, 0, 0)",
     white="#FFFFFF",
     black="#000000",
-    increase="#097DFE", # Equivalent to blue/blue-500
-    increase_secondary="#00B5A9", # Not equivalent to any color in the palette
-    decrease="#EA5748", # Not equivalent to any color in the palette
-    neutral="#3E495B", # Equivalent to gray/gray-700
-    warning="#FFC107", # Not equivalent to any color in the palette
+    increase="#097DFE",  # Equivalent to blue/blue-500
+    decrease="#EA5748",  # Not equivalent to any color in the palette, same as warning
+    neutral="#3E495B",  # Equivalent to gray/gray-700
+    success="#00B5A9",  # Not equivalent to any color in the palette
+    warning="#FFC107",  # Not equivalent to any color in the palette, same as decrease
+    error="#EA5748",  # Not equivalent to any color in the palette
 )
 """Colors used by palettes, plus additional colors.
 

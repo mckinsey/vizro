@@ -78,19 +78,19 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .card-kpi .color-pos.card-footer {
-  color: var(--bs-green);
+  color: var(--bs-success);
 }
 
 .card-kpi .color-neg.card-footer {
-  color: var(--bs-red);
+  color: var(--bs-danger);
 }
 
 .card-kpi:has(.color-pos) {
-  border-left: 4px solid var(--bs-green);
+  border-left: 4px solid var(--bs-success);
 }
 
 .card-kpi:has(.color-neg) {
-  border-left: 4px solid var(--bs-red);
+  border-left: 4px solid var(--bs-danger);
 }
 
 .is-clickable > .card-kpi {
