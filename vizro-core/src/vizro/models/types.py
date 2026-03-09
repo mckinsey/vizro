@@ -101,7 +101,6 @@ def _coerce_to_list(value: Any) -> Any:
     return [value]
 
 
-# TODO PP NOW: Test whether everything works if progress=None, or error=None, or custom_key=None.
 def _normalize_action_notifications(value: Any) -> Any:
     """Normalize action notifications dict.
 
@@ -116,12 +115,12 @@ def _normalize_action_notifications(value: Any) -> Any:
     """
     from vizro.actions import show_notification, update_notification
 
-    # If present, ensure that the "progress" is a notification action and not a string.
-    if isinstance(progress := value.get("progress"), str):
-        progress = value["progress"] = show_notification(text=progress, variant="progress")
-
     # Default "error" to string first. It will be converted to notificaiton action below.
     value.setdefault("error", "Action failed.")
+
+    # If present, ensure that the "progress" is a notification action and not a string to extract its ID.
+    if isinstance(progress := value.get("progress"), str):
+        progress = value["progress"] = show_notification(text=progress, variant="progress")
 
     # Convert all string notifications to actions and set _is_conditional=True.
     for notif_key, notif_value in value.items():
@@ -771,12 +770,6 @@ OutputsType = Annotated[list[str] | dict[str, str], BeforeValidator(_coerce_to_l
 a list of strings, or a dictionary mapping strings to strings. Each output can be specified as
 `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`."""
 
-
-# TODO OQ: What to do with AfterValidator, discriminator and the description here?
-#  When type is defined as "dict[str, str | show_notification | update_notification | None]", this test
-#  test_to_python_complete_dashboard raises
-#  E  pydantic.errors.PydanticUserError: `export_data` is not fully defined; you should define `show_notification`,
-#     then call `export_data.model_rebuild()`.
 
 ActionNotificationType = Annotated[
     "dict[str, str | show_notification | update_notification | None]",

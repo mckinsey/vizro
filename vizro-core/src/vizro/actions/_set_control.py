@@ -11,7 +11,7 @@ from pydantic import Field, JsonValue
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ControlType, ModelID
+from vizro.models.types import ControlType, ModelID, ActionNotificationType
 
 logger = logging.getLogger(__name__)
 
@@ -125,6 +125,9 @@ class set_control(_AbstractAction):
         "that triggers `set_control`."
     )
 
+    notifications: ActionNotificationType  # type: ignore[misc]
+
+
     @_log_call
     def pre_build(self):
         from vizro.models._controls._controls_utils import _is_categorical_selector
@@ -207,3 +210,18 @@ class set_control(_AbstractAction):
         if self._same_page:
             return self.control
         return ["vizro_url.pathname", "vizro_url.search"]
+
+
+# TODO PP NOW: Fix this
+def rebuild_models():
+    # local import inside the function avoids import-time circularity
+    from vizro.actions._notifications import show_notification, update_notification
+
+    set_control.model_rebuild(
+        _types_namespace={
+            "show_notification": show_notification,
+            "update_notification": update_notification,
+        }
+    )
+
+rebuild_models()

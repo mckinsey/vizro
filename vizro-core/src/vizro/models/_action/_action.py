@@ -305,13 +305,6 @@ class _BaseAction(VizroBaseModel):
 
         return {output_name: _transform_output(output) for output_name, output in self._validated_outputs.items()}
 
-    # TODO PP NOW: Improve a lot. Use protocols, write function that just breaks the return_value into external_return_value
-    #  and notification.
-    # TODO PP NOW: Don't return notification within a list (as the last element) or dict (assigned to some hardcoded key).
-    #  So, it's only possible to return the notification as a separate element of the tuple.
-    #  -> Any, str(if matches notification key and len(cb_output) == len(Any)) |
-    #  -> Any, tuple[str, Any](if tuple[0] matches notification key and len(cb_output) == len(Any)
-    #  WHY?: This will make it much easier for us and for vizro users to know whether a notification is returned or not.
     def _is_value_action_notification_type(self, value: Any) -> bool:
         if isinstance(value, str):
             key = value
@@ -389,15 +382,12 @@ class _BaseAction(VizroBaseModel):
                 )
         # Single output
         elif isinstance(return_value, tuple) and self._is_value_action_notification_type(return_value[-1]):
-            # TODO PP NOW: Have in mind it can be a string. e.g. return "pipeline", "is", "success"
-            # output = "text_id". This is an edge case we can't cover perfectly, but it's too rare.
             *return_value, notification_payload = return_value
 
         # If no error has been raised then the return_value is good and is returned as it is.
         # This could be a list of outputs, dictionary of outputs or any single value including None.
         return {"external_return": return_value, "notification_payload": notification_payload}
 
-    # TODO PP NOW: Make notification_payload type.
     @staticmethod
     def _normalize_notification(
         notification_payload: str | tuple[str, Any] | None,
@@ -517,7 +507,6 @@ class _BaseAction(VizroBaseModel):
             },
         }
 
-        # TODO PP NOW: Instead of questioning if it has a notification property check if it implements the protocol.
         # Add vizro-notification output except when the action is show_notification itself to avoid duplicate outputs.
         if hasattr(self, "notifications"):
             callback_outputs["internal"]["vizro_notification"] = (
@@ -555,19 +544,23 @@ class _BaseAction(VizroBaseModel):
                     error_msg="",
                 )
             except Exception as exc:
-                notification_payload = (
-                    exc.args[1]
+                exc, notification_payload = (
+                    (exc.args[0], exc.args[1])
                     if len(exc.args) == 2 and self._is_value_action_notification_type(exc.args[1])
-                    else None
+                    else (exc, None)
                 )
+
+                # It is not possible to both propagate the full error details to the UI and display a user-friendly
+                # error notification at the same time. Therefore, we log the exception (including the stack trace)
+                # to the console only. This ensures that the dashboard creator has access to the full error details,
+                # while dashboard users see only the custom error notification defined by the creator.
+                logger.exception("Action failed")
+
                 notification_key, error_msg, notification_result = self._normalize_notification(
                     notification_payload=notification_payload,
                     default_key="error",
-                    # Prefer args[0] as "error message" when present; otherwise fall back to the exception object.
-                    error_msg=exc.args[0] if exc.args else exc,
+                    error_msg=exc,
                 )
-                # TODO OQ: Should we continue executing actions loop? What happens with no_update, PreventUpdate,
-                #  or any other Exception
                 # On error, return no_update for all external outputs.
                 external_return = self._no_update_outputs(external_outputs_spec)
 

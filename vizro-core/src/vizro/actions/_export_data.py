@@ -1,6 +1,5 @@
 import importlib.util
 from collections.abc import Iterable
-from time import sleep
 from typing import Any, Literal, cast
 
 from dash import Output, ctx, dcc
@@ -32,16 +31,13 @@ class export_data(_AbstractAction):
     """
 
     type: Literal["export_data"] = "export_data"
-    # TODO PP NOW: Think about default_factory=list instead.
     targets: list[ModelID] = Field(
-        default=[],
+        default_factory=list,
         description="List of target component ids for which to download data. If none are given then "
         "download data from all components on the page.",
     )
     file_format: Literal["csv", "xlsx"] = Field(default="csv", description="Format of downloaded files.")
 
-    # TODO PP NOW: See how to predefine this for built-in actions. Should we convert it to method instead or just
-    #  validate differently (like adjusting action notification keys) per action and use as a field?
     notifications: ActionNotificationType  # type: ignore[misc]
 
     @_log_call
@@ -77,10 +73,11 @@ class export_data(_AbstractAction):
     def function(self, _controls: _Controls) -> dict[str, Any]:
         """Exports data after applying _controls."""
         # TODO IMPORTANT: REMOVE SLEEP AND EXCEPTION AFTER TESTING
-        sleep(2)
         import random
+        from time import sleep
+        sleep(2)
 
-        if random.random() > 0.5:
+        if random.random() > 0:
             raise Exception("Random error occurred during data export!")
 
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This

@@ -7,7 +7,7 @@ import vizro.models as vm
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers import model_manager
-from vizro.models.types import ModelID, _Controls
+from vizro.models.types import ModelID, _Controls, ActionNotificationType
 
 
 # TODO-AV2 A 3: rename _on_page_load if desired and make public. Similarly for other built-in actions.
@@ -16,6 +16,8 @@ class _on_page_load(_AbstractAction):
     type: Literal["_on_page_load"] = "_on_page_load"
 
     targets: list[ModelID] = Field(description="Target component IDs.")
+
+    notifications: ActionNotificationType  # type: ignore[misc]
 
     def function(self, _controls: _Controls) -> dict[ModelID, Any]:
         """Applies controls to charts on page once the page is opened (or refreshed).
@@ -41,3 +43,18 @@ class _on_page_load(_AbstractAction):
             target: f"{target}.selector" if isinstance(model_manager[target], vm.Filter) else target
             for target in self.targets
         }
+
+
+# TODO PP NOW: Fix this
+def rebuild_models():
+    # local import inside the function avoids import-time circularity
+    from vizro.actions._notifications import show_notification, update_notification
+
+    _on_page_load.model_rebuild(
+        _types_namespace={
+            "show_notification": show_notification,
+            "update_notification": update_notification,
+        }
+    )
+
+rebuild_models()

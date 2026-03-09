@@ -9,7 +9,7 @@ from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import FIGURE_MODELS, model_manager
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, ModelID, _Controls
+from vizro.models.types import FigureType, ModelID, _Controls, ActionNotificationType
 
 
 @deprecated(
@@ -25,6 +25,8 @@ class filter_interaction(_AbstractAction):
 
     # Note this has a default value, unlike on_page_load, filter and parameter. It's like export_data.
     targets: list[ModelID] = Field(default=[], description="Target component IDs.")
+
+    notifications: ActionNotificationType  # type: ignore[misc]
 
     @_log_call
     def pre_build(self):
@@ -85,3 +87,18 @@ class filter_interaction(_AbstractAction):
     @property
     def outputs(self):  # type: ignore[override]
         return {target: target for target in self.targets}
+
+
+# TODO PP NOW: Fix this
+def rebuild_models():
+    # local import inside the function avoids import-time circularity
+    from vizro.actions._notifications import show_notification, update_notification
+
+    filter_interaction.model_rebuild(
+        _types_namespace={
+            "show_notification": show_notification,
+            "update_notification": update_notification,
+        }
+    )
+
+rebuild_models()

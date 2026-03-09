@@ -46,7 +46,6 @@ function guard_action_chain(trigger_value, guard_data, trigger_component_id) {
   return trigger_value;
 }
 
-// TODO PP NOW: Add tests. (Test it manually first and make it robust on different inputs)
 /**
  * Replaces template variables in the format {{key}} within the given text with corresponding values from valuesMap.
  *
@@ -76,8 +75,6 @@ function replaceTemplateVariables(text, valuesMap) {
  * @param {...*} actionRuntimeArguments - The current runtime values of the action function parameters.
  * @returns {void} - This function does not return a value. It updates the notification component directly using set_props instead to avoid duplication callback output dash exception.
  */
-// TODO OQ: Should we clear notifications from the page before the new actions chain is triggered?
-// TODO OQ: This would generally improve the UX. This comment is added here but should happen before progress is shown.
 function show_progress_notification(
   trigger,
   notificationObject,

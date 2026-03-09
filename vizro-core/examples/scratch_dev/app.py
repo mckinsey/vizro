@@ -11,26 +11,23 @@ from vizro.models.types import capture
 
 
 # TODO:
-#  Solve model_rebuild in export_data issue. Open the file at the end and see an ugly hack I did.
-#  ALMOST DONE - Refactor output return value in _action.py
+#  DONE - Refactor output return value in _action.py
+#  DONE - Refactor and merge validators in types.
 #  DONE - If we enable `text -> va.show_notification(...)` conversion, this would look like:
 #  DONE - Clean notifications from the notification panel when the same action is triggered again.
-#    - See whether we should introduce hideNotification so that users can hide it before showing explicit notification.
-#      Or to do so even before every show_notification action. With it hiding the progress would be automatically solved
-#  DONE - Refactor and merge validators in types.
 #  DONE - Enable providing a second argument of exception containing results.
-#  Test by assigning a variant="warning" notification to the "progress" key.
-#  Pass through todos and done or open question.
-#  See ticket issue and cover other edge cases if any.
-#  Check other actions like filter/parameter. What happens if they fail.
-#     One pros of introducing update_figures is that we don't have to copy-paste similar code for many actions.
+#  DONE - Test by assigning a variant="warning" notification to the "progress" key.
+#  DONE - Check other actions like filter/parameter. What happens if they fail.
+#  DONE - Pass through todos and done or open question.
 #  Check what happens with the actions chain when no_update, PreventUpdate, or Exception is raised.
+#  See ticket issue and cover other edge cases if any.
 #  See whether everything works for export_data as it works for custom action.
 #  "page_1_8", action with different output type [None, data, [data], {"output_id": data}] Make sure that all the combinations are covered.
 #  hrl
-#  tests
+#  tests (unit, js)
 #  schema
 #  docs
+#  Solve model_rebuild for builtin actions. Open action files at the end and see an ugly hack I did.
 
 df = px.data.iris().iloc[[0, 1, 50, 51, 100, 101]]
 SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
@@ -43,12 +40,6 @@ def random_pipeline(switch_successfulness: bool = False, exit_path_slider: int =
 
     if switch_successfulness:
         match exit_path_slider:
-            # TODO OQ: Should we enable propagating results from the exception cases as well?
-            #  It's possible to enable the following syntax and to parse it internally:
-            #   1. raise Exception("Error!", "my_error_1")
-            #     ~ raises the `my_error_1` notification if it exists.
-            #   2. raise ValueError("Error!", ("my_error_2", result))
-            #     ~ raises the `my_error_2` notification if it exists with `result` as {{result}} variable.
             case 1:
                 raise Exception("Random error occurred!")
             case 2:
@@ -370,7 +361,6 @@ page_4 = vm.Page(
                                         ),
                                         "error": va.update_notification(
                                             notification=f"{pre}_progress_2",
-                                            # TODO OQ: Should we use {{error_msg}}, {{result}} or something else here?
                                             text="Custom pipeline failed! Exception:\n\n{{error_msg}}",
                                             variant="error",
                                         ),
@@ -407,9 +397,6 @@ page_4 = vm.Page(
                                             text="Exporting data...",
                                             variant="progress",
                                         ),
-                                        # TODO OQ: To show for example how many rows were exported, users should rewrite the
-                                        #  export_data.function method to return that info as additional output, and then
-                                        #  use {{result}} template variable here. Is that ok?
                                         "success": va.update_notification(
                                             notification=f"{pre}_progress_1",
                                             text="Data exported successfully!",
@@ -469,8 +456,6 @@ page_5 = vm.Page(
                                             text="Running custom pipeline.\n\nException will happen: {{switch_successfulness}}.\n\nExit path: {{exit_path_slider}}",
                                             variant="progress",
                                         ),
-                                        # TODO OQ: We might need to introduce the hide_notification(notification=modelId).
-                                        #  Could be useful if users don't want success message after progress for example.
                                         "success": va.update_notification(
                                             notification=f"{pre}_progress_2",
                                             text="Custom pipeline completed!\n\n{{result}}",
@@ -490,8 +475,8 @@ page_5 = vm.Page(
                                         "my_custom_err": va.update_notification(
                                             notification=f"{pre}_progress_2",
                                             text="Custom pipeline failed!\n\nError Message: {{error_msg}}\n\n{{result}}",
-                                            variant="error",
-                                            title="My custom error",
+                                            variant="warning",
+                                            title="My custom Warning",
                                         ),
                                     },
                                 )
@@ -621,6 +606,52 @@ page_6 = vm.Page(
 )
 
 
+# ========== Weird edge case examples ========== #
+
+from vizro.managers import data_manager
+from vizro.actions._parameter_action import _parameter
+
+data_manager["dynamic_df"] = lambda number_of_points=10: px.data.iris().sample(number_of_points)
+
+
+pre = "p7"
+page_7 = vm.Page(
+    id="page_7",
+    title="Warning progress | (50% to fail) Parameter Action | Error{{error_msg}}/Success",
+    components=[
+        vm.Graph(
+            id="graph_7",
+            figure=px.scatter(
+                "dynamic_df",
+                x="sepal_width",
+                y="sepal_length",
+                color="species",
+                color_discrete_map=SPECIES_COLORS,
+            )
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["graph_7.data_frame.number_of_points"],
+            selector=vm.Slider(
+                title="Trigger slow data loading", min=10, max=150, step=10, value=10,
+                actions=_parameter(
+                    targets=["graph_7.data_frame.number_of_points"],
+                    notifications={
+                        "progress": va.show_notification(
+                            variant="warning",
+                            text="Loading heavy data. Do not close the app!",
+                        ),
+                        "error": "{{error_msg}}",
+                        "success": "Data loaded successfully",
+                    }
+                )
+            ),
+        )
+    ]
+)
+
+
 dashboard = vm.Dashboard(
     pages=[
         page_0,
@@ -630,6 +661,7 @@ dashboard = vm.Dashboard(
         page_4,
         page_5,
         page_6,
+        page_7,
     ]
 )
 
