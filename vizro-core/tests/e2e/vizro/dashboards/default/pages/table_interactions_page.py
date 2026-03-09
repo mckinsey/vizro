@@ -17,7 +17,7 @@ table_interactions_page = vm.Page(
                 id="dash_data_table_country",
                 data_frame=gapminder,
             ),
-            actions=filter_interaction(targets=[cnst.LINE_INTERACTIONS_ID])
+            actions=filter_interaction(targets=[cnst.LINE_INTERACTIONS_ID]),
         ),
         vm.Graph(
             id=cnst.LINE_INTERACTIONS_ID,

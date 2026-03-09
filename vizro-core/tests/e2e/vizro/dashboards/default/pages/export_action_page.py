@@ -25,11 +25,11 @@ export_action_page = vm.Page(
             text="Export data",
             actions=[
                 export_data(
-                        file_format="csv",
-                    ),
+                    file_format="csv",
+                ),
                 export_data(
-                        file_format="xlsx",
-                    )
+                    file_format="xlsx",
+                ),
             ],
         ),
     ],

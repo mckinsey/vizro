@@ -42,13 +42,13 @@ filters_page = vm.Page(
                                     text="Export data",
                                     actions=[
                                         export_data(
-                                                targets=[cnst.SCATTER_GRAPH_ID],
-                                                file_format="csv",
-                                            ),
+                                            targets=[cnst.SCATTER_GRAPH_ID],
+                                            file_format="csv",
+                                        ),
                                         export_data(
-                                                targets=[cnst.SCATTER_GRAPH_ID],
-                                                file_format="xlsx",
-                                            )
+                                            targets=[cnst.SCATTER_GRAPH_ID],
+                                            file_format="xlsx",
+                                        ),
                                     ],
                                 ),
                                 vm.Button(
