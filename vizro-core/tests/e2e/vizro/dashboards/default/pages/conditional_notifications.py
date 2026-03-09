@@ -44,7 +44,8 @@ conditional_notifications_page = vm.Page(
             id=cnst.CONDITIONAL_NOTIFICATION_ERROR_BUTTON,
             actions=[
                 vm.Action(
-                    function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID), outputs="text"
+                    function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
+                    outputs="text",
                 )
             ],
         ),
