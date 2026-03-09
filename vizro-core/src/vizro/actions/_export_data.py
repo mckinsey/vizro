@@ -127,3 +127,18 @@ class export_data(_AbstractAction):
             dcc.Download(id={"type": "download_dataframe", "action_id": self.id, "target_id": target})
             for target in self.targets
         ]
+
+
+# TODO PP NOW: Fix this
+def rebuild_models():
+    # local import inside the function avoids import-time circularity
+    from vizro.actions._notifications import show_notification, update_notification
+
+    export_data.model_rebuild(
+        _types_namespace={
+            "show_notification": show_notification,
+            "update_notification": update_notification,
+        }
+    )
+
+rebuild_models()
