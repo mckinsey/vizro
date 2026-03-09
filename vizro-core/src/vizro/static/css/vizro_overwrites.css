@@ -191,6 +191,12 @@ All the HEX values starting with --text-code are taken from the Github code high
   --mantine-color-orange-7: #b45309;
   --mantine-color-orange-8: #92400e;
   --mantine-color-orange-9: #78350f;
+
+  --bs-blue: #097DFE;
+  --bs-green: #00B5A9;
+  --bs-red: #EA5748;
+  --bs-gray: #3E495B;
+  --bs-yellow: #FFC107;
 }
 
 [data-bs-theme="dark"] {
