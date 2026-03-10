@@ -641,6 +641,7 @@ page_7 = vm.Page(
                         "progress": va.show_notification(
                             variant="warning",
                             text="Loading heavy data. Do not close the app!",
+                            auto_close=False,
                         ),
                         "error": "{{error_msg}}",
                         "success": "Data loaded successfully",
@@ -651,6 +652,85 @@ page_7 = vm.Page(
     ]
 )
 
+from dash import no_update
+from dash.exceptions import PreventUpdate
+
+
+def raise_exception(exception):
+    raise exception
+
+
+pre = "p8"
+page_8 = vm.Page(
+    id="page_8",
+    title="no_update / PreventUpdate in action chains",
+    components=[
+        vm.Button(
+            text="3 no_update actions in a chain.",
+            actions=[
+                vm.Action(
+                    function=capture("action")(lambda: no_update)(),
+                    outputs=f"{pre}_text_output",
+                    notifications={"success": "Finished 1st no_update action"},
+                ),
+                vm.Action(
+                    function=capture("action")(lambda: no_update)(),
+                    outputs=f"{pre}_text_output",
+                    notifications={"success": "Finished 2st no_update action"},
+                ),
+                vm.Action(
+                    function=capture("action")(lambda: no_update)(),
+                    outputs=f"{pre}_text_output",
+                    notifications={"success": "Finished 3st no_update action"},
+                )
+            ]
+        ),
+        vm.Button(
+            text="3 PreventUpdate actions in a chain.",
+            actions=[
+                vm.Action(
+                    function=capture("action")(lambda: raise_exception(PreventUpdate))(),
+                    outputs=f"{pre}_text_output",
+                    notifications={"success": "Finished 1st no_update action"},
+                ),
+                vm.Action(
+                    function=capture("action")(lambda: raise_exception(PreventUpdate))(),
+                    outputs=f"{pre}_text_output",
+                    notifications={"success": "Finished 2st no_update action"},
+                ),
+                vm.Action(
+                    function=capture("action")(lambda: raise_exception(PreventUpdate))(),
+                    outputs=f"{pre}_text_output",
+                    notifications={"success": "Finished 3st no_update action"},
+                )
+            ]
+        ),
+        vm.Button(
+            text="3 ValueError actions in a chain.",
+            actions=[
+                vm.Action(
+                    function=capture("action")(lambda: raise_exception(ValueError))(),
+                    outputs=f"{pre}_text_output",
+                    notifications={"success": "Finished 1st no_update action"},
+                ),
+                vm.Action(
+                    function=capture("action")(lambda: raise_exception(ValueError))(),
+                    outputs=f"{pre}_text_output",
+                    notifications={"success": "Finished 2st no_update action"},
+                ),
+                vm.Action(
+                    function=capture("action")(lambda: raise_exception(ValueError))(),
+                    outputs=f"{pre}_text_output",
+                    notifications={"success": "Finished 3st no_update action"},
+                )
+            ]
+        ),
+        vm.Text(
+            id=f"{pre}_text_output",
+            text="Action not triggered yet."
+        )
+    ]
+)
 
 dashboard = vm.Dashboard(
     pages=[
@@ -662,6 +742,7 @@ dashboard = vm.Dashboard(
         page_5,
         page_6,
         page_7,
+        page_8,
     ]
 )
 

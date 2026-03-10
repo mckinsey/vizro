@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 
 from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
+from dash.exceptions import PreventUpdate
 from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
@@ -537,6 +538,9 @@ class _BaseAction(VizroBaseModel):
             try:
                 ret = self._action_callback_function(inputs=external, outputs=external_outputs_spec)
 
+                # Returning anything but `no_update` to internal action_finished triggers the next action in the chain.
+                action_finished = time.time()
+
                 external_return = ret["external_return"]
                 notification_key, error_msg, notification_result = self._normalize_notification(
                     notification_payload=ret.get("notification_payload"),
@@ -544,35 +548,39 @@ class _BaseAction(VizroBaseModel):
                     error_msg="",
                 )
             except Exception as exc:
-                exc, notification_payload = (
-                    (exc.args[0], exc.args[1])
-                    if len(exc.args) == 2 and self._is_value_action_notification_type(exc.args[1])
-                    else (exc, None)
-                )
-
                 # It is not possible to both propagate the full error details to the UI and display a user-friendly
                 # error notification at the same time. Therefore, we log the exception (including the stack trace)
                 # to the console only. This ensures that the dashboard creator has access to the full error details,
                 # while dashboard users see only the custom error notification defined by the creator.
                 logger.exception("Action failed")
 
-                notification_key, error_msg, notification_result = self._normalize_notification(
-                    notification_payload=notification_payload,
-                    default_key="error",
-                    error_msg=exc,
-                )
+                # Returning `no_update` to internal action_finished triggers the next action in the chain.
+                action_finished = no_update
+
                 # On error, return no_update for all external outputs.
                 external_return = self._no_update_outputs(external_outputs_spec)
 
-            return_value = {"internal": {"action_finished": time.time(), "action_progress_indicator": no_update}}
+                exc, notification_payload = (
+                    (exc.args[0], exc.args[1])
+                    if len(exc.args) == 2 and self._is_value_action_notification_type(exc.args[1])
+                    else (exc, None)
+                )
 
-            # notification_key here always exists and matches
-            vizro_notification = self._render_notification(notification_key, notification_result, error_msg)
-            if vizro_notification is not None:
-                return_value["internal"]["vizro_notification"] = vizro_notification
+                notification_key, error_msg, notification_result = self._normalize_notification(
+                    notification_payload=notification_payload,
+                    # Treat PreventUpdate exception as a special case bt showing a `success` notification.
+                    default_key="success" if isinstance(exc, PreventUpdate) else "error",
+                    error_msg=exc,
+                )
+
+            return_value = {"internal": {"action_finished": action_finished, "action_progress_indicator": no_update}}
 
             if "external" in callback_outputs:
                 return_value["external"] = external_return
+
+            vizro_notification = self._render_notification(notification_key, notification_result, error_msg)
+            if vizro_notification is not None:
+                return_value["internal"]["vizro_notification"] = vizro_notification
 
             return return_value
 
