@@ -34,7 +34,7 @@ class _parameter(_AbstractAction):
             Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
 
         """
-        # TODO IMPORTANT: REMOVE SLEEP AND EXCEPTION AFTER TESTING
+        # TODO PP IMPORTANT: REMOVE SLEEP AND EXCEPTION AFTER TESTING
         import random
         from time import sleep
         sleep(2)

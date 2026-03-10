@@ -9,28 +9,8 @@ from vizro import Vizro
 from vizro.actions import export_data, show_notification, update_notification
 from vizro.models.types import capture
 
-
-# TODO:
-#  DONE - Refactor output return value in _action.py
-#  DONE - Refactor and merge validators in types.
-#  DONE - If we enable `text -> va.show_notification(...)` conversion, this would look like:
-#  DONE - Clean notifications from the notification panel when the same action is triggered again.
-#  DONE - Enable providing a second argument of exception containing results.
-#  DONE - Test by assigning a variant="warning" notification to the "progress" key.
-#  DONE - Check other actions like filter/parameter. What happens if they fail.
-#  DONE - Pass through todos and done or open question.
-#  Check what happens with the actions chain when no_update, PreventUpdate, or Exception is raised.
-#  See ticket issue and cover other edge cases if any.
-#  See whether everything works for export_data as it works for custom action.
-#  "page_1_8", action with different output type [None, data, [data], {"output_id": data}] Make sure that all the combinations are covered.
-#  hrl
-#  tests (unit, js)
-#  schema
-#  docs
-#  Solve model_rebuild for builtin actions. Open action files at the end and see an ugly hack I did.
-
 df = px.data.iris().iloc[[0, 1, 50, 51, 100, 101]]
-SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
+SPECIES_COLORS = {"setosa": "#097DFE", "versicolor": "#6F39E3", "virginica": "#05D0F0"}
 
 
 # Custom mock pipeline with set or random success/failure

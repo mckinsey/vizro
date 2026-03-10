@@ -418,7 +418,7 @@ class _BaseAction(VizroBaseModel):
             return None
 
         # Return no_update if the notification key does not exist, or its value is None.
-        if not (notification_model := action_notifications.get(notification_key)):
+        if (notification_model := action_notifications.get(notification_key)) is None:
             return [no_update]
 
         notification = notification_model.function()
