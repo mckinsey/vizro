@@ -10,6 +10,11 @@ iris = px.data.iris()
 
 @capture("action")
 def notifications_pipeline(exit_path_slider) -> str:
+    """Simulates a pipeline which can have different exit paths based on the value of the slider.
+
+    The different exit paths will trigger different types of notifications (error, success, info, warning)
+    which can be configured on the buttons that trigger this pipeline.
+    """
     match exit_path_slider:
         # error
         case 1:
@@ -41,7 +46,6 @@ conditional_notifications_page = vm.Page(
             step=1,
             value=1,
             marks={1: "error", 2: "success", 3: "info", 4: "warning"},
-            extra=dict(className="cond-notification-slider"),
         ),
         vm.Button(
             text="Default error notification",
@@ -82,7 +86,7 @@ conditional_notifications_page = vm.Page(
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
                     outputs="text",
-                    notifications={"success": f"{cnst.CONDITIONAL_NOTIFICATION_SUCCESS_MSG}" + "{{result}}"},
+                    notifications={"success": cnst.CONDITIONAL_NOTIFICATION_SUCCESS_MSG + "{{result}}"},
                 )
             ],
         ),
@@ -93,9 +97,7 @@ conditional_notifications_page = vm.Page(
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
                     outputs="text",
-                    notifications={
-                        "progress": f"{cnst.CONDITIONAL_NOTIFICATION_PROGRESS_MSG}" + "{{exit_path_slider}}"
-                    },
+                    notifications={"progress": cnst.CONDITIONAL_NOTIFICATION_PROGRESS_MSG + "{{exit_path_slider}}"},
                 )
             ],
         ),
@@ -106,7 +108,7 @@ conditional_notifications_page = vm.Page(
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
                     outputs="text",
-                    notifications={"my_info": f"{cnst.CONDITIONAL_NOTIFICATION_INFO_MSG}" + "{{result}}"},
+                    notifications={"my_info": cnst.CONDITIONAL_NOTIFICATION_INFO_MSG + "{{result}}"},
                 )
             ],
         ),
@@ -119,7 +121,7 @@ conditional_notifications_page = vm.Page(
                     outputs="text",
                     notifications={
                         "my_warning": show_notification(
-                            text=f"{cnst.CONDITIONAL_NOTIFICATION_WARNING_MSG}" + "{{result}}", variant="warning"
+                            text=cnst.CONDITIONAL_NOTIFICATION_WARNING_MSG + "{{result}}", variant="warning"
                         )
                     },
                 )
@@ -147,7 +149,7 @@ conditional_notifications_page = vm.Page(
                     outputs="text",
                     notifications={
                         "success": "Custom pipeline completed!",
-                        "my_info": f"{cnst.CONDITIONAL_NOTIFICATION_INFO_MSG}" + "{{result}}",
+                        "my_info": cnst.CONDITIONAL_NOTIFICATION_INFO_MSG + "{{result}}",
                     },
                 )
             ],
