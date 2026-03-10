@@ -81,6 +81,13 @@ colors = SimpleNamespace(
     transparent="rgba(0, 0, 0, 0)",
     white="#FFFFFF",
     black="#000000",
+    increase="#00B5A9",  # Same as success
+    decrease="#EA5748",  # Same as error
+    neutral="#3E495B",  # Equivalent to gray/gray-700
+    info="#097DFE",
+    success="#00B5A9",
+    warning="#FFC107",
+    error="#EA5748",
 )
 """Colors used by palettes, plus additional colors.
 
