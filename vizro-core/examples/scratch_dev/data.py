@@ -14,6 +14,26 @@ daily_data = pd.DataFrame(
 )
 daily_data["date_label"] = daily_data["date"].dt.strftime("%-m/%d")  # "10/01" etc.
 
+# ── 1b. Scenario comparison line chart: two datasets (Baseline vs Scenario a) ─
+_dates = pd.date_range("2026-10-01", periods=8, freq="D")
+_date_labels = [d.strftime("%-m/%d") for d in _dates]
+# Baseline: dotted white line in chart
+daily_baseline = pd.DataFrame(
+    {
+        "date": _dates,
+        "date_label": _date_labels,
+        "ton": [56, 43, 50, 48, 42, 56, 43, 59],
+    }
+)
+# Scenario a: solid teal line in chart
+daily_scenario_a = pd.DataFrame(
+    {
+        "date": _dates,
+        "date_label": _date_labels,
+        "ton": [38, 65, 49, 50, 45, 52, 42, 68],
+    }
+)
+
 # ── 2. KPI summary cards (left panel) ────────────────────────────────────────
 
 kpi_summary_production = pd.DataFrame(
@@ -131,6 +151,40 @@ data = [
 
 scenario_data = pd.DataFrame(data)
 scenario_data["date_created"] = pd.to_datetime(scenario_data["date_created"])
+
+# Comparison KPI: actual + two scenarios (for custom kpi_card_actual_vs_scenarios)
+kpi_comparison_production = pd.DataFrame(
+    [
+        {
+            "actual": 1285.00,
+            "scenario_1": 1608.00,
+            "scenario_2": 1710.28,
+            "unit": "ton",
+        }
+    ]
+)
+
+kpi_comparison_avg = pd.DataFrame(
+    [
+        {
+            "actual": 25.02,
+            "scenario_1": 14.56,
+            "scenario_2": 18.15,
+            "unit": "ton",
+        }
+    ]
+)
+
+kpi_comparison_avg_lead = pd.DataFrame(
+    [
+        {
+            "actual": 8.25,
+            "scenario_1": 3.31,
+            "scenario_2": 3.45,
+            "unit": "day",
+        }
+    ]
+)
 
 kpis_per_product_type = pd.DataFrame(
     [

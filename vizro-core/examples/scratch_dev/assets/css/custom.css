@@ -3,16 +3,3 @@
 #logo-light {
   height: 28px;
 }
-
-.btn-scenario {
-  background: inherit;
-  border: 1px solid white;
-  color: inherit;
-  height: 100%;
-  width: 100%;
-}
-
-.btn-scenario:hover {
-  background: white;
-  color: black;
-}
