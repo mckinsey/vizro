@@ -7,8 +7,7 @@ import vizro.models as vm
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers import model_manager
-from vizro.models.types import ModelID, _Controls
-from vizro.models.types import ActionNotificationType
+from vizro.models.types import ActionNotificationType, ModelID, _Controls
 
 
 class _parameter(_AbstractAction):
@@ -37,6 +36,7 @@ class _parameter(_AbstractAction):
         # TODO PP IMPORTANT: REMOVE SLEEP AND EXCEPTION AFTER TESTING
         import random
         from time import sleep
+
         sleep(2)
 
         if random.random() > 0.5:
@@ -73,5 +73,6 @@ def rebuild_models():
             "update_notification": update_notification,
         }
     )
+
 
 rebuild_models()

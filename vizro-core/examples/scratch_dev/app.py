@@ -350,7 +350,10 @@ page_4 = vm.Page(
                         ),
                         vm.Text(id=f"{pre}_text", text="Click the button to run action."),
                         vm.Slider(
-                            id=f"{pre}_exit_path_slider", min=1, max=4, value=2,
+                            id=f"{pre}_exit_path_slider",
+                            min=1,
+                            max=4,
+                            value=2,
                             extra=dict(className="cond-notification-slider"),
                         ),
                     ],
@@ -607,14 +610,18 @@ page_7 = vm.Page(
                 y="sepal_length",
                 color="species",
                 color_discrete_map=SPECIES_COLORS,
-            )
+            ),
         ),
     ],
     controls=[
         vm.Parameter(
             targets=["graph_7.data_frame.number_of_points"],
             selector=vm.Slider(
-                title="Trigger slow data loading", min=10, max=150, step=10, value=10,
+                title="Trigger slow data loading",
+                min=10,
+                max=150,
+                step=10,
+                value=10,
                 actions=_parameter(
                     targets=["graph_7.data_frame.number_of_points"],
                     notifications={
@@ -625,11 +632,11 @@ page_7 = vm.Page(
                         ),
                         "error": "{{error_msg}}",
                         "success": "Data loaded successfully",
-                    }
-                )
+                    },
+                ),
             ),
         )
-    ]
+    ],
 )
 
 from dash import no_update
@@ -662,8 +669,8 @@ page_8 = vm.Page(
                     function=capture("action")(lambda: no_update)(),
                     outputs=f"{pre}_text_output",
                     notifications={"success": "Finished 3st no_update action"},
-                )
-            ]
+                ),
+            ],
         ),
         vm.Button(
             text="3 PreventUpdate actions in a chain.",
@@ -682,8 +689,8 @@ page_8 = vm.Page(
                     function=capture("action")(lambda: raise_exception(PreventUpdate))(),
                     outputs=f"{pre}_text_output",
                     notifications={"success": "Finished 3st no_update action"},
-                )
-            ]
+                ),
+            ],
         ),
         vm.Button(
             text="3 ValueError actions in a chain.",
@@ -702,14 +709,11 @@ page_8 = vm.Page(
                     function=capture("action")(lambda: raise_exception(ValueError))(),
                     outputs=f"{pre}_text_output",
                     notifications={"success": "Finished 3st no_update action"},
-                )
-            ]
+                ),
+            ],
         ),
-        vm.Text(
-            id=f"{pre}_text_output",
-            text="Action not triggered yet."
-        )
-    ]
+        vm.Text(id=f"{pre}_text_output", text="Action not triggered yet."),
+    ],
 )
 
 dashboard = vm.Dashboard(

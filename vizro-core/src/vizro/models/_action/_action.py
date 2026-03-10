@@ -391,9 +391,7 @@ class _BaseAction(VizroBaseModel):
 
     @staticmethod
     def _normalize_notification(
-        notification_payload: str | tuple[str, Any] | None,
-        default_key: str,
-        error_msg: str
+        notification_payload: str | tuple[str, Any] | None, default_key: str, error_msg: str
     ) -> tuple[str, str, str]:
         if isinstance(notification_payload, tuple):
             key, result = notification_payload
@@ -409,7 +407,7 @@ class _BaseAction(VizroBaseModel):
         if isinstance(outputs_spec, list):
             return [no_update] * len(outputs_spec)
         if isinstance(outputs_spec, dict):
-            return {key: no_update for key in outputs_spec}
+            return dict.fromkeys(outputs_spec, no_update)
         return no_update
 
     def _render_notification(self, notification_key: str, notification_result: str, error_msg: str):

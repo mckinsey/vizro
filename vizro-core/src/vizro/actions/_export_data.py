@@ -75,6 +75,7 @@ class export_data(_AbstractAction):
         # TODO PP IMPORTANT: REMOVE SLEEP AND EXCEPTION AFTER TESTING
         import random
         from time import sleep
+
         sleep(2)
 
         if random.random() > 0.5:
@@ -137,5 +138,6 @@ def rebuild_models():
             "update_notification": update_notification,
         }
     )
+
 
 rebuild_models()

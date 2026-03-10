@@ -7,7 +7,7 @@ from pydantic import Field
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.models.types import ModelID, _Controls, ActionNotificationType
+from vizro.models.types import ActionNotificationType, ModelID, _Controls
 
 
 class _filter(_AbstractAction):
@@ -54,5 +54,6 @@ def rebuild_models():
             "update_notification": update_notification,
         }
     )
+
 
 rebuild_models()

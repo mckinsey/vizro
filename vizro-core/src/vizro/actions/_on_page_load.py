@@ -7,7 +7,7 @@ import vizro.models as vm
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers import model_manager
-from vizro.models.types import ModelID, _Controls, ActionNotificationType
+from vizro.models.types import ActionNotificationType, ModelID, _Controls
 
 
 # TODO-AV2 A 3: rename _on_page_load if desired and make public. Similarly for other built-in actions.
@@ -56,5 +56,6 @@ def rebuild_models():
             "update_notification": update_notification,
         }
     )
+
 
 rebuild_models()
