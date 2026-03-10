@@ -20,6 +20,8 @@ lint = "pre-commit run {args} --all-files"
 pip = '"{env:HATCH_UV}" pip {args}'
 prep-release = [
   "hatch version release",
+  "npm install --package-lock-only --legacy-peer-deps",
+  "npm run build",
   "hatch run changelog:collect",
   "hatch run changelog:add",
   'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-dash-components $(hatch version)"'

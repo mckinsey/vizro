@@ -211,7 +211,15 @@ def create_theme_overrides(extracted_values: dict[str, str]) -> go.layout.Templa
         ),
         data=go.layout.template.Data(
             bar=[go.Bar(marker_line_color=BG_COLOR)],
-            waterfall=[go.Waterfall(textfont_color=FONT_COLOR_PRIMARY, connector_line_color=AXIS_COLOR)],
+            waterfall=[
+                go.Waterfall(
+                    textfont_color=FONT_COLOR_PRIMARY,
+                    connector_line_color=AXIS_COLOR,
+                    decreasing_marker_color=colors.decrease,
+                    increasing_marker_color=colors.increase,
+                    totals_marker_color=colors.neutral,
+                )
+            ],
             sankey=[go.Sankey(link={"color": AXIS_COLOR})],
         ),
     )

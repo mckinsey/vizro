@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 
 from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
+from dash.exceptions import PreventUpdate
 from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
@@ -305,13 +306,6 @@ class _BaseAction(VizroBaseModel):
 
         return {output_name: _transform_output(output) for output_name, output in self._validated_outputs.items()}
 
-    # TODO PP NOW: Improve a lot. Use protocols, write function that just breaks the return_value into external_return_value
-    #  and notification.
-    # TODO PP NOW: Don't return notification within a list (as the last element) or dict (assigned to some hardcoded key).
-    #  So, it's only possible to return the notification as a separate element of the tuple.
-    #  -> Any, str(if matches notification key and len(cb_output) == len(Any)) |
-    #  -> Any, tuple[str, Any](if tuple[0] matches notification key and len(cb_output) == len(Any)
-    #  WHY?: This will make it much easier for us and for vizro users to know whether a notification is returned or not.
     def _is_value_action_notification_type(self, value: Any) -> bool:
         if isinstance(value, str):
             key = value
@@ -320,7 +314,6 @@ class _BaseAction(VizroBaseModel):
         else:
             return False
 
-        # TODO PP NOW: Maybe this works too: `return key in self.notifications`
         return key in getattr(self, "notifications", {})
 
     def _action_callback_function(
@@ -339,12 +332,12 @@ class _BaseAction(VizroBaseModel):
         else:
             return_value = self.function(**inputs)  # type: ignore[arg-type]
 
-        external_notification = None
+        notification_payload = None
         # Delegate all handling of the return_value and mapping to appropriate outputs to Dash. Here we do some error
         # checking to raise clearer error messages. All return_value reshaping we do is only extracting notification.
         if not outputs:
             if self._is_value_action_notification_type(return_value):
-                external_notification = return_value
+                notification_payload = return_value
             elif return_value is not None:
                 raise ValueError(
                     "Action function has returned a value but the action has no defined outputs. "
@@ -357,7 +350,7 @@ class _BaseAction(VizroBaseModel):
                 and len(return_value) == 2
                 and self._is_value_action_notification_type(return_value[1])
             ):
-                return_value, external_notification = return_value[0], return_value[1]
+                return_value, notification_payload = return_value[0], return_value[1]
             if not isinstance(return_value, Mapping):
                 raise ValueError(
                     "Action function has not returned a dictionary-like object "
@@ -380,7 +373,7 @@ class _BaseAction(VizroBaseModel):
                 and len(return_value) == (len(outputs) + 1)
                 and self._is_value_action_notification_type(return_value[-1])
             ):
-                *return_value, external_notification = return_value
+                *return_value, notification_payload = return_value
             if len(return_value) != len(outputs):
                 raise ValueError(
                     f"Number of action's returned elements {len(return_value)} does not match the number "
@@ -390,13 +383,50 @@ class _BaseAction(VizroBaseModel):
                 )
         # Single output
         elif isinstance(return_value, tuple) and self._is_value_action_notification_type(return_value[-1]):
-            # TODO PP NOW: Have in mind it can be a string. e.g. return "pipeline", "is", "success"
-            # output = "text_id". This is an edge case we can't cover perfectly, but it's too rare.
-            *return_value, external_notification = return_value
+            *return_value, notification_payload = return_value
 
         # If no error has been raised then the return_value is good and is returned as it is.
         # This could be a list of outputs, dictionary of outputs or any single value including None.
-        return {"external_return": return_value, "_action_notification": external_notification}
+        return {"external_return": return_value, "notification_payload": notification_payload}
+
+    @staticmethod
+    def _normalize_notification(
+        notification_payload: str | tuple[str, Any] | None, default_key: str, error_msg: str
+    ) -> tuple[str, str, str]:
+        if isinstance(notification_payload, tuple):
+            key, result = notification_payload
+            # Skip showing the result in the notification if it's not convertable to string.
+            result = str(result) if hasattr(result, "__str__") else ""
+            return key, error_msg, result
+        if isinstance(notification_payload, str):
+            return notification_payload, error_msg, ""
+        return default_key, error_msg, ""
+
+    @staticmethod
+    def _no_update_outputs(outputs_spec):
+        if isinstance(outputs_spec, list):
+            return [no_update] * len(outputs_spec)
+        if isinstance(outputs_spec, dict):
+            return dict.fromkeys(outputs_spec, no_update)
+        return no_update
+
+    def _render_notification(self, notification_key: str, notification_result: str, error_msg: str):
+        # Skip setting `vizro_notification` output if the action does not support notifications.
+        if not (action_notifications := getattr(self, "notifications", None)):
+            return None
+
+        # Return no_update if the notification key does not exist, or its value is None.
+        if (notification_model := action_notifications.get(notification_key)) is None:
+            return [no_update]
+
+        notification = notification_model.function()
+
+        msg = notification[0]["message"].children
+        msg = msg.replace("{{result}}", str(notification_result))
+        msg = msg.replace("{{error_msg}}", str(error_msg))
+        notification[0]["message"].children = msg
+
+        return [notification]
 
     @_log_call
     def _define_callback(self):
@@ -476,7 +506,6 @@ class _BaseAction(VizroBaseModel):
             },
         }
 
-        # TODO PP NOW: Instead of questioning if it has a notification property check if it implements the protocol.
         # Add vizro-notification output except when the action is show_notification itself to avoid duplicate outputs.
         if hasattr(self, "notifications"):
             callback_outputs["internal"]["vizro_notification"] = (
@@ -502,69 +531,54 @@ class _BaseAction(VizroBaseModel):
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
         def action_callback(external: list[Any] | dict[str, Any], internal: dict[str, Any]) -> dict[str, Any]:
+            external_outputs_spec = callback_outputs.get("external")
+
             try:
-                _ret_val = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
-                external_return, _action_notification = _ret_val["external_return"], _ret_val["_action_notification"]
+                ret = self._action_callback_function(inputs=external, outputs=external_outputs_spec)
 
-                if isinstance(_action_notification, tuple):
-                    notification_key = _action_notification[0]
-                    error_msg = ""
-                    notification_result = _action_notification[1]
-                elif isinstance(_action_notification, str):
-                    notification_key = _action_notification
-                    error_msg = ""
-                    notification_result = ""
-                else:
-                    notification_key = "success"
-                    error_msg = ""
-                    notification_result = ""
-            except Exception as exc:
-                # TODO OQ: Should we continue executing actions loop? What happens with no_update, PreventUpdate,
-                #  or any other Exception
-                notification_key = "error"
-                # TODO PP NOW: Handle notification_error_msg vs notification_result. Make that result could be returned
-                #  from the action even when exception is raised.
-                exception_notification = (
-                    exc.args[1] if len(exc.args) == 2 and self._is_value_action_notification_type(exc.args[1]) else None
+                # Returning anything but `no_update` to internal action_finished triggers the next action in the chain.
+                action_finished = time.time()
+
+                external_return = ret["external_return"]
+                notification_key, error_msg, notification_result = self._normalize_notification(
+                    notification_payload=ret.get("notification_payload"),
+                    default_key="success",
+                    error_msg="",
                 )
-                if isinstance(exception_notification, tuple):
-                    notification_key, error_msg, notification_result = (
-                        exception_notification[0],
-                        exc.args[0],
-                        exception_notification[1],
-                    )
-                elif isinstance(exception_notification, str):
-                    notification_key, error_msg, notification_result = exception_notification, exc.args[0], ""
-                else:
-                    notification_key, error_msg, notification_result = "error", exc, ""
+            except Exception as exc:
+                # It is not possible to both propagate the full error details to the UI and display a user-friendly
+                # error notification at the same time. Therefore, we log the exception (including the stack trace)
+                # to the console only. This ensures that the dashboard creator has access to the full error details,
+                # while dashboard users see only the custom error notification defined by the creator.
+                logger.exception("Action failed")
 
-                # return no_update for all external outputs on error
-                if isinstance(callback_outputs["external"], list):
-                    external_return = [no_update] * len(callback_outputs["external"])
-                elif isinstance(callback_outputs["external"], dict):
-                    external_return = dict.fromkeys(callback_outputs["external"], no_update)
-                else:
-                    external_return = no_update
+                # Returning `no_update` to internal action_finished triggers the next action in the chain.
+                action_finished = no_update
 
-            return_value = {"internal": {"action_finished": time.time(), "action_progress_indicator": no_update}}
+                # On error, return no_update for all external outputs.
+                external_return = self._no_update_outputs(external_outputs_spec)
 
-            if hasattr(self, "notifications"):
-                if notification_obj := self.notifications.get(notification_key):
-                    notification = notification_obj.function()
+                exc, notification_payload = (
+                    (exc.args[0], exc.args[1])
+                    if len(exc.args) == 2 and self._is_value_action_notification_type(exc.args[1])
+                    else (exc, None)
+                )
 
-                    notification[0]["message"].children = notification[0]["message"].children.replace(
-                        "{{result}}", str(notification_result)
-                    )
-                    notification[0]["message"].children = notification[0]["message"].children.replace(
-                        "{{error_msg}}", str(error_msg)
-                    )
+                notification_key, error_msg, notification_result = self._normalize_notification(
+                    notification_payload=notification_payload,
+                    # Treat PreventUpdate exception as a special case bt showing a `success` notification.
+                    default_key="success" if isinstance(exc, PreventUpdate) else "error",
+                    error_msg=exc,
+                )
 
-                    return_value["internal"]["vizro_notification"] = [notification]
-                else:
-                    return_value["internal"]["vizro_notification"] = [no_update]
+            return_value = {"internal": {"action_finished": action_finished, "action_progress_indicator": no_update}}
 
             if "external" in callback_outputs:
                 return_value["external"] = external_return
+
+            vizro_notification = self._render_notification(notification_key, notification_result, error_msg)
+            if vizro_notification is not None:
+                return_value["internal"]["vizro_notification"] = vizro_notification
 
             return return_value
 
@@ -640,7 +654,7 @@ class Action(_BaseAction):
             if legacy:
                 warnings.warn(
                     "Passing a static argument to a custom action is deprecated and will not be possible in "
-                    "Vizro 0.2.0. See https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/static"
+                    "Vizro 0.2.0. See https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#static"
                     "-argument-for-custom-action.",
                     category=FutureWarning,
                 )

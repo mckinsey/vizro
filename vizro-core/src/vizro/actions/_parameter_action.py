@@ -7,13 +7,15 @@ import vizro.models as vm
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers import model_manager
-from vizro.models.types import ModelID, _Controls
+from vizro.models.types import ActionNotificationType, ModelID, _Controls
 
 
 class _parameter(_AbstractAction):
     type: Literal["_parameter"] = "_parameter"
 
     targets: list[str] = Field(description="Targets in the form `<target_component>.<target_argument>`.")
+
+    notifications: ActionNotificationType  # type: ignore[misc]
 
     @property
     def _target_ids(self) -> list[ModelID]:
@@ -31,6 +33,15 @@ class _parameter(_AbstractAction):
             Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
 
         """
+        # TODO PP IMPORTANT: REMOVE SLEEP AND EXCEPTION AFTER TESTING
+        import random
+        from time import sleep
+
+        sleep(2)
+
+        if random.random() > 0.5:
+            raise Exception("Random error occurred during data export!")
+
         # This is identical to _on_page_load but with self._target_ids rather than self.targets.
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
@@ -49,3 +60,19 @@ class _parameter(_AbstractAction):
             target: f"{target}.selector" if isinstance(model_manager[target], vm.Filter) else target
             for target in self._target_ids
         }
+
+
+# TODO PP NOW: Fix this
+def rebuild_models():
+    # local import inside the function avoids import-time circularity
+    from vizro.actions._notifications import show_notification, update_notification
+
+    _parameter.model_rebuild(
+        _types_namespace={
+            "show_notification": show_notification,
+            "update_notification": update_notification,
+        }
+    )
+
+
+rebuild_models()

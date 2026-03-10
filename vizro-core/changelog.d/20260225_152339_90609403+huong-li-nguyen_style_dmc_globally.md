@@ -10,24 +10,21 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
 <!--
 ### Removed
 
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
+<!--
 ### Added
 
-- Initial release of vizro-dash-components (`vdc`) with `Markdown` component: a clone of `dcc.Markdown` that uses `dmc.CodeHighlight` and `dmc.InlineCodeHighlight`. ([#1571](https://github.com/mckinsey/vizro/pull/1571))
-
-<!--
-### Changed
-
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
+### Changed
+
+- Extend global Mantine theme so that DMC-based custom components better match Vizro's theme. ([#1623](https://github.com/mckinsey/vizro/pull/1623))
 
 <!--
 ### Deprecated
@@ -35,14 +32,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
 <!--
 ### Fixed
 
 - A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
 <!--
 ### Security
 

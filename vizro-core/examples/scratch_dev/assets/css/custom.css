@@ -2,13 +2,13 @@
 
 #logo-dark,
 #logo-light {
-  height: 30px;
-}
-
-#page-header {
-  display: none;
+  height: 28px;
 }
 
 .cond-notification-slider {
   width: 240px;
+}
+
+#p4_exit_path_slider {
+  display: none;
 }

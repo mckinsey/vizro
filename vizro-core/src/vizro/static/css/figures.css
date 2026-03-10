@@ -1,5 +1,5 @@
 .card-kpi {
-  border-left: 4px solid var(--bs-body-color);
+  border-left: 4px solid var(--bs-gray);
   height: 100%;
   padding: 0.75rem;
 }
@@ -78,19 +78,19 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .card-kpi .color-pos.card-footer {
-  color: var(--bs-blue);
+  color: var(--bs-success);
 }
 
 .card-kpi .color-neg.card-footer {
-  color: var(--bs-pink);
+  color: var(--bs-danger);
 }
 
 .card-kpi:has(.color-pos) {
-  border-left: 4px solid var(--bs-blue);
+  border-left: 4px solid var(--bs-success);
 }
 
 .card-kpi:has(.color-neg) {
-  border-left: 4px solid var(--bs-pink);
+  border-left: 4px solid var(--bs-danger);
 }
 
 .is-clickable > .card-kpi {
