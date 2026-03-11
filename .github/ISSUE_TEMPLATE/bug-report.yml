@@ -24,6 +24,7 @@ body:
         - vizro
         - vizro-mcp
         - vizro-ai
+        - vizro-e2e-flow
     validations:
       required: true
 

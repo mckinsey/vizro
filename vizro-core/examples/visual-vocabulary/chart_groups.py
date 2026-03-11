@@ -49,9 +49,7 @@ positive, neutral or negative sentiment.
 deviation_chart_group = ChartGroup(
     name="Deviation",
     pages=pages.deviation.pages,
-    incomplete_pages=[
-        IncompletePage(title="Surplus deficit filled line"),
-    ],
+    incomplete_pages=[],
     icon="Contrast Square",
     intro_text=deviation_intro_text,
 )
@@ -153,7 +151,6 @@ part_to_whole_chart_group = ChartGroup(
         IncompletePage("Marimekko"),
         IncompletePage("Arc"),
         IncompletePage("Gridplot"),
-        IncompletePage("Venn"),
     ],
     icon="Donut Small",
     intro_text=part_to_whole_intro_text,

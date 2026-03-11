@@ -251,6 +251,9 @@ class TestDunderMethodsGraph:
         # Mock out set_props so we don't need to supply mock callback context for this test.
         mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
         graph = vm.Graph(figure=standard_px_chart).__call__()
+
+        standard_px_chart.update_layout(modebar_remove=["select2d", "lasso2d"])
+
         assert graph == standard_px_chart
 
     def test_graph_trigger(self, standard_px_chart, identity_action_function):
@@ -312,7 +315,6 @@ class TestBuildGraph:
                         ),
                         config={
                             "frameMargins": 0,
-                            "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
                     None,
@@ -352,7 +354,6 @@ class TestBuildGraph:
                         ),
                         config={
                             "frameMargins": 0,
-                            "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
                     dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
@@ -401,7 +402,6 @@ class TestBuildGraph:
                         ),
                         config={
                             "frameMargins": 0,
-                            "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
                     None,
@@ -440,7 +440,6 @@ class TestBuildGraph:
                         ),
                         config={
                             "frameMargins": 0,
-                            "modeBarButtonsToRemove": ["toImage"],
                             "displayModeBar": False,
                         },
                         className="test",

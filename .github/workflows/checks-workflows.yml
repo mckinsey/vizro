@@ -1,5 +1,8 @@
 name: Checks for GitHub workflows
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main]

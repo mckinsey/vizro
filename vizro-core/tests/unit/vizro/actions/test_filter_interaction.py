@@ -174,7 +174,7 @@ class TestFilterInteraction:
         result = model_manager["test_action"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent}
 
-        assert result == expected
+        assert result["scatter_chart"].data == expected["scatter_chart"].data
 
     @pytest.mark.parametrize(
         "ctx_filter_interaction,target_scatter_filtered_continent,target_box_filtered_continent",
@@ -197,7 +197,8 @@ class TestFilterInteraction:
         result = model_manager["test_action"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
-        assert result == expected
+        assert result["scatter_chart"].data == expected["scatter_chart"].data
+        assert result["box_chart"].data == expected["box_chart"].data
 
     @pytest.mark.xfail  # This (or similar code) should raise a Value/Validation error explaining next steps
     @pytest.mark.parametrize("target", ["invalid_target", ["invalid_target"]])
@@ -226,7 +227,7 @@ class TestFilterInteraction:
         result = model_manager["test_action"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent}
 
-        assert result == expected
+        assert result["scatter_chart"].data == expected["scatter_chart"].data
 
     @pytest.mark.parametrize(
         "ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent",
@@ -251,7 +252,8 @@ class TestFilterInteraction:
         result = model_manager["test_action"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
-        assert result == expected
+        assert result["scatter_chart"].data == expected["scatter_chart"].data
+        assert result["box_chart"].data == expected["box_chart"].data
 
     @pytest.mark.parametrize(
         "ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent",
@@ -278,7 +280,8 @@ class TestFilterInteraction:
         result = model_manager["test_action"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
-        assert result == expected
+        assert result["scatter_chart"].data == expected["scatter_chart"].data
+        assert result["box_chart"].data == expected["box_chart"].data
 
     @pytest.mark.parametrize(
         "ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent",
@@ -303,7 +306,8 @@ class TestFilterInteraction:
         result = model_manager["test_action"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
-        assert result == expected
+        assert result["scatter_chart"].data == expected["scatter_chart"].data
+        assert result["box_chart"].data == expected["box_chart"].data
 
     # TODO: Simplify parametrization, such that we have less repetitive code
     # TODO: Eliminate above xfails

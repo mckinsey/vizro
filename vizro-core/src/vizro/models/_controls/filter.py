@@ -15,7 +15,7 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
-from vizro.models._components.form import DatePicker, Dropdown, RangeSlider, Switch
+from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch
 from vizro.models._controls._controls_utils import (
     SELECTORS,
     _is_boolean_selector,
@@ -81,15 +81,6 @@ class Filter(VizroBaseModel):
     Abstract: Usage documentation
         [How to use filters](../user-guides/filters.md)
 
-    Args:
-        column (str): Column of `DataFrame` to filter.
-        targets (list[ModelID]): Target component to be affected by filter. If none are given then target all components
-            on the page that use `column`. Defaults to `[]`.
-        selector (SelectorType | None): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
-        show_in_url (bool): Whether the filter should be included in the URL query string. Defaults to `False`.
-            Useful for bookmarking or sharing dashboards with specific filter values pre-set.
-        visible (bool): Whether the filter should be visible. Defaults to `True`.
-
     Example:
         ```python
         import vizro.models as vm
@@ -109,13 +100,13 @@ class Filter(VizroBaseModel):
     show_in_url: bool = Field(
         default=False,
         description=(
-            "Whether the filter should be included in the URL query string. Defaults to `False`. "
+            "Whether the filter should be included in the URL query string. "
             "Useful for bookmarking or sharing dashboards with specific filter values pre-set."
         ),
     )
     visible: bool = Field(
         default=True,
-        description="Whether the filter should be visible. Defaults to `True`.",
+        description="Whether the filter should be visible.",
     )
 
     _dynamic: bool = PrivateAttr(False)
@@ -124,6 +115,7 @@ class Filter(VizroBaseModel):
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
+        """Check that the filter has an `id` set if it is shown in the URL."""
         # If the filter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
         warn_missing_id_for_url_control(control=self)
         return self
@@ -316,17 +308,12 @@ class Filter(VizroBaseModel):
         if not self._dynamic:
             return html.Div(id=self.id, children=selector_build_obj, hidden=not self.visible)
 
-        # Temporarily hide the selector and numeric dcc.Input components during the filter reloading process.
-        # Other components, such as the title, remain visible because of the configuration:
-        # overlay_style={"visibility": "visible"} in dcc.Loading.
-        # Note: dcc.Slider and dcc.RangeSlider do not support the "style" property directly,
-        # so the "className" attribute is used to apply custom CSS for visibility control.
-        # Reference for Dash class names: https://dashcheatsheet.pythonanywhere.com/
+        # Temporarily hide the selector during the filter reloading process. Other components, such as the title,
+        # remain visible because of the configuration: overlay_style={"visibility": "visible"} in dcc.Loading.
+        # If the selector is a Checklist with show_select_all=True, then hide the select all checkbox too.
         selector_build_obj[selector.id].className = "invisible"
-        if f"{selector.id}_start_value" in selector_build_obj:
-            selector_build_obj[f"{selector.id}_start_value"].className = "d-none"
-        if f"{selector.id}_end_value" in selector_build_obj:
-            selector_build_obj[f"{selector.id}_end_value"].className = "d-none"
+        if isinstance(selector, Checklist) and selector.show_select_all:
+            selector_build_obj[f"{selector.id}_select_all"].className = "invisible"
 
         # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
         #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().

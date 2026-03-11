@@ -1,6 +1,11 @@
 # This workflow will triage pull requests and apply a label based on the
 # paths that are modified in the pull request.
 name: Labeler
+
+permissions:
+  contents: read
+  pull-requests: write
+
 on:
   # Note this job uses pull_request_target so we should not add steps that check out, build, or run untrusted code.
   # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#pull_request_target
@@ -11,9 +16,6 @@ on:
 jobs:
   label:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
 
     steps:
       - uses: actions/labeler@v6

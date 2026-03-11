@@ -1,5 +1,8 @@
 name: Build
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main]
@@ -30,7 +33,7 @@ jobs:
       - name: Build vizro-core package
         run: hatch build -t wheel
       - name: Upload vizro-core artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: pip
           path: vizro-core/dist/*.whl
@@ -39,7 +42,7 @@ jobs:
         working-directory: vizro-ai
         run: hatch build -t wheel
       - name: Upload vizro-ai artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: pip2
           path: vizro-ai/dist/*.whl

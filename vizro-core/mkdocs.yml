@@ -37,7 +37,7 @@ nav:
       - Visual formatting:
           - Overview: pages/user-guides/visual-formatting.md
           - Layout: pages/user-guides/layouts.md
-          - Theme: pages/user-guides/themes.md
+          - Themes and colors: pages/user-guides/themes.md
           - Assets: pages/user-guides/assets.md
           - Custom CSS: pages/user-guides/custom-css.md
       - Data:
@@ -54,6 +54,7 @@ nav:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
       - Actions: pages/API-reference/actions.md
+      - Themes: pages/API-reference/themes.md
       - Table functions: pages/API-reference/table-callables.md
       - Figure functions: pages/API-reference/figure-callables.md
       - Kedro integration: pages/API-reference/kedro-integration.md
@@ -71,6 +72,8 @@ nav:
           - Authors: pages/explanation/authors.md
   - Vizro-MCP:
       - Vizro-MCP: https://vizro.readthedocs.io/projects/vizro-mcp/
+  - Vizro-AI:
+      - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
 
 repo_url: https://github.com/mckinsey/vizro
 repo_name: mckinsey/vizro
@@ -126,7 +129,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.50
+                vizro==0.1.52
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
@@ -153,7 +156,7 @@ plugins:
         Configuration can be written in multiple formats including Pydantic models, JSON, YAML or Python dictionaries for added flexibility of implementation.
 
         Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
-      base_url: https://vizro.readthedocs.io/en/0.1.49/
+      base_url: https://vizro.readthedocs.io/en/0.1.52/
       full_output: llms-full.txt
       sections:
         "TUTORIALS":
@@ -184,7 +187,7 @@ plugins:
         "HOW TO APPLY VISUAL FORMATTING":
           - pages/user-guides/visual-formatting.md: "Formatting overview"
           - pages/user-guides/layouts.md: "Layouts"
-          - pages/user-guides/themes.md: "Themes"
+          - pages/user-guides/themes.md: "Themes and colors"
           - pages/user-guides/assets.md: "Assets"
           - pages/user-guides/custom-css.md: "Custom CSS"
         "ACTIONS":
@@ -210,36 +213,43 @@ plugins:
           - pages/explanation/schema.md: "The Vizro schema"
           - pages/explanation/authors.md: "Vizro contributor listing"
   - mkdocstrings:
+      custom_templates: docs/templates # includes custom jinja template for Pydantic field rendering
       handlers:
         python:
           options:
             show_bases: false
-            show_source: false #currently doesn't show source at correct level, and not for pydantic models
+            show_source: false # currently doesn't show source at correct level, and not for pydantic models
             docstring_style: google
             merge_init_into_class: true
-            docstring_section_style: list
+            docstring_section_style: spacy
             separate_signature: true
-            #   filters: ["!^_"]
+            unwrap_annotated: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: false
+            signature_crossrefs: true
+            show_signature_annotations: true
+            filters: ["!^_"] # Hide private attributes (names starting with underscore)
             show_root_heading: true
             docstring_options:
               ignore_init_summary: true
               warn_unknown_params: false
               returns_named_value: false
             extensions:
-              - docs/griffe_extensions.py:
+              - docs/griffe_extensions.py:DynamicallyInspect:
                   paths:
                     [vizro.figures.kpi_card, vizro.figures.kpi_card_reference]
               - griffe_warnings_deprecated:
                   kind: danger
                   title: Deprecated
+              - griffe_pydantic:
+                  schema: true
+              - docs/griffe_extensions.py:PydanticDocsCleaner
           paths: [src]
+          inventories:
+            - https://docs.python.org/3/objects.inv
+            - https://docs.pydantic.dev/latest/objects.inv
   - git-revision-date-localized:
       enable_creation_date: false
-
-extra:
-  meta:
-    - name: google-site-verification
-      content: "CYb3cxosCgsN2QDQVaSGQpMQCesqpsGQ3oTM02NtvkY"
 extra_css:
   - stylesheets/extra.css
 extra_javascript:

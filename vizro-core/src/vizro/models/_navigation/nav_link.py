@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import itertools
-from typing import Annotated, cast
+import warnings
+from typing import Annotated, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
@@ -21,11 +22,6 @@ class NavLink(VizroBaseModel):
     Abstract: Usage documentation
         [How to customize the NavBar icons](../user-guides/navigation.md#change-icons)
 
-    Args:
-        pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
-        label (str): Text description of the icon for use in tooltip.
-        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `""`.
-
     """
 
     pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
@@ -36,12 +32,20 @@ class NavLink(VizroBaseModel):
         Field(default="", description="Icon name from Google Material icons library."),
     ]
     _nav_selector: Accordion = PrivateAttr()
+    _nav_position: Literal["left", "top"] = PrivateAttr(default="left")
 
     @_log_call
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
 
         self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
+
+        if self.icon and self._nav_position == "top":
+            warnings.warn(
+                'Using the `icon` argument when `vm.NavBar(position="top")` is set is not currently supported. '
+                'Icons are only supported for `position="left"`.',
+                UserWarning,
+            )
 
     @_log_call
     def build(self, *, active_page_id=None):
@@ -55,7 +59,7 @@ class NavLink(VizroBaseModel):
         item_active = active_page_id in all_page_ids
         first_page = cast(Page, model_manager[first_page_id])
 
-        nav_link = dbc.NavLink(
+        nav_link_children = (
             [
                 html.Span(self.icon, className="material-symbols-outlined", id=f"{self.id}-tooltip-target"),
                 dbc.Tooltip(
@@ -63,11 +67,14 @@ class NavLink(VizroBaseModel):
                     placement="right",
                     target=f"{self.id}-tooltip-target",
                 ),
-            ],
+            ]
+            if self._nav_position == "left"
+            else self.label
+        )
+        nav_link = dbc.NavLink(
+            nav_link_children,
             id=self.id,
             href=get_relative_path(first_page.path),
-            # `active` is required to keep the icon highlighted when navigating through different pages inside
-            # the nested accordion
             active=item_active,
         )
 
