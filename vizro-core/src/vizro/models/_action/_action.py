@@ -578,7 +578,7 @@ class _BaseAction(VizroBaseModel):
                 )
                 notification_key, notification_result = self._parse_notification_payload(notification_payload)
                 # Treat PreventUpdate exception as a special case by showing a `success` notification by default.
-                notification_key = notification_key or "success" if isinstance(exc, PreventUpdate) else "error"
+                notification_key = notification_key or ("success" if isinstance(exc, PreventUpdate) else "error")
 
             return_value = {"internal": {"action_finished": action_finished, "action_progress_indicator": no_update}}
 
