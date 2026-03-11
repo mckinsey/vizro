@@ -115,7 +115,7 @@ def _normalize_action_notifications(value: Any) -> Any:
     """
     from vizro.actions import show_notification, update_notification
 
-    # Default "error" to string first. It will be converted to notificaiton action below.
+    # Default "error" to string first. It will be converted to notification action below.
     value.setdefault("error", "Action failed.")
 
     # If present, ensure that the "progress" is a notification action and not a string to extract its ID.
