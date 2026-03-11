@@ -23,6 +23,7 @@ daily_baseline = pd.DataFrame(
         "date": _dates,
         "date_label": _date_labels,
         "ton": [56, 43, 50, 48, 42, 56, 43, 59],
+        "actual": 1500,
     }
 )
 # Scenario a: solid teal line in chart
@@ -31,55 +32,37 @@ daily_scenario_a = pd.DataFrame(
         "date": _dates,
         "date_label": _date_labels,
         "ton": [38, 65, 49, 50, 45, 52, 42, 68],
+        "actual": 1470,
     }
 )
 
-# ── 2. KPI summary cards (left panel) ────────────────────────────────────────
-
-kpi_summary_production = pd.DataFrame(
-    [
-        {
-            "kpi": "Total production volume",
-            "description": "The total production volume",
-            "value": 1608.00,
-            "unit": "ton",
-            "baseline_value": 1285.00,
-            "baseline_unit": "ton",
-            "change_pct": 25.1,
-            "direction": "up",
-        },
-    ]
+daily_scenario_b = pd.DataFrame(
+    {
+        "date": _dates,
+        "date_label": _date_labels,
+        "ton": [48, 65, 59, 50, 40, 52, 41, 58],
+        "actual": 1720,
+    }
 )
 
-kpi_summary_average = pd.DataFrame(
-    [
-        {
-            "kpi": "Daily average WIP",
-            "description": "The daily average WIP for all equipment during the period",
-            "value": 14.56,
-            "unit": "ton",
-            "baseline_value": 25.02,
-            "baseline_unit": "ton",
-            "change_pct": -41.8,
-            "direction": "down",
-        },
-    ]
+daily_scenario_c = pd.DataFrame(
+    {
+        "date": _dates,
+        "date_label": _date_labels,
+        "ton": [38, 45, 49, 56, 47, 32, 41, 68],
+        "actual": 1550,
+    }
 )
 
-kpi_summary_lead = pd.DataFrame(
-    [
-        {
-            "kpi": "Average lead time",
-            "description": "The average lead time for all product types across the 2nd company for the entire period",
-            "value": 3.31,
-            "unit": "day",
-            "baseline_value": 8.25,
-            "baseline_unit": "day",
-            "change_pct": -59.8,
-            "direction": "down",
-        },
-    ]
+daily_scenario_d = pd.DataFrame(
+    {
+        "date": _dates,
+        "date_label": _date_labels,
+        "ton": [37, 35, 39, 56, 67, 62, 51, 68],
+        "actual": 1350,
+    }
 )
+
 
 # ── 3. WIP by Equipment (used in the "WIP by Equipment" tab) ─────────────────
 equipment_list = ["CNC Mill A", "CNC Mill B", "Lathe 1", "Lathe 2", "Assembly Line", "Paint Station"]
@@ -134,7 +117,7 @@ data = [
         "baseline": False,
         "id": "d4e72c1a-8b3f-4a6d-9e5c-2f1b7a4d3e08",
         "date_created": datetime(2026, 1, 10, 14, 42),
-        "status": "Failed",
+        "status": "Optimized",
         "created_ago": "18 DAYS AGO",
         "Scenario action": "Action",
     },
@@ -153,6 +136,59 @@ scenario_data = pd.DataFrame(data)
 scenario_data["date_created"] = pd.to_datetime(scenario_data["date_created"])
 
 # Comparison KPI: actual + two scenarios (for custom kpi_card_actual_vs_scenarios)
+
+kpi_comparison_baseline = pd.DataFrame(
+    [
+        {
+            "production_volume": 1285.00,
+            "average_wip": 25.02,
+            "average_lead": 8.25,
+        }
+    ]
+)
+
+kpi_comparison_scenario_a = pd.DataFrame(
+    [
+        {
+            "scenario_name": "Increased high-end product",
+            "production_volume": 1885.00,
+            "average_wip": 35.02,
+            "average_lead": 9.25,
+        }
+    ]
+)
+
+kpi_comparison_scenario_b = pd.DataFrame(
+    [
+        {
+            "scenario_name": "Reduced pricing tier",
+            "production_volume": 1485.00,
+            "average_wip": 15.02,
+            "average_lead": 4.25,
+        }
+    ]
+)
+kpi_comparison_scenario_c = pd.DataFrame(
+    [
+        {
+            "scenario_name": "Aggressive discounting",
+            "production_volume": 1585.00,
+            "average_wip": 39.02,
+            "average_lead": 5.65,
+        }
+    ]
+)
+kpi_comparison_scenario_d = pd.DataFrame(
+    [
+        {
+            "scenario_name": "Bundle promotion strategy",
+            "production_volume": 1155.00,
+            "average_wip": 29.92,
+            "average_lead": 4.15,
+        }
+    ]
+)
+
 kpi_comparison_production = pd.DataFrame(
     [
         {
