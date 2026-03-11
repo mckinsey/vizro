@@ -130,12 +130,13 @@ def _normalize_action_notifications(value: Any) -> Any:
                 "variant": notif_key if notif_key in {"progress", "success", "error"} else "info",
             }
 
+            notification_action: show_notification | update_notification
             if notif_key != "progress" and progress is not None:
-                notif_value = update_notification(**defaults, notification=progress.id)
+                notification_action = update_notification(**defaults, notification=progress.id)  # type: ignore[arg-type]
             else:
-                notif_value = show_notification(**defaults)
+                notification_action = show_notification(**defaults)  # type: ignore[arg-type]
 
-            value[notif_key] = notif_value
+            value[notif_key] = notification_action
 
         if value[notif_key] is not None:
             value[notif_key]._is_conditional = True

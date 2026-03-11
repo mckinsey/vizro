@@ -326,7 +326,7 @@ page_4 = vm.Page(
                             text="Run pipeline",
                             actions=[
                                 vm.Action(
-                                    function=random_pipeline(f"{pre}_raise_exc_switch", f"{pre}_exit_path_slider"),
+                                    function=random_pipeline(f"{pre}_raise_exc_switch", f"{pre}-exit-path-slider"),
                                     outputs=f"{pre}_text",
                                     notifications={
                                         "progress": va.show_notification(
@@ -350,7 +350,7 @@ page_4 = vm.Page(
                         ),
                         vm.Text(id=f"{pre}_text", text="Click the button to run action."),
                         vm.Slider(
-                            id=f"{pre}_exit_path_slider",
+                            id=f"{pre}-exit-path-slider",
                             min=1,
                             max=4,
                             value=2,
@@ -414,7 +414,7 @@ page_5 = vm.Page(
                     layout=vm.Flex(),
                     components=[
                         vm.Slider(
-                            id=f"{pre}_exit_path_slider",
+                            id=f"{pre}-exit-path-slider",
                             title="Choose exit path",
                             min=1,
                             max=4,
@@ -430,7 +430,7 @@ page_5 = vm.Page(
                                 vm.Action(
                                     function=random_pipeline(
                                         switch_successfulness=f"{pre}_raise_exc_switch",
-                                        exit_path_slider=f"{pre}_exit_path_slider",
+                                        exit_path_slider=f"{pre}-exit-path-slider",
                                     ),
                                     outputs=f"{pre}_text",
                                     notifications={
@@ -524,7 +524,7 @@ page_6 = vm.Page(
                     layout=vm.Flex(),
                     components=[
                         vm.Slider(
-                            id=f"{pre}_exit_path_slider",
+                            id=f"{pre}-exit-path-slider",
                             title="Choose exit path",
                             min=1,
                             max=4,
@@ -540,7 +540,7 @@ page_6 = vm.Page(
                                 vm.Action(
                                     function=random_pipeline(
                                         switch_successfulness=f"{pre}_raise_exc_switch",
-                                        exit_path_slider=f"{pre}_exit_path_slider",
+                                        exit_path_slider=f"{pre}-exit-path-slider",
                                     ),
                                     outputs=f"{pre}_text",
                                     notifications={
@@ -716,6 +716,100 @@ page_8 = vm.Page(
     ],
 )
 
+pre = "p9"
+page_9 = vm.Page(
+    title="Different action output structure",
+    layout=vm.Flex(),
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Actions without notifications",
+                    layout=vm.Flex(),
+                    components=[
+                        vm.Button(
+                            text="Action with no output",
+                            actions=vm.Action(
+                                function=capture("action")(lambda: print("Action with no output executed"))(),
+                            ),
+                        ),
+                        vm.Button(
+                            text="Action with single output",
+                            actions=vm.Action(
+                                function=capture("action")(lambda _trigger: f"Button clicked {_trigger} times.")(),
+                                outputs=f"{pre}_text",
+                            ),
+                        ),
+                        vm.Button(
+                            text="Action with list outputs",
+                            actions=vm.Action(
+                                function=capture("action")(lambda _trigger: f"Button clicked {_trigger} times.")(),
+                                outputs=[f"{pre}_text"],
+                            ),
+                        ),
+                        vm.Button(
+                            text="Action with dict outputs",
+                            actions=vm.Action(
+                                function=capture("action")(
+                                    lambda _trigger: {f"{pre}_text_key": f"Button clicked {_trigger} times."}
+                                )(),
+                                outputs={f"{pre}_text_key": f"{pre}_text"},
+                            ),
+                        ),
+                    ],
+                ),
+                vm.Container(
+                    title="Actions with notifications",
+                    layout=vm.Flex(),
+                    components=[
+                        vm.Button(
+                            text="Action with no output",
+                            actions=vm.Action(
+                                function=capture("action")(lambda: "my_success")(),
+                                notifications={"my_success": "Action with no output executed successfully!"},
+                            ),
+                        ),
+                        vm.Button(
+                            text="Action with single output",
+                            actions=vm.Action(
+                                function=capture("action")(
+                                    lambda _trigger: (f"Button clicked {_trigger} times.", "my_success")
+                                )(),
+                                outputs=f"{pre}_text",
+                                notifications={"my_success": "Action with single output executed successfully!"},
+                            ),
+                        ),
+                        vm.Button(
+                            text="Action with list outputs",
+                            actions=vm.Action(
+                                function=capture("action")(
+                                    lambda _trigger: (f"Button clicked {_trigger} times.", "my_success")
+                                )(),
+                                outputs=[f"{pre}_text"],
+                                notifications={"my_success": "Action with list outputs executed successfully!"},
+                            ),
+                        ),
+                        vm.Button(
+                            text="Action with dict outputs",
+                            actions=vm.Action(
+                                function=capture("action")(
+                                    lambda _trigger: (
+                                        {f"{pre}_text_key": f"Button clicked {_trigger} times."},
+                                        "my_success",
+                                    )
+                                )(),
+                                outputs={f"{pre}_text_key": f"{pre}_text"},
+                                notifications={"my_success": "Action with dict outputs executed successfully!"},
+                            ),
+                        ),
+                    ],
+                ),
+            ]
+        ),
+        vm.Text(id=f"{pre}_text", text="Action not triggered yet."),
+    ],
+)
+
 dashboard = vm.Dashboard(
     pages=[
         page_0,
@@ -727,6 +821,7 @@ dashboard = vm.Dashboard(
         page_6,
         page_7,
         page_8,
+        page_9,
     ]
 )
 
