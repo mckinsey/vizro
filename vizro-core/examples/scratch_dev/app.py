@@ -7,49 +7,41 @@ from vizro import Vizro
 
 df = px.data.iris()
 
-page_1 = vm.Page(
-    title="Page One",
-    layout=vm.Flex(),
-    components=[vm.Card(text="placeholder")],
-)
-
-
-page_two = vm.Page(
-    title="Page Two",
-    controls=[vm.Filter(column="species")],
+page = vm.Page(
+    title="Card with code snippet",
     components=[
-        vm.Graph(figure=px.histogram(df, x="sepal_length")),
+        vm.Card(
+            text="""
+
+Block code snippet:
+```python
+
+import vizro.plotly.express as px
+from vizro import Vizro
+import vizro.models as vm
+
+df = px.data.iris()
+
+page = vm.Page(
+    title="My first dashboard",
+    components=[
+        vm.Graph(figure=px.histogram(df, x="sepal_width", color="species"))],
+    controls=[
+        vm.Filter(column="species"),
     ],
 )
 
-page_three = vm.Page(
-    title="Page Three",
-    controls=[
-        vm.Filter(
-            column="species",
-            # visible=False,
+dashboard = vm.Dashboard(pages=[page])
+Vizro().build(dashboard).run()
+
+```"""
         )
     ],
-    components=[
-        vm.Graph(figure=px.histogram(df, x="sepal_length")),
-    ],
 )
 
-navigation = vm.Navigation(
-    nav_selector=vm.NavBar(
-        items=[
-            # This raises a warning:
-            # vm.NavLink(pages=["Page One", "Page Two"], label="First Tab", icon="home"),
-            vm.NavLink(pages=["Page One", "Page Two"], label="First Tab"),
-            vm.NavLink(pages=["Page Three"], label="Second Tab"),
-        ],
-        position="top",
-    ),
-)
 
 dashboard = vm.Dashboard(
-    pages=[page_1, page_two, page_three],
-    navigation=navigation,
+    pages=[page],
     title="QB",
 )
 

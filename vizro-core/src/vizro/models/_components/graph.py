@@ -4,6 +4,7 @@ from contextlib import suppress
 from typing import Annotated, Any, Literal, cast
 
 import pandas as pd
+import vizro_dash_components as vdc
 from box import Box, BoxList
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
@@ -354,11 +355,11 @@ underlying component may change in the future.""",
                     html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
                     if self.title
                     else None,
-                    dcc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
+                    vdc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
                     if self.header
                     else None,
                     dcc.Graph(**graph_defaults),
-                    dcc.Markdown(self.footer, className="figure-footer", id=f"{self.id}_footer")
+                    vdc.Markdown(self.footer, className="figure-footer", id=f"{self.id}_footer")
                     if self.footer
                     else None,
                 ],
