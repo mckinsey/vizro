@@ -640,6 +640,9 @@ class _OptionsDictType(TypedDict):
 OptionsType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date] | list[_OptionsDictType]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
+TreeOptionsType: TypeAlias = dict[str, Any]
+"""Permissible options type for tree selectors."""
+
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
 SelectorType = Annotated[
     "Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch",
