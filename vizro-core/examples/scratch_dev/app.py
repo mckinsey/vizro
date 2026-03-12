@@ -1,57 +1,98 @@
 """Dev app to try things out."""
 
+import json
+
+import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
-
+import vizro_dash_components as vdc
 from vizro import Vizro
+from vizro.models.types import capture
 
-df = px.data.iris()
+# --- Data ---
 
-page_1 = vm.Page(
-    title="Page One",
-    layout=vm.Flex(),
-    components=[vm.Card(text="placeholder")],
-)
+_STRUCTURE = {
+    "Electronics": {
+        "Phones": ["iPhone 15", "Android", "Pixel 8"],
+        "Laptops": ["MacBook", "ThinkPad", "Dell XPS"],
+    },
+    "Clothing": {
+        "Tops": ["Oxford Shirt", "Polo Shirt", "T-Shirt"],
+        "Bottoms": ["Jeans", "Chinos", "Shorts"],
+    },
+    "Food": {
+        "Fruit": ["Apple", "Banana", "Orange"],
+        "Vegetables": ["Carrot", "Broccoli", "Spinach"],
+    },
+}
+
+gapminder = px.data.gapminder()
+continents = gapminder["continent"].unique().tolist()
+GAPMINDER_OPTIONS = {
+    continent: gapminder[gapminder["continent"] == continent]["country"].unique().tolist() for continent in continents
+}
+
+# Dummy dataframes for filter compatibility (filters need a data_frame with filterable columns)
+dummy_df = pd.DataFrame({"category": ["Electronics", "Clothing", "Food"]})
+gapminder_2007 = gapminder[gapminder["year"] == 2007].copy()
 
 
-page_two = vm.Page(
-    title="Page Two",
-    controls=[vm.Filter(column="species")],
+# --- Custom figures ---
+
+
+@capture("figure")
+def show_selected(data_frame: pd.DataFrame, selected=None):
+    """Display selected values as JSON."""
+    code = json.dumps(selected, indent=2) if selected is not None else "null"
+    return vdc.Markdown(children=f"```json\n{code}\n```")
+
+
+@capture("graph")
+def gapminder_bar(data_frame: pd.DataFrame, countries=None):
+    """Bar chart of 2007 gapminder life expectancy, filtered to selected countries."""
+    if countries:
+        data_frame = data_frame[data_frame["country"].isin(countries)]
+    return px.bar(data_frame, x="country", y="lifeExp", color="continent")
+
+
+# --- Page ---
+
+page = vm.Page(
+    title="TreeSelect",
     components=[
-        vm.Graph(figure=px.histogram(df, x="sepal_length")),
+        vm.Figure(id="figure-products", figure=show_selected(data_frame=dummy_df, selected=[])),
+        vm.Graph(id="graph-gapminder", figure=gapminder_bar(data_frame=gapminder_2007, countries=[])),
     ],
-)
-
-page_three = vm.Page(
-    title="Page Three",
     controls=[
+        vm.Parameter(
+            targets=["figure-products.selected"],
+            selector=vm.TreeSelect(
+                options=_STRUCTURE,
+                title="Products (TreeSelect)",
+                multi=False,
+            ),
+        ),
+        vm.Parameter(
+            targets=["graph-gapminder.countries"],
+            selector=vm.TreeSelect(
+                options=GAPMINDER_OPTIONS,
+                title="Gapminder countries (TreeSelect)",
+            ),
+        ),
         vm.Filter(
-            column="species",
-            # visible=False,
-        )
-    ],
-    components=[
-        vm.Graph(figure=px.histogram(df, x="sepal_length")),
+            column="category",
+            targets=["figure-products"],
+            selector=vm.Checklist(title="Category filter (Checklist)"),
+        ),
+        vm.Filter(
+            column="continent",
+            targets=["graph-gapminder"],
+            selector=vm.Dropdown(title="Continent filter (Dropdown)"),
+        ),
     ],
 )
 
-navigation = vm.Navigation(
-    nav_selector=vm.NavBar(
-        items=[
-            # This raises a warning:
-            # vm.NavLink(pages=["Page One", "Page Two"], label="First Tab", icon="home"),
-            vm.NavLink(pages=["Page One", "Page Two"], label="First Tab"),
-            vm.NavLink(pages=["Page Three"], label="Second Tab"),
-        ],
-        position="top",
-    ),
-)
-
-dashboard = vm.Dashboard(
-    pages=[page_1, page_two, page_three],
-    navigation=navigation,
-    title="QB",
-)
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run(debug=True)

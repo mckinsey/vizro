@@ -1,0 +1,174 @@
+/* TREE SELECT (fac.AntdTreeSelect) ----------------------------------------- */
+/* Ant Design 5 CSS-in-JS uses :where(.css-<hash>) with 0 specificity,        */
+/* so plain class selectors here override it without needing !important.       */
+
+/* Selector box (trigger/input area) */
+.ant-tree-select.ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
+  background-color: var(--bs-primary-bg-subtle);
+  border: none;
+  border-radius: 0;
+  box-shadow: var(--bs-box-shadow-sm);
+  color: var(--bs-body-color);
+  min-height: 32px;
+}
+
+.ant-tree-select.ant-select-outlined:not(.ant-select-disabled):not(.ant-select-customize-input):hover
+  .ant-select-selector {
+  border: none;
+  box-shadow: var(--bs-box-shadow-sm);
+}
+
+/* Open/focused state: keep same shadow as closed, no focus ring */
+.ant-select-focused.ant-tree-select.ant-select-outlined:not(.ant-select-disabled):not(.ant-select-customize-input)
+  .ant-select-selector {
+  border: none;
+  box-shadow: var(--bs-box-shadow-sm);
+  outline: none;
+}
+
+/* Placeholder text */
+.ant-tree-select .ant-select-selection-placeholder {
+  color: var(--bs-secondary);
+}
+
+/* Dropdown arrow and clear icon */
+.ant-tree-select .ant-select-arrow,
+.ant-tree-select .ant-select-suffix,
+.ant-tree-select .ant-select-clear {
+  color: var(--bs-secondary);
+  background: transparent;
+  font-size: 8px;
+  width: 8px;
+}
+
+.ant-tree-select .ant-select-arrow:hover,
+.ant-tree-select .ant-select-clear:hover {
+  color: var(--bs-primary);
+}
+
+/* Selected tag chips (multi mode) */
+.ant-tree-select.ant-select-outlined.ant-select-multiple .ant-select-selection-item {
+  background: var(--bs-highlight-bg);
+  border: none;
+  border-radius: 0;
+  color: var(--bs-body-color);
+}
+
+.ant-tree-select .ant-select-selection-item-remove {
+  color: var(--bs-secondary);
+}
+
+.ant-tree-select .ant-select-selection-item-remove:hover {
+  color: var(--bs-primary);
+}
+
+/* Dropdown popup panel */
+.ant-tree-select-dropdown {
+  background-color: var(--bs-primary-bg-subtle);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0 0 4px;
+}
+
+/* Tree list container */
+.ant-tree-select-dropdown .ant-select-tree {
+  background: var(--bs-primary-bg-subtle);
+  color: var(--bs-body-color);
+}
+
+.ant-tree-select-dropdown .ant-select-tree-list-holder {
+  background: var(--bs-primary-bg-subtle);
+}
+
+/* Tree nodes - match dcc Dropdown item height (6px top+bottom padding, 21px line-height = 33px) */
+.ant-tree-select-dropdown .ant-select-tree-treenode {
+  align-items: center;
+  color: var(--bs-body-color);
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+/* 3-class specificity to beat CSS-in-JS min-height: 24px and line-height: 24px rules */
+.ant-tree-select-dropdown .ant-select-tree-treenode .ant-select-tree-node-content-wrapper {
+  line-height: 21px;
+  min-height: 0;
+  padding: 6px 8px;
+}
+
+.ant-tree-select-dropdown .ant-select-tree-node-content-wrapper:hover {
+  background: transparent;
+  color: var(--bs-primary-text-emphasis);
+}
+
+.ant-tree-select-dropdown .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected {
+  background: transparent;
+}
+
+/* Collapse/expand arrows */
+.ant-tree-select-dropdown .ant-select-tree-switcher {
+  color: var(--bs-secondary);
+}
+
+.ant-tree-select-dropdown .ant-select-tree-switcher:hover {
+  color: var(--bs-primary);
+}
+
+/* Checkboxes - need 3-class specificity to beat CSS-in-JS rules */
+.ant-tree-select-dropdown .ant-select-tree-checkbox .ant-select-tree-checkbox-inner {
+  background-color: transparent;
+  border: 1px solid var(--bs-secondary);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.ant-tree-select-dropdown .ant-select-tree-checkbox:hover .ant-select-tree-checkbox-inner {
+  border-color: var(--bs-primary);
+}
+
+.ant-tree-select-dropdown
+  .ant-select-tree-checkbox-checked
+  .ant-select-tree-checkbox-inner,
+.ant-tree-select-dropdown
+  .ant-select-tree-checkbox-indeterminate
+  .ant-select-tree-checkbox-inner {
+  background-color: transparent;
+  border-color: var(--bs-secondary);
+}
+
+.ant-tree-select-dropdown
+  .ant-select-tree-checkbox-checked
+  .ant-select-tree-checkbox-inner::after {
+  border-color: var(--bs-secondary);
+}
+
+.ant-tree-select-dropdown
+  .ant-select-tree-checkbox-indeterminate
+  .ant-select-tree-checkbox-inner::after {
+  background-color: var(--bs-secondary);
+}
+
+/* Tree title text */
+.ant-tree-select-dropdown .ant-select-tree-title {
+  color: var(--bs-body-color);
+}
+
+/* Search input inside the popup - match dcc Dropdown search (no border, transparent) */
+.ant-tree-select-dropdown .ant-select-tree-list-search {
+  padding: 0 8px;
+}
+
+.ant-tree-select-dropdown .ant-select-tree-list-search input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--bs-border-color);
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--bs-body-color);
+  outline: none;
+  padding: 4px 0;
+}
+
+.ant-tree-select-dropdown .ant-select-tree-list-search input:focus {
+  border-bottom-color: var(--bs-focus-ring-color);
+}
