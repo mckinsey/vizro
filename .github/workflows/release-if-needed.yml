@@ -121,6 +121,8 @@ jobs:
             hatch run schema
           fi
           if [ "${{ needs.check-version.outputs.package_name }}" == "vizro-dash-components" ]; then
+            # hatch-nodejs-version writes package.json with 4-space indent; reformat to match biome config.
+            npx biome format --write package.json
             npm install --package-lock-only --legacy-peer-deps
           fi
           git config user.email "145135826+vizro-svc@users.noreply.github.com"
