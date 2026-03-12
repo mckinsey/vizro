@@ -8,11 +8,6 @@ from pydantic import TypeAdapter
 from vizro.models._action._action import _BaseAction
 from vizro.models.types import OutputsType, _IdOrIdProperty
 
-# from typing import TYPE_CHECKING, Annotated
-#
-# if TYPE_CHECKING:
-#     from vizro.actions import show_notification, update_notification
-
 
 # TODO-AV2 D 5: make public.
 class _AbstractAction(_BaseAction, abc.ABC):
