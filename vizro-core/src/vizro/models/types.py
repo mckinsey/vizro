@@ -655,7 +655,7 @@ _FormComponentType = Annotated[
 ]
 
 ControlType = Annotated[
-    "Filter | Parameter",
+    "Filter | Parameter | ControlGroup",
     Field(discriminator="type", description="Control that affects components on the page."),
 ]
 """Discriminated union. Type of control that affects components on the page: [`Filter`][vizro.models.Filter] or

@@ -9,5 +9,6 @@ from vizro.models._components.graph import Graph
 from vizro.models._components.table import Table
 from vizro.models._components.tabs import Tabs
 from vizro.models._components.text import Text
+from vizro.models._components.control_group import ControlGroup
 
-__all__ = ["AgGrid", "Button", "Card", "Container", "Figure", "Graph", "Table", "Tabs", "Text"]
+__all__ = ["AgGrid", "Button", "Card", "Container", "Figure", "Graph", "Table", "Tabs", "Text", "ControlGroup"]

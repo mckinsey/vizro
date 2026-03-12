@@ -7,49 +7,37 @@ from vizro import Vizro
 
 df = px.data.iris()
 
-page_1 = vm.Page(
-    title="Page One",
-    layout=vm.Flex(),
-    components=[vm.Card(text="placeholder")],
-)
 
-
-page_two = vm.Page(
+page = vm.Page(
     title="Page Two",
-    controls=[vm.Filter(column="species")],
     components=[
         vm.Graph(figure=px.histogram(df, x="sepal_length")),
     ],
-)
-
-page_three = vm.Page(
-    title="Page Three",
     controls=[
-        vm.Filter(
-            column="species",
-            # visible=False,
+        vm.ControlGroup(
+            title="Filters",
+            controls=[
+                vm.Filter(column="species", selector=vm.Dropdown(variant="filled")),
+                vm.Filter(column="sepal_length", selector=vm.Slider())
+            ],
+            variant="outlined",
+            collapsed="True"
+        ),
+        vm.ControlGroup(
+            title="Filters 2",
+            controls=[
+                vm.Filter(column="species", selector=vm.Dropdown(variant="filled")),
+                vm.Filter(column="sepal_length", selector=vm.Slider())
+            ],
+            variant="outlined",
+            collapsed="True"
         )
     ],
-    components=[
-        vm.Graph(figure=px.histogram(df, x="sepal_length")),
-    ],
 )
 
-navigation = vm.Navigation(
-    nav_selector=vm.NavBar(
-        items=[
-            # This raises a warning:
-            # vm.NavLink(pages=["Page One", "Page Two"], label="First Tab", icon="home"),
-            vm.NavLink(pages=["Page One", "Page Two"], label="First Tab"),
-            vm.NavLink(pages=["Page Three"], label="Second Tab"),
-        ],
-        position="top",
-    ),
-)
 
 dashboard = vm.Dashboard(
-    pages=[page_1, page_two, page_three],
-    navigation=navigation,
+    pages=[page],
     title="QB",
 )
 
