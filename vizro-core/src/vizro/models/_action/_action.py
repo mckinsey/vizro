@@ -325,79 +325,6 @@ class _BaseAction(VizroBaseModel):
 
         return key in getattr(self, "notifications", {})
 
-    # def __action_callback_function(
-    #     self,
-    #     inputs: dict[str, Any] | list[Any],
-    #     outputs: dict[str, Output] | list[Output] | Output | None,
-    # ) -> Any:
-    #     logger.debug("===== Running action with id %s, function %s =====", self.id, self._action_name)
-    #     if logger.isEnabledFor(logging.DEBUG):
-    #         logger.debug("Action inputs:\n%s", pformat(inputs, depth=3, width=200))
-    #         logger.debug("Action outputs:\n%s", pformat(outputs, width=200))
-    #
-    #     if self._legacy:
-    #         # Inputs must be list[str].
-    #         return_value = cast(Action, self).function(*inputs)  # type: ignore[operator]
-    #     else:
-    #         return_value = self.function(**inputs)  # type: ignore[arg-type]
-    #
-    #     notification_payload = None
-    #     # Delegate all handling of the return_value and mapping to appropriate outputs to Dash. Here we do some error
-    #     # checking to raise clearer error messages. All return_value reshaping we do is only extracting notification.
-    #     if not outputs:
-    #         if self._is_notification_payload(return_value):
-    #             notification_payload = return_value
-    #         elif return_value is not None:
-    #             raise ValueError(
-    #                 "Action function has returned a value but the action has no defined outputs. "
-    #                 "If you want to return a notification, make sure the returned value matches the notification key "
-    #                 "in the action's notifications."
-    #             )
-    #     elif isinstance(outputs, dict):
-    #         if (
-    #             isinstance(return_value, tuple)
-    #             and len(return_value) == 2
-    #             and self._is_notification_payload(return_value[1])
-    #         ):
-    #             return_value, notification_payload = return_value[0], return_value[1]
-    #         if not isinstance(return_value, Mapping):
-    #             raise ValueError(
-    #                 "Action function has not returned a dictionary-like object "
-    #                 "but the action's defined outputs are a dictionary. "
-    #                 "If you want to return a notification, make sure the returned value matches the notification key "
-    #                 "in the action's notifications."
-    #             )
-    #         if set(outputs) != set(return_value):
-    #             raise ValueError(
-    #                 f"Keys of action's returned value {set(return_value) or {}} "
-    #                 f"do not match the action's defined outputs {set(outputs) or {}})."
-    #             )
-    #     elif isinstance(outputs, list):
-    #         if not isinstance(return_value, Collection):
-    #             raise ValueError(
-    #                 "Action function has not returned a list-like object but the action's defined outputs are a list."
-    #             )
-    #         if (
-    #             isinstance(return_value, tuple)
-    #             and len(return_value) == (len(outputs) + 1)
-    #             and self._is_notification_payload(return_value[-1])
-    #         ):
-    #             *return_value, notification_payload = return_value
-    #         if len(return_value) != len(outputs):
-    #             raise ValueError(
-    #                 f"Number of action's returned elements {len(return_value)} does not match the number "
-    #                 f"of action's defined outputs {len(outputs)}. "
-    #                 "If you want to return a notification, make sure the returned value matches the notification key "
-    #                 "in the action's notifications."
-    #             )
-    #     # Single output
-    #     elif isinstance(return_value, tuple) and self._is_notification_payload(return_value[-1]):
-    #         *return_value, notification_payload = return_value
-    #
-    #     # If no error has been raised then the return_value is good and is returned as it is.
-    #     # This could be a list of outputs, dictionary of outputs or any single value including None.
-    #     return {"external_return": return_value, "notification_payload": notification_payload}
-
     def _split_trailing_notification_payload(
         self,
         return_value: Any,
@@ -484,6 +411,9 @@ class _BaseAction(VizroBaseModel):
                 return_value=return_value,
                 expected_lengths=[2, len(outputs) + 1],
             )
+            # Unwrap single external_value list to just the external_value.
+            if len(return_value) == 1:
+                return_value = return_value[0]
 
             if not isinstance(return_value, Collection):
                 raise ValueError(
@@ -504,6 +434,9 @@ class _BaseAction(VizroBaseModel):
                 return_value=return_value,
                 expected_lengths=None,
             )
+            # Unwrap single external_value list to just the external_value.
+            if len(return_value) == 1:
+                return_value = return_value[0]
 
         return {"external_return": return_value, "notification_payload": notification_payload}
 
@@ -535,7 +468,7 @@ class _BaseAction(VizroBaseModel):
 
         # Return no_update if the notification key does not exist, or its value is None.
         if (notification_model := action_notifications.get(notification_key)) is None:
-            return [no_update]
+            return no_update
 
         # Template {{result}} with the empty string if the `notification_result` is not convertible to string.
         if notification_result is None or not hasattr(notification_result, "__str__"):
@@ -550,7 +483,7 @@ class _BaseAction(VizroBaseModel):
         msg = msg.replace("{{error_msg}}", str(error_msg))
         notification[0]["message"].children = msg
 
-        return [notification]
+        return notification
 
     @_log_call
     def _define_callback(self):
@@ -635,7 +568,7 @@ class _BaseAction(VizroBaseModel):
         # Add vizro-notification output except when the action is show_notification itself to avoid duplicate outputs.
         if hasattr(self, "notifications"):
             callback_outputs["internal"]["vizro_notification"] = (  # type: ignore[call-overload]
-                Output("vizro-notifications", "sendNotifications", allow_duplicate=True),
+                Output("vizro-notifications", "sendNotifications", allow_duplicate=True)
             )
 
         # If there are no outputs then we don't want the external part of callback_outputs to exist at all.

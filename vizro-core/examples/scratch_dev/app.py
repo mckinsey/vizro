@@ -826,4 +826,4 @@ dashboard = vm.Dashboard(
 )
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=True)
