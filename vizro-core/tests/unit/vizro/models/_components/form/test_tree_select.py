@@ -11,7 +11,6 @@ from vizro.models._action._action import Action
 from vizro.models._components.form import TreeSelect
 from vizro.models._components.form.tree_select import _convert_options, _extract_leaf_keys
 
-
 SIMPLE_OPTIONS = {"Fruits": ["Apple", "Banana"], "Vegetables": ["Carrot"]}
 NESTED_OPTIONS = {
     "Electronics": {
@@ -120,7 +119,9 @@ class TestTreeSelectInstantiation:
         assert ts._action_inputs == {"__default__": "tree-select-id.value"}
 
     def test_tree_select_trigger(self, identity_action_function):
-        ts = TreeSelect(id="tree-select-id", options=SIMPLE_OPTIONS, actions=[Action(function=identity_action_function())])
+        ts = TreeSelect(
+            id="tree-select-id", options=SIMPLE_OPTIONS, actions=[Action(function=identity_action_function())]
+        )
         [action] = ts.actions
         assert action._trigger == "tree-select-id.value"
 

@@ -26,22 +26,17 @@ def _validate_options_structure(options: Any) -> None:
         elif isinstance(value, dict):
             _validate_options_structure(value)
         else:
-            raise ValueError(
-                f"options values must be list[str] or dict, got {type(value)} for key {key!r}"
-            )
+            raise ValueError(f"options values must be list[str] or dict, got {type(value)} for key {key!r}")
 
 
-def _convert_options(d: dict | list) -> list[dict]:
+def _convert_options(d: dict[Any, Any] | list[Any]) -> list[dict[str, Any]]:
     """Convert nested dict options to AntdTreeSelect treeData format."""
     if isinstance(d, list):
         return [{"title": v, "key": v, "value": v} for v in d]
-    return [
-        {"title": k, "key": k, "value": k, "children": _convert_options(v)}
-        for k, v in d.items()
-    ]
+    return [{"title": k, "key": k, "value": k, "children": _convert_options(v)} for k, v in d.items()]
 
 
-def _extract_leaf_keys(d: dict | list) -> set[str]:
+def _extract_leaf_keys(d: dict[Any, Any] | list[Any]) -> set[str]:
     """Recursively collect all leaf string values from the nested dict."""
     if isinstance(d, list):
         return set(d)
@@ -63,9 +58,7 @@ def _validate_tree_value(value, info: ValidationInfo):
     if "options" not in info.data or not info.data["options"]:
         return value
     leaf_keys = _extract_leaf_keys(info.data["options"])
-    if value and not (
-        all(v in leaf_keys for v in value) if isinstance(value, list) else value in leaf_keys
-    ):
+    if value and not (all(v in leaf_keys for v in value) if isinstance(value, list) else value in leaf_keys):
         raise ValueError("Please provide a valid value from `options`.")
     return value
 
@@ -146,7 +139,7 @@ defaults chosen by the Vizro team. This may have unexpected behavior.""",
             "treeCheckable": self.multi,
             "multiple": self.multi,
             "allowClear": self.multi,
-            **( {"showCheckedStrategy": "show-child", "maxTagCount": "responsive"} if self.multi else {} ),
+            **({"showCheckedStrategy": "show-child", "maxTagCount": "responsive"} if self.multi else {}),
             "listHeight": 300,
             "locale": "en-us",
             "persistence": True,
