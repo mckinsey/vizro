@@ -40,10 +40,7 @@ Vizro().build(dashboard).run()
 )
 
 
-dashboard = vm.Dashboard(
-    pages=[page],
-    title="QB",
-)
+dashboard = vm.Dashboard(pages=[page], title="QB")
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run(debug=True)
