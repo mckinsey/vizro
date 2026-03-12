@@ -4,6 +4,7 @@ import vizro.models as vm
 from vizro.actions import set_control
 
 from vizro import Vizro
+from vizro.figures import kpi_card
 from vizro.tables import dash_ag_grid
 
 from vizro.managers import data_manager
@@ -81,6 +82,7 @@ page_1 = vm.Page(
             title="List of Scenarios",
             components=[
                 vm.AgGrid(
+                    header="Select the row to compare scenario against the baseline",
                     figure=scenarios_ag_grid(data_frame=scenario_data, id="custom_ag_grid"),
                     actions=[
                         set_control(control="comparison-param", value="scenario_name"),
@@ -192,32 +194,26 @@ page_2 = vm.Page(
                     components=[
                         vm.Figure(
                             id="kpi_card_4",
-                            figure=custom_kpi_card_reference(
+                            figure=kpi_card(
                                 data_frame="scenario_compare_kpi",
-                                data_frame_reference=kpi_comparison_baseline,
                                 title="The total production volume",
                                 value_column="production_volume",
-                                reference_column="production_volume",
                             ),
                         ),
                         vm.Figure(
                             id="kpi_card_5",
-                            figure=custom_kpi_card_reference(
+                            figure=kpi_card(
                                 data_frame="scenario_compare_kpi",
-                                data_frame_reference=kpi_comparison_baseline,
                                 title="The daily average WIP for all equipment",
                                 value_column="average_wip",
-                                reference_column="average_wip",
                             ),
                         ),
                         vm.Figure(
                             id="kpi_card_6",
-                            figure=custom_kpi_card_reference(
+                            figure=kpi_card(
                                 data_frame="scenario_compare_kpi",
-                                data_frame_reference=kpi_comparison_baseline,
                                 title="The average lead time for all product types",
                                 value_column="average_lead",
-                                reference_column="average_lead",
                             ),
                         ),
                         vm.Tabs(
