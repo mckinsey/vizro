@@ -4,9 +4,10 @@ import dash_bootstrap_components as dbc
 import feffery_antd_components as fac
 import pytest
 from asserts import assert_component_equal
-from dash import html
+from dash import dcc, html
 from pydantic import ValidationError
 
+from vizro.models import Tooltip
 from vizro.models._action._action import Action
 from vizro.models._components.form import TreeSelect
 from vizro.models._components.form.tree_select import _convert_options, _extract_leaf_keys
@@ -98,6 +99,14 @@ class TestTreeSelectInstantiation:
     def test_multi_false_with_list_value_raises(self):
         with pytest.raises(ValidationError, match="multi=True"):
             TreeSelect(options=SIMPLE_OPTIONS, value=["Apple"], multi=False)
+
+    def test_valid_single_value(self):
+        ts = TreeSelect(options=SIMPLE_OPTIONS, value="Apple", multi=False)
+        assert ts.value == "Apple"
+
+    def test_invalid_single_value_not_in_options(self):
+        with pytest.raises(ValidationError, match="valid value from `options`"):
+            TreeSelect(options=SIMPLE_OPTIONS, value="NotAFruit", multi=False)
 
     def test_action_triggers(self):
         ts = TreeSelect(id="tree-select-id", options=SIMPLE_OPTIONS)
@@ -215,6 +224,49 @@ class TestTreeSelectBuild:
                     id="tree_select_id",
                     treeData=_convert_options(SIMPLE_OPTIONS),
                     value=["Apple"],
+                    treeCheckable=True,
+                    multiple=True,
+                    allowClear=True,
+                    showCheckedStrategy="show-child",
+                    maxTagCount="responsive",
+                    listHeight=300,
+                    locale="en-us",
+                    persistence=True,
+                    persistence_type="session",
+                    placeholder="Select option",
+                ),
+            ]
+        )
+        assert_component_equal(result, expected)
+
+    def test_build_with_description(self):
+        ts = TreeSelect(
+            id="tree_select_id",
+            options=SIMPLE_OPTIONS,
+            title="Pick a fruit",
+            description=Tooltip(text="Test description", icon="Info", id="info"),
+        )
+        result = ts.build()
+
+        expected_description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+        expected = html.Div(
+            children=[
+                dbc.Label(
+                    children=[html.Span(id="tree_select_id_title", children="Pick a fruit"), *expected_description],
+                    html_for="tree_select_id",
+                ),
+                fac.AntdTreeSelect(
+                    id="tree_select_id",
+                    treeData=_convert_options(SIMPLE_OPTIONS),
+                    value=[],
                     treeCheckable=True,
                     multiple=True,
                     allowClear=True,

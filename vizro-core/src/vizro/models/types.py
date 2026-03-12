@@ -650,7 +650,8 @@ SelectorType = Annotated[
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Checklist`][vizro.models.Checklist],
 [`DatePicker`][vizro.models.DatePicker], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
-[`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider] or [`Switch`][vizro.models.Switch]."""
+[`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`Switch`][vizro.models.Switch] or
+[`TreeSelect`][vizro.models.TreeSelect]."""
 
 _FormComponentType = Annotated[
     "SelectorType | Button | UserInput",
