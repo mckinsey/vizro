@@ -6,7 +6,7 @@ from ._tooltip import Tooltip
 from ._action import Action
 from ._components import Card, Container, Graph, Text, Table, Tabs, Figure
 from ._components import AgGrid
-from ._components.form import Button, Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider, Switch
+from ._components.form import Button, Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider, Switch, TreeSelect
 from ._controls import Filter, Parameter
 from ._navigation.accordion import Accordion
 from ._navigation.navigation import Navigation
@@ -44,6 +44,7 @@ __all__ = [
     "Slider",
     "Switch",
     "Table",
+    "TreeSelect",
     "Tabs",
     "Text",
     "Tooltip",
