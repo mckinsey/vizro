@@ -10,7 +10,11 @@ from vizro.managers import data_manager
 
 from data import (
     scenario_data,
-    daily_data,
+    daily_data_baseline,
+    daily_data_scenario_a,
+    daily_data_scenario_b,
+    daily_data_scenario_c,
+    daily_data_scenario_d,
     kpis_per_product_type,
     daily_baseline,
     daily_scenario_a,
@@ -54,8 +58,20 @@ def load_kpi_data(scenario_name="Baseline"):
     return scenario_df_kpi.get(scenario_name, kpi_comparison_baseline)
 
 
+def load_data_daily(scenario_name="Baseline"):
+    scenario_df = {
+        "Increased high-end product": daily_data_scenario_a,
+        "Reduced pricing tier": daily_data_scenario_b,
+        "Bundle promotion strategy": daily_data_scenario_c,
+        "Aggressive discounting": daily_data_scenario_d,
+    }
+
+    return scenario_df.get(scenario_name, daily_data_baseline)
+
+
 data_manager["scenario_compare"] = load_data
 data_manager["scenario_compare_kpi"] = load_kpi_data
+data_manager["scenario_daily_data"] = load_data_daily
 
 
 page_1 = vm.Page(
@@ -69,7 +85,6 @@ page_1 = vm.Page(
                     actions=[
                         set_control(control="comparison-param", value="scenario_name"),
                         set_control(control="comparison-param-1", value="scenario_name"),
-                        set_control(control="comparison-param-2", value="scenario_name"),
                     ],
                 ),
             ],
@@ -209,10 +224,40 @@ page_2 = vm.Page(
                             tabs=[
                                 vm.Container(
                                     title="Total production volume",
-                                    components=[vm.Graph(figure=plot_total_production_volume(daily_data))],
+                                    components=[
+                                        vm.Graph(
+                                            id="graph-2",
+                                            figure=plot_total_production_volume(
+                                                data_frame="scenario_daily_data",
+                                                metric="total_production_volume_ton",
+                                            ),
+                                        )
+                                    ],
                                 ),
-                                vm.Container(title="WIP by equipment", components=[vm.Card(text="placeholder")]),
-                                vm.Container(title="WIP waterfall", components=[vm.Card(text="placeholder")]),
+                                vm.Container(
+                                    title="WIP by equipment",
+                                    components=[
+                                        vm.Graph(
+                                            id="graph-3",
+                                            figure=plot_total_production_volume(
+                                                data_frame="scenario_daily_data",
+                                                metric="daily_avg_wip_ton",
+                                            ),
+                                        )
+                                    ],
+                                ),
+                                vm.Container(
+                                    title="WIP waterfall",
+                                    components=[
+                                        vm.Graph(
+                                            id="graph-4",
+                                            figure=plot_total_production_volume(
+                                                data_frame="scenario_daily_data",
+                                                metric="avg_lead_time_day",
+                                            ),
+                                        )
+                                    ],
+                                ),
                             ]
                         ),
                         vm.Container(
@@ -234,27 +279,32 @@ page_2 = vm.Page(
                         ],
                         row_min_height="150px",
                     ),
+                    controls=[
+                        vm.Parameter(
+                            id="comparison-param-2",
+                            targets=[
+                                "kpi_card_4.data_frame.scenario_name",
+                                "kpi_card_5.data_frame.scenario_name",
+                                "kpi_card_6.data_frame.scenario_name",
+                                "graph-2.data_frame.scenario_name",
+                                "graph-3.data_frame.scenario_name",
+                                "graph-4.data_frame.scenario_name",
+                            ],
+                            selector=vm.Dropdown(
+                                options=[
+                                    "Increased high-end product",
+                                    "Baseline",
+                                    "Reduced pricing tier",
+                                    "Bundle promotion strategy",
+                                ],
+                                value="Baseline",
+                                multi=False,
+                                title="Choose scenario",
+                            ),
+                        )
+                    ],
                 ),
-                vm.Container(title="Gun-kan chart", components=[vm.Card(text="placeholder")]),
-                vm.Container(title="Gun-kan chart - detailed", components=[vm.Card(text="placeholder")]),
             ]
-        )
-    ],
-    controls=[
-        vm.Parameter(
-            id="comparison-param-2",
-            targets=[
-                "kpi_card_4.data_frame.scenario_name",
-                "kpi_card_5.data_frame.scenario_name",
-                "kpi_card_6.data_frame.scenario_name",
-            ],
-            selector=vm.Dropdown(
-                options=["Increased high-end product", "Baseline", "Reduced pricing tier", "Bundle promotion strategy"],
-                value="Baseline",
-                multi=False,
-            ),
-            visible=False,
-            show_in_url=True,
         )
     ],
 )

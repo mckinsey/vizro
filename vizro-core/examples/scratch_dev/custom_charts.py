@@ -97,15 +97,26 @@ def custom_kpi_card_reference(
     return dbc.Card([header, body, footer], className="card-kpi", style={"overflow": "hidden"})
 
 
+_METRIC_CONFIG = {
+    "total_production_volume_ton": {"title": "Total production volume", "y_label": "ton"},
+    "daily_avg_wip_ton": {"title": "Daily average WIP", "y_label": "ton"},
+}
+_DEFAULT_METRIC_CONFIG = {"title": "Average lead time", "y_label": "ton"}
+
+
 @capture("graph")
-def plot_total_production_volume(data_frame):
+def plot_total_production_volume(data_frame, metric):
+    """Line chart of a single metric over time for one scenario."""
+    config = _METRIC_CONFIG.get(metric, _DEFAULT_METRIC_CONFIG)
+    scenario_name = data_frame["scenario_name"].iloc[0] if not data_frame.empty else ""
+
     fig = px.line(
         data_frame,
         x="date_label",
-        y="total_production_volume_ton",
+        y=metric,
         markers=True,
-        labels={"date_label": "", "total_production_volume_ton": "ton"},
-        title="Total production volume",
+        labels={"date_label": "", metric: config["y_label"]},
+        title=f"{config['title']} - {scenario_name}",
     )
     return fig
 

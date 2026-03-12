@@ -4,15 +4,59 @@ import numpy as np
 import pandas as pd
 
 # ── 1. Daily time-series data (used for the line chart) ──────────────────────
-daily_data = pd.DataFrame(
+daily_data_baseline = pd.DataFrame(
     {
+        "scenario_name": "Baseline",
         "date": pd.date_range("2026-10-01", periods=8, freq="D"),
         "total_production_volume_ton": [215, 182, 207, 175, 171, 237, 185, 231],
         "daily_avg_wip_ton": [14.2, 18.6, 13.9, 16.5, 12.1, 19.3, 15.7, 17.4],
         "avg_lead_time_day": [3.1, 4.2, 2.9, 3.8, 2.5, 4.5, 3.0, 3.9],
     }
 )
-daily_data["date_label"] = daily_data["date"].dt.strftime("%-m/%d")  # "10/01" etc.
+
+daily_data_scenario_a = pd.DataFrame(
+    {
+        "scenario_name": "Increased high-end product",
+        "date": pd.date_range("2026-10-01", periods=8, freq="D"),
+        "total_production_volume_ton": [228, 169, 214, 188, 176, 241, 192, 224],
+        "daily_avg_wip_ton": [15.1, 17.8, 14.6, 16.2, 13.4, 18.7, 16.3, 17.1],
+        "avg_lead_time_day": [3.3, 4.0, 3.1, 3.7, 2.7, 4.3, 3.2, 3.8],
+    }
+)
+daily_data_scenario_b = pd.DataFrame(
+    {
+        "scenario_name": "Reduced pricing tier",
+        "date": pd.date_range("2026-10-01", periods=8, freq="D"),
+        "total_production_volume_ton": [203, 191, 219, 168, 184, 229, 197, 216],
+        "daily_avg_wip_ton": [13.8, 19.1, 14.2, 17.0, 12.9, 18.5, 15.4, 16.8],
+        "avg_lead_time_day": [2.9, 4.4, 3.0, 3.9, 2.6, 4.1, 3.1, 3.6],
+    }
+)
+daily_data_scenario_c = pd.DataFrame(
+    {
+        "scenario_name": "Aggressive discounting",
+        "date": pd.date_range("2026-10-01", periods=8, freq="D"),
+        "total_production_volume_ton": [221, 174, 210, 183, 179, 235, 189, 227],
+        "daily_avg_wip_ton": [14.7, 18.2, 13.7, 16.9, 12.8, 19.0, 15.9, 17.6],
+        "avg_lead_time_day": [3.2, 4.1, 2.8, 3.6, 2.4, 4.4, 3.0, 3.7],
+    }
+)
+daily_data_scenario_d = pd.DataFrame(
+    {
+        "scenario_name": "Bundle promotion strategy",
+        "date": pd.date_range("2026-10-01", periods=8, freq="D"),
+        "total_production_volume_ton": [209, 186, 222, 172, 181, 233, 194, 218],
+        "daily_avg_wip_ton": [14.0, 18.9, 14.4, 16.7, 13.1, 18.8, 15.6, 17.2],
+        "avg_lead_time_day": [3.0, 4.3, 3.2, 3.8, 2.6, 4.2, 3.1, 3.9],
+    }
+)
+
+
+daily_data_baseline["date_label"] = daily_data_baseline["date"].dt.strftime("%-m/%d")
+daily_data_scenario_a["date_label"] = daily_data_scenario_a["date"].dt.strftime("%-m/%d")
+daily_data_scenario_b["date_label"] = daily_data_scenario_b["date"].dt.strftime("%-m/%d")
+daily_data_scenario_c["date_label"] = daily_data_scenario_c["date"].dt.strftime("%-m/%d")
+daily_data_scenario_d["date_label"] = daily_data_scenario_d["date"].dt.strftime("%-m/%d")
 
 # ── 1b. Scenario comparison line chart: two datasets (Baseline vs Scenario a) ─
 _dates = pd.date_range("2026-10-01", periods=8, freq="D")
@@ -20,6 +64,7 @@ _date_labels = [d.strftime("%-m/%d") for d in _dates]
 # Baseline: dotted white line in chart
 daily_baseline = pd.DataFrame(
     {
+        "scenario_name": "Baseline",
         "date": _dates,
         "date_label": _date_labels,
         "ton": [56, 43, 50, 48, 42, 56, 43, 59],
@@ -29,6 +74,7 @@ daily_baseline = pd.DataFrame(
 # Scenario a: solid teal line in chart
 daily_scenario_a = pd.DataFrame(
     {
+        "scenario_name": "Increased high-end product",
         "date": _dates,
         "date_label": _date_labels,
         "ton": [38, 65, 49, 50, 45, 52, 42, 68],
@@ -38,6 +84,7 @@ daily_scenario_a = pd.DataFrame(
 
 daily_scenario_b = pd.DataFrame(
     {
+        "scenario_name": "Reduced pricing tier",
         "date": _dates,
         "date_label": _date_labels,
         "ton": [48, 65, 59, 50, 40, 52, 41, 58],
@@ -47,6 +94,7 @@ daily_scenario_b = pd.DataFrame(
 
 daily_scenario_c = pd.DataFrame(
     {
+        "scenario_name": "Aggressive discounting",
         "date": _dates,
         "date_label": _date_labels,
         "ton": [38, 45, 49, 56, 47, 32, 41, 68],
@@ -56,6 +104,7 @@ daily_scenario_c = pd.DataFrame(
 
 daily_scenario_d = pd.DataFrame(
     {
+        "scenario_name": "Bundle promotion strategy",
         "date": _dates,
         "date_label": _date_labels,
         "ton": [37, 35, 39, 56, 67, 62, 51, 68],
