@@ -49,7 +49,7 @@ def make_code_clipboard_from_py_file(filepath: str, mode="vizro"):
         for old_code, new_code in replacements.items():
             example_code = example_code.replace(old_code, new_code)
 
-    return vm.Card(text=f"""```python {_format_and_lint(example_code, line_length=80)}```""")
+    return vm.Text(text=f"""```python {_format_and_lint(example_code, line_length=80)}```""")
 
 
 PAGE_GRID = [[0, 0, 0, 0, 0, 0, 0]] * 2 + [[1, 1, 1, 1, 2, 2, 2]] * 5
