@@ -127,7 +127,7 @@ class set_control(_AbstractAction):
     success_text: str | None = Field(
         default="Control applied.",
         description="Text that will be displayed in the notification when the control is successfully applied. "
-        "Set None to not display the notification."
+        "Set None to not display the notification.",
     )
 
     @_log_call
@@ -174,11 +174,10 @@ class set_control(_AbstractAction):
         # TODO PP IMPORTANT: REMOVE SLEEP AND EXCEPTION AFTER TESTING
         import random
         from time import sleep
+
         sleep(0.5)
         if random.random() > 0.5:
             raise Exception("Random error occurred during set control!")
-
-
 
         from vizro.models import Checklist
 

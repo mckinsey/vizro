@@ -3,7 +3,7 @@ from collections.abc import Iterable
 from typing import Any, Literal, cast
 
 from dash import Output, ctx, dcc
-from pydantic import Field, TypeAdapter
+from pydantic import Field
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
@@ -40,7 +40,7 @@ class export_data(_AbstractAction):
     error_text: str | None = Field(
         default="Exporting failed.",
         description="Text that will be displayed in the notification if the export fails. "
-        "Set None to not display the notification."
+        "Set None to not display the notification.",
     )
 
     @_log_call
@@ -78,6 +78,7 @@ class export_data(_AbstractAction):
         # TODO PP IMPORTANT: REMOVE SLEEP AND EXCEPTION AFTER TESTING
         import random
         from time import sleep
+
         sleep(0.5)
         if random.random() > 0.5:
             raise Exception("Random error occurred during data export!")
