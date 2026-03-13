@@ -58,6 +58,27 @@
           "default": [],
           "title": "Outputs"
         },
+        "notifications": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/show_notification"
+              },
+              {
+                "$ref": "#/$defs/update_notification"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Conditional notifications",
+          "title": "Notifications",
+          "type": "object"
+        },
         "type": {
           "const": "action",
           "default": "action",
@@ -2360,7 +2381,6 @@
           "type": "string"
         },
         "targets": {
-          "default": [],
           "description": "List of target component ids for which to download data. If none are given then download data from all components on the page.",
           "items": {
             "type": "string"
@@ -2374,6 +2394,19 @@
           "enum": ["csv", "xlsx"],
           "title": "File Format",
           "type": "string"
+        },
+        "error_text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "Exporting failed.",
+          "description": "Text that will be displayed in the notification if the export fails. Set None to not display the notification.",
+          "title": "Error Text"
         }
       },
       "title": "export_data",
@@ -2431,6 +2464,19 @@
         "value": {
           "$ref": "#/$defs/JsonValue",
           "description": "Value to take from trigger and send to the `target`. Format depends on the model that triggers `set_control`."
+        },
+        "success_text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "Control applied.",
+          "description": "Text that will be displayed in the notification when the control is successfully applied. Set None to not display the notification.",
+          "title": "Success Text"
         }
       },
       "required": ["control", "value"],

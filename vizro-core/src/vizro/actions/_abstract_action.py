@@ -28,7 +28,6 @@ class _AbstractAction(_BaseAction, abc.ABC):
 
     # Note this model itself cannot have any fields (aside from `id` that comes from `VizroBaseModel`) or that field
     # would be inherited by all subclasses.
-
     @abc.abstractmethod
     def function(self, *args, **kwargs):
         """Function that must be defined by concrete action.
