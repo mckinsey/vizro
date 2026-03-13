@@ -35,7 +35,7 @@ Open a second chat window to ask which skills are available and confirm the dash
 
 For more details, see [Cursor Skills documentation](https://cursor.com/docs/context/skills#installing-skills-from-github).
 
-Then configure *Playwright MCP** for browser testing. In Cursor, go to **Cursor** > **Settings** > **Cursor Settings** > **Tools & MCP** and click Add Custom MCP to add the following to `.cursor/mcp.json`:
+Then configure **Playwright MCP** for browser testing. In Cursor, go to **Cursor** > **Settings** > **Cursor Settings** > **Tools & MCP** and click Add Custom MCP to add the following to `.cursor/mcp.json`:
 
 ```json
 {
