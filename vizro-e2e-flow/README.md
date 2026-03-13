@@ -1,18 +1,61 @@
 # Vizro e2e Flow Plugin
 
-Vizro e2e Flow is a Claude Code plugin for end-to-end Vizro dashboard development with a 2-skill workflow:
+Vizro e2e Flow is a [Claude Code plugin](https://code.claude.com/docs/en/plugins) for end-to-end Vizro dashboard development. It consists of a 2-skill workflow:
 
-**Skill 1: dashboard-design** - Design phase covering requirements, layout, and visualization selection
+* **Skill 1: dashboard-design** - Dashboard design phase covering requirements, layout, and individual chart visualization selection.
 
-**Skill 2: dashboard-build** - Implementation and testing phase
+* **Skill 2: dashboard-build** - Dashboard implementation and testing phase.
 
-The plugin includes pre-configured Playwright MCP server for a seamless workflow:
+The plugin includes a pre-configured [Playwright MCP server](https://executeautomation.github.io/mcp-playwright/) for a seamless workflow:
 
 - **Playwright MCP**: Browser automation for functional testing
 
+## Prerequisites
+
+Skills are a new way of working with agentic and generative AI, and have yet to become mainstream. It's likely that you'll be an experienced technical user if you're considering setting these up for Vizro development. You may find these instructions have dated or that the installation process is bumpy because the Claude Code and Cursor products are still under development. If you experience issues, check their documentation for the latest way to install skills, and check on the status of [Claude](https://status.claude.com/) in case of an outage.
+
+* At the time of writing, you'll need a [Pro, Max, Teams, or Enterprise Claude subscription](https://claude.com/pricing) or a [Claude Console](https://console.anthropic.com/) account or a [paid Cursor plan](https://cursor.com/pricing).
+* You'll also need a [GitHub account](https://github.com) with SSH or HTTPS enabled.
+* Clone the [Vizro repository](https://github.com/mckinsey/vizro.git) (and give it a star while you're there).
+
+
 ## Installation
 
-### Option 1: Claude Code (Plugin Marketplace)
+### Option 1: Cursor
+
+**Import the Vizro skills from GitHub**:
+
+- Open Cursor, then select **Cursor** > **Settings** > **Cursor Settings** and navigate to **Rules, Skills, Subagents**
+- In the **Rules** section, click **+New**
+- Select **Add from GitHub/GitLab**
+- Enter the GitHub repository URL: `https://github.com/mckinsey/vizro.git`
+
+![](cursor-install-skill.gif)
+
+For more details, see [Cursor Skills documentation](https://cursor.com/docs/context/skills#installing-skills-from-github).
+
+1. **Verify skills are available** by opening a Cursor and asking:
+
+    - "What skills do you have available?"
+    - Look for skills related to dashboard design and dashboard build
+
+1. **Configure the Playwright MCP** for browser testing. In Cursor, go to **Settings > MCP** and add the following server configuration:
+
+    ```json
+    {
+      "mcpServers": {
+        "playwright": {
+          "command": "npx",
+          "args": [
+            "@playwright/mcp@latest"
+          ]
+        }
+      }
+    }
+  
+    ```
+
+### Option 2: Claude Code (Plugin Marketplace)
 
 Open your terminal and start Claude Code:
 
@@ -44,36 +87,7 @@ You should see `vizro-e2e-flow` listed with its skills (`dashboard-design`, `das
 playwright MCP · ✔ connected
 ```
 
-### Option 2: Cursor
 
-1. **Import skills from GitHub**:
-
-    - Open **Cursor Settings → Rules**
-    - In the **Project Rules** section, click **Add Rule**
-    - Select **Remote Rule (Github)**
-    - Enter the GitHub repository URL: `https://github.com/mckinsey/vizro`
-
-    For more details, see [Cursor Skills documentation](https://cursor.com/docs/context/skills#installing-skills-from-github).
-
-1. **Verify skills are available** by opening Cursor and asking:
-
-    - "What skills do you have available?"
-    - Look for skills related to dashboard design and dashboard build
-
-1. **Configure the Playwright MCP** for browser testing. In Cursor, go to **Settings > MCP** and add the following server configuration:
-
-    ```json
-    {
-      "mcpServers": {
-        "playwright": {
-          "command": "npx",
-          "args": [
-            "@playwright/mcp@latest"
-          ]
-        }
-      }
-    }
-    ```
 
 ## Quick Start Tutorial
 
