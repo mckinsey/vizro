@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Add new sequential palettes (positive, negative, warning) and diverging color scales to themes. See the [API reference](https://vizro.readthedocs.io/en/stable/pages/API-reference/themes/#vizro.themes) for all available palettes and colors. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Add new sequential palettes (positive, negative, warning) and diverging color scales to themes. See the [API reference](https://vizro.readthedocs.io/en/stable/pages/API-reference/themes/#vizro.themes) for all available palettes and colors. ([#1655](https://github.com/mckinsey/vizro/pull/1655))
 
 
 <!--
