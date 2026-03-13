@@ -385,17 +385,17 @@ page_7 = vm.Page(
                 vm.Action(
                     function=capture("action")(lambda: raise_exception(PreventUpdate))(),
                     outputs=f"{pre}_text_output",
-                    # notifications={"success": "Finished 1st no_update action"},
+                    notifications={"success": "Finished 1st no_update action"},
                 ),
                 vm.Action(
                     function=capture("action")(lambda: raise_exception(PreventUpdate))(),
                     outputs=f"{pre}_text_output",
-                    # notifications={"success": "Finished 2nd no_update action"},
+                    notifications={"success": "Finished 2nd no_update action"},
                 ),
                 vm.Action(
                     function=capture("action")(lambda: raise_exception(PreventUpdate))(),
                     outputs=f"{pre}_text_output",
-                    # notifications={"success": "Finished 3rd no_update action"},
+                    notifications={"success": "Finished 3rd no_update action"},
                 ),
             ],
         ),
@@ -459,7 +459,7 @@ page_8 = vm.Page(
                             text="Action with dict outputs",
                             actions=vm.Action(
                                 function=capture("action")(
-                                    lambda _trigger: {f"{pre}_text_key": f"Button clicked {_trigger} times."}
+                                    lambda _trigger: {f"p8_text_key": f"Button clicked {_trigger} times."}
                                 )(),
                                 outputs={f"{pre}_text_key": f"{pre}_text"},
                             ),
@@ -502,7 +502,7 @@ page_8 = vm.Page(
                             actions=vm.Action(
                                 function=capture("action")(
                                     lambda _trigger: (
-                                        {f"{pre}_text_key": f"Button clicked {_trigger} times."},
+                                        {f"p8_text_key": f"Button clicked {_trigger} times."},
                                         "my_success",
                                     )
                                 )(),
