@@ -215,8 +215,8 @@ def create_theme_overrides(extracted_values: dict[str, str]) -> go.layout.Templa
                 go.Waterfall(
                     textfont_color=FONT_COLOR_PRIMARY,
                     connector_line_color=AXIS_COLOR,
-                    decreasing_marker_color=colors.decrease,
-                    increasing_marker_color=colors.increase,
+                    decreasing_marker_color=colors.negative,
+                    increasing_marker_color=colors.positive,
                     totals_marker_color=colors.neutral,
                 )
             ],
