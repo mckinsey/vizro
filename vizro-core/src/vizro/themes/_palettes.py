@@ -170,7 +170,7 @@ diverging_red_green = [
     colors.positive_300,
     colors.positive_500,
     colors.positive_700,
-    colors.positive_900
+    colors.positive_900,
 ]
 
 diverging_purple_green = [
@@ -217,7 +217,6 @@ palettes = SimpleNamespace(
     sequential_negative=sequential_negative,
     sequential_warning=sequential_warning,
     diverging=diverging_red_blue,
-    diverging_red_blue=diverging_red_blue,
     diverging_pink_blue=diverging_pink_blue,
     diverging_red_green=diverging_red_green,
     diverging_purple_green=diverging_purple_green,
