@@ -1,9 +1,22 @@
-.mantine-CodeHighlight-controls {
-  background: transparent;
+.dmc-code {
+  --code-text-color: var(--bs-body-color);
+  --code-comment-color: var(--bs-tertiary-color);
+  --code-background: var(--surfaces-bg-card) !important;
 }
 
-.mantine-CodeHighlight-code {
-  background: transparent;
+.hljs {
+  color: var(--bs-body-color);
+  background: var(--surfaces-bg-card);
+}
+
+.mantine-ActionIcon-icon {
+  background: inherit;
+}
+
+.card .hljs {
   border: 1px solid var(--bs-border-color);
-  color: unset;
+}
+
+.mantine-CodeHighlight-controls {
+  background: transparent;
 }
