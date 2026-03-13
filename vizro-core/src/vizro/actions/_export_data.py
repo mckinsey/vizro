@@ -129,5 +129,5 @@ class export_data(_AbstractAction):
         ]
 
     @property
-    def notifications(self):
+    def notifications(self):  # type: ignore[override]
         return _normalize_action_notifications({"error": self.error_text})

@@ -222,5 +222,5 @@ class set_control(_AbstractAction):
         return ["vizro_url.pathname", "vizro_url.search"]
 
     @property
-    def notifications(self):
+    def notifications(self):  # type: ignore[override]
         return _normalize_action_notifications({"success": self.success_text, "error": None})
