@@ -546,7 +546,7 @@ page_9 = vm.Page(
                     actions=export_data(targets=[f"{pre}_graph_2"], error_text="Custom export failed text.")
                 ),
                 vm.Button(
-                    text="Export Graph 2 with err_msh None",
+                    text="Export Graph 2 with err_msg None",
                     actions=export_data(targets=[f"{pre}_graph_2"], error_text=None),
                 ),
             ]
