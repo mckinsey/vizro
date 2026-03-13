@@ -89,9 +89,7 @@ page_1 = vm.Page(
                 vm.Button(
                     text="Run pipeline",
                     actions=[
-                        show_notification(
-                            id=f"{pre}_progress_2", variant="progress", text="Running pipeline..."
-                        ),
+                        show_notification(id=f"{pre}_progress_2", variant="progress", text="Running pipeline..."),
                         vm.Action(function=random_pipeline(f"{pre}_raise_exc_switch"), outputs=f"{pre}_text"),
                         update_notification(
                             notification=f"{pre}_progress_2",
@@ -120,9 +118,7 @@ page_2 = vm.Page(
                 vm.Button(
                     text="Run pipeline",
                     actions=[
-                        show_notification(
-                            id=f"{pre}_progress_2", variant="progress", text="Running pipeline..."
-                        ),
+                        show_notification(id=f"{pre}_progress_2", variant="progress", text="Running pipeline..."),
                         vm.Action(
                             function=random_pipeline(f"{pre}_raise_exc_switch"),
                             outputs=f"{pre}_text",
@@ -535,7 +531,7 @@ page_9 = vm.Page(
                 color_discrete_map=SPECIES_COLORS,
                 custom_data="species",
             ),
-            actions=set_control(control=f"{pre}_filter", value="species")
+            actions=set_control(control=f"{pre}_filter", value="species"),
         ),
         vm.Container(
             layout=vm.Flex(direction="row"),
@@ -543,13 +539,13 @@ page_9 = vm.Page(
                 vm.Button(text="Export Graph 2 - standard", actions=export_data(targets=[f"{pre}_graph_2"])),
                 vm.Button(
                     text="Export Graph 2 with custom err_msg",
-                    actions=export_data(targets=[f"{pre}_graph_2"], error_text="Custom export failed text.")
+                    actions=export_data(targets=[f"{pre}_graph_2"], error_text="Custom export failed text."),
                 ),
                 vm.Button(
                     text="Export Graph 2 with err_msg None",
                     actions=export_data(targets=[f"{pre}_graph_2"], error_text=None),
                 ),
-            ]
+            ],
         ),
         vm.Graph(
             id=f"{pre}_graph_2",
@@ -568,8 +564,8 @@ page_9 = vm.Page(
         vm.Parameter(
             targets=[f"{pre}_graph_2.x"],
             selector=vm.RadioItems(options=["sepal_length", "sepal_width"]),
-        )
-    ]
+        ),
+    ],
 )
 
 dashboard = vm.Dashboard(

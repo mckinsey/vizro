@@ -34,6 +34,7 @@ class _parameter(_AbstractAction):
         # TODO PP IMPORTANT: REMOVE SLEEP AND EXCEPTION AFTER TESTING
         import random
         from time import sleep
+
         sleep(0.5)
         if random.random() > 0.5:
             raise Exception("Random error occurred during parametrisation!")
