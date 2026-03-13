@@ -5,6 +5,7 @@ import re
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import pytest
+import vizro_dash_components as vdc
 from asserts import assert_component_equal
 from dash import dcc, html
 from dash.exceptions import MissingCallbackContextException
@@ -341,7 +342,7 @@ class TestBuildGraph:
                 [
                     dcc.Store(id="graph_id_action_trigger"),
                     html.H3([html.Span("Title"), None], className="figure-title"),
-                    dcc.Markdown("""#### Subtitle""", className="figure-header"),
+                    vdc.Markdown("""#### Subtitle""", className="figure-header"),
                     dcc.Graph(
                         id="graph_id",
                         figure=go.Figure(
@@ -356,7 +357,7 @@ class TestBuildGraph:
                             "frameMargins": 0,
                         },
                     ),
-                    dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
+                    vdc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
                 ],
                 className="figure-container",
             ),
@@ -377,7 +378,7 @@ class TestBuildGraph:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Tooltip test", className="card-text"),
+                children=vdc.Markdown("Tooltip test", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

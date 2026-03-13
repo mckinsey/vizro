@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import Annotated, Any
 
 import dash_bootstrap_components as dbc
-from dash import dcc, html
+import vizro_dash_components as vdc
+from dash import html
 from pydantic import (
     AfterValidator,
     Field,
@@ -78,7 +79,7 @@ the underlying component may change in the future.""",
     def build(self):
         defaults = {
             "id": self.id,
-            "children": dcc.Markdown(id=f"{self.id}-text", children=self.text, className="card-text"),
+            "children": vdc.Markdown(id=f"{self.id}-text", children=self.text, className="card-text"),
             "target": f"{self.id}-icon",
             "autohide": False,
         }
