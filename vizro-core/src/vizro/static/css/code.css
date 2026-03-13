@@ -20,3 +20,7 @@
 .mantine-CodeHighlight-controls {
   background: transparent;
 }
+
+.card-text {
+  width: 100%;
+}
