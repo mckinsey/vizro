@@ -5,8 +5,8 @@
 }
 
 .hljs {
-  color: var(--bs-body-color);
   background: var(--surfaces-bg-card);
+  color: var(--bs-body-color);
 }
 
 .mantine-ActionIcon-icon {
