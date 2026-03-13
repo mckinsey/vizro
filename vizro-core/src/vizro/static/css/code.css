@@ -1,4 +1,9 @@
-.hljs {
-  background: var(--bs-card-color);
-  color: unset;
+.mantine-CodeHighlight-controls {
+    background: transparent;
+}
+
+.mantine-CodeHighlight-code {
+    background: transparent;
+    color: unset;
+    border: 1px solid var(--bs-border-color);
 }
