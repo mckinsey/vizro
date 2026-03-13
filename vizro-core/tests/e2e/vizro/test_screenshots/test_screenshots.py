@@ -421,22 +421,22 @@ def test_notifications_page(dash_br):
     # Trigger notifications with delays to allow each to fully render
     dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
     dash_br.wait_for_text_to_equal(
-        f'#{cnst.SUCCESS_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.SUCCESS_NOTIFICATION_MESSAGE
+        f'#{cnst.SUCCESS_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.SUCCESS_NOTIFICATION_MSG
     )
 
     dash_br.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
     dash_br.wait_for_text_to_equal(
-        f'#{cnst.WARNING_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.WARNING_NOTIFICATION_MESSAGE
+        f'#{cnst.WARNING_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.WARNING_NOTIFICATION_MSG
     )
 
     dash_br.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
     dash_br.wait_for_text_to_equal(
-        f'#{cnst.ERROR_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.ERROR_NOTIFICATION_MESSAGE
+        f'#{cnst.ERROR_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.ERROR_NOTIFICATION_MSG
     )
 
     dash_br.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
     dash_br.wait_for_text_to_equal(
-        f'#{cnst.INFO_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.INFO_NOTIFICATION_MESSAGE
+        f'#{cnst.INFO_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.INFO_NOTIFICATION_MSG
     )
 
     dash_br.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1)
@@ -460,22 +460,22 @@ def test_notifications_page_dark_theme(dash_br):
     # Trigger notifications with delays to allow each to fully render
     dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
     dash_br.wait_for_text_to_equal(
-        f'#{cnst.SUCCESS_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.SUCCESS_NOTIFICATION_MESSAGE
+        f'#{cnst.SUCCESS_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.SUCCESS_NOTIFICATION_MSG
     )
 
     dash_br.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
     dash_br.wait_for_text_to_equal(
-        f'#{cnst.WARNING_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.WARNING_NOTIFICATION_MESSAGE
+        f'#{cnst.WARNING_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.WARNING_NOTIFICATION_MSG
     )
 
     dash_br.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
     dash_br.wait_for_text_to_equal(
-        f'#{cnst.ERROR_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.ERROR_NOTIFICATION_MESSAGE
+        f'#{cnst.ERROR_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.ERROR_NOTIFICATION_MSG
     )
 
     dash_br.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
     dash_br.wait_for_text_to_equal(
-        f'#{cnst.INFO_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.INFO_NOTIFICATION_MESSAGE
+        f'#{cnst.INFO_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.INFO_NOTIFICATION_MSG
     )
 
     dash_br.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1)
