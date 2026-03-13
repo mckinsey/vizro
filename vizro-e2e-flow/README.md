@@ -21,39 +21,35 @@ Skills are a new way of working with agentic and generative AI, and have yet to 
 
 ## Installation
 
-### Option 1: Cursor
+### Option 1: Ask Cursor
 
-**Import the Vizro skills from GitHub**:
+Open a new chat and ask Cursor to import the Vizro e2e skills. We used the Agent mode with `claude-4.6-opus-high`:
 
-- Open Cursor, then select **Cursor** > **Settings** > **Cursor Settings** and navigate to **Rules, Skills, Subagents**
-- In the **Rules** section, click **+New**
-- Select **Add from GitHub/GitLab**
-- Enter the GitHub repository URL: `https://github.com/mckinsey/vizro.git`
+> I want to import 2 skills from the vizro repo at https://github.com/mckinsey/vizro.git  which are in the vizro-e2e-flow directory.
 
-![](cursor-install-skill.gif)
+The GIF below shows how Cursor works through the task, shortened for brevity.  
+
+![](cursor-import-skills.gif)
+
+Open a second chat window to ask which skills are available and confirm the dashboard design and dashboard build skills are present.
 
 For more details, see [Cursor Skills documentation](https://cursor.com/docs/context/skills#installing-skills-from-github).
 
-1. **Verify skills are available** by opening a Cursor and asking:
+Then configure *Playwright MCP** for browser testing. In Cursor, go to **Cursor** > **Settings** > **Cursor Settings** > **Tools & MCP** and click Add Custom MCP to add the following to `.cursor/mcp.json`:
 
-    - "What skills do you have available?"
-    - Look for skills related to dashboard design and dashboard build
-
-1. **Configure the Playwright MCP** for browser testing. In Cursor, go to **Settings > MCP** and add the following server configuration:
-
-    ```json
-    {
-      "mcpServers": {
-        "playwright": {
-          "command": "npx",
-          "args": [
-            "@playwright/mcp@latest"
-          ]
-        }
-      }
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ]
     }
+  }
+}
   
-    ```
+```
 
 ### Option 2: Claude Code (Plugin Marketplace)
 
