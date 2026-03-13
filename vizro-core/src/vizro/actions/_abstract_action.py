@@ -99,20 +99,3 @@ class _AbstractAction(_BaseAction, abc.ABC):
     @property
     def _action_name(self) -> str:
         return self.__class__.__name__
-
-
-# TODO PP NOW: Fix this
-def rebuild_models():
-    # local import inside the function avoids import-time circularity
-    from vizro.actions._notifications import show_notification, update_notification
-
-    for action_cls in _AbstractAction.__subclasses__():
-        action_cls.model_rebuild(
-            _types_namespace={
-                "show_notification": show_notification,
-                "update_notification": update_notification,
-            }
-        )
-
-
-rebuild_models()

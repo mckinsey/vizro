@@ -606,13 +606,11 @@ class _BaseAction(VizroBaseModel):
                 error_msg = None
 
             except Exception as exc:
-                # It is not possible to both propagate the full error details to the UI and display a user-friendly
-                # error notification at the same time. Therefore, we log the exception (including the stack trace)
-                # to the console only. This ensures that the dashboard creator has access to the full error details,
-                # while dashboard users see only the custom error notification defined by the creator.
-                logger.exception("Action failed")
+                # Log the exception including the stack trace if it's not PreventUpdate.
+                if not isinstance(exc, PreventUpdate):
+                    logger.exception("Action failed")
 
-                # Returning `no_update` to internal action_finished triggers the next action in the chain.
+                # Returning `no_update` to internal action_finished stops triggering the next action in the chain.
                 action_finished = no_update
 
                 # On error, return no_update for all external outputs.
@@ -628,13 +626,17 @@ class _BaseAction(VizroBaseModel):
                 notification_key = notification_key or ("success" if isinstance(exc, PreventUpdate) else "error")
 
             return_value = {"internal": {"action_finished": action_finished, "action_progress_indicator": no_update}}
-
             if "external" in callback_outputs:
                 return_value["external"] = external_return
 
             vizro_notification = self._render_notification(notification_key, notification_result, error_msg)
+
+            # It's not possible to both propagate the error to the UI and show an error notification at the same time.
+            # Therefore, we either display an error notification or propagate the exception to avoid failing silently.
             if vizro_notification is not None:
                 return_value["internal"]["vizro_notification"] = vizro_notification
+            if error_msg and vizro_notification in [None, no_update]:
+                raise error_msg
 
             return return_value
 
