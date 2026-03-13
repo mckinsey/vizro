@@ -2,9 +2,9 @@
 
 Vizro e2e Flow is a [Claude Code plugin](https://code.claude.com/docs/en/plugins) for end-to-end Vizro dashboard development. It consists of a 2-skill workflow:
 
-* **Skill 1: dashboard-design** - Dashboard design phase covering requirements, layout, and individual chart visualization selection.
+- **Skill 1: dashboard-design** - Dashboard design phase covering requirements, layout, and individual chart visualization selection.
 
-* **Skill 2: dashboard-build** - Dashboard implementation and testing phase.
+- **Skill 2: dashboard-build** - Dashboard implementation and testing phase.
 
 The plugin includes a pre-configured [Playwright MCP server](https://executeautomation.github.io/mcp-playwright/) for a seamless workflow:
 
@@ -14,10 +14,9 @@ The plugin includes a pre-configured [Playwright MCP server](https://executeauto
 
 Skills are a new way of working with agentic and generative AI, and have yet to become mainstream. It's likely that you'll be an experienced technical user if you're considering setting these up for Vizro development. You may find these instructions have dated or that the installation process is bumpy because the Claude Code and Cursor products are still under development. If you experience issues, check their documentation for the latest way to install skills, and check on the status of [Claude](https://status.claude.com/) in case of an outage.
 
-* At the time of writing, you'll need a [Pro, Max, Teams, or Enterprise Claude subscription](https://claude.com/pricing) or a [Claude Console](https://console.anthropic.com/) account or a [paid Cursor plan](https://cursor.com/pricing).
-* You'll also need a [GitHub account](https://github.com) with SSH or HTTPS enabled.
-* Clone the [Vizro repository](https://github.com/mckinsey/vizro.git) (and give it a star while you're there).
-
+- At the time of writing, you'll need a [Pro, Max, Teams, or Enterprise Claude subscription](https://claude.com/pricing) or a [Claude Console](https://console.anthropic.com/) account or a [paid Cursor plan](https://cursor.com/pricing).
+- You'll also need a [GitHub account](https://github.com) with SSH or HTTPS enabled.
+- Clone the [Vizro repository](https://github.com/mckinsey/vizro.git) (and give it a star while you're there).
 
 ## Installation
 
@@ -25,9 +24,9 @@ Skills are a new way of working with agentic and generative AI, and have yet to 
 
 Open a new chat and ask Cursor to import the Vizro e2e skills. We used the Agent mode with `claude-4.6-opus-high`:
 
-> I want to import 2 skills from the vizro repo at https://github.com/mckinsey/vizro.git  which are in the vizro-e2e-flow directory.
+> I want to import 2 skills from the vizro repo at https://github.com/mckinsey/vizro.git which are in the vizro-e2e-flow directory.
 
-The GIF below shows how Cursor works through the task, shortened for brevity.  
+The GIF below shows how Cursor works through the task, shortened for brevity.
 
 ![](cursor-import-skills.gif)
 
@@ -48,7 +47,6 @@ Then configure **Playwright MCP** for browser testing. In Cursor, go to **Cursor
     }
   }
 }
-  
 ```
 
 ### Option 2: Claude Code (Plugin Marketplace)
@@ -82,8 +80,6 @@ You should see `vizro-e2e-flow` listed with its skills (`dashboard-design`, `das
 ```
 playwright MCP · ✔ connected
 ```
-
-
 
 ## Quick Start Tutorial
 
