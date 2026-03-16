@@ -2,6 +2,7 @@ import logging
 from typing import Annotated, Literal
 
 import pandas as pd
+import vizro_dash_components as vdc
 from dash import State, dcc, html
 from pydantic import (
     AfterValidator,
@@ -182,7 +183,7 @@ class Table(VizroBaseModel):
                     html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
                     if self.title
                     else None,
-                    dcc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
+                    vdc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
                     if self.header
                     else None,
                     # Refer to the vm.AgGrid build method for details on why we return the
@@ -193,7 +194,7 @@ class Table(VizroBaseModel):
                         children=[html.Div(id=self._inner_component_id)],
                         className="table-container",
                     ),
-                    dcc.Markdown(self.footer, className="figure-footer", id=f"{self.id}_footer")
+                    vdc.Markdown(self.footer, className="figure-footer", id=f"{self.id}_footer")
                     if self.footer
                     else None,
                 ],
