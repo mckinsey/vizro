@@ -1,3 +1,11 @@
+[build.targets.sdist]
+include = [
+  "src/",
+  "LICENSE.txt",
+  "README.md",
+  "pyproject.toml"
+]
+
 [envs.all]
 
 [[envs.all.matrix]]
