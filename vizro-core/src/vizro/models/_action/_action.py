@@ -405,12 +405,9 @@ class _BaseAction(VizroBaseModel):
                     and len(return_value[0]) == len(outputs)
                 )
                 if tuple_has_extra_output or first_element_matches_output:
-                    *return_value, notification_payload = self._split_trailing_notification_payload(
+                    return_value, notification_payload = self._split_trailing_notification_payload(
                         return_value=return_value
                     )
-                    # Unwrap single external_value list to just the external_value.
-                    if len(return_value) == 1:
-                        return_value = return_value[0]
 
             if not isinstance(return_value, Collection):
                 raise ValueError(
@@ -427,10 +424,7 @@ class _BaseAction(VizroBaseModel):
         # --- Single output ---
         else:
             # Allow: `Any` and `(Any, notification_payload)`.
-            *return_value, notification_payload = self._split_trailing_notification_payload(return_value=return_value)
-            # Unwrap single external_value list to just the external_value.
-            if len(return_value) == 1:
-                return_value = return_value[0]
+            return_value, notification_payload = self._split_trailing_notification_payload(return_value=return_value)
 
         return {"external_return": return_value, "notification_payload": notification_payload}
 
