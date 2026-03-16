@@ -86,13 +86,14 @@ page_2 = vm.Page(
             title="Container without controls",
             components=[
                 vm.Graph(
-                    figure=px.scatter(iris, title="My scatter chart", x="sepal_length", y="petal_width",
-                                      color="species"),
+                    figure=px.scatter(
+                        iris, title="My scatter chart", x="sepal_length", y="petal_width", color="species"
+                    ),
                 )
-            ]
-        )
+            ],
+        ),
     ],
-    layout=vm.Grid(grid=[[0, 1]])
+    layout=vm.Grid(grid=[[0, 1]]),
 )
 
 
