@@ -1,7 +1,7 @@
 """Unit tests for vizro.models.Text."""
 
+import vizro_dash_components as vdc
 from asserts import assert_component_equal
-from dash import dcc
 
 import vizro.models as vm
 
@@ -39,7 +39,7 @@ class TestBuildMethod:
         text = vm.Text(id="text_id", text="Test")
         text = text.build()
 
-        expected = dcc.Markdown(
+        expected = vdc.Markdown(
             id="text_id",
             children="Test",
             dangerously_allow_html=False,
@@ -52,7 +52,7 @@ class TestBuildMethod:
         text = vm.Text(id="text_id", text="Test", extra={"className": "bg-primary p-1 mt-2 text-center h2"})
         text = text.build()
 
-        expected = dcc.Markdown(
+        expected = vdc.Markdown(
             id="text_id",
             children="Test",
             dangerously_allow_html=False,
