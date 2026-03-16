@@ -325,25 +325,12 @@ class _BaseAction(VizroBaseModel):
 
         return key in getattr(self, "notifications", {})
 
-    def _split_trailing_notification_payload(
-        self,
-        return_value: Any,
-        expected_lengths: list[int] | None = None,
-    ) -> tuple[Any, Any | None]:
-        """If return_value is a tuple whose last element is a notification payload, split it off.
-
-        - expected_len=N: only treat as (..., notification) if len(return_value) == N
-        - expected_len=None: allow any tuple length (used for single-output case)
-        """
+    def _split_trailing_notification_payload(self, return_value: Any) -> tuple[Any, Any | None]:
+        """If return_value is a tuple whose last element is a notification payload, split it off."""
         if not isinstance(return_value, tuple):
             return return_value, None
 
-        # If return_value tuple length does not match the `expected_lengths`, consider `notification_payload` as None.
-        if expected_lengths is not None and len(return_value) not in expected_lengths:
-            return return_value, None
-
-        last = return_value[-1]
-        if self._is_notification_payload(last):
+        if self._is_notification_payload(last := return_value[-1]):
             external_return = return_value[:-1]
             # Unwrap single external_value tuple to just the external_value.
             if isinstance(external_return, tuple) and len(external_return) == 1:
@@ -383,11 +370,8 @@ class _BaseAction(VizroBaseModel):
 
         # --- Dict outputs ---
         elif isinstance(outputs, dict):
-            # Allow: `rv_mapping` and `(rv_mapping, notification_payload)`.
-            return_value, notification_payload = self._split_trailing_notification_payload(
-                return_value=return_value,
-                expected_lengths=[2],
-            )
+            # Allow: `return_value_mapping` and `(return_value_mapping, notification_payload)`.
+            return_value, notification_payload = self._split_trailing_notification_payload(return_value=return_value)
 
             if not isinstance(return_value, Mapping):
                 raise ValueError(
@@ -404,16 +388,29 @@ class _BaseAction(VizroBaseModel):
 
         # --- List outputs ---
         elif isinstance(outputs, list):
-            # TODO PP NOW: Cover with unit-tests
-            # Allow: `(rv_1, ..., rv_N)`,  `(rv_1, ..., rv_N, notification_payload)`,
-            # `[rv_1, ..., rv_N]`, and `([rv_1, ..., rv_N], notification_payload)`.
-            *return_value, notification_payload = self._split_trailing_notification_payload(
-                return_value=return_value,
-                expected_lengths=[2, len(outputs) + 1],
-            )
-            # Unwrap single external_value list to just the external_value.
-            if len(return_value) == 1:
-                return_value = return_value[0]
+            # Allow: `(rv_1, ..., rv_N)`, `(rv_1, ..., rv_N, notification_payload)`,
+            #        `[rv_1, ..., rv_N]`, and `([rv_1, ..., rv_N], notification_payload)`.
+            # Extract a trailing `notification_payload` only when the tuple shape clearly indicates it.
+            # This happens when the tuple has one more element than the defined outputs, or when it is
+            # `([rv_1, ..., rv_N], notification_payload)` (a 2-tuple whose first element matches the number of elements
+            # in the defined outputs). This avoids misinterpreting legitimate return values like `(X, Y, "success")`
+            # (for three defined outputs) as containing a notification payload.
+            if isinstance(return_value, tuple):
+                # Matches: `(rv_1, ..., rv_N, notification_payload)` for N defined outputs.
+                tuple_has_extra_output = len(return_value) == len(outputs) + 1
+                # Matches: `([rv_1, ..., rv_N], notification_payload)` for N defined outputs.
+                first_element_matches_output = (
+                    len(return_value) == 2  # noqa: PLR2004
+                    and isinstance(return_value[0], list)
+                    and len(return_value[0]) == len(outputs)
+                )
+                if tuple_has_extra_output or first_element_matches_output:
+                    *return_value, notification_payload = self._split_trailing_notification_payload(
+                        return_value=return_value
+                    )
+                    # Unwrap single external_value list to just the external_value.
+                    if len(return_value) == 1:
+                        return_value = return_value[0]
 
             if not isinstance(return_value, Collection):
                 raise ValueError(
@@ -430,10 +427,7 @@ class _BaseAction(VizroBaseModel):
         # --- Single output ---
         else:
             # Allow: `Any` and `(Any, notification_payload)`.
-            *return_value, notification_payload = self._split_trailing_notification_payload(
-                return_value=return_value,
-                expected_lengths=None,
-            )
+            *return_value, notification_payload = self._split_trailing_notification_payload(return_value=return_value)
             # Unwrap single external_value list to just the external_value.
             if len(return_value) == 1:
                 return_value = return_value[0]
