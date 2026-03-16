@@ -11,6 +11,21 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.53'></a>
+# 0.1.53 — 2026-03-16
+
+## Added
+
+- Add `position` argument to `vm.NavBar` model to enable horizontal navigation. See the [user guide on horizontal navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/#use-a-horizontal-navigation-bar). ([#1576](https://github.com/mckinsey/vizro/pull/1576))
+
+- Add new sequential palettes (positive, negative, warning) and diverging color scales to themes. See the [API reference](https://vizro.readthedocs.io/en/stable/pages/API-reference/themes/#vizro.themes) for all available palettes and colors. ([#1655](https://github.com/mckinsey/vizro/pull/1655))
+
+## Changed
+
+- Extend global Mantine theme so that DMC-based custom components better match Vizro's theme. ([#1623](https://github.com/mckinsey/vizro/pull/1623))
+
+- Updated default waterfall increase/decrease/total colors and KPI positive/negative indicator colors, and added these semantic colors to the theme palettes. ([#1650](https://github.com/mckinsey/vizro/pull/1650))
+
 <a id='changelog-0.1.52'></a>
 
 # 0.1.52 — 2026-02-24
