@@ -25,7 +25,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - Extend global Mantine theme so that DMC-based custom components better match Vizro's theme. ([#1623](https://github.com/mckinsey/vizro/pull/1623))
 
-- Updated default waterfall increase/decrease/total colors and KPI positive/negative indicator colors, and added these semantic colors to the theme palettes. ([#1650](https://github.com/mckinsey/vizro/pull/1650))
+- Update waterfall increase/decrease/total colors and KPI positive/negative indicator colors. ([#1650](https://github.com/mckinsey/vizro/pull/1650))
 
 <a id='changelog-0.1.52'></a>
 
