@@ -313,8 +313,8 @@ class _BaseAction(VizroBaseModel):
     def _is_notification_payload(self, value: Any) -> bool:
         """Determine whether the given value represents a valid notification payload returned from the action.
 
-        The value is considered as the notification payload it is either a string that matches a key in
-        `self.notification`, or a tuple whose first element is a string that matches a key in `self.notification`.
+        The value is considered as the notification payload if it is either a string that matches a key in
+        `self.notifications`, or a tuple whose first element is a string that matches a key in `self.notifications`.
         """
         if isinstance(value, str):
             key = value

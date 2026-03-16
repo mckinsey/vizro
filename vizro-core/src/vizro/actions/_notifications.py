@@ -3,6 +3,7 @@ from typing import Annotated, Literal
 
 import vizro_dash_components as vdc
 from dash import html
+from dash.development.base_component import Component
 from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro.actions._abstract_action import _AbstractAction
@@ -110,7 +111,7 @@ class show_notification(_AbstractAction):
         return [notification]
 
     @property
-    def _dash_components(self) -> list[dcc.Download]:
+    def _dash_components(self) -> list[Component]:
         return [] if self._is_conditional else super()._dash_components
 
     def _define_callback(self):

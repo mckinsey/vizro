@@ -61,8 +61,8 @@ function replaceTemplateVariables(text, valuesMap) {
       return String(valuesMap[key]);
     }
 
-    // leave {{key}} unchanged
-    return match;
+    // If the key is not found in valuesMap, replace the template with empty string.
+    return "";
   });
 }
 
