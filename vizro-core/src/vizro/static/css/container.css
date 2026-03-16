@@ -17,7 +17,8 @@
 }
 
 .container-title,
-.container-title-collapse {
+.container-title-collapse,
+.control-group-title {
   align-items: center;
   display: flex;
   justify-content: space-between;
@@ -26,6 +27,10 @@
 .container-title {
   border-bottom: 1px solid var(--bs-border-color);
   padding-bottom: 4px;
+}
+
+.control-group-title {
+  font-size: 16px;
 }
 
 /* Hides title of the first container given the title is already reflected in the tab title */
@@ -71,16 +76,32 @@ the lighter shade, both in dark and light theme. */
   gap: 8px;
 }
 
-.container-controls-panel {
-  border-bottom: 1px solid var(--bs-border-color);
+.container-controls-panel,
+.control-group-panel,
+.control-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
   justify-content: start;
   padding-bottom: 1rem;
+}
+
+.container-controls-panel {
+  border-bottom: 1px solid var(--bs-border-color);
+  gap: 24px;
 }
 
 .tab-content .container-controls-panel {
   border-bottom: none;
   padding-bottom: 0;
+}
+
+.control-group-panel {
+  border-bottom: 1px solid var(--bs-border-color);
+  gap: 12px;
+  height: fit-content;
+}
+
+.control-group {
+  gap: 12px;
+  height: fit-content;
 }
