@@ -40,7 +40,7 @@ class export_data(_AbstractAction):
     error_text: str | None = Field(
         default="Exporting failed.",
         description="Text that will be displayed in the notification if the export fails. "
-        "Set None to not display the notification.",
+        "Set `None` to not display the notification.",
     )
 
     @_log_call

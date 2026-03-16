@@ -126,8 +126,8 @@ class set_control(_AbstractAction):
     )
     success_text: str | None = Field(
         default="The control value is set.",
-        description="Text that will be displayed in the notification when the control is successfully applied. "
-        "Set None to not display the notification.",
+        description="Text that will be displayed in the notification when the `set_control` action is successfully "
+        "applied. Set `None` to not display the notification.",
     )
 
     @_log_call
