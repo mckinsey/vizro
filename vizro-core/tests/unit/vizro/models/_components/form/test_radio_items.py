@@ -2,8 +2,9 @@
 
 import dash_bootstrap_components as dbc
 import pytest
+import vizro_dash_components as vdc
 from asserts import assert_component_equal
-from dash import dcc, html
+from dash import html
 from pydantic import ValidationError
 
 from vizro.models import Tooltip
@@ -202,7 +203,7 @@ class TestRadioItemsBuild:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+                children=vdc.Markdown("Test description", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

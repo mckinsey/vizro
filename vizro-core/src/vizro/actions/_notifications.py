@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import Annotated, Literal
 
-from dash import dcc, html
+import vizro_dash_components as vdc
+from dash import html
 from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro.actions._abstract_action import _AbstractAction
@@ -99,7 +100,7 @@ class show_notification(_AbstractAction):
         notification = {
             "id": self.id,
             "title": self.title,
-            "message": dcc.Markdown(children=self.text, dangerously_allow_html=False),
+            "message": vdc.Markdown(children=self.text, dangerously_allow_html=False),
             "className": VARIANT_DEFAULTS[self.variant].className,
             "icon": html.Span(self.icon, className="material-symbols-outlined"),
             "autoClose": self.auto_close,
