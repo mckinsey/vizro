@@ -1,8 +1,9 @@
 """Unit tests for TextArea."""
 
 import dash_bootstrap_components as dbc
+import vizro_dash_components as vdc
 from asserts import assert_component_equal
-from dash import dcc, html
+from dash import html
 
 import vizro.models as vm
 from vizro.models._components.form._text_area import TextArea
@@ -74,7 +75,7 @@ class TestTextAreaBuild:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Tooltip test", id="info-text", className="card-text"),
+                children=vdc.Markdown("Tooltip test", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

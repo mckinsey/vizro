@@ -99,6 +99,54 @@ sequential_gray = [
     colors.gray_900,
 ]
 
+sequential_positive = [
+    colors.positive_100,
+    colors.positive_200,
+    colors.positive_300,
+    colors.positive_400,
+    colors.positive_500,
+    colors.positive_600,
+    colors.positive_700,
+    colors.positive_800,
+    colors.positive_900,
+]
+
+sequential_negative = [
+    colors.negative_100,
+    colors.negative_200,
+    colors.negative_300,
+    colors.negative_400,
+    colors.negative_500,
+    colors.negative_600,
+    colors.negative_700,
+    colors.negative_800,
+    colors.negative_900,
+]
+
+sequential_warning = [
+    colors.warning_100,
+    colors.warning_200,
+    colors.warning_300,
+    colors.warning_400,
+    colors.warning_500,
+    colors.warning_600,
+    colors.warning_700,
+    colors.warning_800,
+    colors.warning_900,
+]
+
+diverging_red_blue = [
+    colors.negative_900,
+    colors.negative_700,
+    colors.negative_500,
+    colors.negative_300,
+    colors.gray_300,
+    colors.blue_300,
+    colors.blue_500,
+    colors.blue_700,
+    colors.blue_900,
+]
+
 diverging_pink_blue = [
     colors.pink_900,
     colors.pink_800,
@@ -113,6 +161,43 @@ diverging_pink_blue = [
     colors.blue_900,
 ]
 
+diverging_red_green = [
+    colors.negative_900,
+    colors.negative_700,
+    colors.negative_500,
+    colors.negative_300,
+    colors.gray_300,
+    colors.positive_300,
+    colors.positive_500,
+    colors.positive_700,
+    colors.positive_900,
+]
+
+diverging_purple_green = [
+    colors.purple_900,
+    colors.purple_700,
+    colors.purple_500,
+    colors.purple_300,
+    colors.gray_300,
+    colors.positive_300,
+    colors.positive_500,
+    colors.positive_700,
+    colors.positive_900,
+]
+
+diverging_yellow_blue = [
+    colors.yellow_900,
+    colors.yellow_700,
+    colors.yellow_500,
+    colors.yellow_300,
+    colors.gray_300,
+    colors.blue_300,
+    colors.blue_500,
+    colors.blue_700,
+    colors.blue_900,
+]
+
+
 # These are necessarily the same for dark and light themes.
 # For plotly express plots, some colors are taken from the template's palettes and stored in
 # fig.data rather than fig.layout. This means they cannot be changed consistently by post-fig
@@ -120,7 +205,7 @@ diverging_pink_blue = [
 palettes = SimpleNamespace(
     qualitative=qualitative,
     sequential=sequential_blue,
-    sequential_minus=sequential_pink[::-1],
+    sequential_minus=sequential_negative[::-1],
     sequential_blue=sequential_blue,
     sequential_purple=sequential_purple,
     sequential_turquoise=sequential_turquoise,
@@ -128,7 +213,14 @@ palettes = SimpleNamespace(
     sequential_pink=sequential_pink,
     sequential_yellow=sequential_yellow,
     sequential_gray=sequential_gray,
-    diverging=diverging_pink_blue,
+    sequential_positive=sequential_positive,
+    sequential_negative=sequential_negative,
+    sequential_warning=sequential_warning,
+    diverging=diverging_red_blue,
+    diverging_pink_blue=diverging_pink_blue,
+    diverging_red_green=diverging_red_green,
+    diverging_purple_green=diverging_purple_green,
+    diverging_yellow_blue=diverging_yellow_blue,
 )
 """Qualitative, sequential and diverging palettes. This includes the core palettes used by the Vizro plotly templates (`qualitative`, `sequential`, `sequential_minus` and `diverging`) as well as alternative palettes.
 

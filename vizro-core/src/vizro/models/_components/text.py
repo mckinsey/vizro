@@ -1,6 +1,6 @@
 from typing import Annotated, Any, Literal
 
-from dash import dcc
+import vizro_dash_components as vdc
 from pydantic import Field
 from pydantic.json_schema import SkipJsonSchema
 
@@ -26,7 +26,7 @@ class Text(VizroBaseModel):
             dict[str, Any],
             Field(
                 default={},
-                description="""Extra keyword arguments that are passed to `dcc.Markdown` and overwrite any
+                description="""Extra keyword arguments that are passed to `vdc.Markdown` and overwrite any
 defaults chosen by the Vizro team. This may have unexpected behavior.
 Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/markdown/)
 to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
@@ -50,4 +50,4 @@ underlying component may change in the future.""",
             "dangerously_allow_html": False,
         }
 
-        return dcc.Markdown(**(defaults | self.extra))
+        return vdc.Markdown(**(defaults | self.extra))

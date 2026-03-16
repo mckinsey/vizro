@@ -77,10 +77,44 @@ colors = SimpleNamespace(
     gray_700="#3E495B",
     gray_800="#2A3241",
     gray_900="#1D222E",
+    positive_100="#D0FAF3",
+    positive_200="#A1F4E8",
+    positive_300="#64E9D9",
+    positive_400="#1BD0C1",
+    positive_500="#00B5A9",
+    positive_600="#00918A",
+    positive_700="#0F766E",
+    positive_800="#0F5B59",
+    positive_900="#144B49",
+    negative_100="#FBE4E2",
+    negative_200="#FACDC9",
+    negative_300="#F7AAA3",
+    negative_400="#F1766C",
+    negative_500="#EA5748",
+    negative_600="#D63A28",
+    negative_700="#B22F20",
+    negative_800="#922A20",
+    negative_900="#782921",
+    warning_100="#FFF7CD",
+    warning_200="#FFED9B",
+    warning_300="#FFE16A",
+    warning_400="#FFD545",
+    warning_500="#FFC107",
+    warning_600="#DBA005",
+    warning_700="#B78103",
+    warning_800="#936402",
+    warning_900="#7A4F01",
     # Special colors
     transparent="rgba(0, 0, 0, 0)",
     white="#FFFFFF",
     black="#000000",
+    positive="#00B5A9",  # Equivalent to positive_500
+    negative="#EA5748",  # Equivalent to negative_500
+    neutral="#3E495B",  # Equivalent to gray_700
+    info="#097DFE",  # Equivalent to blue_500
+    success="#00B5A9",  # Equivalent to positive_500
+    warning="#FFC107",  # Equivalent to warning_500
+    error="#EA5748",  # Equivalent to negative_500
 )
 """Colors used by palettes, plus additional colors.
 
