@@ -6,9 +6,7 @@ Vizro e2e Flow is a [Claude Code plugin](https://code.claude.com/docs/en/plugins
 
 - **Skill 2: dashboard-build** - Dashboard implementation and testing phase.
 
-The plugin includes a pre-configured [Playwright MCP server](https://executeautomation.github.io/mcp-playwright/) for a seamless workflow:
-
-- **Playwright MCP**: Browser automation for functional testing
+The plugin includes a [Playwright MCP server](https://executeautomation.github.io/mcp-playwright/) for browser automation for functional testing.
 
 ## Prerequisites
 
