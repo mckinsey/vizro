@@ -25,21 +25,36 @@
   });
 })();
 
-/* Carousel */
+/* Carousel - infinite loop with cloned slides */
 (function initCarousel() {
-  const carousel = document.querySelector(".carousel");
-  if (!carousel) return;
+  const carouselSection = document.querySelector(".carousel-section");
+  if (!carouselSection) return;
 
-  const track = carousel.querySelector(".carousel__track");
+  const carousel = carouselSection.querySelector(".carousel");
+  const track = carousel?.querySelector(".carousel__track");
+  const leftButton = carouselSection.querySelector(".carousel__button--left");
+  const rightButton = carouselSection.querySelector(".carousel__button--right");
+
+  if (!carousel || !track) return;
+
+  /* Clone first slide to end and last slide to start for seamless loop */
+  const originalItems = [...track.querySelectorAll(".carousel__item")];
+  if (!originalItems.length || !leftButton || !rightButton) return;
+
+  const firstClone = originalItems[0].cloneNode(true);
+  const lastClone = originalItems[originalItems.length - 1].cloneNode(true);
+  track.insertBefore(lastClone, track.firstChild);
+  track.appendChild(firstClone);
+
   const items = [...track.querySelectorAll(".carousel__item")];
-  const leftButton = carousel.querySelector(".carousel__button--left");
-  const rightButton = carousel.querySelector(".carousel__button--right");
+  const realFirstIndex = 1;
+  const realLastIndex = items.length - 2;
 
-  if (!track || !items.length || !leftButton || !rightButton) return;
-
-  let currentIndex = 0;
-  let autoRotateInterval;
-  const AUTO_ROTATE_DELAY = 4000;
+  let currentIndex = realFirstIndex;
+  let autoRotateTimeoutId = null;
+  let isTransitioning = false;
+  const AUTO_ROTATE_DELAY = 7000;
+  const WRAP_DELAY = 7000;
 
   const getScrollAmount = () => {
     const gap = parseFloat(getComputedStyle(track).gap) || 16;
@@ -47,39 +62,80 @@
   };
 
   const getVisibleItems = () => {
-    const container = carousel.querySelector(".carousel__track-container");
-    return Math.floor(container.offsetWidth / getScrollAmount());
+    const trackContainer = carousel.querySelector(".carousel__track-container");
+    return Math.floor(trackContainer.offsetWidth / getScrollAmount());
   };
 
-  const updateCarousel = () => {
+  const updateCarousel = (withoutTransition = false) => {
+    if (withoutTransition) {
+      track.style.transition = "none";
+    }
     track.style.transform = `translateX(${-currentIndex * getScrollAmount()}px)`;
+    if (withoutTransition) {
+      requestAnimationFrame(() => {
+        track.offsetHeight;
+        track.style.transition = "";
+      });
+    }
+    leftButton.disabled = false;
+    rightButton.disabled = false;
+  };
 
-    const maxIndex = Math.max(0, items.length - getVisibleItems());
-    leftButton.disabled = currentIndex === 0;
-    rightButton.disabled = currentIndex >= maxIndex;
+  const jumpToRealSlide = () => {
+    if (currentIndex === 0) {
+      currentIndex = realLastIndex;
+    } else if (currentIndex === items.length - 1) {
+      currentIndex = realFirstIndex;
+    }
+    updateCarousel(true);
+    isTransitioning = false;
+  };
+
+  const handleTransitionEnd = (e) => {
+    if (e.target !== track || e.propertyName !== "transform") return;
+    track.removeEventListener("transitionend", handleTransitionEnd);
+    jumpToRealSlide();
   };
 
   const scrollLeft = () => {
-    if (currentIndex > 0) {
-      currentIndex--;
-      updateCarousel();
+    if (isTransitioning) return;
+    currentIndex--;
+    if (currentIndex === 0) {
+      isTransitioning = true;
+      track.addEventListener("transitionend", handleTransitionEnd);
     }
+    updateCarousel();
   };
 
   const scrollRight = () => {
-    const maxIndex = Math.max(0, items.length - getVisibleItems());
-    currentIndex = currentIndex < maxIndex ? currentIndex + 1 : 0;
+    if (isTransitioning) return;
+    currentIndex++;
+    if (currentIndex === items.length - 1) {
+      isTransitioning = true;
+      track.addEventListener("transitionend", handleTransitionEnd);
+    }
     updateCarousel();
   };
 
   const stopAutoRotate = () => {
-    clearInterval(autoRotateInterval);
-    autoRotateInterval = null;
+    if (autoRotateTimeoutId !== null) {
+      clearTimeout(autoRotateTimeoutId);
+      autoRotateTimeoutId = null;
+    }
+  };
+
+  const scheduleNextTick = () => {
+    const isOnLastRealSlide = currentIndex >= realLastIndex;
+    const delay = isOnLastRealSlide ? WRAP_DELAY : AUTO_ROTATE_DELAY;
+    autoRotateTimeoutId = setTimeout(() => {
+      scrollRight();
+      scheduleNextTick();
+    }, delay);
   };
 
   const startAutoRotate = () => {
     stopAutoRotate();
-    autoRotateInterval = setInterval(scrollRight, AUTO_ROTATE_DELAY);
+    scheduleNextTick();
   };
 
   const pauseAndRestart = () => {
@@ -106,22 +162,22 @@
     });
   });
 
-  carousel.addEventListener("mouseenter", stopAutoRotate);
-  carousel.addEventListener("mouseleave", startAutoRotate);
-  carousel.addEventListener("focusin", stopAutoRotate);
-  carousel.addEventListener("focusout", startAutoRotate);
+  carouselSection.addEventListener("mouseenter", stopAutoRotate);
+  carouselSection.addEventListener("mouseleave", startAutoRotate);
+  carouselSection.addEventListener("focusin", stopAutoRotate);
+  carouselSection.addEventListener("focusout", startAutoRotate);
 
   let resizeTimer;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      currentIndex = 0;
-      updateCarousel();
+      currentIndex = realFirstIndex;
+      updateCarousel(true);
       pauseAndRestart();
     }, 250);
   });
 
-  updateCarousel();
+  updateCarousel(true);
   startAutoRotate();
 })();
 
@@ -184,6 +240,37 @@
 
     document.body.removeChild(textarea);
   }
+})();
+
+/* Long code blocks: collapse after 30 lines with "Show full code" button */
+(function initLongCodeBlocks() {
+  const MAX_VISIBLE_LINES = 30;
+
+  document.querySelectorAll(".code-block").forEach((block) => {
+    const pre = block.querySelector("pre");
+    const code = block.querySelector("code");
+    if (!pre || !code) return;
+
+    const lineCount = code.textContent.split("\n").length;
+    if (lineCount <= MAX_VISIBLE_LINES) return;
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "code-block__pre-wrapper";
+    pre.parentNode.insertBefore(wrapper, pre);
+    wrapper.appendChild(pre);
+
+    const showMoreBtn = document.createElement("button");
+    showMoreBtn.className = "code-block__show-more";
+    showMoreBtn.setAttribute("type", "button");
+    showMoreBtn.textContent = "Show full code";
+    showMoreBtn.addEventListener("click", () => {
+      const collapsed = block.classList.toggle("code-block--collapsed");
+      showMoreBtn.textContent = collapsed ? "Show full code" : "Show less";
+    });
+
+    block.classList.add("code-block--collapsed");
+    block.appendChild(showMoreBtn);
+  });
 })();
 
 /* Search */

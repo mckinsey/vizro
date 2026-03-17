@@ -301,132 +301,138 @@
                 <span class="section-badge">New</span>
                 <h2 class="section-title">Latest updates</h2>
               </div>
-              <div class="carousel">
-                <button
-                  class="carousel__button carousel__button--left"
-                  aria-label="Scroll left"
-                >
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
+              <div class="carousel-outer">
+                <div class="carousel-wrapper">
+                  <button
+                    class="carousel__button carousel__button--left"
+                    aria-label="Scroll left"
+                    type="button"
                   >
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                  </svg>
-                </button>
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                  </button>
+                  <div class="carousel">
+                    <div class="carousel__track-container">
+                      <div class="carousel__track">
+                        <!-- Carousel Item 1 -->
+                        <div class="carousel__item">
+                          <div class="carousel__item-content">
+                            <div class="carousel__item-image">
+                              <img
+                                src="assets/images/notifications.gif"
+                                alt="Notifications"
+                              />
+                            </div>
+                            <div class="carousel-content">
+                              <h3 class="carousel__item-title">
+                                Notifications
+                              </h3>
+                              <p class="carousel__item-description">
+                                The <code>show_notification</code> action
+                                displays a temporary message to the user.
+                                <br />
 
-                <div class="carousel__track-container">
-                  <div class="carousel__track">
-                    <!-- Carousel Item 1 -->
-                    <div class="carousel__item">
-                      <div class="carousel__item-content">
-                        <div class="carousel__item-image">
-                          <img
-                            src="assets/images/notifications.gif"
-                            alt="Notifications"
-                          />
-                        </div>
-                        <div class="carousel-content">
-                          <h3 class="carousel__item-title">Notifications</h3>
-                          <p class="carousel__item-description">
-                            The <code>show_notification</code> action displays a
-                            temporary message to the user.
-                            <br />
-
-                            Notifications appear at the top-right of the screen
-                            and are customizable with options for content and
-                            styling.
-                          </p>
-                          <div class="view-btn">
-                            <a
-                              href="https://vizro.readthedocs.io/en/stable/pages/user-guides/notification-actions/"
-                              class="version-link"
-                              >View Notifications</a
-                            >
+                                Notifications appear at the top-right of the
+                                screen and are customizable with options for
+                                content and styling.
+                              </p>
+                              <div class="view-btn">
+                                <a
+                                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/notification-actions/"
+                                  class="version-link"
+                                  >View Notifications</a
+                                >
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
 
-                    <!-- Carousel Item 2 -->
-                    <div class="carousel__item">
-                      <div class="carousel__item-content">
-                        <div class="carousel__item-image">
-                          <img
-                            src="assets/images/controls_in_containers.gif"
-                            alt="Controls in containers"
-                          />
-                        </div>
-                        <div class="carousel-content">
-                          <h3 class="carousel__item-title">
-                            Controls in containers
-                          </h3>
-                          <p class="carousel__item-description">
-                            The Container has a controls argument where you can
-                            define container-specific controls such as filters
-                            and parameters. Controls can only target components
-                            inside their own container.
-                          </p>
-                          <div class="view-btn">
-                            <a
-                              href="https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-controls-to-container"
-                              class="version-link"
-                              >View controls in Container</a
-                            >
+                        <!-- Carousel Item 2 -->
+                        <div class="carousel__item">
+                          <div class="carousel__item-content">
+                            <div class="carousel__item-image">
+                              <img
+                                src="assets/images/controls_in_containers.gif"
+                                alt="Controls in containers"
+                              />
+                            </div>
+                            <div class="carousel-content">
+                              <h3 class="carousel__item-title">
+                                Controls in containers
+                              </h3>
+                              <p class="carousel__item-description">
+                                The Container has a controls argument where you
+                                can define container-specific controls such as
+                                filters and parameters. Controls can only target
+                                components inside their own container.
+                              </p>
+                              <div class="view-btn">
+                                <a
+                                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-controls-to-container"
+                                  class="version-link"
+                                  >View controls in Container</a
+                                >
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
 
-                    <!-- Carousel Item 4 -->
-                    <div class="carousel__item">
-                      <div class="carousel__item-content">
-                        <div class="carousel__item-image">
-                          <img
-                            src="assets/images/cross_highlight.gif"
-                            alt="Set controls"
-                          />
-                        </div>
-                        <div class="carousel-content">
-                          <h3 class="carousel__item-title">
-                            New action set_controls
-                          </h3>
-                          <p class="carousel__item-description">
-                            Configure interactions between graphs and tables, as
-                            is commonly done in business intelligence (BI)
-                            tools.
-                          </p>
-                          <div class="view-btn">
-                            <a
-                              href="https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions/"
-                              class="version-link"
-                              >View new Actions</a
-                            >
+                        <!-- Carousel Item 4 -->
+                        <div class="carousel__item">
+                          <div class="carousel__item-content">
+                            <div class="carousel__item-image">
+                              <img
+                                src="assets/images/cross_highlight.gif"
+                                alt="Set controls"
+                              />
+                            </div>
+                            <div class="carousel-content">
+                              <h3 class="carousel__item-title">
+                                New action set_controls
+                              </h3>
+                              <p class="carousel__item-description">
+                                Configure interactions between graphs and
+                                tables, as is commonly done in business
+                                intelligence (BI) tools.
+                              </p>
+                              <div class="view-btn">
+                                <a
+                                  href="https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions/"
+                                  class="version-link"
+                                  >View new Actions</a
+                                >
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-
-                <button
-                  class="carousel__button carousel__button--right"
-                  aria-label="Scroll right"
-                >
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
+                  <button
+                    class="carousel__button carousel__button--right"
+                    aria-label="Scroll right"
+                    type="button"
                   >
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </button>
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           </section>
