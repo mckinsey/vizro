@@ -47,7 +47,7 @@ Then configure **Playwright MCP** for browser testing. In Cursor, go to **Cursor
 }
 ```
 
-### Option 2: Claude Code (Plugin Marketplace)
+### Option 2: Use the Claude Code marketplace
 
 Open your terminal and start Claude Code:
 
@@ -55,7 +55,7 @@ Open your terminal and start Claude Code:
 claude
 ```
 
-Register the `mckinsey/vizro` repository as a plugin marketplace:
+Register the `mckinsey/vizro` repository as a plugin with the marketplace:
 
 ```
 /plugin marketplace add mckinsey/vizro
@@ -91,7 +91,7 @@ The skills are automatically triggered when you mention keywords like "dashboard
 
 This invokes the **dashboard-design** skill, which guides you through three sub-steps:
 
-1. **Understand Requirements** - Agent will ask about your analytical questions, data sources, KPIs, and page structure.
+1. **Understand Requirements** - The agent will ask about the audience for the dashboard, the insights the audience are most interested in, the KPIs, and your preferred page structure.
 
 1. **Design Layout & Interactions** - Agent proposes a grid layout, navigation structure, and filter strategy. You review and iterate together.
 
@@ -119,7 +119,7 @@ This invokes the **dashboard-build** skill, which:
 
 ## Compatibility
 
-At the time of writing, this plugin is compatible with products which support Claude Agent Skills (https://agentskills.io/). As is often the case with GenAI products, we expect this to work with more products in the future.
+At the time of writing, this plugin is compatible with products which support [Claude Agent Skills](https://agentskills.io/). As is often the case with generative AI products, we expect this to work with more products in the future.
 
 ## Support
 
