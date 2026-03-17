@@ -80,9 +80,10 @@ class _BaseAction(VizroBaseModel):
         - {action.id}_finished for completion of an action callback to trigger the next action in the chain
         - {action.id}_guarded_trigger for the first action in a chain so that guard_action_chain callback prevent
             undesired triggering (workaround for Dash prevent_initial_call=True behavior)
-        # TODO PP NOW: Do docstring.
-        - {action.id}_progress_notification_object for...
-        - {action.id}_action_parameters for...
+        - {action.id}_progress_notification_object for storing the progress notification so it can be reused in the
+            client-side show_progress_notification callback.
+        - {action.id}_action_parameters for storing the list of parameter names so it can be reused in the client-side
+            show_progress_notification callback for templating the progress notification.
 
         In theory, subclasses can add additional components to the list, as done in export_data, but this should not be
         generally encouraged. In the future it might not be possible.
