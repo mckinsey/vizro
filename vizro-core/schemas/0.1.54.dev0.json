@@ -603,7 +603,6 @@
             "description": "Control that affects components on the page.",
             "discriminator": {
               "mapping": {
-                "control_group": "#/$defs/ControlGroup",
                 "filter": "#/$defs/Filter",
                 "parameter": "#/$defs/Parameter"
               },
@@ -615,9 +614,6 @@
               },
               {
                 "$ref": "#/$defs/Parameter"
-              },
-              {
-                "$ref": "#/$defs/ControlGroup"
               }
             ]
           },
@@ -627,70 +623,6 @@
       },
       "required": ["components"],
       "title": "Container",
-      "type": "object"
-    },
-    "ControlGroup": {
-      "additionalProperties": false,
-      "description": "Container to group together a set of controls.\n\nAbstract: Usage documentation\n    [How to use containers](../user-guides/container.md)",
-      "properties": {
-        "id": {
-          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
-          "title": "Id",
-          "type": "string"
-        },
-        "type": {
-          "const": "control_group",
-          "default": "control_group",
-          "title": "Type",
-          "type": "string"
-        },
-        "title": {
-          "default": "",
-          "description": "Title of the control group.",
-          "title": "Title",
-          "type": "string"
-        },
-        "description": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/Tooltip"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
-        },
-        "controls": {
-          "default": [],
-          "items": {
-            "description": "Control that affects components on the page.",
-            "discriminator": {
-              "mapping": {
-                "control_group": "#/$defs/ControlGroup",
-                "filter": "#/$defs/Filter",
-                "parameter": "#/$defs/Parameter"
-              },
-              "propertyName": "type"
-            },
-            "oneOf": [
-              {
-                "$ref": "#/$defs/Filter"
-              },
-              {
-                "$ref": "#/$defs/Parameter"
-              },
-              {
-                "$ref": "#/$defs/ControlGroup"
-              }
-            ]
-          },
-          "title": "Controls",
-          "type": "array"
-        }
-      },
-      "title": "ControlGroup",
       "type": "object"
     },
     "DatePicker": {
@@ -1609,7 +1541,6 @@
             "description": "Control that affects components on the page.",
             "discriminator": {
               "mapping": {
-                "control_group": "#/$defs/ControlGroup",
                 "filter": "#/$defs/Filter",
                 "parameter": "#/$defs/Parameter"
               },
@@ -1621,9 +1552,6 @@
               },
               {
                 "$ref": "#/$defs/Parameter"
-              },
-              {
-                "$ref": "#/$defs/ControlGroup"
               }
             ]
           },
