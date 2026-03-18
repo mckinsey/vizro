@@ -1,4 +1,4 @@
-# Vizro e2e Flow Plugin
+# Vizro e2e flow plugin
 
 Vizro e2e Flow is a [Claude Code plugin](https://code.claude.com/docs/en/plugins) for end-to-end Vizro dashboard development. It consists of a 2-skill workflow:
 
