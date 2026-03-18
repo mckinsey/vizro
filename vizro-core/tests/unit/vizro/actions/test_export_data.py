@@ -8,7 +8,7 @@ from dash._utils import AttributeDict
 
 import vizro.models as vm
 from vizro import Vizro
-from vizro.actions import export_data, filter_interaction
+from vizro.actions import export_data, filter_interaction, show_notification
 from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import data_manager, model_manager
 
@@ -330,6 +330,38 @@ class TestExportDataPreBuild:
             ModuleNotFoundError, match=r"You must install either openpyxl or xlsxwriter to export to xlsx format."
         ):
             export_data(file_format="xlsx").pre_build()
+
+
+class TestExportDataNotificationsProperty:
+    """Tests for export_data notifications property."""
+
+    def test_default_export_data_notifications(self):
+        result_export_data_notifications = export_data().notifications
+
+        assert len(result_export_data_notifications) == 1
+
+        # default error notification
+        result_error_notification = result_export_data_notifications["error"]
+        assert type(result_error_notification) == show_notification
+        assert result_error_notification.variant == "error"
+        assert result_error_notification.text == "Exporting failed."
+        assert result_error_notification._is_conditional is True
+
+    def test_export_data_notifications_with_error_text_none(self):
+        export_data_model = export_data(error_text=None)
+        assert export_data_model.notifications == {"error": None}
+
+    def test_export_data_notifications_with_custom_error_text(self):
+        result_export_data_notifications = export_data(error_text="test").notifications
+
+        assert len(result_export_data_notifications) == 1
+
+        # default error notification
+        result_error_notification = result_export_data_notifications["error"]
+        assert type(result_error_notification) == show_notification
+        assert result_error_notification.variant == "error"
+        assert result_error_notification.text == "test"
+        assert result_error_notification._is_conditional is True
 
 
 class TestExportDataFunction:

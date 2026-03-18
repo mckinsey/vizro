@@ -428,7 +428,7 @@ page_8 = vm.Page(
         vm.Tabs(
             tabs=[
                 vm.Container(
-                    title="Actions without notifications",
+                    title="Success Actions without notifications",
                     layout=vm.Flex(),
                     components=[
                         vm.Button(
@@ -463,7 +463,7 @@ page_8 = vm.Page(
                     ],
                 ),
                 vm.Container(
-                    title="Actions with notifications",
+                    title="Success Actions with notifications",
                     layout=vm.Flex(),
                     components=[
                         vm.Button(
@@ -504,6 +504,39 @@ page_8 = vm.Page(
                                 )(),
                                 outputs={f"{pre}_text_key": f"{pre}_text"},
                                 notifications={"my_success": "Action with dict outputs executed successfully!"},
+                            ),
+                        ),
+                    ],
+                ),
+                vm.Container(
+                    title="Error Actions without notifications",
+                    layout=vm.Flex(),
+                    components=[
+                        vm.Button(
+                            text="Action with no output",
+                            actions=vm.Action(
+                                function=capture("action")(lambda: raise_exception(ValueError))(),
+                            ),
+                        ),
+                        vm.Button(
+                            text="Action with single output",
+                            actions=vm.Action(
+                                function=capture("action")(lambda: raise_exception(ValueError))(),
+                                outputs=f"{pre}_text",
+                            ),
+                        ),
+                        vm.Button(
+                            text="Action with list outputs",
+                            actions=vm.Action(
+                                function=capture("action")(lambda: raise_exception(ValueError))(),
+                                outputs=[f"{pre}_text"],
+                            ),
+                        ),
+                        vm.Button(
+                            text="Action with dict outputs",
+                            actions=vm.Action(
+                                function=capture("action")(lambda: raise_exception(ValueError))(),
+                                outputs={f"{pre}_text_key": f"{pre}_text"},
                             ),
                         ),
                     ],

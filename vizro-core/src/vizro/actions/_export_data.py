@@ -76,12 +76,12 @@ class export_data(_AbstractAction):
     def function(self, _controls: _Controls) -> dict[str, Any]:
         """Exports data after applying _controls."""
         # TODO PP IMPORTANT: REMOVE SLEEP AND EXCEPTION AFTER TESTING
-        import random
-        from time import sleep
-
-        sleep(0.5)
-        if random.random() > 0.5:
-            raise Exception("Random error occurred during data export!")
+        # import random
+        # from time import sleep
+        #
+        # sleep(0.5)
+        # if random.random() > 0.5:
+        #     raise Exception("Random error occurred during data export!")
 
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.

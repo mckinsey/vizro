@@ -328,7 +328,7 @@ class _BaseAction(VizroBaseModel):
 
     def _split_trailing_notification_payload(self, return_value: Any) -> tuple[Any, Any | None]:
         """If return_value is a tuple whose last element is a notification payload, split it off."""
-        if not isinstance(return_value, tuple):
+        if not isinstance(return_value, tuple) or return_value == ():
             return return_value, None
 
         if self._is_notification_payload(last := return_value[-1]):
@@ -394,15 +394,15 @@ class _BaseAction(VizroBaseModel):
             # Extract a trailing `notification_payload` only when the tuple shape clearly indicates it.
             # This happens when the tuple has one more element than the defined outputs, or when it is
             # `([rv_1, ..., rv_N], notification_payload)` (a 2-tuple whose first element matches the number of elements
-            # in the defined outputs). This avoids misinterpreting legitimate return values like `(X, Y, "success")`
-            # (for three defined outputs) as containing a notification payload.
+            # in the defined outputs). This for example avoids misinterpreting legitimate return values like
+            # `(X, Y, "success")` for three defined outputs as containing a notification payload.
             if isinstance(return_value, tuple):
                 # Matches: `(rv_1, ..., rv_N, notification_payload)` for N defined outputs.
                 tuple_has_extra_output = len(return_value) == len(outputs) + 1
                 # Matches: `([rv_1, ..., rv_N], notification_payload)` for N defined outputs.
                 first_element_matches_output = (
                     len(return_value) == 2  # noqa: PLR2004
-                    and isinstance(return_value[0], list)
+                    and hasattr(return_value[0], "__len__")
                     and len(return_value[0]) == len(outputs)
                 )
                 if tuple_has_extra_output or first_element_matches_output:
@@ -425,6 +425,8 @@ class _BaseAction(VizroBaseModel):
         # --- Single output ---
         else:
             # Allow: `Any` and `(Any, notification_payload)`.
+            # Breaking change: if a single output returns a tuple whose last element looks like `notification_payload`,
+            # it will be split into (return_value[:-1], notification_payload).
             return_value, notification_payload = self._split_trailing_notification_payload(return_value=return_value)
 
         return {"external_return": return_value, "notification_payload": notification_payload}
@@ -449,7 +451,12 @@ class _BaseAction(VizroBaseModel):
             return dict.fromkeys(outputs_spec, no_update)
         return no_update
 
-    def _render_notification(self, notification_key: str, notification_result: str | None, error_msg: str | None):
+    def _render_notification(
+        self,
+        notification_key: str,
+        notification_result: Any | None = None,
+        error_msg: str | None = None,
+    ):
         """Renders the notification based on the notification_key, notification_result and error_msg."""
         # Skip setting `vizro_notification` output if the action does not support notifications.
         if not (action_notifications := getattr(self, "notifications", None)):
@@ -459,10 +466,9 @@ class _BaseAction(VizroBaseModel):
         if (notification_model := action_notifications.get(notification_key)) is None:
             return no_update
 
-        # Template {{result}} with the empty string if the `notification_result` is not convertible to string.
-        if notification_result is None or not hasattr(notification_result, "__str__"):
-            notification_result = ""
-        # Template {{error_msg}} with the empty string if the `error_msg` does not exist.
+        # Template {{result}} with the empty string if the `result` is not provided.
+        notification_result = notification_result or ""
+        # Template {{error_msg}} with the empty string if the `error_msg` is not provided.
         error_msg = error_msg or ""
 
         notification = notification_model.function()
