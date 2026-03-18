@@ -9,8 +9,13 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import export_data, show_notification, update_notification
 from vizro.models import Action, Button, VizroBaseModel
-from vizro.models.types import CapturedCallable, _coerce_to_list, _normalize_action_notifications, \
-    _validate_captured_callable, capture
+from vizro.models.types import (
+    CapturedCallable,
+    _coerce_to_list,
+    _normalize_action_notifications,
+    _validate_captured_callable,
+    capture,
+)
 
 
 def positional_only_function(a, /):
@@ -24,8 +29,8 @@ def var_positional_function(*args):
 @pytest.mark.parametrize("function", [positional_only_function, var_positional_function])
 def test_invalid_parameter_kind(function):
     with pytest.raises(
-            ValueError,
-            match="CapturedCallable does not accept functions with positional-only or variadic positional parameters",
+        ValueError,
+        match="CapturedCallable does not accept functions with positional-only or variadic positional parameters",
     ):
         CapturedCallable(function)
 
@@ -113,8 +118,8 @@ class TestCallMissingArgument:
     "captured_callable, expectation",
     [
         (
-                positional_or_keyword_function,
-                pytest.raises(TypeError, match="takes 1 positional arguments but 2 were given"),
+            positional_or_keyword_function,
+            pytest.raises(TypeError, match="takes 1 positional arguments but 2 were given"),
         ),
         (keyword_only_function, pytest.raises(TypeError, match="takes 0 positional arguments but 2 were given")),
         (var_keyword_function, pytest.raises(TypeError, match="takes 0 positional arguments but 2 were given")),
@@ -197,21 +202,21 @@ class TestModelFieldPython:
 
     def test_undecorated_function(self):
         with pytest.raises(
-                ValidationError,
-                match=re.escape(
-                    "Invalid CapturedCallable. Supply a function imported from tests.unit.vizro.models.test_types or "
-                    "defined with decorator @capture('graph')."
-                ),
+            ValidationError,
+            match=re.escape(
+                "Invalid CapturedCallable. Supply a function imported from tests.unit.vizro.models.test_types or "
+                "defined with decorator @capture('graph')."
+            ),
         ):
             ModelWithGraph(function=undecorated_function(1, 2, 3))
 
     def test_wrong_mode(self):
         with pytest.raises(
-                ValidationError,
-                match=re.escape(
-                    "CapturedCallable was defined with @capture('action') rather than @capture('graph') and so "
-                    "is not compatible with the model."
-                ),
+            ValidationError,
+            match=re.escape(
+                "CapturedCallable was defined with @capture('action') rather than @capture('graph') and so "
+                "is not compatible with the model."
+            ),
         ):
             ModelWithGraph(function=decorated_action_function(a=1, b=2))
 
@@ -269,7 +274,7 @@ class TestModelFieldJSONConfig:
     def test_invalid_import(self):
         config = {"_target_": "invalid_function"}
         with pytest.raises(
-                ValidationError, match="Failed to import function 'invalid_function' from any of the attempted paths"
+            ValidationError, match="Failed to import function 'invalid_function' from any of the attempted paths"
         ):
             ModelWithGraph(function=config)
 
@@ -281,22 +286,22 @@ class TestModelFieldJSONConfig:
     def test_undecorated_function(self):
         config = {"_target_": "undecorated_function", "a": 1, "b": 2, "c": 3}
         with pytest.raises(
-                ValidationError,
-                match=re.escape(
-                    "Invalid CapturedCallable. Supply a function imported from tests.unit.vizro.models.test_types or "
-                    "defined with decorator @capture('graph')."
-                ),
+            ValidationError,
+            match=re.escape(
+                "Invalid CapturedCallable. Supply a function imported from tests.unit.vizro.models.test_types or "
+                "defined with decorator @capture('graph')."
+            ),
         ):
             ModelWithGraph(function=config)
 
     def test_wrong_mode(self):
         config = {"_target_": "decorated_action_function", "a": 1, "b": 2}
         with pytest.raises(
-                ValidationError,
-                match=re.escape(
-                    "CapturedCallable was defined with @capture('action') rather than @capture('graph') and so "
-                    "is not compatible with the model."
-                ),
+            ValidationError,
+            match=re.escape(
+                "CapturedCallable was defined with @capture('action') rather than @capture('graph') and so "
+                "is not compatible with the model."
+            ),
         ):
             ModelWithGraph(function=config)
 
@@ -304,7 +309,7 @@ class TestModelFieldJSONConfig:
         config = {"_target_": "decorated_graph_function", "data_frame": "data_source_name"}
 
         with pytest.raises(
-                ValueError, match="Failed to import function 'decorated_graph_function' from any of the attempted paths"
+            ValueError, match="Failed to import function 'decorated_graph_function' from any of the attempted paths"
         ):
             ModelWithInvalidModule(function=config)
 
@@ -578,4 +583,3 @@ class TestNormalizeActionNotifications:
         assert result_error_notification.text == "Action failed."
         assert result_error_notification._is_conditional is True
         assert result_error_notification.notification == result_progress_notification.id
-

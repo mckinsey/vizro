@@ -141,7 +141,7 @@ class TestLegacyActionInstantiation:
                 dcc.Store(id="action-id_guarded_trigger"),
                 dcc.Store(id="action-id_progress_notification_object", data=result_progress_notification.function()),
                 dcc.Store(id="action-id_action_parameters", data=[]),
-            ]
+            ],
         )
         assert action._transformed_inputs == []
         assert action._transformed_outputs == []
@@ -547,7 +547,7 @@ class TestActionInstantiation:
                 dcc.Store(id="action-id_guarded_trigger"),
                 dcc.Store(id="action-id_progress_notification_object", data=result_progress_notification.function()),
                 dcc.Store(id="action-id_action_parameters", data=[]),
-            ]
+            ],
         )
         assert action._transformed_inputs == {}
         assert action._transformed_outputs == []
@@ -798,6 +798,7 @@ class TestActionOutputs:
 
 class TestBaseActionUtilMethods:
     """Tests for private util functions."""
+
     @pytest.mark.parametrize(
         "input_value, expected_is_notification_payload",
         [
@@ -808,7 +809,7 @@ class TestBaseActionUtilMethods:
             (("unknown_notification_key", None), False),
             (("notification_key", None), True),
             (("notification_key", None, None), False),
-        ]
+        ],
     )
     def test_is_notification_payload(self, input_value, expected_is_notification_payload):
         action = Action(function=action_with_no_args(), notifications={"notification_key": "Text"})
@@ -824,7 +825,7 @@ class TestBaseActionUtilMethods:
             ((None, "notification_key"), (None, "notification_key")),
             ((1, 2, 3, "notification_key"), ((1, 2, 3), "notification_key")),
             (([1, 2, 3], "notification_key"), ([1, 2, 3], "notification_key")),
-        ]
+        ],
     )
     def test_split_trailing_notification_payload(self, input_value, expected_split_trailing_notification_payload):
         action = Action(function=action_with_no_args(), notifications={"notification_key": "Text"})
@@ -864,18 +865,18 @@ class TestBaseActionUtilMethods:
                 [
                     Output("component_1", "property"),
                     Output("component_2", "property"),
-                ], [no_update, no_update]
+                ],
+                [no_update, no_update],
             ),
-            (
-                {"component": Output("component", "property")}, {"component": no_update}
-            ),
+            ({"component": Output("component", "property")}, {"component": no_update}),
             (
                 {
                     "component_1": Output("component_1", "property"),
                     "component_2": Output("component_2", "property"),
-                }, {"component_1": no_update, "component_2": no_update}
+                },
+                {"component_1": no_update, "component_2": no_update},
             ),
-        ]
+        ],
     )
     def test_no_update_outputs(self, callback_outputs, expected_no_update_outputs):
         action = Action(function=action_with_no_args())
@@ -902,7 +903,7 @@ class TestBaseActionUtilMethods:
         [
             (None, None, "Result: Error:"),
             ("actions_result", "actions_error", "Result:actions_result Error:actions_error"),
-        ]
+        ],
     )
     def test_render_notification_with_notification_result(
         self,
@@ -911,8 +912,7 @@ class TestBaseActionUtilMethods:
         expected_rendered_notification,
     ):
         action = Action(
-            function=action_with_no_args(),
-            notifications={"notification_key": "Result:{{result}} Error:{{error_msg}}"}
+            function=action_with_no_args(), notifications={"notification_key": "Result:{{result}} Error:{{error_msg}}"}
         )
 
         result = action._render_notification(
@@ -947,13 +947,20 @@ class TestBaseActionCallbackFunction:
             # These two edge cases are the only breaking changes introduced with conditional notification feature.
             # Find more about the edge cases in the source code.
             pytest.param(("value_1", "notification_key"), Output("component", "property"), marks=pytest.mark.xfail),
-            pytest.param(("value_1", ("notification_key", "notification_result")), Output("component", "property"), marks=pytest.mark.xfail),
+            pytest.param(
+                ("value_1", ("notification_key", "notification_result")),
+                Output("component", "property"),
+                marks=pytest.mark.xfail,
+            ),
             # multiple list outputs
             ("ab", [Output("component_1", "property"), Output("component_2", "property")]),
             (["value_1", "value_2"], [Output("component_1", "property"), Output("component_2", "property")]),
             (["value_1", "notification_key"], [Output("component_1", "property"), Output("component_2", "property")]),
             (("value_1", "notification_key"), [Output("component_1", "property"), Output("component_2", "property")]),
-            (("value_1", ("notification_key", "notification_result")), [Output("component_1", "property"), Output("component_2", "property")]),
+            (
+                ("value_1", ("notification_key", "notification_result")),
+                [Output("component_1", "property"), Output("component_2", "property")],
+            ),
             (
                 {"component_1": "value_1", "component_2": "value_2"},
                 [Output("component", "property"), Output("component_2", "property")],
@@ -972,7 +979,8 @@ class TestBaseActionCallbackFunction:
         # If no error is raised by _action_callback_function then running it should return exactly the same
         # as the output of the action_with_mock_return_value.
         assert action._action_callback_function(inputs={}, outputs=callback_outputs) == {
-            "external_return": action_with_mock_return_value()(), "notification_payload": None
+            "external_return": action_with_mock_return_value()(),
+            "notification_payload": None,
         }
 
     @pytest.mark.parametrize(
@@ -983,40 +991,79 @@ class TestBaseActionCallbackFunction:
             (("notification_key", "notification_result"), None, ("notification_key", "notification_result"), None),
             # single output
             (("value_1", "notification_key"), "value_1", "notification_key", Output("component", "property")),
-            (("value_1", ("notification_key", "notification_result")), "value_1", ("notification_key", "notification_result"), Output("component", "property")),
+            (
+                ("value_1", ("notification_key", "notification_result")),
+                "value_1",
+                ("notification_key", "notification_result"),
+                Output("component", "property"),
+            ),
             # list outputs
-            (("ab", "notification_key"), "ab", "notification_key", [Output("component_1", "property"), Output("component_2", "property")]),
-            (("ab", ("notification_key", "notification_result")), "ab", ("notification_key", "notification_result"), [Output("component_1", "property"), Output("component_2", "property")]),
-            ((["value_1", "value_2"], "notification_key"), ["value_1", "value_2"], "notification_key", [Output("component_1", "property"), Output("component_2", "property")]),
-            ((["value_1", "value_2"], ("notification_key", "notification_result")), ["value_1", "value_2"], ("notification_key", "notification_result"), [Output("component_1", "property"), Output("component_2", "property")]),
-            (("value_1", "value_2", "notification_key"), ("value_1", "value_2"), "notification_key",[Output("component_1", "property"), Output("component_2", "property")]),
-            (("value_1", "value_2", ("notification_key", "notification_result")), ("value_1", "value_2"), ("notification_key", "notification_result"),[Output("component_1", "property"), Output("component_2", "property")]),
+            (
+                ("ab", "notification_key"),
+                "ab",
+                "notification_key",
+                [Output("component_1", "property"), Output("component_2", "property")],
+            ),
+            (
+                ("ab", ("notification_key", "notification_result")),
+                "ab",
+                ("notification_key", "notification_result"),
+                [Output("component_1", "property"), Output("component_2", "property")],
+            ),
+            (
+                (["value_1", "value_2"], "notification_key"),
+                ["value_1", "value_2"],
+                "notification_key",
+                [Output("component_1", "property"), Output("component_2", "property")],
+            ),
+            (
+                (["value_1", "value_2"], ("notification_key", "notification_result")),
+                ["value_1", "value_2"],
+                ("notification_key", "notification_result"),
+                [Output("component_1", "property"), Output("component_2", "property")],
+            ),
+            (
+                ("value_1", "value_2", "notification_key"),
+                ("value_1", "value_2"),
+                "notification_key",
+                [Output("component_1", "property"), Output("component_2", "property")],
+            ),
+            (
+                ("value_1", "value_2", ("notification_key", "notification_result")),
+                ("value_1", "value_2"),
+                ("notification_key", "notification_result"),
+                [Output("component_1", "property"), Output("component_2", "property")],
+            ),
             # dict outputs
-            (({"component_1": "value_1"}, "notification_key"), {"component_1": "value_1"}, "notification_key", {"component_1": Output("component", "property")}),
-            (({"component_1": "value_1"}, ("notification_key", "notification_result")), {"component_1": "value_1"}, ("notification_key", "notification_result"),
-             {"component_1": Output("component", "property")}),
+            (
+                ({"component_1": "value_1"}, "notification_key"),
+                {"component_1": "value_1"},
+                "notification_key",
+                {"component_1": Output("component", "property")},
+            ),
+            (
+                ({"component_1": "value_1"}, ("notification_key", "notification_result")),
+                {"component_1": "value_1"},
+                ("notification_key", "notification_result"),
+                {"component_1": Output("component", "property")},
+            ),
         ],
         indirect=["action_with_mock_return_value"],
     )
     def test_action_callback_function_return_value_and_notification_valid(
-        self,
-        action_with_mock_return_value,
-        expected_external_return,
-        expected_notification_payload,
-        callback_outputs
+        self, action_with_mock_return_value, expected_external_return, expected_notification_payload, callback_outputs
     ):
         action = Action(function=action_with_mock_return_value(), notifications={"notification_key": "Text"})
         # If no error is raised by _action_callback_function then running it should return exactly the same
         # as the output of the action_with_mock_return_value.
         assert action._action_callback_function(inputs={}, outputs=callback_outputs) == {
-            'external_return': expected_external_return, 'notification_payload': expected_notification_payload
+            "external_return": expected_external_return,
+            "notification_payload": expected_notification_payload,
         }
 
     @pytest.mark.parametrize("callback_outputs", [[], {}, None])
     @pytest.mark.parametrize(
-        "action_with_mock_return_value",
-        [False, 0, "", [], (), {}, "unknown_notification_key"],
-        indirect=True
+        "action_with_mock_return_value", [False, 0, "", [], (), {}, "unknown_notification_key"], indirect=True
     )
     def test_action_callback_function_no_outputs_return_value_not_none(
         self, action_with_mock_return_value, callback_outputs
