@@ -654,12 +654,22 @@ _FormComponentType = Annotated[
     Field(discriminator="type", description="Components that can be used to receive user input within a form."),
 ]
 
+ContainerControlType = Annotated[
+    "Filter | Parameter",
+    Field(
+        discriminator="type",
+        description="Control that affects components in the `vm.Container`.",
+    ),
+]
+"""Discriminated union. Type of control that affects components in the `vm.Container`: [`Filter`][vizro.models.Filter]
+or [`Parameter`][vizro.models.Parameter]."""
+
 ControlType = Annotated[
     "Filter | Parameter | ControlGroup",
     Field(discriminator="type", description="Control that affects components on the page."),
 ]
-"""Discriminated union. Type of control that affects components on the page: [`Filter`][vizro.models.Filter] or
-[`Parameter`][vizro.models.Parameter]."""
+"""Discriminated union. Type of control that affects components on the page: [`Filter`][vizro.models.Filter],
+[`Parameter`][vizro.models.Parameter] or [`ControlGroup`][vizro.models.ControlGroup]."""
 
 ComponentType = Annotated[
     "AgGrid | Button | Card | Container | Figure | Graph | Text | Table | Tabs",

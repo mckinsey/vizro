@@ -75,6 +75,17 @@ class TestContainerInstantiation:
         ):
             vm.Container(components=[vm.Button()], collapsed=True)
 
+    def test_control_group_not_allowed_in_container_controls(self):
+        with pytest.raises(ValidationError, match=r"control_group|filter.*parameter"):
+            vm.Container(
+                components=[vm.Button()],
+                controls=[
+                    vm.ControlGroup(
+                        controls=[vm.Filter(column="x", selector=vm.Dropdown(options=["a"]))],
+                    ),
+                ],
+            )
+
 
 class TestContainerPreBuildMethod:
     def test_controls_have_in_container_set(self, standard_px_chart, MockControlWrapper):

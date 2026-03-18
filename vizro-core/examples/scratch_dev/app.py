@@ -9,7 +9,7 @@ iris = px.data.iris()
 
 
 page = vm.Page(
-    title="Page Two",
+    title="Page with ControlGroup",
     components=[
         vm.Graph(
             id="scatter_chart",
@@ -37,13 +37,14 @@ page = vm.Page(
                     ),
                 ),
             ],
+            description="Change the title",
         ),
         vm.Filter(column="sepal_length", selector=vm.Slider()),
     ],
 )
 
 page_2 = vm.Page(
-    title="ControlGroup in Container",
+    title="Container with controls",
     components=[
         vm.Container(
             title="Bar chart container",
@@ -60,26 +61,16 @@ page_2 = vm.Page(
                 ),
             ],
             controls=[
-                vm.ControlGroup(
-                    title="Control group in container",
-                    controls=[
-                        vm.Parameter(
-                            targets=["bar_chart.color_discrete_map.virginica"],
-                            selector=vm.Dropdown(
-                                options=["#ff5267", "#3949ab"],
-                                multi=False,
-                                value="#3949ab",
-                            ),
-                        ),
-                        vm.Filter(column="species", selector=vm.Dropdown(variant="filled")),
-                    ],
+                vm.Parameter(
+                    targets=["bar_chart.color_discrete_map.virginica"],
+                    selector=vm.Dropdown(
+                        options=["#ff5267", "#3949ab"],
+                        multi=False,
+                        value="#3949ab",
+                    ),
                 ),
-                vm.ControlGroup(
-                    title="Control group in container",
-                    controls=[
-                        vm.Filter(column="sepal_length"),
-                    ],
-                ),
+                vm.Filter(column="species", selector=vm.Dropdown(variant="filled")),
+                vm.Filter(column="sepal_length"),
             ],
         ),
         vm.Container(
@@ -96,9 +87,19 @@ page_2 = vm.Page(
     layout=vm.Grid(grid=[[0, 1]]),
 )
 
+page_3 = vm.Page(
+    title="Regular page",
+    components=[
+        vm.Graph(
+            figure=px.scatter(iris, title="My scatter chart", x="sepal_length", y="petal_width", color="species"),
+        )
+    ],
+    controls=[vm.Filter(column="sepal_length"), vm.Filter(column="species")],
+)
+
 
 dashboard = vm.Dashboard(
-    pages=[page, page_2],
+    pages=[page, page_2, page_3],
     title="QB",
 )
 

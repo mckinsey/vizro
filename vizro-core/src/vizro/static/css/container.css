@@ -31,6 +31,7 @@
 
 .control-group-title {
   font-size: 16px;
+  line-height: 18px;
 }
 
 /* Hides title of the first container given the title is already reflected in the tab title */
@@ -102,6 +103,6 @@ the lighter shade, both in dark and light theme. */
 }
 
 .control-group {
-  gap: 12px;
+  gap: 24px;
   height: fit-content;
 }

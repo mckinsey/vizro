@@ -4,7 +4,7 @@ from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field
+from pydantic import AfterValidator, BeforeValidator, Field, conlist
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
@@ -14,18 +14,19 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ControlType, _IdProperty
+from vizro.models.types import ContainerControlType, _IdProperty
 
 
 class ControlGroup(VizroBaseModel):
     """Container to group together a set of controls.
 
     Abstract: Usage documentation
-        [How to use containers](../user-guides/container.md)
+        [How to use ControlGroup](../user-guides/control-group.md)
 
     """
 
     type: Literal["control_group"] = "control_group"
+    controls: conlist(ContainerControlType, min_length=1)  # type: ignore[valid-type]
     title: str = Field(default="", description="Title of the control group.")
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
@@ -39,7 +40,6 @@ class ControlGroup(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
-    controls: list[ControlType] = []
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -67,7 +67,7 @@ class ControlGroup(VizroBaseModel):
             "id": self.id,
             "children": [
                 self._build_container_title() if self.title else None,
-                self._build_control_panel() if self.controls else None,
+                self._build_control_panel(),
             ],
             "fluid": True,
             "className": "control-group-panel",
