@@ -177,7 +177,8 @@ describe("sync_url_query_params_and_controls", () => {
     global.history.replaceState = global.window.history.replaceState;
 
     // Get the function from the global object
-    sync_url_query_params_and_controls = global.dash_clientside.page.sync_url_query_params_and_controls;
+    sync_url_query_params_and_controls =
+      global.dash_clientside.page.sync_url_query_params_and_controls;
   });
 
   describe("Page opened scenarios (opl_triggered = undefined)", () => {
@@ -209,7 +210,10 @@ describe("sync_url_query_params_and_controls", () => {
       mockUrlParams.set("control-id-1", "b64_InZhbHVlMSI"); // "value1" encoded
       mockUrlParams.set("control-id-2", "b64_InZhbHVlMiI"); // "value2" encoded
 
-      const result = sync_url_query_params_and_controls(opl_triggered, ...values_ids);
+      const result = sync_url_query_params_and_controls(
+        opl_triggered,
+        ...values_ids,
+      );
 
       // Should call setProps for both controls
       // selector-id-1
@@ -243,7 +247,10 @@ describe("sync_url_query_params_and_controls", () => {
       // Only one control is defined in URL
       mockUrlParams.set("control-id-1", "b64_InZhbHVlMSI"); // "value1" encoded
 
-      const result = sync_url_query_params_and_controls(opl_triggered, ...values_ids);
+      const result = sync_url_query_params_and_controls(
+        opl_triggered,
+        ...values_ids,
+      );
 
       // Should only call setProps for control-1
       // selector-id-1
@@ -273,7 +280,10 @@ describe("sync_url_query_params_and_controls", () => {
 
     test("should not call setProps when URL params are empty", () => {
       // No URL params - mockUrlParams is already cleared in beforeEach
-      const result = sync_url_query_params_and_controls(opl_triggered, ...values_ids);
+      const result = sync_url_query_params_and_controls(
+        opl_triggered,
+        ...values_ids,
+      );
 
       // Should NOT call setProps since no control IDs match
       expect(global.dash_clientside.set_props).not.toHaveBeenCalled();
@@ -287,7 +297,10 @@ describe("sync_url_query_params_and_controls", () => {
       mockUrlParams.set("different-control", "b64_InZhbHVlMSI");
       mockUrlParams.set("another-control", "b64_InZhbHVlMiI");
 
-      const result = sync_url_query_params_and_controls(opl_triggered, ...values_ids);
+      const result = sync_url_query_params_and_controls(
+        opl_triggered,
+        ...values_ids,
+      );
 
       // Should NOT call setProps since no control IDs match
       expect(global.dash_clientside.set_props).not.toHaveBeenCalled();
@@ -323,7 +336,10 @@ describe("sync_url_query_params_and_controls", () => {
         "selector-id-1", // selector ID
       ];
 
-      const result = sync_url_query_params_and_controls(opl_triggered, ...values_ids);
+      const result = sync_url_query_params_and_controls(
+        opl_triggered,
+        ...values_ids,
+      );
 
       // Should update URL with new encoded value
       expect(replaceStateSpy).toHaveBeenCalledWith(
@@ -373,7 +389,10 @@ describe("sync_url_query_params_and_controls", () => {
         "selector-id-2",
       ];
 
-      const result = sync_url_query_params_and_controls(opl_triggered, ...values_ids);
+      const result = sync_url_query_params_and_controls(
+        opl_triggered,
+        ...values_ids,
+      );
 
       // Should update URL with new values for both controls
       const finalUrl = replaceStateSpy.mock.calls[0][2];
