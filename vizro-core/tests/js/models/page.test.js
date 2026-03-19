@@ -1,4 +1,7 @@
-global.dash_clientside = { set_props: jest.fn() };
+global.dash_clientside = {
+  set_props: jest.fn(),
+  no_update: Symbol("no_update"),
+};
 
 // Import the page module
 require("../../../src/vizro/static/js/models/page.js");
@@ -327,8 +330,8 @@ describe("sync_url_query_params_and_controls", () => {
           ),
       }));
 
-      // URL initially contains one encoded control
-      mockUrlParams.set("control-1", "b64_InZhbHVlMSI"); // old value "value1"
+      // URL initially contains one encoded control for this control ID
+      mockUrlParams.set("control-id-1", "b64_InZhbHVlMSI"); // old value "value1"
 
       const values_ids = [
         "new-value", // new selector value
