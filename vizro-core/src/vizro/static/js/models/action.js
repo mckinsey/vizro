@@ -54,15 +54,21 @@ function guard_action_chain(trigger_value, guard_data, trigger_component_id) {
  * @returns {string} The text with template variables replaced by their corresponding values.
  */
 function replaceTemplateVariables(text, valuesMap) {
-  if (typeof text !== "string") return text;
-
   return text.replace(/\{\{(\w+)\}\}/g, (match, key) => {
     if (Object.hasOwn(valuesMap, key)) {
-      return String(valuesMap[key]);
+      const value = valuesMap[key];
+
+      // Use JSON.stringify for objects and arrays
+      if (typeof value === "object") {
+        return JSON.stringify(value);
+      }
+
+      // For primitives
+      return String(value);
     }
 
-    // If the key is not found in valuesMap, replace the template with empty string.
-    return "";
+    // Leave unknown keys unchanged.
+    return match;
   });
 }
 
@@ -116,3 +122,6 @@ window.dash_clientside = {
     show_progress_notification: show_progress_notification,
   },
 };
+
+// Export the functions for testing purposes
+module.exports = {replaceTemplateVariables};
