@@ -1,6 +1,12 @@
 ---
 name: dashboard-design
-description: USE THIS SKILL FIRST when a user wants to create and design a dashboard, ESPECIALLY Vizro dashboards. This skill enforces a 3-step workflow (requirements, layout, visualization) that must be followed before implementation. For implementation and testing, use the dashboard-build skill after completing Steps 1-3.
+description: >
+  Use this skill first when the user wants to design or plan a dashboard,
+  especially Vizro dashboards. Enforces a 3-step workflow (requirements, layout,
+  visualization) before implementation. Activate when the user asks to create,
+  design, or plan a dashboard — even if they say "just build it," start here
+  first. For implementation, use the dashboard-build skill after completing
+  Steps 1-3.
 ---
 
 # Building Vizro Dashboards
@@ -227,6 +233,4 @@ Before proceeding to implementation (dashboard-build skill):
 
 ## Quick Reference: Vizro Components
 
-**Components**: `Dashboard`, `Page`, `Container`, `Tabs`, `Graph`, `Figure`, `AgGrid`, `Card`, `Filter`, `Parameter`, `Selector`, `Button`
-
-**Key Imports**: `import vizro.models as vm`, `from vizro import Vizro`, `import vizro.plotly.express as px`, `from vizro.tables import dash_ag_grid`, `from vizro.figures import kpi_card, kpi_card_reference`, `from vizro.models.types import capture`
+**Available components**: `Dashboard`, `Page`, `Container`, `Tabs`, `Graph`, `Figure`, `AgGrid`, `Card`, `Filter`, `Parameter`, `Selector`, `Button`

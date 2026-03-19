@@ -1,6 +1,11 @@
 ---
 name: dashboard-build
-description: A skill that should be invoked whenever a user wants to build a Dashboard or simple app. This skill is Phase 2 of an e2e process that covers the actual build and testing. For Phase 1 (requirements, layout design, visualization selection), use the dashboard-design skill.
+description: >
+  Use this skill when the user wants to build, implement, or test a Vizro
+  dashboard. This is Phase 2 — covering the actual build and testing. For
+  Phase 1 (requirements, layout, visualization design), use the
+  dashboard-design skill first. Activate even when the user says "just build
+  it" or asks for a working app from data.
 ---
 
 ## CRITICAL Guidelines for Dashboard Building

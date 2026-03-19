@@ -112,22 +112,7 @@ Tertiary metric: Smaller chart or table row
 - Set appropriate `row_min_height`
 - Leave visual breathing room
 
-**Spacing Guidelines**:
-
-```python
-# Good: Charts span 3 rows (420px each)
-vm.Grid(
-    grid=[
-        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-    ],
-    row_min_height="140px",
-)
-
-# Bad: Charts only 1 row (140px - too small)
-vm.Grid(grid=[[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]], row_min_height="140px")
-```
+**Spacing rule**: Give every chart at least 3 rows in the grid (420px at `row_min_height="140px"`). A chart in a single row (~140px) will look squeezed and unreadable. See the **designing-vizro-layouts** skill for the full component sizing table.
 
 ### Inconsistent Time Ranges
 
