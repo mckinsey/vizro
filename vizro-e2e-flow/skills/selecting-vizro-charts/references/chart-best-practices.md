@@ -38,20 +38,20 @@ from vizro.themes import palettes, colors
 
 Key palettes and colors (see [API reference](https://vizro.readthedocs.io/en/stable/pages/API-reference/themes/) for full list):
 
-| Name | Use case |
-|------|----------|
-| `palettes.sequential` | Continuous data (alias for `sequential_blue`) |
-| `palettes.sequential_minus` | Reversed sequential |
-| `palettes.diverging` | Data with a midpoint (use with `color_continuous_midpoint=0`) |
-| `palettes.sequential_positive` | Positive-sentiment scale |
-| `palettes.sequential_negative` | Negative-sentiment scale |
-| `palettes.sequential_warning` | Warning-sentiment scale |
-| `colors.positive` | Positive status (KPI, waterfall increase) |
-| `colors.negative` | Negative status (KPI, waterfall decrease) |
-| `colors.warning` | Warning status |
-| `colors.info` | Informational |
-| `colors.success` | Success status |
-| `colors.error` | Error status |
+| Name                           | Use case                                                      |
+| ------------------------------ | ------------------------------------------------------------- |
+| `palettes.sequential`          | Continuous data (alias for `sequential_blue`)                 |
+| `palettes.sequential_minus`    | Reversed sequential                                           |
+| `palettes.diverging`           | Data with a midpoint (use with `color_continuous_midpoint=0`) |
+| `palettes.sequential_positive` | Positive-sentiment scale                                      |
+| `palettes.sequential_negative` | Negative-sentiment scale                                      |
+| `palettes.sequential_warning`  | Warning-sentiment scale                                       |
+| `colors.positive`              | Positive status (KPI, waterfall increase)                     |
+| `colors.negative`              | Negative status (KPI, waterfall decrease)                     |
+| `colors.warning`               | Warning status                                                |
+| `colors.info`                  | Informational                                                 |
+| `colors.success`               | Success status                                                |
+| `colors.error`                 | Error status                                                  |
 
 ### Accessibility
 
@@ -83,7 +83,7 @@ Standard `px` charts expressible purely via YAML do **not** need custom function
 ## Anti-patterns: use with caution
 
 | Chart type   | Risk                     | Mitigation           |
-|--------------|--------------------------|----------------------|
+| ------------ | ------------------------ | -------------------- |
 | Bubble       | Size hard to compare     | Add size legend      |
 | Stacked Area | Overlapping trends       | Limit to 4 series    |
 | Gauge        | Takes space, little info | Use KPI card instead |
@@ -91,10 +91,9 @@ Standard `px` charts expressible purely via YAML do **not** need custom function
 ## Quick reference: wrong vs right chart
 
 | Data type                 | Wrong         | Right        | Why                       |
-|---------------------------|---------------|--------------|---------------------------|
+| ------------------------- | ------------- | ------------ | ------------------------- |
 | Time series (many points) | Bar           | Line         | Lines show continuity     |
 | Small differences         | Pie           | Bar          | Bars more precise         |
 | Composition over time     | Multiple pies | Stacked area | Shows trend + composition |
 | 10+ categories            | Pie           | Bar          | Readable labels           |
 | Correlation               | Line          | Scatter      | Line implies sequence     |
-

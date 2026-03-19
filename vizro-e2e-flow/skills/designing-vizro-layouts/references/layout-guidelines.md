@@ -118,12 +118,12 @@ Prefer **Filters over Parameters**. Use Parameters only when Filters can't achie
 
 Users scan in an **F-pattern**: left to right across the top, then down the left side. Place the most important content top-left.
 
-| Position     | Priority       | Grid sizing (12-col)         |
-|--------------|----------------|------------------------------|
-| Top-left     | Most important | 6 columns (half width)       |
-| Top-right    | Second         | 6 columns                    |
-| Middle-left  | Third          | 4 columns (one-third)        |
-| Bottom       | Supporting     | 3 columns (quarter width)    |
+| Position    | Priority       | Grid sizing (12-col)      |
+| ----------- | -------------- | ------------------------- |
+| Top-left    | Most important | 6 columns (half width)    |
+| Top-right   | Second         | 6 columns                 |
+| Middle-left | Third          | 4 columns (one-third)     |
+| Bottom      | Supporting     | 3 columns (quarter width) |
 
 Use component **size to indicate importance** — larger cells signal higher priority. KPIs at the top, detail tables at the bottom.
 

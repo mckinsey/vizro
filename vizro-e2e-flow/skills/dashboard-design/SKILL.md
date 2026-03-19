@@ -226,9 +226,9 @@ Before proceeding to implementation (dashboard-build skill):
 | --------------------------------------------------------------------- | -------------------------------------------------- |
 | [information_architecture.md](references/information_architecture.md) | Step 1: Deep dive on requirements                  |
 | **designing-vizro-layouts** skill                                     | Step 2: Grid system, component sizing, filters     |
-| [wireframe_templates.md](references/wireframe_templates.md)           | Step 2: Wireframe templates and interaction labels  |
-| **selecting-vizro-charts** skill                                      | Step 3: Chart types, colors, anti-patterns          |
-| [common_mistakes.md](references/common_mistakes.md)                   | All steps: Anti-patterns to avoid                   |
+| [wireframe_templates.md](references/wireframe_templates.md)           | Step 2: Wireframe templates and interaction labels |
+| **selecting-vizro-charts** skill                                      | Step 3: Chart types, colors, anti-patterns         |
+| [common_mistakes.md](references/common_mistakes.md)                   | All steps: Anti-patterns to avoid                  |
 
 ---
 
