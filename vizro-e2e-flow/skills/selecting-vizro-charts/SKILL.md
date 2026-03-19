@@ -51,4 +51,4 @@ Standard `px` charts expressible via YAML args do **not** need custom functions.
 
 ## Deep Dive
 
-Load [chart-best-practices.md](references/chart-best-practices.md) when you need: extended chart type decision tree, Plotly Express formatting conventions (100% stacked bar, axis/legend cleanup), semantic color hex codes and palette details, accessibility rules, or detailed `@capture("graph")` guidance.
+Load [chart-best-practices.md](references/chart-best-practices.md) when you need: extended chart type decision tree, Plotly Express formatting conventions (100% stacked bar, axis/legend cleanup), palette/color names and use cases, accessibility rules, or detailed `@capture("graph")` guidance.

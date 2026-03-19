@@ -48,4 +48,4 @@ Charts need **at least 2–3 rows** to avoid looking squeezed.
 
 ## Deep Dive
 
-Load [layout-guidelines.md](references/layout-guidelines.md) when you need: grid YAML examples (correct vs incorrect), flexible width distributions, container patterns (plain/filled/outlined), wireframe labels for design specs, or Vizro platform constraints.
+Load [layout-guidelines.md](references/layout-guidelines.md) when you need: grid YAML examples (correct vs incorrect), flexible width distributions, container patterns (plain/filled/outlined), visual hierarchy principles, or Vizro platform constraints.

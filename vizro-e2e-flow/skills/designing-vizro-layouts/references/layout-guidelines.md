@@ -1,4 +1,4 @@
-# Vizro Layout & Interaction Guidelines
+# Vizro Layout Guidelines
 
 Single reference for grid layout, component sizing, filter placement, and container patterns.
 
