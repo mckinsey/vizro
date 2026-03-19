@@ -24,27 +24,34 @@ Plotly Express does **not** aggregate. Pre-aggregate in `app.py` or inside custo
 
 ## Color strategy
 
-### Default
+### Default: let Vizro handle it
 
-Let Vizro handle colors for standard charts. Do not set explicit colors (no hex, `marker_color`, `line=dict(color=...)`) unless the user explicitly requests or semantic meaning is required.
+Plotly Express charts automatically use Vizro color schemes via the built-in Vizro plotly templates. **Do not** set explicit colors (`color_discrete_sequence`, `color_continuous_scale`, `marker_color`, hex values, etc.) unless the user explicitly requests it or semantic meaning is required. Qualitative, sequential, diverging, and waterfall colors are all applied automatically.
 
-### When to specify colors
+### When to specify colors manually
 
-Use `vizro.themes`:
+Only AG Grid, custom figures, and manual color logic need explicit color imports — they do not pick up Vizro palettes automatically:
 
 ```python
 from vizro.themes import palettes, colors
 ```
 
-- **Palettes**: `sequential`, `sequential_minus`, `diverging`, `qualitative` (for heatmaps, categorical, etc.)
-- **Semantic**: `colors.positive`, `colors.negative`, `colors.warning`, `colors.info` (KPIs, status, conditional formatting)
+Key palettes and colors (see [API reference](https://vizro.readthedocs.io/en/stable/pages/API-reference/themes/) for full list):
 
-**Semantic options** (pick one and use consistently):
-
-- **Option A (Teal/Green):** positive `#00B5A9`, negative `#EA5748`, warning `#FFC107`, neutral `#3E495B`
-- **Option B (Blue):** positive `#097DFE`, negative `#EA5748`, warning `#FFC107`, neutral `#3E495B`
-
-AG Grid, custom figures, and manual color logic do not pick up Vizro palettes automatically—import and use `palettes`/`colors` explicitly.
+| Name | Use case |
+|------|----------|
+| `palettes.sequential` | Continuous data (alias for `sequential_blue`) |
+| `palettes.sequential_minus` | Reversed sequential |
+| `palettes.diverging` | Data with a midpoint (use with `color_continuous_midpoint=0`) |
+| `palettes.sequential_positive` | Positive-sentiment scale |
+| `palettes.sequential_negative` | Negative-sentiment scale |
+| `palettes.sequential_warning` | Warning-sentiment scale |
+| `colors.positive` | Positive status (KPI, waterfall increase) |
+| `colors.negative` | Negative status (KPI, waterfall decrease) |
+| `colors.warning` | Warning status |
+| `colors.info` | Informational |
+| `colors.success` | Success status |
+| `colors.error` | Error status |
 
 ### Accessibility
 
@@ -72,4 +79,22 @@ Standard `px` charts expressible purely via YAML do **not** need custom function
 - Use `reverse_color=True` when lower is better (costs, errors).
 - **Never** implement KPI cards as custom charts—use `Figure` with `kpi_card` / `kpi_card_reference` from `vizro.figures`. Exception: only when the KPI is strictly not possible with built-in (e.g. dynamically showing text as a KPI).
 - Titles go in `vm.Graph(title=...)` or inside the figure args (e.g. `_target_: kpi_card` args), not as a component `title` field for `type: figure`.
+
+## Anti-patterns: use with caution
+
+| Chart type   | Risk                     | Mitigation           |
+|--------------|--------------------------|----------------------|
+| Bubble       | Size hard to compare     | Add size legend      |
+| Stacked Area | Overlapping trends       | Limit to 4 series    |
+| Gauge        | Takes space, little info | Use KPI card instead |
+
+## Quick reference: wrong vs right chart
+
+| Data type                 | Wrong         | Right        | Why                       |
+|---------------------------|---------------|--------------|---------------------------|
+| Time series (many points) | Bar           | Line         | Lines show continuity     |
+| Small differences         | Pie           | Bar          | Bars more precise         |
+| Composition over time     | Multiple pies | Stacked area | Shows trend + composition |
+| 10+ categories            | Pie           | Bar          | Readable labels           |
+| Correlation               | Line          | Scatter      | Line implies sequence     |
 
