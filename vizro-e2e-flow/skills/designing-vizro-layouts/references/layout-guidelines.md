@@ -56,6 +56,7 @@ Based on 12-column grid with `row_min_height="140px"`:
 | Table (AG Grid) | 12 (full) | 4-6  | 560-840px  |
 
 **KPI card rules:**
+
 - KPI cards should be compact (2-3 columns in a grid, or auto-sized in a flex container).
 - **Preferred approach**: Wrap KPI cards in a `Container` with `Flex(direction="row")` layout, then place the container as one full-width component inside the page `Grid`. This avoids awkward empty cells and lets the browser handle equal spacing.
 - **Stretching to fill width**: Vizro's `Flex` layout does not expose `flex-grow` on children. To make cards stretch equally, add a CSS rule in `assets/custom.css` targeting the container's `.flex-item` children. Each Vizro flex child is rendered as a `div.flex-item`.
@@ -83,8 +84,8 @@ vm.Container(
 
 ### Flexible width distributions (new layouts only)
 
-| Layout                 | Column distribution                               |
-| ---------------------- | ------------------------------------------------- |
+| Layout                 | Column distribution                                |
+| ---------------------- | -------------------------------------------------- |
 | 3 equal charts         | 4 + 4 + 4                                          |
 | Primary + 2 secondary  | 6 + 3 + 3                                          |
 | Two-thirds + one-third | 8 + 4                                              |
