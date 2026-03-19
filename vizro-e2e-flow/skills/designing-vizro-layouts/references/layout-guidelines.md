@@ -2,7 +2,7 @@
 
 Single reference for grid layout, component sizing, filter placement, and container patterns.
 
-**When to read:** Design or implementation - grid layout, component sizing, filter placement, selector types, wireframes.
+**When to read:** Design or implementation — grid layout, component sizing, filter placement, selector types. Sections marked "(new layouts only)" apply when designing from scratch; when converting existing dashboards, favor replicating the original layout and apply only the technical constraints.
 
 ## Grid System
 
@@ -57,7 +57,7 @@ Based on 12-column grid with `row_min_height="140px"`:
 
 **Exceptions:** Text-heavy Card -> 3+ rows; small table (\<5 cols) -> doesn't need full width; Button -> 1 row. Charts need at least 2-3 rows to avoid looking squeezed.
 
-### Flexible width distributions
+### Flexible width distributions (new layouts only)
 
 | Layout                 | Column distribution |
 | ---------------------- | ------------------- |
@@ -67,7 +67,7 @@ Based on 12-column grid with `row_min_height="140px"`:
 | Two equal charts       | 6 + 6               |
 | 4 KPI cards            | 3 + 3 + 3 + 3       |
 
-### Layout rules
+### Layout rules (new layouts only)
 
 - Place 2-3 charts per row (side-by-side)
 - Full-width only for time-series line charts
@@ -114,16 +114,18 @@ Prefer **Filters over Parameters**. Use Parameters only when Filters can't achie
 
 **Variants:** `plain` (default), `filled`, `outlined`.
 
-## Wireframe labels (design phase)
+## Visual Hierarchy (new layouts only)
 
-| Label        | Description                                     |
-| ------------ | ----------------------------------------------- |
-| KPI          | Metric cards                                    |
-| CHART        | Visualizations (type: [Line], [Bar], etc.)      |
-| TABLE        | Data tables (sortable, pagination)              |
-| CONTAINER    | Groups; can have own filters                    |
-| TABS         | Multiple views with tab labels                  |
-| FILTER/PARAM | Left panel (global) or above container (scoped) |
+Users scan in an **F-pattern**: left to right across the top, then down the left side. Place the most important content top-left.
+
+| Position     | Priority       | Grid sizing (12-col)         |
+|--------------|----------------|------------------------------|
+| Top-left     | Most important | 6 columns (half width)       |
+| Top-right    | Second         | 6 columns                    |
+| Middle-left  | Third          | 4 columns (one-third)        |
+| Bottom       | Supporting     | 3 columns (quarter width)    |
+
+Use component **size to indicate importance** — larger cells signal higher priority. KPIs at the top, detail tables at the bottom.
 
 ## Vizro-specific constraints
 

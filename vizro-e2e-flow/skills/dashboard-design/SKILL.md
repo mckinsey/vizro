@@ -123,7 +123,7 @@ Tier 3: Component-level
 
 ### Layout Strategy
 
-Load the **designing-vizro-layouts** skill for the full grid system, component sizing table, filter selectors, and container patterns. Key points for design:
+Load the **designing-vizro-layouts** skill for the full grid system, component sizing table, filter selectors, and container patterns. Use the [wireframe templates](references/wireframe_templates.md) when building ASCII wireframes for user approval. Key points for design:
 
 - **12-column grid**, `row_min_height: "140px"`, use `-1` for empty cells
 - Charts need at least 3 rows; place 2–3 charts per row; full-width only for time-series
@@ -222,12 +222,13 @@ Before proceeding to implementation (dashboard-build skill):
 
 ## Reference Files
 
-| Reference                                                             | When to Load                               |
-| --------------------------------------------------------------------- | ------------------------------------------ |
-| [information_architecture.md](references/information_architecture.md) | Step 1: Deep dive on requirements          |
-| **designing-vizro-layouts** skill                                     | Step 2: Grid, wireframes, component sizing |
-| **selecting-vizro-charts** skill                                      | Step 3: Chart types, colors, anti-patterns |
-| [common_mistakes.md](references/common_mistakes.md)                   | All steps: Anti-patterns to avoid          |
+| Reference                                                             | When to Load                                       |
+| --------------------------------------------------------------------- | -------------------------------------------------- |
+| [information_architecture.md](references/information_architecture.md) | Step 1: Deep dive on requirements                  |
+| **designing-vizro-layouts** skill                                     | Step 2: Grid system, component sizing, filters     |
+| [wireframe_templates.md](references/wireframe_templates.md)           | Step 2: Wireframe templates and interaction labels  |
+| **selecting-vizro-charts** skill                                      | Step 3: Chart types, colors, anti-patterns          |
+| [common_mistakes.md](references/common_mistakes.md)                   | All steps: Anti-patterns to avoid                   |
 
 ---
 
