@@ -1,6 +1,6 @@
 ---
 name: dashboard-build
-description: >
+description: >-
   Use this skill when the user wants to build, implement, or test a Vizro
   dashboard. This is Phase 2 — covering the actual build and testing. For
   Phase 1 (requirements, layout, visualization design), use the

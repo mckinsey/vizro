@@ -1,6 +1,6 @@
 ---
 name: designing-vizro-layouts
-description: >
+description: >-
   Use this skill when designing or building Vizro dashboard layouts — grid
   configuration, component sizing, filter/parameter placement, selector types,
   or container patterns. Activate when the user is creating wireframes, defining

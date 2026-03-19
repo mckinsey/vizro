@@ -1,6 +1,6 @@
 ---
 name: dashboard-design
-description: >
+description: >-
   Use this skill first when the user wants to design or plan a dashboard,
   especially Vizro dashboards. Enforces a 3-step workflow (requirements, layout,
   visualization) before implementation. Activate when the user asks to create,

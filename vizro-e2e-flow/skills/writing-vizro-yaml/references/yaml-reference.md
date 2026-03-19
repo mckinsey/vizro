@@ -547,4 +547,3 @@ A filter column must have the same data type in all targeted datasets. Convert t
 - Use the **latest Vizro**: in `requirements.txt` specify `vizro` only (no version pin)
 - **Use unique ports per app** — `Vizro().build(dashboard).run(port=8052)` — to avoid conflicts
 - Custom Python files are auto-discovered when referenced via `_target_: module.function` in YAML
-

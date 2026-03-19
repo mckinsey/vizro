@@ -1,6 +1,6 @@
 ---
 name: writing-vizro-yaml
-description: >
+description: >-
   Use this skill when writing or debugging Vizro YAML dashboard configurations —
   component syntax, data_manager registration, custom function wiring,
   filter/parameter setup, or AG Grid tables. Activate when the user is building
