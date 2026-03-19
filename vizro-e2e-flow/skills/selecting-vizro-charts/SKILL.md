@@ -1,6 +1,11 @@
 ---
 name: selecting-vizro-charts
-description: Select chart types, apply Plotly conventions, enforce color strategy, and configure KPI cards when choosing, implementing, or converting Vizro charts.
+description: >
+  Use this skill when choosing chart types, applying Plotly Express conventions,
+  configuring colors, or building KPI cards for Vizro dashboards. Activate when
+  the user asks which chart fits their data, needs custom chart functions, wants
+  to set colors or palettes, or is creating KPI metric cards — even if they
+  don't explicitly mention "chart selection."
 ---
 
 # Vizro Chart Best Practices
@@ -46,4 +51,4 @@ Standard `px` charts expressible via YAML args do **not** need custom functions.
 
 ## Deep Dive
 
-Load [chart-best-practices.md](references/chart-best-practices.md) for: full Plotly Express syntax reference, semantic color hex codes, palette details, accessibility rules, and detailed custom chart guidance.
+Load [chart-best-practices.md](references/chart-best-practices.md) when you need: extended chart type decision tree, Plotly Express formatting conventions (100% stacked bar, axis/legend cleanup), semantic color hex codes and palette details, accessibility rules, or detailed `@capture("graph")` guidance.

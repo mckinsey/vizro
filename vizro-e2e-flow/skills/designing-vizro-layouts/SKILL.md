@@ -1,6 +1,11 @@
 ---
 name: designing-vizro-layouts
-description: Apply Vizro grid layout rules, component sizing, filter placement, and container patterns when designing or implementing dashboard layouts.
+description: >
+  Use this skill when designing or building Vizro dashboard layouts — grid
+  configuration, component sizing, filter/parameter placement, selector types,
+  or container patterns. Activate when the user is creating wireframes, defining
+  page structure, placing controls, or sizing charts, even if they don't
+  explicitly mention "layout" or "grid."
 ---
 
 # Vizro Layout Guidelines
@@ -43,4 +48,4 @@ Charts need **at least 2–3 rows** to avoid looking squeezed.
 
 ## Deep Dive
 
-Load [layout-guidelines.md](references/layout-guidelines.md) for: flexible width distributions, container patterns and styling, wireframe labels, Vizro-specific constraints, and full reference links.
+Load [layout-guidelines.md](references/layout-guidelines.md) when you need: grid YAML examples (correct vs incorrect), flexible width distributions, container patterns (plain/filled/outlined), wireframe labels for design specs, or Vizro platform constraints.

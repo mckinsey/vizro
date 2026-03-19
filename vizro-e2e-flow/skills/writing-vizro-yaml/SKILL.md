@@ -1,6 +1,11 @@
 ---
 name: writing-vizro-yaml
-description: Write Vizro YAML dashboard configs with correct component patterns, data_manager setup, and avoid critical implementation mistakes.
+description: >
+  Use this skill when writing or debugging Vizro YAML dashboard configurations —
+  component syntax, data_manager registration, custom function wiring,
+  filter/parameter setup, or AG Grid tables. Activate when the user is building
+  a Vizro app, encountering YAML or runtime errors, or asking about Vizro
+  component patterns, even if they don't explicitly mention "YAML."
 ---
 
 # Vizro YAML & Component Reference
@@ -61,4 +66,4 @@ from vizro.themes import palettes, colors
 
 ## Deep Dive
 
-Load [yaml-reference.md](references/yaml-reference.md) for: data_manager patterns, custom charts/figures/tables code, AG Grid (heatmap, inline bars), containers, tabs, navigation, and full code examples.
+Load [yaml-reference.md](references/yaml-reference.md) when you need: end-to-end data flow (app.py + YAML + custom files), data_manager registration patterns, custom chart/figure/table code with `@capture`, AG Grid examples (heatmap, inline bars), container/tabs/navigation YAML, or expanded explanations of the critical mistakes above.
