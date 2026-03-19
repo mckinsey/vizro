@@ -81,7 +81,7 @@ class TestSetControlNotificationsProperty:
 
         # default success notification
         result_success_notification = result_set_control_notifications["success"]
-        assert type(result_success_notification) == show_notification
+        assert type(result_success_notification) is show_notification
         assert result_success_notification.variant == "success"
         assert result_success_notification.text == "The control value is set."
         assert result_success_notification._is_conditional is True
@@ -102,7 +102,7 @@ class TestSetControlNotificationsProperty:
 
         # default success notification
         result_success_notification = result_set_control_notifications["success"]
-        assert type(result_success_notification) == show_notification
+        assert type(result_success_notification) is show_notification
         assert result_success_notification.variant == "success"
         assert result_success_notification.text == "test"
         assert result_success_notification._is_conditional is True

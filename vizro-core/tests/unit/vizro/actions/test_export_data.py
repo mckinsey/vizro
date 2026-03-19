@@ -342,7 +342,7 @@ class TestExportDataNotificationsProperty:
 
         # default error notification
         result_error_notification = result_export_data_notifications["error"]
-        assert type(result_error_notification) == show_notification
+        assert type(result_error_notification) is show_notification
         assert result_error_notification.variant == "error"
         assert result_error_notification.text == "Exporting failed."
         assert result_error_notification._is_conditional is True
@@ -358,7 +358,7 @@ class TestExportDataNotificationsProperty:
 
         # default error notification
         result_error_notification = result_export_data_notifications["error"]
-        assert type(result_error_notification) == show_notification
+        assert type(result_error_notification) is show_notification
         assert result_error_notification.variant == "error"
         assert result_error_notification.text == "test"
         assert result_error_notification._is_conditional is True

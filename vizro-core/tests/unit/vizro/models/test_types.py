@@ -483,7 +483,7 @@ class TestNormalizeActionNotifications:
 
         # default error notification
         result_error_notification = result["error"]
-        assert type(result_error_notification) == show_notification
+        assert type(result_error_notification) is show_notification
         assert result_error_notification.variant == "error"
         assert result_error_notification.text == "Action failed."
         assert result_error_notification._is_conditional is True
@@ -499,14 +499,14 @@ class TestNormalizeActionNotifications:
 
         # success notification - show_notification
         result_success_notification = result["success"]
-        assert type(result_success_notification) == show_notification
+        assert type(result_success_notification) is show_notification
         assert result_success_notification.variant == "success"
         assert result_success_notification.text == "Success."
         assert result_success_notification._is_conditional is True
 
         # default error notification - show_notification
         result_error_notification = result["error"]
-        assert type(result_error_notification) == show_notification
+        assert type(result_error_notification) is show_notification
         assert result_error_notification.variant == "error"
         assert result_error_notification.text == "Action failed."
         assert result_error_notification._is_conditional is True
@@ -518,14 +518,14 @@ class TestNormalizeActionNotifications:
 
         # progress notification - show_notification
         result_progress_notification = result["progress"]
-        assert type(result_progress_notification) == show_notification
+        assert type(result_progress_notification) is show_notification
         assert result_progress_notification.variant == "progress"
         assert result_progress_notification.text == "Progress."
         assert result_progress_notification._is_conditional is True
 
         # default error notification - update_notification
         result_error_notification = result["error"]
-        assert type(result_error_notification) == update_notification
+        assert type(result_error_notification) is update_notification
         assert result_error_notification.variant == "error"
         assert result_error_notification.text == "Action failed."
         assert result_error_notification._is_conditional is True
@@ -538,7 +538,7 @@ class TestNormalizeActionNotifications:
 
         # icon notification - show_notification
         result_custom_notification = result["custom_key"]
-        assert type(result_custom_notification) == show_notification
+        assert type(result_custom_notification) is show_notification
         assert result_custom_notification.variant == "info"
         assert result_custom_notification.text == "Custom text."
         assert result_custom_notification._is_conditional is True
@@ -556,21 +556,21 @@ class TestNormalizeActionNotifications:
 
         # progress notification - show_notification
         result_progress_notification = result["progress"]
-        assert type(result_progress_notification) == show_notification
+        assert type(result_progress_notification) is show_notification
         assert result_progress_notification.variant == "progress"
         assert result_progress_notification.text == "Progress."
         assert result_progress_notification._is_conditional is True
 
         # success notification - show_notification
         result_success_notification = result["success"]
-        assert type(result_success_notification) == show_notification
+        assert type(result_success_notification) is show_notification
         assert result_success_notification.variant == "success"
         assert result_success_notification.text == "Success."
         assert result_success_notification._is_conditional is True
 
         # custom notification - update_notification
         result_custom_notification = result["custom_key"]
-        assert type(result_custom_notification) == update_notification
+        assert type(result_custom_notification) is update_notification
         assert result_custom_notification.variant == "info"
         assert result_custom_notification.text == "Custom text."
         assert result_custom_notification._is_conditional is True
@@ -578,7 +578,7 @@ class TestNormalizeActionNotifications:
 
         # default error notification - update_notification
         result_error_notification = result["error"]
-        assert type(result_error_notification) == update_notification
+        assert type(result_error_notification) is update_notification
         assert result_error_notification.variant == "error"
         assert result_error_notification.text == "Action failed."
         assert result_error_notification._is_conditional is True

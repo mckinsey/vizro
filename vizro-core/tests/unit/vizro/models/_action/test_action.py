@@ -58,7 +58,7 @@ class TestLegacyActionInstantiation:
         # default error notification
         assert len(action.notifications) == 1
         result_error_notification = action.notifications["error"]
-        assert type(result_error_notification) == show_notification
+        assert type(result_error_notification) is show_notification
         assert result_error_notification.variant == "error"
         assert result_error_notification.text == "Action failed."
         assert result_error_notification._is_conditional is True
@@ -91,7 +91,7 @@ class TestLegacyActionInstantiation:
         # default error notification
         assert len(action.notifications) == 1
         result_error_notification = action.notifications["error"]
-        assert type(result_error_notification) == show_notification
+        assert type(result_error_notification) is show_notification
         assert result_error_notification.variant == "error"
         assert result_error_notification.text == "Action failed."
         assert result_error_notification._is_conditional is True
@@ -121,13 +121,13 @@ class TestLegacyActionInstantiation:
         assert len(action.notifications) == 2
         # progress notification
         result_progress_notification = action.notifications["progress"]
-        assert type(result_progress_notification) == show_notification
+        assert type(result_progress_notification) is show_notification
         assert result_progress_notification.variant == "progress"
         assert result_progress_notification.text == "Progress."
         assert result_progress_notification._is_conditional is True
         # default error notification - update_notification
         result_error_notification = action.notifications["error"]
-        assert type(result_error_notification) == update_notification
+        assert type(result_error_notification) is update_notification
         assert result_error_notification.variant == "error"
         assert result_error_notification.text == "Action failed."
         assert result_error_notification._is_conditional is True
@@ -473,7 +473,7 @@ class TestActionInstantiation:
         # default error notification
         assert len(action.notifications) == 1
         result_error_notification = action.notifications["error"]
-        assert type(result_error_notification) == show_notification
+        assert type(result_error_notification) is show_notification
         assert result_error_notification.variant == "error"
         assert result_error_notification.text == "Action failed."
         assert result_error_notification._is_conditional is True
@@ -502,7 +502,7 @@ class TestActionInstantiation:
         # default error notification
         assert len(action.notifications) == 1
         result_error_notification = action.notifications["error"]
-        assert type(result_error_notification) == show_notification
+        assert type(result_error_notification) is show_notification
         assert result_error_notification.variant == "error"
         assert result_error_notification.text == "Action failed."
         assert result_error_notification._is_conditional is True
@@ -528,13 +528,13 @@ class TestActionInstantiation:
         assert len(action.notifications) == 2
         # progress notification
         result_progress_notification = action.notifications["progress"]
-        assert type(result_progress_notification) == show_notification
+        assert type(result_progress_notification) is show_notification
         assert result_progress_notification.variant == "progress"
         assert result_progress_notification.text == "Progress."
         assert result_progress_notification._is_conditional is True
         # default error notification - update_notification
         result_error_notification = action.notifications["error"]
-        assert type(result_error_notification) == update_notification
+        assert type(result_error_notification) is update_notification
         assert result_error_notification.variant == "error"
         assert result_error_notification.text == "Action failed."
         assert result_error_notification._is_conditional is True
