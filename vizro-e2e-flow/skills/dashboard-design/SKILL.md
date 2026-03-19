@@ -1,12 +1,6 @@
 ---
 name: dashboard-design
-description: >-
-  Use this skill first when the user wants to design or plan a dashboard,
-  especially Vizro dashboards. Enforces a 3-step workflow (requirements, layout,
-  visualization) before implementation. Activate when the user asks to create,
-  design, or plan a dashboard — even if they say "just build it," start here
-  first. For implementation, use the dashboard-build skill after completing
-  Steps 1-3.
+description: Use this skill first when the user wants to design or plan a dashboard, especially Vizro dashboards. Enforces a 3-step workflow (requirements, layout, visualization) before implementation. Activate when the user asks to create, design, or plan a dashboard. For implementation, use the dashboard-build skill after completing Steps 1-3.
 ---
 
 # Building Vizro Dashboards

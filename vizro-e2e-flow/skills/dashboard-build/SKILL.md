@@ -1,11 +1,6 @@
 ---
 name: dashboard-build
-description: >-
-  Use this skill when the user wants to build, implement, or test a Vizro
-  dashboard. This is Phase 2 — covering the actual build and testing. For
-  Phase 1 (requirements, layout, visualization design), use the
-  dashboard-design skill first. Activate even when the user says "just build
-  it" or asks for a working app from data.
+description: Use this skill when the user wants to build, implement, or test a Vizro dashboard. This is Phase 2 — covering the actual build and testing. For Phase 1 (requirements, layout, visualization design), use the dashboard-design skill first. Activate even when the user says "just build it" or asks for a working app from data.
 ---
 
 ## CRITICAL Guidelines for Dashboard Building

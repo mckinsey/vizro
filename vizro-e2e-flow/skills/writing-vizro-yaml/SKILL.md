@@ -1,11 +1,6 @@
 ---
 name: writing-vizro-yaml
-description: >-
-  Use this skill when writing or debugging Vizro YAML dashboard configurations —
-  component syntax, data_manager registration, custom function wiring,
-  filter/parameter setup, or AG Grid tables. Activate when the user is building
-  a Vizro app, encountering YAML or runtime errors, or asking about Vizro
-  component patterns, even if they don't explicitly mention "YAML."
+description: Use this skill when writing or debugging Vizro YAML dashboard configurations — component syntax, data_manager registration, custom function wiring, filter/parameter setup, or AG Grid tables. Activate when the user is building a Vizro app, encountering YAML or runtime errors, or asking about Vizro component patterns.
 ---
 
 # Vizro YAML & Component Reference
