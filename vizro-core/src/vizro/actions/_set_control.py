@@ -172,12 +172,12 @@ class set_control(_AbstractAction):
 
     def function(self, _trigger, _controls_store):
         # TODO PP IMPORTANT: REMOVE SLEEP AND EXCEPTION AFTER TESTING
-        # import random
-        # from time import sleep
-        #
-        # sleep(0.5)
-        # if random.random() > 0.5:
-        #     raise Exception("Random error occurred during set control!")
+        import random
+        from time import sleep
+
+        sleep(0.5)
+        if random.random() > 0.5:
+            raise Exception("Random error occurred during set control!")
 
         from vizro.models import Checklist
 
