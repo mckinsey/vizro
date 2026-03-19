@@ -125,8 +125,6 @@ Prefer **Filters over Parameters**. Use Parameters only when Filters can't achie
 | TABS         | Multiple views with tab labels                  |
 | FILTER/PARAM | Left panel (global) or above container (scoped) |
 
-Full-width charts: use only for time-series line charts. Most charts should be 2-3 per row.
-
 ## Vizro-specific constraints
 
 1. **Page navigation**: Automatic sidebar (built-in)

@@ -122,7 +122,7 @@ Load the **designing-vizro-layouts** skill for the full grid system, component s
 - **12-column grid**, `row_min_height: "140px"`, use `-1` for empty cells
 - Charts need at least 3 rows; place 2–3 charts per row; full-width only for time-series
 - Page-level filters → left sidebar; container-level → above container
-- Choose selectors by data type (RadioItems for 2–4 options, Dropdown for 5+, RangeSlider for numeric, DatePicker for dates)
+- Vizro auto-selects the selector based on column data type; override only when needed (RadioItems for 2–4 options, Dropdown for 5+, RangeSlider for numeric, DatePicker for dates)
 
 ### REQUIRED OUTPUT: spec/2_interaction_ux.yaml
 

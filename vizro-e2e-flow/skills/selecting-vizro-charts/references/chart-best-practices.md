@@ -2,9 +2,9 @@
 
 Consolidated reference for chart selection, Plotly implementation, color strategy, and custom charts.
 
-## Chart Type Selection
+**When to read:** Choosing chart types, implementing Plotly conventions, applying color strategy, building custom charts or KPI cards.
 
-### Decision tree
+## Chart Type Selection (extended)
 
 - **Comparing values** → Bar (horizontal preferred), grouped bar
 - **Change over time** → Line (12+ points), area, or column for discrete periods
@@ -12,21 +12,6 @@ Consolidated reference for chart selection, Plotly implementation, color strateg
 - **Distribution** → Histogram, box, violin
 - **Relationship** → Scatter, bubble (with caution)
 - **Performance vs target** → Bullet, waterfall (custom)
-
-### Quick reference
-
-| Data question           | Recommended chart           |
-| ----------------------- | --------------------------- |
-| Compare categories      | Bar (horizontal preferred)  |
-| Trend over time         | Line (12+ points)           |
-| Part-to-whole (simple)  | Pie/donut (2–5 slices only) |
-| Part-to-whole (complex) | Stacked bar                 |
-| Distribution            | Histogram or box            |
-| Correlation             | Scatter                     |
-
-### Anti-patterns (never use)
-
-- 3D charts, bar charts not starting at zero
 
 ## Plotly Express best practice conventions
 
@@ -88,11 +73,3 @@ Standard `px` charts expressible purely via YAML do **not** need custom function
 - **Never** implement KPI cards as custom charts—use `Figure` with `kpi_card` / `kpi_card_reference` from `vizro.figures`. Exception: only when the KPI is strictly not possible with built-in (e.g. dynamically showing text as a KPI).
 - Titles go in `vm.Graph(title=...)` or inside the figure args (e.g. `_target_: kpi_card` args), not as a component `title` field for `type: figure`.
 
-## Quick reference: key imports
-
-```python
-import vizro.plotly.express as px
-from vizro.figures import kpi_card, kpi_card_reference
-from vizro.themes import palettes, colors
-from vizro.models.types import capture
-```

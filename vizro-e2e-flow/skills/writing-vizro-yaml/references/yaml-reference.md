@@ -548,15 +548,3 @@ A filter column must have the same data type in all targeted datasets. Convert t
 - **Use unique ports per app** — `Vizro().build(dashboard).run(port=8052)` — to avoid conflicts
 - Custom Python files are auto-discovered when referenced via `_target_: module.function` in YAML
 
-## Quick Reference: Key Imports
-
-```python
-import vizro.models as vm
-from vizro import Vizro
-import vizro.plotly.express as px
-from vizro.tables import dash_ag_grid
-from vizro.figures import kpi_card, kpi_card_reference
-from vizro.models.types import capture
-from vizro.managers import data_manager
-from vizro.themes import palettes
-```

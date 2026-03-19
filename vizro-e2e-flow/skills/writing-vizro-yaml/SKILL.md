@@ -7,6 +7,7 @@ description: Write Vizro YAML dashboard configs with correct component patterns,
 
 ## Critical Mistakes to Avoid
 
+1. **`@capture("graph")` receives a DataFrame** — use `data_frame` directly; never re-lookup via `data_manager[data_frame]` (causes blank charts).
 1. **`data_manager` is not subscriptable** — pre-process on raw DataFrame, then register.
 1. **Custom `_target_` needs module prefix** — `_target_: custom_charts.my_chart`, not `_target_: my_chart`.
 1. **`type: figure` has no `title` field** — KPI titles go in `_target_: kpi_card` args.
