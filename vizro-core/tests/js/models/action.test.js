@@ -85,13 +85,16 @@ describe("guard_action_chain", () => {
 });
 
 
-const { replaceTemplateVariables } = require("../../../src/vizro/static/js/models/action.js");
-
 describe("replaceTemplateVariables", () => {
+  let replaceTemplateVariables;
+
   beforeEach(() => {
     // Reset mocks
     jest.clearAllMocks();
     console.debug = jest.fn();
+
+    // Get the function from the global object
+    replaceTemplateVariables = global.replaceTemplateVariables;
   });
 
   describe("when text contains no template variables", () => {

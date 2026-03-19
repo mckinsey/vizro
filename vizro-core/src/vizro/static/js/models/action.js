@@ -115,6 +115,7 @@ function show_progress_notification(
   });
 }
 
+window.replaceTemplateVariables = replaceTemplateVariables;
 window.dash_clientside = {
   ...window.dash_clientside,
   action: {
@@ -122,6 +123,3 @@ window.dash_clientside = {
     show_progress_notification: show_progress_notification,
   },
 };
-
-// Export the functions for testing purposes
-module.exports = {replaceTemplateVariables};
