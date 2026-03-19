@@ -154,22 +154,22 @@ describe("replaceTemplateVariables", () => {
   describe("when placeholders do not match the regex \\{\\{(\\w+)\\}\\}", () => {
     it("should not replace hyphenated keys (not matched by \\w+)", () => {
       expect(
-        replaceTemplateVariables("Hello {{key-key}}!", { "key-key": "value" }),
-      ).toBe("Hello {{key-key}}!");
+        replaceTemplateVariables("Value: {{key-key}}!", { "key-key": "value" }),
+      ).toBe("Value: {{key-key}}!");
     });
 
     it("should not replace placeholders containing spaces inside braces", () => {
-      expect(replaceTemplateVariables("Hello {{ key }}!", { key: "World" })).toBe(
-        "Hello {{ key }}!",
+      expect(replaceTemplateVariables("Value: {{ key }}!", { key: "value" })).toBe(
+        "Value: {{ key }}!",
       );
     });
 
     it("should not replace empty keys", () => {
-      expect(replaceTemplateVariables("Value: {{}}", { "": "X" })).toBe("Value: {{}}");
+      expect(replaceTemplateVariables("Value: {{}}", { "": "value" })).toBe("Value: {{}}");
     });
 
     it("should not replace keys containing dots", () => {
-      expect(replaceTemplateVariables("Value: {{a.b}}", { "a.b": "X" })).toBe("Value: {{a.b}}");
+      expect(replaceTemplateVariables("Value: {{a.b}}", { "a.b": "value" })).toBe("Value: {{a.b}}");
     });
 
     it("should leave single braces or malformed templates unchanged", () => {
@@ -179,5 +179,163 @@ describe("replaceTemplateVariables", () => {
         "Hello { {name}}!",
       );
     });
+  });
+});
+
+
+// Ensure structuredClone that's used in the code exists and is observable in tests.
+// If Jest runtime already provides structuredClone, we wrap it in a spy.
+// Otherwise, we provide a simple JSON-based clone (sufficient for these fixtures).
+if (typeof global.structuredClone === "function") {
+  global.structuredClone = jest.fn(global.structuredClone);
+} else {
+  global.structuredClone = jest.fn((obj) => JSON.parse(JSON.stringify(obj)));
+}
+
+describe("show_progress_notification", () => {
+  let show_progress_notification;
+
+  beforeEach(() => {
+    // Reset mocks
+    jest.clearAllMocks();
+    console.debug = jest.fn();
+
+    // Get the function from the global object
+    show_progress_notification =
+      global.dash_clientside.action.show_progress_notification;
+  });
+
+  it("should hide the existing notification by id and send the updated notification payload via set_props", () => {
+    const notificationObject = [
+      {
+        id: "notif-1",
+        message: { props: { children: "Clicked {{n_clicks}} times" } },
+      },
+    ];
+
+    const actionParameters = ["n_clicks"];
+    const actionArguments = 123;
+
+    const result = show_progress_notification(
+      "trigger_value_not_used",
+      notificationObject,
+      actionParameters,
+      actionArguments,
+    );
+
+    expect(result).toBeUndefined();
+
+    // Clears existing notification so it can be shown again
+    expect(dash_mantine_components.appNotifications.api.hide).toHaveBeenCalledTimes(
+      1,
+    );
+    expect(dash_mantine_components.appNotifications.api.hide).toHaveBeenCalledWith(
+      "notif-1",
+    );
+
+    // Sends updated notifications via Dash set_props
+    expect(dash_clientside.set_props).toHaveBeenCalledTimes(1);
+
+    const [targetId, props] = dash_clientside.set_props.mock.calls[0];
+    expect(targetId).toBe("vizro-notifications");
+    expect(props).toHaveProperty("sendNotifications");
+
+    // Template variables replaced
+    expect(props.sendNotifications[0].message.props.children).toBe("Clicked 123 times");
+
+    // Original input must not be mutated
+    expect(notificationObject[0].message.props.children).toBe("Clicked {{n_clicks}} times");
+  });
+
+  it("should replace multiple template variables using parameter-to-runtime-value mapping", () => {
+    const notificationObject = [
+      {
+        id: "notif-2",
+        message: { props: { children: "A={{a}}, B={{b}}" } },
+      },
+    ];
+
+    show_progress_notification(
+      "trigger_value_not_used",
+       notificationObject,
+       ["a", "b"],
+       1, 2,
+     );
+
+    // Template variables replaced
+    const [, props] = dash_clientside.set_props.mock.calls[0];
+    expect(props.sendNotifications[0].message.props.children).toBe("A=1, B=2");
+  });
+
+  it("should leave unknown keys", () => {
+    const notificationObject = [
+      {
+        id: "notif-3",
+        message: { props: { children: "This is {{unknown}}" } },
+      },
+    ];
+
+    // No action parameters => values map is empty => {{unknown}} stays {{unknown}""
+    show_progress_notification("trigger_value_not_used", notificationObject, []);
+
+    const [, props] = dash_clientside.set_props.mock.calls[0];
+    expect(props.sendNotifications[0].message.props.children).toBe("This is {{unknown}}");
+  });
+
+  it("should only replace keys matching \\w+ (placeholders remain unchanged)", () => {
+    const notificationObject = [
+      {
+        id: "notif-4",
+        message: { props: { children: "{{key-key}}, {{ key }}, {{}}, {{a.b}}"}},
+      },
+    ];
+
+    show_progress_notification(
+      "trigger_value_not_used",
+       notificationObject,
+       ["key-key", "key", "", "a.b"],
+       "value", "value", "value", "value",
+    );
+
+    const [, props] = dash_clientside.set_props.mock.calls[0];
+    expect(props.sendNotifications[0].message.props.children).toBe("{{key-key}}, {{ key }}, {{}}, {{a.b}}");
+  });
+
+  it("should stringify booleans/null/undefined", () => {
+    const notificationObject = [
+      {
+        id: "notif-5",
+        message: { props: { children: "{{a}}, {{b}}, {{c}}" } },
+      },
+    ];
+
+    show_progress_notification(
+      "trigger_value_not_used",
+      notificationObject,
+      ["a", "b", "c"],
+      false, null, undefined,
+    );
+
+    const [, props] = dash_clientside.set_props.mock.calls[0];
+    expect(props.sendNotifications[0].message.props.children).toBe("false, null, undefined");
+  });
+
+  it("should stringify arrays and objects via JSON.stringify(value", () => {
+    const notificationObject = [
+      {
+        id: "notif-6",
+        message: { props: { children: "arr={{arr}}, obj={{obj}}" } },
+      },
+    ];
+
+    show_progress_notification(
+      "trigger_value_not_used",
+      notificationObject,
+      ["arr", "obj"],
+      [1, 2], { a: 1 },
+    );
+
+    const [, props] = dash_clientside.set_props.mock.calls[0];
+    expect(props.sendNotifications[0].message.props.children).toBe("arr=[1,2], obj={\"a\":1}");
   });
 });
