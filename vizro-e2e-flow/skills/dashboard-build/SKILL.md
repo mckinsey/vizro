@@ -28,9 +28,9 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 
 ### Optimizations and common errors
 
-- **Colors**: Always respect color decisions from the design phase (`spec/3_visual_design.yaml`). Use Vizro palettes (`from vizro.themes import palettes`) instead of generic plotly colorscales. This is especially easy to get wrong in custom charts.
-- **Data loading**: For dashboards needing data refresh (databases, APIs) or performance optimization, see the [data management guide](./references/data_management.md) for static vs dynamic data, caching, and best practices.
-- **KPI cards**: Use `kpi_card()` for simple metrics, `kpi_card_reference()` for comparisons. Use `reverse_color=True` when lower is better (costs, errors). NEVER put `kpi_card` or `kpi_card_reference` as a custom chart or re-build KPI cards as custom charts, use the built-in `kpi_card` and `kpi_card_reference` (imported from `vizro.figures`) in `Figure` model instead. Only accept exceptions for when the KPI card is strictly not possible, for example when dynamically showing text as a KPI card.
+- **Colors**: Respect color decisions from `spec/3_visual_design.yaml`. Load the **selecting-vizro-charts** skill for Vizro palette rules (no hardcoded colors).
+- **Data loading**: See [data_management.md](./references/data_management.md) for static vs dynamic data, caching, and best practices.
+- **KPI cards**: Use built-in `kpi_card` / `kpi_card_reference` in `Figure` model only. Never rebuild as custom charts (exception: dynamic text). See **selecting-vizro-charts** skill.
 
 ### REQUIRED OUTPUT: spec/4_implementation.yaml
 
@@ -140,8 +140,10 @@ dashboard_ready: true/false
 
 ## Reference Files
 
-| File                                                          | When to Read                                                                      |
-| ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| [data_management.md](./references/data_management.md)         | Optimizations: Data loading patterns, static vs dynamic, caching, databases, APIs |
-| [custom_charts_guide.md](./references/custom_charts_guide.md) | Step 1: Creating complex custom charts when plotly express isn't enough           |
-| [example_app.py](./references/example_app.py)                 | Step 1: Starting template for dashboard implementation                            |
+| Reference                                                      | When to Load                                                |
+| -------------------------------------------------------------- | ----------------------------------------------------------- |
+| **selecting-vizro-charts** skill                           | Colors, KPI cards, custom charts, Plotly conventions        |
+| **writing-vizro-yaml** skill                                 | YAML syntax, component patterns, data_manager, pitfalls     |
+| [data_management.md](./references/data_management.md)          | Static vs dynamic data, caching, databases, APIs            |
+| [custom_charts_guide.md](./references/custom_charts_guide.md)  | Implementing custom `@capture("graph")` charts              |
+| [example_app.py](./references/example_app.py)                  | Starting template for dashboard implementation              |

@@ -117,52 +117,12 @@ Tier 3: Component-level
 
 ### Layout Strategy
 
-**Optimal Grid Configuration**:
+Load the **designing-vizro-layouts** skill for the full grid system, component sizing table, filter selectors, and container patterns. Key points for design:
 
-- Always use `row_min_height="140px"` (at page or container level)
-- **12 columns recommended** (not enforced) - flexible due to many divisors (1, 2, 3, 4, 6, 12)
-- Control height by giving components **more rows**
-
-**Component Sizing** (based on 12-column grid, height = rows × 140px):
-
-| Component   | Columns   | Rows | Height    |
-| ----------- | --------- | ---- | --------- |
-| KPI Card    | 3         | 1    | 140px     |
-| Small Chart | 4         | 3    | 420px     |
-| Large Chart | 6         | 4-5  | 560-700px |
-| Table       | 12 (full) | 4-6  | 560-840px |
-
-**Exceptions** - size based on content to render:
-
-- Text-heavy Card → treat like a chart (3+ rows)
-- Small Table (less than columns) → doesn't need full width
-- Button → 1 row is enough
-
-**Layout Rules**:
-
-- Place 2-3 charts maximum per row (side-by-side)
-- Full-width ONLY for time-series line charts
-- Give charts minimum 3 rows (use `*[[...]] * 3` pattern)
-- Use `-1` for intentional empty cells
-
-### Filter Placement & Selectors
-
-```
-Filter needed across multiple visualizations?
-├─ YES → Page-level (left sidebar)
-└─ NO → Container-level (top of the container)
-```
-
-**Choose appropriate selectors** - don't default to Dropdown:
-
-| Data Type     | Selector        | Example                  |
-| ------------- | --------------- | ------------------------ |
-| 2-4 options   | **RadioItems**  | Region (N/S/E/W)         |
-| 5+ options    | Dropdown        | Category (many)          |
-| Numeric range | **RangeSlider** | Price ($0-$1000)         |
-| Single number | **Slider**      | Year (2020-2025)         |
-| Date          | **DatePicker**  | Order date               |
-| Multi-select  | **Checklist**   | Status (Active, Pending) |
+- **12-column grid**, `row_min_height: "140px"`, use `-1` for empty cells
+- Charts need at least 3 rows; place 2–3 charts per row; full-width only for time-series
+- Page-level filters → left sidebar; container-level → above container
+- Choose selectors by data type (RadioItems for 2–4 options, Dropdown for 5+, RangeSlider for numeric, DatePicker for dates)
 
 ### REQUIRED OUTPUT: spec/2_interaction_ux.yaml
 
@@ -197,7 +157,7 @@ Before proceeding to Step 3:
 - [ ] Filter placement is intentional and documented
 - [ ] User has been presented ASCII wireframes for every page and approved them
 
-**Wireframes & examples**: See [layout_patterns.md](references/layout_patterns.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 2: Layout Mistakes"
+**Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 2: Layout Mistakes"
 
 ---
 
@@ -205,56 +165,15 @@ Before proceeding to Step 3:
 
 **Goal**: Choose appropriate chart types and establish visual consistency.
 
-### Chart Type Quick Reference
+### Chart Types, Colors & KPIs
 
-| Data Question           | Recommended Chart                |
-| ----------------------- | -------------------------------- |
-| Compare categories      | Bar chart (horizontal preferred) |
-| Show trend over time    | Line chart (12+ points)          |
-| Part-to-whole (simple)  | Pie/donut (2-5 slices ONLY)      |
-| Part-to-whole (complex) | Stacked bar chart                |
-| Distribution            | Histogram or box plot            |
-| Correlation             | Scatter plot                     |
+Load the **selecting-vizro-charts** skill for chart selection, color strategy, anti-patterns, and KPI card rules. Key points for design:
 
-### Chart Anti-Patterns (Never Use)
-
-- 3D charts, Pie charts with 6+ slices, Dual Y-axis, Bar charts not starting at zero
-
-### Color Strategy
-
-**Primary Rule**: Let Vizro handle colors automatically for standard charts.
-
-**When to specify colors**:
-
-- Semantic meaning (green=good, red=bad)
-- Consistent entity coloring across charts
-- Brand requirements
-
-**Vizro Semantic Colors** — two palettes available, pick one and use consistently:
-
-```python
-# Option A: Teal/Green palette (softer, recommended for chart-heavy dashboards)
-positive_color = "#00B5A9"  # Darkgreen-500
-negative_color = "#EA5748"  # Red
-warning_color = "#FFC107"  # Yellow
-sum_color = "#3E495B"  # Grey
-
-# Option B: Blue palette (bolder, recommended when positive = primary brand blue)
-positive_color = "#097DFE"  # Blue-500
-negative_color = "#EA5748"  # Red
-warning_color = "#FFC107"  # Yellow
-sum_color = "#3E495B"  # Grey
-```
-
-Semantic colors can be used in charts where the meaning is inherent to the visualization (e.g., waterfall charts for increase/decrease, bar charts showing profit vs loss). Use them for KPI status indicators, notifications, and any chart where positive/negative semantics are core to the message.
-
-### KPI Card Pattern
-
-Use `kpi_card()` for simple metrics, `kpi_card_reference()` for comparisons. Use `reverse_color=True` when lower is better (costs, errors). NEVER put `kpi_card` or `kpi_card_reference` as a custom chart or re-build KPI cards as custom charts, use the built-in `kpi_card` and `kpi_card_reference` in `Figure` model instead. Only accept exceptions for when the KPI card is strictly not possible, for example when dynamically showing text as a KPI card.
-
-### Chart Title Pattern
-
-**IMPORTANT**: Titles go in `vm.Graph(title=...)`, NOT in plotly code.
+- Match chart type to data question (bar for comparison, line for trends, pie only for 2–5 slices)
+- Never use: 3D charts, pie with 6+ slices, dual Y-axis, bar charts not starting at zero
+- Let Vizro handle colors by default; specify only for semantic meaning or brand
+- Use built-in `kpi_card` / `kpi_card_reference`; never rebuild as custom charts
+- Titles go in `vm.Graph(title=...)`, not in Plotly code
 
 ### REQUIRED OUTPUT: spec/3_visual_design.yaml
 
@@ -293,16 +212,16 @@ Before proceeding to implementation (dashboard-build skill):
 - [ ] Custom chart needs are identified
 - [ ] Color usage is consistent and intentional
 
-**Chart decision trees**: See [chart_selection.md](references/chart_selection.md); **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 3: Visualization Mistakes"
+**Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 3: Visualization Mistakes"
 
 ## Reference Files
 
-| File                                                                  | When to Read                         |
-| --------------------------------------------------------------------- | ------------------------------------ |
-| [information_architecture.md](references/information_architecture.md) | Step 1: Deep dive on requirements    |
-| [layout_patterns.md](references/layout_patterns.md)                   | Step 2: Wireframes, component sizing |
-| [chart_selection.md](references/chart_selection.md)                   | Step 3: Chart decision trees         |
-| [common_mistakes.md](references/common_mistakes.md)                   | All steps: Anti-patterns to avoid    |
+| Reference                                                             | When to Load                                  |
+| --------------------------------------------------------------------- | --------------------------------------------- |
+| [information_architecture.md](references/information_architecture.md) | Step 1: Deep dive on requirements             |
+| **designing-vizro-layouts** skill                                     | Step 2: Grid, wireframes, component sizing    |
+| **selecting-vizro-charts** skill                                  | Step 3: Chart types, colors, anti-patterns    |
+| [common_mistakes.md](references/common_mistakes.md)                   | All steps: Anti-patterns to avoid             |
 
 ---
 
