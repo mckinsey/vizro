@@ -1,6 +1,6 @@
 ---
 name: selecting-vizro-charts
-description: >
+description: >-
   Use this skill when choosing chart types, applying Plotly Express conventions,
   configuring colors, or building KPI cards for Vizro dashboards. Activate when
   the user asks which chart fits their data, needs custom chart functions, wants

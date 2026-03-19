@@ -72,4 +72,3 @@ Standard `px` charts expressible purely via YAML do **not** need custom function
 - Use `reverse_color=True` when lower is better (costs, errors).
 - **Never** implement KPI cards as custom charts—use `Figure` with `kpi_card` / `kpi_card_reference` from `vizro.figures`. Exception: only when the KPI is strictly not possible with built-in (e.g. dynamically showing text as a KPI).
 - Titles go in `vm.Graph(title=...)` or inside the figure args (e.g. `_target_: kpi_card` args), not as a component `title` field for `type: figure`.
-
