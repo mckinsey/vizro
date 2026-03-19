@@ -140,10 +140,10 @@ dashboard_ready: true/false
 
 ## Reference Files
 
-| Reference                                                      | When to Load                                                |
-| -------------------------------------------------------------- | ----------------------------------------------------------- |
-| **selecting-vizro-charts** skill                           | Colors, KPI cards, custom charts, Plotly conventions        |
-| **writing-vizro-yaml** skill                                 | YAML syntax, component patterns, data_manager, pitfalls     |
-| [data_management.md](./references/data_management.md)          | Static vs dynamic data, caching, databases, APIs            |
-| [custom_charts_guide.md](./references/custom_charts_guide.md)  | Implementing custom `@capture("graph")` charts              |
-| [example_app.py](./references/example_app.py)                  | Starting template for dashboard implementation              |
+| Reference                                                     | When to Load                                            |
+| ------------------------------------------------------------- | ------------------------------------------------------- |
+| **selecting-vizro-charts** skill                              | Colors, KPI cards, custom charts, Plotly conventions    |
+| **writing-vizro-yaml** skill                                  | YAML syntax, component patterns, data_manager, pitfalls |
+| [data_management.md](./references/data_management.md)         | Static vs dynamic data, caching, databases, APIs        |
+| [custom_charts_guide.md](./references/custom_charts_guide.md) | Implementing custom `@capture("graph")` charts          |
+| [example_app.py](./references/example_app.py)                 | Starting template for dashboard implementation          |

@@ -14,7 +14,7 @@ description: Apply Vizro grid layout rules, component sizing, filter placement, 
 ## Component Sizing (12-col grid, 140px rows)
 
 | Component   | Columns | Rows | Height    |
-|-------------|---------|------|-----------|
+| ----------- | ------- | ---- | --------- |
 | KPI Card    | 3       | 1    | 140px     |
 | Small Chart | 4       | 3    | 420px     |
 | Large Chart | 6       | 4–5  | 560–700px |
@@ -26,18 +26,20 @@ Charts need **at least 2–3 rows** to avoid looking squeezed.
 
 - **Page-level** (left sidebar): filters shared across multiple components
 - **Container-level** (above container): filters scoped to one section
-- Prefer Filters over Parameters. Always set `targets:` when using pre-aggregated data.
+- Prefer Filters over Parameters. Set `targets:` only when components on a page use different datasets.
 
-## Selector by Data Type
+## Selectors
 
-| Data type     | Selector       | Example              |
-|---------------|----------------|----------------------|
-| 2–4 options   | RadioItems     | Region (N/S/E/W)     |
-| 5+ options    | Dropdown       | Category (many)      |
-| Numeric range | RangeSlider    | Price ($0–$1000)     |
-| Single number | Slider         | Year (2020–2025)     |
-| Date          | DatePicker     | Order date           |
-| Multi-select  | Checklist      | Status (Active, etc.)|
+**Default**: Just provide the column name to `Filter` or `Parameter` — Vizro auto-selects the appropriate selector based on the data type. Only override when the auto-selected selector doesn't fit:
+
+| Data type     | Selector    | Example               |
+| ------------- | ----------- | --------------------- |
+| 2–4 options   | RadioItems  | Region (N/S/E/W)      |
+| 5+ options    | Dropdown    | Category (many)       |
+| Numeric range | RangeSlider | Price ($0–$1000)      |
+| Single number | Slider      | Year (2020–2025)      |
+| Date          | DatePicker  | Order date            |
+| Multi-select  | Checklist   | Status (Active, etc.) |
 
 ## Deep Dive
 

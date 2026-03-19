@@ -216,12 +216,12 @@ Before proceeding to implementation (dashboard-build skill):
 
 ## Reference Files
 
-| Reference                                                             | When to Load                                  |
-| --------------------------------------------------------------------- | --------------------------------------------- |
-| [information_architecture.md](references/information_architecture.md) | Step 1: Deep dive on requirements             |
-| **designing-vizro-layouts** skill                                     | Step 2: Grid, wireframes, component sizing    |
-| **selecting-vizro-charts** skill                                  | Step 3: Chart types, colors, anti-patterns    |
-| [common_mistakes.md](references/common_mistakes.md)                   | All steps: Anti-patterns to avoid             |
+| Reference                                                             | When to Load                               |
+| --------------------------------------------------------------------- | ------------------------------------------ |
+| [information_architecture.md](references/information_architecture.md) | Step 1: Deep dive on requirements          |
+| **designing-vizro-layouts** skill                                     | Step 2: Grid, wireframes, component sizing |
+| **selecting-vizro-charts** skill                                      | Step 3: Chart types, colors, anti-patterns |
+| [common_mistakes.md](references/common_mistakes.md)                   | All steps: Anti-patterns to avoid          |
 
 ---
 

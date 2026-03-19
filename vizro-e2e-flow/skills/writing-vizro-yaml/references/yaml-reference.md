@@ -7,12 +7,15 @@ Shared reference for Vizro YAML syntax, component patterns, data registration, a
 ## End-to-End Data Flow
 
 ```
-app.py                    dashboard.yaml              custom_charts.py
-──────                    ──────────────              ────────────────
-1. Load raw data          Defines pages, components,  @capture("graph") functions
-2. Pre-process/aggregate  layout, controls, nav       for charts needing aggregation,
-3. Register in data_mgr   References data by string   parameter logic, or layout
-4. Load YAML & run app    key; refs custom funcs      tweaks
+app.py                    dashboard.yaml              custom_*.py
+──────                    ──────────────              ───────────
+1. Load raw data          Defines pages, components,  custom_charts.py   → @capture("graph")
+2. Pre-process/aggregate  layout, controls, nav         charts needing aggregation, sorting,
+3. Register in data_mgr   References data by string     parameter logic, or layout tweaks
+4. Load YAML & run app    key; refs custom funcs      custom_tables.py   → @capture("ag_grid")
+                                                        custom AG Grid tables beyond simple args
+                                                      custom_figures.py  → @capture("figure")
+                                                        custom KPI cards or other figure components
 ```
 
 ### Minimal `app.py`
@@ -44,9 +47,9 @@ if __name__ == "__main__":
 from vizro.managers import data_manager
 
 raw = pd.read_csv("data.csv")
-pivot = raw.pivot_table(...)       # process BEFORE registering
+pivot = raw.pivot_table(...)  # process BEFORE registering
 data_manager["raw"] = raw
-data_manager["pivot"] = pivot      # register the derived result
+data_manager["pivot"] = pivot  # register the derived result
 ```
 
 - `data_manager["key"]` wraps data and is **not subscriptable** — never do `data_manager["key"]["col"]`
@@ -58,17 +61,17 @@ data_manager["pivot"] = pivot      # register the derived result
 When a chart can be expressed with Plotly Express arguments alone:
 
 ```yaml
-- figure:
-    _target_: bar
-    data_frame: sales_data
-    x: region
-    y: revenue
-    color: category
-  type: graph
-  title: Revenue by Region
+  - figure:
+      _target_: bar
+      data_frame: sales_data
+      x: region
+      y: revenue
+      color: category
+    type: graph
+    title: Revenue by Region
 ```
 
-Available standard `_target_` values: `bar`, `scatter`, `line`, `area`, `histogram`, `box`, `violin`, `strip`, `funnel`, `pie`, `treemap`, `sunburst`, `density_heatmap`, and other `px` functions.
+Available standard `_target_` values correspond to any `plotly.express` function name (e.g. `bar`, `scatter`, `line`, `area`, `histogram`, `box`, `violin`, `strip`, `funnel`, `pie`, `treemap`, `sunburst`, `density_heatmap`). Full list: https://plotly.com/python-api-reference/plotly.express.html
 
 ## Custom Charts (Graph)
 
@@ -76,18 +79,19 @@ When a chart needs aggregation, sorting, parameter logic, or layout tweaks:
 
 ```yaml
 # dashboard.yaml
-- figure:
-    _target_: custom_charts.metric_bar
-    data_frame: raw
-    metric_param: Sales
-  id: metric_chart
-  type: graph
+  - figure:
+      _target_: custom_charts.metric_bar
+      data_frame: raw
+      metric_param: Sales
+    id: metric_chart
+    type: graph
 ```
 
 ```python
 # custom_charts.py
 import vizro.plotly.express as px
 from vizro.models.types import capture
+
 
 @capture("graph")
 def metric_bar(data_frame, metric_param="Sales"):
@@ -99,20 +103,20 @@ def metric_bar(data_frame, metric_param="Sales"):
 ```
 
 Key points:
+
 - Custom functions go in `custom_charts.py` (or `custom_figures.py` / `custom_tables.py`), NOT in `app.py`
 - Standard `_target_` values (like `bar`) need no module prefix; custom functions need `_target_: custom_charts.func_name`
 
 ### When to Use Custom vs Standard
 
-| Scenario | Approach | File |
-|---|---|---|
-| Simple bar/line/scatter with px args | YAML `_target_: bar` | `dashboard.yaml` only |
-| Chart needing aggregation before plotting | Custom function | `custom_charts.py` |
-| Parameter-driven column switching | Custom function | `custom_charts.py` |
-| Dual-axis charts | Custom function | `custom_charts.py` |
-| Shared legend (hide on some charts) | Custom function | `custom_charts.py` |
-| Heatmap table with cell coloring | Custom function | `custom_tables.py` |
-| Custom KPI/figure logic | Custom function | `custom_figures.py` |
+| Scenario                                  | Approach             | File                  |
+| ----------------------------------------- | -------------------- | --------------------- |
+| Simple bar/line/scatter with px args      | YAML `_target_: bar` | `dashboard.yaml` only |
+| Chart needing aggregation before plotting | Custom function      | `custom_charts.py`    |
+| Dual-axis charts                          | Custom function      | `custom_charts.py`    |
+| Shared legend (hide on some charts)       | Custom function      | `custom_charts.py`    |
+| Heatmap table with cell coloring          | Custom function      | `custom_tables.py`    |
+| Custom KPI/figure logic                   | Custom function      | `custom_figures.py`   |
 
 ## KPI Cards
 
@@ -125,27 +129,27 @@ Key points:
 ### Built-in (no custom file needed)
 
 ```yaml
-- figure:
-    _target_: kpi_card
-    data_frame: kpi_data
-    value_column: Revenue
-    title: Total Revenue
-    value_format: "${value:,.0f}"
-  type: figure
+  - figure:
+      _target_: kpi_card
+      data_frame: kpi_data
+      value_column: Revenue
+      title: Total Revenue
+      value_format: ${value:,.0f}
+    type: figure
 ```
 
 With reference comparison:
 
 ```yaml
-- figure:
-    _target_: kpi_card_reference
-    data_frame: kpi_data
-    value_column: Actual
-    reference_column: Target
-    title: Revenue vs Target
-    value_format: "${value:,.0f}"
-    reference_format: "{delta:+.1f}% vs. target"
-  type: figure
+  - figure:
+      _target_: kpi_card_reference
+      data_frame: kpi_data
+      value_column: Actual
+      reference_column: Target
+      title: Revenue vs Target
+      value_format: ${value:,.0f}
+      reference_format: '{delta:+.1f}% vs. target'
+    type: figure
 ```
 
 - No `title` field on the component — title goes inside `_target_: kpi_card` arguments
@@ -155,15 +159,15 @@ With reference comparison:
 
 ```yaml
 # dashboard.yaml
-- figure:
-    _target_: custom_figures.my_kpi
-    data_frame: raw_data
-    value_column: id
-    agg_func: count
-    title: Active Resources
-    value_format: "{value:,.0f}"
-  type: figure
-  id: kpi_count
+  - figure:
+      _target_: custom_figures.my_kpi
+      data_frame: raw_data
+      value_column: id
+      agg_func: count
+      title: Active Resources
+      value_format: '{value:,.0f}'
+    type: figure
+    id: kpi_count
 ```
 
 ```python
@@ -172,6 +176,7 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import html
 from vizro.models.types import capture
+
 
 @capture("figure")
 def my_kpi(
@@ -209,13 +214,13 @@ def my_kpi(
 ### Standard Table
 
 ```yaml
-- figure:
-    _target_: dash_ag_grid
-    data_frame: my_data
-    dashGridOptions:
-      pagination: true
-  type: ag_grid
-  title: Data Table
+  - figure:
+      _target_: dash_ag_grid
+      data_frame: my_data
+      dashGridOptions:
+        pagination: true
+    type: ag_grid
+    title: Data Table
 ```
 
 - Must use `_target_: dash_ag_grid` in the figure
@@ -224,10 +229,10 @@ def my_kpi(
 
 ```yaml
 # dashboard.yaml
-- figure:
-    _target_: custom_tables.heatmap_grid
-    data_frame: pivot_data
-  type: ag_grid
+  - figure:
+      _target_: custom_tables.heatmap_grid
+      data_frame: pivot_data
+    type: ag_grid
 ```
 
 ```python
@@ -237,6 +242,7 @@ from vizro.models.types import capture
 from vizro.themes import palettes
 
 _SEQ_PALETTE = palettes.sequential
+
 
 def _heatmap_style_conditions(global_max):
     n = len(_SEQ_PALETTE)
@@ -250,6 +256,7 @@ def _heatmap_style_conditions(global_max):
         conditions.append({"condition": f"params.value >= {threshold:.1f}", "style": style})
     return {"styleConditions": conditions, "defaultStyle": {}}
 
+
 def _heatmap_column_defs(df, first_col_name):
     numeric_cols = df.columns[1:]
     global_max = max(df[numeric_cols].max().max(), 1)
@@ -259,6 +266,7 @@ def _heatmap_column_defs(df, first_col_name):
     for c in numeric_cols:
         cols.append({"field": c, "headerName": str(c), "cellStyle": cell_style})
     return cols
+
 
 @capture("ag_grid")
 def heatmap_grid(data_frame):
@@ -273,17 +281,18 @@ def heatmap_grid(data_frame):
 
 ```yaml
 # dashboard.yaml
-- figure:
-    _target_: custom_tables.table_with_bars
-    data_frame: product_data
-  type: ag_grid
-  title: Product Summary
+  - figure:
+      _target_: custom_tables.table_with_bars
+      data_frame: product_data
+    type: ag_grid
+    title: Product Summary
 ```
 
 ```python
 # custom_tables.py
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
+
 
 @capture("ag_grid")
 def table_with_bars(data_frame):
@@ -306,7 +315,7 @@ def table_with_bars(data_frame):
 var dagcomponentfuncs = (window.dashAgGridComponentFunctions =
     window.dashAgGridComponentFunctions || {});
 
-dagcomponentfuncs.BarRenderer = function (props) {
+dagcomponentfuncs.BarRenderer = function(props) {
     var maxValue =
         (props.colDef.cellRendererParams &&
             props.colDef.cellRendererParams.maxValue) || 100;
@@ -314,15 +323,29 @@ dagcomponentfuncs.BarRenderer = function (props) {
     var pct = Math.min(Math.round((value / maxValue) * 100), 100);
 
     return React.createElement(
-        "div",
-        { style: { display: "flex", alignItems: "center", gap: "6px",
-                    height: "100%", padding: "4px 0" } },
+        "div", {
+            style: {
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                height: "100%",
+                padding: "4px 0"
+            }
+        },
         React.createElement("div", {
-            style: { width: pct + "%", height: "60%",
-                     backgroundColor: "var(--bs-primary)",
-                     borderRadius: "2px", minWidth: value > 0 ? "4px" : "0" },
+            style: {
+                width: pct + "%",
+                height: "60%",
+                backgroundColor: "var(--bs-primary)",
+                borderRadius: "2px",
+                minWidth: value > 0 ? "4px" : "0"
+            },
         }),
-        React.createElement("span", { style: { fontSize: "0.85em" } }, value)
+        React.createElement("span", {
+            style: {
+                fontSize: "0.85em"
+            }
+        }, value)
     );
 };
 ```
@@ -333,20 +356,20 @@ dagcomponentfuncs.BarRenderer = function (props) {
 ## Cards (Text/Markdown)
 
 ```yaml
-- text: |
-    ### My Title
+  - text: |
+      ### My Title
 
-    Some description with **bold** and *italic* text.
-  type: card
+      Some description with **bold** and *italic* text.
+    type: card
 ```
 
 With header and footer:
 
 ```yaml
-- text: Main card content here
-  header: Card Header
-  footer: Card Footer
-  type: card
+  - text: Main card content here
+    header: Card Header
+    footer: Card Footer
+    type: card
 ```
 
 ## Filters
@@ -391,7 +414,7 @@ controls:
       - chart_id.metric_param
     selector:
       type: dropdown
-      options: ["Sales", "Quantity", "Profit"]
+      options: [Sales, Quantity, Profit]
       value: Sales
     type: parameter
 ```
@@ -402,18 +425,18 @@ controls:
 ## Containers
 
 ```yaml
-- type: container
-  components:
-    - figure:
-        _target_: scatter
-        data_frame: iris
-        x: sepal_width
-        y: sepal_length
-      type: graph
-  controls:
-    - column: species
-      type: filter
-  variant: outlined
+  - type: container
+    components:
+      - figure:
+          _target_: scatter
+          data_frame: iris
+          x: sepal_width
+          y: sepal_length
+        type: graph
+    controls:
+      - column: species
+        type: filter
+    variant: outlined
 ```
 
 Variants: `plain`, `outlined`, `filled`.
@@ -421,26 +444,26 @@ Variants: `plain`, `outlined`, `filled`.
 ## Tabs
 
 ```yaml
-- tabs:
-    - title: Tab I
-      type: container
-      components:
-        - figure:
-            _target_: bar
-            data_frame: my_data
-            x: category
-            y: value
-          type: graph
-    - title: Tab II
-      type: container
-      components:
-        - figure:
-            _target_: scatter
-            data_frame: my_data
-            x: x_col
-            y: y_col
-          type: graph
-  type: tabs
+  - tabs:
+      - title: Tab I
+        type: container
+        components:
+          - figure:
+              _target_: bar
+              data_frame: my_data
+              x: category
+              y: value
+            type: graph
+      - title: Tab II
+        type: container
+        components:
+          - figure:
+              _target_: scatter
+              data_frame: my_data
+              x: x_col
+              y: y_col
+            type: graph
+    type: tabs
 ```
 
 ## Navigation
@@ -497,19 +520,19 @@ YAML treats `#` as a comment marker. Column names containing `#` must be quoted:
 
 ```yaml
 # WRONG
-- column: Version #
-  type: filter
+  - column: Version #
+    type: filter
 
 # CORRECT
-- column: "Version #"
-  type: filter
+  - column: 'Version #'
+    type: filter
 ```
 
 This applies to any column name containing YAML special characters (`:`, `{`, `}`, `[`, `]`, `&`, `*`, `?`, `|`, `>`, `!`, `%`, `@`, `` ` ``).
 
-### 8. Filter targets required for pre-aggregated datasets
+### 8. Filter targets required when components use different datasets
 
-Filters without `targets:` apply to all components. If any component uses a dataset without the filter column, Vizro raises `"column not found"`.
+Filters without `targets:` apply to all components on the page. This works fine when every component shares the same dataset. When components use different datasets, omitting `targets:` causes Vizro to raise `"column not found"` for any dataset missing that column. Specify `targets:` listing only the components whose datasets contain the filter column.
 
 ### 9. Grid areas must be rectangular
 

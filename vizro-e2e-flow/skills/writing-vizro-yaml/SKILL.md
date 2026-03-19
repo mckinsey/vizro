@@ -7,16 +7,15 @@ description: Write Vizro YAML dashboard configs with correct component patterns,
 
 ## Critical Mistakes to Avoid
 
-1. **`@capture("graph")` receives a DataFrame** — use `data_frame` directly; never re-lookup via `data_manager[data_frame]`.
-2. **`data_manager` is not subscriptable** — pre-process on raw DataFrame, then register.
-3. **Custom `_target_` needs module prefix** — `_target_: custom_charts.my_chart`, not `_target_: my_chart`.
-4. **`type: figure` has no `title` field** — KPI titles go in `_target_: kpi_card` args.
-5. **`type: ag_grid` requires `_target_: dash_ag_grid`**.
-6. **Parameter targets** — format: `"component_id.argument_name"`, not `"component_id.figure"`.
-7. **Quote YAML special chars in column names** — `column: "Version #"` (unquoted `#` starts a comment).
-8. **Filter `targets:` required for pre-aggregated data** — without it, Vizro raises "column not found".
-9. **Grid must be rectangular** — same component index must span same columns in every row.
-10. **Column type consistency** — filter column must have same dtype across all targeted datasets.
+1. **`data_manager` is not subscriptable** — pre-process on raw DataFrame, then register.
+1. **Custom `_target_` needs module prefix** — `_target_: custom_charts.my_chart`, not `_target_: my_chart`.
+1. **`type: figure` has no `title` field** — KPI titles go in `_target_: kpi_card` args.
+1. **`type: ag_grid` requires `_target_: dash_ag_grid`**.
+1. **Parameter targets** — format: `"component_id.argument_name"`, not `"component_id.figure"`.
+1. **Quote YAML special chars in column names** — `column: "Version #"` (unquoted `#` starts a comment).
+1. **Filter `targets:`** — omit when all components on a page share the same dataset; specify when components use different datasets (otherwise Vizro raises "column not found").
+1. **Grid must be rectangular** — same component index must span same columns in every row.
+1. **Column type consistency** — filter column must have same dtype across all targeted datasets.
 
 ## Quick Patterns
 

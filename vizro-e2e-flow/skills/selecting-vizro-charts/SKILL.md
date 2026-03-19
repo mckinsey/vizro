@@ -7,14 +7,14 @@ description: Select chart types, apply Plotly conventions, enforce color strateg
 
 ## Chart Selection
 
-| Data question            | Chart                          |
-|--------------------------|--------------------------------|
-| Compare categories       | Bar (horizontal preferred)     |
-| Trend over time          | Line (12+ points)              |
-| Part-to-whole (simple)   | Pie/donut (2–5 slices only)    |
-| Part-to-whole (complex)  | Stacked bar                    |
-| Distribution             | Histogram or box               |
-| Correlation              | Scatter                        |
+| Data question           | Chart                       |
+| ----------------------- | --------------------------- |
+| Compare categories      | Bar (horizontal preferred)  |
+| Trend over time         | Line (12+ points)           |
+| Part-to-whole (simple)  | Pie/donut (2–5 slices only) |
+| Part-to-whole (complex) | Stacked bar                 |
+| Distribution            | Histogram or box            |
+| Correlation             | Scatter                     |
 
 **Never use**: 3D charts, pie with 6+ slices, dual Y-axis, bar charts not starting at zero.
 
@@ -36,7 +36,7 @@ description: Select chart types, apply Plotly conventions, enforce color strateg
 
 Use when: aggregation/sorting needed, `update_layout()`/`update_traces()` calls, reference lines, parameter-driven logic, dual-axis, multi-trace `go.Figure()`, shared legend control.
 
-Standard `px` charts expressible via YAML args do **not** need custom functions.
+Standard `px` charts expressible via YAML args do **not** need custom functions. Full list: https://plotly.com/python-api-reference/plotly.express.html
 
 ## KPI Cards
 

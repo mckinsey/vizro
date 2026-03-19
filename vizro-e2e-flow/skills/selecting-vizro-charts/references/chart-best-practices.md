@@ -15,20 +15,20 @@ Consolidated reference for chart selection, Plotly implementation, color strateg
 
 ### Quick reference
 
-| Data question           | Recommended chart                |
-|------------------------|----------------------------------|
-| Compare categories     | Bar (horizontal preferred)       |
-| Trend over time        | Line (12+ points)                |
-| Part-to-whole (simple) | Pie/donut (2–5 slices only)      |
-| Part-to-whole (complex)| Stacked bar                      |
-| Distribution          | Histogram or box                 |
-| Correlation           | Scatter                          |
+| Data question           | Recommended chart           |
+| ----------------------- | --------------------------- |
+| Compare categories      | Bar (horizontal preferred)  |
+| Trend over time         | Line (12+ points)           |
+| Part-to-whole (simple)  | Pie/donut (2–5 slices only) |
+| Part-to-whole (complex) | Stacked bar                 |
+| Distribution            | Histogram or box            |
+| Correlation             | Scatter                     |
 
 ### Anti-patterns (never use)
 
-- 3D charts, pie with 6+ slices, dual Y-axis, bar charts not starting at zero
+- 3D charts, bar charts not starting at zero
 
-## Plotly Express conventions
+## Plotly Express best practice conventions
 
 - **Bar**: Sort by value (largest to smallest) unless time-based; **always start at zero**.
 - **Line**: Pre-aggregate by time/series; sort by x ascending; never pass raw detail-level data and assume correct order.
