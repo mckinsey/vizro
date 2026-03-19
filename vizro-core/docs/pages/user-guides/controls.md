@@ -32,3 +32,7 @@ When the dashboard is running there are two ways for a user to set a control:
 ## Reset controls
 
 You can reset all controls on the page to their original values with the "Reset controls" button at the bottom of the control panel on the left side of the page. This applies to all controls on the page, regardless of whether they are visible. When all controls on a page have `visible=False` and hence no control panel is shown, the "Reset controls" button appears next to the theme switch on the top right of the page.
+
+## Add ControlGroup
+
+To organize the control panel on a page into sections, you can group [filters](filters.md) and [parameters](parameters.md) under a title using a [ControlGroup](control-group.md). Control groups are only available for page level controls. For when to use them and how to configure title and description, see [How to use control groups](control-group.md).

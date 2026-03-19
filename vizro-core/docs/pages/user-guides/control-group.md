@@ -27,7 +27,7 @@ Use a control group when you want to:
             title="My first page",
             components=[
                 vm.Graph(
-                    id="scatter-chart",
+                    id="scatter_chart",
                     figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")
                 ),
             ],
@@ -68,7 +68,7 @@ Use a control group when you want to:
         pages:
           - title: My first page
             components:
-              - id: scatter-chart
+              - id: scatter_chart
                 figure:
                   _target_: scatter
                   data_frame: iris
@@ -91,7 +91,7 @@ Use a control group when you want to:
                     targets:
                       - scatter-chart.title
                     selector:
-                      options: [My scatter chart", A better title!, Another title...]
+                      options: [My scatter chart, A better title!, Another title...]
                       multi: false
                       type: dropdown
         ```
@@ -99,3 +99,5 @@ Use a control group when you want to:
     === "Result"
 
         \[![Filter]\][filter]
+
+[filter]: ../../assets/user_guides/control/control1.png

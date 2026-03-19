@@ -28,6 +28,7 @@ nav:
           - Filter: pages/user-guides/filters.md
           - Parameter: pages/user-guides/parameters.md
           - Selector: pages/user-guides/selectors.md
+          - ControlGroup: pages/user-guides/control-group.md
       - Navigation: pages/user-guides/navigation.md
       - Actions:
           - Overview: pages/user-guides/actions.md

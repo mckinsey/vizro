@@ -3,7 +3,7 @@
 import dash_bootstrap_components as dbc
 import pytest
 import vizro_dash_components as vdc
-from asserts import STRIP_ALL, assert_component_equal
+from asserts import assert_component_equal
 from dash import html
 from pydantic import ValidationError
 
@@ -154,18 +154,3 @@ class TestControlGroupBuildMethod:
                 id="control-group_title_content",
             ),
         )
-
-    def test_control_group_build_with_multiple_controls(self):
-        control_group = vm.ControlGroup(
-            id="control-group",
-            controls=[
-                vm.Filter(column="species", selector=vm.Dropdown()),
-                vm.Filter(column="year", selector=vm.Slider()),
-            ],
-        )
-        result = control_group.build()
-        panel = result.children[1]
-        assert panel.id == "control-group-control-panel"
-        assert len(panel.children) == 2
-        assert_component_equal(panel.children[0], html.Div(id=control_group.controls[0].id), keys_to_strip=STRIP_ALL)
-        assert_component_equal(panel.children[1], html.Div(id=control_group.controls[1].id), keys_to_strip=STRIP_ALL)

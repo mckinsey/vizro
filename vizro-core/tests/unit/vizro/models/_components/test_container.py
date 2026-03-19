@@ -76,7 +76,11 @@ class TestContainerInstantiation:
             vm.Container(components=[vm.Button()], collapsed=True)
 
     def test_control_group_not_allowed_in_container_controls(self):
-        with pytest.raises(ValidationError, match=r"control_group|filter.*parameter"):
+        with pytest.raises(
+            ValidationError,
+            match=r"Input tag 'control_group' found using 'type' does not match any of the expected tags: "
+            r"'filter', 'parameter'.",
+        ):
             vm.Container(
                 components=[vm.Button()],
                 controls=[
