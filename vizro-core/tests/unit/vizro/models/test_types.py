@@ -7,9 +7,15 @@ import pytest
 from pydantic import Field, ValidationError, field_validator
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.actions import export_data
+from vizro.actions import export_data, show_notification, update_notification
 from vizro.models import Action, Button, VizroBaseModel
-from vizro.models.types import CapturedCallable, _coerce_to_list, _validate_captured_callable, capture
+from vizro.models.types import (
+    CapturedCallable,
+    _coerce_to_list,
+    _normalize_action_notifications,
+    _validate_captured_callable,
+    capture,
+)
 
 
 def positional_only_function(a, /):
@@ -465,3 +471,115 @@ class TestCoerceActionsAndOutputsType:
         """Test that single output strings work with Action model."""
         action = Action(function=decorated_action_function(a=1, b=2), outputs=outputs_input)
         assert action.outputs == expected_output
+
+
+class TestNormalizeActionNotifications:
+    """Tests for _normalize_action_notifications."""
+
+    def test_default_notifications(self):
+        result = _normalize_action_notifications({})
+
+        assert len(result) == 1
+
+        # default error notification
+        result_error_notification = result["error"]
+        assert type(result_error_notification) is show_notification
+        assert result_error_notification.variant == "error"
+        assert result_error_notification.text == "Action failed."
+        assert result_error_notification._is_conditional is True
+
+    def test_error_none_notifications(self):
+        result = _normalize_action_notifications({"error": None})
+        assert result == {"error": None}
+
+    def test_success_notifications(self):
+        result = _normalize_action_notifications({"success": "Success."})
+
+        assert len(result) == 2
+
+        # success notification - show_notification
+        result_success_notification = result["success"]
+        assert type(result_success_notification) is show_notification
+        assert result_success_notification.variant == "success"
+        assert result_success_notification.text == "Success."
+        assert result_success_notification._is_conditional is True
+
+        # default error notification - show_notification
+        result_error_notification = result["error"]
+        assert type(result_error_notification) is show_notification
+        assert result_error_notification.variant == "error"
+        assert result_error_notification.text == "Action failed."
+        assert result_error_notification._is_conditional is True
+
+    def test_progress_notifications(self):
+        result = _normalize_action_notifications({"progress": "Progress."})
+
+        assert len(result) == 2
+
+        # progress notification - show_notification
+        result_progress_notification = result["progress"]
+        assert type(result_progress_notification) is show_notification
+        assert result_progress_notification.variant == "progress"
+        assert result_progress_notification.text == "Progress."
+        assert result_progress_notification._is_conditional is True
+
+        # default error notification - update_notification
+        result_error_notification = result["error"]
+        assert type(result_error_notification) is update_notification
+        assert result_error_notification.variant == "error"
+        assert result_error_notification.text == "Action failed."
+        assert result_error_notification._is_conditional is True
+        assert result_error_notification.notification == result_progress_notification.id
+
+    def test_custom_notifications(self):
+        result = _normalize_action_notifications({"custom_key": "Custom text."})
+
+        assert len(result) == 2
+
+        # icon notification - show_notification
+        result_custom_notification = result["custom_key"]
+        assert type(result_custom_notification) is show_notification
+        assert result_custom_notification.variant == "info"
+        assert result_custom_notification.text == "Custom text."
+        assert result_custom_notification._is_conditional is True
+
+    def test_multiple_notifications(self):
+        result = _normalize_action_notifications(
+            {
+                "progress": "Progress.",
+                "success": show_notification(text="Success.", variant="success"),
+                "custom_key": "Custom text.",
+            }
+        )
+
+        assert len(result) == 4
+
+        # progress notification - show_notification
+        result_progress_notification = result["progress"]
+        assert type(result_progress_notification) is show_notification
+        assert result_progress_notification.variant == "progress"
+        assert result_progress_notification.text == "Progress."
+        assert result_progress_notification._is_conditional is True
+
+        # success notification - show_notification
+        result_success_notification = result["success"]
+        assert type(result_success_notification) is show_notification
+        assert result_success_notification.variant == "success"
+        assert result_success_notification.text == "Success."
+        assert result_success_notification._is_conditional is True
+
+        # custom notification - update_notification
+        result_custom_notification = result["custom_key"]
+        assert type(result_custom_notification) is update_notification
+        assert result_custom_notification.variant == "info"
+        assert result_custom_notification.text == "Custom text."
+        assert result_custom_notification._is_conditional is True
+        assert result_custom_notification.notification == result_progress_notification.id
+
+        # default error notification - update_notification
+        result_error_notification = result["error"]
+        assert type(result_error_notification) is update_notification
+        assert result_error_notification.variant == "error"
+        assert result_error_notification.text == "Action failed."
+        assert result_error_notification._is_conditional is True
+        assert result_error_notification.notification == result_progress_notification.id

@@ -8,11 +8,6 @@ from pydantic import TypeAdapter
 from vizro.models._action._action import _BaseAction
 from vizro.models.types import OutputsType, _IdOrIdProperty
 
-# from typing import TYPE_CHECKING, Annotated
-#
-# if TYPE_CHECKING:
-#     from vizro.actions import show_notification, update_notification
-
 
 # TODO-AV2 D 5: make public.
 class _AbstractAction(_BaseAction, abc.ABC):
@@ -33,6 +28,7 @@ class _AbstractAction(_BaseAction, abc.ABC):
 
     # Note this model itself cannot have any fields (aside from `id` that comes from `VizroBaseModel`) or that field
     # would be inherited by all subclasses.
+
     @abc.abstractmethod
     def function(self, *args, **kwargs):
         """Function that must be defined by concrete action.
@@ -104,20 +100,3 @@ class _AbstractAction(_BaseAction, abc.ABC):
     @property
     def _action_name(self) -> str:
         return self.__class__.__name__
-
-
-# TODO PP NOW: Fix this
-def rebuild_models():
-    # local import inside the function avoids import-time circularity
-    from vizro.actions._notifications import show_notification, update_notification
-
-    for action_cls in _AbstractAction.__subclasses__():
-        action_cls.model_rebuild(
-            _types_namespace={
-                "show_notification": show_notification,
-                "update_notification": update_notification,
-            }
-        )
-
-
-rebuild_models()

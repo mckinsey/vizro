@@ -54,14 +54,20 @@ function guard_action_chain(trigger_value, guard_data, trigger_component_id) {
  * @returns {string} The text with template variables replaced by their corresponding values.
  */
 function replaceTemplateVariables(text, valuesMap) {
-  if (typeof text !== "string") return text;
-
   return text.replace(/\{\{(\w+)\}\}/g, (match, key) => {
     if (Object.hasOwn(valuesMap, key)) {
-      return String(valuesMap[key]);
+      const value = valuesMap[key];
+
+      // Use JSON.stringify for objects and arrays
+      if (typeof value === "object") {
+        return JSON.stringify(value);
+      }
+
+      // For primitives
+      return String(value);
     }
 
-    // leave {{key}} unchanged
+    // Leave unknown keys unchanged.
     return match;
   });
 }
@@ -109,6 +115,7 @@ function show_progress_notification(
   });
 }
 
+window.replaceTemplateVariables = replaceTemplateVariables;
 window.dash_clientside = {
   ...window.dash_clientside,
   action: {

@@ -1,6 +1,7 @@
 import pytest
+import vizro_dash_components as vdc
 from asserts import assert_component_equal
-from dash import dcc, html
+from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -30,11 +31,17 @@ class TestShowNotificationInstantiation:
         assert notification.icon == "info"
         assert notification.auto_close == 4000
         assert notification.outputs == "vizro-notifications.sendNotifications"
+        assert notification._is_conditional is False
 
     @pytest.mark.parametrize("field", ["title", "icon", "auto_close"])
     def test_none_value_raises_validation_error(self, field):
         with pytest.raises(ValidationError, match=field):
             show_notification(text="Test message", **{field: None})
+
+    def test_dash_components_for_conditional_notification(self):
+        conditional_notification = show_notification(text="Test message")
+        conditional_notification._is_conditional = True
+        assert conditional_notification._dash_components == []
 
 
 @pytest.mark.usefixtures("managers_one_page_one_button")
@@ -46,7 +53,7 @@ class TestShowNotificationFunction:
 
         assert result["id"] == "test_notification"
         assert result["title"] == "Info"
-        assert_component_equal(result["message"], dcc.Markdown(children="Info message", dangerously_allow_html=False))
+        assert_component_equal(result["message"], vdc.Markdown(children="Info message", dangerously_allow_html=False))
         assert result["className"] == "alert-info"
         assert_component_equal(result["icon"], html.Span("info", className="material-symbols-outlined"))
         assert result["autoClose"] == 4000
@@ -69,7 +76,7 @@ class TestShowNotificationFunction:
 
         assert result["id"] == "custom_notification"
         assert result["title"] == "Custom Title"
-        assert_component_equal(result["message"], dcc.Markdown(children="Test message", dangerously_allow_html=False))
+        assert_component_equal(result["message"], vdc.Markdown(children="Test message", dangerously_allow_html=False))
         assert result["className"] == "alert-success"
         assert_component_equal(result["icon"], html.Span("star", className="material-symbols-outlined"))
         assert result["autoClose"] is False
@@ -110,6 +117,7 @@ class TestUpdateNotificationInstantiation:
         assert notification.notification == "test_notification"
         assert notification.text == "Updated message"
         assert notification.variant == "info"
+        assert notification._is_conditional is False
 
 
 @pytest.mark.usefixtures("managers_one_page_one_button")
@@ -128,7 +136,7 @@ class TestUpdateNotificationFunction:
         assert result["id"] == "original_notification"
         assert result["title"] == "Updated"
         assert_component_equal(
-            result["message"], dcc.Markdown(children="Updated message", dangerously_allow_html=False)
+            result["message"], vdc.Markdown(children="Updated message", dangerously_allow_html=False)
         )
         assert result["className"] == "alert-success"
         assert result["action"] == "update"

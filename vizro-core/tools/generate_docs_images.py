@@ -97,7 +97,7 @@ def generate_colors_image(output_path):
         "Pink": [f"pink_{i}00" for i in range(1, 10)],
         "Yellow": [f"yellow_{i}00" for i in range(1, 10)],
         "Grey": [f"gray_{i}00" for i in range(1, 10)],
-        "Special": ["transparent", "white", "black", "increase", "decrease", "neutral"],
+        "Special": ["transparent", "white", "black", "positive", "negative", "neutral"],
         "Alerts": ["info", "success", "warning", "error"],
     }
 
