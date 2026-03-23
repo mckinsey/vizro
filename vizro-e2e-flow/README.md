@@ -25,6 +25,12 @@ You don't need to be an expert Vizro user to use the e2e flow plugin. Check out 
 - You'll also need a [GitHub account](https://github.com) with SSH or HTTPS enabled.
 - Clone the [Vizro repository](https://github.com/mckinsey/vizro.git) (and give it a star while you're there).
 
+### Requirements
+
+- **dashboard-design skill**: No technical dependencies: this phases uses the design guidance contained in the skill.
+- **dashboard-build skill (build)**: A Python environment with [uv](https://docs.astral.sh/uv/) installed, which the agent will guide you through if it's not already set up.
+- **dashboard-build skill (test)**: [Node.js](https://nodejs.org/) is required for the Playwright MCP.
+
 ## Installation
 
 ### Option 1: Ask Cursor
@@ -90,7 +96,7 @@ playwright MCP · ✔ connected
 
 ## Get started tutorial
 
-Once the skills and Playwright MCP are set up, here's how to build your first dashboard end-to-end. There's a [set of dummy data](https://todo) in this repo for you to use.
+Once the skills and Playwright MCP are set up, here's how to build your first dashboard end-to-end. There's a [set of dummy data](https://todo) in the `/get-started-tutorial subfolder for you to use.
 
 ### Step 1: Start the design phase
 
@@ -120,11 +126,9 @@ This invokes the **dashboard-build** skill, which:
 
 1. **Tests & Verifies** - The agent launches the dashboard and uses the Playwright MCP server to automatically test the dashboard code in a browser. It validates navigation, filters, controls, and checks for console errors.
 
-## Requirements
+The GIF below illustrates the dashboard built from the sample data. Your dashboard may looks slightly different due to the deterministic nature of LLMs.
 
-- **dashboard-design skill**: No technical dependencies: this phases uses the design guidance contained in the skill.
-- **dashboard-build skill (build)**: A Python environment with [uv](https://docs.astral.sh/uv/) installed, which the agent will guide you through if it's not already set up.
-- **dashboard-build skill (test)**: [Node.js](https://nodejs.org/) is required for the Playwright MCP.
+![](get-started-tutorial/sales-dashboard.gif)
 
 ## Support
 
