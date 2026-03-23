@@ -95,7 +95,6 @@ playwright MCP · ✔ connected
 ```
 
 ## Get started tutorial
-
 Once the skills and Playwright MCP are set up, here's how to build your first dashboard end-to-end. There's a [set of dummy data](https://raw.githubusercontent.com/mckinsey/vizro/8b488179a7cf9aa0b0dfd587b24988fa5f79a697/vizro-e2e-flow/get-started-tutorial/monthly_sales_data.csv) in the `/get-started-tutorial subfolder for you to use.
 
 ### Step 1: Start the design phase
