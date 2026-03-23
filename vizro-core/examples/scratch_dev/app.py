@@ -20,9 +20,10 @@ page = vm.Page(
         vm.ControlGroup(
             title="Control group title",
             controls=[
-                vm.Filter(column="species", selector=vm.Dropdown(variant="filled")),
-                vm.Filter(column="sepal_length", selector=vm.Slider()),
+                vm.Filter(column="species", selector=vm.Dropdown(variant="filled", description="test")),
+                vm.Filter(column="sepal_length", selector=vm.Slider(description="test")),
             ],
+            description="test"
         ),
         vm.ControlGroup(
             id="ctl2",
@@ -34,58 +35,16 @@ page = vm.Page(
                         title="Choose title",
                         options=["My scatter chart", "A better title!", "Another title..."],
                         multi=False,
+                        description=vm.Tooltip(icon="Shopping Cart", text="test")
                     ),
                 ),
             ],
-            description="Change the title",
+            description=vm.Tooltip(icon="Favorite", text="test")
         ),
-        vm.Filter(column="sepal_length", selector=vm.Slider()),
+        vm.Filter(column="sepal_length", selector=vm.Slider(description=vm.Tooltip(icon="Dashboard", text="test"))),
     ],
 )
 
-page_2 = vm.Page(
-    title="Container with controls",
-    components=[
-        vm.Container(
-            title="Bar chart container",
-            components=[
-                vm.Graph(
-                    id="bar_chart",
-                    figure=px.bar(
-                        iris,
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                    ),
-                ),
-            ],
-            controls=[
-                vm.Parameter(
-                    targets=["bar_chart.color_discrete_map.virginica"],
-                    selector=vm.Dropdown(
-                        options=["#ff5267", "#3949ab"],
-                        multi=False,
-                        value="#3949ab",
-                    ),
-                ),
-                vm.Filter(column="species", selector=vm.Dropdown(variant="filled")),
-                vm.Filter(column="sepal_length"),
-            ],
-        ),
-        vm.Container(
-            title="Container without controls",
-            components=[
-                vm.Graph(
-                    figure=px.scatter(
-                        iris, title="My scatter chart", x="sepal_length", y="petal_width", color="species"
-                    ),
-                )
-            ],
-        ),
-    ],
-    layout=vm.Grid(grid=[[0, 1]]),
-)
 
 page_3 = vm.Page(
     title="Regular page",
@@ -99,9 +58,8 @@ page_3 = vm.Page(
 
 
 dashboard = vm.Dashboard(
-    pages=[page, page_2, page_3],
-    title="QB",
+    pages=[page, page_3],
 )
 
-if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+
+Vizro().build(dashboard).run(debug=True)
