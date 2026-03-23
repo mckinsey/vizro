@@ -1,6 +1,6 @@
 # Vizro e2e flow plugin
 
-Vizro e2e Flow is a [Claude Code plugin](https://code.claude.com/docs/en/plugins) for end-to-end Vizro dashboard development. It consists of a 2-skill workflow:
+Vizro e2e flow is a [Claude Code plugin](https://code.claude.com/docs/en/plugins) for end-to-end Vizro dashboard development. It consists of a 2-skill workflow:
 
 - **Skill 1: dashboard-design** - Dashboard design phase covering requirements, layout, and individual chart visualization selection.
 
@@ -27,7 +27,7 @@ You don't need to be an expert Vizro user to use the e2e flow plugin. Check out 
 
 ### Requirements
 
-- **dashboard-design skill**: No technical dependencies: this phases uses the design guidance contained in the skill.
+- **dashboard-design skill**: No technical dependencies: this phase uses the design guidance contained in the skill.
 - **dashboard-build skill (build)**: A Python environment with [uv](https://docs.astral.sh/uv/) installed, which the agent will guide you through if it's not already set up.
 - **dashboard-build skill (test)**: [Node.js](https://nodejs.org/) is required for the Playwright MCP.
 
@@ -126,7 +126,7 @@ This invokes the **dashboard-build** skill, which:
 
 1. **Tests & Verifies** - The agent launches the dashboard and uses the Playwright MCP server to automatically test the dashboard code in a browser. It validates navigation, filters, controls, and checks for console errors.
 
-The GIF below illustrates the dashboard built from the sample data. Your dashboard may looks slightly different due to the deterministic nature of LLMs.
+The GIF below illustrates the dashboard built from the sample data. Your dashboard may look slightly different because LLM outputs can vary.
 
 ![](get-started-tutorial/sales-dashboard.gif)
 
