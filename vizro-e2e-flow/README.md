@@ -19,6 +19,7 @@ At the time of writing, this plugin is compatible with products which support [C
 - You'll need a [Pro, Max, Teams, or Enterprise Claude subscription](https://claude.com/pricing) or a [Claude Console](https://console.anthropic.com/) account or a [paid Cursor plan](https://cursor.com/pricing).
 
 ### Vizro prerequisites
+
 You don't need to be an expert Vizro user to use the e2e flow plugin. Check out the [Vizro documentation](https://vizro.readthedocs.io/en/stable/) to find out more about ways you can interact with Vizro to build charts and dashboards.
 
 - You'll also need a [GitHub account](https://github.com) with SSH or HTTPS enabled.
