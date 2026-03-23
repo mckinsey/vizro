@@ -23,7 +23,7 @@ page = vm.Page(
                 vm.Filter(column="species", selector=vm.Dropdown(variant="filled", description="test")),
                 vm.Filter(column="sepal_length", selector=vm.Slider(description="test")),
             ],
-            description="test"
+            description="test",
         ),
         vm.ControlGroup(
             id="ctl2",
@@ -35,11 +35,11 @@ page = vm.Page(
                         title="Choose title",
                         options=["My scatter chart", "A better title!", "Another title..."],
                         multi=False,
-                        description=vm.Tooltip(icon="Shopping Cart", text="test")
+                        description=vm.Tooltip(icon="Shopping Cart", text="test"),
                     ),
                 ),
             ],
-            description=vm.Tooltip(icon="Favorite", text="test")
+            description=vm.Tooltip(icon="Favorite", text="test"),
         ),
         vm.Filter(column="sepal_length", selector=vm.Slider(description=vm.Tooltip(icon="Dashboard", text="test"))),
     ],
