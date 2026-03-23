@@ -44,7 +44,7 @@ custom_fig_df = pd.DataFrame(
 
 df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
-SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
+SPECIES_COLORS = {"setosa": "#097DFE", "versicolor": "#6F39E3", "virginica": "#05D0F0"}
 
 selected_countries = [
     "Singapore",
@@ -243,16 +243,25 @@ cards = vm.Page(
                 >
                 > A block quote is a long quotation, indented to create a separate block of text.
                 >
-            """
-        ),
-        vm.Card(
-            text="""
+
                 ### Lists
 
                 * Item A
                     * Sub Item 1
                     * Sub Item 2
                 * Item B
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Code snippet examples
+
+                Python inline code snippet: `print('hello world')`
+
+                ```javascript
+                console.log('hello world');
+                const add = (a, b) => a + b;
+                ```
             """
         ),
         vm.Card(
@@ -267,7 +276,11 @@ cards = vm.Page(
             """
         ),
         vm.Card(
-            text="Commodi repudiandae consequuntur voluptatum.",
+            text="""Cards can also contain markdown text with **formatting**.
+
+```bash
+$ echo hello
+```""",
             header="Card header",
             footer="Card footer",
         ),
@@ -558,6 +571,87 @@ tooltip = vm.Page(
     """,
 )
 
+text = vm.Page(
+    title="Text",
+    components=[
+        vm.Text(
+            text="""
+                # Header level 1 <h1>
+
+                ## Header level 2 <h2>
+
+                ### Header level 3 <h3>
+
+                #### Header level 4 <h4>
+            """
+        ),
+        vm.Text(
+            text="""
+                 ### Paragraphs
+                 Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+
+                 Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+
+                 Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+
+                 Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
+            """
+        ),
+        vm.Text(
+            text="""
+                ### Block Quotes
+
+                >
+                > A block quote is a long quotation, indented to create a separate block of text.
+                >
+
+                ### Lists
+
+                * Item A
+                    * Sub Item 1
+                    * Sub Item 2
+                * Item B
+            """
+        ),
+        vm.Text(
+            text="""
+                ### Code snippet examples
+
+                Python inline code snippet: `print('hello world')`
+
+                ```javascript
+                console.log('hello world');
+                const add = (a, b) => a + b;
+                ```
+            """
+        ),
+        vm.Text(
+            text="""
+                ### Emphasis
+
+                This word will be *italic*
+
+                This word will be **bold**
+
+                This word will be _**bold and italic**_
+            """
+        ),
+        vm.Text(
+            text="""
+              ### Math
+              This example uses the block delimiter:
+              $$
+              \\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}
+              $$
+
+              This example uses the inline delimiter:
+              $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$
+            """,
+            extra={"mathjax": True},
+        ),
+    ],
+    layout=vm.Grid(grid=[[0, 1, 2], [3, 4, 5]]),
+)
 
 # CONTROLS --------------------------------------------------------------------
 filters = vm.Page(
@@ -607,7 +701,7 @@ parameters = vm.Page(
                 y="sepal_length",
                 color="species",
                 size="petal_length",
-                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
+                color_discrete_map={"setosa": "#097DFE", "versicolor": "#6F39E3"},
             ),
         ),
         vm.Graph(
@@ -617,14 +711,14 @@ parameters = vm.Page(
                 x="sepal_width",
                 y="sepal_length",
                 color="species",
-                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
+                color_discrete_map={"setosa": "#097DFE", "versicolor": "#6F39E3"},
             ),
         ),
     ],
     controls=[
         vm.Parameter(
             targets=["scatter_chart_pm.color_discrete_map.virginica", "bar_chart_pm.color_discrete_map.virginica"],
-            selector=vm.Dropdown(options=["#ff5267", "#3949ab"], multi=False, value="#3949ab"),
+            selector=vm.Dropdown(options=["#05D0F0", "#0F766E"], multi=False, value="#05D0F0"),
         )
     ],
 )
@@ -1010,9 +1104,9 @@ def waterfall(data_frame, measure, x, y, text, title=None):
             x=data_frame[x],
             y=data_frame[y],
             text=data_frame[text],
-            decreasing={"marker": {"color": "#ff5267"}},
-            increasing={"marker": {"color": "#08bdba"}},
-            totals={"marker": {"color": "#00b4ff"}},
+            decreasing={"marker": {"color": "#EA5748"}},
+            increasing={"marker": {"color": "#00B5A9"}},
+            totals={"marker": {"color": "#097DFE"}},
         )
     )
     fig.update_layout(title=title)
@@ -1200,7 +1294,7 @@ kpi_indicators = vm.Page(
 
 
 # DASHBOARD -------------------------------------------------------------------
-components = [graphs, ag_grid, table, cards, figure, button, containers, tabs, tooltip]
+components = [graphs, ag_grid, table, cards, figure, button, containers, tabs, tooltip, text]
 controls = [filters, parameters, selectors, controls_in_containers]
 actions = [export_data_action, set_controls_action_cross_filter, set_controls_action_cross_parameter, notifications]
 layout = [grid_layout, flex_layout]
@@ -1226,6 +1320,7 @@ dashboard = vm.Dashboard(
                             "Containers",
                             "Tabs",
                             "Tooltip",
+                            "Text",
                         ],
                         "Controls": ["Filters", "Parameters", "Selectors", "Controls in containers"],
                         "Layout": ["Grid layout", "flex-layout"],
