@@ -20,7 +20,7 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ComponentType, ContainerControlType, LayoutType, _IdProperty
+from vizro.models.types import ComponentType, ControlType, LayoutType, _IdProperty
 
 
 # TODO: this could be done with default_factory once we bump to pydantic>=2.10.0.
@@ -74,7 +74,7 @@ class Container(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
-    controls: list[ContainerControlType] = []
+    controls: list[ControlType] = []
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -111,7 +111,7 @@ underlying component may change in the future.""",
         # Use "_get_models" instead of "for control in self.controls" to handle nested custom controls.
         # Use root_model=self.controls so only its own self.controls are marked, not these nested under self.components.
         for control in cast(
-            Iterable[ContainerControlType],
+            Iterable[ControlType],
             model_manager._get_models(model_type=(Filter, Parameter), root_model=self.controls),
         ):
             control.selector._in_container = True

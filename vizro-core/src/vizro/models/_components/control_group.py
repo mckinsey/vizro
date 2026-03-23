@@ -14,19 +14,19 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ContainerControlType, _IdProperty
+from vizro.models.types import ControlType, _IdProperty
 
 
 class ControlGroup(VizroBaseModel):
     """Container to group together a set of controls.
 
     Abstract: Usage documentation
-        [How to use ControlGroup](../user-guides/control-group.md)
+        [How to use ControlGroup](../user-guides/controls.md/#add-controlgroup)
 
     """
 
     type: Literal["control_group"] = "control_group"
-    controls: conlist(ContainerControlType, min_length=1)  # type: ignore[valid-type]
+    controls: conlist(ControlType, min_length=1)  # type: ignore[valid-type]
     title: str = Field(default="", description="Title of the control group.")
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
