@@ -96,7 +96,7 @@ playwright MCP · ✔ connected
 
 ## Get started tutorial
 
-Once the skills and Playwright MCP are set up, here's how to build your first dashboard end-to-end. There's a [set of dummy data](https://todo) in the `/get-started-tutorial subfolder for you to use.
+Once the skills and Playwright MCP are set up, here's how to build your first dashboard end-to-end. There's a [set of dummy data](https://todo) in the \`/get-started-tutorial subfolder for you to use.
 
 ### Step 1: Start the design phase
 
