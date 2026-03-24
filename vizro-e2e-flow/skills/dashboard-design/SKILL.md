@@ -3,17 +3,13 @@ name: dashboard-design
 description: Use this skill first when the user wants to design or plan a dashboard, especially Vizro dashboards. Enforces a 3-step workflow (requirements, layout, visualization) before implementation. Activate when the user asks to create, design, or plan a dashboard. For implementation, use the dashboard-build skill after completing Steps 1-3.
 ---
 
-# Building Vizro Dashboards
+# Designing Vizro Dashboards
 
-A structured workflow for creating effective dashboards with Vizro.
+Structured **requirements → layout → visualization** before any implementation (hand off to **dashboard-build** after Step 3).
 
-## How to Use This Skill
+## Workflow execution
 
-**CRITICAL**: Use this skill BEFORE implementation. After completing Steps 1-3, proceed to the dashboard-build skill for implementation and testing.
-
-**IMPORTANT**: Follow steps sequentially. Each step builds on the previous.
-
-Copy this checklist and track your progress:
+Run Steps 1–3 in order; each step depends on the prior. Track progress:
 
 ```
 Dashboard Development Progress:
@@ -23,7 +19,7 @@ Dashboard Development Progress:
 - [ ] Next: Use dashboard-build skill for implementation and testing
 ```
 
-**Interaction style**: When gathering requirements or making design decisions, use the AskUserQuestion tool to present options as numbered choices. This enables interactive selection rather than walls of text. Break complex decisions into focused questions with 2-5 clear options each.
+**Decision prompts**: For requirements and design choices, ask focused questions and offer **2–5 numbered options** per turn so the user can pick quickly. Use your client’s built-in choice / question UI when it exists; otherwise use the same pattern in plain messages.
 
 **Do not skip steps.** Handle partial context as follows:
 
