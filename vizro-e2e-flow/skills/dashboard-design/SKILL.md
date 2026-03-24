@@ -15,10 +15,10 @@ Run Steps 1–3 in order; each step depends on the prior. Track progress:
 Dashboard Development Progress:
 - [ ] Step 1: Understand Requirements (define end user, dashboard goals, document decisions)
 - [ ] Step 2: Design Layout & Interactions (wireframes, filter placement)
-- [ ] Step 3: Select Visualizations (chart types, colors, KPIs)
+- [ ] Step 3: Select Visualizations (chart types, KPIs; colors only if user asked)
 ```
 
-**Decision prompts**: For requirements and design choices, ask focused questions and offer **2–5 numbered options** per turn so the user can pick quickly. Use your client’s built-in choice / question UI when it exists; otherwise use the same pattern in plain messages.
+**Decision prompts**: For requirements and design choices, ask focused questions and offer **2–5 numbered options** per turn so the user can pick quickly. Use your client's built-in choice / question UI when it exists; otherwise use the same pattern in plain messages.
 
 **Do not skip steps.** Handle partial context as follows:
 
@@ -160,12 +160,12 @@ Before proceeding to Step 3:
 Load the **selecting-vizro-charts** skill for chart selection, color strategy, anti-patterns, and KPI card rules. Key design decisions:
 
 - Match chart type to data question (bar for comparison, line for trends, pie only for 2–5 slices)
-- Let Vizro handle colors by default; specify only for semantic meaning or brand
+- **Colors**: Omit `color_decisions` and all color fields unless the user explicitly asked for branding, semantic coloring, or a named palette. Vizro / Plotly Express assign palettes automatically. If the user did request colors, prefer Vizro `palettes` / `colors` over invented hex.
 - Use built-in `kpi_card` / `kpi_card_reference`; never rebuild as custom charts
 
 ### REQUIRED OUTPUT: spec/3_visual_design.yaml
 
-Save this file BEFORE proceeding to implementation (dashboard-build skill):
+Save this file BEFORE proceeding to implementation (dashboard-build skill).
 
 ```yaml
 # spec/3_visual_design.yaml
@@ -175,10 +175,7 @@ visualizations:
     needs_custom_implementation: true/false
     reason: [if custom: has_reference_line/needs_data_processing/etc]
 
-color_decisions:
-  - component: [Name]
-    reason: [Why non-default color]
-    colors: [List of hex codes]
+# color_decisions — OPTIONAL. Omit unless the user explicitly asked for non-default colors.
 
 kpi_cards:
   - name: [KPI Name]
@@ -198,7 +195,7 @@ Before proceeding to implementation (dashboard-build skill):
 - [ ] Chart types match data types (no pie charts for time series)
 - [ ] No anti-patterns used
 - [ ] Custom chart needs are identified
-- [ ] Color usage is consistent and intentional
+- [ ] `color_decisions` is **absent** unless the user explicitly requested custom colors
 
 **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 3: Visualization Mistakes"
 
@@ -209,7 +206,7 @@ Before proceeding to implementation (dashboard-build skill):
 | [information_architecture.md](references/information_architecture.md) | Step 1: Deep dive on requirements                  |
 | **designing-vizro-layouts** skill                                     | Step 2: Grid system, component sizing, filters     |
 | [wireframe_templates.md](references/wireframe_templates.md)           | Step 2: Wireframe templates and interaction labels |
-| **selecting-vizro-charts** skill                                      | Step 3: Chart types, colors, anti-patterns         |
+| **selecting-vizro-charts** skill                                      | Step 3: Chart types, anti-patterns                 |
 | [common_mistakes.md](references/common_mistakes.md)                   | All steps: Anti-patterns to avoid                  |
 
 ---

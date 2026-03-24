@@ -32,7 +32,7 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 
 ### Optimizations and common errors
 
-- **Colors**: Respect color decisions from `spec/3_visual_design.yaml`. Load the **selecting-vizro-charts** skill for Vizro palette rules (no hardcoded colors).
+- **Colors**: If `spec/3_visual_design.yaml` defines `color_decisions` or other agreed custom colors, implement them with the **selecting-vizro-charts** skill (Vizro `palettes` / `colors`; no arbitrary hex unless the user supplied them). If the spec omits color sections, do **not** add colors in code — use Plotly Express / Vizro defaults.
 - **Data loading**: For dashboards needing data refresh (databases, APIs) or performance optimization, see the [data management guide](./references/data_management.md) for static vs dynamic data, caching, and best practices.
 - **KPI cards**: Use built-in `kpi_card` / `kpi_card_reference` in `Figure` model only. Never rebuild as custom charts (exception: dynamic text). See **selecting-vizro-charts** skill.
 

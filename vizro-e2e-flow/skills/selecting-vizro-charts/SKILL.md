@@ -27,8 +27,8 @@ description: Use this skill when choosing chart types, applying Plotly Express c
 
 ## Color Rules
 
-- **Default**: Let Vizro handle colors. No `marker_color`, no hex codes, no `line=dict(color=...)`.
-- **When required** (semantic meaning, brand): use `from vizro.themes import palettes, colors`.
+- **Default**: Let Vizro handle colors — do not specify colors in code or in design specs unless the user explicitly asked. No `marker_color`, no hex codes, no `color_discrete_map`, no `line=dict(color=...)`.
+- **When required** (user-supplied brand hex, semantic meaning, or named palette): use `from vizro.themes import palettes, colors`.
 - AG Grid and custom figures do **not** auto-pick Vizro palettes — import explicitly.
 - Vizro palettes are colorblind-safe. Never use color alone to convey information.
 

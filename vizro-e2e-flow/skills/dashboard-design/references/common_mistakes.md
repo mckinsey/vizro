@@ -163,12 +163,10 @@ Mistakes in chart types, colors, and visual design.
 
 **Solution**:
 
-- Limit to 3 primary colors + neutrals
-- Use color consistently (same entity = same color everywhere)
-- Let Vizro handle colors automatically for most charts
-- Reserve bright colors for highlights only
+- Let Vizro handle colors automatically unless the user asked otherwise (see **selecting-vizro-charts** and dashboard-design Step 3).
+- When the user **has** requested custom colors: limit to a small palette, use color consistently (same entity = same color everywhere), and reserve bright colors for highlights only.
 
-**Color Budget**:
+**Color budget** (only after the user asked for custom colors):
 
 ```
 Primary data: 1 color
