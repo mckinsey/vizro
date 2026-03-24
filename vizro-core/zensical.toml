@@ -110,7 +110,7 @@ extra_javascript = ["javascripts/extra.js"]
 language = "en"
 custom_dir = "docs/overrides"
 variant = "classic"
-favicon = "assets/images/favicon.png"
+favicon = "images/favicon/favicon.png"
 features = [
   "navigation.path",
   "navigation.expand",
