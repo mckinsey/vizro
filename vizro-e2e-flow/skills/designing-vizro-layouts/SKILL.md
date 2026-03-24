@@ -26,8 +26,8 @@ description: Use this skill when designing or building Vizro dashboard layouts â
 ## Filter Placement
 
 - **Page-level** (left sidebar): filters shared across multiple components
-- **Container-level** (above container): filters scoped to one section
-- Prefer Filters over Parameters. Set `targets:` only when components on a page use different datasets.
+- **Container-level** (above container): filters scoped only to the components inside that container
+- Prefer Filters over Parameters. Do not set `targets:` by default â€” all components containing the specified column are automatically affected. Only set `targets:` when you want to limit which components are affected.
 
 ## Selectors
 

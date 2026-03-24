@@ -58,4 +58,4 @@ def gapminder_life_expectancy_chart(data_frame: pd.DataFrame) -> go.Figure:
 
 ### Custom charts as KPI cards
 
-Never use custom charts as KPI cards. Use built-in `kpi_card` / `kpi_card_reference` and do data manipulation in `app.py`. See **selecting-vizro-charts** skill for full rules.
+Never use custom charts for building KPI cards. Use built-in `kpi_card` / `kpi_card_reference` and do data manipulation in `app.py`. See **selecting-vizro-charts** skill for full rules.

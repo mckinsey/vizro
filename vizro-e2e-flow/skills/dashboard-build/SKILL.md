@@ -1,6 +1,6 @@
 ---
 name: dashboard-build
-description: Use this skill when the user wants to build, implement, or test a Vizro dashboard. This is Phase 2 — covering the actual build and testing. For Phase 1 (requirements, layout, visualization design), use the dashboard-design skill first. Activate even when the user says "just build it" or asks for a working app from data.
+description: Use this skill to build, implement, and test Vizro dashboards (Phase 2). Activate when the user wants to create a working app, says "just build it", or has data ready for implementation. Requires spec files from the dashboard-design skill (Phase 1), or user confirmation to skip design.
 ---
 
 ## Prerequisites
@@ -33,7 +33,7 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 ### Optimizations and common errors
 
 - **Colors**: Respect color decisions from `spec/3_visual_design.yaml`. Load the **selecting-vizro-charts** skill for Vizro palette rules (no hardcoded colors).
-- **Data loading**: See [data_management.md](./references/data_management.md) for static vs dynamic data, caching, and best practices.
+- **Data loading**: For dashboards needing data refresh (databases, APIs) or performance optimization, see the [data management guide](./references/data_management.md) for static vs dynamic data, caching, and best practices.
 - **KPI cards**: Use built-in `kpi_card` / `kpi_card_reference` in `Figure` model only. Never rebuild as custom charts (exception: dynamic text). See **selecting-vizro-charts** skill.
 
 ### REQUIRED OUTPUT: spec/4_implementation.yaml
