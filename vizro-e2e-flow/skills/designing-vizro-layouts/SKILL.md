@@ -10,6 +10,7 @@ description: Use this skill when designing or building Vizro dashboard layouts â
 - Use `type: grid` (not `vm.Layout`). Recommended: **12 columns**, `row_min_height: "140px"`.
 - Use `-1` for empty cells. Every component must form a **perfect rectangle** in the grid.
 - Place 2â€“3 charts per row. Full-width only for time-series line charts.
+- **Modifying existing layouts**: Replicate the original structure and apply only the technical constraints below. See [layout-guidelines.md](references/layout-guidelines.md) for details.
 
 ## Component Sizing (12-col grid, 140px rows)
 
