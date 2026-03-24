@@ -46,14 +46,7 @@ grid:
 
 ## Component Sizing
 
-Based on 12-column grid with `row_min_height="140px"`:
-
-| Component       | Columns   | Rows | Min height |
-| --------------- | --------- | ---- | ---------- |
-| KPI Card        | 2-3       | 1    | 140px      |
-| Small Chart     | 4         | 3    | 420px      |
-| Large Chart     | 6         | 4-5  | 560-700px  |
-| Table (AG Grid) | 12 (full) | 4-6  | 560-840px  |
+See the quick-reference sizing table in the SKILL.md. Below are expanded patterns:
 
 **KPI card rules:**
 

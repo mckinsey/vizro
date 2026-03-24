@@ -157,13 +157,11 @@ Before proceeding to Step 3:
 
 ### Chart Types, Colors & KPIs
 
-Load the **selecting-vizro-charts** skill for chart selection, color strategy, anti-patterns, and KPI card rules. Key points for design:
+Load the **selecting-vizro-charts** skill for chart selection, color strategy, anti-patterns, and KPI card rules. Key design decisions:
 
 - Match chart type to data question (bar for comparison, line for trends, pie only for 2–5 slices)
-- Never use: 3D charts, pie with 6+ slices, dual Y-axis, bar charts not starting at zero
 - Let Vizro handle colors by default; specify only for semantic meaning or brand
 - Use built-in `kpi_card` / `kpi_card_reference`; never rebuild as custom charts
-- Titles go in `vm.Graph(title=...)`, not in Plotly code
 
 ### REQUIRED OUTPUT: spec/3_visual_design.yaml
 

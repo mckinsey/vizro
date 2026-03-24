@@ -120,11 +120,10 @@ Key points:
 
 ## KPI Cards
 
-- Use built-in `kpi_card` for simple metrics, `kpi_card_reference` for comparisons
-- Use `reverse_color=True` when lower is better (costs, errors)
-- NEVER rebuild KPI cards as custom charts — use the built-in figures
-- Only exception: when dynamically showing text as a KPI card (strictly not possible with built-in)
+For when to use `kpi_card` vs `kpi_card_reference`, anti-patterns, and exceptions, see the **selecting-vizro-charts** skill. YAML-specific points:
+
 - Titles go inside `_target_: kpi_card` arguments, NOT on the component (`type: figure` has no `title` field)
+- Use `reverse_color=True` when lower is better (costs, errors)
 
 ### Built-in (no custom file needed)
 
