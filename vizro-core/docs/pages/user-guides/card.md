@@ -61,7 +61,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
 ## Customize card text
 
-The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as its underlying text component. For more details on customizing the [Markdown text](https://markdown-guide.readthedocs.io/), refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). Based on examples from Dash, the [`Card`][vizro.models.Card] model supports the following:
+The [`Card`][vizro.models.Card] uses the [`vdc.Markdown` component](https://github.com/mckinsey/vizro/tree/main/vizro-dash-components) as its underlying text component. `vdc.Markdown` is a clone of `dcc.Markdown` that additionally uses [`dmc.CodeHighlight`](https://www.dash-mantine-components.com/components/code-highlight) and [`dmc.InlineCodeHighlight`](https://www.dash-mantine-components.com/components/code-highlight#inline-code) for rendering code blocks and inline code. For more details on customizing the [Markdown text](https://markdown-guide.readthedocs.io/), refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). Based on examples from Dash, the [`Card`][vizro.models.Card] model supports the following:
 
 - Headers
 - Emphasis
@@ -404,7 +404,7 @@ Use the following URL hashes in your image path to apply Vizro's default styling
 
 To float an image for example to the right of the text, use the `src` attribute as a CSS selector. Follow these steps:
 
-1. Add a hash (#) to the image URL, e.g., `![](assets/images/continents/europe.svg#my-image)`
+1. Add a hash (#) to the image URL, for example, `![](assets/images/continents/europe.svg#my-image)`
 1. Target that hash in your custom CSS file `img[src*="#my-image"] { float: right; }`
 
 !!! example "Card with floating image"

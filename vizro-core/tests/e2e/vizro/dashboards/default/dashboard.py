@@ -33,6 +33,7 @@ from pages.layout_pages import (
     layout_flex_with_wrap_param_and_ag_grid,
     layout_flex_without_params,
 )
+from pages.notifications_page import static_notifications_page
 from pages.parameters_multi_page import parameters_multi_page
 from pages.parameters_page import parameters_page
 from pages.set_control_cross_filter_page import (
@@ -48,6 +49,12 @@ from pages.set_control_drill_through import (
     drill_through_filter_graph_target_page,
     drill_through_parameter_graph_source_page,
     drill_through_parameter_graph_target_page,
+)
+from pages.set_control_multi_select_pages import (
+    button_card_trigger_set_control,
+    cross_filter_multi_select_page,
+    filtered_graph_aggrid_trigger_set_control,
+    self_filter_set_control_page,
 )
 from pages.switch_control_page import switch_control_page
 from pages.table_interactions_page import table_interactions_page
@@ -106,6 +113,11 @@ dashboard = vm.Dashboard(
         action_model_field_shortcut_page,
         action_ag_grid_underlying_id_shortcut_page,
         action_control_shortcut_page,
+        static_notifications_page,
+        cross_filter_multi_select_page,
+        button_card_trigger_set_control,
+        filtered_graph_aggrid_trigger_set_control,
+        self_filter_set_control_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -166,6 +178,11 @@ dashboard = vm.Dashboard(
                 cnst.ACTION_MODEL_FIELD_SHORTCUT_PAGE,
                 cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
                 cnst.ACTION_CONTROL_SHORTCUT_PAGE,
+                cnst.STATIC_NOTIFICATIONS_PAGE,
+                cnst.SET_CONTROL_MULTI_SELECT_PAGE,
+                cnst.SET_CONTROL_BUTTON_CARD_PAGE,
+                cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE,
+                cnst.SELF_FILTER_SET_CONTROL_PAGE,
             ],
         }
     ),

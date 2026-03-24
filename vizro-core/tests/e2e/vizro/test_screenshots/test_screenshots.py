@@ -1,4 +1,3 @@
-import os
 import time
 
 import pytest
@@ -8,15 +7,21 @@ from e2e.vizro.checkers import check_graph_color, check_theme_color
 from e2e.vizro.navigation import (
     accordion_select,
     click_element_by_xpath_selenium,
+    hover_over_element_by_css_selector_selenium,
     hover_over_element_by_xpath_selenium,
     page_select,
+    select_dropdown_select_all,
 )
 from e2e.vizro.paths import (
-    dropdown_arrow_path,
+    button_id_path,
+    dropdown_id_path,
     kpi_card_path,
     nav_card_link_path,
+    scatter_point_path,
     switch_path_using_filter_control_id,
+    table_ag_grid_cell_path_by_row,
     table_ag_grid_cell_value_path,
+    table_ag_grid_checkbox_path_by_row,
     theme_toggle_path,
 )
 from e2e.vizro.waiters import callbacks_finish_waiter, graph_load_waiter
@@ -60,7 +65,7 @@ def test_ag_grid_page(dash_br):
         page_name=cnst.TABLE_AG_GRID_PAGE,
     )
     # check if column 'country' is available
-    dash_br.wait_for_element(f"div[id='{cnst.TABLE_AG_GRID_ID}'] div:nth-of-type(1) div[col-id='country']")
+    dash_br.wait_for_element(table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_ID, row_index=0, col_id="country"))
 
 
 @image_assertion
@@ -120,6 +125,16 @@ def test_export_action_page(dash_br_driver):
 
 
 @pytest.mark.parametrize(
+    "dash_br_driver", [({"port": cnst.ONE_PAGE_PORT})], ids=["one_page"], indirect=["dash_br_driver"]
+)
+@image_assertion
+def test_export_action_page_dark_theme(dash_br_driver):
+    graph_load_waiter(dash_br_driver)
+    # Change to dark theme, then take the screenshot
+    dash_br_driver.multiple_click(theme_toggle_path(), 1, delay=1)
+
+
+@pytest.mark.parametrize(
     "dash_br_driver",
     [
         ({"port": cnst.NAVBAR_ACCORDIONS_PORT}),
@@ -154,14 +169,14 @@ def test_container_variants_light_theme(dash_br):
 
 @image_assertion
 def test_container_variants_dark_theme(dash_br):
-    style_background = cnst.STYLE_TRANSPARENT_FIREFOX if os.getenv("BROWSER") == "firefox" else cnst.STYLE_TRANSPARENT
+    style_background = cnst.STYLE_DARK
     accordion_select(dash_br, accordion_name=cnst.CONTAINER_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.CONTAINER_VARIANTS_PAGE,
     )
     dash_br.multiple_click(theme_toggle_path(), 1)
-    check_graph_color(dash_br, style_background=style_background, color=cnst.RGBA_TRANSPARENT)
+    check_graph_color(dash_br, style_background=style_background, color=cnst.RGBA_DARK)
     check_theme_color(dash_br, color=cnst.THEME_DARK)
 
 
@@ -217,7 +232,7 @@ def test_flex_layout_wrap_and_ag_grid(dash_br):
     page_select(dash_br, page_name=cnst.LAYOUT_FLEX_WRAP_AND_AG_GRID, graph_check=False)
 
     # check if column 'Total_bill' is available
-    dash_br.wait_for_element("div[class='ag-theme-quartz ag-theme-vizro'] div:nth-of-type(1) div[col-id='total_bill']")
+    dash_br.wait_for_element("div[class='ag-theme-vizro'] div:nth-of-type(1) div[col-id='total_bill']")
 
 
 @image_assertion
@@ -241,7 +256,7 @@ def test_controls_tooltip_and_icon_light_theme(dash_br):
 
     # hover over dropdown icon and wait for the tooltip appear
     hover_over_element_by_xpath_selenium(
-        dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.DROPDOWN_TOOLTIP_ICON}']"
+        dash_br.driver, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.DROPDOWN_TOOLTIP_ICON}']"
     )
     dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.DROPDOWN_TOOLTIP_TEXT)
 
@@ -278,7 +293,7 @@ def test_controls_tooltip_and_icon_dark_theme(dash_br):
 
     # hover over dropdown icon and wait for the tooltip appear
     hover_over_element_by_xpath_selenium(
-        dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.CHECKLIST_TOOLTIP_ICON}']"
+        dash_br.driver, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.CHECKLIST_TOOLTIP_ICON}']"
     )
     dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.CHECKLIST_TOOLTIP_TEXT)
 
@@ -295,18 +310,21 @@ def test_collapsible_containers_grid(dash_br):
     page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_GRID)
 
 
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 @image_assertion
 def test_collapsible_containers_grid_switched(dash_br):
     accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
     page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_GRID)
 
     # close one container and open another
-    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]')
-    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
+    click_element_by_xpath_selenium(
+        dash_br.driver, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]'
+    )
+    click_element_by_xpath_selenium(
+        dash_br.driver, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]'
+    )
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 1)
+    hover_over_element_by_css_selector_selenium(dash_br.driver, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
@@ -316,22 +334,24 @@ def test_collapsible_containers_flex(dash_br):
     page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_FLEX)
 
 
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 @image_assertion
 def test_collapsible_containers_flex_switched(dash_br):
     accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
     page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_FLEX)
 
     # close one container and open another
-    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]')
-    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
+    click_element_by_xpath_selenium(
+        dash_br.driver, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]'
+    )
+    click_element_by_xpath_selenium(
+        dash_br.driver, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]'
+    )
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 1)
+    hover_over_element_by_css_selector_selenium(dash_br.driver, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 @image_assertion
 def test_collapsible_subcontainers_flex(dash_br):
     """Test that after closing subcontainer the parent container is still open."""
@@ -342,7 +362,7 @@ def test_collapsible_subcontainers_flex(dash_br):
     dash_br.multiple_click("#flex_subcontainer_icon", 1)
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
-    dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 1)
+    hover_over_element_by_css_selector_selenium(dash_br.driver, theme_toggle_path())
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
@@ -377,14 +397,129 @@ def test_reset_controls_page(dash_br):
         page_name=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
     )
     # change dropdown controls on the page
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
-    dash_br.multiple_click(f"#{cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID}_select_all", 1)
+    # dropdown change from "2007" to "Select All"
+    select_dropdown_select_all(dash_br, dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID)
+    # close dropdown to avoid errors with checking other controls
+    dash_br.multiple_click(dropdown_id_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
 
     # click reset controls button
     dash_br.multiple_click("button[id$='reset-button']", 1, delay=0.1)
 
     # open dropdown menu to check on the screenshot if select_all is unchecked
-    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
+    dash_br.multiple_click(dropdown_id_path(dropdown_id=cnst.DROPDOWN_AG_GRID_INTERACTIONS_ID), 1)
+
+
+@image_assertion
+def test_notifications_page(dash_br):
+    """Testing static notifications page."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.STATIC_NOTIFICATIONS_PAGE,
+    )
+
+    # Trigger notifications with delays to allow each to fully render
+    dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.SUCCESS_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.SUCCESS_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.WARNING_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.WARNING_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.ERROR_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.ERROR_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.INFO_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.INFO_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-description"] a', "Filters page"
+    )
+
+
+@image_assertion
+def test_notifications_page_dark_theme(dash_br):
+    """Testing static notifications page with dark theme."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.STATIC_NOTIFICATIONS_PAGE,
+    )
+
+    # Switch theme to dark
+    dash_br.multiple_click(theme_toggle_path(), 1)
+
+    # Trigger notifications with delays to allow each to fully render
+    dash_br.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.SUCCESS_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.SUCCESS_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.WARNING_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.WARNING_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.ERROR_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.ERROR_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.INFO_NOTIFICATION_ID} div[class$="Notification-description"] p', cnst.INFO_NOTIFICATION_MESSAGE
+    )
+
+    dash_br.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1)
+    dash_br.wait_for_text_to_equal(
+        f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-description"] a', "Filters page"
+    )
+
+
+@pytest.mark.chrome_screenshots
+@image_assertion
+def test_set_control_multi_select_page(dash_br):
+    """Testing set control multi select interactions page."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
+    )
+
+    # click on the scatter point to check that the rest of the chart is dimmed
+    dash_br.click_at_coord_fractions(
+        scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21, trace_index=1), 0, 0
+    )
+
+    # click on the scatter point to check that the rest of the chart is not changed
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=21), 0, 0)
+
+    # click on the aggrid checkbox
+    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=2), 1)
+
+
+@image_assertion
+def test_aggrid_click_without_set_control(dash_br):
+    """Testing aggrid cell click without set_control action."""
+    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.TABLE_AG_GRID_PAGE,
+    )
+
+    # click on the aggrid cell
+    dash_br.multiple_click(table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_ID, row_index=2, col_id="continent"), 1)
+
+    # move mouse to different location to see what exactly was selected on aggrid
+    hover_over_element_by_css_selector_selenium(dash_br.driver, theme_toggle_path())
 
 
 @pytest.mark.mobile_screenshots
@@ -410,5 +545,27 @@ def test_filter_interactions_page(dash_br_driver):
 def test_filter_interactions_dark_theme_page(dash_br_driver):
     graph_load_waiter(dash_br_driver)
     dash_br_driver.multiple_click(theme_toggle_path(), 1)
-    check_graph_color(dash_br_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+    check_graph_color(dash_br_driver, style_background=cnst.STYLE_DARK, color=cnst.RGBA_DARK)
     check_theme_color(dash_br_driver, color=cnst.THEME_DARK)
+
+
+@pytest.mark.mobile_screenshots
+@pytest.mark.parametrize(
+    "dash_br_driver", [({"path": f"/{cnst.STATIC_NOTIFICATIONS_PAGE}"})], ids=["mobile"], indirect=["dash_br_driver"]
+)
+@image_assertion
+def test_notifications_page_mobile(dash_br_driver):
+    """Testing static notifications page on mobile."""
+    graph_load_waiter(dash_br_driver)
+
+    # Trigger multiple notifications
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.SUCCESS_NOTIFICATION_BUTTON), 1)
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.WARNING_NOTIFICATION_BUTTON), 1)
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.ERROR_NOTIFICATION_BUTTON), 1)
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.INFO_NOTIFICATION_BUTTON), 1)
+    dash_br_driver.multiple_click(button_id_path(btn_id=cnst.LINK_NOTIFICATION_BUTTON), 1)
+
+    # Check that the last notification is displayed
+    dash_br_driver.wait_for_text_to_equal(
+        f'#{cnst.LINK_NOTIFICATION_ID} div[class$="Notification-title"]', cnst.LINK_NOTIFICATION_TITLE
+    )

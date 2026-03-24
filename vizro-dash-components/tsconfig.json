@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "baseUrl": "src/ts",
+    "inlineSources": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "checkJs": false,
+    "moduleResolution": "node",
+    "target": "ES2018",
+    "module": "ESNext",
+    "skipLibCheck": true
+  },
+  "include": ["src/ts/**/*"],
+  "exclude": ["node_modules"]
+}

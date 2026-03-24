@@ -88,7 +88,7 @@ action_ag_grid_underlying_id_shortcut_page = vm.Page(
                 # Lambda action that takes `AgGrid.selectedRows` JSON and pastes it to the Card output.
                 vm.Action(
                     # Uses the parent `vm.AgGrid.id` instead of the actual `dag.AgGrid` ID created by `dash_ag_grid`.
-                    function=capture("action")(lambda x: str(x))(
+                    function=capture("action")(lambda x: str(x))(  # noqa: PLW0108
                         f"{cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_AG_GRID_ID}.selectedRows"
                     ),
                     outputs=cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_CARD_ID,

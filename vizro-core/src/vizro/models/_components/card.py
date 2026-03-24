@@ -1,7 +1,8 @@
 from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
-from dash import dcc, get_relative_path, html
+import vizro_dash_components as vdc
+from dash import get_relative_path, html
 from pydantic import BeforeValidator, Field, JsonValue, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -16,23 +17,6 @@ class Card(VizroBaseModel):
 
     Abstract: Usage documentation
         [How to use cards](../user-guides/card.md)
-
-    Args:
-        text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.
-        header (str): Markdown text positioned above the card text. Follows the CommonMark specification.
-            Ideal for adding supplementary information. Defaults to `""`.
-        footer (str): Markdown text positioned at the bottom of the `Card`. Follows the CommonMark specification.
-            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card
-            only. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon in the top-right corner of the Card.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `dbc.Card` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/card/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
 
     """
 
@@ -62,7 +46,7 @@ class Card(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon in the top-right corner of the Card.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     extra: SkipJsonSchema[
@@ -71,10 +55,10 @@ class Card(VizroBaseModel):
             Field(
                 default={},
                 description="""Extra keyword arguments that are passed to `dbc.Card` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/card/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.""",
+defaults chosen by the Vizro team. This may have unexpected behavior.
+Visit the [dbc documentation](https://www.dash-bootstrap-components.com/docs/components/card/)
+to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+underlying component may change in the future.""",
             ),
         ]
     ]
@@ -82,6 +66,7 @@ class Card(VizroBaseModel):
 
     @model_validator(mode="after")
     def validate_href_and_actions(self):
+        """Validate that `href` and `actions` are not defined together."""
         if self.href and self.actions:
             raise ValueError("Card cannot have both `href` and `actions` defined.")
 
@@ -135,7 +120,7 @@ class Card(VizroBaseModel):
 
     def _build_card_text(self):
         """Wrap text in NavLink if href is provided."""
-        text = dcc.Markdown(
+        text = vdc.Markdown(
             id=f"{self.id}-text", children=self.text, dangerously_allow_html=False, className="card-text"
         )
         if not self.href:
@@ -149,7 +134,7 @@ class Card(VizroBaseModel):
         if not self.header:
             return None
 
-        children = [dcc.Markdown(children=self.header, dangerously_allow_html=False)]
+        children = [vdc.Markdown(children=self.header, dangerously_allow_html=False)]
 
         # Add description to header if it exists
         if description is not None:
@@ -176,5 +161,5 @@ class Card(VizroBaseModel):
             return None
 
         return dbc.CardFooter(
-            id=f"{self.id}_footer", children=dcc.Markdown(children=self.footer, dangerously_allow_html=False)
+            id=f"{self.id}_footer", children=vdc.Markdown(children=self.footer, dangerously_allow_html=False)
         )

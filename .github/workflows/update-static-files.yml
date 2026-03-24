@@ -1,5 +1,9 @@
 name: Update static files
 
+permissions:
+  contents: write
+  pull-requests: write
+
 on:
   schedule:
     - cron: "0 0 * * 0" # Runs at midnight every Sunday

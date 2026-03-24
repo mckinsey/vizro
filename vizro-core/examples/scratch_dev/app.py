@@ -1,170 +1,160 @@
-import vizro.plotly.express as px
+"""Development playground exploring markdown variations using built-in Vizro models.
+
+This script demonstrates a variety of ways to render markdown content with
+components that internally rely on `vdc.Markdown` (the new built‑in
+markdown component).  The goal is to exercise code blocks, math formulas,
+links, headers and dynamic content without importing `vizro_dash_components`
+explicitly.  We show both static pages (with `vm.Text` and `vm.Card`) and
+custom figures which react to filters/parameters.
+"""
+
+import pandas as pd
+
 import vizro.models as vm
-import vizro.actions as va
 from vizro import Vizro
-from vizro.models.types import capture
-from time import sleep
 
-df = px.data.iris()
+# sample data with several kinds of markdown content
 
-page_1 = vm.Page(
-    title="Test dmc notification system",
-    layout=vm.Flex(),
+df = pd.DataFrame(
+    {
+        "topic": ["Python", "JavaScript", "SQL", "React"],
+        "description": [
+            "A versatile programming language",
+            "The language of the web",
+            "Database query language",
+            "A JavaScript library for building UIs",
+        ],
+        "code_example": [
+            '```python\ndef hello():\n    return "Hello, World!"\n```',
+            '```javascript\nconst hello = () => "Hello, World!";\n```',
+            "```sql\nSELECT * FROM users WHERE active = true;\n```",
+            "```jsx\nconst App = () => <h1>Hello, World!</h1>;\n```",
+        ],
+        "formula": [
+            r"$f(x) = x^2 + 2x + 1$",
+            r"$y = mx + b$",
+            r"$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$",
+            r"$E = mc^2$",
+        ],
+    }
+)
+
+# tests previously used custom figure functions with capture decorators.
+# since we only want to demonstrate vm.Text/vm.Card models we remove
+# all @capture definitions and instead create simple pages directly.
+
+# (helper data still available for manual consumption if desired)
+
+
+# -----------------------------------------------------------------------------
+# Pages built from the helper figures and static text/card examples
+# -----------------------------------------------------------------------------
+
+# create a page that showcases various markdown features using vm.Text
+page_static = vm.Page(
+    title="Markdown variations",
     components=[
-        vm.Button(
-            icon="check_circle",
-            text="Success Notification",
-            actions=[
-                va.show_notification(
-                    text="Operation completed successfully!",
-                    variant="success",
-                )
-            ],
+        vm.Text(
+            text="""# Header level 1
+
+This is a paragraph with **bold**, *italic*, and a [link](https://example.com).
+
+Here is some inline code: `print('hi')`.
+
+And a fenced code block:
+```python
+for i in range(3):
+    print(i)
+```
+""",
         ),
-        vm.Button(
-            icon="warning",
-            text="Warning Notification",
-            actions=[
-                va.show_notification(
-                    text="Please review this warning message.",
-                    variant="warning",
-                )
-            ],
+        vm.Text(
+            text="""## Math and lists
+
+To render math use `$E = mc^2$` inline or
+
+This example uses the block delimiter:
+$$
+\\frac{1}{(\\sqrt{\\phi \\sqrt{5}}-\\phi) e^{\\frac25 \\pi}} =
+1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}}
+{1+\\frac{e^{-8\\pi}} {1+\\ldots} } } }
+$$
+
+This example uses the inline delimiter:
+$E^2=m^2c^4+p^2c^2$
+
+
+- bullet
+- points
+""",
+            extra={"mathjax": True},
         ),
-        vm.Button(
-            text="Error Notification",
-            icon="error",
-            actions=[
-                va.show_notification(
-                    text="An error occurred during the operation.",
-                    variant="error",
-                )
-            ],
-        ),
-        vm.Button(
-            text="Info Notification",
-            icon="info",
-            actions=[
-                va.show_notification(
-                    text="Here's some useful information for you.",
-                    variant="info",
-                )
-            ],
-        ),
-        vm.Button(
-            text="Loading Notification",
-            icon="hourglass_empty",
-            actions=[
-                va.show_notification(
-                    text="Processing your request...",
-                    variant="progress",
-                )
-            ],
-        ),
-        vm.Button(
-            text="No Auto-Close",
-            icon="close",
-            actions=[
-                va.show_notification(
-                    text="This notification will stay until you close it manually.",
-                    title="Persistent",
-                    variant="info",
-                    auto_close=False,
-                )
-            ],
-        ),
-        vm.Button(
-            text="Custom Icon",
-            icon="celebration",
-            actions=[
-                va.show_notification(
-                    text="Check out this new feature!",
-                    title="New Feature",
-                    variant="success",
-                    icon="celebration",
-                )
-            ],
-        ),
-        vm.Button(
-            text="Markdown with Link",
-            icon="link",
-            actions=[
-                va.show_notification(
-                    text="Visit the [Vizro documentation](https://vizro.readthedocs.io/en/stable/) for more details!",
-                    title="",
-                    auto_close=False,
-                )
-            ],
-        ),
-        vm.Button(
-            text="1. Show Loading",
-            icon="hourglass_empty",
-            actions=[
-                va.show_notification(
-                    id="update-demo",
-                    text="Processing your request...",
-                    title="Processing",
-                    variant="progress",
-                )
-            ],
-        ),
-        vm.Button(
-            text="2. Update to Complete",
-            icon="done",
-            actions=[
-                va.update_notification(
-                    notification="update-demo",
-                    text="Your request has been processed successfully!",
-                    title="Complete",
-                    variant="success",
-                )
-            ],
-        ),
-        vm.Button(
-            text="Show Navigation Notification",
-            icon="arrow_forward",
-            actions=[
-                va.show_notification(
-                    text="Click [here](/page-two) to go to **Page 2** and explore more features!",
-                    title="Ready to explore?",
-                    variant="info",
-                    auto_close=False,
-                )
-            ],
+        vm.Card(
+            header="Card header",
+            text="""Cards can also contain markdown text with **formatting**.
+
+```bash
+$ echo hello
+```""",
+            footer="Footer text",
         ),
     ],
 )
 
-
-page_two = vm.Page(
-    id="page-two",
-    title="Page Two",
-    controls=[vm.Filter(column="species")],
+# a later page demonstrating layout flexibility and code snippets
+page_snippet = vm.Page(
+    title="Code snippet examples",
     components=[
-        vm.Graph(figure=px.histogram(df, x="sepal_length")),
-        vm.Button(
-            icon="file_download",
-            text="Export data notification",
-            actions=[
-                va.show_notification(
-                    id="export-notif",
-                    text="Export data starting...",
-                    title="",
-                    variant="progress",
-                ),
-                vm.Action(function=capture("action")(lambda: sleep(2.5))()),
-                va.export_data(),
-                va.update_notification(
-                    notification="export-notif",
-                    text="Export data completed successfully!",
-                    variant="success",
-                ),
-            ],
+        vm.Card(
+            text="""
+
+Block code snippet:
+```python
+print('hello world')
+```
+
+""",
+        ),
+        vm.Card(
+            text="""
+and inline code snippet: `print('hello world')`
+
+and
+```javascript
+console.log('hello world');
+const add = (a, b) => a + b;
+```
+""",
+        ),
+        vm.Text(
+            text="""
+
+Another snippet inside ``vm.Text``:
+```python
+# Kadane's Algorithm
+
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        curr, summ = nums[0], nums[0]
+        for n in nums[1:]:
+            curr = max(n, curr + n)
+            summ = max(summ, curr)
+        return summ
+```
+
+test test tests
+""",
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_two])
+# note: page_snippet already defined above, nothing else needed
+# assemble dashboard
+
+dashboard = vm.Dashboard(
+    title="QB",
+    pages=[page_static, page_snippet],
+)
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=True)

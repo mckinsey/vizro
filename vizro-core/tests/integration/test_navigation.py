@@ -37,7 +37,7 @@ accordion_cases = [
         lambda: vm.Navigation(nav_selector=vm.Accordion(pages=["page_1", "page_2"])),
     ),
     (
-        lambda: vm.Navigation(),
+        vm.Navigation,
         lambda: vm.Navigation(nav_selector=vm.Accordion(pages=["page_1", "page_2"])),
     ),
     (

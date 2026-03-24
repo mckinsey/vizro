@@ -130,7 +130,7 @@ The following examples show a possible version of a custom table. In this case t
         @capture("ag_grid")
         def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
             defaults = {
-                "className": "ag-theme-quartz-dark ag-theme-vizro",
+                "className": "ag-theme-vizro",
                 "defaultColDef": {
                     "resizable": True,
                     "sortable": True,

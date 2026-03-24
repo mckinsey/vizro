@@ -15,28 +15,37 @@ from vizro.managers import data_manager, model_manager
 def target_scatter_parameter_y(request, gapminder_2007, scatter_params):
     y = request.param
     scatter_params["y"] = y
-    return px.scatter(gapminder_2007, **scatter_params)
+    fig = px.scatter(gapminder_2007, **scatter_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
 def target_scatter_matrix_parameter_dimensions(request, iris, scatter_matrix_params):
     dimensions = request.param
     scatter_matrix_params["dimensions"] = dimensions
-    return px.scatter_matrix(iris, **scatter_matrix_params)
+
+    fig = px.scatter_matrix(iris, **scatter_matrix_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
 def target_scatter_parameter_hover_data(request, gapminder_2007, scatter_params):
     hover_data = request.param
     scatter_params["hover_data"] = hover_data
-    return px.scatter(gapminder_2007, **scatter_params)
+    fig = px.scatter(gapminder_2007, **scatter_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
 def target_box_parameter_y(request, gapminder_2007, box_params):
     y = request.param
     box_params["y"] = y
-    return px.box(gapminder_2007, **box_params)
+    fig = px.box(gapminder_2007, **box_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
@@ -44,7 +53,9 @@ def target_scatter_parameter_y_and_x(request, gapminder_2007, scatter_params):
     y, x = request.param
     scatter_params["y"] = y
     scatter_params["x"] = x
-    return px.scatter(gapminder_2007, **scatter_params)
+    fig = px.scatter(gapminder_2007, **scatter_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
@@ -52,13 +63,17 @@ def target_scatter_parameter_data_frame_first_n_last_n(
     request, gapminder_dynamic_first_n_last_n_function, scatter_params
 ):
     first_n_last_n_args = request.param
-    return px.scatter(gapminder_dynamic_first_n_last_n_function(**first_n_last_n_args), **scatter_params)
+    fig = px.scatter(gapminder_dynamic_first_n_last_n_function(**first_n_last_n_args), **scatter_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
 def target_box_parameter_data_frame_first_n_last_n(request, gapminder_dynamic_first_n_last_n_function, box_params):
     first_n_last_n_args = request.param
-    return px.box(gapminder_dynamic_first_n_last_n_function(**first_n_last_n_args), **box_params)
+    fig = px.box(gapminder_dynamic_first_n_last_n_function(**first_n_last_n_args), **box_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
@@ -66,7 +81,9 @@ def target_box_parameter_y_and_x(request, gapminder_2007, box_params):
     y, x = request.param
     box_params["y"] = y
     box_params["x"] = x
-    return px.box(gapminder_2007, **box_params)
+    fig = px.box(gapminder_2007, **box_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture

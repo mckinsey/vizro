@@ -5,6 +5,7 @@ import re
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import pytest
+import vizro_dash_components as vdc
 from asserts import assert_component_equal
 from dash import dcc, html
 from dash.exceptions import MissingCallbackContextException
@@ -251,6 +252,9 @@ class TestDunderMethodsGraph:
         # Mock out set_props so we don't need to supply mock callback context for this test.
         mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
         graph = vm.Graph(figure=standard_px_chart).__call__()
+
+        standard_px_chart.update_layout(modebar_remove=["select2d", "lasso2d"])
+
         assert graph == standard_px_chart
 
     def test_graph_trigger(self, standard_px_chart, identity_action_function):
@@ -312,7 +316,6 @@ class TestBuildGraph:
                         ),
                         config={
                             "frameMargins": 0,
-                            "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
                     None,
@@ -339,7 +342,7 @@ class TestBuildGraph:
                 [
                     dcc.Store(id="graph_id_action_trigger"),
                     html.H3([html.Span("Title"), None], className="figure-title"),
-                    dcc.Markdown("""#### Subtitle""", className="figure-header"),
+                    vdc.Markdown("""#### Subtitle""", className="figure-header"),
                     dcc.Graph(
                         id="graph_id",
                         figure=go.Figure(
@@ -352,10 +355,9 @@ class TestBuildGraph:
                         ),
                         config={
                             "frameMargins": 0,
-                            "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
-                    dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
+                    vdc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
                 ],
                 className="figure-container",
             ),
@@ -376,7 +378,7 @@ class TestBuildGraph:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Tooltip test", className="card-text"),
+                children=vdc.Markdown("Tooltip test", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,
@@ -401,7 +403,6 @@ class TestBuildGraph:
                         ),
                         config={
                             "frameMargins": 0,
-                            "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
                     None,
@@ -440,7 +441,6 @@ class TestBuildGraph:
                         ),
                         config={
                             "frameMargins": 0,
-                            "modeBarButtonsToRemove": ["toImage"],
                             "displayModeBar": False,
                         },
                         className="test",

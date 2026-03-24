@@ -32,7 +32,7 @@ function encodeUrlParams(decodedMap, applyOnKeys) {
         .replace(/\+/g, "-")
         .replace(/\//g, "_")
         .replace(/=+$/, "");
-      encodedMap.set(key, "b64_" + encoded);
+      encodedMap.set(key, `b64_${encoded}`);
     }
   }
   return encodedMap;
@@ -73,7 +73,7 @@ function decodeUrlParams(encodedMap, applyOnKeys) {
         const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
         const json = new TextDecoder().decode(bytes);
         decodedMap.set(key, JSON.parse(json));
-      } catch (e) {
+      } catch {
         console.warn("Failed to decode URL parameter:", key, val);
       }
     }
@@ -150,9 +150,9 @@ Received input: ${JSON.stringify(values_ids)}`,
   }
 
   // Encode controlMap to URL parameters.
-  encodeUrlParams(controlMap, controlIds).forEach((value, id) =>
-    urlParams.set(id, value),
-  );
+  for (const [id, value] of encodeUrlParams(controlMap, controlIds)) {
+    urlParams.set(id, value);
+  }
 
   // Directly `replace` the URL instead of using a dcc.Location as a callback Output. Do it because the dcc.Location
   // uses history.pushState under the hood which causes destroying the history. With replaceState, we partially

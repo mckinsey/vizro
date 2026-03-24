@@ -4,6 +4,7 @@ import re
 
 import dash_bootstrap_components as dbc
 import pytest
+import vizro_dash_components as vdc
 from asserts import assert_component_equal
 from dash import dcc, html
 from pydantic import ValidationError
@@ -274,12 +275,12 @@ class TestBuildTable:
             html.Div(
                 children=[
                     html.H3([html.Span("Title"), None], className="figure-title"),
-                    dcc.Markdown("""#### Subtitle""", className="figure-header"),
+                    vdc.Markdown("""#### Subtitle""", className="figure-header"),
                     html.Div(
                         children=[html.Div()],
                         className="table-container",
                     ),
-                    dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
+                    vdc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
                 ],
                 className="figure-container",
             ),
@@ -302,7 +303,7 @@ class TestBuildTable:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Tooltip test", className="card-text"),
+                children=vdc.Markdown("Tooltip test", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,
