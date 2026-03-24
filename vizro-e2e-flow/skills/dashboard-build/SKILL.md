@@ -3,15 +3,19 @@ name: dashboard-build
 description: Use this skill when the user wants to build, implement, or test a Vizro dashboard. This is Phase 2 — covering the actual build and testing. For Phase 1 (requirements, layout, visualization design), use the dashboard-design skill first. Activate even when the user says "just build it" or asks for a working app from data.
 ---
 
-## CRITICAL Guidelines for Dashboard Building
+## Prerequisites
 
-- Ideally, do NOT skip Phase 1 (dashboard-design skill) as that ensures a much smoother build process. If the user just wants to build it, explain the value of a design phase first. Check if there is any existing `/spec` directory from Phase 1. If yes, use that to guide your build.
+Requires Phase 1 spec files from the **dashboard-design** skill: `spec/1_information_architecture.yaml`, `spec/2_interaction_ux.yaml`, and `spec/3_visual_design.yaml`. If these do not exist, ask the user whether to run Phase 1 first or proceed without specs.
+
+## Guidelines
+
 - Use your native tools to understand the data well, especially if you build custom charts or when you use specific selectors.
 - If the user asks for an example, simply copy the [example app](./references/example_app.py) and run it. Do not include your own data or change the example.
 - When executing any script mentioned below for the first time, it may take a while to install dependencies. Plan accordingly before taking any rash actions.
 - When iterating on the dashboard after completing all steps, do not forget key points from below, especially regarding spec compliance and updating and terminal handling: always keep all specs up to date, and always check if terminal output is clean after each iteration.
 - Execute all scripts from this skill, and the `app.py` you will create, with `uv run <script_name>.py` or `uv run app.py` - this will ensure you use the correct dependencies and versions.
 - **ABSOLUTELY NEVER** type ANY commands (including `sleep`, `echo`, or anything else) in the terminal where the dashboard app is running, even if you started it with `isBackground=true`. This WILL kill the dashboard process. The dashboard startup takes time - be patient and let it run undisturbed.
+- Step 2 (Testing) requires a Playwright MCP server. If unavailable, skip testing and inform the user.
 
 ## Spec Files: Documenting Decisions
 

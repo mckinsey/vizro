@@ -5,7 +5,7 @@ description: Use this skill first when the user wants to design or plan a dashbo
 
 # Designing Vizro Dashboards
 
-Structured **requirements → layout → visualization** before any implementation (hand off to **dashboard-build** after Step 3).
+Structured **requirements → layout → visualization** workflow.
 
 ## Workflow execution
 
@@ -16,7 +16,6 @@ Dashboard Development Progress:
 - [ ] Step 1: Understand Requirements (define end user, dashboard goals, document decisions)
 - [ ] Step 2: Design Layout & Interactions (wireframes, filter placement)
 - [ ] Step 3: Select Visualizations (chart types, colors, KPIs)
-- [ ] Next: Use dashboard-build skill for implementation and testing
 ```
 
 **Decision prompts**: For requirements and design choices, ask focused questions and offer **2–5 numbered options** per turn so the user can pick quickly. Use your client’s built-in choice / question UI when it exists; otherwise use the same pattern in plain messages.
