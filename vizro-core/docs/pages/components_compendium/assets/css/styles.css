@@ -414,14 +414,6 @@ a {
   padding: 0 12px;
 }
 
-.code-block {
-  background-color: #2d2d2d;
-  border-radius: var(--border-radius);
-  max-width: 640px;
-  overflow: hidden;
-  position: relative;
-}
-
 .code-block__copy-button {
   align-items: center;
   background-color: rgba(255, 255, 255, 0.1);
