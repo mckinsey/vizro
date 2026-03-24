@@ -7,6 +7,8 @@ description: Use this skill when writing or debugging Vizro YAML dashboard confi
 
 ## Critical Mistakes to Avoid
 
+Each mistake below is expanded with code examples and fixes in [yaml-reference.md](references/yaml-reference.md).
+
 1. **`@capture("graph")` receives a DataFrame** — use `data_frame` directly; never re-lookup via `data_manager[data_frame]` (causes blank charts).
 1. **`data_manager` is not subscriptable** — pre-process on raw DataFrame, then register.
 1. **Custom `_target_` needs module prefix** — `_target_: custom_charts.my_chart`, not `_target_: my_chart`.
