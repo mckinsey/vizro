@@ -16,7 +16,7 @@ You may find these instructions are outdated or that the installation process is
 
 At the time of writing, this plugin is compatible with products which support [Claude Agent Skills](https://agentskills.io/). As is often the case with generative AI products, we expect this to work with more products in the future.
 
-- You'll need a [Pro, Max, Teams, or Enterprise Claude subscription](https://claude.com/pricing) or a [Claude Console](https://console.anthropic.com/) account or a [paid Cursor plan](https://cursor.com/pricing).
+At the time of writing, to use the skill long-term, you'll need a [Pro, Max, Teams, or Enterprise Claude subscription](https://claude.com/pricing), a [Claude Console](https://console.anthropic.com/) account or a [paid Cursor plan](https://cursor.com/pricing). You could explore it using a time-limited Cursor trial account or with [OpenCode](https://opencode.ai/), without a paid account.
 
 ## Prerequisites
 
