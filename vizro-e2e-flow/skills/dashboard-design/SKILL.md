@@ -51,7 +51,7 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 
 ### Design Principles
 
-- **Limit KPIs**: 5 primary metrics per page maximum
+- **Limit KPIs**: 5–9 primary metrics per page (7 ± 2 rule)
 - **Clear hierarchy**: Overview → Detail → Granular (max 3 levels)
 - **Persona-based**: Different users may need different views
 - **Decision-focused**: Every metric should inform a decision
