@@ -2,17 +2,17 @@
 #    uv pip compile requirements.in -o requirements.txt
 annotated-types==0.7.0
     # via pydantic
-autoflake==2.3.3
+autoflake==2.3.1
     # via vizro
-black==26.3.1
+black==25.12.0
     # via vizro
 blinker==1.9.0
     # via flask
 cachelib==0.13.0
     # via flask-caching
-certifi==2026.2.25
+certifi==2025.11.12
     # via requests
-charset-normalizer==3.4.6
+charset-normalizer==3.4.4
     # via requests
 click==8.3.1
     # via
@@ -29,23 +29,23 @@ dash-ag-grid==33.3.3
     # via vizro
 dash-bootstrap-components==2.0.4
     # via vizro
-dash-mantine-components==2.6.0
+dash-mantine-components==2.4.0
     # via
     #   vizro
     #   vizro-dash-components
 et-xmlfile==2.0.0
     # via openpyxl
-flask==3.1.3
+flask==3.1.2
     # via
     #   dash
     #   flask-caching
 flask-caching==2.3.1
     # via vizro
-gunicorn==25.1.0
+gunicorn==23.0.0
     # via -r requirements.in
 idna==3.11
     # via requests
-importlib-metadata==9.0.0
+importlib-metadata==8.7.0
     # via dash
 itsdangerous==2.2.0
     # via flask
@@ -58,29 +58,29 @@ markupsafe==3.0.3
     #   werkzeug
 mypy-extensions==1.1.0
     # via black
-narwhals==2.18.0
+narwhals==2.13.0
     # via plotly
 nest-asyncio==1.6.0
     # via dash
-numpy==2.4.3
+numpy==2.3.5
     # via
     #   -r requirements.in
     #   pandas
 openpyxl==3.1.5
     # via -r requirements.in
-packaging==26.0
+packaging==25.0
     # via
     #   black
     #   gunicorn
     #   plotly
     #   vizro
-pandas==3.0.1
+pandas==2.3.3
     # via vizro
-pathspec==1.0.4
+pathspec==0.12.1
     # via black
-platformdirs==4.9.4
+platformdirs==4.5.1
     # via black
-plotly==6.6.0
+plotly==6.5.0
     # via
     #   dash
     #   vizro
@@ -90,17 +90,19 @@ pydantic-core==2.41.5
     # via pydantic
 pyflakes==3.4.0
     # via autoflake
-python-box==7.4.1
+python-box==7.3.2
     # via vizro
 python-dateutil==2.9.0.post0
     # via pandas
-pytokens==0.4.1
+pytokens==0.3.0
     # via black
+pytz==2025.2
+    # via pandas
 requests==2.32.5
     # via dash
 retrying==1.4.2
     # via dash
-setuptools==82.0.1
+setuptools==80.9.0
     # via dash
 six==1.17.0
     # via python-dateutil
@@ -112,17 +114,19 @@ typing-extensions==4.15.0
     #   typing-inspection
 typing-inspection==0.4.2
     # via pydantic
-urllib3==2.6.3
+tzdata==2025.3
+    # via pandas
+urllib3==2.6.2
     # via requests
 vizro==0.1.53
     # via -r requirements.in
 vizro-dash-components==0.1.0
     # via vizro
-werkzeug==3.1.6
+werkzeug==3.1.4
     # via
     #   dash
     #   flask
-wrapt==2.1.2
+wrapt==2.0.1
     # via vizro
 zipp==3.23.0
     # via importlib-metadata
