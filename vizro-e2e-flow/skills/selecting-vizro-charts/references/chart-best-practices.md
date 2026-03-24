@@ -2,7 +2,6 @@
 
 Consolidated reference for chart selection, Plotly implementation, color strategy, and custom charts.
 
-
 ## Chart Type Selection (extended)
 
 - **Comparing values** → Bar (horizontal preferred), grouped bar
