@@ -1104,9 +1104,6 @@ def waterfall(data_frame, measure, x, y, text, title=None):
             x=data_frame[x],
             y=data_frame[y],
             text=data_frame[text],
-            decreasing={"marker": {"color": "#EA5748"}},
-            increasing={"marker": {"color": "#00B5A9"}},
-            totals={"marker": {"color": "#097DFE"}},
         )
     )
     fig.update_layout(title=title)
