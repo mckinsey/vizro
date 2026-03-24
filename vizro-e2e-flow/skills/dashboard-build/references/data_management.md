@@ -5,6 +5,7 @@ Deep guidance for handling data in Vizro dashboards.
 ## Contents
 
 **Quick Start** (most dashboards need only this):
+
 - Data Source Types (static vs dynamic)
 - Choosing Your Approach (decision tree)
 - Static Data (simple loading patterns)
@@ -13,6 +14,7 @@ Deep guidance for handling data in Vizro dashboards.
 - Comparison Summary
 
 **Advanced Patterns** (databases, APIs, parametrized loading):
+
 - Parametrized Data Loading
 - Common Data Patterns (databases, APIs, multi-source)
 - Dynamic Filters (data-driven filter options)
