@@ -109,19 +109,6 @@ Filter needed across multiple visualizations?
 - **Page-level**: Left collapsible sidebar
 - **Container-level**: Above the container they control
 
-### Filter selector types
-
-**Default**: Just provide the column name to `Filter` or `Parameter` - Vizro auto-selects the selector based on the data type. Only override when the auto-selected selector doesn't fit:
-
-| Data type     | Selector        | Example / when to use    |
-| ------------- | --------------- | ------------------------ |
-| 2-4 options   | **RadioItems**  | Region (N/S/E/W)         |
-| 5+ options    | Dropdown        | Category (many)          |
-| Numeric range | **RangeSlider** | Price ($0-$1000)         |
-| Single number | **Slider**      | Year (2020-2025)         |
-| Date          | **DatePicker**  | Order date               |
-| Multi-select  | **Checklist**   | Status (Active, Pending) |
-
 ### Filter targets
 
 Page-level filters without `targets:` apply to **all** components on the page. This works when every component shares the same dataset. When components use different datasets, omitting `targets:` causes "column not found" for any dataset missing that column. Specify `targets:` only when components use different datasets, listing the ones whose data contains the filter column.
