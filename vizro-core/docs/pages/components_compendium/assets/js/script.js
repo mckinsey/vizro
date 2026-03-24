@@ -476,4 +476,4 @@ function toggleNavSubcategory(header) {
   header.classList.toggle("collapsed");
 }
 
-document.addEventListener("DOMContentLoaded", function () {});
+document.addEventListener("DOMContentLoaded", () => {});
