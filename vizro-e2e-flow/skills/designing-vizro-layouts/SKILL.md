@@ -21,7 +21,14 @@ description: Use this skill when designing or building Vizro dashboard layouts �
 | Large Chart | 6       | 4–5  | 560–700px |
 | Table       | 12      | 4–6  | 560–840px |
 
-**KPI cards**: Wrap in a `Container` with `Flex(direction="row", gap="12px", wrap=True)` layout, then place the container as one full-width row in the page `Grid`. To make cards stretch equally across the available width, add `#container_id .flex-item { flex: 1; }` in `assets/custom.css`. Fallback: place directly in grid at 2–3 cols each with equal width and `-1` for empty cells. Charts need **at least 2–3 rows** to avoid looking squeezed.
+**KPI cards**: Wrap in a `Container` with `Flex(direction="row", gap="12px", wrap=True)` layout, then place the container as one full-width row in the page `Grid`. Equal-width stretch:
+
+```css
+/* assets/custom.css */
+#container_id .flex-item { flex: 1; }
+```
+
+Fallback: place directly in grid at 2–3 cols each with equal width and `-1` for empty cells. Charts need **at least 2–3 rows** to avoid looking squeezed.
 
 ## Filter Placement
 

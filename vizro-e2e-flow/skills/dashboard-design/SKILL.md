@@ -209,8 +209,3 @@ Before proceeding to implementation (dashboard-build skill):
 | **selecting-vizro-charts** skill                                      | Step 3: Chart types, anti-patterns                 |
 | [common_mistakes.md](references/common_mistakes.md)                   | All steps: Anti-patterns to avoid                  |
 
----
-
-## Quick Reference: Vizro Components
-
-**Available components**: `Dashboard`, `Page`, `Container`, `Tabs`, `Graph`, `Figure`, `AgGrid`, `Card`, `Filter`, `Parameter`, `Selector`, `Button`

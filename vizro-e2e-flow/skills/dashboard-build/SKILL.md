@@ -75,7 +75,7 @@ Before proceeding to Step 2, verify against spec files:
 
 ## Step 2: Testing (optional)
 
-This requires the Playwright MCP server to be running. If not available, inform the user and skip this step. Look for `mcp__*playwright__*` tools.
+This requires a Playwright MCP server. If not available, inform the user and skip this step. Look for Playwright-related tools in your available MCP tools (naming varies by client).
 
 When conducting the below tests, feel free to go back to Step 1 to fix any issues you find, then come back here.
 
@@ -85,11 +85,7 @@ When conducting the below tests, feel free to go back to Step 1 to fix any issue
 1. Click through all pages
 1. Check console for errors
 
-```
-Use: playwright:browser_navigate(url="http://localhost:8050")
-Use: playwright:browser_click(element="Page Name", ref="...")
-Use: playwright:browser_console_messages()
-```
+Use your Playwright MCP tools to navigate to `http://localhost:8050`, click through each page, and check the browser console for errors.
 
 ### Advanced Testing flow
 
@@ -121,17 +117,17 @@ testing:
     no_errors: true/false
     errors_found: []
 
-screenshot_tests:
+  screenshot_tests:
     performed: true/false
     pages_tested: []
     discrepancies:
-        - page: [Page name]
-            issue: [Description of visual issue]
-            fixed: true/false
-            notes: [Fix details or reason not fixed]
+      - page: [Page name]
+        issue: [Description of visual issue]
+        fixed: true/false
+        notes: [Fix details or reason not fixed]
 
-requirements_met: true/false
-dashboard_ready: true/false
+  requirements_met: true/false
+  dashboard_ready: true/false
 ```
 
 ### Done When

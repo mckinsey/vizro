@@ -41,6 +41,13 @@ Each mistake below is expanded with code examples and fixes in [yaml-reference.m
     value_format: "${value:,.0f}"
   type: figure
 
+# AG Grid table
+- figure:
+    _target_: dash_ag_grid
+    data_frame: sales_data
+  type: ag_grid
+  title: Sales Data
+
 # Filter with targets
 controls:
   - column: region
@@ -63,4 +70,13 @@ from vizro.themes import palettes, colors
 
 ## Deep Dive
 
-Load [yaml-reference.md](references/yaml-reference.md) when you need: end-to-end data flow (app.py + YAML + custom files), data_manager registration patterns, custom chart/figure/table code with `@capture`, AG Grid examples (heatmap, inline bars), container/tabs/navigation YAML, or expanded explanations of the critical mistakes above.
+Load [yaml-reference.md](references/yaml-reference.md) when you need expanded guidance. Key sections to search for:
+
+| Need | Search for |
+| --- | --- |
+| App structure | `## End-to-End Data Flow` |
+| Data registration | `## Data Registration` |
+| Custom charts | `## Custom Charts` |
+| AG Grid (heatmap, inline bars) | `## AG Grid Tables` |
+| Containers / Tabs | `## Containers` or `## Tabs` |
+| Expanded mistake fixes | `## Critical Mistakes` |
