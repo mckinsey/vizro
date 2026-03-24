@@ -72,11 +72,11 @@ from vizro.themes import palettes, colors
 
 Load [yaml-reference.md](references/yaml-reference.md) when you need expanded guidance. Key sections to search for:
 
-| Need | Search for |
-| --- | --- |
-| App structure | `## End-to-End Data Flow` |
-| Data registration | `## Data Registration` |
-| Custom charts | `## Custom Charts` |
-| AG Grid (heatmap, inline bars) | `## AG Grid Tables` |
-| Containers / Tabs | `## Containers` or `## Tabs` |
-| Expanded mistake fixes | `## Critical Mistakes` |
+| Need                           | Search for                   |
+| ------------------------------ | ---------------------------- |
+| App structure                  | `## End-to-End Data Flow`    |
+| Data registration              | `## Data Registration`       |
+| Custom charts                  | `## Custom Charts`           |
+| AG Grid (heatmap, inline bars) | `## AG Grid Tables`          |
+| Containers / Tabs              | `## Containers` or `## Tabs` |
+| Expanded mistake fixes         | `## Critical Mistakes`       |

@@ -25,7 +25,9 @@ description: Use this skill when designing or building Vizro dashboard layouts �
 
 ```css
 /* assets/custom.css */
-#container_id .flex-item { flex: 1; }
+#container_id .flex-item {
+    flex: 1;
+}
 ```
 
 Fallback: place directly in grid at 2–3 cols each with equal width and `-1` for empty cells. Charts need **at least 2–3 rows** to avoid looking squeezed.

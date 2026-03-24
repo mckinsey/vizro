@@ -208,4 +208,3 @@ Before proceeding to implementation (dashboard-build skill):
 | [wireframe_templates.md](references/wireframe_templates.md)           | Step 2: Wireframe templates and interaction labels |
 | **selecting-vizro-charts** skill                                      | Step 3: Chart types, anti-patterns                 |
 | [common_mistakes.md](references/common_mistakes.md)                   | All steps: Anti-patterns to avoid                  |
-
