@@ -48,7 +48,7 @@ nav = [
     {"Visual formatting" = [
       {"Overview" = "pages/user-guides/visual-formatting.md"},
       {"Layout" = "pages/user-guides/layouts.md"},
-      {"Theme" = "pages/user-guides/themes.md"},
+      {"Themes and colors" = "pages/user-guides/themes.md"},
       {"Assets" = "pages/user-guides/assets.md"},
       {"Custom CSS" = "pages/user-guides/custom-css.md"}
     ]},
@@ -69,6 +69,7 @@ nav = [
     {"Vizro" = "pages/API-reference/vizro.md"},
     {"Models" = "pages/API-reference/models.md"},
     {"Actions" = "pages/API-reference/actions.md"},
+    {"Themes" = "pages/API-reference/themes.md"},
     {"Table functions" = "pages/API-reference/table-callables.md"},
     {"Figure functions" = "pages/API-reference/figure-callables.md"},
     {"Kedro integration" = "pages/API-reference/kedro-integration.md"},
@@ -90,14 +91,17 @@ nav = [
   ]},
   {"Vizro-MCP" = [
     {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"}
+  ]},
+  {"Vizro-AI" = [
+    {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"}
   ]}
 ]
 
 repo_url = "https://github.com/mckinsey/vizro"
 repo_name = "mckinsey/vizro"
 
-extra_css = ["/stylesheets/extra.css"]
-extra_javascript = ["/javascripts/extra.js"]
+extra_css = ["stylesheets/extra.css"]
+extra_javascript = ["javascripts/extra.js"]
 
 # -------------------------
 # theme
@@ -108,7 +112,6 @@ custom_dir = "docs/overrides"
 variant = "classic"
 favicon = "assets/images/favicon.png"
 features = [
-  "header.autohide",
   "navigation.path",
   "navigation.expand",
   "navigation.instant",
@@ -173,7 +176,7 @@ format = "pymdownx.superfences.fence_code_format"
 name = "python"
 class = "highlight"
 validator = "mkdocs_pycafe.validator"
-format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.49"}}
+format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.52"}}
 
 [project.markdown_extensions.pymdownx.tabbed]
 alternate_style = true
@@ -210,7 +213,7 @@ Configuration can be written in multiple formats including Pydantic models, JSON
 
 Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
 """
-base_url = "https://vizro.readthedocs.io/en/0.1.49/"
+base_url = "https://vizro.readthedocs.io/en/0.1.52/"
 full_output = "llms-full.txt"
 
 [project.plugins.llmstxt.sections]
@@ -247,7 +250,7 @@ TUTORIALS = [
 "HOW TO APPLY VISUAL FORMATTING" = [
   {"pages/user-guides/visual-formatting.md" = "Formatting overview"},
   {"pages/user-guides/layouts.md" = "Layouts"},
-  {"pages/user-guides/themes.md" = "Themes"},
+  {"pages/user-guides/themes.md" = "Themes and colors"},
   {"pages/user-guides/assets.md" = "Assets"},
   {"pages/user-guides/custom-css.md" = "Custom CSS"}
 ]
@@ -282,21 +285,34 @@ ACTIONS = [
 # mkdocstrings (supported since Zensical 0.0.11, autorefs since 0.0.22)
 # -------------------------
 [project.plugins.mkdocstrings]
+custom_templates = "docs/templates"
 
 [project.plugins.mkdocstrings.handlers.python]
 paths = ["src"]
+inventories = [
+  "https://docs.python.org/3/objects.inv",
+  "https://docs.pydantic.dev/latest/objects.inv"
+]
 
 [project.plugins.mkdocstrings.handlers.python.options]
 show_bases = false
 show_source = false
 docstring_style = "google"
 merge_init_into_class = true
-docstring_section_style = "list"
+docstring_section_style = "spacy"
 separate_signature = true
+unwrap_annotated = true
+show_symbol_type_heading = true
+show_symbol_type_toc = false
+signature_crossrefs = true
+show_signature_annotations = true
+filters = ["!^_"]
 show_root_heading = true
 extensions = [
-  {"docs/griffe_extensions.py" = {paths = ["vizro.figures.kpi_card", "vizro.figures.kpi_card_reference"]}},
-  {griffe_warnings_deprecated = {kind = "danger", title = "Deprecated"}}
+  {"docs/griffe_extensions.py:DynamicallyInspect" = {paths = ["vizro.figures.kpi_card", "vizro.figures.kpi_card_reference"]}},
+  {griffe_warnings_deprecated = {kind = "danger", title = "Deprecated"}},
+  {griffe_pydantic = {schema = true}},
+  "docs/griffe_extensions.py:PydanticDocsCleaner"
 ]
 
 [project.plugins.mkdocstrings.handlers.python.options.docstring_options]
