@@ -2,7 +2,22 @@
 
 Shared reference for Vizro YAML syntax, component patterns, data registration, and common mistakes.
 
-**When to read:** Implementing or converting dashboards—YAML syntax, component patterns, data registration, and critical mistakes to avoid.
+## Contents
+
+- End-to-End Data Flow (app.py + YAML + custom files)
+- Data Registration (`data_manager`)
+- Standard Charts (Graph)
+- Custom Charts (Graph) and when to use custom vs standard
+- KPI Cards (built-in and custom)
+- AG Grid Tables (standard, heatmap, inline bars)
+- Cards (Text/Markdown)
+- Filters
+- Parameters
+- Containers
+- Tabs
+- Navigation
+- Critical Mistakes to Avoid (expanded from SKILL.md)
+- Running the App
 
 ## End-to-End Data Flow
 

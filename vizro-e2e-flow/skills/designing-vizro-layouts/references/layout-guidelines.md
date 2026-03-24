@@ -1,8 +1,15 @@
 # Vizro Layout Guidelines
 
-Single reference for grid layout, component sizing, filter placement, and container patterns.
+Single reference for grid layout, component sizing, filter placement, and container patterns. Sections marked "(new layouts only)" apply when designing from scratch; when converting existing dashboards, favor replicating the original layout and apply only the technical constraints.
 
-**When to read:** Design or implementation — grid layout, component sizing, filter placement, selector types. Sections marked "(new layouts only)" apply when designing from scratch; when converting existing dashboards, favor replicating the original layout and apply only the technical constraints.
+## Contents
+
+- Grid System (type, columns, row height, rectangularity)
+- Component Sizing (KPI cards, flexible widths, layout rules)
+- Filter Placement (page vs container, filter targets)
+- Container Patterns (when to use, variants)
+- Visual Hierarchy (new layouts only)
+- Vizro-specific constraints
 
 ## Grid System
 

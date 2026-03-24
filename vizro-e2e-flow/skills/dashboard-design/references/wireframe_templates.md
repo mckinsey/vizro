@@ -2,7 +2,14 @@
 
 Design-phase reference for creating dashboard wireframes. For grid system, component sizing, and filter placement rules, load the **designing-vizro-layouts** skill.
 
-**When to read:** Step 2 — when creating ASCII wireframes for user approval.
+## Contents
+
+- Wireframe labels (KPI, CHART, TABLE, CONTAINER, TABS, FILTER/PARAM)
+- Wireframing Guidelines
+- Interaction Annotations
+- Template 1: KPIs + Charts + Table
+- Template 2: Full-Width Time-series + Container
+- Template 3: Tabs for Multiple Views
 
 ## Wireframe labels
 

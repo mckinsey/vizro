@@ -2,7 +2,6 @@
 
 Consolidated reference for chart selection, Plotly implementation, color strategy, and custom charts.
 
-**When to read:** Choosing chart types, implementing Plotly conventions, applying color strategy, building custom charts or KPI cards.
 
 ## Chart Type Selection (extended)
 
