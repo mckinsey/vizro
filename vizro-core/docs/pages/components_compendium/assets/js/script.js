@@ -61,11 +61,6 @@
     return items[0].offsetWidth + gap;
   };
 
-  const getVisibleItems = () => {
-    const trackContainer = carousel.querySelector(".carousel__track-container");
-    return Math.floor(trackContainer.offsetWidth / getScrollAmount());
-  };
-
   const updateCarousel = (withoutTransition = false) => {
     if (withoutTransition) {
       track.style.transition = "none";
@@ -338,7 +333,9 @@
       cat.classList.add("expanded");
     });
 
-    items.forEach((item) => item.element.classList.remove("search-match"));
+    items.forEach((item) => {
+      item.element.classList.remove("search-match");
+    });
   }
 
   function searchItems(items, searchTerm) {
@@ -435,10 +432,10 @@
   searchClear.addEventListener("click", clearSearch);
 })();
 
-/* Navigation */
-function toggleNav() {
+/* Navigation — assigned to globalThis for inline handlers in index.html */
+globalThis.toggleNav = () => {
   document.getElementById("leftNav")?.classList.toggle("open");
-}
+};
 
 const sections = document.querySelectorAll("[id]");
 const navLinks = document.querySelectorAll(".nav-link");
@@ -468,12 +465,12 @@ navLinks.forEach((link) => {
   });
 });
 
-function toggleNavCategory(header) {
+globalThis.toggleNavCategory = (header) => {
   header.classList.toggle("collapsed");
-}
+};
 
-function toggleNavSubcategory(header) {
+globalThis.toggleNavSubcategory = (header) => {
   header.classList.toggle("collapsed");
-}
+};
 
 document.addEventListener("DOMContentLoaded", () => {});
