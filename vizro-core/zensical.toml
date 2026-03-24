@@ -1,11 +1,7 @@
 [project]
-site_name = "Vizro"
-site_url = "https://vizro.readthedocs.io/en/stable/"
-site_description = "Core Vizro documentation"
-site_dir = "site"
 docs_dir = "docs"
-use_directory_urls = true
-
+extra_css = ["stylesheets/extra.css"]
+extra_javascript = ["javascripts/extra.js"]
 # Make sure any new page added here is also added to the llmstxt plugin below
 nav = [
   {"Vizro" = "index.md"},
@@ -96,53 +92,30 @@ nav = [
     {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"}
   ]}
 ]
-
-repo_url = "https://github.com/mckinsey/vizro"
 repo_name = "mckinsey/vizro"
+repo_url = "https://github.com/mckinsey/vizro"
+site_description = "Core Vizro documentation"
+site_dir = "site"
+site_name = "Vizro"
+site_url = "https://vizro.readthedocs.io/en/stable/"
+use_directory_urls = true
 
-extra_css = ["stylesheets/extra.css"]
-extra_javascript = ["javascripts/extra.js"]
+[project.markdown_extensions.admonition]
 
-# -------------------------
-# theme
-# -------------------------
-[project.theme]
-language = "en"
-custom_dir = "docs/overrides"
-variant = "classic"
-favicon = "assets/images/favicon.png"
-features = [
-  "navigation.path",
-  "navigation.expand",
-  "navigation.instant",
-  "navigation.indexes",
-  "navigation.tabs",
-  "navigation.tabs.sticky",
-  "navigation.tracking",
-  "search.suggest",
-  "search.highlight",
-  "content.tabs.link",
-  "content.code.annotation",
-  "content.code.copy",
-  "content.code.annotate"
-]
+[project.markdown_extensions.attr_list]
 
-[[project.theme.palette]]
-scheme = "default"
-toggle.icon = "lucide/sun"
-toggle.name = "Switch to dark mode"
+[project.markdown_extensions.footnotes]
 
-[[project.theme.palette]]
-scheme = "slate"
-toggle.icon = "lucide/moon"
-toggle.name = "Switch to light mode"
+[project.markdown_extensions.md_in_html]
 
-[project.theme.font]
-text = "Google sans"
-code = "Source Code Pro"
+[project.markdown_extensions.pymdownx.arithmatex]
+generic = true
 
-[project.theme.icon]
-repo = "fontawesome/brands/github"
+[project.markdown_extensions.pymdownx.details]
+
+[project.markdown_extensions.pymdownx.emoji]
+emoji_generator = "zensical.extensions.emoji.to_svg"
+emoji_index = "zensical.extensions.emoji.twemoji"
 
 # -------------------------
 # markdown_extensions
@@ -152,53 +125,36 @@ anchor_linenums = true
 
 [project.markdown_extensions.pymdownx.inlinehilite]
 
-[project.markdown_extensions.pymdownx.snippets]
-
-[project.markdown_extensions.admonition]
-
-[project.markdown_extensions.pymdownx.arithmatex]
-generic = true
-
-[project.markdown_extensions.footnotes]
-
 [project.markdown_extensions.pymdownx.keys]
 
-[project.markdown_extensions.pymdownx.details]
+[project.markdown_extensions.pymdownx.mark]
+
+[project.markdown_extensions.pymdownx.snippets]
 
 [project.markdown_extensions.pymdownx.superfences]
 
 [[project.markdown_extensions.pymdownx.superfences.custom_fences]]
-name = "mermaid"
 class = "mermaid"
 format = "pymdownx.superfences.fence_code_format"
+name = "mermaid"
 
 [[project.markdown_extensions.pymdownx.superfences.custom_fences]]
-name = "python"
 class = "highlight"
-validator = "mkdocs_pycafe.validator"
 format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.52"}}
+name = "python"
+validator = "mkdocs_pycafe.validator"
 
 [project.markdown_extensions.pymdownx.tabbed]
 alternate_style = true
 
-[project.markdown_extensions.pymdownx.mark]
-
-[project.markdown_extensions.md_in_html]
-
-[project.markdown_extensions.attr_list]
-
-[project.markdown_extensions.pymdownx.emoji]
-emoji_index = "zensical.extensions.emoji.twemoji"
-emoji_generator = "zensical.extensions.emoji.to_svg"
-
-# -------------------------
-# plugins
-# -------------------------
-[project.plugins.search]
-
 [project.plugins.autorefs]
 
+[project.plugins.git-revision-date-localized]
+enable_creation_date = false
+
 [project.plugins.llmstxt]  # https://pypi.org/project/mkdocs-llmstxt/
+base_url = "https://vizro.readthedocs.io/en/0.1.52/"
+full_output = "llms-full.txt"
 markdown_description = """
 Vizro is an open-source Python-based toolkit to build data visualization apps.
 
@@ -213,30 +169,13 @@ Configuration can be written in multiple formats including Pydantic models, JSON
 
 Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
 """
-base_url = "https://vizro.readthedocs.io/en/0.1.52/"
-full_output = "llms-full.txt"
 
 [project.plugins.llmstxt.sections]
-TUTORIALS = [
-  {"pages/tutorials/quickstart-tutorial.md" = "A quickstart dashboard tutorial"},
-  {"pages/tutorials/explore-components.md" = "An in-depth tutorial to introduce Vizro's key features (accompanying Video is available)"}
-]
-"FUNDAMENTAL CONCEPTS IN VIZRO" = [
-  {"pages/user-guides/install.md" = "Guide on how to install Vizro"},
-  {"pages/user-guides/dashboard.md" = "Dashboard basics"},
-  {"pages/user-guides/pages.md" = "Pages"},
-  {"pages/user-guides/run-deploy.md" = "How to run or deploy dashboards"}
-]
-"LEARN ABOUT VIZRO COMPONENTS" = [
-  {"pages/user-guides/components.md" = "Components overview"},
-  {"pages/user-guides/graph.md" = "Graphs"},
-  {"pages/user-guides/table.md" = "Tables"},
-  {"pages/user-guides/figure.md" = "Figures"},
-  {"pages/user-guides/card.md" = "Cards"},
-  {"pages/user-guides/text.md" = "Text"},
-  {"pages/user-guides/button.md" = "Buttons"},
-  {"pages/user-guides/container.md" = "Containers"},
-  {"pages/user-guides/tabs.md" = "Tabs"}
+ACTIONS = [
+  {"pages/user-guides/actions.md" = "Actions"},
+  {"pages/user-guides/data-actions.md" = "Handle data"},
+  {"pages/user-guides/graph-table-actions.md" = "Graph and table interactions"},
+  {"pages/user-guides/notification-actions.md" = "Notifications"}
 ]
 "ADD CONTROLS TO A DASHBOARD" = [
   {"pages/user-guides/controls.md" = "Controls overview"},
@@ -246,23 +185,6 @@ TUTORIALS = [
 ]
 "DASHBOARD NAVIGATION ELEMENTS" = [
   {"pages/user-guides/navigation.md" = "Navigation"}
-]
-"HOW TO APPLY VISUAL FORMATTING" = [
-  {"pages/user-guides/visual-formatting.md" = "Formatting overview"},
-  {"pages/user-guides/layouts.md" = "Layouts"},
-  {"pages/user-guides/themes.md" = "Themes and colors"},
-  {"pages/user-guides/assets.md" = "Assets"},
-  {"pages/user-guides/custom-css.md" = "Custom CSS"}
-]
-ACTIONS = [
-  {"pages/user-guides/actions.md" = "Actions"},
-  {"pages/user-guides/data-actions.md" = "Handle data"},
-  {"pages/user-guides/graph-table-actions.md" = "Graph and table interactions"},
-  {"pages/user-guides/notification-actions.md" = "Notifications"}
-]
-"MANAGE DATA USED BY THE DASHBOARD" = [
-  {"pages/user-guides/data.md" = "Data"},
-  {"pages/user-guides/kedro-data-catalog.md" = "Kedro Data Catalog"}
 ]
 "EXTEND THE DASHBOARD WITH CUSTOMIZATIONS" = [
   {"pages/user-guides/extensions.md" = "Extensions overview"},
@@ -280,6 +202,38 @@ ACTIONS = [
   {"pages/explanation/schema.md" = "The Vizro schema"},
   {"pages/explanation/authors.md" = "Vizro contributor listing"}
 ]
+"FUNDAMENTAL CONCEPTS IN VIZRO" = [
+  {"pages/user-guides/install.md" = "Guide on how to install Vizro"},
+  {"pages/user-guides/dashboard.md" = "Dashboard basics"},
+  {"pages/user-guides/pages.md" = "Pages"},
+  {"pages/user-guides/run-deploy.md" = "How to run or deploy dashboards"}
+]
+"HOW TO APPLY VISUAL FORMATTING" = [
+  {"pages/user-guides/visual-formatting.md" = "Formatting overview"},
+  {"pages/user-guides/layouts.md" = "Layouts"},
+  {"pages/user-guides/themes.md" = "Themes and colors"},
+  {"pages/user-guides/assets.md" = "Assets"},
+  {"pages/user-guides/custom-css.md" = "Custom CSS"}
+]
+"LEARN ABOUT VIZRO COMPONENTS" = [
+  {"pages/user-guides/components.md" = "Components overview"},
+  {"pages/user-guides/graph.md" = "Graphs"},
+  {"pages/user-guides/table.md" = "Tables"},
+  {"pages/user-guides/figure.md" = "Figures"},
+  {"pages/user-guides/card.md" = "Cards"},
+  {"pages/user-guides/text.md" = "Text"},
+  {"pages/user-guides/button.md" = "Buttons"},
+  {"pages/user-guides/container.md" = "Containers"},
+  {"pages/user-guides/tabs.md" = "Tabs"}
+]
+"MANAGE DATA USED BY THE DASHBOARD" = [
+  {"pages/user-guides/data.md" = "Data"},
+  {"pages/user-guides/kedro-data-catalog.md" = "Kedro Data Catalog"}
+]
+TUTORIALS = [
+  {"pages/tutorials/quickstart-tutorial.md" = "A quickstart dashboard tutorial"},
+  {"pages/tutorials/explore-components.md" = "An in-depth tutorial to introduce Vizro's key features (accompanying Video is available)"}
+]
 
 # -------------------------
 # mkdocstrings (supported since Zensical 0.0.11, autorefs since 0.0.22)
@@ -288,46 +242,89 @@ ACTIONS = [
 custom_templates = "docs/templates"
 
 [project.plugins.mkdocstrings.handlers.python]
-paths = ["src"]
 inventories = [
   "https://docs.python.org/3/objects.inv",
   "https://docs.pydantic.dev/latest/objects.inv"
 ]
+paths = ["src"]
 
 [project.plugins.mkdocstrings.handlers.python.options]
-show_bases = false
-show_source = false
-docstring_style = "google"
-merge_init_into_class = true
 docstring_section_style = "spacy"
-separate_signature = true
-unwrap_annotated = true
-show_symbol_type_heading = true
-show_symbol_type_toc = false
-signature_crossrefs = true
-show_signature_annotations = true
-filters = ["!^_"]
-show_root_heading = true
+docstring_style = "google"
 extensions = [
   {"docs/griffe_extensions.py:DynamicallyInspect" = {paths = ["vizro.figures.kpi_card", "vizro.figures.kpi_card_reference"]}},
   {griffe_warnings_deprecated = {kind = "danger", title = "Deprecated"}},
   {griffe_pydantic = {schema = true}},
   "docs/griffe_extensions.py:PydanticDocsCleaner"
 ]
+filters = ["!^_"]
+merge_init_into_class = true
+separate_signature = true
+show_bases = false
+show_root_heading = true
+show_signature_annotations = true
+show_source = false
+show_symbol_type_heading = true
+show_symbol_type_toc = false
+signature_crossrefs = true
+unwrap_annotated = true
 
 [project.plugins.mkdocstrings.handlers.python.options.docstring_options]
 ignore_init_summary = true
-warn_unknown_params = false
 returns_named_value = false
+warn_unknown_params = false
 
-[project.plugins.git-revision-date-localized]
-enable_creation_date = false
+# -------------------------
+# plugins
+# -------------------------
+[project.plugins.search]
+
+# -------------------------
+# theme
+# -------------------------
+[project.theme]
+custom_dir = "docs/overrides"
+favicon = "assets/images/favicon.png"
+features = [
+  "navigation.path",
+  "navigation.expand",
+  "navigation.instant",
+  "navigation.indexes",
+  "navigation.tabs",
+  "navigation.tabs.sticky",
+  "navigation.tracking",
+  "search.suggest",
+  "search.highlight",
+  "content.tabs.link",
+  "content.code.annotation",
+  "content.code.copy",
+  "content.code.annotate"
+]
+language = "en"
+variant = "classic"
+
+[project.theme.font]
+code = "Source Code Pro"
+text = "Google sans"
+
+[project.theme.icon]
+repo = "fontawesome/brands/github"
+
+[[project.theme.palette]]
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
 
 # Zensical does not yet support strict/validation settings (as of 0.0.28).
 # See https://zensical.org/docs/setup/basics/#unsupported-settings
 # When supported, add:
 # validation:
-#   omitted_files: warn
-#   absolute_links: warn
-#   unrecognized_links: warn
-#   anchors: warn
+# omitted_files: warn
+# absolute_links: warn
+# unrecognized_links: warn
+# anchors: warn
