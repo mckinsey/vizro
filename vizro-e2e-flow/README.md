@@ -8,7 +8,7 @@ Vizro e2e flow is a [Claude Code plugin](https://code.claude.com/docs/en/plugins
 
 The plugin includes a [Playwright MCP server](https://executeautomation.github.io/mcp-playwright/) delivering browser automation for functional testing.
 
-## Warning ⚠️ 
+## Warning ⚠️
 
 You may find these instructions are outdated or that the installation process is bumpy because the Claude Code and Cursor products are still under development. If you experience issues, check their documentation for the latest way to install skills, and check on the status of [Claude](https://status.claude.com/) in case of an outage.
 
@@ -20,7 +20,7 @@ At the time of writing, to use the skill long-term, you'll need a [Pro, Max, Tea
 
 ## Prerequisites
 
-Skills are a new way of working with agentic and generative AI, and have yet to become mainstream. It's likely that you'll be an experienced technical user. **However, you don't need to be an expert *Vizro* user to use the e2e flow plugin**. 
+Skills are a new way of working with agentic and generative AI, and have yet to become mainstream. It's likely that you'll be an experienced technical user. **However, you don't need to be an expert *Vizro* user to use the e2e flow plugin**.
 
 Check out the [Vizro documentation](https://vizro.readthedocs.io/en/stable/) to find more about ways you can interact with Vizro to build charts and dashboards.
 
@@ -127,7 +127,6 @@ This invokes the **dashboard-build** skill, which:
 1. **Builds the dashboard** - The agent writes the Vizro dashboard code in Python, storing it in a file called `app.py`. The agent connects it to the data, and configures layouts based on the design specification from the design phase. When complete, the LLM will launch the dashboard locally and provide you with a link.
 
 1. **Tests and verifies** - The agent launches the dashboard and uses the Playwright MCP server to automatically test the dashboard code in a browser. It validates navigation, filters, controls, and checks for console errors.
-
 
 ## Support
 
