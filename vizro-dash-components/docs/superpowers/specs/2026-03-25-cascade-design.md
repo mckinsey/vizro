@@ -1,7 +1,7 @@
 # Cascade Component Design Spec
 
 **Date:** 2026-03-25
-**Status:** Approved
+**Status:** Draft
 
 ## Overview
 
@@ -46,18 +46,21 @@ type CascadeProps = {
   /** Disable the component. Default false. */
   disabled?: boolean;
 
+  /** Maximum height of the panel in pixels. Default 300. */
+  maxHeight?: number;
+
   className?: string;
   style?: object;
 };
 ```
 
-**Value contract:** `value` always contains only leaf node values. Intermediate (parent) node values are never written to `value`, even when a parent checkbox is clicked (clicking a parent selects/deselects all its descendant leaves).
+**Value contract:** `value` always contains only leaf node values. Intermediate (parent) node values are never written to `value`, even when a parent checkbox is clicked (clicking a parent selects/deselects all its descendant leaves). If `value` contains a value not present in `options`, it is silently ignored for display and treated as not selected; it is not written back to `value` automatically. When `multi=false`, empty is represented as `null`; when `multi=true`, empty is represented as `[]`. The `null` form is not valid when `multi=true` and `[]` is not valid when `multi=false`.
 
 ## Architecture: Single Flat State Machine
 
 Internal state:
 
-- `activePath: number[]` — indices into the options tree tracking which item is expanded at each column depth. E.g. `[2, 0]` means column 0 item index 2 is expanded, column 1 item index 0 is expanded. Length = number of open columns − 1.
+- `activePath: number[]` — indices into the options tree tracking which item is expanded at each column depth. E.g. `[2, 0]` means column 0 item index 2 is expanded, column 1 item index 0 is expanded. Length 0 means only column 0 is visible; length N means N+1 columns are visible. When `options` changes, `activePath` is reset to `[]`.
 - `isOpen: boolean` — whether the dropdown panel is visible.
 - `searchValue: string` — current search input text (local state, not a Dash prop).
 
@@ -73,19 +76,19 @@ Derived from props + state:
 
 Identical to `dcc.Dropdown`:
 
-- Border + `var(--Dash-Fill-Inverse-Strong)` background, `border-radius: var(--Dash-Spacing)`.
-- `CaretDownIcon` (Radix UI) on the right, rotates 180° when open.
-- **single-select**: displays leaf label as plain text; or placeholder if no value.
-- **multi-select**: displays leaf labels comma-separated; count badge (`"N selected"`) when N > 1; clear `✕` button when `clearable=true` and a value is set.
+- Border + `var(--Dash-Fill-Inverse-Strong)` background, `border-radius: var(--Dash-Border-Radius)`.
+- `CaretDownIcon` on the right, rotates 180° when open.
+- **single-select**: displays leaf label as plain text when a value is set; placeholder otherwise. Shows `✕` clear button when `clearable=true` and a value is set.
+- **multi-select**: when N = 1 displays the single leaf label as plain text; when N > 1 displays the first label truncated with ellipsis plus a count badge (`"N selected"`). Shows `✕` clear button when `clearable=true` and at least one value is set.
 - Focus ring uses `var(--Dash-Fill-Interactive-Strong)`.
 
 ### Panel (open)
 
-Floats below trigger via Radix UI `Popover`, minimum width = trigger width.
+Floats below trigger via a `position: absolute` div (Radix UI is not available as a source dependency), minimum width = trigger width.
 
 1. **Search bar** (when `searchable=true`): sticky at top, same styling as `dcc.Dropdown` search (magnifying glass icon, inline input, clear button). Matches `dash-dropdown-search-container`.
-2. **Select all / Deselect all bar** (when `multi=true`): identical to `dcc.Dropdown` `dash-dropdown-actions` bar, only shown when not searching.
-3. **Column area** (when not searching): side-by-side columns separated by `1px solid var(--Dash-Fill-Disabled)` dividers. Each column scrolls independently if taller than `maxHeight / numColumns`.
+2. **Select all / Deselect all bar** (when `multi=true`, not shown when `multi=false`): identical to `dcc.Dropdown` `dash-dropdown-actions` bar, always visible when `multi=true`. During search it operates on the search results; without a search it operates on the entire tree.
+3. **Column area** (when not searching): side-by-side columns separated by `1px solid var(--Dash-Fill-Disabled)` dividers. The column area as a whole is capped at `maxHeight` px; each column is `max-height: 100%` and scrolls independently.
    - **Parent row**: label + `›` chevron on the right. Active (expanded) row has `var(--Dash-Fill-Interactive-Weak)` background. In multi mode, a checkbox precedes the label; it is checked if all descendant leaves are selected, indeterminate if some are, unchecked otherwise.
    - **Leaf row**: label only (no chevron). In single mode, selected leaf shows `var(--Dash-Fill-Interactive-Weak)` background. In multi mode, a checkbox.
    - Disabled options are dimmed and non-interactive.
@@ -93,7 +96,7 @@ Floats below trigger via Radix UI `Popover`, minimum width = trigger width.
 
 ### CSS
 
-New file `src/css/cascade.css` using only `var(--Dash-)` design tokens — no hardcoded colours. Reuses class names from `dropdown.css` where structure is identical (trigger, search bar, actions bar). Cascade-specific classes prefixed `dash-cascade-`.
+New file `src/ts/css/cascade.css` (imported from the TSX fragment so webpack's `css-loader` bundles it), using only `var(--Dash-)` design tokens — no hardcoded colours. Reuses class names from `dropdown.css` where structure is identical (trigger, search bar, actions bar). Cascade-specific classes prefixed `dash-cascade-`. The panel uses `z-index: 500` (matching `dash-dropdown-content`).
 
 ## Interaction Behaviour
 
@@ -107,7 +110,7 @@ New file `src/css/cascade.css` using only `var(--Dash-)` design tokens — no ha
 ### Multi-select
 
 - Clicking a leaf checkbox: toggles that leaf in `value`.
-- Clicking a parent checkbox: collects all descendant leaf values and adds/removes them all from `value` (checked → add all; indeterminate/unchecked → remove all). Panel stays open.
+- Clicking a parent checkbox: collects all descendant leaf values. Unchecked → add all (→ checked); indeterminate → add all missing descendants (→ checked); checked → remove all (→ unchecked). Panel stays open.
 - "Select all": adds all leaf values in the current search results (or entire tree if not searching) to `value`.
 - "Deselect all": removes all leaf values in the current search results (or entire tree) from `value`.
 - Clicking `✕` clear on trigger: sets `value` to `[]`.
@@ -116,8 +119,9 @@ New file `src/css/cascade.css` using only `var(--Dash-)` design tokens — no ha
 
 - Typing filters to leaf nodes whose label contains the search string (case-insensitive).
 - Results are shown as a flat list (columns hidden).
-- Selecting from search results behaves the same as selecting from columns, then clears the search.
-- Clearing search restores the column view.
+- In single-select: selecting a result sets `value`, closes the panel, and clears the search.
+- In multi-select: clicking a result checkbox toggles it in `value`; search is not cleared so the user can continue selecting from results. Clearing the search input (via its `✕` or backspace) restores the column view.
+- While search is active, clicking a parent row (not its checkbox) in search results is a no-op — the expand action is suppressed. Only leaf selection and parent checkbox clicks are active during search.
 
 ### Keyboard (future / stretch)
 
@@ -135,7 +139,7 @@ src/ts/
     cascade.css          # Component styles (Dash design tokens only)
 ```
 
-No new npm dependencies required. Uses Radix UI `Popover` (already available via dcc), `@radix-ui/react-icons` `CaretDownIcon`, `Cross1Icon`, `MagnifyingGlassIcon` (same as dcc.Dropdown).
+No new npm dependencies. Radix UI is not available as a source import — the panel is implemented as a plain `position: absolute` div. Icons (`CaretDownIcon`, `Cross1Icon`, `MagnifyingGlassIcon`) are inline SVGs copied from `@radix-ui/react-icons` source or implemented as simple Unicode/SVG equivalents.
 
 ## Out of Scope
 
