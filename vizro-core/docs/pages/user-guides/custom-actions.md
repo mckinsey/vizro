@@ -52,7 +52,7 @@ You can also execute [multiple actions with a single trigger](#multiple-actions)
 
 ## Trigger an action with a button
 
-Here is an example action that gives the current time when a [button](button.md) is clicked.
+Here is an example action that gives the current time when a [button](./button.md) is clicked.
 
 ```python
 from datetime import datetime
