@@ -1413,3 +1413,91 @@ class TestFilterHierarchyPreBuildDynamic:
         f.pre_build()
         assert f._dynamic is False
         assert f.selector._dynamic is False
+
+
+@pytest.fixture
+def tree_filter_pre_built(managers_column_hierarchy_dynamic):
+    """Pre-built dynamic tree filter targeting fig_dynamic."""
+    f = vm.Filter(
+        column_hierarchy=["continent", "country"],
+        targets=["fig_dynamic"],
+        selector=vm.TreeSelect(id="tree_selector_id"),
+    )
+    model_manager["test_page"].controls = [f]
+    f.pre_build()
+    return f
+
+
+class TestFilterCallTree:
+    def test_call_returns_fresh_options(self, tree_filter_pre_built):
+        fresh_df = pd.DataFrame({"continent": ["Europe", "Asia"], "country": ["France", "Japan"]})
+        result = tree_filter_pre_built(
+            target_to_data_frame={"fig_dynamic": fresh_df},
+            current_value=[],
+        )
+        tree_component = result["tree_selector_id"]
+        option_titles = [node["title"] for node in tree_component.treeData]
+        # Options should reflect fresh data: Europe and Asia as top-level groups
+        assert "Europe" in option_titles
+        assert "Asia" in option_titles
+        assert "(Stale selection)" not in option_titles
+
+    def test_call_injects_stale_values(self, tree_filter_pre_built):
+        fresh_df = pd.DataFrame({"continent": ["Europe"], "country": ["France"]})
+        # "OldCountry" was previously selected but is no longer in the data
+        result = tree_filter_pre_built(
+            target_to_data_frame={"fig_dynamic": fresh_df},
+            current_value=["OldCountry"],
+        )
+        tree_component = result["tree_selector_id"]
+        option_titles = [node["title"] for node in tree_component.treeData]
+        assert "(Stale selection)" in option_titles
+        stale_node = next(n for n in tree_component.treeData if n["title"] == "(Stale selection)")
+        # The stale node's children should include OldCountry
+        assert any(child["title"] == "OldCountry" for child in stale_node["children"])
+
+    def test_call_multi_false_stale_string(self, managers_column_hierarchy_dynamic):
+        f = vm.Filter(
+            column_hierarchy=["continent", "country"],
+            targets=["fig_dynamic"],
+            selector=vm.TreeSelect(id="tree_selector_id_single", multi=False),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        fresh_df = pd.DataFrame({"continent": ["Europe"], "country": ["France"]})
+        result = f(
+            target_to_data_frame={"fig_dynamic": fresh_df},
+            current_value="Atlantis",
+        )
+        tree_component = result["tree_selector_id_single"]
+        option_titles = [node["title"] for node in tree_component.treeData]
+        assert "(Stale selection)" in option_titles
+
+    def test_call_no_stale_when_current_value_empty(self, tree_filter_pre_built):
+        fresh_df = pd.DataFrame({"continent": ["Europe"], "country": ["France"]})
+        result = tree_filter_pre_built(
+            target_to_data_frame={"fig_dynamic": fresh_df},
+            current_value=[],
+        )
+        tree_component = result["tree_selector_id"]
+        option_titles = [node["title"] for node in tree_component.treeData]
+        assert "(Stale selection)" not in option_titles
+
+    def test_call_target_missing_hierarchy_column_excluded(self, tree_filter_pre_built):
+        # DataFrame missing "country" column → silently excluded, options empty
+        bad_df = pd.DataFrame({"continent": ["Europe"]})
+        result = tree_filter_pre_built(
+            target_to_data_frame={"fig_dynamic": bad_df},
+            current_value=[],
+        )
+        tree_component = result["tree_selector_id"]
+        assert tree_component.treeData == []
+
+    def test_call_guard_component_is_true(self, tree_filter_pre_built):
+        fresh_df = pd.DataFrame({"continent": ["Europe"], "country": ["France"]})
+        result = tree_filter_pre_built(
+            target_to_data_frame={"fig_dynamic": fresh_df},
+            current_value=[],
+        )
+        guard = result["tree_selector_id_guard_actions_chain"]
+        assert guard.data is True

@@ -16,12 +16,13 @@ from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch, TreeSelect
-from vizro.models._components.form.tree_select import _check_no_duplicate_leaves
+from vizro.models._components.form.tree_select import _check_no_duplicate_leaves, _extract_leaf_keys
 from vizro.models._controls._controls_utils import (
     SELECTORS,
     _is_boolean_selector,
     _is_categorical_selector,
     _is_numerical_temporal_selector,
+    _is_tree_selector,
     check_control_targets,
     get_control_parent,
     get_selector_default_value,
@@ -184,29 +185,40 @@ class Filter(VizroBaseModel):
         }
 
     def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any):
-        # Only relevant for a dynamic filter and non-boolean selectors. Boolean selectors don't need to be dynamic,
-        # as their options are always set to True/False.
-        # Although targets are fixed at build time, the validation logic is repeated during runtime, so if a column
-        # is missing then it will raise an error. We could change this if we wanted.
-        targeted_data = self._validate_targeted_data(
-            {target: data_frame for target, data_frame in target_to_data_frame.items() if target in self.targets},
-            eagerly_raise_column_not_found_error=True,
-        )
-
-        if (column_type := self._validate_column_type(targeted_data)) != self._column_type:
-            raise ValueError(
-                f"{self.column} has changed type from {self._column_type} to {column_type}. A filtered column cannot "
-                "change type while the dashboard is running."
-            )
-
         # Cast is justified as the selector is set in pre_build and is not None.
         selector = cast(SelectorType, self.selector)
 
-        if _is_categorical_selector(selector):
-            selector_call_obj = selector(options=self._get_options(targeted_data, current_value))
-        elif _is_numerical_temporal_selector(selector):
-            _min, _max = self._get_min_max(targeted_data, current_value)
-            selector_call_obj = selector(min=_min, max=_max)
+        # Tree selectors handle their own data gathering (across the full hierarchy) and silently skip
+        # targets that are missing hierarchy columns, so they bypass the standard targeted_data validation.
+        if _is_tree_selector(selector):
+            selector_call_obj = selector(
+                options=self._get_tree_options_dynamic(
+                    {target: df for target, df in target_to_data_frame.items() if target in self.targets},
+                    self.column_hierarchy,
+                    current_value,
+                )
+            )
+        else:
+            # Only relevant for a dynamic filter and non-boolean selectors. Boolean selectors don't need to be dynamic,
+            # as their options are always set to True/False.
+            # Although targets are fixed at build time, the validation logic is repeated during runtime, so if a column
+            # is missing then it will raise an error. We could change this if we wanted.
+            targeted_data = self._validate_targeted_data(
+                {target: data_frame for target, data_frame in target_to_data_frame.items() if target in self.targets},
+                eagerly_raise_column_not_found_error=True,
+            )
+
+            if (column_type := self._validate_column_type(targeted_data)) != self._column_type:
+                raise ValueError(
+                    f"{self.column} has changed type from {self._column_type} to {column_type}. A filtered column "
+                    "cannot change type while the dashboard is running."
+                )
+
+            if _is_categorical_selector(selector):
+                selector_call_obj = selector(options=self._get_options(targeted_data, current_value))
+            elif _is_numerical_temporal_selector(selector):
+                _min, _max = self._get_min_max(targeted_data, current_value)
+                selector_call_obj = selector(min=_min, max=_max)
 
         # The filter is dynamic, so a guard component (data=True) needs to be added to prevent unexpected action firing.
         selector_call_obj = html.Div(
@@ -549,3 +561,25 @@ class Filter(VizroBaseModel):
             return {key: _build_nested(group, rest) for key, group in df.groupby(col, sort=True)}
 
         return _build_nested(wide_df, columns)  # type: ignore[return-value]
+
+    @staticmethod
+    def _get_tree_options_dynamic(
+        target_to_data_frame: dict[ModelID, pd.DataFrame],
+        columns: list[str],
+        current_value: MultiValueType | SingleValueType | None,
+    ) -> dict[str, Any]:
+        """Build tree options from fresh data, preserving stale current_value leaves."""
+        # Build wide_df from targets that have all hierarchy columns (silently skip others)
+        dfs = [df[columns] for df in target_to_data_frame.values() if all(col in df.columns for col in columns)]
+        wide_df = pd.concat(dfs, ignore_index=True).drop_duplicates() if dfs else pd.DataFrame(columns=columns)
+        options = Filter._get_tree_options(wide_df, columns)
+
+        # Re-inject stale selected leaves under "(Stale selection)" — parallel to _get_options behavior
+        if current_value:
+            current_leaves = current_value if isinstance(current_value, list) else [current_value]
+            existing_leaves = _extract_leaf_keys(options)
+            stale = sorted(v for v in current_leaves if v not in existing_leaves)
+            if stale:
+                options["(Stale selection)"] = stale
+
+        return options
