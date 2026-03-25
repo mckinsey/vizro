@@ -1,8 +1,9 @@
 /* Trigger button — identical structure to .dash-dropdown */
 .dash-cascader {
-  background: var(--Dash-Fill-Inverse-Strong);
-  border: 1px solid var(--Dash-Stroke-Strong);
-  border-radius: var(--Dash-Spacing);
+  background: var(--bs-dropdown-bg);
+  border: 0;
+  border-radius: var(--bs-border-radius);
+  box-shadow: var(--bs-box-shadow-sm);
   box-sizing: border-box;
   color: inherit;
   cursor: pointer;
@@ -15,9 +16,14 @@
   width: 100%;
 }
 
-.dash-cascader:focus {
-  border-color: var(--Dash-Fill-Interactive-Strong);
-  outline: 1px solid var(--Dash-Fill-Interactive-Strong);
+.dash-cascader:focus-within {
+  border: none;
+  outline: none;
+}
+
+.dash-cascader:focus,
+.dash-cascader.focus {
+  box-shadow: 0 0 0 1px var(--bs-focus-ring-color) inset;
 }
 
 .dash-cascader.disabled {
@@ -32,8 +38,8 @@
   display: grid;
   gap: calc(var(--Dash-Spacing) * 2);
   grid-template-columns: 1fr auto;
-  min-height: 32px;
-  padding: 0 12px;
+  height: 32px;
+  padding: 0 8px;
 }
 
 /* value | count | caret */
@@ -74,18 +80,18 @@
 /* Count badge — same as .dash-dropdown-value-count */
 .dash-cascader-count {
   background: var(--Dash-Fill-Interactive-Weak);
-  border-radius: 4px;
+  border-radius: 0;
   color: var(--Dash-Text-Weak);
-  font-size: 0.875em;
+  font-size: 12px;
   line-height: 18px;
-  padding: 4px;
+  padding: 2px 4px;
   white-space: nowrap;
 }
 
 /* Caret icon */
 .dash-cascader-caret {
-  color: var(--Dash-Text-Strong);
-  fill: var(--Dash-Text-Strong);
+  color: var(--Dash-Text-Weak);
+  fill: var(--Dash-Text-Weak);
   justify-self: end;
   transition: transform 0.15s;
 }
@@ -99,13 +105,18 @@
   align-items: center;
   background: none;
   border: none;
-  color: var(--Dash-Text-Strong);
+  color: var(--Dash-Text-Weak);
   cursor: pointer;
   display: flex;
-  height: 1em;
+  height: 8px;
   justify-content: center;
   padding: 0;
-  width: 1em;
+  width: 8px;
+}
+
+.dash-cascader-clear svg {
+  height: 8px;
+  width: 8px;
 }
 
 .dash-cascader-clear:hover {
@@ -139,19 +150,19 @@
 /* Search bar — same structure as .dash-dropdown-search-container */
 .dash-cascader-search-container {
   align-items: center;
-  background: var(--Dash-Fill-Inverse-Strong);
-  border: 1px solid var(--Dash-Stroke-Strong);
-  border-radius: 4px;
+  background: var(--bs-dropdown-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
   display: grid;
   gap: calc(var(--Dash-Spacing) * 2);
   grid-template-columns: auto 1fr auto;
-  margin: calc(var(--Dash-Spacing) * 2);
-  padding: var(--Dash-Spacing);
+  margin: 4px 8px;
+  padding: 2px 4px;
 }
 
 .dash-cascader-search-container:focus-within {
-  border-color: var(--Dash-Fill-Interactive-Strong);
-  outline: 1px solid var(--Dash-Fill-Interactive-Strong);
+  border-color: var(--bs-focus-ring-color);
+  outline: none;
 }
 
 .dash-cascader-search-icon {
@@ -184,12 +195,10 @@
 
 /* Actions bar (multi-select only) — same as .dash-dropdown-actions */
 .dash-cascader-actions {
-  border-bottom: 1px solid var(--Dash-Fill-Disabled);
-  border-top: 1px solid var(--Dash-Fill-Disabled);
+  border-bottom: 1px solid var(--bs-border-color);
   display: flex;
-  gap: calc(var(--Dash-Spacing) * 6);
-  line-height: 18px;
-  padding: var(--Dash-Spacing) calc(var(--Dash-Spacing) * 3);
+  gap: 16px;
+  padding: 8px;
 }
 
 .dash-cascader-action-button {
@@ -229,11 +238,12 @@
 /* Rows */
 .dash-cascader-row {
   align-items: center;
-  box-shadow: 0 -1px 0 0 var(--Dash-Fill-Disabled) inset;
+  box-shadow: none;
   cursor: pointer;
   display: flex;
-  gap: calc(var(--Dash-Spacing) * 2);
-  padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
+  gap: 4px;
+  min-height: 32px;
+  padding: 6px 8px;
   white-space: nowrap;
 }
 

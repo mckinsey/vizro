@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 import "../css/cascader.css";
 import {
   CaretDownIcon,
@@ -17,8 +18,10 @@ import {
 import {
   buildColumns,
   type CascaderOption,
+  type CascaderOptionsRaw,
   collectAllLeaves,
   collectLeaves,
+  normalizeOptions,
   parentCheckState,
   searchOptions,
 } from "./cascaderUtils";
@@ -26,7 +29,7 @@ import {
 export type CascaderProps = {
   id?: string;
   setProps?: (props: Record<string, unknown>) => void;
-  options: CascaderOption[];
+  options: CascaderOptionsRaw;
   value?: string | number | null | (string | number)[];
   multi?: boolean;
   searchable?: boolean;
@@ -36,6 +39,8 @@ export type CascaderProps = {
   maxHeight?: number;
   className?: string;
   style?: React.CSSProperties;
+  optionHeight?: "auto" | number;
+  debounce?: boolean;
   persistence?: boolean | string | number;
   persisted_props?: string[];
   persistence_type?: "local" | "session" | "memory";
@@ -44,7 +49,7 @@ export type CascaderProps = {
 const CascaderFragment = ({
   id,
   setProps,
-  options,
+  options: optionsRaw,
   value,
   multi = false,
   searchable = true,
@@ -54,12 +59,25 @@ const CascaderFragment = ({
   maxHeight = 300,
   className,
   style,
+  optionHeight = "auto",
+  debounce = false,
 }: CascaderProps) => {
+  const options = useMemo(() => normalizeOptions(optionsRaw), [optionsRaw]);
+
   const [isOpen, setIsOpen] = useState(false);
   const [activePath, setActivePath] = useState<number[]>([]);
   const [searchValue, setSearchValue] = useState("");
+  const [panelStyle, setPanelStyle] = useState<React.CSSProperties>({});
+  // Local value state for debounce: tracks selection without firing setProps
+  const [localValue, setLocalValue] = useState(value);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+
+  // Sync localValue when external value changes
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
 
   // Reset activePath when options change
   const prevOptionsRef = useRef(options);
@@ -70,34 +88,35 @@ const CascaderFragment = ({
     }
   }, [options]);
 
-  // Close panel on outside click
+  // Close panel on outside click — also commits debounced value
   useEffect(() => {
     if (!isOpen) return;
     const handler = (e: MouseEvent) => {
+      const target = e.target as Node;
       if (
         wrapperRef.current &&
-        !wrapperRef.current.contains(e.target as Node)
+        !wrapperRef.current.contains(target) &&
+        panelRef.current &&
+        !panelRef.current.contains(target)
       ) {
-        setIsOpen(false);
-        setSearchValue("");
+        closePanel();
       }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, [isOpen]);
+  }, [isOpen, debounce, localValue, value]);
 
-  // Close on Escape
+  // Close on Escape — also commits debounced value
   useEffect(() => {
     if (!isOpen) return;
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setIsOpen(false);
-        setSearchValue("");
+        closePanel();
       }
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, [isOpen]);
+  }, [isOpen, debounce, localValue, value]);
 
   // Focus search when panel opens
   useEffect(() => {
@@ -106,12 +125,35 @@ const CascaderFragment = ({
     }
   }, [isOpen, searchable]);
 
-  // Derived values
+  // Commit debounced value and close
+  const closePanel = useCallback(() => {
+    setIsOpen(false);
+    setSearchValue("");
+    if (debounce && localValue !== value) {
+      setProps?.({ value: localValue });
+    }
+  }, [debounce, localValue, value, setProps]);
+
+  // Fire setProps immediately or defer to close depending on debounce
+  const emitValue = useCallback(
+    (next: unknown) => {
+      if (debounce) {
+        setLocalValue(next as typeof value);
+      } else {
+        setLocalValue(next as typeof value);
+        setProps?.({ value: next });
+      }
+    },
+    [debounce, setProps],
+  );
+
+  // Derived values — use localValue so optimistic updates render during debounce
   const selectedValues: (string | number)[] = useMemo(() => {
-    if (value === null || value === undefined) return [];
-    if (Array.isArray(value)) return value;
-    return [value];
-  }, [value]);
+    const v = localValue;
+    if (v === null || v === undefined) return [];
+    if (Array.isArray(v)) return v;
+    return [v];
+  }, [localValue]);
 
   const selectedSet = useMemo(
     () => new Set<string | number>(selectedValues),
@@ -150,13 +192,33 @@ const CascaderFragment = ({
 
   const handleTriggerClick = useCallback(() => {
     if (disabled) return;
-    setIsOpen((prev) => !prev);
-  }, [disabled]);
+    setIsOpen((prev) => {
+      if (!prev && wrapperRef.current) {
+        const rect = wrapperRef.current.getBoundingClientRect();
+        setPanelStyle({
+          position: "fixed",
+          top: rect.bottom + 5,
+          left: rect.left,
+          minWidth: rect.width,
+        });
+      }
+      if (prev) {
+        // closing via trigger click — commit debounced value
+        if (debounce && localValue !== value) {
+          setProps?.({ value: localValue });
+        }
+        setSearchValue("");
+      }
+      return !prev;
+    });
+  }, [disabled, debounce, localValue, value, setProps]);
 
   const handleClear = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      setProps({ value: multi ? [] : null });
+      const next = multi ? [] : null;
+      setLocalValue(next);
+      setProps?.({ value: next });
     },
     [multi, setProps],
   );
@@ -167,18 +229,20 @@ const CascaderFragment = ({
         const next = selectedSet.has(leafValue)
           ? selectedValues.filter((v) => v !== leafValue)
           : [...selectedValues, leafValue];
-        setProps({ value: next });
+        emitValue(next);
       } else {
-        setProps({ value: leafValue });
+        // Single-select always commits immediately, even with debounce=true,
+        // because the panel closes right away.
+        setLocalValue(leafValue);
+        setProps?.({ value: leafValue });
         setIsOpen(false);
         setSearchValue("");
       }
     },
-    [multi, selectedSet, selectedValues, setProps],
+    [multi, selectedSet, selectedValues, emitValue, setProps],
   );
 
   const handleParentClick = useCallback((colIdx: number, rowIdx: number) => {
-    // Clicking the row (not checkbox) expands the column — only when not searching
     setActivePath((prev) => {
       const next = prev.slice(0, colIdx);
       next.push(rowIdx);
@@ -193,16 +257,14 @@ const CascaderFragment = ({
       const leaves = collectLeaves(option);
       let next: (string | number)[];
       if (state === "checked") {
-        // checked → remove all
         next = selectedValues.filter((v) => !leaves.includes(v));
       } else {
-        // unchecked or indeterminate → add all missing
         const toAdd = leaves.filter((v) => !selectedSet.has(v));
         next = [...selectedValues, ...toAdd];
       }
-      setProps({ value: next });
+      emitValue(next);
     },
-    [selectedSet, selectedValues, setProps],
+    [selectedSet, selectedValues, emitValue],
   );
 
   const handleSelectAll = useCallback(() => {
@@ -210,15 +272,8 @@ const CascaderFragment = ({
       ? searchResults.map((r) => r.option.value)
       : collectAllLeaves(options);
     const toAdd = pool.filter((v) => !selectedSet.has(v));
-    setProps({ value: [...selectedValues, ...toAdd] });
-  }, [
-    searchValue,
-    searchResults,
-    options,
-    selectedSet,
-    selectedValues,
-    setProps,
-  ]);
+    emitValue([...selectedValues, ...toAdd]);
+  }, [searchValue, searchResults, options, selectedSet, selectedValues, emitValue]);
 
   const handleDeselectAll = useCallback(() => {
     const pool = new Set(
@@ -226,12 +281,15 @@ const CascaderFragment = ({
         ? searchResults.map((r) => r.option.value)
         : collectAllLeaves(options),
     );
-    setProps({ value: selectedValues.filter((v) => !pool.has(v)) });
-  }, [searchValue, searchResults, options, selectedValues, setProps]);
+    emitValue(selectedValues.filter((v) => !pool.has(v)));
+  }, [searchValue, searchResults, options, selectedValues, emitValue]);
 
   // --- Render helpers ---
 
   const canClear = clearable && !disabled && selectedValues.length > 0;
+
+  const rowStyle: React.CSSProperties | undefined =
+    typeof optionHeight === "number" ? { height: optionHeight } : undefined;
 
   const triggerLabels = useMemo(() => {
     if (selectedValues.length === 0) return [];
@@ -349,11 +407,11 @@ const CascaderFragment = ({
             const isSelected = selectedSet.has(opt.value);
 
             if (isLeafNode) {
-              // Leaf row
               return (
                 <div
                   key={String(opt.value)}
                   className={`dash-cascader-row${isSelected && !multi ? " selected" : ""}${opt.disabled ? " disabled" : ""}`}
+                  style={rowStyle}
                   onClick={() => !opt.disabled && handleLeafClick(opt.value)}
                 >
                   {multi && (
@@ -371,7 +429,6 @@ const CascaderFragment = ({
               );
             }
 
-            // Parent row
             const checkState = multi
               ? parentCheckState(opt, selectedSet)
               : undefined;
@@ -379,6 +436,7 @@ const CascaderFragment = ({
               <div
                 key={String(opt.value)}
                 className={`dash-cascader-row${isActive ? " active" : ""}${opt.disabled ? " disabled" : ""}`}
+                style={rowStyle}
                 onClick={() =>
                   !opt.disabled && handleParentClick(colIdx, rowIdx)
                 }
@@ -418,6 +476,7 @@ const CascaderFragment = ({
             <div
               key={String(option.value)}
               className={`dash-cascader-result-row${isSelected && !multi ? " selected" : ""}`}
+              style={rowStyle}
               onClick={() => !option.disabled && handleLeafClick(option.value)}
             >
               {multi && (
@@ -444,13 +503,19 @@ const CascaderFragment = ({
   return (
     <div ref={wrapperRef} className="dash-cascader-wrapper" style={style}>
       {renderTrigger()}
-      {isOpen && (
-        <div className="dash-cascader-panel">
-          {searchable && renderSearchBar()}
-          {multi && renderActionsBar()}
-          {searchValue ? renderSearchResults() : renderColumns()}
-        </div>
-      )}
+      {isOpen &&
+        createPortal(
+          <div
+            ref={panelRef}
+            className="dash-cascader-panel"
+            style={panelStyle}
+          >
+            {searchable && renderSearchBar()}
+            {multi && renderActionsBar()}
+            {searchValue ? renderSearchResults() : renderColumns()}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };

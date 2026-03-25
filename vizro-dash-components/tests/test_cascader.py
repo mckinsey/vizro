@@ -287,6 +287,165 @@ def test_cascader_three_levels(dash_duo):
     assert dash_duo.get_logs() == []
 
 
+# --- shorthand options format ---
+
+
+def test_cascader_shorthand_dict_list(dash_duo):
+    """Dict-of-lists shorthand is normalised: keys become parents, list items become leaves."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div([
+            Cascader(id="c", options={"Asia": ["Japan", "China"], "Europe": ["France"]}),
+            html.Div(id="out"),
+        ])
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_text_to_equal(
+        ".dash-cascader-column:first-child .dash-cascader-row:first-child .dash-cascader-row-label", "Asia"
+    )
+    # Expand Asia and select Japan
+    dash_duo.wait_for_element(".dash-cascader-row").click()
+    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    rows[0].click()
+    dash_duo.wait_for_text_to_equal("#out", "Japan")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_shorthand_nested_dict(dash_duo):
+    """Nested dict shorthand produces multi-level tree."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div([
+            Cascader(id="c", options={"Europe": {"Western": ["France", "Germany"]}}),
+            html.Div(id="out"),
+        ])
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-row").click()  # Europe
+    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    rows[0].click()  # Western
+    dash_duo.wait_for_text_to_equal(
+        ".dash-cascader-column:nth-child(3) .dash-cascader-row:first-child .dash-cascader-row-label", "France"
+    )
+    assert dash_duo.get_logs() == []
+
+
+# --- search field on options ---
+
+
+def test_cascader_option_search_field_used_for_filtering(dash_duo):
+    """search field overrides label for search matching."""
+    options = [
+        {
+            "label": "Asia",
+            "value": "asia",
+            "children": [
+                {"label": "Japan", "value": "japan", "search": "nippon"},
+            ],
+        }
+    ]
+    app = _app(Cascader(id="c", options=options))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    # "nippon" matches via search field, not label
+    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("nippon")
+    dash_duo.wait_for_element(".dash-cascader-result-row")
+    labels = [el.text for el in dash_duo.driver.find_elements("css selector", ".dash-cascader-row-label") if el.is_displayed()]
+    assert "Japan" in labels
+    # "japan" does NOT match (search field replaces label matching)
+    dash_duo.find_element(".dash-cascader-search-input").clear()
+    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("japan")
+    import time; time.sleep(0.3)
+    results = dash_duo.driver.find_elements("css selector", ".dash-cascader-result-row")
+    assert len(results) == 0
+    assert dash_duo.get_logs() == []
+
+
+# --- style, optionHeight, debounce ---
+
+
+def test_cascader_style_applied_to_wrapper(dash_duo):
+    """style prop is applied inline to the wrapper div."""
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, style={"width": "400px"}))
+    dash_duo.start_server(app)
+    wrapper = dash_duo.wait_for_element(".dash-cascader-wrapper")
+    assert "400px" in wrapper.get_attribute("style")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_option_height_applied_to_rows(dash_duo):
+    """optionHeight sets a fixed pixel height on each option row."""
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, optionHeight=50))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    row = dash_duo.wait_for_element(".dash-cascader-row")
+    style = row.get_attribute("style")
+    assert "50px" in style
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_debounce_defers_callback(dash_duo):
+    """With debounce=True, the callback is not fired until the panel closes."""
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.webdriver.support.ui import WebDriverWait
+
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_2LEVEL, debounce=True),
+                html.Div(id="out", children="initial"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    dash_duo.start_server(app)
+    # Open and select a leaf
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
+    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    rows[0].click()  # Japan — panel closes immediately in single mode, committing the value
+    dash_duo.wait_for_text_to_equal("#out", "japan")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_debounce_multi_defers_until_close(dash_duo):
+    """With debounce=True and multi=True, callback fires only when panel closes."""
+    import time
+
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                html.Div("outside", id="outside"),
+                Cascader(id="c", options=OPTIONS_2LEVEL, multi=True, debounce=True),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: ",".join(sorted(str(x) for x in (v or []))))
+    dash_duo.start_server(app)
+    # Open and check Japan
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
+    checkboxes = dash_duo.driver.find_elements(
+        "css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-checkbox"
+    )
+    checkboxes[0].click()  # Japan
+    # Callback should NOT have fired yet (still empty from initial render)
+    time.sleep(0.5)
+    assert dash_duo.find_element("#out").text == ""
+    # Close by clicking outside — now it fires
+    dash_duo.find_element("#outside").click()
+    dash_duo.wait_for_text_to_equal("#out", "japan")
+    assert dash_duo.get_logs() == []
+
+
 # --- Persistence ---
 
 

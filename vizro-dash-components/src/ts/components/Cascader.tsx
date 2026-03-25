@@ -29,11 +29,16 @@ Cascader.propTypes = {
    */
   setProps: PropTypes.func,
   /**
-   * Tree-structured options. Each node has a `label` and `value`.
-   * Nodes with a `children` array are parents; nodes without are leaves.
+   * Tree-structured options. Accepts either the standard list-of-dicts format
+   * or a nested dict/list shorthand:
+   *   {"Asia": ["Japan", "China"], "Europe": {"Western": ["France"]}}
+   * Each dict key becomes a parent node (label = value = key).
+   * List items become leaves; scalars use the scalar as both label and value.
+   * In the standard format each node has a `label` and `value`; nodes with a
+   * `children` array are parents, nodes without are leaves.
    * Only leaf values are ever stored in `value`.
    */
-  options: PropTypes.arrayOf(PropTypes.object).isRequired,
+  options: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.object), PropTypes.object]).isRequired,
   /**
    * Selected value(s).
    * When `multi=false`: a single leaf value (string or number) or null.
@@ -76,9 +81,19 @@ Cascader.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * Inline styles applied to the outer wrapper div.
+   * Inline CSS style applied to the outer wrapper div.
    */
   style: PropTypes.object,
+  /**
+   * Height in pixels for each option row. When omitted, rows size naturally.
+   */
+  optionHeight: PropTypes.number,
+  /**
+   * If true, the component will not fire its callback until the panel is
+   * closed (by clicking outside, pressing Escape, or clicking the trigger).
+   * This reduces the number of callbacks fired during multi-select interactions.
+   */
+  debounce: PropTypes.bool,
   /**
    * Used to allow user interactions in this component to be persisted when
    * the component — or the page — is refreshed. If `persistence` is truthy and
@@ -116,6 +131,8 @@ Cascader.defaultProps = {
   placeholder: "Select...",
   disabled: false,
   maxHeight: 300,
+  optionHeight: "auto",
+  debounce: false,
   persisted_props: ["value"],
   persistence_type: "local",
 };

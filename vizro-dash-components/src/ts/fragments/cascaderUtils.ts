@@ -3,7 +3,47 @@ export type CascaderOption = {
   value: string | number;
   disabled?: boolean;
   children?: CascaderOption[];
+  title?: string;
+  search?: string;
 };
+
+/**
+ * The raw `options` type accepted by the Cascader component.
+ * In addition to the standard list-of-dicts format, the shorthand
+ * nested dict/list notation is also supported:
+ *   { "Asia": ["Japan", "China"], "Europe": { "Western": ["France"] } }
+ * Each dict key becomes a parent node (label = value = key).
+ * List items become leaves; scalars use the scalar as both label and value.
+ * Fully-specified option dicts inside lists are passed through unchanged.
+ */
+export type CascaderOptionsRaw = CascaderOption[] | CascaderOptionsDict;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface CascaderOptionsDict extends Record<string, CascaderOptionsRaw | (string | number | CascaderOption)[]> {}
+
+function normalizeLeaf(item: string | number | CascaderOption): CascaderOption {
+  if (typeof item === "object") return item;
+  return { label: String(item), value: item };
+}
+
+export function normalizeOptions(raw: CascaderOptionsRaw): CascaderOption[] {
+  if (Array.isArray(raw)) {
+    return raw as CascaderOption[];
+  }
+  return Object.entries(raw).map(([key, value]) => {
+    if (Array.isArray(value)) {
+      return {
+        label: key,
+        value: key,
+        children: value.map(normalizeLeaf),
+      };
+    }
+    return {
+      label: key,
+      value: key,
+      children: normalizeOptions(value as CascaderOptionsRaw),
+    };
+  });
+}
 
 /** True if the node has no children (i.e. is a leaf). */
 export function isLeaf(option: CascaderOption): boolean {
@@ -72,7 +112,8 @@ export function searchOptions(
   const results: { option: CascaderOption; breadcrumb: string }[] = [];
   for (const opt of options) {
     if (isLeaf(opt)) {
-      if (opt.label.toLowerCase().includes(lower)) {
+      const searchTarget = (opt.search ?? opt.label).toLowerCase();
+      if (searchTarget.includes(lower)) {
         results.push({
           option: opt,
           breadcrumb: ancestors.join(" › "),

@@ -15,6 +15,8 @@ pk.Cascader.propTypes = {id:pt.any,
  maxHeight:pt.any,
  className:pt.any,
  style:pt.any,
+ optionHeight:pt.any,
+ debounce:pt.any,
  persistence:pt.any,
  persisted_props:pt.any,
  persistence_type:pt.any};
