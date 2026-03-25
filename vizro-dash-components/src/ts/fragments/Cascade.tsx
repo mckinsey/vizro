@@ -233,11 +233,10 @@ const CascadeFragment = ({
 
   const canClear = clearable && !disabled && selectedValues.length > 0;
 
-  const triggerLabel = useMemo(() => {
-    if (selectedValues.length === 0) return null;
-    if (!multi) return findLabel(selectedValues[0]);
-    if (selectedValues.length === 1) return findLabel(selectedValues[0]);
-    return findLabel(selectedValues[0]); // first label; badge shows count
+  const triggerLabels = useMemo(() => {
+    if (selectedValues.length === 0) return [];
+    if (!multi) return [findLabel(selectedValues[0])];
+    return selectedValues.map(findLabel);
   }, [selectedValues, multi, findLabel]);
 
   const renderTrigger = () => (
@@ -263,15 +262,19 @@ const CascadeFragment = ({
           .filter(Boolean)
           .join(" ")}
       >
-        <span
-          className={
-            triggerLabel
-              ? "dash-cascade-value"
-              : "dash-cascade-value dash-cascade-placeholder"
-          }
-        >
-          {triggerLabel ?? placeholder}
-        </span>
+        {triggerLabels.length === 0 ? (
+          <span className="dash-cascade-value dash-cascade-placeholder">
+            {placeholder}
+          </span>
+        ) : (
+          <span className="dash-cascade-value">
+            {triggerLabels.map((label, i) => (
+              <span key={i} className="dash-cascade-value-item">
+                {label}
+              </span>
+            ))}
+          </span>
+        )}
         {multi && selectedValues.length > 1 && (
           <span className="dash-cascade-count">
             {selectedValues.length} selected

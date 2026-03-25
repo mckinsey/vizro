@@ -53,9 +53,18 @@
 
 /* Value display */
 .dash-cascade-value {
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.dash-cascade-value-item {
+  display: inline;
+}
+
+.dash-cascade-value-item:not(:first-child)::before {
+  content: ", ";
 }
 
 .dash-cascade-placeholder {
@@ -147,6 +156,7 @@
 
 .dash-cascade-search-icon {
   color: var(--Dash-Text-Weak);
+  flex-shrink: 0;
   height: 1em;
   width: 1em;
 }
@@ -154,6 +164,7 @@
 .dash-cascade-search-container:focus-within .dash-cascade-search-icon {
   color: var(--Dash-Fill-Interactive-Strong);
 }
+
 
 .dash-cascade-search-input {
   background: transparent;
