@@ -8,7 +8,7 @@ from vizro import Vizro
 iris = px.data.iris()
 
 
-page = vm.Page(
+page_1 = vm.Page(
     title="Page with ControlGroup",
     components=[
         vm.Graph(
@@ -52,7 +52,7 @@ page = vm.Page(
 )
 
 
-page_3 = vm.Page(
+page_2 = vm.Page(
     title="Regular page",
     components=[
         vm.Graph(
@@ -65,8 +65,8 @@ page_3 = vm.Page(
 
 
 dashboard = vm.Dashboard(
-    pages=[page, page_3],
+    pages=[page_1, page_2],
 )
 
-
-Vizro().build(dashboard).run(debug=True)
+if __name__ == "__main__":
+    Vizro().build(dashboard).run(debug=True)
