@@ -3,6 +3,7 @@
 import dash_mantine_components as dmc
 import vizro_dash_components as vdc
 from dash import Dash, html
+from vizro_dash_components import Cascade
 
 app = Dash(__name__)
 
@@ -122,6 +123,93 @@ app.layout = dmc.MantineProvider(
                 id="markdown-html",
                 children=markdown_with_html,
                 dangerously_allow_html=True,
+            ),
+            dmc.Divider(my="md"),
+            dmc.Title("Cascade (single-select)", order=2, mb="sm"),
+            Cascade(
+                id="cascade-single",
+                options=[
+                    {
+                        "label": "Asia",
+                        "value": "asia",
+                        "children": [
+                            {"label": "Japan", "value": "japan"},
+                            {"label": "China", "value": "china"},
+                            {"label": "India", "value": "india"},
+                        ],
+                    },
+                    {
+                        "label": "Europe",
+                        "value": "europe",
+                        "children": [
+                            {"label": "France", "value": "france"},
+                            {"label": "Germany", "value": "germany"},
+                        ],
+                    },
+                    {
+                        "label": "Americas",
+                        "value": "americas",
+                        "children": [
+                            {"label": "USA", "value": "usa"},
+                            {"label": "Canada", "value": "canada"},
+                            {"label": "Brazil", "value": "brazil"},
+                        ],
+                    },
+                ],
+            ),
+            dmc.Divider(my="md"),
+            dmc.Title("Cascade (multi-select)", order=2, mb="sm"),
+            Cascade(
+                id="cascade-multi",
+                multi=True,
+                options=[
+                    {
+                        "label": "Asia",
+                        "value": "asia",
+                        "children": [
+                            {"label": "Japan", "value": "japan"},
+                            {"label": "China", "value": "china"},
+                            {"label": "India", "value": "india"},
+                        ],
+                    },
+                    {
+                        "label": "Europe",
+                        "value": "europe",
+                        "children": [
+                            {"label": "France", "value": "france"},
+                            {"label": "Germany", "value": "germany"},
+                        ],
+                    },
+                ],
+            ),
+            dmc.Divider(my="md"),
+            dmc.Title("Cascade (3-level hierarchy)", order=2, mb="sm"),
+            Cascade(
+                id="cascade-3level",
+                options=[
+                    {
+                        "label": "Asia",
+                        "value": "asia",
+                        "children": [
+                            {
+                                "label": "East Asia",
+                                "value": "east_asia",
+                                "children": [
+                                    {"label": "Japan", "value": "japan"},
+                                    {"label": "South Korea", "value": "south_korea"},
+                                ],
+                            },
+                            {
+                                "label": "South Asia",
+                                "value": "south_asia",
+                                "children": [
+                                    {"label": "India", "value": "india"},
+                                    {"label": "Pakistan", "value": "pakistan"},
+                                ],
+                            },
+                        ],
+                    },
+                ],
             ),
         ],
         size="md",
