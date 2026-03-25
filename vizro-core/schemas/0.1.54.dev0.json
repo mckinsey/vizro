@@ -627,7 +627,7 @@
     },
     "ControlGroup": {
       "additionalProperties": false,
-      "description": "Container to group together a set of controls.\n\nAbstract: Usage documentation\n    [How to use ControlGroup](../user-guides/controls.md/#add-controlgroup)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    (\n        vm.ControlGroup(\n            title=\"Control group title\",\n            controls=[vm.Filter(column=\"species\"), vm.Filter(column=\"sepal_length\")],\n        ),\n    )\n    ```",
+      "description": "Container to group together a set of controls.\n\nAbstract: Usage documentation\n    [How to group controls](../user-guides/controls.md/#group-controls)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    vm.ControlGroup(\n        title=\"Control group title\",\n        controls=[vm.Filter(column=\"species\"), vm.Filter(column=\"sepal_length\")],\n    )\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
