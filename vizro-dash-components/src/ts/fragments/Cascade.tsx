@@ -36,6 +36,9 @@ export type CascadeProps = {
   maxHeight?: number;
   className?: string;
   style?: React.CSSProperties;
+  persistence?: boolean | string | number;
+  persisted_props?: string[];
+  persistence_type?: "local" | "session" | "memory";
 };
 
 const CascadeFragment = ({

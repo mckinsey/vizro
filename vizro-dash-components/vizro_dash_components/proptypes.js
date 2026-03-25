@@ -14,7 +14,10 @@ pk.Cascade.propTypes = {id:pt.any,
  disabled:pt.any,
  maxHeight:pt.any,
  className:pt.any,
- style:pt.any};
+ style:pt.any,
+ persistence:pt.any,
+ persisted_props:pt.any,
+ persistence_type:pt.any};
 pk.Markdown.propTypes = {id:pt.any,
  setProps:pt.any,
  className:pt.any,

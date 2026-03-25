@@ -35,6 +35,12 @@ Keyword arguments:
 
 - options (boolean | number | string | dict | list; required)
 
+- persisted_props (boolean | number | string | dict | list; optional)
+
+- persistence (boolean | number | string | dict | list; optional)
+
+- persistence_type (boolean | number | string | dict | list; optional)
+
 - placeholder (boolean | number | string | dict | list; optional)
 
 - searchable (boolean | number | string | dict | list; optional)
@@ -61,11 +67,14 @@ Keyword arguments:
         maxHeight: typing.Optional[typing.Any] = None,
         className: typing.Optional[typing.Any] = None,
         style: typing.Optional[typing.Any] = None,
+        persistence: typing.Optional[typing.Any] = None,
+        persisted_props: typing.Optional[typing.Any] = None,
+        persistence_type: typing.Optional[typing.Any] = None,
         **kwargs
     ):
-        self._prop_names = ['id', 'className', 'clearable', 'disabled', 'maxHeight', 'multi', 'options', 'placeholder', 'searchable', 'setProps', 'style', 'value']
+        self._prop_names = ['id', 'className', 'clearable', 'disabled', 'maxHeight', 'multi', 'options', 'persisted_props', 'persistence', 'persistence_type', 'placeholder', 'searchable', 'setProps', 'style', 'value']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'className', 'clearable', 'disabled', 'maxHeight', 'multi', 'options', 'placeholder', 'searchable', 'setProps', 'style', 'value']
+        self.available_properties = ['id', 'className', 'clearable', 'disabled', 'maxHeight', 'multi', 'options', 'persisted_props', 'persistence', 'persistence_type', 'placeholder', 'searchable', 'setProps', 'style', 'value']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()
