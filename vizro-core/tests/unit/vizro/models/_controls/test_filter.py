@@ -12,6 +12,8 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
+from vizro.models._components.form import TreeSelect
+from vizro.models._controls._controls_utils import get_selector_default_value
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
 
 
@@ -1148,3 +1150,19 @@ class TestFilterBuild:
         )
 
         assert_component_equal(result, expected, keys_to_strip={"children"})
+
+
+class TestGetSelectorDefaultValueTreeSelect:
+    def test_tree_select_multi_true_default_is_empty_list(self):
+        ts = TreeSelect(multi=True)
+        assert get_selector_default_value(ts) == []
+
+    def test_tree_select_multi_false_default_is_none(self):
+        ts = TreeSelect(multi=False)
+        assert get_selector_default_value(ts) is None
+
+    def test_tree_select_with_value_returns_value(self):
+        # This test passes BEFORE the new branch is added (early-return handles it),
+        # but it documents the expected contract so is worth keeping.
+        ts = TreeSelect(options={"A": ["x"]}, value=["x"])
+        assert get_selector_default_value(ts) == ["x"]
