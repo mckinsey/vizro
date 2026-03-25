@@ -1436,11 +1436,10 @@ class TestFilterCallTree:
             current_value=[],
         )
         tree_component = result["tree_selector_id"]
-        option_titles = [node["title"] for node in tree_component.treeData]
         # Options should reflect fresh data: Europe and Asia as top-level groups
-        assert "Europe" in option_titles
-        assert "Asia" in option_titles
-        assert "(Stale selection)" not in option_titles
+        assert "Europe" in tree_component.options
+        assert "Asia" in tree_component.options
+        assert "(Stale selection)" not in tree_component.options
 
     def test_call_injects_stale_values(self, tree_filter_pre_built):
         fresh_df = pd.DataFrame({"continent": ["Europe"], "country": ["France"]})
@@ -1450,11 +1449,8 @@ class TestFilterCallTree:
             current_value=["OldCountry"],
         )
         tree_component = result["tree_selector_id"]
-        option_titles = [node["title"] for node in tree_component.treeData]
-        assert "(Stale selection)" in option_titles
-        stale_node = next(n for n in tree_component.treeData if n["title"] == "(Stale selection)")
-        # The stale node's children should include OldCountry
-        assert any(child["title"] == "OldCountry" for child in stale_node["children"])
+        assert "(Stale selection)" in tree_component.options
+        assert "OldCountry" in tree_component.options["(Stale selection)"]
 
     def test_call_multi_false_stale_string(self, managers_column_hierarchy_dynamic):
         f = vm.Filter(
@@ -1470,8 +1466,7 @@ class TestFilterCallTree:
             current_value="Atlantis",
         )
         tree_component = result["tree_selector_id_single"]
-        option_titles = [node["title"] for node in tree_component.treeData]
-        assert "(Stale selection)" in option_titles
+        assert "(Stale selection)" in tree_component.options
 
     def test_call_no_stale_when_current_value_empty(self, tree_filter_pre_built):
         fresh_df = pd.DataFrame({"continent": ["Europe"], "country": ["France"]})
@@ -1480,8 +1475,7 @@ class TestFilterCallTree:
             current_value=[],
         )
         tree_component = result["tree_selector_id"]
-        option_titles = [node["title"] for node in tree_component.treeData]
-        assert "(Stale selection)" not in option_titles
+        assert "(Stale selection)" not in tree_component.options
 
     def test_call_target_missing_hierarchy_column_excluded(self, tree_filter_pre_built):
         # DataFrame missing "country" column → silently excluded, options empty
@@ -1491,7 +1485,7 @@ class TestFilterCallTree:
             current_value=[],
         )
         tree_component = result["tree_selector_id"]
-        assert tree_component.treeData == []
+        assert tree_component.options == {}
 
     def test_call_guard_component_is_true(self, tree_filter_pre_built):
         fresh_df = pd.DataFrame({"continent": ["Europe"], "country": ["France"]})

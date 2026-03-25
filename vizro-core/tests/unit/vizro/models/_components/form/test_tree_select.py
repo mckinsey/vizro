@@ -1,8 +1,8 @@
 """Unit tests for vizro.models.TreeSelect."""
 
 import dash_bootstrap_components as dbc
-import feffery_antd_components as fac
 import pytest
+import vizro_dash_components as vdc
 from asserts import assert_component_equal
 from dash import dcc, html
 from pydantic import ValidationError
@@ -10,7 +10,7 @@ from pydantic import ValidationError
 from vizro.models import Tooltip
 from vizro.models._action._action import Action
 from vizro.models._components.form import TreeSelect
-from vizro.models._components.form.tree_select import _convert_options, _extract_leaf_keys
+from vizro.models._components.form.tree_select import _extract_leaf_keys
 
 SIMPLE_OPTIONS = {"Fruits": ["Apple", "Banana"], "Vegetables": ["Carrot"]}
 NESTED_OPTIONS = {
@@ -149,17 +149,12 @@ class TestTreeSelectBuild:
         expected = html.Div(
             children=[
                 None,
-                fac.AntdTreeSelect(
+                vdc.Cascade(
                     id="tree_select_id",
-                    treeData=_convert_options(SIMPLE_OPTIONS),
+                    options=SIMPLE_OPTIONS,
                     value=[],
-                    treeCheckable=True,
-                    multiple=True,
-                    allowClear=True,
-                    showCheckedStrategy="show-child",
-                    maxTagCount="responsive",
-                    listHeight=300,
-                    locale="en-us",
+                    multi=True,
+                    clearable=True,
                     persistence=True,
                     persistence_type="session",
                     placeholder="Select option",
@@ -177,17 +172,12 @@ class TestTreeSelectBuild:
                     children=[html.Span(id="tree_select_id_title", children="Pick a fruit"), None],
                     html_for="tree_select_id",
                 ),
-                fac.AntdTreeSelect(
+                vdc.Cascade(
                     id="tree_select_id",
-                    treeData=_convert_options(SIMPLE_OPTIONS),
+                    options=SIMPLE_OPTIONS,
                     value=[],
-                    treeCheckable=True,
-                    multiple=True,
-                    allowClear=True,
-                    showCheckedStrategy="show-child",
-                    maxTagCount="responsive",
-                    listHeight=300,
-                    locale="en-us",
+                    multi=True,
+                    clearable=True,
                     persistence=True,
                     persistence_type="session",
                     placeholder="Select option",
@@ -202,15 +192,12 @@ class TestTreeSelectBuild:
         expected = html.Div(
             children=[
                 None,
-                fac.AntdTreeSelect(
+                vdc.Cascade(
                     id="tree_select_id",
-                    treeData=_convert_options(SIMPLE_OPTIONS),
+                    options=SIMPLE_OPTIONS,
                     value=None,
-                    treeCheckable=False,
-                    multiple=False,
-                    allowClear=False,
-                    listHeight=300,
-                    locale="en-us",
+                    multi=False,
+                    clearable=False,
                     persistence=True,
                     persistence_type="session",
                     placeholder="Select option",
@@ -225,17 +212,12 @@ class TestTreeSelectBuild:
         expected = html.Div(
             children=[
                 None,
-                fac.AntdTreeSelect(
+                vdc.Cascade(
                     id="tree_select_id",
-                    treeData=_convert_options(SIMPLE_OPTIONS),
+                    options=SIMPLE_OPTIONS,
                     value=["Apple"],
-                    treeCheckable=True,
-                    multiple=True,
-                    allowClear=True,
-                    showCheckedStrategy="show-child",
-                    maxTagCount="responsive",
-                    listHeight=300,
-                    locale="en-us",
+                    multi=True,
+                    clearable=True,
                     persistence=True,
                     persistence_type="session",
                     placeholder="Select option",
@@ -268,17 +250,12 @@ class TestTreeSelectBuild:
                     children=[html.Span(id="tree_select_id_title", children="Pick a fruit"), *expected_description],
                     html_for="tree_select_id",
                 ),
-                fac.AntdTreeSelect(
+                vdc.Cascade(
                     id="tree_select_id",
-                    treeData=_convert_options(SIMPLE_OPTIONS),
+                    options=SIMPLE_OPTIONS,
                     value=[],
-                    treeCheckable=True,
-                    multiple=True,
-                    allowClear=True,
-                    showCheckedStrategy="show-child",
-                    maxTagCount="responsive",
-                    listHeight=300,
-                    locale="en-us",
+                    multi=True,
+                    clearable=True,
                     persistence=True,
                     persistence_type="session",
                     placeholder="Select option",
@@ -288,82 +265,24 @@ class TestTreeSelectBuild:
         assert_component_equal(result, expected)
 
     def test_build_extra_overrides(self):
-        ts = TreeSelect(id="tree_select_id", options=SIMPLE_OPTIONS, extra={"listHeight": 500})
+        ts = TreeSelect(id="tree_select_id", options=SIMPLE_OPTIONS, extra={"placeholder": "Custom"})
         result = ts.build()
         expected = html.Div(
             children=[
                 None,
-                fac.AntdTreeSelect(
+                vdc.Cascade(
                     id="tree_select_id",
-                    treeData=_convert_options(SIMPLE_OPTIONS),
+                    options=SIMPLE_OPTIONS,
                     value=[],
-                    treeCheckable=True,
-                    multiple=True,
-                    allowClear=True,
-                    showCheckedStrategy="show-child",
-                    maxTagCount="responsive",
-                    listHeight=500,
-                    locale="en-us",
+                    multi=True,
+                    clearable=True,
                     persistence=True,
                     persistence_type="session",
-                    placeholder="Select option",
+                    placeholder="Custom",
                 ),
             ]
         )
         assert_component_equal(result, expected)
-
-
-class TestConvertOptions:
-    """Tests for the _convert_options helper function."""
-
-    def test_convert_options_flat(self):
-        result = _convert_options({"A": ["x", "y"]})
-        assert result == [
-            {
-                "title": "A",
-                "key": "A",
-                "value": "A",
-                "children": [
-                    {"title": "x", "key": "x", "value": "x"},
-                    {"title": "y", "key": "y", "value": "y"},
-                ],
-            }
-        ]
-
-    def test_convert_options_nested(self):
-        result = _convert_options({"A": {"B": ["x"]}})
-        assert result == [
-            {
-                "title": "A",
-                "key": "A",
-                "value": "A",
-                "children": [
-                    {
-                        "title": "B",
-                        "key": "B",
-                        "value": "B",
-                        "children": [
-                            {"title": "x", "key": "x", "value": "x"},
-                        ],
-                    }
-                ],
-            }
-        ]
-
-    def test_convert_options_list(self):
-        result = _convert_options(["x", "y"])
-        assert result == [
-            {"title": "x", "key": "x", "value": "x"},
-            {"title": "y", "key": "y", "value": "y"},
-        ]
-
-    def test_convert_options_multiple_groups(self):
-        result = _convert_options(SIMPLE_OPTIONS)
-        assert len(result) == 2
-        assert result[0]["title"] == "Fruits"
-        assert len(result[0]["children"]) == 2
-        assert result[1]["title"] == "Vegetables"
-        assert len(result[1]["children"]) == 1
 
 
 class TestExtractLeafKeys:
@@ -390,17 +309,13 @@ class TestTreeSelectCall:
     def test_call_with_options_param_overrides_self_options(self):
         ts = TreeSelect(options={"A": ["x"]})
         result = ts(options={"B": ["y"]})
-        # title is "" (falsy) so children[0] is None, children[1] is AntdTreeSelect
-        tree_select_component = result.children[1]
-        assert tree_select_component.treeData == [
-            {"title": "B", "key": "B", "value": "B", "children": [{"title": "y", "key": "y", "value": "y"}]}
-        ]
+        # title is "" (falsy) so children[0] is None, children[1] is vdc.Cascade
+        cascade_component = result.children[1]
+        assert cascade_component.options == {"B": ["y"]}
 
     def test_call_without_options_param_uses_self_options(self):
         ts = TreeSelect(options={"A": ["x"]})
         result = ts()
-        # title is "" (falsy) so children[0] is None, children[1] is AntdTreeSelect
-        tree_select_component = result.children[1]
-        assert tree_select_component.treeData == [
-            {"title": "A", "key": "A", "value": "A", "children": [{"title": "x", "key": "x", "value": "x"}]}
-        ]
+        # title is "" (falsy) so children[0] is None, children[1] is vdc.Cascade
+        cascade_component = result.children[1]
+        assert cascade_component.options == {"A": ["x"]}

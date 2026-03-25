@@ -1,7 +1,7 @@
 from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
-import feffery_antd_components as fac
+import vizro_dash_components as vdc
 from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, ValidationInfo, model_validator
 from pydantic.json_schema import SkipJsonSchema
@@ -27,13 +27,6 @@ def _check_options_structure(options: Any) -> None:
             _check_options_structure(value)
         else:
             raise ValueError(f"options values must be list[str] or dict, got {type(value)} for key {key!r}")
-
-
-def _convert_options(d: dict[Any, Any] | list[Any]) -> list[dict[str, Any]]:
-    """Convert nested dict options to AntdTreeSelect treeData format."""
-    if isinstance(d, list):
-        return [{"title": v, "key": v, "value": v} for v in d]
-    return [{"title": k, "key": k, "value": k, "children": _convert_options(v)} for k, v in d.items()]
 
 
 def _extract_leaf_keys(d: dict[Any, Any] | list[Any]) -> set[str]:
@@ -121,7 +114,7 @@ class TreeSelect(VizroBaseModel):
             dict[str, Any],
             Field(
                 default={},
-                description="""Extra keyword arguments passed to `fac.AntdTreeSelect` and overwrite any
+                description="""Extra keyword arguments passed to `vdc.Cascade` and overwrite any
 defaults chosen by the Vizro team. This may have unexpected behavior.""",
             ),
         ]
@@ -157,20 +150,16 @@ defaults chosen by the Vizro team. This may have unexpected behavior.""",
         return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options=None):
-        tree_data = _convert_options(options if options is not None else self.options)
+        options = options if options is not None else self.options
         value = self.value if self.value is not None else ([] if self.multi else None)
         description = self.description.build().children if self.description else [None]
 
         defaults = {
             "id": self.id,
-            "treeData": tree_data,
+            "options": options,
             "value": value,
-            "treeCheckable": self.multi,
-            "multiple": self.multi,
-            "allowClear": self.multi,
-            **({"showCheckedStrategy": "show-child", "maxTagCount": "responsive"} if self.multi else {}),
-            "listHeight": 300,
-            "locale": "en-us",
+            "multi": self.multi,
+            "clearable": self.multi,
             "persistence": True,
             "persistence_type": "session",
             "placeholder": "Select option",
@@ -184,7 +173,7 @@ defaults chosen by the Vizro team. This may have unexpected behavior.""",
                 )
                 if self.title
                 else None,
-                fac.AntdTreeSelect(**(defaults | self.extra)),
+                vdc.Cascade(**(defaults | self.extra)),
             ]
         )
 
