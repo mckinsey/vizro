@@ -3,7 +3,7 @@ from typing import Annotated, Any, Literal
 import dash_bootstrap_components as dbc
 import feffery_antd_components as fac
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, ValidationInfo, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
@@ -94,6 +94,8 @@ class TreeSelect(VizroBaseModel):
     specified in `column_hierarchy`. When used with `Parameter`, `options` must be provided.
 
     """
+
+    _dynamic: bool = PrivateAttr(False)
 
     type: Literal["tree_select"] = "tree_select"
     options: TreeOptionsType = Field(default={})

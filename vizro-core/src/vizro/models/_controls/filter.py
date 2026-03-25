@@ -16,12 +16,13 @@ from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch, TreeSelect
-from vizro.models._components.form.tree_select import _check_no_duplicate_leaves
+from vizro.models._components.form.tree_select import _check_no_duplicate_leaves, _extract_leaf_keys
 from vizro.models._controls._controls_utils import (
     SELECTORS,
     _is_boolean_selector,
     _is_categorical_selector,
     _is_numerical_temporal_selector,
+    _is_tree_selector,
     check_control_targets,
     get_control_parent,
     get_selector_default_value,
@@ -128,10 +129,14 @@ class Filter(VizroBaseModel):
         # mode="before" can receive non-dict input (e.g. a model instance); guard against that.
         if not isinstance(data, dict):
             return data
-        has_column = bool(data.get("column"))
-        has_hierarchy = bool(data.get("column_hierarchy"))
+        column = data.get("column")
+        column_hierarchy = data.get("column_hierarchy")
+        has_column = bool(column)
+        has_hierarchy = bool(column_hierarchy)
         if has_column and has_hierarchy:
-            raise ValueError("Only one of `column` or `column_hierarchy` can be set.")
+            # Allow the internal state where pre_build has set column = column_hierarchy[-1].
+            if column != column_hierarchy[-1]:
+                raise ValueError("Only one of `column` or `column_hierarchy` can be set.")
         elif not has_column and not has_hierarchy:
             raise ValueError("One of `column` or `column_hierarchy` must be set.")
         return data
@@ -222,7 +227,7 @@ class Filter(VizroBaseModel):
         check_control_targets(control=self)
 
         if self.column_hierarchy:
-            # Step 1: set leaf column immediately — required before _validate_targeted_data
+            # Step 1: set leaf column immediately — required before _validate_targeted_data.
             self.column = self.column_hierarchy[-1]
             user_provided_targets = list(self.targets)  # capture before overwriting
 
@@ -273,17 +278,22 @@ class Filter(VizroBaseModel):
             self._column_type = "categorical"
             self.selector.title = self.selector.title or self.column.title()
 
-            # Build options if not user-supplied; validate for duplicate leaves
+            # Dynamic detection — same pattern as the standard path; skipped if options are user-supplied
             if not self.selector.options:
+                for target_id in self.targets:
+                    data_source_name = cast(FigureType, model_manager[target_id])["data_frame"]
+                    if isinstance(data_manager[data_source_name], _DynamicData):
+                        self._dynamic = True
+                        self.selector._dynamic = True
+                        break
+
+            # Only set options for static filters; dynamic filters compute them at runtime in __call__
+            if not self._dynamic and not self.selector.options:
                 built_options = self._get_tree_options(wide_df, self.column_hierarchy)
                 _check_no_duplicate_leaves(built_options)
                 self.selector.options = built_options
 
             self.selector.value = get_selector_default_value(self.selector)
-
-            # Dynamic detection is naturally skipped: options is now non-empty so the condition
-            # `not getattr(self.selector, "options", [])` is False.
-            # TODO: add dynamic support for column_hierarchy
 
             if not self.selector.actions:
                 self.selector.actions = [

@@ -1363,3 +1363,53 @@ class TestFilterHierarchyPreBuild:
         f.pre_build()
         # f.selector.actions[0] is a _filter action instance with a .column field
         assert f.selector.actions[0].column == "city"
+
+
+@pytest.fixture
+def managers_column_hierarchy_dynamic(gapminder_dynamic_first_n_last_n_function):
+    """Page with one graph using dynamic gapminder data (has continent and country columns)."""
+    data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
+    vm.Page(
+        id="test_page",
+        title="Page Title",
+        components=[
+            vm.Graph(
+                id="fig_dynamic", figure=px.scatter("gapminder_dynamic_first_n_last_n", x="continent", y="country")
+            )
+        ],
+    )
+    Vizro._pre_build()
+
+
+class TestFilterHierarchyPreBuildDynamic:
+    def test_dynamic_flag_set(self, managers_column_hierarchy_dynamic):
+        f = vm.Filter(column_hierarchy=["continent", "country"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f._dynamic is True
+        assert f.selector._dynamic is True
+
+    def test_options_not_set_for_dynamic_filter(self, managers_column_hierarchy_dynamic):
+        f = vm.Filter(column_hierarchy=["continent", "country"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f.selector.options == {}
+
+    def test_dynamic_flag_not_set_for_static_data(self, managers_column_hierarchy):
+        # managers_column_hierarchy uses static data frames
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f._dynamic is False
+        assert f.selector._dynamic is False
+
+    def test_user_supplied_options_prevent_dynamic(self, managers_column_hierarchy_dynamic):
+        # User-supplied options → treated as static regardless of data source
+        f = vm.Filter(
+            column_hierarchy=["continent", "country"],
+            selector=vm.TreeSelect(options={"Europe": ["France", "Germany"]}),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f._dynamic is False
+        assert f.selector._dynamic is False
