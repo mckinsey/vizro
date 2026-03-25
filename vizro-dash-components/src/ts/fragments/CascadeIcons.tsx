@@ -1,4 +1,5 @@
 // biome-ignore lint/correctness/noUnusedImports: React must be in scope for classic JSX transform
+// biome-ignore lint/style/useImportType: React value import required for classic JSX transform ("jsx": "react" in tsconfig)
 import React from "react";
 
 type IconProps = { className?: string; style?: React.CSSProperties };

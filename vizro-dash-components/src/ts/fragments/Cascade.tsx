@@ -1,5 +1,12 @@
 // biome-ignore lint/correctness/noUnusedImports: React must be in scope for classic JSX transform
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+// biome-ignore lint/style/useImportType: React value import required for classic JSX transform ("jsx": "react" in tsconfig)
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import "../css/cascade.css";
 import {
   CaretDownIcon,
@@ -9,7 +16,7 @@ import {
 } from "./CascadeIcons";
 import {
   buildColumns,
-  CascadeOption,
+  type CascadeOption,
   collectAllLeaves,
   collectLeaves,
   parentCheckState,
@@ -64,7 +71,10 @@ const CascadeFragment = ({
   useEffect(() => {
     if (!isOpen) return;
     const handler = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
         setIsOpen(false);
         setSearchValue("");
       }
@@ -102,12 +112,12 @@ const CascadeFragment = ({
 
   const selectedSet = useMemo(
     () => new Set<string | number>(selectedValues),
-    [selectedValues]
+    [selectedValues],
   );
 
   const columns = useMemo(
     () => buildColumns(options, activePath),
-    [options, activePath]
+    [options, activePath],
   );
 
   const searchResults = useMemo(() => {
@@ -130,14 +140,14 @@ const CascadeFragment = ({
       };
       return find(options) ?? String(val);
     },
-    [options]
+    [options],
   );
 
   // --- Interaction handlers ---
 
   const handleTriggerClick = useCallback(() => {
     if (disabled) return;
-    setIsOpen(prev => !prev);
+    setIsOpen((prev) => !prev);
   }, [disabled]);
 
   const handleClear = useCallback(
@@ -145,14 +155,14 @@ const CascadeFragment = ({
       e.stopPropagation();
       setProps({ value: multi ? [] : null });
     },
-    [multi, setProps]
+    [multi, setProps],
   );
 
   const handleLeafClick = useCallback(
     (leafValue: string | number) => {
       if (multi) {
         const next = selectedSet.has(leafValue)
-          ? selectedValues.filter(v => v !== leafValue)
+          ? selectedValues.filter((v) => v !== leafValue)
           : [...selectedValues, leafValue];
         setProps({ value: next });
       } else {
@@ -161,20 +171,17 @@ const CascadeFragment = ({
         setSearchValue("");
       }
     },
-    [multi, selectedSet, selectedValues, setProps]
+    [multi, selectedSet, selectedValues, setProps],
   );
 
-  const handleParentClick = useCallback(
-    (colIdx: number, rowIdx: number) => {
-      // Clicking the row (not checkbox) expands the column — only when not searching
-      setActivePath(prev => {
-        const next = prev.slice(0, colIdx);
-        next.push(rowIdx);
-        return next;
-      });
-    },
-    []
-  );
+  const handleParentClick = useCallback((colIdx: number, rowIdx: number) => {
+    // Clicking the row (not checkbox) expands the column — only when not searching
+    setActivePath((prev) => {
+      const next = prev.slice(0, colIdx);
+      next.push(rowIdx);
+      return next;
+    });
+  }, []);
 
   const handleParentCheckbox = useCallback(
     (option: CascadeOption, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -184,32 +191,39 @@ const CascadeFragment = ({
       let next: (string | number)[];
       if (state === "checked") {
         // checked → remove all
-        next = selectedValues.filter(v => !leaves.includes(v));
+        next = selectedValues.filter((v) => !leaves.includes(v));
       } else {
         // unchecked or indeterminate → add all missing
-        const toAdd = leaves.filter(v => !selectedSet.has(v));
+        const toAdd = leaves.filter((v) => !selectedSet.has(v));
         next = [...selectedValues, ...toAdd];
       }
       setProps({ value: next });
     },
-    [selectedSet, selectedValues, setProps]
+    [selectedSet, selectedValues, setProps],
   );
 
   const handleSelectAll = useCallback(() => {
     const pool = searchValue
-      ? searchResults.map(r => r.option.value)
+      ? searchResults.map((r) => r.option.value)
       : collectAllLeaves(options);
-    const toAdd = pool.filter(v => !selectedSet.has(v));
+    const toAdd = pool.filter((v) => !selectedSet.has(v));
     setProps({ value: [...selectedValues, ...toAdd] });
-  }, [searchValue, searchResults, options, selectedSet, selectedValues, setProps]);
+  }, [
+    searchValue,
+    searchResults,
+    options,
+    selectedSet,
+    selectedValues,
+    setProps,
+  ]);
 
   const handleDeselectAll = useCallback(() => {
     const pool = new Set(
       searchValue
-        ? searchResults.map(r => r.option.value)
-        : collectAllLeaves(options)
+        ? searchResults.map((r) => r.option.value)
+        : collectAllLeaves(options),
     );
-    setProps({ value: selectedValues.filter(v => !pool.has(v)) });
+    setProps({ value: selectedValues.filter((v) => !pool.has(v)) });
   }, [searchValue, searchResults, options, selectedValues, setProps]);
 
   // --- Render helpers ---
@@ -236,13 +250,17 @@ const CascadeFragment = ({
       <span className={`dash-cascade-trigger ${canClear ? "has-clear" : ""}`}>
         <span
           className={
-            triggerLabel ? "dash-cascade-value" : "dash-cascade-value dash-cascade-placeholder"
+            triggerLabel
+              ? "dash-cascade-value"
+              : "dash-cascade-value dash-cascade-placeholder"
           }
         >
           {triggerLabel ?? placeholder}
         </span>
         {multi && selectedValues.length > 1 && (
-          <span className="dash-cascade-count">{selectedValues.length} selected</span>
+          <span className="dash-cascade-count">
+            {selectedValues.length} selected
+          </span>
         )}
         {canClear && (
           <button
@@ -269,7 +287,7 @@ const CascadeFragment = ({
         placeholder="Search..."
         value={searchValue}
         autoComplete="off"
-        onChange={e => setSearchValue(e.target.value)}
+        onChange={(e) => setSearchValue(e.target.value)}
       />
       {searchValue && (
         <button
@@ -286,10 +304,18 @@ const CascadeFragment = ({
 
   const renderActionsBar = () => (
     <div className="dash-cascade-actions">
-      <button type="button" className="dash-cascade-action-button" onClick={handleSelectAll}>
+      <button
+        type="button"
+        className="dash-cascade-action-button"
+        onClick={handleSelectAll}
+      >
         Select all
       </button>
-      <button type="button" className="dash-cascade-action-button" onClick={handleDeselectAll}>
+      <button
+        type="button"
+        className="dash-cascade-action-button"
+        onClick={handleDeselectAll}
+      >
         Deselect all
       </button>
     </div>
@@ -319,7 +345,7 @@ const CascadeFragment = ({
                       checked={isSelected}
                       disabled={opt.disabled}
                       onChange={() => handleLeafClick(opt.value)}
-                      onClick={e => e.stopPropagation()}
+                      onClick={(e) => e.stopPropagation()}
                     />
                   )}
                   <span className="dash-cascade-row-label">{opt.label}</span>
@@ -328,24 +354,28 @@ const CascadeFragment = ({
             }
 
             // Parent row
-            const checkState = multi ? parentCheckState(opt, selectedSet) : undefined;
+            const checkState = multi
+              ? parentCheckState(opt, selectedSet)
+              : undefined;
             return (
               <div
                 key={String(opt.value)}
                 className={`dash-cascade-row${isActive ? " active" : ""}${opt.disabled ? " disabled" : ""}`}
-                onClick={() => !opt.disabled && handleParentClick(colIdx, rowIdx)}
+                onClick={() =>
+                  !opt.disabled && handleParentClick(colIdx, rowIdx)
+                }
               >
                 {multi && (
                   <input
                     type="checkbox"
                     className="dash-cascade-checkbox"
                     checked={checkState === "checked"}
-                    ref={el => {
+                    ref={(el) => {
                       if (el) el.indeterminate = checkState === "indeterminate";
                     }}
                     disabled={opt.disabled}
-                    onChange={e => handleParentCheckbox(opt, e)}
-                    onClick={e => e.stopPropagation()}
+                    onChange={(e) => handleParentCheckbox(opt, e)}
+                    onClick={(e) => e.stopPropagation()}
                   />
                 )}
                 <span className="dash-cascade-row-label">{opt.label}</span>
@@ -379,7 +409,7 @@ const CascadeFragment = ({
                   checked={isSelected}
                   disabled={option.disabled}
                   onChange={() => handleLeafClick(option.value)}
-                  onClick={e => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
                 />
               )}
               <span className="dash-cascade-row-label">{option.label}</span>
