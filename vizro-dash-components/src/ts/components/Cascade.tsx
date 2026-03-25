@@ -81,7 +81,7 @@ Cascade.propTypes = {
   style: PropTypes.object,
   /**
    * Used to allow user interactions in this component to be persisted when
-   * the component — or the page — is refreshed. If `persisted` is truthy and
+   * the component — or the page — is refreshed. If `persistence` is truthy and
    * hasn't changed from its previous value, a `value` that the user has
    * changed while using the app will keep that change, as long as the new
    * `value` also matches what was given originally.
