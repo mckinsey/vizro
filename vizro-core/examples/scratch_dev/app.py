@@ -32,7 +32,6 @@ GAPMINDER_OPTIONS = {
     continent: gapminder[gapminder["continent"] == continent]["country"].unique().tolist() for continent in continents
 }
 
-# Dummy dataframes for filter compatibility (filters need a data_frame with filterable columns)
 dummy_df = pd.DataFrame({"category": ["Electronics", "Clothing", "Food"]})
 gapminder_2007 = gapminder[gapminder["year"] == 2007].copy()
 
@@ -55,44 +54,77 @@ def gapminder_bar(data_frame: pd.DataFrame, countries=None):
     return px.bar(data_frame, x="country", y="lifeExp", color="continent")
 
 
-# --- Page ---
+# --- Page: Cascader as Parameter ---
 
-page = vm.Page(
-    title="TreeSelect",
+page_parameter = vm.Page(
+    title="Cascader as Parameter",
     components=[
-        vm.Figure(id="figure-products", figure=show_selected(data_frame=dummy_df, selected=[])),
+        vm.Figure(id="figure-products-single", figure=show_selected(data_frame=dummy_df, selected=None)),
+        vm.Figure(id="figure-products-multi", figure=show_selected(data_frame=dummy_df, selected=[])),
         vm.Graph(id="graph-gapminder", figure=gapminder_bar(data_frame=gapminder_2007, countries=[])),
     ],
     controls=[
         vm.Parameter(
-            targets=["figure-products.selected"],
-            selector=vm.TreeSelect(
+            targets=["figure-products-single.selected"],
+            selector=vm.Cascader(
                 options=_STRUCTURE,
-                title="Products (TreeSelect)",
+                title="Products (Cascader multi=False)",
                 multi=False,
             ),
         ),
         vm.Parameter(
-            targets=["graph-gapminder.countries"],
-            selector=vm.TreeSelect(
-                options=GAPMINDER_OPTIONS,
-                title="Gapminder countries (TreeSelect)",
+            targets=["figure-products-multi.selected"],
+            selector=vm.Cascader(
+                options=_STRUCTURE,
+                title="Products (Cascader multi=True)",
+                multi=True,
             ),
         ),
-        vm.Filter(
-            column="category",
-            targets=["figure-products"],
-            selector=vm.Checklist(title="Category filter (Checklist)"),
-        ),
-        vm.Filter(
-            column="continent",
-            targets=["graph-gapminder"],
-            selector=vm.Dropdown(title="Continent filter (Dropdown)"),
+        vm.Parameter(
+            targets=["graph-gapminder.countries"],
+            selector=vm.Cascader(
+                options=GAPMINDER_OPTIONS,
+                title="Gapminder countries (Cascader multi=True)",
+            ),
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+# --- Page: Cascader as Filter vs Dropdown ---
+
+page_filter = vm.Page(
+    title="Cascader vs Dropdown as Filter",
+    components=[
+        vm.Graph(
+            id="graph-scatter",
+            figure=px.scatter(gapminder_2007, x="lifeExp", y="gdpPercap", color="continent", hover_name="country"),
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            column_hierarchy=["continent", "country"],
+            targets=["graph-scatter"],
+            selector=vm.Cascader(title="Country (Cascader multi=True)", multi=True),
+        ),
+        vm.Filter(
+            column_hierarchy=["continent", "country"],
+            targets=["graph-scatter"],
+            selector=vm.Cascader(title="Country (Cascader multi=False)", multi=False),
+        ),
+        vm.Filter(
+            column="continent",
+            targets=["graph-scatter"],
+            selector=vm.Dropdown(title="Continent (Dropdown multi=True)", multi=True),
+        ),
+        vm.Filter(
+            column="continent",
+            targets=["graph-scatter"],
+            selector=vm.Dropdown(title="Continent (Dropdown multi=False)", multi=False),
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page_parameter, page_filter])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+    Vizro().build(dashboard).run(debug=True, port=8051)
