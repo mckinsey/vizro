@@ -39,7 +39,7 @@ Keyword arguments:
 
 - searchable (boolean | number | string | dict | list; optional)
 
-- setProps (boolean | number | string | dict | list; required)
+- setProps (boolean | number | string | dict | list; optional)
 
 - value (boolean | number | string | dict | list; optional)"""
     _children_props: typing.List[str] = []
@@ -72,7 +72,7 @@ Keyword arguments:
         _locals.update(kwargs)  # For wildcard attrs and excess named props
         args = {k: _locals[k] for k in _explicit_args}
 
-        for k in ['options', 'setProps']:
+        for k in ['options']:
             if k not in args:
                 raise TypeError(
                     'Required argument `' + k + '` was not specified.')

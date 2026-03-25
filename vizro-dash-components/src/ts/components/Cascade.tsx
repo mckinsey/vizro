@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 // biome-ignore lint/correctness/noUnusedImports: React must be in scope for classic JSX transform
 import React, { Component } from "react";
-import CascadeFragment, { CascadeProps } from "../fragments/Cascade";
+import CascadeFragment, { type CascadeProps } from "../fragments/Cascade";
 
 /**
  * A hierarchical cascading dropdown component.
@@ -27,7 +27,7 @@ Cascade.propTypes = {
   /**
    * Dash-assigned callback that gets fired when the value changes.
    */
-  setProps: PropTypes.func.isRequired,
+  setProps: PropTypes.func,
   /**
    * Tree-structured options. Each node has a `label` and `value`.
    * Nodes with a `children` array are parents; nodes without are leaves.
@@ -43,7 +43,7 @@ Cascade.propTypes = {
     PropTypes.string,
     PropTypes.number,
     PropTypes.arrayOf(
-      PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     ),
   ]),
   /**

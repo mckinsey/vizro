@@ -25,7 +25,7 @@ import {
 
 export type CascadeProps = {
   id?: string;
-  setProps: (props: Record<string, unknown>) => void;
+  setProps?: (props: Record<string, unknown>) => void;
   options: CascadeOption[];
   value?: string | number | null | (string | number)[];
   multi?: boolean;
