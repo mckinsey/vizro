@@ -34,7 +34,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install dependencies
-        run: pip install hatch 'virtualenv!=21.0.0' werkzeug
+        run: pip install hatch werkzeug
 
       - name: Extract release notes
         run: |

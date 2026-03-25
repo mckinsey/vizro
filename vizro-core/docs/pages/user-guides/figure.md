@@ -15,7 +15,7 @@ The following flowchart shows what you need to consider when choosing which mode
 
 ```mermaid
 graph TD
-  first["`Does your desired component exist in Vizro, e.g. Graph, Table or AgGrid?`"]
+  first["`Does your desired component exist in Vizro, for example, Graph, Table or AgGrid?`"]
   specific-component([Use the specific component])
   second["`Does your component need to be reactive to controls?`"]
   second-static([Use custom components])

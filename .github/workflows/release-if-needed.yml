@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
-        run: pip install hatch 'virtualenv!=21.0.0' requests
+        run: pip install hatch requests
 
       - name: Check which 📦 needs to be released
         run: python tools/check_package_release.py
@@ -49,7 +49,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
-        run: pip install hatch 'virtualenv!=21.0.0' requests werkzeug>=3.0.1
+        run: pip install hatch requests werkzeug>=3.0.1
       - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/CHANGELOG.md
         id: extract
         run: |
@@ -62,6 +62,18 @@ jobs:
           ./tools/release.sh mckinsey vizro ${{ secrets.GITHUB_TOKEN }} \
           ${{needs.check-version.outputs.package_name}} \
           ${{needs.check-version.outputs.package_version}} release_body.txt
+      - name: Set up Node.js for vizro-dash-components
+        if: needs.check-version.outputs.package_name == 'vizro-dash-components'
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+      - name: Generate Python components for vizro-dash-components
+        if: needs.check-version.outputs.package_name == 'vizro-dash-components'
+        # Generated Python code and JS bundles are gitignored, so we must rebuild before packaging.
+        run: |
+          cd vizro-dash-components
+          npm ci --legacy-peer-deps
+          hatch run generate-components
       - name: Build package
         run: |
           cd "${{ needs.check-version.outputs.package_name }}"
@@ -74,6 +86,8 @@ jobs:
             echo 'PYPI_TOKEN=${{ secrets.VIZRO_AI_PYPI_TOKEN }}' >> $GITHUB_ENV
           elif [ "${{ needs.check-version.outputs.package_name }}" == "vizro-mcp" ]; then
             echo 'PYPI_TOKEN=${{ secrets.VIZRO_MCP_PYPI_TOKEN }}' >> $GITHUB_ENV
+          elif [ "${{ needs.check-version.outputs.package_name }}" == "vizro-dash-components" ]; then
+            echo 'PYPI_TOKEN=${{ secrets.VIZRO_DASH_COMPONENTS_PYPI_TOKEN }}' >> $GITHUB_ENV
           fi
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
@@ -96,7 +110,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
-        run: pip install hatch 'virtualenv!=21.0.0'
+        run: pip install hatch
       # if you want to change this step please contact tech lead
       - name: Push bumped version to main
         run: |
@@ -105,6 +119,11 @@ jobs:
           hatch run changelog:add
           if [ "${{ needs.check-version.outputs.package_name }}" == "vizro-core" ]; then
             hatch run schema
+          fi
+          if [ "${{ needs.check-version.outputs.package_name }}" == "vizro-dash-components" ]; then
+            # hatch-nodejs-version writes package.json with 4-space indent; reformat to match biome config.
+            npx biome format --write package.json
+            npm install --package-lock-only --legacy-peer-deps
           fi
           git config user.email "145135826+vizro-svc@users.noreply.github.com"
           git config user.name "Vizro Team"

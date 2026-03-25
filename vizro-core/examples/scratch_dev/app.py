@@ -1,349 +1,160 @@
-import numpy as np
+"""Development playground exploring markdown variations using built-in Vizro models.
+
+This script demonstrates a variety of ways to render markdown content with
+components that internally rely on `vdc.Markdown` (the new built‑in
+markdown component).  The goal is to exercise code blocks, math formulas,
+links, headers and dynamic content without importing `vizro_dash_components`
+explicitly.  We show both static pages (with `vm.Text` and `vm.Card`) and
+custom figures which react to filters/parameters.
+"""
+
 import pandas as pd
+
 import vizro.models as vm
-import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.managers import data_manager
 
-df = px.data.iris()
-df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq="D")
-df["is_setosa"] = df["species"] == "setosa"
+# sample data with several kinds of markdown content
 
-data_manager["static_df"] = df
-data_manager["dynamic_df"] = lambda number_of_points=10: df.head(number_of_points)
-
-
-SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
-
-page_1 = vm.Page(
-    title="Single/Multi static DD",
-    components=[
-        vm.Graph(
-            figure=px.scatter(
-                "static_df", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
-            )
-        ),
-        vm.Container(
-            title="Container title",
-            components=[
-                vm.Graph(
-                    figure=px.scatter(
-                        "static_df",
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        color_discrete_map=SPECIES_COLORS,
-                    )
-                ),
-            ],
-            controls=[
-                vm.Filter(column="species", selector=vm.Dropdown(multi=True)),
-            ],
-        ),
-    ],
-    controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="plain")),
-        vm.Filter(column="species", selector=vm.Dropdown(multi=False)),
-    ],
-)
-
-page_2 = vm.Page(
-    title="Single/Multi dynamic DD",
-    components=[
-        vm.Graph(
-            id="graph_2",
-            figure=px.scatter(
-                "dynamic_df", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
-            ),
-        )
-    ],
-    controls=[
-        # TODO-REVIEWER: To a bug with the standard _build_dynamic_placeholder:
-        #  1. Replace vm.Dropdown._build_dynamic_placeholder with vm.Checklist._build_dynamic_placeholder implementation
-        #  2. Run the app and open page_2
-        #  3. Select values ["setosa", "versicolor"] in the multi Dropdown, and "versicolor" in the single Dropdown
-        #  4. Refresh the page.
-        vm.Filter(column="species", selector=vm.Dropdown(multi=True)),
-        vm.Filter(column="species", selector=vm.Dropdown(multi=False)),
-        vm.Parameter(
-            targets=["graph_2.data_frame.number_of_points"], selector=vm.Slider(min=10, max=150, step=20, value=10)
-        ),
-    ],
-)
-
-
-long_df = pd.DataFrame(
+df = pd.DataFrame(
     {
-        # TODO-UI: By setting max width of the Dropdown seems like option height is automatically adjusted.
-        "long_string": [
-            # List of 100 strings with variable number (1 -> 101) of characters "A"(95%) or space " "(5%).
-            "Value " + "".join(" " if np.random.rand() < 0.05 else "A" for _ in range(length))
-            for length in range(1, 101)
+        "topic": ["Python", "JavaScript", "SQL", "React"],
+        "description": [
+            "A versatile programming language",
+            "The language of the web",
+            "Database query language",
+            "A JavaScript library for building UIs",
         ],
-        "x": range(1, 101),
-        "y": range(101, 201),
+        "code_example": [
+            '```python\ndef hello():\n    return "Hello, World!"\n```',
+            '```javascript\nconst hello = () => "Hello, World!";\n```',
+            "```sql\nSELECT * FROM users WHERE active = true;\n```",
+            "```jsx\nconst App = () => <h1>Hello, World!</h1>;\n```",
+        ],
+        "formula": [
+            r"$f(x) = x^2 + 2x + 1$",
+            r"$y = mx + b$",
+            r"$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$",
+            r"$E = mc^2$",
+        ],
     }
 )
 
-page_3 = vm.Page(
-    title="Long values in Dropdown",
-    components=[vm.Graph(figure=px.scatter(long_df, x="x", y="y"))],
-    controls=[vm.Filter(column="long_string")],
-)
+# tests previously used custom figure functions with capture decorators.
+# since we only want to demonstrate vm.Text/vm.Card models we remove
+# all @capture definitions and instead create simple pages directly.
 
-page_4 = vm.Page(
-    title="All dynamic selectors",
+# (helper data still available for manual consumption if desired)
+
+
+# -----------------------------------------------------------------------------
+# Pages built from the helper figures and static text/card examples
+# -----------------------------------------------------------------------------
+
+# create a page that showcases various markdown features using vm.Text
+page_static = vm.Page(
+    title="Markdown variations",
     components=[
-        vm.Container(
-            controls=[
-                vm.Filter(column="species", selector=vm.RadioItems(title="RadioItems Single")),
-                vm.Filter(column="species", selector=vm.Dropdown(multi=False, title="Dropdown Single")),
-                vm.Filter(column="species", selector=vm.Dropdown(multi=True, title="Dropdown Multi")),
-                vm.Filter(column="species", selector=vm.Checklist(title="Checklist Multi")),
-                vm.Filter(column="is_setosa", selector=vm.Switch(title="Switch Single")),
-                vm.Filter(column="sepal_width", selector=vm.Slider(title="Slider Single")),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(title="Range Slider")),
-                vm.Filter(column="date_column", selector=vm.DatePicker(range=False, title="Single Dropdown")),
-                vm.Filter(column="date_column", selector=vm.DatePicker(range=True, title="Range DatePicker")),
-            ],
-            components=[
-                vm.Graph(
-                    id="graph_4",
-                    figure=px.scatter(
-                        "dynamic_df",
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        color_discrete_map=SPECIES_COLORS,
-                    ),
-                )
-            ],
-        )
-    ],
-    controls=[
-        vm.Parameter(
-            targets=["graph_4.data_frame.number_of_points"],
-            selector=vm.Slider(min=10, max=150, step=20, value=150, title="DataFrame Parameter"),
+        vm.Text(
+            text="""# Header level 1
+
+This is a paragraph with **bold**, *italic*, and a [link](https://example.com).
+
+Here is some inline code: `print('hi')`.
+
+And a fenced code block:
+```python
+for i in range(3):
+    print(i)
+```
+""",
         ),
-        vm.Filter(column="species", selector=vm.RadioItems(title="RadioItems Single")),
-        vm.Filter(column="species", selector=vm.Dropdown(multi=False, title="Dropdown Single")),
-        vm.Filter(column="species", selector=vm.Dropdown(multi=True, title="Dropdown Multi")),
-        vm.Filter(column="species", selector=vm.Checklist(title="Checklist Multi")),
-        vm.Filter(column="is_setosa", selector=vm.Switch(title="Switch Single")),
-        vm.Filter(column="sepal_width", selector=vm.Slider(title="Slider Single")),
-        vm.Filter(column="sepal_length", selector=vm.RangeSlider(title="Range Slider")),
-        vm.Filter(column="date_column", selector=vm.DatePicker(range=False, title="Single Dropdown")),
-        vm.Filter(column="date_column", selector=vm.DatePicker(range=True, title="Range DatePicker")),
+        vm.Text(
+            text="""## Math and lists
+
+To render math use `$E = mc^2$` inline or
+
+This example uses the block delimiter:
+$$
+\\frac{1}{(\\sqrt{\\phi \\sqrt{5}}-\\phi) e^{\\frac25 \\pi}} =
+1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}}
+{1+\\frac{e^{-8\\pi}} {1+\\ldots} } } }
+$$
+
+This example uses the inline delimiter:
+$E^2=m^2c^4+p^2c^2$
+
+
+- bullet
+- points
+""",
+            extra={"mathjax": True},
+        ),
+        vm.Card(
+            header="Card header",
+            text="""Cards can also contain markdown text with **formatting**.
+
+```bash
+$ echo hello
+```""",
+            footer="Footer text",
+        ),
     ],
 )
 
-page_5 = vm.Page(
-    title="Sliders stress-test",
+# a later page demonstrating layout flexibility and code snippets
+page_snippet = vm.Page(
+    title="Code snippet examples",
     components=[
-        vm.Container(
-            controls=[
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(title="No Config")),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(min=0, max=10, title="Min/Max")),
-                vm.Filter(
-                    column="sepal_length", selector=vm.RangeSlider(min=0.13, max=10.13, title="Min-flot/Max-float")
-                ),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(min=4.3, max=7.9, step=1, title="Step")),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(step=0.5, title="Step-float")),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(marks={5: "5", 6.1: "6.1", 7.2: "7.2"}, title="Marks"),
-                ),
-                vm.Filter(
-                    column="sepal_length", selector=vm.RangeSlider(min=0, max=10, step=0.5, title="Min/Max/Step-float")
-                ),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(min=0.13, max=10.13, step=1, title="Min-float/Max-float/Step"),
-                ),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(min=0.13, max=10.13, step=0.5, title="Min-float/Max-float/Step-float"),
-                ),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(min=0, max=10, marks={0: "0", 5: "5", 10: "10"}, title="Min/Max/Marks"),
-                ),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(
-                        min=0.13,
-                        max=10.13,
-                        marks={0.13: "0.13", 5.13: "5.13", 10.13: "10.13"},
-                        title="Min-float/Max-float/Marks-float",
-                    ),
-                ),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(
-                        min=0, max=10, step=1, marks={0: "0", 5: "5", 10: "10"}, title="Min/Max/Step/Marks"
-                    ),
-                ),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(
-                        min=0.13,
-                        max=10.13,
-                        step=0.5,
-                        marks={0.13: "0.13", 5.13: "5.13", 10.13: "10.13"},
-                        title="Min-float/Max-float/Step-float/Marks-float",
-                    ),
-                ),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(marks=None, title="Marks=None")),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider(step=1, marks=None, title="Step/Marks=None")),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(
-                        min=0.13,
-                        max=10.13,
-                        step=0.5,
-                        marks=None,
-                        title="Min-float/Max-float/Step-float/Marks=None",
-                    ),
-                ),
-            ],
-            components=[
-                vm.Graph(
-                    id="graph_5",
-                    figure=px.scatter(
-                        "dynamic_df",
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        color_discrete_map=SPECIES_COLORS,
-                    ),
-                )
-            ],
-        )
-    ],
-    controls=[
-        vm.Parameter(
-            targets=["graph_5.data_frame.number_of_points"],
-            selector=vm.Slider(min=10, max=150, step=10, title="DataFrame Parameter"),
+        vm.Card(
+            text="""
+
+Block code snippet:
+```python
+print('hello world')
+```
+
+""",
         ),
-        vm.Filter(column="sepal_length", selector=vm.Slider(title="No Config")),
-        vm.Filter(column="sepal_length", selector=vm.Slider(min=0, max=10, title="Min/Max")),
-        vm.Filter(column="sepal_length", selector=vm.Slider(min=0.13, max=10.13, title="Min-flot/Max-float")),
-        vm.Filter(column="sepal_length", selector=vm.Slider(step=1, title="Step")),
-        vm.Filter(column="sepal_length", selector=vm.Slider(step=0.5, title="Step-float")),
-        vm.Filter(column="sepal_length", selector=vm.Slider(marks={5: "5", 6.1: "6.1", 7.2: "7.2"}, title="Marks")),
-        vm.Filter(column="sepal_length", selector=vm.Slider(min=0, max=10, step=0.5, title="Min/Max/Step-float")),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(min=0.13, max=10.13, step=1, title="Min-float/Max-float/Step"),
+        vm.Card(
+            text="""
+and inline code snippet: `print('hello world')`
+
+and
+```javascript
+console.log('hello world');
+const add = (a, b) => a + b;
+```
+""",
         ),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(min=0.13, max=10.13, step=0.5, title="Min-float/Max-float/Step-float"),
-        ),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(min=0, max=10, marks={0: "0", 5: "5", 10: "10"}, title="Min/Max/Marks"),
-        ),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(
-                min=0.13,
-                max=10.13,
-                marks={0.13: "0.13", 5.13: "5.13", 10.13: "10.13"},
-                title="Min-float/Max-float/Marks-float",
-            ),
-        ),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(min=0, max=10, step=1, marks={0: "0", 5: "5", 10: "10"}, title="Min/Max/Step/Marks"),
-        ),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(
-                min=0.13,
-                max=10.13,
-                step=0.5,
-                marks={0.13: "0.13", 5.13: "5.13", 10.13: "10.13"},
-                title="Min-float/Max-float/Step-float/Marks-float",
-            ),
-        ),
-        vm.Filter(column="sepal_length", selector=vm.Slider(marks=None, title="Marks=None")),
-        vm.Filter(column="sepal_length", selector=vm.Slider(step=1, marks=None, title="Step/Marks=None")),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(
-                min=0.13,
-                max=10.13,
-                step=0.5,
-                marks=None,
-                title="Min-float/Max-float/Step-float/Marks=None",
-            ),
+        vm.Text(
+            text="""
+
+Another snippet inside ``vm.Text``:
+```python
+# Kadane's Algorithm
+
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        curr, summ = nums[0], nums[0]
+        for n in nums[1:]:
+            curr = max(n, curr + n)
+            summ = max(summ, curr)
+        return summ
+```
+
+test test tests
+""",
         ),
     ],
 )
 
+# note: page_snippet already defined above, nothing else needed
+# assemble dashboard
 
-page_6 = vm.Page(
-    title="Dropdown variants",
-    components=[
-        vm.Container(
-            controls=[
-                vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="plain", title="Single Plain")),
-                vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="filled", title="Single Filled")),
-                vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="plain", title="Multi Plain")),
-                vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="filled", title="Multi Filled")),
-                vm.Filter(
-                    column="long_string",
-                    selector=vm.Dropdown(multi=False, variant="plain", title="Long values - Single Plain"),
-                ),
-                vm.Filter(
-                    column="long_string",
-                    selector=vm.Dropdown(multi=False, variant="filled", title="Long values - Single Filled"),
-                ),
-                vm.Filter(
-                    column="long_string",
-                    selector=vm.Dropdown(multi=True, variant="plain", title="Long values - Multi Plain"),
-                ),
-                vm.Filter(
-                    column="long_string",
-                    selector=vm.Dropdown(multi=True, variant="filled", title="Long values - Multi Filled"),
-                ),
-            ],
-            components=[
-                vm.Graph(
-                    figure=px.scatter(
-                        "static_df",
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        color_discrete_map=SPECIES_COLORS,
-                    ),
-                ),
-                vm.Graph(figure=px.scatter(long_df, x="x", y="y")),
-            ],
-        )
-    ],
-    controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="plain", title="Plain")),
-        vm.Filter(column="species", selector=vm.Dropdown(multi=False, variant="filled", title="Filled")),
-        vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="plain", title="Plain")),
-        vm.Filter(column="species", selector=vm.Dropdown(multi=True, variant="filled", title="Filled")),
-        vm.Filter(
-            column="long_string", selector=vm.Dropdown(multi=False, variant="plain", title="Long values - Single Plain")
-        ),
-        vm.Filter(
-            column="long_string",
-            selector=vm.Dropdown(multi=False, variant="filled", title="Long values - Single Filled"),
-        ),
-        vm.Filter(
-            column="long_string", selector=vm.Dropdown(multi=True, variant="plain", title="Long values - Multi Plain")
-        ),
-        vm.Filter(
-            column="long_string", selector=vm.Dropdown(multi=True, variant="filled", title="Long values - Multi Filled")
-        ),
-    ],
+dashboard = vm.Dashboard(
+    title="QB",
+    pages=[page_static, page_snippet],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6])
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=True)

@@ -21,6 +21,181 @@ All the HEX values starting with --text-code are taken from the Github code high
   --Dash-Shading-Strong: var(--bs-box-shadow);
   --Dash-Shading-Weak: var(--bs-box-shadow-sm);
   --Dash-Border-Radius: var(--bs-border-radius);
+
+  /* Mantine colors: QB-DS Value.tokens.json (Figma). */
+
+  /* Slate (dark) */
+  --mantine-color-dark-0: #373a44;
+  --mantine-color-dark-1: #333640;
+  --mantine-color-dark-2: #2f323c;
+  --mantine-color-dark-3: #2b2e39;
+  --mantine-color-dark-4: #272a35;
+  --mantine-color-dark-5: #232632;
+  --mantine-color-dark-6: #1f222e;
+  --mantine-color-dark-7: #1b1e2a;
+  --mantine-color-dark-8: #181b26;
+  --mantine-color-dark-9: #141721;
+
+  /* Stone (gray) */
+  --mantine-color-gray-0: #fafaf9;
+  --mantine-color-gray-1: #f5f5f4;
+  --mantine-color-gray-2: #e7e5e4;
+  --mantine-color-gray-3: #d6d3d1;
+  --mantine-color-gray-4: #a8a29e;
+  --mantine-color-gray-5: #78716c;
+  --mantine-color-gray-6: #57534e;
+  --mantine-color-gray-7: #44403c;
+  --mantine-color-gray-8: #292524;
+  --mantine-color-gray-9: #1c1917;
+
+  /* red */
+  --mantine-color-red-0: #fef2f2;
+  --mantine-color-red-1: #fee2e2;
+  --mantine-color-red-2: #fecaca;
+  --mantine-color-red-3: #fca5a5;
+  --mantine-color-red-4: #f87171;
+  --mantine-color-red-5: #ef4444;
+  --mantine-color-red-6: #dc2626;
+  --mantine-color-red-7: #b91c1c;
+  --mantine-color-red-8: #991b1b;
+  --mantine-color-red-9: #7f1d1d;
+
+  /* pink */
+  --mantine-color-pink-0: #fdf2f8;
+  --mantine-color-pink-1: #fce7f3;
+  --mantine-color-pink-2: #fbcfe8;
+  --mantine-color-pink-3: #f9a8d4;
+  --mantine-color-pink-4: #f472b6;
+  --mantine-color-pink-5: #ec4899;
+  --mantine-color-pink-6: #db2777;
+  --mantine-color-pink-7: #be185d;
+  --mantine-color-pink-8: #9d174d;
+  --mantine-color-pink-9: #831843;
+
+  /* Fuchsia (grape) */
+  --mantine-color-grape-0: #fdf4ff;
+  --mantine-color-grape-1: #fae8ff;
+  --mantine-color-grape-2: #f5d0fe;
+  --mantine-color-grape-3: #f0abfc;
+  --mantine-color-grape-4: #e879f9;
+  --mantine-color-grape-5: #d946ef;
+  --mantine-color-grape-6: #c026d3;
+  --mantine-color-grape-7: #a21caf;
+  --mantine-color-grape-8: #86198f;
+  --mantine-color-grape-9: #701a75;
+
+  /* violet */
+  --mantine-color-violet-0: #f5f3ff;
+  --mantine-color-violet-1: #ede9fe;
+  --mantine-color-violet-2: #ddd6fe;
+  --mantine-color-violet-3: #c4b5fd;
+  --mantine-color-violet-4: #a78bfa;
+  --mantine-color-violet-5: #8b5cf6;
+  --mantine-color-violet-6: #7c3aed;
+  --mantine-color-violet-7: #6d28d9;
+  --mantine-color-violet-8: #5b21b6;
+  --mantine-color-violet-9: #4c1d95;
+
+  /* indigo */
+  --mantine-color-indigo-0: #eef2ff;
+  --mantine-color-indigo-1: #e0e7ff;
+  --mantine-color-indigo-2: #c7d2fe;
+  --mantine-color-indigo-3: #a5b4fc;
+  --mantine-color-indigo-4: #818cf8;
+  --mantine-color-indigo-5: #6366f1;
+  --mantine-color-indigo-6: #4f46e5;
+  --mantine-color-indigo-7: #4338ca;
+  --mantine-color-indigo-8: #3730a3;
+  --mantine-color-indigo-9: #312e81;
+
+  /* blue */
+  --mantine-color-blue-0: #eff6ff;
+  --mantine-color-blue-1: #dbeafe;
+  --mantine-color-blue-2: #bfdbfe;
+  --mantine-color-blue-3: #93c5fd;
+  --mantine-color-blue-4: #60a5fa;
+  --mantine-color-blue-5: #3b82f6;
+  --mantine-color-blue-6: #2563eb;
+  --mantine-color-blue-7: #1d4ed8;
+  --mantine-color-blue-8: #1e40af;
+  --mantine-color-blue-9: #1e3a8a;
+
+  /* cyan */
+  --mantine-color-cyan-0: #ecfeff;
+  --mantine-color-cyan-1: #cffafe;
+  --mantine-color-cyan-2: #a5f3fc;
+  --mantine-color-cyan-3: #67e8f9;
+  --mantine-color-cyan-4: #22d3ee;
+  --mantine-color-cyan-5: #06b6d4;
+  --mantine-color-cyan-6: #0891b2;
+  --mantine-color-cyan-7: #0e7490;
+  --mantine-color-cyan-8: #155e75;
+  --mantine-color-cyan-9: #164e63;
+
+  /* teal */
+  --mantine-color-teal-0: #f0fdfa;
+  --mantine-color-teal-1: #ccfbf1;
+  --mantine-color-teal-2: #99f6e4;
+  --mantine-color-teal-3: #5eead4;
+  --mantine-color-teal-4: #2dd4bf;
+  --mantine-color-teal-5: #14b8a6;
+  --mantine-color-teal-6: #0d9488;
+  --mantine-color-teal-7: #0f766e;
+  --mantine-color-teal-8: #115e59;
+  --mantine-color-teal-9: #134e4a;
+
+  /* green */
+  --mantine-color-green-0: #f0fdf4;
+  --mantine-color-green-1: #dcfce7;
+  --mantine-color-green-2: #bbf7d0;
+  --mantine-color-green-3: #86efac;
+  --mantine-color-green-4: #4ade80;
+  --mantine-color-green-5: #22c55e;
+  --mantine-color-green-6: #16a34a;
+  --mantine-color-green-7: #15803d;
+  --mantine-color-green-8: #166534;
+  --mantine-color-green-9: #14532d;
+
+  /* lime */
+  --mantine-color-lime-0: #f7fee7;
+  --mantine-color-lime-1: #ecfccb;
+  --mantine-color-lime-2: #d9f99d;
+  --mantine-color-lime-3: #bef264;
+  --mantine-color-lime-4: #a3e635;
+  --mantine-color-lime-5: #84cc16;
+  --mantine-color-lime-6: #65a30d;
+  --mantine-color-lime-7: #4d7c0f;
+  --mantine-color-lime-8: #3f6212;
+  --mantine-color-lime-9: #365314;
+
+  /* yellow */
+  --mantine-color-yellow-0: #fefce8;
+  --mantine-color-yellow-1: #fef9c3;
+  --mantine-color-yellow-2: #fef08a;
+  --mantine-color-yellow-3: #fde047;
+  --mantine-color-yellow-4: #facc15;
+  --mantine-color-yellow-5: #eab308;
+  --mantine-color-yellow-6: #ca8a04;
+  --mantine-color-yellow-7: #a16207;
+  --mantine-color-yellow-8: #854d0e;
+  --mantine-color-yellow-9: #713f12;
+
+  /* amber (orange) */
+  --mantine-color-orange-0: #fffbeb;
+  --mantine-color-orange-1: #fef3c7;
+  --mantine-color-orange-2: #fde68a;
+  --mantine-color-orange-3: #fcd34d;
+  --mantine-color-orange-4: #fbbf24;
+  --mantine-color-orange-5: #f59e0b;
+  --mantine-color-orange-6: #d97706;
+  --mantine-color-orange-7: #b45309;
+  --mantine-color-orange-8: #92400e;
+  --mantine-color-orange-9: #78350f;
+  --bs-info: #097dfe;
+  --bs-success: #00b5a9;
+  --bs-danger: #ea5748;
+  --bs-warning: #ffc107;
+  --bs-gray: #3e495b;
 }
 
 [data-bs-theme="dark"] {
@@ -51,13 +226,6 @@ All the HEX values starting with --text-code are taken from the Github code high
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --hover-bg-subtle: var(--bs-gray-300);
   --input-field-bg: var(--bs-body-bg);
-}
-
-/* Override Mantine's default CSS variables with Bootstrap's here */
-:root[data-bs-theme="dark"],
-:root[data-bs-theme="light"] {
-  --mantine-color-body: var(--bs-body-bg);
-  --mantine-color-text: var(--bs-body-color);
 }
 
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
@@ -177,4 +345,86 @@ legend {
 .accordion-item .nav-link:hover,
 .accordion-item .nav-link.hover {
   background: var(--bs-highlight-bg) !important;
+}
+
+:root[data-mantine-color-scheme="dark"],
+:root[data-mantine-color-scheme="light"] {
+  --mantine-color-body: var(--bs-body-color);
+  --mantine-color-dimmed: var(--bs-body-color);
+  --mantine-color-text: var(--bs-body-color);
+  --mantine-color-placeholder: var(--bs-tertiary-color);
+  --mantine-primary-color-filled: var(--bs-primary);
+  --mantine-primary-color-light: var(--bs-highlight-bg);
+  --mantine-primary-color-light-hover: var(--bs-highlight-bg);
+  --mantine-color-disabled: var(--bs-primary-bg-subtle);
+  --mantine-color-disabled-color: var(--bs-tertiary-color);
+}
+
+/* Radio / Checkbox indicator color (overrides inline --radio-color) */
+.mantine-RadioIndicator-indicator {
+  --radio-color: var(--bs-primary) !important;
+}
+
+/* Component specific overwrites that can't be done globally as they otherwise affect variants. */
+.mantine-Button-root[data-variant="filled"],
+.mantine-Button-root[data-variant="default"],
+.mantine-ActionIcon-root[data-variant="default"],
+.mantine-ActionIcon-root[data-variant="filled"] {
+  background-color: var(--bs-primary) !important;
+  color: var(--text-primary-inverted) !important;
+}
+
+.mantine-Badge-root[style*="--badge-bg: white"] {
+  color: black;
+}
+
+.mantine-Badge-root:not([style]) .mantine-Badge-label {
+  color: var(--text-primary-inverted);
+}
+
+.mantine-Pagination-control[data-active="true"] {
+  color: var(--text-primary-inverted) !important;
+}
+
+.mantine-Stepper-stepCompletedIcon svg {
+  color: var(--bs-primary) !important;
+  width: 40% !important;
+}
+
+.mantine-Blockquote-root {
+  background-color: var(--bs-primary-bg-subtle);
+  border-left: 4px solid var(--bs-secondary);
+}
+
+.mantine-Timeline-itemBullet[data-active],
+.mantine-Timeline-root [data-active] {
+  background-color: var(--bs-body-bg) !important;
+}
+
+.mantine-Input-input {
+  --input-bd: var(--bs-primary-bg-subtle);
+  --input-bg: var(--bs-primary-bg-subtle);
+  --input-bd-focus: var(--bs-focus-ring-color);
+
+  box-shadow: var(--bs-box-shadow-sm);
+}
+
+.mantine-Input-input .mantine-Pill-root[data-variant="default"] {
+  background-color: var(--bs-body-bg);
+  border-radius: 0;
+  color: var(--bs-primary);
+}
+
+.mantine-RadioIndicator-indicator,
+.mantine-RadioIndicator-indicator[data-checked="true"],
+.mantine-Checkbox-input,
+.mantine-Checkbox-input:checked {
+  background-color: transparent;
+  border-color: var(--bs-secondary);
+}
+
+.mantine-Checkbox-icon {
+  --checkbox-icon-color: var(--bs-primary) !important;
+
+  width: 50%;
 }

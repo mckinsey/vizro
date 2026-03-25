@@ -117,7 +117,7 @@ If you want to change nested parameters, you can specify the `targets` argument 
                         y="sepal_length",
                         color="species",
                         size="petal_length",
-                        color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
+                        color_discrete_map={"setosa": "#097DFE", "versicolor": "#6F39E3"},
                     ),
                 ),
                 vm.Graph(
@@ -127,7 +127,7 @@ If you want to change nested parameters, you can specify the `targets` argument 
                         x="sepal_width",
                         y="sepal_length",
                         color="species",
-                        color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
+                        color_discrete_map={"setosa": "#097DFE", "versicolor": "#6F39E3"},
                     ),
                 ),
             ],
@@ -135,9 +135,9 @@ If you want to change nested parameters, you can specify the `targets` argument 
                 vm.Parameter(
                     targets=["scatter_chart.color_discrete_map.virginica", "bar_chart.color_discrete_map.virginica"],
                     selector=vm.Dropdown(
-                        options=["#ff5267", "#3949ab"],
+                        options=["#05D0F0", "#0F766E"],
                         multi=False,
-                        value="#3949ab",
+                        value="#05D0F0",
                     ),
                 ),
             ],

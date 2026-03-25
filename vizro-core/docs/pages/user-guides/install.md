@@ -50,7 +50,7 @@ import vizro
 print(vizro.__version__)
 ```
 
-You should see the version number displayed (e.g., `0.1.0`).
+You should see the version number displayed (for example, `0.1.0`).
 
 ## Upgrading
 
