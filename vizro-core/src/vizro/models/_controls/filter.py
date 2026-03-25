@@ -16,13 +16,12 @@ from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch, TreeSelect
-from vizro.models._components.form.tree_select import _check_no_duplicate_leaves, _extract_leaf_keys
+from vizro.models._components.form.tree_select import _check_no_duplicate_leaves
 from vizro.models._controls._controls_utils import (
     SELECTORS,
     _is_boolean_selector,
     _is_categorical_selector,
     _is_numerical_temporal_selector,
-    _is_tree_selector,
     check_control_targets,
     get_control_parent,
     get_selector_default_value,
