@@ -4,7 +4,6 @@ import dash_mantine_components as dmc
 from dash import Dash, Input, Output, html
 from vizro_dash_components import Cascade
 
-
 OPTIONS_2LEVEL = [
     {
         "label": "Asia",
@@ -285,4 +284,26 @@ def test_cascade_three_levels(dash_duo):
     rows[0].click()
     # Third column should show Japan
     dash_duo.wait_for_text_to_equal(".dash-cascade-column:nth-child(3) .dash-cascade-row-label", "Japan")
+    assert dash_duo.get_logs() == []
+
+
+# --- Persistence ---
+
+
+def test_cascade_persistence(dash_duo):
+    """Value persists across page reload when persistence=True."""
+    app = _app(Cascade(id="c", options=OPTIONS_2LEVEL, persistence=True))
+    dash_duo.start_server(app)
+
+    # Open panel and select Japan (Asia > Japan)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascade-row").click()  # Asia
+    rows = dash_duo.driver.find_elements("css selector", ".dash-cascade-column:nth-child(2) .dash-cascade-row")
+    rows[0].click()  # Japan
+    dash_duo.wait_for_text_to_equal("#c .dash-cascade-value", "Japan")
+
+    # Reload and check value is restored
+    dash_duo.driver.refresh()
+    dash_duo.wait_for_element("#c")
+    dash_duo.wait_for_text_to_equal("#c .dash-cascade-value", "Japan")
     assert dash_duo.get_logs() == []
