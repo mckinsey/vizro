@@ -12,7 +12,7 @@ from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionsType, MultiValueType, SingleValueType, TreeOptionsType, _IdProperty
 
 
-def _validate_options_structure(options: Any) -> None:
+def _check_options_structure(options: Any) -> None:
     """Recursively validate that options is a dict of str -> list[str] | dict."""
     if not isinstance(options, dict):
         raise ValueError("options must be a dict.")
@@ -24,7 +24,7 @@ def _validate_options_structure(options: Any) -> None:
                 if not isinstance(item, str):
                     raise ValueError(f"Leaf values must be strings, got {type(item)}: {item!r}")
         elif isinstance(value, dict):
-            _validate_options_structure(value)
+            _check_options_structure(value)
         else:
             raise ValueError(f"options values must be list[str] or dict, got {type(value)} for key {key!r}")
 
@@ -44,6 +44,28 @@ def _extract_leaf_keys(d: dict[Any, Any] | list[Any]) -> set[str]:
     for v in d.values():
         keys |= _extract_leaf_keys(v)
     return keys
+
+
+def _check_no_duplicate_leaves(options: dict[Any, Any]) -> None:
+    """Raise ValueError if any leaf value appears more than once across branches."""
+    all_leaves: list[str] = []
+
+    def _collect_leaves(d: dict[Any, Any] | list[Any]) -> None:
+        if isinstance(d, list):
+            all_leaves.extend(d)
+        else:
+            for v in d.values():
+                _collect_leaves(v)
+
+    _collect_leaves(options)
+    seen: set[str] = set()
+    duplicates: set[str] = set()
+    for leaf in all_leaves:
+        if leaf in seen:
+            duplicates.add(leaf)
+        seen.add(leaf)
+    if duplicates:
+        raise ValueError(f"Duplicate leaf values found in options: {duplicates!r}")
 
 
 def _validate_multi(multi: bool, info: ValidationInfo) -> bool:
@@ -66,12 +88,15 @@ def _validate_tree_value(value, info: ValidationInfo):
 class TreeSelect(VizroBaseModel):
     """Hierarchical multi/single-option selector.
 
-    Can be provided to [`Parameter`][vizro.models.Parameter].
+    Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
+
+    When used inside `Filter`, `options` is automatically built from the DataFrame columns
+    specified in `column_hierarchy`. When used with `Parameter`, `options` must be provided.
 
     """
 
     type: Literal["tree_select"] = "tree_select"
-    options: TreeOptionsType
+    options: TreeOptionsType = Field(default={})
     value: Annotated[
         SingleValueType | MultiValueType | None,
         AfterValidator(_validate_tree_value),
@@ -104,7 +129,9 @@ defaults chosen by the Vizro team. This may have unexpected behavior.""",
     @classmethod
     def _validate_options_structure(cls, data: Any) -> Any:
         if "options" in data and isinstance(data["options"], dict):
-            _validate_options_structure(data["options"])
+            _check_options_structure(data["options"])  # calls the module-level function
+            if data["options"]:  # skip check for empty dict
+                _check_no_duplicate_leaves(data["options"])
         return data
 
     @model_validator(mode="after")
@@ -127,8 +154,8 @@ defaults chosen by the Vizro team. This may have unexpected behavior.""",
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.value"}
 
-    def __call__(self):
-        tree_data = _convert_options(self.options)
+    def __call__(self, options=None):
+        tree_data = _convert_options(options if options is not None else self.options)
         value = self.value if self.value is not None else ([] if self.multi else None)
         description = self.description.build().children if self.description else [None]
 

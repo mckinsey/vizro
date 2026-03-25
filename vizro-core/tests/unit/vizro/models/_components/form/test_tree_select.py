@@ -52,9 +52,14 @@ class TestTreeSelectInstantiation:
         assert ts.title == "Title"
         assert ts.actions == []
 
-    def test_options_required(self):
-        with pytest.raises(ValidationError):
-            TreeSelect()
+    def test_create_tree_select_no_args(self):
+        ts = TreeSelect()
+        assert ts.options == {}
+        assert ts.value is None
+
+    def test_duplicate_leaf_values_raises(self):
+        with pytest.raises(ValidationError, match="Duplicate leaf values"):
+            TreeSelect(options={"France": ["Bruges"], "Belgium": ["Bruges"]})
 
     def test_valid_flat_options(self):
         ts = TreeSelect(options={"A": ["x", "y"]})
@@ -379,3 +384,23 @@ class TestExtractLeafKeys:
     def test_extract_leaf_keys_simple(self):
         result = _extract_leaf_keys(SIMPLE_OPTIONS)
         assert result == {"Apple", "Banana", "Carrot"}
+
+
+class TestTreeSelectCall:
+    def test_call_with_options_param_overrides_self_options(self):
+        ts = TreeSelect(options={"A": ["x"]})
+        result = ts(options={"B": ["y"]})
+        # title is "" (falsy) so children[0] is None, children[1] is AntdTreeSelect
+        tree_select_component = result.children[1]
+        assert tree_select_component.treeData == [
+            {"title": "B", "key": "B", "value": "B", "children": [{"title": "y", "key": "y", "value": "y"}]}
+        ]
+
+    def test_call_without_options_param_uses_self_options(self):
+        ts = TreeSelect(options={"A": ["x"]})
+        result = ts()
+        # title is "" (falsy) so children[0] is None, children[1] is AntdTreeSelect
+        tree_select_component = result.children[1]
+        assert tree_select_component.treeData == [
+            {"title": "A", "key": "A", "value": "A", "children": [{"title": "x", "key": "x", "value": "x"}]}
+        ]
