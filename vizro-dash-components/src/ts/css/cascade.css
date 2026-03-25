@@ -2,7 +2,7 @@
 .dash-cascade {
   background: var(--Dash-Fill-Inverse-Strong);
   border: 1px solid var(--Dash-Stroke-Strong);
-  border-radius: var(--Dash-Border-Radius);
+  border-radius: var(--Dash-Spacing);
   box-sizing: border-box;
   color: inherit;
   cursor: pointer;
@@ -36,8 +36,19 @@
   padding: 0 12px;
 }
 
+/* value | count | caret */
+.dash-cascade-trigger.has-count {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
+/* value | clear | caret */
 .dash-cascade-trigger.has-clear {
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
+/* value | count | clear | caret */
+.dash-cascade-trigger.has-count.has-clear {
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
 }
 
 /* Value display */
@@ -92,6 +103,10 @@
   color: var(--Dash-Fill-Interactive-Strong);
 }
 
+.dash-cascade-clear:focus {
+  outline: 2px solid var(--Dash-Fill-Interactive-Strong);
+}
+
 /* Panel */
 .dash-cascade-wrapper {
   position: relative;
@@ -100,7 +115,7 @@
 .dash-cascade-panel {
   background: var(--Dash-Fill-Inverse-Strong);
   border: 1px solid var(--Dash-Stroke-Strong);
-  border-radius: var(--Dash-Border-Radius);
+  border-radius: var(--Dash-Spacing);
   box-shadow:
     0 10px 38px -10px var(--Dash-Shading-Strong),
     0 10px 20px -15px var(--Dash-Shading-Weak);

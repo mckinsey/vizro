@@ -251,7 +251,15 @@ const CascadeFragment = ({
         if (e.key === "Enter" || e.key === " ") handleTriggerClick();
       }}
     >
-      <span className={`dash-cascade-trigger ${canClear ? "has-clear" : ""}`}>
+      <span
+        className={[
+          "dash-cascade-trigger",
+          multi && selectedValues.length > 1 ? "has-count" : "",
+          canClear ? "has-clear" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
         <span
           className={
             triggerLabel

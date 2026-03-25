@@ -18,7 +18,7 @@ export function isLeaf(option: CascadeOption): boolean {
  */
 export function buildColumns(
   options: CascadeOption[],
-  activePath: number[]
+  activePath: number[],
 ): CascadeOption[][] {
   const columns: CascadeOption[][] = [options];
   let current = options;
@@ -38,7 +38,9 @@ export function collectLeaves(option: CascadeOption): (string | number)[] {
 }
 
 /** Collect all leaf values in the entire options tree. */
-export function collectAllLeaves(options: CascadeOption[]): (string | number)[] {
+export function collectAllLeaves(
+  options: CascadeOption[],
+): (string | number)[] {
   return options.flatMap(collectLeaves);
 }
 
@@ -48,13 +50,13 @@ export function collectAllLeaves(options: CascadeOption[]): (string | number)[] 
  */
 export function parentCheckState(
   option: CascadeOption,
-  selectedSet: Set<string | number>
-): 'checked' | 'indeterminate' | 'unchecked' {
+  selectedSet: Set<string | number>,
+): "checked" | "indeterminate" | "unchecked" {
   const leaves = collectLeaves(option);
-  const selectedCount = leaves.filter(v => selectedSet.has(v)).length;
-  if (selectedCount === 0) return 'unchecked';
-  if (selectedCount === leaves.length) return 'checked';
-  return 'indeterminate';
+  const selectedCount = leaves.filter((v) => selectedSet.has(v)).length;
+  if (selectedCount === 0) return "unchecked";
+  if (selectedCount === leaves.length) return "checked";
+  return "indeterminate";
 }
 
 /**
@@ -64,7 +66,7 @@ export function parentCheckState(
 export function searchOptions(
   options: CascadeOption[],
   query: string,
-  ancestors: string[] = []
+  ancestors: string[] = [],
 ): { option: CascadeOption; breadcrumb: string }[] {
   const lower = query.toLowerCase();
   const results: { option: CascadeOption; breadcrumb: string }[] = [];
@@ -73,12 +75,12 @@ export function searchOptions(
       if (opt.label.toLowerCase().includes(lower)) {
         results.push({
           option: opt,
-          breadcrumb: ancestors.join(' › '),
+          breadcrumb: ancestors.join(" › "),
         });
       }
     } else {
       results.push(
-        ...searchOptions(opt.children ?? [], query, [...ancestors, opt.label])
+        ...searchOptions(opt.children ?? [], query, [...ancestors, opt.label]),
       );
     }
   }
