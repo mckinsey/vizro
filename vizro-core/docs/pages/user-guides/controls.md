@@ -33,13 +33,9 @@ When the dashboard is running there are two ways for a user to set a control:
 
 You can reset all controls on the page to their original values with the "Reset controls" button at the bottom of the control panel on the left side of the page. This applies to all controls on the page, regardless of whether they are visible. When all controls on a page have `visible=False` and hence no control panel is shown, the "Reset controls" button appears next to the theme switch on the top right of the page.
 
-## Add ControlGroup
+## Group controls
 
-To organize the control panel on a page into sections, you can group [filters](filters.md) and [parameters](parameters.md) under a title using a `ControlGroup`. Control groups are only available for page level controls.
-
-### When to use control groups
-
-Use a control group when you want to:
+To organize the control panel on a page into sections, you can group [filters](filters.md) and [parameters](parameters.md) under a title using a [`ControlGroup`][vizro.models.ControlGroup]. Control groups are only available for page-level controls. Use a control group when you want to:
 
 - Visually separate different sets of controls on the same page (for example, "Filters" and "Parameters").
 - Add a title or short description to a subset of controls so users understand what they affect.

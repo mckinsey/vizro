@@ -21,17 +21,15 @@ class ControlGroup(VizroBaseModel):
     """Container to group together a set of controls.
 
     Abstract: Usage documentation
-        [How to use ControlGroup](../user-guides/controls.md/#add-controlgroup)
+        [How to group controls](../user-guides/controls.md/#group-controls)
 
     Example:
         ```python
         import vizro.models as vm
 
-        (
-            vm.ControlGroup(
-                title="Control group title",
-                controls=[vm.Filter(column="species"), vm.Filter(column="sepal_length")],
-            ),
+        vm.ControlGroup(
+            title="Control group title",
+            controls=[vm.Filter(column="species"), vm.Filter(column="sepal_length")],
         )
         ```
 

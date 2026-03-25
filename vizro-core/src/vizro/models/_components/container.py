@@ -111,8 +111,7 @@ underlying component may change in the future.""",
         # Use "_get_models" instead of "for control in self.controls" to handle nested custom controls.
         # Use root_model=self.controls so only its own self.controls are marked, not these nested under self.components.
         for control in cast(
-            Iterable[ControlType],
-            model_manager._get_models(model_type=(Filter, Parameter), root_model=self.controls),
+            Iterable[ControlType], model_manager._get_models(model_type=(Filter, Parameter), root_model=self.controls)
         ):
             control.selector._in_container = True
 
