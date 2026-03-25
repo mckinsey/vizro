@@ -1188,3 +1188,178 @@ class TestFilterColumnHierarchyValidation:
         f = vm.Filter(column="species")
         assert f.column == "species"
         assert f.column_hierarchy == []
+
+
+class TestGetTreeOptions:
+    def test_three_level_hierarchy(self):
+        wide_df = pd.DataFrame(
+            {
+                "continent": ["Americas", "Europe", "Europe", "Europe"],
+                "country": ["USA", "France", "France", "Germany"],
+                "city": ["New York", "Lyon", "Paris", "Berlin"],
+            }
+        )
+        result = Filter._get_tree_options(wide_df, ["continent", "country", "city"])
+        assert result == {
+            "Americas": {"USA": ["New York"]},
+            "Europe": {
+                "France": ["Lyon", "Paris"],  # sorted alphabetically
+                "Germany": ["Berlin"],
+            },
+        }
+
+    def test_two_level_hierarchy(self):
+        wide_df = pd.DataFrame(
+            {
+                "continent": ["Americas", "Europe", "Europe"],
+                "city": ["New York", "Lyon", "Paris"],
+            }
+        )
+        result = Filter._get_tree_options(wide_df, ["continent", "city"])
+        assert result == {
+            "Americas": ["New York"],
+            "Europe": ["Lyon", "Paris"],
+        }
+
+    def test_duplicate_rows_deduplicated(self):
+        wide_df = pd.DataFrame(
+            {
+                "continent": ["Europe", "Europe", "Europe"],
+                "country": ["France", "France", "Germany"],
+                "city": ["Paris", "Paris", "Berlin"],  # Paris appears twice
+            }
+        )
+        result = Filter._get_tree_options(wide_df, ["continent", "country", "city"])
+        assert result == {
+            "Europe": {
+                "France": ["Paris"],  # deduped
+                "Germany": ["Berlin"],
+            },
+        }
+
+
+@pytest.fixture
+def managers_column_hierarchy():
+    """Page with two graphs sharing continent/country/city columns."""
+    df1 = pd.DataFrame(
+        {
+            "continent": ["Europe", "Europe", "Americas"],
+            "country": ["France", "France", "USA"],
+            "city": ["Paris", "Lyon", "New York"],
+        }
+    )
+    df2 = pd.DataFrame(
+        {
+            "continent": ["Europe", "Asia"],
+            "country": ["Germany", "Japan"],
+            "city": ["Berlin", "Tokyo"],
+        }
+    )
+    vm.Page(
+        id="test_page",
+        title="Page Title",
+        components=[
+            vm.Graph(id="fig_1", figure=px.scatter(df1, x="city", y="city")),
+            vm.Graph(id="fig_2", figure=px.scatter(df2, x="city", y="city")),
+        ],
+    )
+    Vizro._pre_build()
+
+
+class TestFilterHierarchyPreBuild:
+    def test_default_selector_is_tree_select(self, managers_column_hierarchy):
+        from vizro.models._components.form import TreeSelect
+
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert isinstance(f.selector, TreeSelect)
+
+    def test_column_set_to_leaf(self, managers_column_hierarchy):
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f.column == "city"
+
+    def test_title_defaults_to_leaf_column_name(self, managers_column_hierarchy):
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f.selector.title == "City"
+
+    def test_options_built_from_data(self, managers_column_hierarchy):
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        options = f.selector.options
+        assert "Europe" in options
+        assert "France" in options["Europe"]
+        assert "Paris" in options["Europe"]["France"]
+        assert "Berlin" in options["Europe"]["Germany"]
+        assert "Japan" in options["Asia"]
+        assert "Tokyo" in options["Asia"]["Japan"]
+
+    def test_custom_tree_select_config_respected(self, managers_column_hierarchy):
+
+        f = vm.Filter(
+            column_hierarchy=["continent", "country", "city"],
+            selector=vm.TreeSelect(multi=False, title="Location"),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f.selector.multi is False
+        assert f.selector.title == "Location"
+
+    def test_non_tree_select_selector_raises(self, managers_column_hierarchy):
+        f = vm.Filter(
+            column_hierarchy=["continent", "country", "city"],
+            selector=vm.Dropdown(),
+        )
+        model_manager["test_page"].controls = [f]
+        with pytest.raises(ValueError, match="TreeSelect"):
+            f.pre_build()
+
+    def test_duplicate_leaf_values_in_data_raises(self):
+        # Creates its own page inline; conftest autouse clears model_manager between tests
+        df = pd.DataFrame(
+            {
+                "continent": ["Europe", "Europe"],
+                "country": ["France", "Belgium"],
+                "city": ["Bruges", "Bruges"],
+            }
+        )
+        vm.Page(
+            id="test_page_dup",
+            title="Page",
+            components=[vm.Graph(id="fig_dup", figure=px.scatter(df, x="city", y="city"))],
+        )
+        Vizro._pre_build()
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page_dup"].controls = [f]
+        with pytest.raises(ValueError, match="Duplicate leaf values"):
+            f.pre_build()
+
+    def test_figure_missing_intermediate_column_excluded(self):
+        df_full = pd.DataFrame({"continent": ["Europe"], "country": ["France"], "city": ["Paris"]})
+        df_missing = pd.DataFrame({"continent": ["Asia"], "city": ["Tokyo"]})  # no "country"
+        vm.Page(
+            id="test_page_missing",
+            title="Page",
+            components=[
+                vm.Graph(id="fig_full", figure=px.scatter(df_full, x="city", y="city")),
+                vm.Graph(id="fig_missing", figure=px.scatter(df_missing, x="city", y="city")),
+            ],
+        )
+        Vizro._pre_build()
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page_missing"].controls = [f]
+        f.pre_build()
+        assert "fig_full" in f.targets
+        assert "fig_missing" not in f.targets
+
+    def test_filter_action_uses_leaf_column(self, managers_column_hierarchy):
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        # f.selector.actions[0] is a _filter action instance with a .column field
+        assert f.selector.actions[0].column == "city"
