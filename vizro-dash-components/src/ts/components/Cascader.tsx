@@ -1,25 +1,25 @@
 import PropTypes from "prop-types";
 // biome-ignore lint/correctness/noUnusedImports: React must be in scope for classic JSX transform
 import React, { Component } from "react";
-import CascadeFragment, { type CascadeProps } from "../fragments/Cascade";
+import CascaderFragment, { type CascaderProps } from "../fragments/Cascader";
 
 /**
- * A hierarchical cascading dropdown component.
+ * A hierarchical cascading dropdown component inspired by AntdCascader
+ * (https://fac.feffery.tech/AntdCascader), built to visually match dcc.Dropdown.
  * Users navigate and select leaf values from a recursive tree of options
  * via cascading side-by-side panels.
- *
- * Visually identical to dcc.Dropdown; supports single-select and multi-select.
+ * Supports single-select and multi-select.
  */
-export default class Cascade extends Component<CascadeProps> {
+export default class Cascader extends Component<CascaderProps> {
   static propTypes: Record<string, unknown>;
   static defaultProps: Record<string, unknown>;
 
   render() {
-    return <CascadeFragment {...this.props} />;
+    return <CascaderFragment {...this.props} />;
   }
 }
 
-Cascade.propTypes = {
+Cascader.propTypes = {
   /**
    * Unique ID to identify this component in Dash callbacks.
    */
@@ -107,7 +107,7 @@ Cascade.propTypes = {
   persistence_type: PropTypes.oneOf(["local", "session", "memory"]),
 };
 
-Cascade.defaultProps = {
+Cascader.defaultProps = {
   options: [],
   value: null,
   multi: false,
@@ -120,5 +120,5 @@ Cascade.defaultProps = {
   persistence_type: "local",
 };
 
-export const propTypes = Cascade.propTypes;
-export const defaultProps = Cascade.defaultProps;
+export const propTypes = Cascader.propTypes;
+export const defaultProps = Cascader.defaultProps;

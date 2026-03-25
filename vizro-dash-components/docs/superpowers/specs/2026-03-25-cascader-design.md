@@ -1,28 +1,27 @@
-# Cascade Component Design Spec
+# Cascader Component Design Spec
 
-**Date:** 2026-03-25
-**Status:** Draft
+**Date:** 2026-03-25 **Status:** Draft
 
 ## Overview
 
-`Cascade` is a hierarchical dropdown Dash component for `vizro-dash-components`. It lets users navigate and select from a tree-structured option set via cascading side panels. Functionally inspired by feffery-antd-components `AntdCascader`; visually identical to `dcc.Dropdown` (trigger, panel chrome, search bar, multi-select bar) with `dbc.Checklist`-style checkboxes in multi mode.
+`Cascader` is a hierarchical dropdown Dash component for `vizro-dash-components`. It lets users navigate and select from a tree-structured option set via cascading side panels. Functionally inspired by feffery-antd-components `AntdCascaderr`; visually identical to `dcc.Dropdown` (trigger, panel chrome, search bar, multi-select bar) with `dbc.Checklist`-style checkboxes in multi mode.
 
 ## Props
 
 ```typescript
-type CascadeOption = {
+type CascaderOption = {
   label: string;
   value: string | number;
   disabled?: boolean;
-  children?: CascadeOption[];  // absence of children = leaf node
+  children?: CascaderOption[];  // absence of children = leaf node
 };
 
-type CascadeProps = {
+type CascaderProps = {
   id?: string;
   setProps: (props: Record<string, any>) => void;
 
   /** Tree-structured options. Nodes with no `children` are leaves. */
-  options: CascadeOption[];
+  options: CascaderOption[];
 
   /**
    * Selected value(s). Single value (string|number|null) when multi=false;
@@ -66,9 +65,9 @@ Internal state:
 
 Derived from props + state:
 
-- `columns: CascadeOption[][]` — computed by walking `options` tree following `activePath`. Column 0 is always the root level. Each subsequent column is the `children` array of the active item in the previous column.
+- `columns: CascaderOption[][]` — computed by walking `options` tree following `activePath`. Column 0 is always the root level. Each subsequent column is the `children` array of the active item in the previous column.
 - `selectedSet: Set<string|number>` — derived from `value` prop for O(1) membership checks.
-- `searchResults: {option: CascadeOption, breadcrumb: string}[]` — when `searchValue` is non-empty, a flat list of matching leaf nodes (label contains search string, case-insensitive) with their ancestor path as a breadcrumb string (e.g. `"Asia › China"`).
+- `searchResults: {option: CascaderOption, breadcrumb: string}[]` — when `searchValue` is non-empty, a flat list of matching leaf nodes (label contains search string, case-insensitive) with their ancestor path as a breadcrumb string (e.g. `"Asia › China"`).
 
 ## Visual Design
 
@@ -87,16 +86,16 @@ Identical to `dcc.Dropdown`:
 Floats below trigger via a `position: absolute` div (Radix UI is not available as a source dependency), minimum width = trigger width.
 
 1. **Search bar** (when `searchable=true`): sticky at top, same styling as `dcc.Dropdown` search (magnifying glass icon, inline input, clear button). Matches `dash-dropdown-search-container`.
-2. **Select all / Deselect all bar** (when `multi=true`, not shown when `multi=false`): identical to `dcc.Dropdown` `dash-dropdown-actions` bar, always visible when `multi=true`. During search it operates on the search results; without a search it operates on the entire tree.
-3. **Column area** (when not searching): side-by-side columns separated by `1px solid var(--Dash-Fill-Disabled)` dividers. The column area as a whole is capped at `maxHeight` px; each column is `max-height: 100%` and scrolls independently.
-   - **Parent row**: label + `›` chevron on the right. Active (expanded) row has `var(--Dash-Fill-Interactive-Weak)` background. In multi mode, a checkbox precedes the label; it is checked if all descendant leaves are selected, indeterminate if some are, unchecked otherwise.
-   - **Leaf row**: label only (no chevron). In single mode, selected leaf shows `var(--Dash-Fill-Interactive-Weak)` background. In multi mode, a checkbox.
-   - Disabled options are dimmed and non-interactive.
-4. **Search results** (when searching): renders as a flat `dcc.Dropdown`-style options list. Each row shows the leaf label on the left and a faint breadcrumb path (`"Asia › China"`) right-aligned. In multi mode uses checkboxes.
+1. **Select all / Deselect all bar** (when `multi=true`, not shown when `multi=false`): identical to `dcc.Dropdown` `dash-dropdown-actions` bar, always visible when `multi=true`. During search it operates on the search results; without a search it operates on the entire tree.
+1. **Column area** (when not searching): side-by-side columns separated by `1px solid var(--Dash-Fill-Disabled)` dividers. The column area as a whole is capped at `maxHeight` px; each column is `max-height: 100%` and scrolls independently.
+    - **Parent row**: label + `›` chevron on the right. Active (expanded) row has `var(--Dash-Fill-Interactive-Weak)` background. In multi mode, a checkbox precedes the label; it is checked if all descendant leaves are selected, indeterminate if some are, unchecked otherwise.
+    - **Leaf row**: label only (no chevron). In single mode, selected leaf shows `var(--Dash-Fill-Interactive-Weak)` background. In multi mode, a checkbox.
+    - Disabled options are dimmed and non-interactive.
+1. **Search results** (when searching): renders as a flat `dcc.Dropdown`-style options list. Each row shows the leaf label on the left and a faint breadcrumb path (`"Asia › China"`) right-aligned. In multi mode uses checkboxes.
 
 ### CSS
 
-New file `src/ts/css/cascade.css` (imported from the TSX fragment so webpack's `css-loader` bundles it), using only `var(--Dash-)` design tokens — no hardcoded colours. Reuses class names from `dropdown.css` where structure is identical (trigger, search bar, actions bar). Cascade-specific classes prefixed `dash-cascade-`. The panel uses `z-index: 500` (matching `dash-dropdown-content`).
+New file `src/ts/css/cascader.css` (imported from the TSX fragment so webpack's `css-loader` bundles it), using only `var(--Dash-)` design tokens — no hardcoded colours. Reuses class names from `dropdown.css` where structure is identical (trigger, search bar, actions bar). Cascader-specific classes prefixed `dash-cascader-`. The panel uses `z-index: 500` (matching `dash-dropdown-content`).
 
 ## Interaction Behaviour
 
@@ -132,11 +131,11 @@ Not in scope for initial implementation. The component will be mouse/touch only 
 ```
 src/ts/
   components/
-    Cascade.tsx          # Dash wrapper component (class, exports propTypes + defaultProps)
+    Cascader.tsx          # Dash wrapper component (class, exports propTypes + defaultProps)
   fragments/
-    Cascade.tsx          # Functional implementation
+    Cascader.tsx          # Functional implementation
   css/
-    cascade.css          # Component styles (Dash design tokens only)
+    cascader.css          # Component styles (Dash design tokens only)
 ```
 
 No new npm dependencies. Radix UI is not available as a source import — the panel is implemented as a plain `position: absolute` div. Icons (`CaretDownIcon`, `Cross1Icon`, `MagnifyingGlassIcon`) are inline SVGs copied from `@radix-ui/react-icons` source or implemented as simple Unicode/SVG equivalents.

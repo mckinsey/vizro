@@ -7,26 +7,26 @@ import React, {
   useRef,
   useState,
 } from "react";
-import "../css/cascade.css";
+import "../css/cascader.css";
 import {
   CaretDownIcon,
   ChevronRightIcon,
   Cross1Icon,
   MagnifyingGlassIcon,
-} from "./CascadeIcons";
+} from "./CascaderIcons";
 import {
   buildColumns,
-  type CascadeOption,
+  type CascaderOption,
   collectAllLeaves,
   collectLeaves,
   parentCheckState,
   searchOptions,
-} from "./cascadeUtils";
+} from "./cascaderUtils";
 
-export type CascadeProps = {
+export type CascaderProps = {
   id?: string;
   setProps?: (props: Record<string, unknown>) => void;
-  options: CascadeOption[];
+  options: CascaderOption[];
   value?: string | number | null | (string | number)[];
   multi?: boolean;
   searchable?: boolean;
@@ -41,7 +41,7 @@ export type CascadeProps = {
   persistence_type?: "local" | "session" | "memory";
 };
 
-const CascadeFragment = ({
+const CascaderFragment = ({
   id,
   setProps,
   options,
@@ -54,7 +54,7 @@ const CascadeFragment = ({
   maxHeight = 300,
   className,
   style,
-}: CascadeProps) => {
+}: CascaderProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activePath, setActivePath] = useState<number[]>([]);
   const [searchValue, setSearchValue] = useState("");
@@ -131,7 +131,7 @@ const CascadeFragment = ({
   // Find the label for a given value (for trigger display)
   const findLabel = useCallback(
     (val: string | number): string => {
-      const find = (opts: CascadeOption[]): string | undefined => {
+      const find = (opts: CascaderOption[]): string | undefined => {
         for (const opt of opts) {
           if (opt.value === val) return opt.label;
           if (opt.children) {
@@ -187,7 +187,7 @@ const CascadeFragment = ({
   }, []);
 
   const handleParentCheckbox = useCallback(
-    (option: CascadeOption, e: React.ChangeEvent<HTMLInputElement>) => {
+    (option: CascaderOption, e: React.ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation();
       const state = parentCheckState(option, selectedSet);
       const leaves = collectLeaves(option);
@@ -244,7 +244,7 @@ const CascadeFragment = ({
       id={id}
       role="button"
       tabIndex={disabled ? -1 : 0}
-      className={`dash-cascade ${disabled ? "disabled" : ""} ${className ?? ""}`}
+      className={`dash-cascader ${disabled ? "disabled" : ""} ${className ?? ""}`}
       aria-expanded={isOpen}
       aria-haspopup="listbox"
       aria-disabled={disabled}
@@ -255,7 +255,7 @@ const CascadeFragment = ({
     >
       <span
         className={[
-          "dash-cascade-trigger",
+          "dash-cascader-trigger",
           multi && selectedValues.length > 1 ? "has-count" : "",
           canClear ? "has-clear" : "",
         ]
@@ -263,45 +263,45 @@ const CascadeFragment = ({
           .join(" ")}
       >
         {triggerLabels.length === 0 ? (
-          <span className="dash-cascade-value dash-cascade-placeholder">
+          <span className="dash-cascader-value dash-cascader-placeholder">
             {placeholder}
           </span>
         ) : (
-          <span className="dash-cascade-value">
+          <span className="dash-cascader-value">
             {triggerLabels.map((label, i) => (
-              <span key={i} className="dash-cascade-value-item">
+              <span key={i} className="dash-cascader-value-item">
                 {label}
               </span>
             ))}
           </span>
         )}
         {multi && selectedValues.length > 1 && (
-          <span className="dash-cascade-count">
+          <span className="dash-cascader-count">
             {selectedValues.length} selected
           </span>
         )}
         {canClear && (
           <button
             type="button"
-            className="dash-cascade-clear"
+            className="dash-cascader-clear"
             onClick={handleClear}
             aria-label="Clear selection"
           >
             <Cross1Icon />
           </button>
         )}
-        <CaretDownIcon className="dash-cascade-caret" />
+        <CaretDownIcon className="dash-cascader-caret" />
       </span>
     </div>
   );
 
   const renderSearchBar = () => (
-    <div className="dash-cascade-search-container">
-      <MagnifyingGlassIcon className="dash-cascade-search-icon" />
+    <div className="dash-cascader-search-container">
+      <MagnifyingGlassIcon className="dash-cascader-search-icon" />
       <input
         ref={searchRef}
         type="search"
-        className="dash-cascade-search-input"
+        className="dash-cascader-search-input"
         placeholder="Search..."
         value={searchValue}
         autoComplete="off"
@@ -310,7 +310,7 @@ const CascadeFragment = ({
       {searchValue && (
         <button
           type="button"
-          className="dash-cascade-clear"
+          className="dash-cascader-clear"
           onClick={() => setSearchValue("")}
           aria-label="Clear search"
         >
@@ -321,17 +321,17 @@ const CascadeFragment = ({
   );
 
   const renderActionsBar = () => (
-    <div className="dash-cascade-actions">
+    <div className="dash-cascader-actions">
       <button
         type="button"
-        className="dash-cascade-action-button"
+        className="dash-cascader-action-button"
         onClick={handleSelectAll}
       >
         Select all
       </button>
       <button
         type="button"
-        className="dash-cascade-action-button"
+        className="dash-cascader-action-button"
         onClick={handleDeselectAll}
       >
         Deselect all
@@ -340,9 +340,9 @@ const CascadeFragment = ({
   );
 
   const renderColumns = () => (
-    <div className="dash-cascade-columns" style={{ maxHeight }}>
+    <div className="dash-cascader-columns" style={{ maxHeight }}>
       {columns.map((colOptions, colIdx) => (
-        <div key={colIdx} className="dash-cascade-column">
+        <div key={colIdx} className="dash-cascader-column">
           {colOptions.map((opt, rowIdx) => {
             const isActive = activePath[colIdx] === rowIdx;
             const isLeafNode = !opt.children || opt.children.length === 0;
@@ -353,20 +353,20 @@ const CascadeFragment = ({
               return (
                 <div
                   key={String(opt.value)}
-                  className={`dash-cascade-row${isSelected && !multi ? " selected" : ""}${opt.disabled ? " disabled" : ""}`}
+                  className={`dash-cascader-row${isSelected && !multi ? " selected" : ""}${opt.disabled ? " disabled" : ""}`}
                   onClick={() => !opt.disabled && handleLeafClick(opt.value)}
                 >
                   {multi && (
                     <input
                       type="checkbox"
-                      className="dash-cascade-checkbox"
+                      className="dash-cascader-checkbox"
                       checked={isSelected}
                       disabled={opt.disabled}
                       onChange={() => handleLeafClick(opt.value)}
                       onClick={(e) => e.stopPropagation()}
                     />
                   )}
-                  <span className="dash-cascade-row-label">{opt.label}</span>
+                  <span className="dash-cascader-row-label">{opt.label}</span>
                 </div>
               );
             }
@@ -378,7 +378,7 @@ const CascadeFragment = ({
             return (
               <div
                 key={String(opt.value)}
-                className={`dash-cascade-row${isActive ? " active" : ""}${opt.disabled ? " disabled" : ""}`}
+                className={`dash-cascader-row${isActive ? " active" : ""}${opt.disabled ? " disabled" : ""}`}
                 onClick={() =>
                   !opt.disabled && handleParentClick(colIdx, rowIdx)
                 }
@@ -386,7 +386,7 @@ const CascadeFragment = ({
                 {multi && (
                   <input
                     type="checkbox"
-                    className="dash-cascade-checkbox"
+                    className="dash-cascader-checkbox"
                     checked={checkState === "checked"}
                     ref={(el) => {
                       if (el) el.indeterminate = checkState === "indeterminate";
@@ -396,8 +396,8 @@ const CascadeFragment = ({
                     onClick={(e) => e.stopPropagation()}
                   />
                 )}
-                <span className="dash-cascade-row-label">{opt.label}</span>
-                <ChevronRightIcon className="dash-cascade-chevron" />
+                <span className="dash-cascader-row-label">{opt.label}</span>
+                <ChevronRightIcon className="dash-cascader-chevron" />
               </div>
             );
           })}
@@ -408,31 +408,31 @@ const CascadeFragment = ({
 
   const renderSearchResults = () => {
     if (searchResults.length === 0) {
-      return <div className="dash-cascade-no-results">No options found</div>;
+      return <div className="dash-cascader-no-results">No options found</div>;
     }
     return (
-      <div className="dash-cascade-results" style={{ maxHeight }}>
+      <div className="dash-cascader-results" style={{ maxHeight }}>
         {searchResults.map(({ option, breadcrumb }) => {
           const isSelected = selectedSet.has(option.value);
           return (
             <div
               key={String(option.value)}
-              className={`dash-cascade-result-row${isSelected && !multi ? " selected" : ""}`}
+              className={`dash-cascader-result-row${isSelected && !multi ? " selected" : ""}`}
               onClick={() => !option.disabled && handleLeafClick(option.value)}
             >
               {multi && (
                 <input
                   type="checkbox"
-                  className="dash-cascade-checkbox"
+                  className="dash-cascader-checkbox"
                   checked={isSelected}
                   disabled={option.disabled}
                   onChange={() => handleLeafClick(option.value)}
                   onClick={(e) => e.stopPropagation()}
                 />
               )}
-              <span className="dash-cascade-row-label">{option.label}</span>
+              <span className="dash-cascader-row-label">{option.label}</span>
               {breadcrumb && (
-                <span className="dash-cascade-breadcrumb">{breadcrumb}</span>
+                <span className="dash-cascader-breadcrumb">{breadcrumb}</span>
               )}
             </div>
           );
@@ -442,10 +442,10 @@ const CascadeFragment = ({
   };
 
   return (
-    <div ref={wrapperRef} className="dash-cascade-wrapper" style={style}>
+    <div ref={wrapperRef} className="dash-cascader-wrapper" style={style}>
       {renderTrigger()}
       {isOpen && (
-        <div className="dash-cascade-panel">
+        <div className="dash-cascader-panel">
           {searchable && renderSearchBar()}
           {multi && renderActionsBar()}
           {searchValue ? renderSearchResults() : renderColumns()}
@@ -455,4 +455,4 @@ const CascadeFragment = ({
   );
 };
 
-export default CascadeFragment;
+export default CascaderFragment;

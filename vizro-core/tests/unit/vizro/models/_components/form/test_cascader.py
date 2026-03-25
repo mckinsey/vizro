@@ -1,4 +1,4 @@
-"""Unit tests for vizro.models.TreeSelect."""
+"""Unit tests for vizro.models.Cascader."""
 
 import dash_bootstrap_components as dbc
 import pytest
@@ -9,8 +9,8 @@ from pydantic import ValidationError
 
 from vizro.models import Tooltip
 from vizro.models._action._action import Action
-from vizro.models._components.form import TreeSelect
-from vizro.models._components.form.tree_select import _extract_leaf_keys
+from vizro.models._components.form import Cascader
+from vizro.models._components.form.cascader import _extract_leaf_keys
 
 SIMPLE_OPTIONS = {"Fruits": ["Apple", "Banana"], "Vegetables": ["Carrot"]}
 NESTED_OPTIONS = {
@@ -21,14 +21,14 @@ NESTED_OPTIONS = {
 }
 
 
-class TestTreeSelectInstantiation:
+class TestCascaderInstantiation:
     """Tests model instantiation."""
 
     def test_create_tree_select_mandatory_only(self):
-        ts = TreeSelect(options=SIMPLE_OPTIONS)
+        ts = Cascader(options=SIMPLE_OPTIONS)
 
         assert hasattr(ts, "id")
-        assert ts.type == "tree_select"
+        assert ts.type == "cascader"
         assert ts.multi is True
         assert ts.value is None
         assert ts.title == ""
@@ -37,7 +37,7 @@ class TestTreeSelectInstantiation:
         assert ts.extra == {}
 
     def test_create_tree_select_mandatory_and_optional(self):
-        ts = TreeSelect(
+        ts = Cascader(
             id="tree-select-id",
             options=SIMPLE_OPTIONS,
             value=["Apple"],
@@ -46,110 +46,110 @@ class TestTreeSelectInstantiation:
         )
 
         assert ts.id == "tree-select-id"
-        assert ts.type == "tree_select"
+        assert ts.type == "cascader"
         assert ts.options == SIMPLE_OPTIONS
         assert ts.value == ["Apple"]
         assert ts.title == "Title"
         assert ts.actions == []
 
     def test_create_tree_select_no_args(self):
-        ts = TreeSelect()
+        ts = Cascader()
         assert ts.options == {}
         assert ts.value is None
 
     def test_duplicate_leaf_values_raises(self):
         with pytest.raises(ValidationError, match="Duplicate leaf values"):
-            TreeSelect(options={"France": ["Bruges"], "Belgium": ["Bruges"]})
+            Cascader(options={"France": ["Bruges"], "Belgium": ["Bruges"]})
 
     def test_valid_flat_options(self):
-        ts = TreeSelect(options={"A": ["x", "y"]})
+        ts = Cascader(options={"A": ["x", "y"]})
         assert ts.options == {"A": ["x", "y"]}
 
     def test_valid_nested_options(self):
-        ts = TreeSelect(options=NESTED_OPTIONS)
+        ts = Cascader(options=NESTED_OPTIONS)
         assert ts.options == NESTED_OPTIONS
 
     def test_empty_options(self):
-        ts = TreeSelect(options={})
+        ts = Cascader(options={})
         assert ts.options == {}
 
     def test_invalid_options_not_dict(self):
         with pytest.raises(ValidationError, match="Input should be a valid dictionary"):
-            TreeSelect(options=["a", "b"])
+            Cascader(options=["a", "b"])
 
     def test_invalid_options_non_string_leaf(self):
         with pytest.raises(ValidationError, match="Leaf values must be strings"):
-            TreeSelect(options={"A": [1, 2]})
+            Cascader(options={"A": [1, 2]})
 
     def test_invalid_options_invalid_value_type(self):
         with pytest.raises(ValidationError):
-            TreeSelect(options={"A": 42})
+            Cascader(options={"A": 42})
 
     def test_valid_value(self):
-        ts = TreeSelect(options=SIMPLE_OPTIONS, value=["Apple"])
+        ts = Cascader(options=SIMPLE_OPTIONS, value=["Apple"])
         assert ts.value == ["Apple"]
 
     def test_valid_value_nested(self):
-        ts = TreeSelect(options=NESTED_OPTIONS, value=["iPhone", "MacBook"])
+        ts = Cascader(options=NESTED_OPTIONS, value=["iPhone", "MacBook"])
         assert ts.value == ["iPhone", "MacBook"]
 
     def test_invalid_value_not_in_options(self):
         with pytest.raises(ValidationError, match="valid value from `options`"):
-            TreeSelect(options=SIMPLE_OPTIONS, value=["NotAFruit"])
+            Cascader(options=SIMPLE_OPTIONS, value=["NotAFruit"])
 
     def test_multi_false_with_single_value(self):
-        ts = TreeSelect(options=SIMPLE_OPTIONS, value="Apple", multi=False)
+        ts = Cascader(options=SIMPLE_OPTIONS, value="Apple", multi=False)
         assert ts.value == "Apple"
 
     def test_multi_false_with_list_value_raises(self):
         with pytest.raises(ValidationError, match="multi=True"):
-            TreeSelect(options=SIMPLE_OPTIONS, value=["Apple"], multi=False)
+            Cascader(options=SIMPLE_OPTIONS, value=["Apple"], multi=False)
 
     def test_valid_single_value(self):
-        ts = TreeSelect(options=SIMPLE_OPTIONS, value="Apple", multi=False)
+        ts = Cascader(options=SIMPLE_OPTIONS, value="Apple", multi=False)
         assert ts.value == "Apple"
 
     def test_invalid_single_value_not_in_options(self):
         with pytest.raises(ValidationError, match="valid value from `options`"):
-            TreeSelect(options=SIMPLE_OPTIONS, value="NotAFruit", multi=False)
+            Cascader(options=SIMPLE_OPTIONS, value="NotAFruit", multi=False)
 
     def test_action_triggers(self):
-        ts = TreeSelect(id="tree-select-id", options=SIMPLE_OPTIONS)
+        ts = Cascader(id="tree-select-id", options=SIMPLE_OPTIONS)
         assert ts._action_triggers == {"__default__": "tree-select-id.value"}
 
     def test_action_outputs_no_title(self):
-        ts = TreeSelect(id="tree-select-id", options=SIMPLE_OPTIONS)
+        ts = Cascader(id="tree-select-id", options=SIMPLE_OPTIONS)
         assert ts._action_outputs == {"__default__": "tree-select-id.value"}
 
     def test_action_outputs_with_title(self):
-        ts = TreeSelect(id="tree-select-id", options=SIMPLE_OPTIONS, title="My Title")
+        ts = Cascader(id="tree-select-id", options=SIMPLE_OPTIONS, title="My Title")
         assert ts._action_outputs == {
             "__default__": "tree-select-id.value",
             "title": "tree-select-id_title.children",
         }
 
     def test_action_inputs(self):
-        ts = TreeSelect(id="tree-select-id", options=SIMPLE_OPTIONS)
+        ts = Cascader(id="tree-select-id", options=SIMPLE_OPTIONS)
         assert ts._action_inputs == {"__default__": "tree-select-id.value"}
 
     def test_tree_select_trigger(self, identity_action_function):
-        ts = TreeSelect(
+        ts = Cascader(
             id="tree-select-id", options=SIMPLE_OPTIONS, actions=[Action(function=identity_action_function())]
         )
         [action] = ts.actions
         assert action._trigger == "tree-select-id.value"
 
 
-class TestTreeSelectBuild:
+class TestCascaderBuild:
     """Tests model build method."""
 
     def test_build_no_title(self):
-        ts = TreeSelect(id="tree_select_id", options=SIMPLE_OPTIONS)
+        ts = Cascader(id="tree_select_id", options=SIMPLE_OPTIONS)
         result = ts.build()
         expected = html.Div(
             children=[
                 None,
-                vdc.Cascade(
+                vdc.Cascader(
                     id="tree_select_id",
                     options=SIMPLE_OPTIONS,
                     value=[],
@@ -164,7 +164,7 @@ class TestTreeSelectBuild:
         assert_component_equal(result, expected)
 
     def test_build_with_title(self):
-        ts = TreeSelect(id="tree_select_id", options=SIMPLE_OPTIONS, title="Pick a fruit")
+        ts = Cascader(id="tree_select_id", options=SIMPLE_OPTIONS, title="Pick a fruit")
         result = ts.build()
         expected = html.Div(
             children=[
@@ -172,7 +172,7 @@ class TestTreeSelectBuild:
                     children=[html.Span(id="tree_select_id_title", children="Pick a fruit"), None],
                     html_for="tree_select_id",
                 ),
-                vdc.Cascade(
+                vdc.Cascader(
                     id="tree_select_id",
                     options=SIMPLE_OPTIONS,
                     value=[],
@@ -187,12 +187,12 @@ class TestTreeSelectBuild:
         assert_component_equal(result, expected)
 
     def test_build_multi_false(self):
-        ts = TreeSelect(id="tree_select_id", options=SIMPLE_OPTIONS, multi=False)
+        ts = Cascader(id="tree_select_id", options=SIMPLE_OPTIONS, multi=False)
         result = ts.build()
         expected = html.Div(
             children=[
                 None,
-                vdc.Cascade(
+                vdc.Cascader(
                     id="tree_select_id",
                     options=SIMPLE_OPTIONS,
                     value=None,
@@ -207,12 +207,12 @@ class TestTreeSelectBuild:
         assert_component_equal(result, expected)
 
     def test_build_with_value(self):
-        ts = TreeSelect(id="tree_select_id", options=SIMPLE_OPTIONS, value=["Apple"])
+        ts = Cascader(id="tree_select_id", options=SIMPLE_OPTIONS, value=["Apple"])
         result = ts.build()
         expected = html.Div(
             children=[
                 None,
-                vdc.Cascade(
+                vdc.Cascader(
                     id="tree_select_id",
                     options=SIMPLE_OPTIONS,
                     value=["Apple"],
@@ -227,7 +227,7 @@ class TestTreeSelectBuild:
         assert_component_equal(result, expected)
 
     def test_build_with_description(self):
-        ts = TreeSelect(
+        ts = Cascader(
             id="tree_select_id",
             options=SIMPLE_OPTIONS,
             title="Pick a fruit",
@@ -250,7 +250,7 @@ class TestTreeSelectBuild:
                     children=[html.Span(id="tree_select_id_title", children="Pick a fruit"), *expected_description],
                     html_for="tree_select_id",
                 ),
-                vdc.Cascade(
+                vdc.Cascader(
                     id="tree_select_id",
                     options=SIMPLE_OPTIONS,
                     value=[],
@@ -265,12 +265,12 @@ class TestTreeSelectBuild:
         assert_component_equal(result, expected)
 
     def test_build_extra_overrides(self):
-        ts = TreeSelect(id="tree_select_id", options=SIMPLE_OPTIONS, extra={"placeholder": "Custom"})
+        ts = Cascader(id="tree_select_id", options=SIMPLE_OPTIONS, extra={"placeholder": "Custom"})
         result = ts.build()
         expected = html.Div(
             children=[
                 None,
-                vdc.Cascade(
+                vdc.Cascader(
                     id="tree_select_id",
                     options=SIMPLE_OPTIONS,
                     value=[],
@@ -305,17 +305,17 @@ class TestExtractLeafKeys:
         assert result == {"Apple", "Banana", "Carrot"}
 
 
-class TestTreeSelectCall:
+class TestCascaderCall:
     def test_call_with_options_param_overrides_self_options(self):
-        ts = TreeSelect(options={"A": ["x"]})
+        ts = Cascader(options={"A": ["x"]})
         result = ts(options={"B": ["y"]})
-        # title is "" (falsy) so children[0] is None, children[1] is vdc.Cascade
+        # title is "" (falsy) so children[0] is None, children[1] is vdc.Cascader
         cascade_component = result.children[1]
         assert cascade_component.options == {"B": ["y"]}
 
     def test_call_without_options_param_uses_self_options(self):
-        ts = TreeSelect(options={"A": ["x"]})
+        ts = Cascader(options={"A": ["x"]})
         result = ts()
-        # title is "" (falsy) so children[0] is None, children[1] is vdc.Cascade
+        # title is "" (falsy) so children[0] is None, children[1] is vdc.Cascader
         cascade_component = result.children[1]
         assert cascade_component.options == {"A": ["x"]}

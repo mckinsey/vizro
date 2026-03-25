@@ -1,0 +1,121 @@
+<h2>Cascade: Closed & Open States</h2>
+<p class="subtitle">Styled after dcc.Dropdown trigger + dbc.Checklist items. Click to see both states side-by-side.</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Closed (single-select)</div>
+    <div class="mockup-body" style="padding:20px;background:#1a1a2e;">
+      <!-- Trigger closed -->
+      <div style="position:relative;font-family:sans-serif;">
+        <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid #444;border-radius:4px;padding:6px 10px;background:#2a2a3e;color:#e0e0e0;cursor:pointer;min-height:36px;">
+          <span style="color:#888;font-size:13px;">Select...</span>
+          <span style="color:#888;font-size:10px;">▼</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Closed (multi-select, 2 items selected)</div>
+    <div class="mockup-body" style="padding:20px;background:#1a1a2e;">
+      <div style="position:relative;font-family:sans-serif;">
+        <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid #444;border-radius:4px;padding:4px 10px;background:#2a2a3e;color:#e0e0e0;cursor:pointer;min-height:36px;flex-wrap:wrap;gap:4px;">
+          <div style="display:flex;gap:4px;flex-wrap:wrap;flex:1;">
+            <span style="background:#3a3a5e;border:1px solid #555;border-radius:3px;padding:2px 6px;font-size:12px;display:flex;align-items:center;gap:4px;">Asia / Japan <span style="cursor:pointer;opacity:0.7;">×</span></span>
+            <span style="background:#3a3a5e;border:1px solid #555;border-radius:3px;padding:2px 6px;font-size:12px;display:flex;align-items:center;gap:4px;">Europe / France <span style="cursor:pointer;opacity:0.7;">×</span></span>
+          </div>
+          <span style="color:#888;font-size:10px;margin-left:4px;">▼</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="split" style="margin-top:24px;">
+  <div class="mockup">
+    <div class="mockup-header">Open — single-select, 2 levels deep</div>
+    <div class="mockup-body" style="padding:20px;background:#1a1a2e;min-height:260px;">
+      <div style="font-family:sans-serif;">
+        <!-- Trigger open -->
+        <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid #5b5fc7;border-radius:4px;padding:6px 10px;background:#2a2a3e;color:#e0e0e0;cursor:pointer;min-height:36px;margin-bottom:2px;">
+          <span style="color:#888;font-size:13px;">Select...</span>
+          <span style="color:#888;font-size:10px;">▲</span>
+        </div>
+        <!-- Search -->
+        <div style="border:1px solid #444;border-radius:4px;background:#2a2a3e;overflow:hidden;">
+          <div style="padding:6px 10px;border-bottom:1px solid #333;">
+            <input style="background:transparent;border:none;outline:none;color:#e0e0e0;width:100%;font-size:13px;" placeholder="Search..." value="" />
+          </div>
+          <!-- Panel row -->
+          <div style="display:flex;">
+            <!-- Column 1 -->
+            <div style="min-width:150px;border-right:1px solid #333;">
+              <div style="padding:7px 12px;background:#3a3a5e;color:#aab;font-size:13px;display:flex;justify-content:space-between;">Asia <span>›</span></div>
+              <div style="padding:7px 12px;color:#ccc;font-size:13px;display:flex;justify-content:space-between;cursor:pointer;">Europe <span style="opacity:0.4">›</span></div>
+              <div style="padding:7px 12px;color:#ccc;font-size:13px;display:flex;justify-content:space-between;cursor:pointer;">Americas <span style="opacity:0.4">›</span></div>
+            </div>
+            <!-- Column 2 -->
+            <div style="min-width:150px;">
+              <div style="padding:7px 12px;color:#ccc;font-size:13px;cursor:pointer;">China</div>
+              <div style="padding:7px 12px;color:#5b5fc7;font-size:13px;font-weight:500;cursor:pointer;">Japan ✓</div>
+              <div style="padding:7px 12px;color:#ccc;font-size:13px;cursor:pointer;">India</div>
+              <div style="padding:7px 12px;color:#ccc;font-size:13px;cursor:pointer;">Korea</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Open — multi-select with checkboxes</div>
+    <div class="mockup-body" style="padding:20px;background:#1a1a2e;min-height:260px;">
+      <div style="font-family:sans-serif;">
+        <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid #5b5fc7;border-radius:4px;padding:4px 10px;background:#2a2a3e;color:#e0e0e0;cursor:pointer;min-height:36px;margin-bottom:2px;">
+          <span style="background:#3a3a5e;border:1px solid #555;border-radius:3px;padding:2px 6px;font-size:12px;">Japan ×</span>
+          <span style="color:#888;font-size:10px;">▲</span>
+        </div>
+        <div style="border:1px solid #444;border-radius:4px;background:#2a2a3e;overflow:hidden;">
+          <div style="padding:6px 10px;border-bottom:1px solid #333;">
+            <input style="background:transparent;border:none;outline:none;color:#e0e0e0;width:100%;font-size:13px;" placeholder="Search..." />
+          </div>
+          <div style="display:flex;">
+            <!-- Column 1 with parent checkboxes -->
+            <div style="min-width:160px;border-right:1px solid #333;">
+              <div style="padding:7px 12px;background:#3a3a5e;color:#aab;font-size:13px;display:flex;align-items:center;gap:8px;">
+                <!-- indeterminate checkbox -->
+                <span style="width:14px;height:14px;border:1px solid #5b5fc7;border-radius:2px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#5b5fc7;">—</span>
+                <span style="flex:1;">Asia</span><span>›</span>
+              </div>
+              <div style="padding:7px 12px;color:#ccc;font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <span style="width:14px;height:14px;border:1px solid #555;border-radius:2px;display:inline-block;"></span>
+                <span style="flex:1;">Europe</span><span style="opacity:0.4">›</span>
+              </div>
+              <div style="padding:7px 12px;color:#ccc;font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <span style="width:14px;height:14px;border:1px solid #555;border-radius:2px;display:inline-block;"></span>
+                <span style="flex:1;">Americas</span><span style="opacity:0.4">›</span>
+              </div>
+            </div>
+            <!-- Column 2 with leaf checkboxes -->
+            <div style="min-width:150px;">
+              <div style="padding:7px 12px;color:#ccc;font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <span style="width:14px;height:14px;border:1px solid #555;border-radius:2px;display:inline-block;"></span>
+                China
+              </div>
+              <div style="padding:7px 12px;color:#5b5fc7;font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <span style="width:14px;height:14px;border:1px solid #5b5fc7;border-radius:2px;background:#5b5fc7;display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:white;">✓</span>
+                Japan
+              </div>
+              <div style="padding:7px 12px;color:#ccc;font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <span style="width:14px;height:14px;border:1px solid #555;border-radius:2px;display:inline-block;"></span>
+                India
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:16px;">Does this visual direction look right? Key decisions: tag-style selected values in trigger, search bar at top of panel, side-by-side columns, checkboxes in multi mode with indeterminate state on parents.</p>

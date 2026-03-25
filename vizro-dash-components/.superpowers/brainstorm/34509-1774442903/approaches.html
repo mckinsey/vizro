@@ -1,0 +1,40 @@
+<h2>Cascade Component: 3 Approaches</h2>
+<p class="subtitle">How should the side-panel expansion and multi-select be architected internally?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Single flat state machine <span style="font-size:0.8em;opacity:0.6">(Recommended)</span></h3>
+      <p>State = <code>activePathIndices: number[]</code> tracking which column is open at each depth, plus <code>value</code>. Each column renders from the options tree by following the active path. Multi-select uses a flat <code>Set&lt;string&gt;</code> of selected leaf values.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Simple, predictable state</li><li>Easy to reason about column rendering</li><li>Search just filters the root level, then resets path</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Parent "select all" requires walking the subtree to collect leaves</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Recursive column components</h3>
+      <p>Each column is a self-contained <code>&lt;CascadeColumn&gt;</code> component that receives its slice of options and renders the next column recursively when an item is active.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Natural recursive structure mirrors the data</li><li>Each column is independently testable</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>State lifted to root anyway (Dash needs it)</li><li>More component boilerplate for the same result</li><li>Harder to animate column transitions</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Pre-computed index at build time</h3>
+      <p>On mount, flatten the entire options tree into a lookup map <code>valueToNode</code> and a <code>valueToPath</code> map. All operations (select, select-all, search) work against the index.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>O(1) lookups for select-all and path resolution</li><li>Cleanest search implementation</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Extra complexity on mount/options-change</li><li>Overkill for typical small-to-medium option trees</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -78,7 +78,7 @@ TABLE = """
 | Component | Type       | Async chunk |
 |-----------|------------|-------------|
 | Markdown  | React/TSX  | Yes         |
-| Cascade   | React/TSX  | No          |
+| Cascader  | React/TSX  | No          |
 | MathJax   | Extension  | Yes         |
 """
 

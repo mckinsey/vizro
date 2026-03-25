@@ -1,12 +1,12 @@
-export type CascadeOption = {
+export type CascaderOption = {
   label: string;
   value: string | number;
   disabled?: boolean;
-  children?: CascadeOption[];
+  children?: CascaderOption[];
 };
 
 /** True if the node has no children (i.e. is a leaf). */
-export function isLeaf(option: CascadeOption): boolean {
+export function isLeaf(option: CascaderOption): boolean {
   return !option.children || option.children.length === 0;
 }
 
@@ -17,10 +17,10 @@ export function isLeaf(option: CascadeOption): boolean {
  * the walk stops and the path is effectively truncated.
  */
 export function buildColumns(
-  options: CascadeOption[],
+  options: CascaderOption[],
   activePath: number[],
-): CascadeOption[][] {
-  const columns: CascadeOption[][] = [options];
+): CascaderOption[][] {
+  const columns: CascaderOption[][] = [options];
   let current = options;
   for (const idx of activePath) {
     const node = current[idx];
@@ -32,14 +32,14 @@ export function buildColumns(
 }
 
 /** Collect all leaf values under a node (depth-first). */
-export function collectLeaves(option: CascadeOption): (string | number)[] {
+export function collectLeaves(option: CascaderOption): (string | number)[] {
   if (isLeaf(option)) return [option.value];
   return (option.children ?? []).flatMap(collectLeaves);
 }
 
 /** Collect all leaf values in the entire options tree. */
 export function collectAllLeaves(
-  options: CascadeOption[],
+  options: CascaderOption[],
 ): (string | number)[] {
   return options.flatMap(collectLeaves);
 }
@@ -49,7 +49,7 @@ export function collectAllLeaves(
  * Returns 'checked' | 'indeterminate' | 'unchecked'.
  */
 export function parentCheckState(
-  option: CascadeOption,
+  option: CascaderOption,
   selectedSet: Set<string | number>,
 ): "checked" | "indeterminate" | "unchecked" {
   const leaves = collectLeaves(option);
@@ -64,12 +64,12 @@ export function parentCheckState(
  * Returns {option, breadcrumb} where breadcrumb is e.g. "Asia › China".
  */
 export function searchOptions(
-  options: CascadeOption[],
+  options: CascaderOption[],
   query: string,
   ancestors: string[] = [],
-): { option: CascadeOption; breadcrumb: string }[] {
+): { option: CascaderOption; breadcrumb: string }[] {
   const lower = query.toLowerCase();
-  const results: { option: CascadeOption; breadcrumb: string }[] = [];
+  const results: { option: CascaderOption; breadcrumb: string }[] = [];
   for (const opt of options) {
     if (isLeaf(opt)) {
       if (opt.label.toLowerCase().includes(lower)) {

@@ -3,7 +3,7 @@
 var pt = window.PropTypes;
 var pk = window['vizro_dash_components'];
 
-pk.Cascade.propTypes = {id:pt.any,
+pk.Cascader.propTypes = {id:pt.any,
  setProps:pt.any,
  options:pt.any,
  value:pt.any,

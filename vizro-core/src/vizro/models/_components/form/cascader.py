@@ -69,7 +69,7 @@ def _validate_multi(multi: bool, info: ValidationInfo) -> bool:
     return multi
 
 
-def _validate_tree_value(value, info: ValidationInfo):
+def _validate_cascader_value(value, info: ValidationInfo):
     if "options" not in info.data or not info.data["options"]:
         return value
     leaf_keys = _extract_leaf_keys(info.data["options"])
@@ -78,7 +78,7 @@ def _validate_tree_value(value, info: ValidationInfo):
     return value
 
 
-class TreeSelect(VizroBaseModel):
+class Cascader(VizroBaseModel):
     """Hierarchical multi/single-option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
@@ -90,11 +90,11 @@ class TreeSelect(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
 
-    type: Literal["tree_select"] = "tree_select"
+    type: Literal["cascader"] = "cascader"
     options: TreeOptionsType = Field(default={})
     value: Annotated[
         SingleValueType | MultiValueType | None,
-        AfterValidator(_validate_tree_value),
+        AfterValidator(_validate_cascader_value),
         Field(default=None, validate_default=True),
     ]
     multi: Annotated[
@@ -114,7 +114,7 @@ class TreeSelect(VizroBaseModel):
             dict[str, Any],
             Field(
                 default={},
-                description="""Extra keyword arguments passed to `vdc.Cascade` and overwrite any
+                description="""Extra keyword arguments passed to `vdc.Cascader` and overwrite any
 defaults chosen by the Vizro team. This may have unexpected behavior.""",
             ),
         ]
@@ -173,7 +173,7 @@ defaults chosen by the Vizro team. This may have unexpected behavior.""",
                 )
                 if self.title
                 else None,
-                vdc.Cascade(**(defaults | self.extra)),
+                vdc.Cascader(**(defaults | self.extra)),
             ]
         )
 

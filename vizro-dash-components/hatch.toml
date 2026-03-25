@@ -14,7 +14,7 @@ dependencies = [
 installer = "uv"
 
 [envs.default.scripts]
-example-cascade = "python examples/cascade_demo.py"
+example-cascader = "python examples/cascader_demo.py"
 example-markdown = "python examples/markdown_demo.py"
 generate-components = "npm run build"
 lint = "pre-commit run {args} --all-files"

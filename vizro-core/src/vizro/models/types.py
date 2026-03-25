@@ -645,13 +645,13 @@ TreeOptionsType: TypeAlias = dict[str, Any]
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
 SelectorType = Annotated[
-    "Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch | TreeSelect",
+    "Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch | Cascader",
     Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Checklist`][vizro.models.Checklist],
 [`DatePicker`][vizro.models.DatePicker], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
 [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`Switch`][vizro.models.Switch] or
-[`TreeSelect`][vizro.models.TreeSelect]."""
+[`Cascader`][vizro.models.Cascader]."""
 
 _FormComponentType = Annotated[
     "SelectorType | Button | UserInput",

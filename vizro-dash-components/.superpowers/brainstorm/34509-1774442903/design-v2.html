@@ -1,0 +1,191 @@
+<h2>Cascade: Revised Design (matching dcc.Dropdown exactly)</h2>
+<p class="subtitle">Trigger and panel match dcc.Dropdown styling. The only difference is the panel has side-by-side columns instead of a flat list.</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">multi=False — nothing selected (closed)</div>
+    <div class="mockup-body" style="padding:20px 20px 60px;background:#f8f8f8;">
+      <div style="font-family:sans-serif;font-size:14px;position:relative;">
+        <button style="display:block;width:100%;box-sizing:border-box;background:#fff;border:1px solid #ccc;border-radius:4px;padding:0;cursor:pointer;font-size:inherit;font-family:inherit;overflow:hidden;outline:none;">
+          <span style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;padding:0 12px;min-height:32px;">
+            <span style="color:#aaa;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Select...</span>
+            <span style="font-size:10px;color:#555;">▾</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">multi=False — "Japan" selected (closed)</div>
+    <div class="mockup-body" style="padding:20px 20px 60px;background:#f8f8f8;">
+      <div style="font-family:sans-serif;font-size:14px;position:relative;">
+        <button style="display:block;width:100%;box-sizing:border-box;background:#fff;border:1px solid #ccc;border-radius:4px;padding:0;cursor:pointer;font-size:inherit;font-family:inherit;overflow:hidden;outline:none;">
+          <span style="display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;padding:0 12px;min-height:32px;">
+            <span style="text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#333;">Japan</span>
+            <span style="cursor:pointer;color:#888;font-size:11px;line-height:1;">✕</span>
+            <span style="font-size:10px;color:#555;">▾</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="split" style="margin-top:16px;">
+  <div class="mockup">
+    <div class="mockup-header">multi=True — 2 items selected (closed)</div>
+    <div class="mockup-body" style="padding:20px 20px 60px;background:#f8f8f8;">
+      <div style="font-family:sans-serif;font-size:14px;position:relative;">
+        <button style="display:block;width:100%;box-sizing:border-box;background:#fff;border:1px solid #ccc;border-radius:4px;padding:0;cursor:pointer;font-size:inherit;font-family:inherit;overflow:hidden;outline:none;">
+          <span style="display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:8px;padding:0 12px;min-height:32px;">
+            <span style="text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#333;">Japan, France</span>
+            <span style="background:#e8eaf6;border-radius:4px;padding:2px 5px;font-size:0.875em;color:#666;white-space:nowrap;">2 selected</span>
+            <span style="cursor:pointer;color:#888;font-size:11px;line-height:1;">✕</span>
+            <span style="font-size:10px;color:#555;">▾</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">multi=False — open panel (2 levels)</div>
+    <div class="mockup-body" style="padding:20px;background:#f8f8f8;min-height:280px;">
+      <div style="font-family:sans-serif;font-size:14px;position:relative;">
+        <!-- Trigger open -->
+        <button style="display:block;width:100%;box-sizing:border-box;background:#fff;border:1px solid #5c6bc0;border-radius:4px;padding:0;cursor:pointer;font-size:inherit;font-family:inherit;overflow:hidden;outline:1px solid #5c6bc0;">
+          <span style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;padding:0 12px;min-height:32px;">
+            <span style="color:#aaa;text-align:left;">Select...</span>
+            <span style="font-size:10px;color:#555;">▴</span>
+          </span>
+        </button>
+        <!-- Panel -->
+        <div style="position:absolute;top:calc(100% + 5px);left:0;right:0;background:#fff;border:1px solid #ccc;border-radius:4px;box-shadow:0 10px 38px -10px rgba(0,0,0,0.15);z-index:10;overflow:hidden;">
+          <!-- Search bar -->
+          <div style="margin:6px;padding:4px 8px;border:1px solid #ccc;border-radius:4px;display:flex;align-items:center;gap:6px;">
+            <span style="color:#aaa;font-size:12px;">🔍</span>
+            <input style="border:none;outline:none;width:100%;font-size:13px;font-family:inherit;color:#333;" placeholder="Search..." />
+          </div>
+          <!-- Columns -->
+          <div style="display:flex;border-top:1px solid #eee;">
+            <!-- Col 1 -->
+            <div style="min-width:130px;border-right:1px solid #eee;">
+              <div style="padding:6px 10px;background:#e8eaf6;color:#333;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">Asia<span style="color:#999;font-size:11px;">›</span></div>
+              <div style="padding:6px 10px;color:#555;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">Europe<span style="color:#ddd;font-size:11px;">›</span></div>
+              <div style="padding:6px 10px;color:#555;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">Americas<span style="color:#ddd;font-size:11px;">›</span></div>
+            </div>
+            <!-- Col 2 (leaf — no chevron, no checkbox) -->
+            <div style="min-width:130px;">
+              <div style="padding:6px 10px;color:#555;cursor:pointer;">China</div>
+              <div style="padding:6px 10px;background:#e8eaf6;color:#5c6bc0;font-weight:500;cursor:pointer;">Japan</div>
+              <div style="padding:6px 10px;color:#555;cursor:pointer;">India</div>
+              <div style="padding:6px 10px;color:#555;cursor:pointer;">Korea</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="split" style="margin-top:16px;">
+  <div class="mockup">
+    <div class="mockup-header">multi=True — open panel with checkboxes</div>
+    <div class="mockup-body" style="padding:20px;background:#f8f8f8;min-height:300px;">
+      <div style="font-family:sans-serif;font-size:14px;position:relative;">
+        <button style="display:block;width:100%;box-sizing:border-box;background:#fff;border:1px solid #5c6bc0;border-radius:4px;padding:0;cursor:pointer;font-size:inherit;font-family:inherit;overflow:hidden;outline:1px solid #5c6bc0;">
+          <span style="display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:8px;padding:0 12px;min-height:32px;">
+            <span style="text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#333;">Japan, France</span>
+            <span style="background:#e8eaf6;border-radius:4px;padding:2px 5px;font-size:0.875em;color:#666;">2 selected</span>
+            <span style="cursor:pointer;color:#888;font-size:11px;">✕</span>
+            <span style="font-size:10px;color:#555;">▴</span>
+          </span>
+        </button>
+        <div style="position:absolute;top:calc(100% + 5px);left:0;right:0;background:#fff;border:1px solid #ccc;border-radius:4px;box-shadow:0 10px 38px -10px rgba(0,0,0,0.15);z-index:10;overflow:hidden;">
+          <!-- Search -->
+          <div style="margin:6px;padding:4px 8px;border:1px solid #ccc;border-radius:4px;display:flex;align-items:center;gap:6px;">
+            <span style="color:#aaa;font-size:12px;">🔍</span>
+            <input style="border:none;outline:none;width:100%;font-size:13px;font-family:inherit;color:#333;" placeholder="Search..." />
+          </div>
+          <!-- Select all / Deselect all -->
+          <div style="display:flex;gap:16px;padding:4px 10px;border-top:1px solid #eee;border-bottom:1px solid #eee;">
+            <button style="background:none;border:none;cursor:pointer;font-size:0.875em;font-weight:600;color:#888;padding:0;font-family:inherit;">Select all</button>
+            <button style="background:none;border:none;cursor:pointer;font-size:0.875em;font-weight:600;color:#888;padding:0;font-family:inherit;">Deselect all</button>
+          </div>
+          <!-- Columns with checkboxes -->
+          <div style="display:flex;border-top:1px solid #eee;">
+            <!-- Col 1: parents with checkboxes -->
+            <div style="min-width:145px;border-right:1px solid #eee;">
+              <!-- Asia: indeterminate (1 of N children selected) -->
+              <div style="padding:6px 10px;background:#e8eaf6;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <input type="checkbox" style="accent-color:#5c6bc0;" />
+                <span style="flex:1;color:#333;">Asia</span>
+                <span style="color:#999;font-size:11px;">›</span>
+              </div>
+              <div style="padding:6px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <input type="checkbox" checked style="accent-color:#5c6bc0;" />
+                <span style="flex:1;color:#5c6bc0;font-weight:500;">Europe</span>
+                <span style="color:#ddd;font-size:11px;">›</span>
+              </div>
+              <div style="padding:6px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <input type="checkbox" style="accent-color:#5c6bc0;" />
+                <span style="flex:1;color:#555;">Americas</span>
+                <span style="color:#ddd;font-size:11px;">›</span>
+              </div>
+            </div>
+            <!-- Col 2: leaves with checkboxes -->
+            <div style="min-width:130px;">
+              <div style="padding:6px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <input type="checkbox" style="accent-color:#5c6bc0;" />
+                <span style="color:#555;">China</span>
+              </div>
+              <div style="padding:6px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <input type="checkbox" checked style="accent-color:#5c6bc0;" />
+                <span style="color:#5c6bc0;font-weight:500;">Japan</span>
+              </div>
+              <div style="padding:6px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <input type="checkbox" style="accent-color:#5c6bc0;" />
+                <span style="color:#555;">India</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Search active — results flatten across levels</div>
+    <div class="mockup-body" style="padding:20px;background:#f8f8f8;min-height:260px;">
+      <div style="font-family:sans-serif;font-size:14px;position:relative;">
+        <button style="display:block;width:100%;box-sizing:border-box;background:#fff;border:1px solid #5c6bc0;border-radius:4px;padding:0;cursor:pointer;font-size:inherit;font-family:inherit;overflow:hidden;outline:1px solid #5c6bc0;">
+          <span style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;padding:0 12px;min-height:32px;">
+            <span style="color:#aaa;text-align:left;">Select...</span>
+            <span style="font-size:10px;color:#555;">▴</span>
+          </span>
+        </button>
+        <div style="position:absolute;top:calc(100% + 5px);left:0;right:0;background:#fff;border:1px solid #ccc;border-radius:4px;box-shadow:0 10px 38px -10px rgba(0,0,0,0.15);z-index:10;overflow:hidden;">
+          <div style="margin:6px;padding:4px 8px;border:1px solid #5c6bc0;border-radius:4px;display:flex;align-items:center;gap:6px;outline:1px solid #5c6bc0;">
+            <span style="color:#5c6bc0;font-size:12px;">🔍</span>
+            <input style="border:none;outline:none;width:100%;font-size:13px;font-family:inherit;color:#333;" value="ja" />
+            <button style="background:none;border:none;cursor:pointer;color:#888;font-size:11px;padding:0;">✕</button>
+          </div>
+          <!-- Flat results list (like normal dropdown) -->
+          <div style="border-top:1px solid #eee;">
+            <div style="padding:6px 10px;color:#555;cursor:pointer;display:flex;align-items:center;gap:8px;">
+              <span>Japan</span>
+              <span style="color:#aaa;font-size:11px;margin-left:auto;">Asia ›</span>
+            </div>
+            <div style="padding:6px 10px;color:#555;cursor:pointer;display:flex;align-items:center;gap:8px;">
+              <span>Jakarta</span>
+              <span style="color:#aaa;font-size:11px;margin-left:auto;">Asia ›</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:16px;">Trigger and panel now match dcc.Dropdown exactly. Value shown as plain text (leaf label only, no path). "Select all / Deselect all" bar in multi mode. Search flattens results to a plain list with a breadcrumb hint on the right. Does this look right?</p>

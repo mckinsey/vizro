@@ -17,7 +17,7 @@ from vizro.models import (
     RangeSlider,
     Slider,
     Switch,
-    TreeSelect,
+    Cascader,
     VizroBaseModel,
 )
 from vizro.models._components.form._form_utils import get_dict_options_and_default
@@ -47,8 +47,8 @@ def _is_boolean_selector(x: object) -> TypeIs[Switch]:
     return isinstance(x, SELECTORS["boolean"])
 
 
-def _is_tree_selector(x: object) -> TypeIs[TreeSelect]:
-    return isinstance(x, TreeSelect)
+def _is_cascader_selector(x: object) -> TypeIs[Cascader]:
+    return isinstance(x, Cascader)
 
 
 def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
@@ -116,6 +116,6 @@ def get_selector_default_value(selector: SelectorType) -> Any:
         is_multi = isinstance(selector, Checklist) or getattr(selector, "multi", False)
         _, default_value = get_dict_options_and_default(options=selector.options, multi=is_multi)
         return default_value
-    elif _is_tree_selector(selector):
+    elif _is_cascader_selector(selector):
         return [] if selector.multi else None
     # Boolean selectors always have a default value specified so no need to handle them here.

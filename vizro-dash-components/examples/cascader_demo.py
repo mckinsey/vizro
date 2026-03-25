@@ -1,8 +1,8 @@
-"""Full-suite demo for the Cascade component."""
+"""Full-suite demo for the Cascader component."""
 
 import dash_mantine_components as dmc
 from dash import Dash, Input, Output, ctx, dcc, html
-from vizro_dash_components import Cascade
+from vizro_dash_components import Cascader
 
 # --- Option trees ---
 
@@ -232,7 +232,7 @@ app.layout = dmc.MantineProvider(
         [
             dmc.Group(
                 [
-                    dmc.Title("Cascade — component showcase", order=1),
+                    dmc.Title("Cascader — component showcase", order=1),
                     dmc.ColorSchemeToggle(
                         lightIcon=html.Span("☀", style={"fontSize": 20}),
                         darkIcon=html.Span("☾", style={"fontSize": 20}),
@@ -252,7 +252,7 @@ app.layout = dmc.MantineProvider(
                         dmc.GridCol(
                             [
                                 dmc.Text("Default", fw=600, size="sm", mb=4),
-                                Cascade(id="single", options=WORLD_OPTIONS, placeholder="Select a country..."),
+                                Cascader(id="single", options=WORLD_OPTIONS, placeholder="Select a country..."),
                                 value_out("single-out"),
                             ],
                             span=6,
@@ -260,7 +260,7 @@ app.layout = dmc.MantineProvider(
                         dmc.GridCol(
                             [
                                 dmc.Text("Pre-seeded: value='japan'", fw=600, size="sm", mb=4),
-                                Cascade(id="single-preseeded", options=WORLD_OPTIONS, value="japan"),
+                                Cascader(id="single-preseeded", options=WORLD_OPTIONS, value="japan"),
                                 value_out("single-preseeded-out"),
                             ],
                             span=6,
@@ -276,7 +276,7 @@ app.layout = dmc.MantineProvider(
                         dmc.GridCol(
                             [
                                 dmc.Text("Default", fw=600, size="sm", mb=4),
-                                Cascade(id="multi", options=WORLD_OPTIONS, multi=True, placeholder="Select countries..."),
+                                Cascader(id="multi", options=WORLD_OPTIONS, multi=True, placeholder="Select countries..."),
                                 value_out("multi-out"),
                             ],
                             span=6,
@@ -284,7 +284,7 @@ app.layout = dmc.MantineProvider(
                         dmc.GridCol(
                             [
                                 dmc.Text("Pre-seeded: japan + france + germany", fw=600, size="sm", mb=4),
-                                Cascade(
+                                Cascader(
                                     id="multi-preseeded",
                                     options=WORLD_OPTIONS,
                                     multi=True,
@@ -305,7 +305,7 @@ app.layout = dmc.MantineProvider(
                         dmc.GridCol(
                             [
                                 dmc.Text("Single-select", fw=600, size="sm", mb=4),
-                                Cascade(
+                                Cascader(
                                     id="no-search-single",
                                     options=WORLD_OPTIONS,
                                     searchable=False,
@@ -318,7 +318,7 @@ app.layout = dmc.MantineProvider(
                         dmc.GridCol(
                             [
                                 dmc.Text("Multi-select", fw=600, size="sm", mb=4),
-                                Cascade(
+                                Cascader(
                                     id="no-search-multi",
                                     options=WORLD_OPTIONS,
                                     multi=True,
@@ -340,21 +340,21 @@ app.layout = dmc.MantineProvider(
                         dmc.GridCol(
                             [
                                 dmc.Text("No value", fw=600, size="sm", mb=4),
-                                Cascade(id="disabled-empty", options=WORLD_OPTIONS, disabled=True),
+                                Cascader(id="disabled-empty", options=WORLD_OPTIONS, disabled=True),
                             ],
                             span=3,
                         ),
                         dmc.GridCol(
                             [
                                 dmc.Text("With value", fw=600, size="sm", mb=4),
-                                Cascade(id="disabled-val", options=WORLD_OPTIONS, disabled=True, value="japan"),
+                                Cascader(id="disabled-val", options=WORLD_OPTIONS, disabled=True, value="japan"),
                             ],
                             span=3,
                         ),
                         dmc.GridCol(
                             [
                                 dmc.Text("Multi with value", fw=600, size="sm", mb=4),
-                                Cascade(
+                                Cascader(
                                     id="disabled-multi",
                                     options=WORLD_OPTIONS,
                                     multi=True,
@@ -369,7 +369,7 @@ app.layout = dmc.MantineProvider(
             ),
             section(
                 "Programmatic value update",
-                "Buttons drive the Cascade value from a callback.",
+                "Buttons drive the Cascader value from a callback.",
                 dmc.Group(
                     [
                         dmc.Button("Set Japan", id="btn-japan", variant="outline", size="sm"),
@@ -378,7 +378,7 @@ app.layout = dmc.MantineProvider(
                     ],
                     mb="sm",
                 ),
-                Cascade(id="programmatic", options=WORLD_OPTIONS, placeholder="Driven by buttons..."),
+                Cascader(id="programmatic", options=WORLD_OPTIONS, placeholder="Driven by buttons..."),
                 value_out("programmatic-out"),
             ),
             section(
@@ -389,7 +389,7 @@ app.layout = dmc.MantineProvider(
                         dmc.GridCol(
                             [
                                 dmc.Text("Single-select", fw=600, size="sm", mb=4),
-                                Cascade(id="products-single", options=PRODUCT_OPTIONS, placeholder="Select product..."),
+                                Cascader(id="products-single", options=PRODUCT_OPTIONS, placeholder="Select product..."),
                                 value_out("products-single-out"),
                             ],
                             span=6,
@@ -397,7 +397,7 @@ app.layout = dmc.MantineProvider(
                         dmc.GridCol(
                             [
                                 dmc.Text("Multi-select", fw=600, size="sm", mb=4),
-                                Cascade(
+                                Cascader(
                                     id="products-multi",
                                     options=PRODUCT_OPTIONS,
                                     multi=True,
@@ -413,7 +413,7 @@ app.layout = dmc.MantineProvider(
             section(
                 "maxHeight=150px",
                 "Each column scrolls independently within the constrained panel height.",
-                Cascade(id="maxheight", options=WORLD_OPTIONS, multi=True, maxHeight=150),
+                Cascader(id="maxheight", options=WORLD_OPTIONS, multi=True, maxHeight=150),
             ),
             section(
                 "Stress test — wide tree (10 × 10 × 10 = 1 000 leaves)",
@@ -423,7 +423,7 @@ app.layout = dmc.MantineProvider(
                         dmc.GridCol(
                             [
                                 dmc.Text("Single-select", fw=600, size="sm", mb=4),
-                                Cascade(id="stress-single", options=STRESS_OPTIONS, placeholder="Select item..."),
+                                Cascader(id="stress-single", options=STRESS_OPTIONS, placeholder="Select item..."),
                                 value_out("stress-single-out"),
                             ],
                             span=6,
@@ -431,7 +431,7 @@ app.layout = dmc.MantineProvider(
                         dmc.GridCol(
                             [
                                 dmc.Text("Multi-select", fw=600, size="sm", mb=4),
-                                Cascade(id="stress-multi", options=STRESS_OPTIONS, multi=True, placeholder="Select items..."),
+                                Cascader(id="stress-multi", options=STRESS_OPTIONS, multi=True, placeholder="Select items..."),
                                 value_out("stress-multi-out"),
                             ],
                             span=6,
@@ -447,7 +447,7 @@ app.layout = dmc.MantineProvider(
                         dmc.GridCol(
                             [
                                 dmc.Text("Single-select", fw=600, size="sm", mb=4),
-                                Cascade(id="deep-single", options=DEEP_OPTIONS, placeholder="Select leaf..."),
+                                Cascader(id="deep-single", options=DEEP_OPTIONS, placeholder="Select leaf..."),
                                 value_out("deep-single-out"),
                             ],
                             span=6,
@@ -455,7 +455,7 @@ app.layout = dmc.MantineProvider(
                         dmc.GridCol(
                             [
                                 dmc.Text("Multi-select", fw=600, size="sm", mb=4),
-                                Cascade(id="deep-multi", options=DEEP_OPTIONS, multi=True, placeholder="Select leaves..."),
+                                Cascader(id="deep-multi", options=DEEP_OPTIONS, multi=True, placeholder="Select leaves..."),
                                 value_out("deep-multi-out"),
                             ],
                             span=6,

@@ -6,7 +6,7 @@ from vizro.models._components.form.radio_items import RadioItems
 from vizro.models._components.form.range_slider import RangeSlider
 from vizro.models._components.form.slider import Slider
 from vizro.models._components.form.switch import Switch
-from vizro.models._components.form.tree_select import TreeSelect
+from vizro.models._components.form.cascader import Cascader
 
 __all__ = [
     "Button",
@@ -17,5 +17,5 @@ __all__ = [
     "RangeSlider",
     "Slider",
     "Switch",
-    "TreeSelect",
+    "Cascader",
 ]

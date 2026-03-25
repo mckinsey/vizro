@@ -13,7 +13,7 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
-from vizro.models._components.form import TreeSelect
+from vizro.models._components.form import Cascader
 from vizro.models._controls._controls_utils import get_selector_default_value
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
 
@@ -1153,19 +1153,19 @@ class TestFilterBuild:
         assert_component_equal(result, expected, keys_to_strip={"children"})
 
 
-class TestGetSelectorDefaultValueTreeSelect:
+class TestGetSelectorDefaultValueCascader:
     def test_tree_select_multi_true_default_is_empty_list(self):
-        ts = TreeSelect(multi=True)
+        ts = Cascader(multi=True)
         assert get_selector_default_value(ts) == []
 
     def test_tree_select_multi_false_default_is_none(self):
-        ts = TreeSelect(multi=False)
+        ts = Cascader(multi=False)
         assert get_selector_default_value(ts) is None
 
     def test_tree_select_with_value_returns_value(self):
         # This test passes BEFORE the new branch is added (early-return handles it),
         # but it documents the expected contract so is worth keeping.
-        ts = TreeSelect(options={"A": ["x"]}, value=["x"])
+        ts = Cascader(options={"A": ["x"]}, value=["x"])
         assert get_selector_default_value(ts) == ["x"]
 
 
@@ -1268,12 +1268,12 @@ def managers_column_hierarchy():
 
 class TestFilterHierarchyPreBuild:
     def test_default_selector_is_tree_select(self, managers_column_hierarchy):
-        from vizro.models._components.form import TreeSelect
+        from vizro.models._components.form import Cascader
 
         f = vm.Filter(column_hierarchy=["continent", "country", "city"])
         model_manager["test_page"].controls = [f]
         f.pre_build()
-        assert isinstance(f.selector, TreeSelect)
+        assert isinstance(f.selector, Cascader)
 
     def test_column_set_to_leaf(self, managers_column_hierarchy):
         f = vm.Filter(column_hierarchy=["continent", "country", "city"])
@@ -1303,7 +1303,7 @@ class TestFilterHierarchyPreBuild:
 
         f = vm.Filter(
             column_hierarchy=["continent", "country", "city"],
-            selector=vm.TreeSelect(multi=False, title="Location"),
+            selector=vm.Cascader(multi=False, title="Location"),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -1316,7 +1316,7 @@ class TestFilterHierarchyPreBuild:
             selector=vm.Dropdown(),
         )
         model_manager["test_page"].controls = [f]
-        with pytest.raises(ValueError, match="TreeSelect"):
+        with pytest.raises(ValueError, match="Cascader"):
             f.pre_build()
 
     def test_duplicate_leaf_values_in_data_raises(self):
@@ -1407,7 +1407,7 @@ class TestFilterHierarchyPreBuildDynamic:
         # User-supplied options → treated as static regardless of data source
         f = vm.Filter(
             column_hierarchy=["continent", "country"],
-            selector=vm.TreeSelect(options={"Europe": ["France", "Germany"]}),
+            selector=vm.Cascader(options={"Europe": ["France", "Germany"]}),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -1421,7 +1421,7 @@ def tree_filter_pre_built(managers_column_hierarchy_dynamic):
     f = vm.Filter(
         column_hierarchy=["continent", "country"],
         targets=["fig_dynamic"],
-        selector=vm.TreeSelect(id="tree_selector_id"),
+        selector=vm.Cascader(id="tree_selector_id"),
     )
     model_manager["test_page"].controls = [f]
     f.pre_build()
@@ -1456,7 +1456,7 @@ class TestFilterCallTree:
         f = vm.Filter(
             column_hierarchy=["continent", "country"],
             targets=["fig_dynamic"],
-            selector=vm.TreeSelect(id="tree_selector_id_single", multi=False),
+            selector=vm.Cascader(id="tree_selector_id_single", multi=False),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()

@@ -26,7 +26,7 @@ Vizro Dash Components are used by the Vizro framework but can be used in a pure 
 - `hatch run generate-components` - Full build: compile JS/CSS via webpack + generate Python component classes via `dash-generate-components`
 - `hatch run lint` - Run all linters via pre-commit (includes Biome for JS/TS)
 - `hatch run test` - Run integration tests (requires Chrome; uses `dash_duo` for browser-based testing)
-- `hatch run example-cascade` - Run the Cascade example app on port 8050
+- `hatch run example-cascader` - Run the Cascader example app on port 8050
 - `hatch run example-markdown` - Run the Markdown example app on port 8050
 - `hatch run changelog:add` - Create a changelog fragment (required for PRs)
 
@@ -38,7 +38,7 @@ Vizro Dash Components are used by the Vizro framework but can be used in a pure 
 - `src/ts/fragments/` - Internal React components used by the Dash components (not exported as Dash components)
 - `src/ts/utils/` - Shared utilities (lazy loaders, helper functions)
 - `vizro_dash_components/` - Auto-generated Python package (built artifacts, do not edit manually)
-- `examples/cascade_demo.py` - Full-suite Cascade example app (run with `hatch run example-cascade`)
+- `examples/cascader_demo.py` - Full-suite Cascader example app (run with `hatch run example-cascader`)
 - `examples/markdown_demo.py` - Full-suite Markdown example app (run with `hatch run example-markdown`)
 - `pyproject.toml` - Python package configuration (version sourced from `package.json` via `hatch-nodejs-version`)
 - `package.json` - npm package configuration with build scripts (version must be semver-compatible, e.g. `0.1.0` or `0.1.0-dev0`)

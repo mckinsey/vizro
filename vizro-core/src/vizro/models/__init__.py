@@ -15,7 +15,7 @@ from ._components.form import (
     RangeSlider,
     Slider,
     Switch,
-    TreeSelect,
+    Cascader,
 )
 from ._controls import Filter, Parameter
 from ._navigation.accordion import Accordion
@@ -57,7 +57,7 @@ __all__ = [
     "Tabs",
     "Text",
     "Tooltip",
-    "TreeSelect",
+    "Cascader",
     "VizroBaseModel",
 ]
 

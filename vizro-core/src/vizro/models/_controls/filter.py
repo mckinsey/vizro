@@ -15,14 +15,14 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
-from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch, TreeSelect
-from vizro.models._components.form.tree_select import _check_no_duplicate_leaves, _extract_leaf_keys
+from vizro.models._components.form import Cascader, Checklist, DatePicker, Dropdown, RangeSlider, Switch
+from vizro.models._components.form.cascader import _check_no_duplicate_leaves, _extract_leaf_keys
 from vizro.models._controls._controls_utils import (
     SELECTORS,
     _is_boolean_selector,
+    _is_cascader_selector,
     _is_categorical_selector,
     _is_numerical_temporal_selector,
-    _is_tree_selector,
     check_control_targets,
     get_control_parent,
     get_selector_default_value,
@@ -98,7 +98,7 @@ class Filter(VizroBaseModel):
     )
     column_hierarchy: list[str] = Field(
         default=[],
-        description="Ordered list of DataFrame columns forming a hierarchy for TreeSelect. "
+        description="Ordered list of DataFrame columns forming a hierarchy for Cascader. "
         "Exactly one of `column` or `column_hierarchy` must be set.",
     )
     targets: list[ModelID] = Field(
@@ -190,7 +190,7 @@ class Filter(VizroBaseModel):
 
         # Tree selectors handle their own data gathering (across the full hierarchy) and silently skip
         # targets that are missing hierarchy columns, so they bypass the standard targeted_data validation.
-        if _is_tree_selector(selector):
+        if _is_cascader_selector(selector):
             selector_call_obj = selector(
                 options=self._get_tree_options_dynamic(
                     {target: df for target, df in target_to_data_frame.items() if target in self.targets},
@@ -279,12 +279,12 @@ class Filter(VizroBaseModel):
             dfs = [target_to_data_frame[target][self.column_hierarchy] for target in self.targets]
             wide_df = pd.concat(dfs, ignore_index=True).drop_duplicates()
 
-            # Validate selector type — TreeSelect is the only allowed selector
-            if self.selector is not None and not isinstance(self.selector, TreeSelect):
+            # Validate selector type — Cascader is the only allowed selector
+            if self.selector is not None and not isinstance(self.selector, Cascader):
                 raise ValueError(
-                    f"column_hierarchy can only be used with a TreeSelect selector, got {type(self.selector).__name__}."
+                    f"column_hierarchy can only be used with a Cascader selector, got {type(self.selector).__name__}."
                 )
-            self.selector = self.selector or TreeSelect()
+            self.selector = self.selector or Cascader()
 
             self._column_type = "categorical"
             self.selector.title = self.selector.title or self.column.title()

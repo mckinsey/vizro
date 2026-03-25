@@ -44,9 +44,9 @@ if __name__ == "__main__": app.run(debug=True)
 
 ````
 
-### Cascade
+### Cascader
 
-A hierarchical cascading dropdown. Users navigate a tree of options via side-by-side panels and select leaf values. Supports single-select and multi-select. Visually matches `dcc.Dropdown`.
+A hierarchical cascading dropdown inspired by [AntdCascader](https://fac.feffery.tech/AntdCascader). Users navigate a tree of options via side-by-side panels and select leaf values. Supports single-select and multi-select. Built to visually match `dcc.Dropdown`.
 
 Requires a `dmc.MantineProvider` wrapper.
 
@@ -77,7 +77,7 @@ OPTIONS = [
 app = Dash(__name__)
 
 app.layout = dmc.MantineProvider(
-    vdc.Cascade(id="cascade", options=OPTIONS, placeholder="Select a country...")
+    vdc.Cascader(id="cascade", options=OPTIONS, placeholder="Select a country...")
 )
 
 @app.callback(Output("cascade", "value"), Input("cascade", "value"))
