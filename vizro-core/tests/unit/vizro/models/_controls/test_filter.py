@@ -6,6 +6,7 @@ import pandas as pd
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
+from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -1166,3 +1167,24 @@ class TestGetSelectorDefaultValueTreeSelect:
         # but it documents the expected contract so is worth keeping.
         ts = TreeSelect(options={"A": ["x"]}, value=["x"])
         assert get_selector_default_value(ts) == ["x"]
+
+
+class TestFilterColumnHierarchyValidation:
+    def test_both_column_and_column_hierarchy_raises(self):
+        with pytest.raises(ValidationError, match="Only one of"):
+            vm.Filter(column="species", column_hierarchy=["a", "b"])
+
+    def test_neither_column_nor_column_hierarchy_raises(self):
+        with pytest.raises(ValidationError, match="One of"):
+            vm.Filter()
+
+    def test_column_hierarchy_sets_field(self):
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        assert f.column_hierarchy == ["continent", "country", "city"]
+        # column is None at construction; set to column_hierarchy[-1] in pre_build
+        assert f.column is None
+
+    def test_column_alone_still_works(self):
+        f = vm.Filter(column="species")
+        assert f.column == "species"
+        assert f.column_hierarchy == []

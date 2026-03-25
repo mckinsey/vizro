@@ -90,7 +90,15 @@ class Filter(VizroBaseModel):
     """
 
     type: Literal["filter"] = "filter"
-    column: str = Field(description="Column of DataFrame to filter.")
+    column: str | None = Field(
+        default=None,
+        description="Column of DataFrame to filter. Exactly one of `column` or `column_hierarchy` must be set.",
+    )
+    column_hierarchy: list[str] = Field(
+        default=[],
+        description="Ordered list of DataFrame columns forming a hierarchy for TreeSelect. "
+        "Exactly one of `column` or `column_hierarchy` must be set.",
+    )
     targets: list[ModelID] = Field(
         default=[],
         description="Target component to be affected by filter. "
@@ -112,6 +120,20 @@ class Filter(VizroBaseModel):
     _dynamic: bool = PrivateAttr(False)
     _selector_properties: set[str] = PrivateAttr(set())
     _column_type: Literal["numerical", "categorical", "temporal", "boolean"] = PrivateAttr()
+
+    @model_validator(mode="before")
+    @classmethod
+    def check_column_or_hierarchy(cls, data: Any) -> Any:
+        # mode="before" can receive non-dict input (e.g. a model instance); guard against that.
+        if not isinstance(data, dict):
+            return data
+        has_column = bool(data.get("column"))
+        has_hierarchy = bool(data.get("column_hierarchy"))
+        if has_column and has_hierarchy:
+            raise ValueError("Only one of `column` or `column_hierarchy` can be set.")
+        if not has_column and not has_hierarchy:
+            raise ValueError("One of `column` or `column_hierarchy` must be set.")
+        return data
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
@@ -231,7 +253,7 @@ class Filter(VizroBaseModel):
         # Set default selector according to column type.
         self._column_type = self._validate_column_type(targeted_data)
         self.selector = self.selector or DEFAULT_SELECTORS[self._column_type]()
-        self.selector.title = self.selector.title or self.column.title()
+        self.selector.title = self.selector.title or cast(str, self.column).title()
 
         if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
             raise ValueError(
@@ -281,7 +303,7 @@ class Filter(VizroBaseModel):
             self.selector.actions = [
                 _filter(
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                    column=self.column,
+                    column=cast(str, self.column),
                     filter_function=filter_function,
                     targets=self.targets,
                 ),
