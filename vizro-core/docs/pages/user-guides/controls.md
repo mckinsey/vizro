@@ -127,6 +127,6 @@ To organize the control panel on a page into sections, you can group [filters](f
 
     === "Result"
 
-        \[![Filter]\][filter]
+        \[![ControlGroup]\][controlgroup]
 
-[filter]: ../../assets/user_guides/control/control1.png
+[controlgroup]: ../../assets/user_guides/control/control_group.png
