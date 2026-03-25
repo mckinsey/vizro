@@ -238,14 +238,18 @@ const CascadeFragment = ({
   }, [selectedValues, multi, findLabel]);
 
   const renderTrigger = () => (
-    <button
+    <div
       id={id}
-      type="button"
-      className={`dash-cascade ${className ?? ""}`}
-      disabled={disabled}
+      role="button"
+      tabIndex={disabled ? -1 : 0}
+      className={`dash-cascade ${disabled ? "disabled" : ""} ${className ?? ""}`}
       aria-expanded={isOpen}
       aria-haspopup="listbox"
+      aria-disabled={disabled}
       onClick={handleTriggerClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") handleTriggerClick();
+      }}
     >
       <span className={`dash-cascade-trigger ${canClear ? "has-clear" : ""}`}>
         <span
@@ -274,7 +278,7 @@ const CascadeFragment = ({
         )}
         <CaretDownIcon className="dash-cascade-caret" />
       </span>
-    </button>
+    </div>
   );
 
   const renderSearchBar = () => (

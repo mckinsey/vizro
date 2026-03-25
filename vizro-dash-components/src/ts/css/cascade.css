@@ -1,18 +1,18 @@
 /* Trigger button — identical structure to .dash-dropdown */
 .dash-cascade {
-  display: block;
-  box-sizing: border-box;
-  width: 100%;
-  padding: 0;
   background: var(--Dash-Fill-Inverse-Strong);
   border: 1px solid var(--Dash-Stroke-Strong);
   border-radius: var(--Dash-Border-Radius);
+  box-sizing: border-box;
   color: inherit;
+  cursor: pointer;
+  display: block;
   font-family: inherit;
   font-size: inherit;
-  cursor: pointer;
   outline: none;
+  padding: 0;
   text-align: left;
+  width: 100%;
 }
 
 .dash-cascade:focus {
@@ -20,19 +20,20 @@
   outline: 1px solid var(--Dash-Fill-Interactive-Strong);
 }
 
-.dash-cascade:disabled {
-  opacity: 0.6;
+.dash-cascade.disabled {
   cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 /* Trigger inner grid — same pattern as .dash-dropdown-grid-container */
 .dash-cascade-trigger {
-  display: grid;
-  grid-template-columns: 1fr auto;
   align-items: center;
+  display: grid;
   gap: calc(var(--Dash-Spacing) * 2);
-  padding: 0 12px;
+  grid-template-columns: 1fr auto;
   min-height: 32px;
+  padding: 0 12px;
 }
 
 .dash-cascade-trigger.has-clear {
@@ -52,12 +53,12 @@
 
 /* Count badge — same as .dash-dropdown-value-count */
 .dash-cascade-count {
-  line-height: 18px;
-  padding: 4px;
+  background: var(--Dash-Fill-Interactive-Weak);
   border-radius: 4px;
   color: var(--Dash-Text-Weak);
-  background: var(--Dash-Fill-Interactive-Weak);
   font-size: 0.875em;
+  line-height: 18px;
+  padding: 4px;
   white-space: nowrap;
 }
 
@@ -65,26 +66,26 @@
 .dash-cascade-caret {
   color: var(--Dash-Text-Strong);
   fill: var(--Dash-Text-Strong);
-  transition: transform 0.15s;
   justify-self: end;
+  transition: transform 0.15s;
 }
 
-.dash-cascade[aria-expanded='true'] .dash-cascade-caret {
+.dash-cascade[aria-expanded="true"] .dash-cascade-caret {
   transform: rotate(180deg);
 }
 
 /* Clear button — same as .dash-dropdown-clear */
 .dash-cascade-clear {
+  align-items: center;
   background: none;
   border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: var(--Dash-Text-Strong);
-  width: 1em;
+  cursor: pointer;
+  display: flex;
   height: 1em;
+  justify-content: center;
+  padding: 0;
+  width: 1em;
 }
 
 .dash-cascade-clear:hover {
@@ -97,30 +98,31 @@
 }
 
 .dash-cascade-panel {
-  position: absolute;
-  top: calc(100% + 5px);
-  left: 0;
-  min-width: 100%;
   background: var(--Dash-Fill-Inverse-Strong);
   border: 1px solid var(--Dash-Stroke-Strong);
   border-radius: var(--Dash-Border-Radius);
-  box-shadow: 0px 10px 38px -10px var(--Dash-Shading-Strong),
-    0px 10px 20px -15px var(--Dash-Shading-Weak);
-  z-index: 500;
+  box-shadow:
+    0 10px 38px -10px var(--Dash-Shading-Strong),
+    0 10px 20px -15px var(--Dash-Shading-Weak);
+  left: 0;
+  min-width: 100%;
   overflow: hidden;
+  position: absolute;
+  top: calc(100% + 5px);
+  z-index: 500;
 }
 
 /* Search bar — same structure as .dash-dropdown-search-container */
 .dash-cascade-search-container {
+  align-items: center;
+  background: var(--Dash-Fill-Inverse-Strong);
+  border: 1px solid var(--Dash-Stroke-Strong);
+  border-radius: 4px;
+  display: grid;
+  gap: calc(var(--Dash-Spacing) * 2);
+  grid-template-columns: auto 1fr auto;
   margin: calc(var(--Dash-Spacing) * 2);
   padding: var(--Dash-Spacing);
-  border-radius: 4px;
-  border: 1px solid var(--Dash-Stroke-Strong);
-  background: var(--Dash-Fill-Inverse-Strong);
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: calc(var(--Dash-Spacing) * 2);
 }
 
 .dash-cascade-search-container:focus-within {
@@ -130,8 +132,8 @@
 
 .dash-cascade-search-icon {
   color: var(--Dash-Text-Weak);
-  width: 1em;
   height: 1em;
+  width: 1em;
 }
 
 .dash-cascade-search-container:focus-within .dash-cascade-search-icon {
@@ -139,42 +141,41 @@
 }
 
 .dash-cascade-search-input {
-  border: none;
   background: transparent;
+  border: none;
   color: var(--Dash-Text-Strong);
-  outline: none;
-  width: 100%;
   font-family: inherit;
   font-size: inherit;
   line-height: calc(var(--Dash-Spacing) * 6);
+  outline: none;
   padding: 0;
+  width: 100%;
 }
 
 .dash-cascade-search-input::-webkit-search-cancel-button {
-  -webkit-appearance: none;
   appearance: none;
   display: none;
 }
 
 /* Actions bar (multi-select only) — same as .dash-dropdown-actions */
 .dash-cascade-actions {
+  border-bottom: 1px solid var(--Dash-Fill-Disabled);
+  border-top: 1px solid var(--Dash-Fill-Disabled);
   display: flex;
   gap: calc(var(--Dash-Spacing) * 6);
   line-height: 18px;
   padding: var(--Dash-Spacing) calc(var(--Dash-Spacing) * 3);
-  border-top: 1px solid var(--Dash-Fill-Disabled);
-  border-bottom: 1px solid var(--Dash-Fill-Disabled);
 }
 
 .dash-cascade-action-button {
   background: none;
   border: none;
+  color: var(--Dash-Text-Weak);
   cursor: pointer;
   font-family: inherit;
   font-size: 0.875em;
   font-weight: 600;
   padding: 0;
-  color: var(--Dash-Text-Weak);
   white-space: nowrap;
 }
 
@@ -189,11 +190,11 @@
 }
 
 .dash-cascade-column {
-  overflow-y: auto;
-  max-height: 100%;
   border-right: 1px solid var(--Dash-Fill-Disabled);
   flex-shrink: 0;
+  max-height: 100%;
   min-width: 140px;
+  overflow-y: auto;
 }
 
 .dash-cascade-column:last-child {
@@ -202,12 +203,12 @@
 
 /* Rows */
 .dash-cascade-row {
-  display: flex;
   align-items: center;
+  box-shadow: 0 -1px 0 0 var(--Dash-Fill-Disabled) inset;
+  cursor: pointer;
+  display: flex;
   gap: calc(var(--Dash-Spacing) * 2);
   padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
-  cursor: pointer;
-  box-shadow: 0 -1px 0 0 var(--Dash-Fill-Disabled) inset;
   white-space: nowrap;
 }
 
@@ -226,8 +227,8 @@
 }
 
 .dash-cascade-row.disabled {
-  opacity: 0.4;
   cursor: not-allowed;
+  opacity: 0.4;
   pointer-events: none;
 }
 
@@ -245,9 +246,9 @@
 
 /* Checkbox — accent-color picks up Dash interactive colour */
 .dash-cascade-checkbox {
-  flex-shrink: 0;
   accent-color: var(--Dash-Fill-Interactive-Strong);
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 /* Search results — flat list */
@@ -256,13 +257,13 @@
 }
 
 .dash-cascade-result-row {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: calc(var(--Dash-Spacing) * 3);
-  padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
-  cursor: pointer;
   box-shadow: 0 -1px 0 0 var(--Dash-Fill-Disabled) inset;
+  cursor: pointer;
+  display: flex;
+  gap: calc(var(--Dash-Spacing) * 3);
+  justify-content: space-between;
+  padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
 }
 
 .dash-cascade-result-row:hover {
@@ -277,13 +278,13 @@
 
 .dash-cascade-breadcrumb {
   color: var(--Dash-Text-Weak);
+  flex-shrink: 0;
   font-size: 0.875em;
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
 /* No-results message */
 .dash-cascade-no-results {
-  padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
   color: var(--Dash-Text-Disabled);
+  padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
 }
