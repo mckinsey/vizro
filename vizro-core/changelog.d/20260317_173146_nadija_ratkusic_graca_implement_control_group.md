@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add a `ControlGroup` model for grouping page level controls. See the [user guide on `ControlGroup`](https://vizro.readthedocs.io/en/stable/pages/user-guides/control-group/). ([#1660](https://github.com/mckinsey/vizro/pull/1660))
+- Add a `ControlGroup` model for grouping page level controls. See the [user guide on `ControlGroup`](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls.md/#add-controlgroup). ([#1660](https://github.com/mckinsey/vizro/pull/1660))
 
 
 <!--

@@ -600,7 +600,7 @@
         "controls": {
           "default": [],
           "items": {
-            "description": "Control that affects components in the `vm.Container`.",
+            "description": "Control that affects components on the page.",
             "discriminator": {
               "mapping": {
                 "filter": "#/$defs/Filter",
@@ -627,7 +627,7 @@
     },
     "ControlGroup": {
       "additionalProperties": false,
-      "description": "Container to group together a set of controls.\n\nAbstract: Usage documentation\n    [How to use ControlGroup](../user-guides/control-group.md)",
+      "description": "Container to group together a set of controls.\n\nAbstract: Usage documentation\n    [How to use ControlGroup](../user-guides/controls.md/#add-controlgroup)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    (\n        vm.ControlGroup(\n            title=\"Control group title\",\n            controls=[vm.Filter(column=\"species\"), vm.Filter(column=\"sepal_length\")],\n        ),\n    )\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -642,7 +642,7 @@
         },
         "controls": {
           "items": {
-            "description": "Control that affects components in the `vm.Container`.",
+            "description": "Control that affects components on the page.",
             "discriminator": {
               "mapping": {
                 "filter": "#/$defs/Filter",
@@ -1599,21 +1599,24 @@
         "controls": {
           "default": [],
           "items": {
-            "description": "Control that affects components on the page.",
-            "discriminator": {
-              "mapping": {
-                "control_group": "#/$defs/ControlGroup",
-                "filter": "#/$defs/Filter",
-                "parameter": "#/$defs/Parameter"
-              },
-              "propertyName": "type"
-            },
-            "oneOf": [
+            "anyOf": [
               {
-                "$ref": "#/$defs/Filter"
-              },
-              {
-                "$ref": "#/$defs/Parameter"
+                "description": "Control that affects components on the page.",
+                "discriminator": {
+                  "mapping": {
+                    "filter": "#/$defs/Filter",
+                    "parameter": "#/$defs/Parameter"
+                  },
+                  "propertyName": "type"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "$ref": "#/$defs/Parameter"
+                  }
+                ]
               },
               {
                 "$ref": "#/$defs/ControlGroup"

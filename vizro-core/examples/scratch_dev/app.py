@@ -13,15 +13,18 @@ page = vm.Page(
     components=[
         vm.Graph(
             id="scatter_chart",
-            figure=px.scatter(iris, title="My scatter chart", x="sepal_length", y="petal_width", color="species"),
+            title="My scatter chart",
+            figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"),
         )
     ],
     controls=[
         vm.ControlGroup(
             title="Control group title",
             controls=[
-                vm.Filter(column="species", selector=vm.Dropdown(variant="filled", description="test")),
-                vm.Filter(column="sepal_length", selector=vm.Slider(description="test")),
+                vm.Filter(
+                    column="species", selector=vm.Dropdown(title="Species", variant="filled", description="test")
+                ),
+                vm.Filter(column="sepal_length", selector=vm.Slider()),
             ],
             description="test",
         ),
@@ -41,7 +44,10 @@ page = vm.Page(
             ],
             description=vm.Tooltip(icon="Favorite", text="test"),
         ),
-        vm.Filter(column="sepal_length", selector=vm.Slider(description=vm.Tooltip(icon="Dashboard", text="test"))),
+        vm.Filter(
+            column="sepal_length",
+            selector=vm.Slider(title="Sepal length", description=vm.Tooltip(icon="Dashboard", text="test")),
+        ),
     ],
 )
 
@@ -50,7 +56,8 @@ page_3 = vm.Page(
     title="Regular page",
     components=[
         vm.Graph(
-            figure=px.scatter(iris, title="My scatter chart", x="sepal_length", y="petal_width", color="species"),
+            title="My scatter chart",
+            figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"),
         )
     ],
     controls=[vm.Filter(column="sepal_length"), vm.Filter(column="species")],

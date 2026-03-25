@@ -23,6 +23,18 @@ class ControlGroup(VizroBaseModel):
     Abstract: Usage documentation
         [How to use ControlGroup](../user-guides/controls.md/#add-controlgroup)
 
+    Example:
+        ```python
+        import vizro.models as vm
+
+        (
+            vm.ControlGroup(
+                title="Control group title",
+                controls=[vm.Filter(column="species"), vm.Filter(column="sepal_length")],
+            ),
+        )
+        ```
+
     """
 
     type: Literal["control_group"] = "control_group"
