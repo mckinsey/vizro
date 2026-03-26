@@ -34,14 +34,15 @@
   --text-secondary: #536471;
   --border: #e8ecef;
   --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+  --font-sans:
+    "Inter", -apple-system, blinkmacsystemfont, "Segoe UI", roboto,
+    "Helvetica Neue", arial, sans-serif;
 }
 
 body {
   background-color: var(--color-bg-alt);
   color: var(--color-text);
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
-    Arial, sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.6;
 }
 
@@ -378,6 +379,7 @@ a {
 }
 
 .code-block pre {
+  font-family: var(--font-sans);
   margin: 0;
   overflow-x: auto;
   padding: var(--spacing-md);
@@ -400,7 +402,7 @@ a {
   align-items: center;
   color: var(--text-primary);
   display: flex;
-  font-family: "Courier New", monospace;
+  font-family: var(--font-sans);
   font-size: 18px;
   font-weight: 600;
   gap: 10px;
@@ -449,7 +451,6 @@ a {
 .code-block code {
   color: #f8f8f2;
   display: block;
-  font-family: "Courier New", Courier, monospace;
   font-size: 0.8125rem;
   line-height: 1.5;
 }
@@ -685,13 +686,6 @@ a {
   display: grid;
 }
 
-/* Highlight search matches */
-.search-highlight {
-  background-color: #fff59d;
-  border-radius: 2px;
-  padding: 0 2px;
-}
-
 .carousel-header {
   align-items: center;
   display: flex;
@@ -810,7 +804,7 @@ a {
   background: linear-gradient(135deg, var(--primary), var(--accent));
   border-radius: 8px;
   color: white;
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 600;
   padding: 6px 12px;
@@ -953,7 +947,7 @@ a {
 
 .demo-title {
   color: var(--text-primary);
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--font-sans);
   font-size: 18px;
   font-weight: 600;
 }
@@ -1043,7 +1037,7 @@ a {
 
 .component_card_title {
   color: var(--text-primary);
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 600;
   margin: 0;
@@ -1112,6 +1106,7 @@ a {
 
 .component_card .code-block pre {
   background: #1e1e1e;
+  font-family: var(--font-sans);
   margin: 0;
   overflow: auto;
   padding: 14px;
@@ -1119,6 +1114,7 @@ a {
 }
 
 .component_card .code-block code {
+  font-family: var(--font-sans);
   font-size: 11px;
   line-height: 1.5;
 }
@@ -1272,7 +1268,7 @@ a {
   background: rgba(0, 0, 0, 0.04);
   border-radius: 10px;
   color: var(--text-secondary);
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--font-sans);
   font-size: 11px;
   margin-left: auto;
   padding: 2px 8px;

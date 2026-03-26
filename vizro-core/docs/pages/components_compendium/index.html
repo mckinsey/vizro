@@ -5,6 +5,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vizro Components & Features</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link
       href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css"
       rel="stylesheet"
@@ -13,26 +19,21 @@
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="assets/css/styles.css" />
-    <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-python.min.js"></script>
-    <script src="assets/js/script.js" defer></script>
-    <!-- Prism.js Core -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <!-- Python Language Support -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-    <!-- Line Highlight Plugin -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
-    <!-- Prism.js Theme -->
+    <!-- Prism.js theme (before site CSS so styles.css can override) -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
       rel="stylesheet"
     />
-    <!-- Line Highlight Plugin CSS -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-highlight/prism-line-highlight.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <!-- Prism: core + Python + line-highlight (cdnjs 1.29.0) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+    <script src="assets/js/script.js" defer></script>
   </head>
   <body>
     <!-- Mobile nav toggle -->
@@ -288,7 +289,7 @@
             <div class="nav-section-title">Resources</div>
             <ul class="nav-list">
               <li class="nav-item">
-                <a href="#demos" class="nav-link"> Demos </a>
+                <a href="#demos" class="nav-link"> Examples </a>
               </li>
             </ul>
           </div>
@@ -2378,12 +2379,12 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
             </div>
           </section>
 
-          <!-- Explore Demos Section -->
+          <!-- Explore Examples Section -->
           <section class="section demo-section" id="demos">
             <div class="container">
               <div class="section-header">
                 <span class="section-badge">Try It Live</span>
-                <h2 class="section-title">Explore Demos</h2>
+                <h2 class="section-title">Explore Examples</h2>
               </div>
 
               <div class="demo-grid">
@@ -2606,7 +2607,5 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
         </div>
       </div>
     </div>
-
-    <script src="script.js"></script>
   </body>
 </html>

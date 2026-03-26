@@ -268,8 +268,10 @@
   });
 })();
 
-/* Search */
+/* Search — min 3 characters before filtering; no title markup */
 (function initSearch() {
+  const MIN_SEARCH_LENGTH = 3;
+
   const searchInput = document.getElementById("component-search");
   const searchClear = document.getElementById("search-clear");
   const searchResults = document.getElementById("search-results");
@@ -290,7 +292,6 @@
         element: el,
         name:
           el.querySelector(".component__name")?.textContent.toLowerCase() || "",
-        nameEl: el.querySelector(".component__name"),
       })),
       selectors: selectorCards.map((el) => ({
         element: el,
@@ -298,7 +299,6 @@
           el
             .querySelector(".component_card_title")
             ?.textContent.toLowerCase() || "",
-        nameEl: el.querySelector(".component_card_title"),
       })),
     };
   };
@@ -307,28 +307,32 @@
     const searchTerm = searchInput.value.toLowerCase().trim();
     const items = getSearchableItems();
     const allItems = [...items.regular, ...items.selectors];
+    const hasText = searchTerm.length > 0;
+    const meetsMinLength = searchTerm.length >= MIN_SEARCH_LENGTH;
 
-    toggleSearchState(!!searchTerm);
+    searchClear?.classList.toggle("visible", hasText);
 
-    if (!searchTerm) {
+    if (!hasText) {
+      compendiumSection?.classList.remove("searching");
       resetSearch(allItems);
+      updateSearchResults(0);
       return;
     }
 
+    if (!meetsMinLength) {
+      compendiumSection?.classList.remove("searching");
+      resetSearch(allItems);
+      updateSearchResults(0);
+      return;
+    }
+
+    compendiumSection?.classList.add("searching");
     const matchCount = searchItems(allItems, searchTerm);
     updateCategoryVisibility();
-    updateSearchResults(matchCount, allItems.length);
-  }
-
-  function toggleSearchState(isSearching) {
-    searchClear.classList.toggle("visible", isSearching);
-    compendiumSection?.classList.toggle("searching", isSearching);
+    updateSearchResults(matchCount);
   }
 
   function resetSearch(items) {
-    clearHighlights(items);
-    updateSearchResults(0, 0);
-
     document.querySelectorAll(".category").forEach((cat) => {
       cat.classList.add("expanded");
     });
@@ -348,7 +352,6 @@
 
       if (isMatch) {
         matchCount++;
-        highlightText(item.nameEl, searchTerm);
       }
     });
 
@@ -369,54 +372,30 @@
     });
   }
 
-  function highlightText(element, searchTerm) {
-    if (!element) return;
+  function updateSearchResults(matchCount) {
+    if (!searchResults) return;
 
-    const originalText =
-      element.getAttribute("data-original-text") || element.textContent;
+    const len = searchInput.value.trim().length;
 
-    if (!element.getAttribute("data-original-text")) {
-      element.setAttribute("data-original-text", originalText);
-    }
-
-    if (!searchTerm) {
-      element.textContent = originalText;
+    if (len === 0) {
+      searchResults.textContent = "";
+      searchResults.classList.remove("visible");
       return;
     }
 
-    const regex = new RegExp(`(${escapeRegex(searchTerm)})`, "gi");
-    element.innerHTML = originalText.replace(
-      regex,
-      '<span class="search-highlight">$1</span>',
-    );
-  }
+    if (len < MIN_SEARCH_LENGTH) {
+      searchResults.textContent = "Enter at least 3 characters to search.";
+      searchResults.classList.add("visible");
+      return;
+    }
 
-  function clearHighlights(items) {
-    items.forEach((item) => {
-      if (item.nameEl?.getAttribute("data-original-text")) {
-        item.nameEl.textContent =
-          item.nameEl.getAttribute("data-original-text");
-      }
-    });
-  }
-
-  function updateSearchResults(matches) {
-    const hasSearchTerm = searchInput.value.trim().length > 0;
-
-    if (hasSearchTerm && matches === 0) {
+    if (matchCount === 0) {
       searchResults.textContent = "No components found";
       searchResults.classList.add("visible");
-    } else if (matches > 0) {
-      searchResults.textContent = `Found ${matches} component${matches !== 1 ? "s" : ""}`;
-      searchResults.classList.add("visible");
     } else {
-      searchResults.textContent = "";
-      searchResults.classList.remove("visible");
+      searchResults.textContent = `Found ${matchCount} component${matchCount !== 1 ? "s" : ""}`;
+      searchResults.classList.add("visible");
     }
-  }
-
-  function escapeRegex(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
   function clearSearch() {
@@ -429,7 +408,7 @@
   searchInput.addEventListener("keydown", (e) => {
     if (e.key === "Escape") clearSearch();
   });
-  searchClear.addEventListener("click", clearSearch);
+  searchClear?.addEventListener("click", clearSearch);
 })();
 
 /* Navigation — assigned to globalThis for inline handlers in index.html */
@@ -472,5 +451,3 @@ globalThis.toggleNavCategory = (header) => {
 globalThis.toggleNavSubcategory = (header) => {
   header.classList.toggle("collapsed");
 };
-
-document.addEventListener("DOMContentLoaded", () => {});
