@@ -140,14 +140,14 @@ class AgGrid(VizroBaseModel):
         """
         if cell_clicked_value := CELL_CLICKED_MAPPING.get(value):
             if "cellClicked" in trigger:
-                # `cell_clicked_value` always present in the `cellClicked`.
                 cell_clicked = cast(dict[str, Any], trigger["cellClicked"])
+                # `cell_clicked_value` always present in the `cell_clicked`.
                 return cell_clicked[cell_clicked_value]
             else:
                 # Keep the target control unchanged if `cellClicked` is missing (e.g. checkbox row selection)
                 return no_update
 
-        selected_rows = cast(list[dict[str, str]], trigger["selectedRows"])
+        selected_rows = cast(list[dict[str, str]], trigger.get("selectedRows"))
 
         # If `selectedRows` doesn't exist leave the target control unchanged except resetting it.
         if selected_rows is None:

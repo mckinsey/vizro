@@ -19,6 +19,7 @@ def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid, stan
         components=[
             vm.Button(id="button_1", text="Set Europe"),
             vm.Graph(id="scatter_chart_1", figure=standard_px_chart),
+            vm.AgGrid(id="ag_grid_1", figure=standard_ag_grid),
             vm.Table(id="table_1", figure=standard_dash_table),
         ],
         controls=[
@@ -158,7 +159,7 @@ class TestSetControlPreBuild:
         "selector",
         [vm.Slider, vm.RangeSlider, vm.DatePicker, vm.Switch],
     )
-    def test_pre_build_control_model_is_control_but_selector_not_categorical(self, selector):
+    def test_pre_build_control_selector_is_not_categorical(self, selector):
         # Add control with non-categorical selector to test-page-1
         model_manager["test-page-1"].controls.append(
             vm.Filter(id="non_categorical", column="continent", selector=selector())
@@ -216,6 +217,18 @@ class TestSetControlFunction:
         # Call function method with a mock trigger value of None
         result = action.function(_trigger=None, _controls_store=controls_store)
         expected = original_value
+
+        assert result == expected
+
+    def test_function_trigger_returns_no_update(self):
+        # Add action to an AgGrid as the AgGrid returns no_update if set_control value is a key from the
+        # CELL_CLICKED_MAPPING (e.g. "COLUMN"), and trigger does not contain "cellClicked"
+        action = set_control(control="filter_page_1", value="COLUMN")
+        model_manager["ag_grid_1"].actions = action
+
+        # Call function method with a mock trigger value of None
+        result = action.function(_trigger={"selectedRows": []}, _controls_store={})
+        expected = no_update
 
         assert result == expected
 

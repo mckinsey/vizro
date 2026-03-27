@@ -7,7 +7,7 @@ import dash_bootstrap_components as dbc
 import pytest
 import vizro_dash_components as vdc
 from asserts import STRIP_ALL, assert_component_equal
-from dash import dcc, html
+from dash import dcc, html, no_update
 from pydantic import ValidationError
 
 import vizro.actions as va
@@ -49,7 +49,7 @@ class TestAgGridInstantiation:
         assert ag_grid.footer == ""
         assert ag_grid.description is None
         assert hasattr(ag_grid, "_inner_component_id")
-        assert ag_grid._action_triggers == {"__default__": f"{ag_grid._inner_component_id}.selectedRows"}
+        assert ag_grid._action_triggers == {"__default__": f"{ag_grid.id}_action_trigger.data"}
         assert ag_grid._action_outputs == {
             "__default__": f"{ag_grid.id}.children",
             "figure": f"{ag_grid.id}.children",
@@ -82,7 +82,7 @@ class TestAgGridInstantiation:
         assert ag_grid.footer == "Footer"
         assert isinstance(ag_grid.description, vm.Tooltip)
         assert ag_grid._inner_component_id == "underlying_ag_grid_id"
-        assert ag_grid._action_triggers == {"__default__": "underlying_ag_grid_id.selectedRows"}
+        assert ag_grid._action_triggers == {"__default__": f"{ag_grid.id}_action_trigger.data"}
         assert ag_grid._action_outputs == {
             "__default__": "ag-grid-id.children",
             "figure": "ag-grid-id.children",
@@ -139,37 +139,61 @@ class TestAgGridInstantiation:
     def test_ag_grid_trigger(self, ag_grid_with_id, identity_action_function):
         ag_grid = vm.AgGrid(figure=ag_grid_with_id, actions=[Action(function=identity_action_function())])
         [action] = ag_grid.actions
-        assert action._trigger == "underlying_ag_grid_id.selectedRows"
+        assert action._trigger == f"{ag_grid.id}_action_trigger.data"
 
 
 class TestAgGridGetValueFromTrigger:
     """Tests _get_value_from_trigger models method."""
 
-    @pytest.mark.parametrize("trigger", [None, []])
-    def test_no_trigger_data(self, standard_ag_grid, trigger):
+    def test_selected_rows_no_trigger_data(self, standard_ag_grid):
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
-        value = ag_grid._get_value_from_trigger(value="continent", trigger=trigger)
+        value = ag_grid._get_value_from_trigger(value="continent", trigger={})
+
+        assert value is no_update
+
+    def test_clicked_cell_no_trigger_data(self, standard_ag_grid):
+        ag_grid = vm.AgGrid(figure=standard_ag_grid)
+        value = ag_grid._get_value_from_trigger(value="COLUMN", trigger={})
+
+        assert value is no_update
+
+    def test_empty_selected_rows_trigger_data(self, standard_ag_grid):
+        ag_grid = vm.AgGrid(figure=standard_ag_grid)
+        value = ag_grid._get_value_from_trigger(value="continent", trigger={"selectedRows": []})
 
         assert value is None
 
-    def test_value_valid(self, standard_ag_grid):
+    def test_selected_rows_value_valid(self, standard_ag_grid):
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
         value = ag_grid._get_value_from_trigger(
-            value="continent", trigger=[{"country": "France", "continent": "Europe", "year": 2007}]
+            value="continent", trigger={"selectedRows": [{"country": "France", "continent": "Europe", "year": 2007}]}
         )
 
         assert value == ["Europe"]
 
+    def test_clicked_cell_value_valid(self, standard_ag_grid):
+        ag_grid = vm.AgGrid(figure=standard_ag_grid)
+        value = ag_grid._get_value_from_trigger(
+            value="COLUMN", trigger={"cellClicked": {"colId": "Europe"}}
+        )
+
+        assert value == "Europe"
+
     @pytest.mark.parametrize(
         "trigger, expected_result",
         [
-            ([{"continent": "Europe"}], ["Europe"]),
-            ([{"continent": "Europe"}, {"continent": "Europe"}], ["Europe"]),
+            ({"selectedRows": [{"continent": "Europe"}]}, ["Europe"]),
+            ({"selectedRows": [{"continent": "Europe"}, {"continent": "Europe"}]}, ["Europe"]),
             # vm.AgGrid._get_value_from_trigger ensures uniqueness but preserves the order
-            ([{"continent": "Europe"}, {"continent": "Europe"}, {"continent": "Asia"}], ["Europe", "Asia"]),
+            ({"selectedRows": [{"continent": "Europe"}, {"continent": "Europe"}, {"continent": "Asia"}]}, ["Europe", "Asia"]),
         ],
     )
-    def test_uniqueness_and_order_multiple_points_selected(self, standard_ag_grid, trigger, expected_result):
+    def test_selected_rows_uniqueness_and_order_multiple_points_selected(
+        self,
+        standard_ag_grid,
+        trigger,
+        expected_result,
+    ):
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
         value = ag_grid._get_value_from_trigger(value="continent", trigger=trigger)
 
@@ -187,7 +211,7 @@ class TestAgGridGetValueFromTrigger:
         ):
             ag_grid._get_value_from_trigger(
                 value="unknown",
-                trigger=[{"country": "France", "continent": "Europe", "year": 2007}],
+                trigger={"selectedRows": [{"country": "France", "continent": "Europe", "year": 2007}]},
             )
 
 
@@ -349,10 +373,11 @@ class TestBuildAgGrid:
     def test_ag_grid_build_mandatory_only(self, standard_ag_grid):
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
         ag_grid.pre_build()
-        ag_grid = ag_grid.build()
+        result_ag_grid = ag_grid.build()
         expected_ag_grid = dcc.Loading(
             html.Div(
                 [
+                    dcc.Store(id=f"{ag_grid.id}_action_trigger"),
                     None,
                     None,
                     html.Div(
@@ -368,7 +393,7 @@ class TestBuildAgGrid:
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
-        assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
+        assert_component_equal(result_ag_grid, expected_ag_grid, keys_to_strip={"id"})
 
     @pytest.mark.parametrize(
         "ag_grid, underlying_id_expected",
@@ -380,11 +405,12 @@ class TestBuildAgGrid:
     def test_ag_grid_build_with_and_without_underlying_id(self, ag_grid, underlying_id_expected, request):
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=request.getfixturevalue(ag_grid))
         ag_grid.pre_build()
-        ag_grid = ag_grid.build()
+        result_ag_grid = ag_grid.build()
 
         expected_ag_grid = dcc.Loading(
             html.Div(
                 [
+                    dcc.Store(id=f"{ag_grid.id}_action_trigger"),
                     None,
                     None,
                     html.Div(
@@ -401,18 +427,19 @@ class TestBuildAgGrid:
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
-        assert_component_equal(ag_grid, expected_ag_grid)
+        assert_component_equal(result_ag_grid, expected_ag_grid)
 
     def test_aggrid_build_title_header_footer(self, standard_ag_grid):
         ag_grid = vm.AgGrid(
             figure=standard_ag_grid, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**"""
         )
         ag_grid.pre_build()
-        ag_grid = ag_grid.build()
+        result_ag_grid = ag_grid.build()
 
         expected_ag_grid = dcc.Loading(
             html.Div(
                 children=[
+                    dcc.Store(id=f"{ag_grid.id}_action_trigger"),
                     html.H3([html.Span("Title"), None], className="figure-title"),
                     vdc.Markdown("""#### Subtitle""", className="figure-header"),
                     html.Div(
@@ -428,7 +455,7 @@ class TestBuildAgGrid:
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
-        assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
+        assert_component_equal(result_ag_grid, expected_ag_grid, keys_to_strip={"id"})
 
     def test_aggrid_build_with_description(self, standard_ag_grid):
         ag_grid = vm.AgGrid(
@@ -437,7 +464,7 @@ class TestBuildAgGrid:
             description=vm.Tooltip(text="Tooltip test", icon="Info", id="info"),
         )
         ag_grid.pre_build()
-        ag_grid = ag_grid.build()
+        result_ag_grid = ag_grid.build()
 
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
@@ -451,6 +478,7 @@ class TestBuildAgGrid:
         expected_ag_grid = dcc.Loading(
             html.Div(
                 children=[
+                    dcc.Store(id=f"{ag_grid.id}_action_trigger"),
                     html.H3([html.Span("Title"), *expected_description], className="figure-title"),
                     None,
                     html.Div(
@@ -466,4 +494,4 @@ class TestBuildAgGrid:
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
-        assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
+        assert_component_equal(result_ag_grid, expected_ag_grid, keys_to_strip={"id"})
