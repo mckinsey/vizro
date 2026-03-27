@@ -1,160 +1,155 @@
-"""Development playground exploring markdown variations using built-in Vizro models.
+from dash import html
 
-This script demonstrates a variety of ways to render markdown content with
-components that internally rely on `vdc.Markdown` (the new built‑in
-markdown component).  The goal is to exercise code blocks, math formulas,
-links, headers and dynamic content without importing `vizro_dash_components`
-explicitly.  We show both static pages (with `vm.Text` and `vm.Card`) and
-custom figures which react to filters/parameters.
-"""
-
-import pandas as pd
-
+import vizro.actions as va
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.tables import dash_ag_grid
+from vizro.models.types import capture
 
-# sample data with several kinds of markdown content
 
-df = pd.DataFrame(
-    {
-        "topic": ["Python", "JavaScript", "SQL", "React"],
-        "description": [
-            "A versatile programming language",
-            "The language of the web",
-            "Database query language",
-            "A JavaScript library for building UIs",
-        ],
-        "code_example": [
-            '```python\ndef hello():\n    return "Hello, World!"\n```',
-            '```javascript\nconst hello = () => "Hello, World!";\n```',
-            "```sql\nSELECT * FROM users WHERE active = true;\n```",
-            "```jsx\nconst App = () => <h1>Hello, World!</h1>;\n```",
-        ],
-        "formula": [
-            r"$f(x) = x^2 + 2x + 1$",
-            r"$y = mx + b$",
-            r"$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$",
-            r"$E = mc^2$",
-        ],
-    }
+df = px.data.iris()
+df_6 = df.iloc[[0, 1, 50, 51, 100, 101]]
+
+tips = px.data.tips()
+pivot_tips = (
+    tips.pivot_table(index="sex", columns="day", aggfunc="size", fill_value=0)
+    .reindex(columns=["Thur", "Fri", "Sat", "Sun"])
+    .reset_index()
 )
 
-# tests previously used custom figure functions with capture decorators.
-# since we only want to demonstrate vm.Text/vm.Card models we remove
-# all @capture definitions and instead create simple pages directly.
 
-# (helper data still available for manual consumption if desired)
+@capture("ag_grid")
+def custom_dash_ag_grid(data_frame, **kwargs):
+    grid = dash_ag_grid(data_frame, **kwargs)()
+    return grid
 
 
-# -----------------------------------------------------------------------------
-# Pages built from the helper figures and static text/card examples
-# -----------------------------------------------------------------------------
-
-# create a page that showcases various markdown features using vm.Text
-page_static = vm.Page(
-    title="Markdown variations",
+pre = "p1"
+page_1 = vm.Page(
+    title="AgGrid set_control",
     components=[
-        vm.Text(
-            text="""# Header level 1
-
-This is a paragraph with **bold**, *italic*, and a [link](https://example.com).
-
-Here is some inline code: `print('hi')`.
-
-And a fenced code block:
-```python
-for i in range(3):
-    print(i)
-```
-""",
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="standard dash_ag_grid",
+                    layout=vm.Flex(direction="row"),
+                    components=[
+                        vm.AgGrid(
+                            id=f"{pre}_ag_grid_1",
+                            title="Standard AgGrid with no actions",
+                            figure=dash_ag_grid(df_6),
+                        ),
+                        vm.AgGrid(
+                            id=f"{pre}_ag_grid_2",
+                            title="AgGrid with set_control.value=column_name",
+                            figure=dash_ag_grid(df_6),
+                            actions=va.set_control(control=f"{pre}_filter_1", value="species"),
+                        ),
+                        vm.AgGrid(
+                            id=f"{pre}_ag_grid_3",
+                            title="AgGrid with set_control.value=column_name and explicit checkboxes=False config",
+                            figure=dash_ag_grid(
+                                df_6, dashGridOptions=dict(rowSelection=dict(checkboxes=False, headerCheckbox=False))
+                            ),
+                            actions=va.set_control(control=f"{pre}_filter_1", value="species"),
+                        ),
+                    ],
+                ),
+                vm.Container(
+                    title="Custom AgGrid",
+                    layout=vm.Flex(direction="row"),
+                    components=[
+                        vm.AgGrid(id=f"{pre}_ag_grid_4", title="Custom AgGrid", figure=dash_ag_grid(df_6)),
+                        vm.AgGrid(
+                            id=f"{pre}_ag_grid_5",
+                            title="Custom AgGrid with set_control.value=column_name",
+                            figure=custom_dash_ag_grid(df_6),
+                            actions=va.set_control(control=f"{pre}_filter_1", value="species"),
+                        ),
+                        vm.AgGrid(
+                            id=f"{pre}_ag_grid_6",
+                            title="Custom AgGrid with set_control.value=column_name and explicit checkboxes=False config",
+                            figure=custom_dash_ag_grid(
+                                df_6, dashGridOptions=dict(rowSelection=dict(checkboxes=False, headerCheckbox=False))
+                            ),
+                            actions=va.set_control(control=f"{pre}_filter_1", value="species"),
+                        ),
+                    ],
+                ),
+            ]
         ),
-        vm.Text(
-            text="""## Math and lists
-
-To render math use `$E = mc^2$` inline or
-
-This example uses the block delimiter:
-$$
-\\frac{1}{(\\sqrt{\\phi \\sqrt{5}}-\\phi) e^{\\frac25 \\pi}} =
-1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}}
-{1+\\frac{e^{-8\\pi}} {1+\\ldots} } } }
-$$
-
-This example uses the inline delimiter:
-$E^2=m^2c^4+p^2c^2$
+        vm.AgGrid(id=f"{pre}_target_table", title="Control Target", figure=dash_ag_grid(px.data.iris())),
+    ],
+    controls=[vm.Filter(id=f"{pre}_filter_1", column="species", targets=[f"{pre}_target_table"])],
+)
 
 
-- bullet
-- points
-""",
-            extra={"mathjax": True},
+@capture("figure")
+def dynamic_title(data_frame, cell_clicked=0):
+    try:
+        cell_clicked = int(cell_clicked)
+    except ValueError:
+        cell_clicked = 0
+
+    return (html.H2(f"One tip one '|': {'|' * cell_clicked}"),)
+
+
+page_2 = vm.Page(
+    title="dash_ag_grid using cellClicked",
+    components=[
+        vm.AgGrid(
+            title="set_control.value=COLUMN",
+            figure=dash_ag_grid(pivot_tips),
+            actions=[
+                va.set_control(control="day_filter", value="COLUMN"),
+            ],
         ),
-        vm.Card(
-            header="Card header",
-            text="""Cards can also contain markdown text with **formatting**.
-
-```bash
-$ echo hello
-```""",
-            footer="Footer text",
+        vm.AgGrid(
+            title=" set_control.value=COLUMN + set_control.value=column_name",
+            figure=dash_ag_grid(pivot_tips),
+            actions=[
+                va.set_control(control="day_filter", value="COLUMN"),
+                va.set_control(control="sex_filter", value="sex"),
+            ],
+        ),
+        vm.AgGrid(
+            title="set_control.value=COLUMN + set_control.value=column_name + set_control.value=CELL",
+            figure=dash_ag_grid(pivot_tips),
+            actions=[
+                va.set_control(control="day_filter", value="COLUMN"),
+                va.set_control(control="sex_filter", value="sex"),
+                va.set_control(control="cell_clicked", value="CELL"),
+            ],
+        ),
+        vm.Container(
+            layout=vm.Flex(direction="column"),
+            components=[
+                vm.Figure(id="tips_table_title", figure=dynamic_title(df_6, cell_clicked="")),
+                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),
+            ],
+        ),
+    ],
+    controls=[
+        vm.Filter(id="day_filter", column="day", targets=["tips_table"]),
+        vm.Filter(id="sex_filter", column="sex", targets=["tips_table"]),
+        vm.Parameter(
+            id="cell_clicked",
+            targets=["tips_table_title.cell_clicked"],
+            visible=False,
+            selector=vm.RadioItems(options=[str(0) for x in range(100)]),
         ),
     ],
 )
 
-# a later page demonstrating layout flexibility and code snippets
-page_snippet = vm.Page(
-    title="Code snippet examples",
+page_3 = vm.Page(
+    title="Filter Interaction",
     components=[
-        vm.Card(
-            text="""
-
-Block code snippet:
-```python
-print('hello world')
-```
-
-""",
-        ),
-        vm.Card(
-            text="""
-and inline code snippet: `print('hello world')`
-
-and
-```javascript
-console.log('hello world');
-const add = (a, b) => a + b;
-```
-""",
-        ),
-        vm.Text(
-            text="""
-
-Another snippet inside ``vm.Text``:
-```python
-# Kadane's Algorithm
-
-class Solution:
-    def maxSubArray(self, nums: List[int]) -> int:
-        curr, summ = nums[0], nums[0]
-        for n in nums[1:]:
-            curr = max(n, curr + n)
-            summ = max(summ, curr)
-        return summ
-```
-
-test test tests
-""",
-        ),
+        vm.AgGrid(figure=dash_ag_grid(tips), actions=va.filter_interaction(targets=["fi_target"])),
+        vm.AgGrid(id="fi_target", figure=dash_ag_grid(tips)),
     ],
 )
 
-# note: page_snippet already defined above, nothing else needed
-# assemble dashboard
+dashboard = vm.Dashboard(pages=[page_1, page_2, page_3])
 
-dashboard = vm.Dashboard(
-    title="QB",
-    pages=[page_static, page_snippet],
-)
-
-if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+Vizro().build(dashboard).run()
