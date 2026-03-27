@@ -393,3 +393,73 @@ def test_self_filtered_graph(page, http_requests_paths):
 
     # checking that no additional http has occurred
     check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_notification_with_no_update_actions_chain(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.CONDITIONAL_NOTIFICATIONS_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click on the button that triggers 3 no_update actions with success notifications (3 http)
+    page.locator(f"#{cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_NO_UPDATE_BUTTON}").click()
+    check_http_requests_count(page, http_requests_paths, 5, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_notification_with_prevent_update_actions_chain(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.CONDITIONAL_NOTIFICATIONS_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click on the button that triggers PreventUpdate actions (1 http)
+    page.locator(f"#{cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_PREVENT_UPDATE_BUTTON}").click()
+    check_http_requests_count(page, http_requests_paths, 3, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_notification_with_value_error_actions_chain(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.CONDITIONAL_NOTIFICATIONS_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click on the button that triggers PreventUpdate actions (1 http)
+    page.locator(f"#{cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_VALUE_ERROR_BUTTON}").click()
+    check_http_requests_count(page, http_requests_paths, 3, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_progess_success_notifications_button_clickeed_once(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.CONDITIONAL_NOTIFICATIONS_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click on the button that triggers progress and success notifications (1 http)
+    page.locator(f"#{cnst.CONDITIONAL_NOTIFICATION_PROGRESS_AND_SUCCESS_BUTTON}").click()
+    check_http_requests_count(page, http_requests_paths, 3, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_progess_success_notifications_button_clickeed_twice(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.CONDITIONAL_NOTIFICATIONS_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click on the button that triggers progress and success notifications (1 http)
+    page.locator(f"#{cnst.CONDITIONAL_NOTIFICATION_PROGRESS_AND_SUCCESS_BUTTON}").dblclick()
+    check_http_requests_count(page, http_requests_paths, 3, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)

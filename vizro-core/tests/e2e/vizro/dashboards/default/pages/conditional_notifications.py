@@ -1,4 +1,6 @@
 import e2e.vizro.constants as cnst
+from dash import no_update
+from dash.exceptions import PreventUpdate
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -6,6 +8,10 @@ from vizro.actions import export_data, show_notification, update_notification
 from vizro.models.types import capture
 
 iris = px.data.iris()
+
+
+def raise_exception(exception):
+    raise exception
 
 
 @capture("action")
@@ -18,16 +24,22 @@ def notifications_pipeline(exit_path_slider) -> str:
     match exit_path_slider:
         # error
         case 1:
-            raise Exception(cnst.CONDITIONAL_NOTIFICATION_CUSTOM_ERROR_MSG)
-        # success
+            raise Exception(
+                cnst.CONDITIONAL_NOTIFICATION_CUSTOM_ERROR_MSG,
+                ("error", cnst.CONDITIONAL_NOTIFICATION_CUSTOM_ERROR_RESULT),
+            )
+        # success default
         case 2:
-            return "", ("success", cnst.CONDITIONAL_NOTIFICATION_CUSTOM_SUCCESS_MSG)
-        # info
+            return None
+        # success with custom message
         case 3:
-            return "", ("my_info", cnst.CONDITIONAL_NOTIFICATION_CUSTOM_INFO_MSG)
-        # warning
+            return ("success", cnst.CONDITIONAL_NOTIFICATION_CUSTOM_SUCCESS_MSG)
+        # info
         case 4:
-            return "", ("my_warning", cnst.CONDITIONAL_NOTIFICATION_CUSTOM_WARNING_MSG)
+            return ("my_info", cnst.CONDITIONAL_NOTIFICATION_CUSTOM_INFO_MSG)
+        # warning
+        case 5:
+            return ("my_warning", cnst.CONDITIONAL_NOTIFICATION_CUSTOM_WARNING_MSG)
 
     return None
 
@@ -42,40 +54,37 @@ conditional_notifications_page = vm.Page(
             id=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID,
             title="Choose exit path",
             min=1,
-            max=4,
+            max=5,
             step=1,
             value=1,
-            marks={1: "error", 2: "success", 3: "info", 4: "warning"},
+            marks={1: "error", 2: "success default", 3: "success with msg", 4: "info", 5: "warning"},
         ),
         vm.Button(
             text="Default error notification",
-            id=cnst.CONDITIONAL_NOTIFICATION_ERROR_BUTTON,
+            id=cnst.CONDITIONAL_NOTIFICATION_ERROR_BUTTON_DEFAULT,
             actions=[
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
-                    outputs="text",
                 )
             ],
         ),
         vm.Button(
-            text="Defualt error notification not shown",
-            id=cnst.CONDITIONAL_NOTIFICATION_ERROR_BUTTON_NO_MSG,
+            text="Default error notification not shown",
+            id=cnst.CONDITIONAL_NOTIFICATION_ERROR_BUTTON_NOTIFICATION_NONE,
             actions=[
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
-                    outputs="text",
                     notifications={"error": None},
                 )
             ],
         ),
         vm.Button(
             text="Default error notification with error message",
-            id=cnst.CONDITIONAL_NOTIFICATION_ERROR_BUTTON_WITH_MSG,
+            id=cnst.CONDITIONAL_NOTIFICATION_ERROR_BUTTON_NOTIFICATION_WITH_ERROR_MSG_AND_RESULT,
             actions=[
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
-                    outputs="text",
-                    notifications={"error": "{{error_msg}}"},
+                    notifications={"error": "{{error_msg}}{{result}}"},
                 )
             ],
         ),
@@ -85,7 +94,6 @@ conditional_notifications_page = vm.Page(
             actions=[
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
-                    outputs="text",
                     notifications={"success": cnst.CONDITIONAL_NOTIFICATION_SUCCESS_MSG + "{{result}}"},
                 )
             ],
@@ -96,8 +104,7 @@ conditional_notifications_page = vm.Page(
             actions=[
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
-                    outputs="text",
-                    notifications={"progress": cnst.CONDITIONAL_NOTIFICATION_PROGRESS_MSG + "{{exit_path_slider}}"},
+                    notifications={"progress": f"{cnst.CONDITIONAL_NOTIFICATION_PROGRESS_MSG}{{{{exit_path_slider}}}}"},
                 )
             ],
         ),
@@ -107,8 +114,7 @@ conditional_notifications_page = vm.Page(
             actions=[
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
-                    outputs="text",
-                    notifications={"my_info": cnst.CONDITIONAL_NOTIFICATION_INFO_MSG + "{{result}}"},
+                    notifications={"my_info": f"{cnst.CONDITIONAL_NOTIFICATION_INFO_MSG}{{{{result}}}}"},
                 )
             ],
         ),
@@ -118,10 +124,9 @@ conditional_notifications_page = vm.Page(
             actions=[
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
-                    outputs="text",
                     notifications={
                         "my_warning": show_notification(
-                            text=cnst.CONDITIONAL_NOTIFICATION_WARNING_MSG + "{{result}}", variant="warning"
+                            text=f"{cnst.CONDITIONAL_NOTIFICATION_WARNING_MSG}{{{{result}}}}", variant="warning"
                         )
                     },
                 )
@@ -134,7 +139,6 @@ conditional_notifications_page = vm.Page(
                 show_notification(text=cnst.CONDITIONAL_NOTIFICATION_SUCCESS_MSG_BEFORE_ACTION, variant="success"),
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
-                    outputs="text",
                     notifications={"success": cnst.CONDITIONAL_NOTIFICATION_SUCCESS_MSG_INSIDE_ACTION},
                 ),
                 show_notification(text=cnst.CONDITIONAL_NOTIFICATION_SUCCESS_MSG_AFTER_ACTION, variant="success"),
@@ -146,12 +150,85 @@ conditional_notifications_page = vm.Page(
             actions=[
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
-                    outputs="text",
                     notifications={
                         "success": "Custom pipeline completed!",
-                        "my_info": cnst.CONDITIONAL_NOTIFICATION_INFO_MSG + "{{result}}",
+                        "my_info": f"{cnst.CONDITIONAL_NOTIFICATION_INFO_MSG}{{{{result}}}}",
                     },
                 )
+            ],
+        ),
+        vm.Button(
+            text="Progress + Success notifications",
+            id=cnst.CONDITIONAL_NOTIFICATION_PROGRESS_AND_SUCCESS_BUTTON,
+            actions=[
+                vm.Action(
+                    function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
+                    notifications={
+                        "progress": show_notification(
+                            id=cnst.CONDITIONAL_NOTIFICATION_PROGRESS_NOTIFICATION_ID,
+                            text=cnst.CONDITIONAL_NOTIFICATION_PROGRESS_MSG,
+                            variant="progress",
+                        ),
+                        "success": update_notification(
+                            notification=cnst.CONDITIONAL_NOTIFICATION_PROGRESS_NOTIFICATION_ID,
+                            text=cnst.CONDITIONAL_NOTIFICATION_SUCCESS_MSG,
+                            variant="success",
+                        ),
+                    },
+                )
+            ],
+        ),
+        vm.Button(
+            text="3 no_update actions in a chain.",
+            id=cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_NO_UPDATE_BUTTON,
+            actions=[
+                vm.Action(
+                    function=capture("action")(lambda: no_update)(),
+                    outputs="text",
+                    notifications={"success": "Finished 1 no_update action"},
+                ),
+                vm.Action(
+                    function=capture("action")(lambda: no_update)(),
+                    outputs="text",
+                    notifications={"success": "Finished 2 no_update action"},
+                ),
+                vm.Action(
+                    function=capture("action")(lambda: no_update)(),
+                    outputs="text",
+                    notifications={"success": "Finished 3 no_update action"},
+                ),
+            ],
+        ),
+        vm.Button(
+            text="2 PreventUpdate actions in a chain.",
+            id=cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_PREVENT_UPDATE_BUTTON,
+            actions=[
+                vm.Action(
+                    function=capture("action")(lambda: raise_exception(PreventUpdate))(),
+                    outputs="text",
+                    notifications={"success": "Finished 1st no_update action"},
+                ),
+                vm.Action(
+                    function=capture("action")(lambda: raise_exception(PreventUpdate))(),
+                    outputs="text",
+                    notifications={"success": "Finished 2nd no_update action"},
+                ),
+            ],
+        ),
+        vm.Button(
+            text="2 ValueError actions in a chain.",
+            id=cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_VALUE_ERROR_BUTTON,
+            actions=[
+                vm.Action(
+                    function=capture("action")(lambda: raise_exception(ValueError))(),
+                    outputs="text",
+                    notifications={"success": "Finished 1st no_update action"},
+                ),
+                vm.Action(
+                    function=capture("action")(lambda: raise_exception(ValueError))(),
+                    outputs="text",
+                    notifications={"success": "Finished 2nd no_update action"},
+                ),
             ],
         ),
         vm.Text(id="text", text="Click the button to run action."),
@@ -168,18 +245,19 @@ conditional_notifications_page = vm.Page(
             id=cnst.CONDITIONAL_NOTIFICATION_EXPORT_BUTTON,
             actions=export_data(
                 file_format="csv",
-                notifications={
-                    "progress": show_notification(
-                        id=cnst.CONDITIONAL_NOTIFICATION_PROGRESS_NOTIFICATION_ID,
-                        text=cnst.CONDITIONAL_NOTIFICATION_PROGRESS_MSG,
-                        variant="progress",
-                    ),
-                    "success": update_notification(
-                        notification=cnst.CONDITIONAL_NOTIFICATION_PROGRESS_NOTIFICATION_ID,
-                        text=cnst.CONDITIONAL_NOTIFICATION_SUCCESS_MSG,
-                        variant="success",
-                    ),
-                },
+                # TODO: Change this setting and test after end of feature development
+                # notifications={
+                # "progress": show_notification(
+                #     id=cnst.CONDITIONAL_NOTIFICATION_PROGRESS_NOTIFICATION_ID,
+                #     text=cnst.CONDITIONAL_NOTIFICATION_PROGRESS_MSG,
+                #     variant="progress",
+                # ),
+                # "success": update_notification(
+                #     notification=cnst.CONDITIONAL_NOTIFICATION_PROGRESS_NOTIFICATION_ID,
+                #     text=cnst.CONDITIONAL_NOTIFICATION_SUCCESS_MSG,
+                #     variant="success",
+                # ),
+                # },
             ),
         ),
     ],
