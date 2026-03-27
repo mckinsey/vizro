@@ -446,6 +446,183 @@ def test_cascader_debounce_multi_defers_until_close(dash_duo):
     assert dash_duo.get_logs() == []
 
 
+# --- Props: searchable, clearable, disabled ---
+
+
+def test_cascader_searchable_false_hides_search_bar(dash_duo):
+    """searchable=False means no search input is rendered when the panel is open."""
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, searchable=False))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-panel")
+    inputs = dash_duo.driver.find_elements("css selector", ".dash-cascader-search-input")
+    assert len(inputs) == 0
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_clearable_false_hides_clear_button(dash_duo):
+    """clearable=False means the clear button is absent even when a value is set."""
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, value="japan", clearable=False))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c")
+    clears = dash_duo.driver.find_elements("css selector", ".dash-cascader-clear")
+    assert len(clears) == 0
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_disabled_does_not_open(dash_duo):
+    """Clicking a disabled trigger does not open the panel."""
+    import time
+
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, disabled=True))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c")
+    # pointer-events: none blocks Selenium's native click, so use JS
+    dash_duo.driver.execute_script("document.querySelector('#c').click()")
+    time.sleep(0.3)
+    panels = dash_duo.driver.find_elements("css selector", ".dash-cascader-panel")
+    assert len(panels) == 0
+    assert dash_duo.get_logs() == []
+
+
+# --- Keyboard: Escape ---
+
+
+def test_cascader_escape_closes_panel(dash_duo):
+    """Pressing Escape while the panel is open closes it."""
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.webdriver.support.ui import WebDriverWait
+
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-panel")
+    dash_duo.driver.find_element(By.CSS_SELECTOR, ".dash-cascader-search-input").send_keys(Keys.ESCAPE)
+    WebDriverWait(dash_duo.driver, 3).until(
+        EC.invisibility_of_element_located((By.CSS_SELECTOR, ".dash-cascader-panel"))
+    )
+    assert dash_duo.get_logs() == []
+
+
+# --- Multi: parent checkbox, multi clear ---
+
+
+def test_cascader_multi_parent_checkbox_selects_children(dash_duo):
+    """Checking a parent checkbox in multi mode selects all its leaf children."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_2LEVEL, multi=True),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(
+        lambda v: ",".join(sorted(str(x) for x in (v or [])))
+    )
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    # Click the Asia parent checkbox (first row, first column)
+    checkboxes = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:first-child .dash-cascader-checkbox")
+    checkboxes[0].click()
+    dash_duo.wait_for_text_to_equal("#out", "china,japan")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_multi_clear_resets_to_empty_list(dash_duo):
+    """Clear button in multi mode resets value to [] (not null)."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_2LEVEL, multi=True, value=["japan", "france"]),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: repr(v))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element(".dash-cascader-clear").click()
+    dash_duo.wait_for_text_to_equal("#out", "[]")
+    assert dash_duo.get_logs() == []
+
+
+# --- Flat options ---
+
+
+def test_cascader_flat_options(dash_duo):
+    """Flat option list (no children) renders a single column and sets value on click."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=[{"label": "Red", "value": "red"}, {"label": "Blue", "value": "blue"}]),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-row").click()
+    dash_duo.wait_for_text_to_equal("#out", "red")
+    panels = dash_duo.driver.find_elements("css selector", ".dash-cascader-panel")
+    assert len(panels) == 0
+    assert dash_duo.get_logs() == []
+
+
+# --- Programmatic value update ---
+
+
+def test_cascader_programmatic_value_update(dash_duo):
+    """Value driven from a callback (externally) is reflected in the trigger."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                html.Button("Set Japan", id="btn"),
+                Cascader(id="c", options=OPTIONS_2LEVEL),
+            ]
+        )
+    )
+    app.callback(Output("c", "value"), Input("btn", "n_clicks"), prevent_initial_call=True)(
+        lambda n: "japan"
+    )
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#btn").click()
+    dash_duo.wait_for_text_to_equal("#c .dash-cascader-value", "Japan")
+    assert dash_duo.get_logs() == []
+
+
+# --- Search: select/deselect all scoped to results ---
+
+
+def test_cascader_multi_select_all_scoped_to_search(dash_duo):
+    """'Select all' when searching adds only the filtered leaf values."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_2LEVEL, multi=True),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(
+        lambda v: ",".join(sorted(str(x) for x in (v or [])))
+    )
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("jap")
+    dash_duo.wait_for_element(".dash-cascader-result-row")
+    dash_duo.wait_for_element(".dash-cascader-action-button").click()  # Select all (filtered)
+    dash_duo.wait_for_text_to_equal("#out", "japan")
+    assert dash_duo.get_logs() == []
+
+
 # --- Persistence ---
 
 
