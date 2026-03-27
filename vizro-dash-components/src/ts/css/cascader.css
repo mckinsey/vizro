@@ -1,9 +1,8 @@
 /* Trigger button — identical structure to .dash-dropdown */
 .dash-cascader {
-  background: var(--bs-dropdown-bg);
-  border: 0;
-  border-radius: var(--bs-border-radius);
-  box-shadow: var(--bs-box-shadow-sm);
+  background: var(--Dash-Fill-Inverse-Strong);
+  border: 1px solid var(--Dash-Stroke-Strong);
+  border-radius: var(--Dash-Spacing);
   box-sizing: border-box;
   color: inherit;
   cursor: pointer;
@@ -16,14 +15,9 @@
   width: 100%;
 }
 
-.dash-cascader:focus-within {
-  border: none;
-  outline: none;
-}
-
-.dash-cascader:focus,
-.dash-cascader.focus {
-  box-shadow: 0 0 0 1px var(--bs-focus-ring-color) inset;
+.dash-cascader:focus {
+  border: 1px solid var(--Dash-Fill-Interactive-Strong);
+  outline: 1px solid var(--Dash-Fill-Interactive-Strong);
 }
 
 .dash-cascader.disabled {
@@ -38,8 +32,8 @@
   display: grid;
   gap: calc(var(--Dash-Spacing) * 2);
   grid-template-columns: 1fr auto;
-  height: 32px;
-  padding: 0 8px;
+  min-height: 32px;
+  padding: 0 12px;
 }
 
 /* value | count | caret */
@@ -150,9 +144,9 @@
 /* Search bar — same structure as .dash-dropdown-search-container */
 .dash-cascader-search-container {
   align-items: center;
-  background: var(--bs-dropdown-bg);
-  border: 1px solid var(--bs-border-color);
-  border-radius: var(--bs-border-radius);
+  background: var(--Dash-Fill-Inverse-Strong);
+  border: 1px solid var(--Dash-Stroke-Strong);
+  border-radius: var(--Dash-Spacing);
   display: grid;
   gap: calc(var(--Dash-Spacing) * 2);
   grid-template-columns: auto 1fr auto;
@@ -161,8 +155,8 @@
 }
 
 .dash-cascader-search-container:focus-within {
-  border-color: var(--bs-focus-ring-color);
-  outline: none;
+  border-color: var(--Dash-Fill-Interactive-Strong);
+  outline: 1px solid var(--Dash-Fill-Interactive-Strong);
 }
 
 .dash-cascader-search-icon {
@@ -195,7 +189,7 @@
 
 /* Actions bar (multi-select only) — same as .dash-dropdown-actions */
 .dash-cascader-actions {
-  border-bottom: 1px solid var(--bs-border-color);
+  border-bottom: 1px solid var(--Dash-Fill-Disabled);
   display: flex;
   gap: 16px;
   padding: 8px;
@@ -279,11 +273,47 @@
   flex-shrink: 0;
 }
 
-/* Checkbox — accent-color picks up Dash interactive colour */
+/* Checkbox — matches .dash-options-list-option-checkbox */
 .dash-cascader-checkbox {
-  accent-color: var(--Dash-Fill-Interactive-Strong);
+  appearance: none;
+  background: none transparent;
+  border: 1px solid var(--Dash-Stroke-Strong);
+  border-radius: 0;
   cursor: pointer;
   flex-shrink: 0;
+  height: 16px;
+  margin: 0;
+  outline-color: var(--Dash-Stroke-Strong);
+  width: 16px;
+}
+
+.dash-cascader-checkbox:checked {
+  background: none transparent;
+  border-color: var(--Dash-Stroke-Strong);
+}
+
+.dash-cascader-checkbox:checked::before {
+  color: var(--Dash-Stroke-Strong);
+  content: "✓";
+  display: block;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 14px;
+  text-align: center;
+}
+
+.dash-cascader-checkbox:indeterminate {
+  border-color: var(--Dash-Stroke-Strong);
+}
+
+.dash-cascader-checkbox:indeterminate::before {
+  color: var(--Dash-Stroke-Strong);
+  content: "−";
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 14px;
+  text-align: center;
 }
 
 /* Search results — flat list */
@@ -293,12 +323,13 @@
 
 .dash-cascader-result-row {
   align-items: center;
-  box-shadow: 0 -1px 0 0 var(--Dash-Fill-Disabled) inset;
+  box-shadow: none;
   cursor: pointer;
   display: flex;
-  gap: calc(var(--Dash-Spacing) * 3);
+  gap: 4px;
   justify-content: space-between;
-  padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
+  min-height: 32px;
+  padding: 6px 8px;
 }
 
 .dash-cascader-result-row:hover {
