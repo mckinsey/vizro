@@ -304,30 +304,42 @@ a {
 
 .component {
   align-items: stretch;
-  background-color: var(--bg-card);
+  background-color: var(--color-bg-alt);
   border: 1px solid var(--border);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-sm);
-  display: grid;
-  gap: var(--spacing-lg);
-  grid-template-columns: 1.5fr 1fr;
-  margin-bottom: var(--spacing-xl);
-  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  margin: 12px;
+  overflow: hidden;
+  padding: 0;
 }
 
 .component:last-child {
   margin-bottom: 0;
 }
 
+.component-body {
+  display: grid;
+  gap: 0;
+  grid-template-columns: 1.5fr 1fr;
+  min-height: 0;
+  min-width: 0;
+}
+
 .component__visual {
+  align-items: center;
   background-color: var(--color-bg-alt);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-sm);
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   min-height: 100%;
+  min-width: 0;
   overflow: hidden;
+  padding: var(--spacing-md);
   width: 100%;
 }
 
@@ -339,9 +351,10 @@ a {
 
 .component__content {
   background-color: var(--color-bg-alt);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-sm);
+  border: none;
+  border-left: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   min-height: 100%;
@@ -350,7 +363,6 @@ a {
 }
 
 .component__content::before {
-  border-bottom: 1px solid var(--border);
   color: var(--text-secondary);
   content: "Example code";
   display: block;
@@ -358,7 +370,7 @@ a {
   font-size: 12px;
   font-weight: 400;
   letter-spacing: 0.02em;
-  padding: 12px;
+  padding: 12px 16px;
   text-transform: uppercase;
 }
 
@@ -374,7 +386,7 @@ a {
   display: flex;
   flex: 1;
   flex-direction: column;
-  margin: 12px;
+  margin: 8px;
   min-height: 0;
 }
 
@@ -526,8 +538,13 @@ a {
     padding: var(--spacing-md);
   }
 
-  .component {
+  .component-body {
     grid-template-columns: 1fr;
+  }
+
+  .component__content {
+    border-left: none;
+    border-top: 1px solid var(--border);
   }
 
   .component__name {
@@ -1526,9 +1543,9 @@ html {
   font-size: 18px;
   font-weight: 600;
   justify-content: space-between;
-  margin-bottom: 20px;
-  padding: 12px;
-  padding-right: 12px;
+  margin-bottom: 0;
+  padding: 14px 16px;
+  padding-right: 16px;
 }
 
 .components-section {
