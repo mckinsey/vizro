@@ -21,16 +21,17 @@ At runtime, `Filter.__call__` (`filter.py:186-219`) is invoked with fresh `targe
 ### Hierarchy branch in `pre_build`
 
 The `if self.column_hierarchy:` branch is at `filter.py:228-305`. It currently:
+
 1. Sets `self.column = self.column_hierarchy[-1]` (line 230)
-2. Loads data, validates targets (lines 232-264)
-3. Builds `wide_df` (lines 267-268)
-4. Validates selector is TreeSelect (lines 271-275)
-5. Sets `self._column_type = "categorical"` (line 277)
-6. Sets title (line 278)
-7. Sets options if not user-supplied (lines 281-284) — **this is where dynamic detection goes**
-8. Sets value (line 286)
-9. Has a `# TODO: add dynamic support for column_hierarchy` comment (line 290)
-10. Adds `_filter_isin` action (lines 292-300)
+1. Loads data, validates targets (lines 232-264)
+1. Builds `wide_df` (lines 267-268)
+1. Validates selector is TreeSelect (lines 271-275)
+1. Sets `self._column_type = "categorical"` (line 277)
+1. Sets title (line 278)
+1. Sets options if not user-supplied (lines 281-284) — **this is where dynamic detection goes**
+1. Sets value (line 286)
+1. Has a `# TODO: add dynamic support for column_hierarchy` comment (line 290)
+1. Adds `_filter_isin` action (lines 292-300)
 
 ### `Filter.__call__`
 
@@ -38,8 +39,7 @@ The `if self.column_hierarchy:` branch is at `filter.py:228-305`. It currently:
 
 ### Imports needed in `filter.py`
 
-Current import from `_controls_utils` (line 20-29): does not include `_is_tree_selector`.
-Current import from `tree_select` (line 19): `from vizro.models._components.form.tree_select import _check_no_duplicate_leaves` — needs `_extract_leaf_keys` added.
+Current import from `_controls_utils` (line 20-29): does not include `_is_tree_selector`. Current import from `tree_select` (line 19): `from vizro.models._components.form.tree_select import _check_no_duplicate_leaves` — needs `_extract_leaf_keys` added.
 
 ### Key test fixtures
 
@@ -57,16 +57,17 @@ From `vizro-core/` directory: `hatch run test-unit tests/unit/vizro/models/_cont
 
 ## File Structure
 
-| File | Change |
-|------|--------|
-| `src/vizro/models/_controls/filter.py` | Add `_is_tree_selector` import, add `_extract_leaf_keys` import, add dynamic detection block in hierarchy `pre_build`, add `_get_tree_options_dynamic` static method, add tree branch in `__call__` |
-| `tests/unit/vizro/models/_controls/test_filter.py` | Add `TestFilterHierarchyPreBuildDynamic` class and `TestFilterCallTree` class |
+| File                                               | Change                                                                                                                                                                                              |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/vizro/models/_controls/filter.py`             | Add `_is_tree_selector` import, add `_extract_leaf_keys` import, add dynamic detection block in hierarchy `pre_build`, add `_get_tree_options_dynamic` static method, add tree branch in `__call__` |
+| `tests/unit/vizro/models/_controls/test_filter.py` | Add `TestFilterHierarchyPreBuildDynamic` class and `TestFilterCallTree` class                                                                                                                       |
 
 ---
 
 ## Task 1: Dynamic detection in `pre_build` and imports
 
 **Files:**
+
 - Modify: `src/vizro/models/_controls/filter.py:19-29, 277-290`
 - Test: `tests/unit/vizro/models/_controls/test_filter.py` (new class `TestFilterHierarchyPreBuildDynamic`)
 
@@ -90,7 +91,11 @@ def managers_column_hierarchy_dynamic(gapminder_dynamic_first_n_last_n_function)
     vm.Page(
         id="test_page",
         title="Page Title",
-        components=[vm.Graph(id="fig_dynamic", figure=px.scatter("gapminder_dynamic_first_n_last_n", x="continent", y="country"))],
+        components=[
+            vm.Graph(
+                id="fig_dynamic", figure=px.scatter("gapminder_dynamic_first_n_last_n", x="continent", y="country")
+            )
+        ],
     )
     Vizro._pre_build()
 
@@ -140,15 +145,19 @@ Expected: FAIL (dynamic detection not yet implemented)
 - [ ] **Step 3: Add imports to `filter.py`**
 
 In `filter.py` line 19, change:
+
 ```python
 from vizro.models._components.form.tree_select import _check_no_duplicate_leaves
 ```
+
 to:
+
 ```python
 from vizro.models._components.form.tree_select import _check_no_duplicate_leaves, _extract_leaf_keys
 ```
 
 In `filter.py` lines 20-29, add `_is_tree_selector` to the `_controls_utils` import:
+
 ```python
 from vizro.models._controls._controls_utils import (
     SELECTORS,
@@ -230,6 +239,7 @@ git commit -m "feat: add dynamic detection for column_hierarchy filters in pre_b
 ## Task 2: `_get_tree_options_dynamic` static method and `Filter.__call__` tree branch
 
 **Files:**
+
 - Modify: `src/vizro/models/_controls/filter.py` (add static method after `_get_tree_options`, add branch in `__call__`)
 - Test: `tests/unit/vizro/models/_controls/test_filter.py` (new class `TestFilterCallTree`)
 
@@ -238,6 +248,7 @@ git commit -m "feat: add dynamic detection for column_hierarchy filters in pre_b
 `Filter.__call__` is only invoked at runtime for dynamic filters (when `self._dynamic is True`). It receives `target_to_data_frame` (freshly loaded) and `current_value` (the selector's current value from the browser). The new tree branch calls `_get_tree_options_dynamic` which rebuilds the nested dict from fresh data, then injects any stale `current_value` leaves under `"(Stale selection)"`.
 
 The `__call__` dispatch at `filter.py:205-209`:
+
 ```python
         if _is_categorical_selector(selector):
             selector_call_obj = selector(options=self._get_options(targeted_data, current_value))

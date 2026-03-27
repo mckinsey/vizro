@@ -18,25 +18,28 @@
 
 ## File Map
 
-| File | Change |
-|------|--------|
-| `src/vizro/models/_components/form/tree_select.py` | Make `options` optional; add `_check_no_duplicate_leaves`; update `_validate_options_structure` model validator; add `options` param to `__call__`; update docstring |
-| `src/vizro/models/_controls/_controls_utils.py` | Import `TreeSelect`; add `_is_tree_selector`; update `get_selector_default_value` |
-| `src/vizro/models/_controls/filter.py` | Make `column` optional; add `column_hierarchy` field; add model validator; add `_get_tree_options`; update `pre_build` |
-| `tests/unit/vizro/models/_components/form/test_tree_select.py` | Update `test_options_required` → `test_create_tree_select_no_args`; add duplicate-leaf and `__call__` tests |
-| `tests/unit/vizro/models/_controls/test_filter.py` | Add hierarchy fixture, `TestGetSelectorDefaultValueTreeSelect`, `TestGetTreeOptions`, `TestFilterColumnHierarchyValidation`, `TestFilterHierarchyPreBuild` |
+| File                                                           | Change                                                                                                                                                               |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/vizro/models/_components/form/tree_select.py`             | Make `options` optional; add `_check_no_duplicate_leaves`; update `_validate_options_structure` model validator; add `options` param to `__call__`; update docstring |
+| `src/vizro/models/_controls/_controls_utils.py`                | Import `TreeSelect`; add `_is_tree_selector`; update `get_selector_default_value`                                                                                    |
+| `src/vizro/models/_controls/filter.py`                         | Make `column` optional; add `column_hierarchy` field; add model validator; add `_get_tree_options`; update `pre_build`                                               |
+| `tests/unit/vizro/models/_components/form/test_tree_select.py` | Update `test_options_required` → `test_create_tree_select_no_args`; add duplicate-leaf and `__call__` tests                                                          |
+| `tests/unit/vizro/models/_controls/test_filter.py`             | Add hierarchy fixture, `TestGetSelectorDefaultValueTreeSelect`, `TestGetTreeOptions`, `TestFilterColumnHierarchyValidation`, `TestFilterHierarchyPreBuild`           |
 
 ---
 
 ## Task 1: Make `TreeSelect.options` optional and add `_check_no_duplicate_leaves`
 
 **Files:**
+
 - Modify: `src/vizro/models/_components/form/tree_select.py`
+
 - Test: `tests/unit/vizro/models/_components/form/test_tree_select.py`
 
 - [ ] **Step 1: Write the failing tests**
 
 In `test_tree_select.py`:
+
 - **Delete** the existing `test_options_required` test (lines 55–57) — after this task, `TreeSelect()` will be valid so it would become a false negative.
 - The existing `test_empty_options` test (which tests `TreeSelect(options={})`) is retained as-is since it tests explicit empty-dict passing; the new `test_create_tree_select_no_args` tests the no-argument default.
 - Add `test_create_tree_select_no_args` and `test_duplicate_leaf_values_raises` to `TestTreeSelectInstantiation`:
@@ -46,6 +49,7 @@ def test_create_tree_select_no_args(self):
     ts = TreeSelect()
     assert ts.options == {}
     assert ts.value is None
+
 
 def test_duplicate_leaf_values_raises(self):
     with pytest.raises(ValidationError, match="Duplicate leaf values"):
@@ -62,9 +66,7 @@ class TestTreeSelectCall:
         # title is "" (falsy) so children[0] is None, children[1] is AntdTreeSelect
         tree_select_component = result.children[1]
         assert tree_select_component.treeData == [
-            {"title": "B", "key": "B", "value": "B", "children": [
-                {"title": "y", "key": "y", "value": "y"}
-            ]}
+            {"title": "B", "key": "B", "value": "B", "children": [{"title": "y", "key": "y", "value": "y"}]}
         ]
 
     def test_call_without_options_param_uses_self_options(self):
@@ -73,9 +75,7 @@ class TestTreeSelectCall:
         # title is "" (falsy) so children[0] is None, children[1] is AntdTreeSelect
         tree_select_component = result.children[1]
         assert tree_select_component.treeData == [
-            {"title": "A", "key": "A", "value": "A", "children": [
-                {"title": "x", "key": "x", "value": "x"}
-            ]}
+            {"title": "A", "key": "A", "value": "A", "children": [{"title": "x", "key": "x", "value": "x"}]}
         ]
 ```
 
@@ -208,7 +208,9 @@ git commit -m "feat: make TreeSelect.options optional and add duplicate-leaf val
 ## Task 2: Update `_controls_utils.py` to support `TreeSelect`
 
 **Files:**
+
 - Modify: `src/vizro/models/_controls/_controls_utils.py`
+
 - Test: `tests/unit/vizro/models/_controls/test_filter.py`
 
 - [ ] **Step 1: Write the failing tests**
@@ -314,6 +316,7 @@ git commit -m "feat: add TreeSelect support to _controls_utils"
 ## Task 3: Extend `Filter` with `column_hierarchy` field and model validator
 
 **Files:**
+
 - Modify: `src/vizro/models/_controls/filter.py`
 - Test: `tests/unit/vizro/models/_controls/test_filter.py`
 
@@ -434,7 +437,9 @@ git commit -m "feat: add column_hierarchy field and model validator to Filter"
 ## Task 4: Implement `Filter._get_tree_options` and the `pre_build` hierarchy branch
 
 **Files:**
+
 - Modify: `src/vizro/models/_controls/filter.py`
+
 - Test: `tests/unit/vizro/models/_controls/test_filter.py`
 
 - [ ] **Step 1: Write the failing tests for `_get_tree_options`**
@@ -444,11 +449,13 @@ Add to `test_filter.py`:
 ```python
 class TestGetTreeOptions:
     def test_three_level_hierarchy(self):
-        wide_df = pd.DataFrame({
-            "continent": ["Americas", "Europe", "Europe", "Europe"],
-            "country": ["USA", "France", "France", "Germany"],
-            "city": ["New York", "Lyon", "Paris", "Berlin"],
-        })
+        wide_df = pd.DataFrame(
+            {
+                "continent": ["Americas", "Europe", "Europe", "Europe"],
+                "country": ["USA", "France", "France", "Germany"],
+                "city": ["New York", "Lyon", "Paris", "Berlin"],
+            }
+        )
         result = Filter._get_tree_options(wide_df, ["continent", "country", "city"])
         assert result == {
             "Americas": {"USA": ["New York"]},
@@ -459,10 +466,12 @@ class TestGetTreeOptions:
         }
 
     def test_two_level_hierarchy(self):
-        wide_df = pd.DataFrame({
-            "continent": ["Americas", "Europe", "Europe"],
-            "city": ["New York", "Lyon", "Paris"],
-        })
+        wide_df = pd.DataFrame(
+            {
+                "continent": ["Americas", "Europe", "Europe"],
+                "city": ["New York", "Lyon", "Paris"],
+            }
+        )
         result = Filter._get_tree_options(wide_df, ["continent", "city"])
         assert result == {
             "Americas": ["New York"],
@@ -471,11 +480,13 @@ class TestGetTreeOptions:
 
     def test_duplicate_rows_deduplicated(self):
         # Simulate two figures with overlapping rows
-        wide_df = pd.DataFrame({
-            "continent": ["Europe", "Europe", "Europe"],
-            "country": ["France", "France", "Germany"],
-            "city": ["Paris", "Paris", "Berlin"],  # Paris appears twice
-        })
+        wide_df = pd.DataFrame(
+            {
+                "continent": ["Europe", "Europe", "Europe"],
+                "country": ["France", "France", "Germany"],
+                "city": ["Paris", "Paris", "Berlin"],  # Paris appears twice
+            }
+        )
         result = Filter._get_tree_options(wide_df, ["continent", "country", "city"])
         assert result == {
             "Europe": {
@@ -508,10 +519,7 @@ def _get_tree_options(wide_df: pd.DataFrame, columns: list[str]) -> dict[str, An
         rest = remaining_columns[1:]
         if not rest:
             return sorted(df[col].unique().tolist())
-        return {
-            key: _build_nested(group, rest)
-            for key, group in df.groupby(col, sort=True)
-        }
+        return {key: _build_nested(group, rest) for key, group in df.groupby(col, sort=True)}
 
     return _build_nested(wide_df, columns)
 ```
@@ -532,16 +540,20 @@ First add a hierarchy fixture to `test_filter.py` (at module level, alongside ex
 @pytest.fixture
 def managers_column_hierarchy():
     """Page with two graphs sharing continent/country/city columns."""
-    df1 = pd.DataFrame({
-        "continent": ["Europe", "Europe", "Americas"],
-        "country": ["France", "France", "USA"],
-        "city": ["Paris", "Lyon", "New York"],
-    })
-    df2 = pd.DataFrame({
-        "continent": ["Europe", "Asia"],
-        "country": ["Germany", "Japan"],
-        "city": ["Berlin", "Tokyo"],
-    })
+    df1 = pd.DataFrame(
+        {
+            "continent": ["Europe", "Europe", "Americas"],
+            "country": ["France", "France", "USA"],
+            "city": ["Paris", "Lyon", "New York"],
+        }
+    )
+    df2 = pd.DataFrame(
+        {
+            "continent": ["Europe", "Asia"],
+            "country": ["Germany", "Japan"],
+            "city": ["Berlin", "Tokyo"],
+        }
+    )
     vm.Page(
         id="test_page",
         title="Page Title",
@@ -559,6 +571,7 @@ Then add the test class:
 class TestFilterHierarchyPreBuild:
     def test_default_selector_is_tree_select(self, managers_column_hierarchy):
         from vizro.models._components.form import TreeSelect
+
         f = vm.Filter(column_hierarchy=["continent", "country", "city"])
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -589,6 +602,7 @@ class TestFilterHierarchyPreBuild:
 
     def test_custom_tree_select_config_respected(self, managers_column_hierarchy):
         from vizro.models._components.form import TreeSelect
+
         f = vm.Filter(
             column_hierarchy=["continent", "country", "city"],
             selector=vm.TreeSelect(multi=False, title="Location"),
@@ -611,11 +625,13 @@ class TestFilterHierarchyPreBuild:
         # This test creates its own page inline (not using managers_column_hierarchy fixture)
         # because it needs specific data. The conftest autouse fixture clears model_manager
         # between tests, so this is safe even with a fresh page ID.
-        df = pd.DataFrame({
-            "continent": ["Europe", "Europe"],
-            "country": ["France", "Belgium"],
-            "city": ["Bruges", "Bruges"],
-        })
+        df = pd.DataFrame(
+            {
+                "continent": ["Europe", "Europe"],
+                "country": ["France", "Belgium"],
+                "city": ["Bruges", "Bruges"],
+            }
+        )
         vm.Page(
             id="test_page_dup",
             title="Page",
@@ -686,9 +702,7 @@ def pre_build(self):
         multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [
             (cast(FigureType, model_manager[target])["data_frame"], {}) for target in proposed_targets
         ]
-        target_to_data_frame = dict(
-            zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs))
-        )
+        target_to_data_frame = dict(zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
 
         # Validate leaf column exists in each figure — establishes initial target set
         targeted_data = self._validate_targeted_data(
@@ -703,9 +717,7 @@ def pre_build(self):
             missing = [col for col in self.column_hierarchy if col not in df.columns]
             if missing:
                 if bool(user_provided_targets):
-                    raise ValueError(
-                        f"Target {target} is missing hierarchy columns {missing} in its DataFrame."
-                    )
+                    raise ValueError(f"Target {target} is missing hierarchy columns {missing} in its DataFrame.")
                 # silently exclude figures that don't have all hierarchy columns
             else:
                 validated_targets.append(target)
@@ -718,8 +730,7 @@ def pre_build(self):
         # Validate selector type — TreeSelect is the only allowed selector
         if self.selector is not None and not isinstance(self.selector, TreeSelect):
             raise ValueError(
-                f"column_hierarchy can only be used with a TreeSelect selector, "
-                f"got {type(self.selector).__name__}."
+                f"column_hierarchy can only be used with a TreeSelect selector, got {type(self.selector).__name__}."
             )
         self.selector = self.selector or TreeSelect()
 

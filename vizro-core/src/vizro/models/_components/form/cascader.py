@@ -12,6 +12,13 @@ from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionsType, MultiValueType, SingleValueType, TreeOptionsType, _IdProperty
 
 
+def _convert_options(d: dict | list) -> list[dict]:
+    """Recursively convert nested dict/list options to vdc.Cascader format."""
+    if isinstance(d, list):
+        return [{"label": item, "value": item} for item in d]
+    return [{"label": k, "value": k, "children": _convert_options(v)} for k, v in d.items()]
+
+
 def _check_options_structure(options: Any) -> None:
     """Recursively validate that options is a dict of str -> list[str] | dict."""
     if not isinstance(options, dict):
@@ -150,7 +157,7 @@ defaults chosen by the Vizro team. This may have unexpected behavior.""",
         return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options=None):
-        options = options if options is not None else self.options
+        options = _convert_options(options if options is not None else self.options)
         value = self.value if self.value is not None else ([] if self.multi else None)
         description = self.description.build().children if self.description else [None]
 

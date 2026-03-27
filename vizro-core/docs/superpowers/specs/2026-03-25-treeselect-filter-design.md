@@ -1,8 +1,6 @@
 # TreeSelect Filter Integration Design
 
-**Date:** 2026-03-25
-**Branch:** feat/cascading-filter
-**Scope:** Static filters only (no dynamic data support in this iteration)
+**Date:** 2026-03-25 **Branch:** feat/cascading-filter **Scope:** Static filters only (no dynamic data support in this iteration)
 
 ## Overview
 
@@ -42,16 +40,16 @@ vm.Filter(
 The hierarchy path is an `if self.column_hierarchy:` branch at the top of `pre_build`. The existing standard path runs as an `else` branch, completely unchanged.
 
 1. Set `self.column = self.column_hierarchy[-1]`.
-2. Load DataFrames for proposed targets using `self.column` (leaf), same as the standard path — `target_to_data_frame` is populated as in the existing code.
-3. Call `_validate_targeted_data` on the leaf column as normal to establish the initial target set and valid target list. Then additionally loop over validated targets and exclude any figure whose DataFrame is missing any column in `column_hierarchy` (or raise if that figure was explicitly targeted). This preserves all existing empty-DataFrame error handling.
-4. Build `wide_df`: from the already-loaded `target_to_data_frame` (restricted to the validated targets from step 3), select only the `column_hierarchy` columns from each figure's DataFrame, concatenate them, and deduplicate rows. Shape: `len(unique_rows) × len(column_hierarchy)`.
-5. Default to `TreeSelect()` if no selector provided. Raise `ValueError` if user provides a non-TreeSelect selector.
-6. Set `self._column_type = "categorical"` directly (skip `_validate_column_type`).
-7. Set title: `self.selector.title = self.selector.title or self.column.title()`.
-8. Set options: `self.selector.options = self.selector.options or self._get_tree_options(wide_df, self.column_hierarchy)`. Then explicitly call `_check_no_duplicate_leaves(self.selector.options)` (imported from `tree_select.py`) — since assigning to a Pydantic field after construction does not re-run model validators, this must be called explicitly for the Filter-built options path. For user-supplied options (non-empty at construction), `_check_no_duplicate_leaves` already ran inside `TreeSelect._validate_options_structure`.
-9. Set default value: `self.selector.value = get_selector_default_value(self.selector)`. TreeSelect default value is `[]` (multi=True) or `None` (multi=False) — always no-selection. This is intentional: TreeSelect options are hierarchical and deriving a "sensible first value" would require flattening to leaf values for no clear UX benefit. Assigning `[]` or `None` post-construction does not re-run `_validate_tree_value`, which is safe.
-10. Dynamic detection is naturally skipped because `self.selector.options` is already set after step 8, making the condition `not getattr(self.selector, "options", [])` evaluate to `False`. A `# TODO: add dynamic support for column_hierarchy` comment is added in the dynamic block for clarity.
-11. Add `_filter_isin` action as normal (on leaf column `self.column`).
+1. Load DataFrames for proposed targets using `self.column` (leaf), same as the standard path — `target_to_data_frame` is populated as in the existing code.
+1. Call `_validate_targeted_data` on the leaf column as normal to establish the initial target set and valid target list. Then additionally loop over validated targets and exclude any figure whose DataFrame is missing any column in `column_hierarchy` (or raise if that figure was explicitly targeted). This preserves all existing empty-DataFrame error handling.
+1. Build `wide_df`: from the already-loaded `target_to_data_frame` (restricted to the validated targets from step 3), select only the `column_hierarchy` columns from each figure's DataFrame, concatenate them, and deduplicate rows. Shape: `len(unique_rows) × len(column_hierarchy)`.
+1. Default to `TreeSelect()` if no selector provided. Raise `ValueError` if user provides a non-TreeSelect selector.
+1. Set `self._column_type = "categorical"` directly (skip `_validate_column_type`).
+1. Set title: `self.selector.title = self.selector.title or self.column.title()`.
+1. Set options: `self.selector.options = self.selector.options or self._get_tree_options(wide_df, self.column_hierarchy)`. Then explicitly call `_check_no_duplicate_leaves(self.selector.options)` (imported from `tree_select.py`) — since assigning to a Pydantic field after construction does not re-run model validators, this must be called explicitly for the Filter-built options path. For user-supplied options (non-empty at construction), `_check_no_duplicate_leaves` already ran inside `TreeSelect._validate_options_structure`.
+1. Set default value: `self.selector.value = get_selector_default_value(self.selector)`. TreeSelect default value is `[]` (multi=True) or `None` (multi=False) — always no-selection. This is intentional: TreeSelect options are hierarchical and deriving a "sensible first value" would require flattening to leaf values for no clear UX benefit. Assigning `[]` or `None` post-construction does not re-run `_validate_tree_value`, which is safe.
+1. Dynamic detection is naturally skipped because `self.selector.options` is already set after step 8, making the condition `not getattr(self.selector, "options", [])` evaluate to `False`. A `# TODO: add dynamic support for column_hierarchy` comment is added in the dynamic block for clarity.
+1. Add `_filter_isin` action as normal (on leaf column `self.column`).
 
 ### `_get_tree_options(wide_df, columns)` static method
 
@@ -61,32 +59,36 @@ Takes a wide DataFrame (one column per hierarchy level, deduplicated rows) and a
 # columns = ["continent", "country", "city"]
 # returns:
 {
-  "Europe": {
-    "France": ["Paris", "Lyon"],
-    "Germany": ["Berlin"],
-  },
-  "Americas": {
-    "USA": ["New York"],
-  }
+    "Europe": {
+        "France": ["Paris", "Lyon"],
+        "Germany": ["Berlin"],
+    },
+    "Americas": {
+        "USA": ["New York"],
+    },
 }
 ```
 
 ### Filter action
+
 Uses existing `_filter_isin` with `column = self.column` (the leaf column). No changes to the action layer.
 
 ### `Filter.__call__` (dynamic path)
+
 Dynamic detection is always naturally skipped for hierarchy filters (step 10 above), so `_dynamic` is never set to `True` and `Filter.__call__` is never invoked for tree selectors. No changes needed to `Filter.__call__`.
 
 ## TreeSelect Model Changes
 
 ### `options` becomes optional
+
 Change `options: TreeOptionsType` to `options: TreeOptionsType = {}`. This allows `TreeSelect()` to be constructed without arguments for use as a default selector inside `Filter`. The existing `_validate_options_structure` and `_validate_tree_value` validators handle empty dicts gracefully.
 
 ### `_check_no_duplicate_leaves` standalone function
+
 Add a standalone function `_check_no_duplicate_leaves(options)` in `tree_select.py`. It raises `ValueError` naming the duplicates if any leaf string appears more than once across different branches. Called from two places:
 
 1. Inside the existing `@model_validator(mode="before") _validate_options_structure` on `TreeSelect`, after structure validation, skipping the check when `options` is empty. This catches duplicates in user-supplied options at construction time.
-2. Explicitly by `Filter.pre_build` step 8 (imported from `tree_select.py`) after calling `_get_tree_options`. This catches duplicates in Filter-built options, since model validators do not re-run on post-construction field assignment.
+1. Explicitly by `Filter.pre_build` step 8 (imported from `tree_select.py`) after calling `_get_tree_options`. This catches duplicates in Filter-built options, since model validators do not re-run on post-construction field assignment.
 
 ```python
 # Raises ValueError: Duplicate leaf values found in options: {'Bruges'}
@@ -94,6 +96,7 @@ vm.TreeSelect(options={"France": ["Bruges"], "Belgium": ["Bruges"]})
 ```
 
 ### `__call__` signature change
+
 Add an optional `options` parameter for API symmetry with other categorical selectors, to enable uniform handling in future dynamic support:
 
 ```python
@@ -124,11 +127,13 @@ def __call__(self, options=None):
 ## Testing
 
 ### `test_tree_select.py`
+
 - `TreeSelect()` with no arguments is valid (empty options)
 - Duplicate leaf values across branches raises `ValueError` naming the duplicates
 - `__call__(options=...)` uses passed options instead of `self.options`
 
 ### `test_filter.py`
+
 - `column_hierarchy` with no selector defaults to `TreeSelect`, title = last column name
 - `column_hierarchy` with `selector=vm.TreeSelect(...)` — custom config respected (e.g. `multi=False`)
 - `column_hierarchy` with non-TreeSelect selector raises `ValueError`

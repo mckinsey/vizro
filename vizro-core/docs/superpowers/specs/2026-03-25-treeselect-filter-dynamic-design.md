@@ -63,11 +63,7 @@ def _get_tree_options_dynamic(
 ) -> dict[str, Any]:
     """Build tree options from fresh data, preserving stale current_value leaves."""
     # Build wide_df from targets that have all hierarchy columns (silently skip others)
-    dfs = [
-        df[columns]
-        for df in target_to_data_frame.values()
-        if all(col in df.columns for col in columns)
-    ]
+    dfs = [df[columns] for df in target_to_data_frame.values() if all(col in df.columns for col in columns)]
     wide_df = pd.concat(dfs, ignore_index=True).drop_duplicates() if dfs else pd.DataFrame(columns=columns)
     options = Filter._get_tree_options(wide_df, columns)
 
@@ -96,12 +92,14 @@ The `"(Stale selection)"` group is only added when there are actually stale valu
 ### New tests in `test_filter.py`
 
 **Dynamic detection:**
+
 - `column_hierarchy` targeting a dynamic data source: `filter._dynamic is True` and `filter.selector._dynamic is True` after `pre_build`
 - `column_hierarchy` targeting a dynamic data source: `filter.selector.options == {}` after `pre_build` (options not fixed at build time)
 - `column_hierarchy` targeting a mix of static and dynamic sources: `_dynamic = True` if any target is dynamic
 - `column_hierarchy` with user-supplied `selector=vm.TreeSelect(options=...)`: `_dynamic` stays `False` even when target is dynamic (user-supplied options treated as static)
 
 **`Filter.__call__` (tree path):**
+
 - With no stale values: returned options match freshly built tree, no `"(Stale selection)"` key
 - With stale `current_value` entries: stale leaves appear under `"(Stale selection)"` key, sorted
 - With `multi=False` and a single stale string value: stale value appears under `"(Stale selection)"`

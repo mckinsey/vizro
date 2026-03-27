@@ -1,7 +1,6 @@
 # TreeSelect Component Design
 
-**Date:** 2026-03-12
-**Status:** Reviewed
+**Date:** 2026-03-12 **Status:** Reviewed
 
 ## Overview
 
@@ -12,7 +11,7 @@ Add a `TreeSelect` model to `vizro-core/src/vizro/models/_components/form/` that
 ```python
 class TreeSelect(VizroBaseModel):
     type: Literal["tree_select"] = "tree_select"
-    options: TreeOptionsType                         # nested dict, see format below
+    options: TreeOptionsType  # nested dict, see format below
     value: Annotated[
         SingleValueType | MultiValueType | None,
         AfterValidator(_validate_tree_value),
@@ -83,9 +82,9 @@ def __call__(self):
         "value": value,
         "treeCheckable": self.multi,
         "multiple": self.multi,
-        "allowClear": self.multi,   # mirrors Dropdown's clearable=self.multi
+        "allowClear": self.multi,  # mirrors Dropdown's clearable=self.multi
         # showCheckedStrategy and maxTagCount only passed when multi=True to avoid passing None to AntdTreeSelect
-        **( {"showCheckedStrategy": "show-child", "maxTagCount": "responsive"} if self.multi else {} ),
+        **({"showCheckedStrategy": "show-child", "maxTagCount": "responsive"} if self.multi else {}),
         "listHeight": 300,
         "locale": "en-us",
         "persistence": True,
@@ -93,13 +92,18 @@ def __call__(self):
         "placeholder": "Select option",
     }
 
-    return html.Div([
-        dbc.Label(
-            [html.Span(id=f"{self.id}_title", children=self.title), *description],
-            html_for=self.id,
-        ) if self.title else None,
-        fac.AntdTreeSelect(**(defaults | self.extra)),
-    ])
+    return html.Div(
+        [
+            dbc.Label(
+                [html.Span(id=f"{self.id}_title", children=self.title), *description],
+                html_for=self.id,
+            )
+            if self.title
+            else None,
+            fac.AntdTreeSelect(**(defaults | self.extra)),
+        ]
+    )
+
 
 @_log_call
 def build(self):
@@ -112,7 +116,9 @@ Same pattern as Dropdown:
 
 ```python
 @property
-def _action_triggers(self): return {"__default__": f"{self.id}.value"}
+def _action_triggers(self):
+    return {"__default__": f"{self.id}.value"}
+
 
 @property
 def _action_outputs(self):
@@ -122,8 +128,10 @@ def _action_outputs(self):
         **({"description": f"{self.description.id}-text.children"} if self.description else {}),
     }
 
+
 @property
-def _action_inputs(self): return {"__default__": f"{self.id}.value"}
+def _action_inputs(self):
+    return {"__default__": f"{self.id}.value"}
 ```
 
 ## Dependencies
@@ -133,14 +141,14 @@ Add `feffery-antd-components` to `vizro-core/pyproject.toml` dependencies.
 ## Registration (all steps)
 
 1. Create `vizro-core/src/vizro/models/_components/form/tree_select.py`
-2. Export from `vizro-core/src/vizro/models/_components/form/__init__.py`
-3. Export from `vizro-core/src/vizro/models/__init__.py` — add `TreeSelect` to `__all__`
-4. Add `TreeOptionsType = dict[str, Any]` to `vizro-core/src/vizro/models/types.py` as a readable alias (structural validation is done in the model_validator, not the type annotation)
-5. Add `TreeSelect` to the `SelectorType` forward-ref string in `types.py`:
-   ```python
-   "Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch | TreeSelect"
-   ```
-6. `TreeSelect.model_rebuild()` is called automatically via the `model_rebuild()` loop in `vizro/models/__init__.py` since it iterates `__all__`.
+1. Export from `vizro-core/src/vizro/models/_components/form/__init__.py`
+1. Export from `vizro-core/src/vizro/models/__init__.py` — add `TreeSelect` to `__all__`
+1. Add `TreeOptionsType = dict[str, Any]` to `vizro-core/src/vizro/models/types.py` as a readable alias (structural validation is done in the model_validator, not the type annotation)
+1. Add `TreeSelect` to the `SelectorType` forward-ref string in `types.py`:
+    ```python
+    "Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch | TreeSelect"
+    ```
+1. `TreeSelect.model_rebuild()` is called automatically via the `model_rebuild()` loop in `vizro/models/__init__.py` since it iterates `__all__`.
 
 ## Out of Scope
 

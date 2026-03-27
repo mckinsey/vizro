@@ -2,6 +2,8 @@
 
 Vizro Dash Components are used by the Vizro framework but can be used in a pure Dash app.
 
+See the [live demo on PyCafe](https://py.cafe/vizro-official/vizro-dash-components) for a full showcase of all components. This uses the code in [`examples`](examples).
+
 ## Installation
 
 ```bash
@@ -40,51 +42,52 @@ print("Hello, World!")
 
 )
 
-if __name__ == "__main__": app.run(debug=True)
+if __name__ == "__main__":
+    app.run()
 
 ````
 
 ### Cascader
 
-A hierarchical cascading dropdown inspired by [AntdCascader](https://fac.feffery.tech/AntdCascader). Users navigate a tree of options via side-by-side panels and select leaf values. Supports single-select and multi-select. Built to visually match `dcc.Dropdown`.
-
-Requires a `dmc.MantineProvider` wrapper.
+A hierarchical cascading dropdown inspired by Ant Design's Cascader pattern. Users navigate a tree of options via side-by-side panels and select leaf values. Supports single-select and multi-select. Built to visually match [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown).
 
 ```python
-import dash_mantine_components as dmc
 import vizro_dash_components as vdc
-from dash import Dash, Input, Output
+from dash import Dash, Input, Output, html
 
-OPTIONS = [
-    {
-        "label": "Asia",
-        "value": "asia",
-        "children": [
-            {"label": "Japan", "value": "japan"},
-            {"label": "China", "value": "china"},
-        ],
+OPTIONS = {
+    "Asia": {
+        "Japan": ["Tokyo", "Osaka", "Kyoto", "Yokohama"],
+        "China": ["Beijing", "Shanghai", "Shenzhen", "Guangzhou"],
+        "India": ["Mumbai", "Delhi", "Bangalore", "Chennai"],
     },
-    {
-        "label": "Europe",
-        "value": "europe",
-        "children": [
-            {"label": "France", "value": "france"},
-            {"label": "Germany", "value": "germany"},
-        ],
+    "Europe": {
+        "France": ["Paris", "Lyon", "Marseille", "Toulouse"],
+        "Germany": ["Berlin", "Munich", "Hamburg", "Frankfurt"],
+        "UK": ["London", "Manchester", "Birmingham", "Edinburgh"],
     },
-]
+    "Americas": {
+        "USA": ["New York", "Los Angeles", "Chicago", "Houston"],
+        "Brazil": ["São Paulo", "Rio de Janeiro", "Brasília", "Salvador"],
+        "Canada": ["Toronto", "Vancouver", "Montreal", "Calgary"],
+    },
+}
 
 app = Dash(__name__)
 
-app.layout = dmc.MantineProvider(
-    vdc.Cascader(id="cascade", options=OPTIONS, placeholder="Select a country...")
-)
+app.layout = [
+    vdc.Cascader(
+        id="cascade", options=OPTIONS, placeholder="Select a city..."
+    ),
+    html.Div(id="cascade-output"),
+]
 
-@app.callback(Output("cascade", "value"), Input("cascade", "value"))
-def on_change(value):
-    print(f"Selected: {value}")
-    return value
+
+@app.callback(Output("cascade-output", "children"), Input("cascade", "value"))
+def show_selected(value):
+    return f"Selected: {value}"
+
 
 if __name__ == "__main__":
-    app.run(debug=True)
-````
+    app.run()
+```

@@ -10,9 +10,10 @@ from pydantic import ValidationError
 from vizro.models import Tooltip
 from vizro.models._action._action import Action
 from vizro.models._components.form import Cascader
-from vizro.models._components.form.cascader import _extract_leaf_keys
+from vizro.models._components.form.cascader import _convert_options, _extract_leaf_keys
 
 SIMPLE_OPTIONS = {"Fruits": ["Apple", "Banana"], "Vegetables": ["Carrot"]}
+SIMPLE_OPTIONS_CONVERTED = _convert_options(SIMPLE_OPTIONS)
 NESTED_OPTIONS = {
     "Electronics": {
         "Phones": ["iPhone", "Android"],
@@ -151,7 +152,7 @@ class TestCascaderBuild:
                 None,
                 vdc.Cascader(
                     id="tree_select_id",
-                    options=SIMPLE_OPTIONS,
+                    options=SIMPLE_OPTIONS_CONVERTED,
                     value=[],
                     multi=True,
                     clearable=True,
@@ -174,7 +175,7 @@ class TestCascaderBuild:
                 ),
                 vdc.Cascader(
                     id="tree_select_id",
-                    options=SIMPLE_OPTIONS,
+                    options=SIMPLE_OPTIONS_CONVERTED,
                     value=[],
                     multi=True,
                     clearable=True,
@@ -194,7 +195,7 @@ class TestCascaderBuild:
                 None,
                 vdc.Cascader(
                     id="tree_select_id",
-                    options=SIMPLE_OPTIONS,
+                    options=SIMPLE_OPTIONS_CONVERTED,
                     value=None,
                     multi=False,
                     clearable=False,
@@ -214,7 +215,7 @@ class TestCascaderBuild:
                 None,
                 vdc.Cascader(
                     id="tree_select_id",
-                    options=SIMPLE_OPTIONS,
+                    options=SIMPLE_OPTIONS_CONVERTED,
                     value=["Apple"],
                     multi=True,
                     clearable=True,
@@ -252,7 +253,7 @@ class TestCascaderBuild:
                 ),
                 vdc.Cascader(
                     id="tree_select_id",
-                    options=SIMPLE_OPTIONS,
+                    options=SIMPLE_OPTIONS_CONVERTED,
                     value=[],
                     multi=True,
                     clearable=True,
@@ -272,7 +273,7 @@ class TestCascaderBuild:
                 None,
                 vdc.Cascader(
                     id="tree_select_id",
-                    options=SIMPLE_OPTIONS,
+                    options=SIMPLE_OPTIONS_CONVERTED,
                     value=[],
                     multi=True,
                     clearable=True,
@@ -311,11 +312,11 @@ class TestCascaderCall:
         result = ts(options={"B": ["y"]})
         # title is "" (falsy) so children[0] is None, children[1] is vdc.Cascader
         cascade_component = result.children[1]
-        assert cascade_component.options == {"B": ["y"]}
+        assert cascade_component.options == [{"label": "B", "value": "B", "children": [{"label": "y", "value": "y"}]}]
 
     def test_call_without_options_param_uses_self_options(self):
         ts = Cascader(options={"A": ["x"]})
         result = ts()
         # title is "" (falsy) so children[0] is None, children[1] is vdc.Cascader
         cascade_component = result.children[1]
-        assert cascade_component.options == {"A": ["x"]}
+        assert cascade_component.options == [{"label": "A", "value": "A", "children": [{"label": "x", "value": "x"}]}]

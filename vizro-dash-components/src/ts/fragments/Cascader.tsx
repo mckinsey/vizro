@@ -7,7 +7,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { createPortal } from "react-dom";
 import "../css/cascader.css";
 import {
   CaretDownIcon,
@@ -67,11 +66,9 @@ const CascaderFragment = ({
   const [isOpen, setIsOpen] = useState(false);
   const [activePath, setActivePath] = useState<number[]>([]);
   const [searchValue, setSearchValue] = useState("");
-  const [panelStyle, setPanelStyle] = useState<React.CSSProperties>({});
   // Local value state for debounce: tracks selection without firing setProps
   const [localValue, setLocalValue] = useState(value);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
   // Sync localValue when external value changes
@@ -93,12 +90,7 @@ const CascaderFragment = ({
     if (!isOpen) return;
     const handler = (e: MouseEvent) => {
       const target = e.target as Node;
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(target) &&
-        panelRef.current &&
-        !panelRef.current.contains(target)
-      ) {
+      if (wrapperRef.current && !wrapperRef.current.contains(target)) {
         closePanel();
       }
     };
@@ -193,15 +185,6 @@ const CascaderFragment = ({
   const handleTriggerClick = useCallback(() => {
     if (disabled) return;
     setIsOpen((prev) => {
-      if (!prev && wrapperRef.current) {
-        const rect = wrapperRef.current.getBoundingClientRect();
-        setPanelStyle({
-          position: "fixed",
-          top: rect.bottom + 5,
-          left: rect.left,
-          minWidth: rect.width,
-        });
-      }
       if (prev) {
         // closing via trigger click — commit debounced value
         if (debounce && localValue !== value) {
@@ -385,14 +368,14 @@ const CascaderFragment = ({
         className="dash-cascader-action-button"
         onClick={handleSelectAll}
       >
-        Select all
+        Select All
       </button>
       <button
         type="button"
         className="dash-cascader-action-button"
         onClick={handleDeselectAll}
       >
-        Deselect all
+        Deselect All
       </button>
     </div>
   );
@@ -503,19 +486,13 @@ const CascaderFragment = ({
   return (
     <div ref={wrapperRef} className="dash-cascader-wrapper" style={style}>
       {renderTrigger()}
-      {isOpen &&
-        createPortal(
-          <div
-            ref={panelRef}
-            className="dash-cascader-panel"
-            style={panelStyle}
-          >
-            {searchable && renderSearchBar()}
-            {multi && renderActionsBar()}
-            {searchValue ? renderSearchResults() : renderColumns()}
-          </div>,
-          document.body,
-        )}
+      {isOpen && (
+        <div className="dash-cascader-panel">
+          {searchable && renderSearchBar()}
+          {multi && renderActionsBar()}
+          {searchValue ? renderSearchResults() : renderColumns()}
+        </div>
+      )}
     </div>
   );
 };

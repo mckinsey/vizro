@@ -127,4 +127,4 @@ page_filter = vm.Page(
 dashboard = vm.Dashboard(pages=[page_parameter, page_filter])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True, port=8051)
+    Vizro().build(dashboard).run(debug=True, port=8052)
