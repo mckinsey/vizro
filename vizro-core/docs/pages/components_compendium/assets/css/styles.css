@@ -335,15 +335,16 @@ a {
   box-shadow: none;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 100%;
   min-width: 0;
   overflow: hidden;
-  padding: var(--spacing-md);
+  padding: 8px;
   width: 100%;
 }
 
 .component__visual img {
+  border-radius: 8px;
   height: auto;
   max-width: min(760px, 100%);
   width: auto;
@@ -362,6 +363,7 @@ a {
   overflow: hidden;
 }
 
+/*
 .component__content::before {
   color: var(--text-secondary);
   content: "Example code";
@@ -373,7 +375,7 @@ a {
   padding: 12px 16px;
   text-transform: uppercase;
 }
-
+*/
 .code-block {
   background-color: #2d2d2d;
   border-radius: var(--border-radius);
