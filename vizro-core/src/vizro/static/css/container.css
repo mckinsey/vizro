@@ -29,7 +29,7 @@
 }
 
 /* Hides title of the first container given the title is already reflected in the tab title */
-.tab-content .container-title:first-of-type {
+.tab-content .tab-pane > div > .container-fluid > .container-title {
   display: none;
 }
 
