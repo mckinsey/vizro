@@ -61,7 +61,46 @@ page = vm.Page(
                                 color="continent",
                             ),
                         ),
+                        vm.Graph(
+                            title="Graph 2",
+                            figure=px.box(
+                                gapminder_2007,
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                            ),
+                        ),
+                        vm.Container(
+                            title="Inner container III",
+                            components=[
+                                vm.Card(
+                                    text="""
+                                    #### Africa
+                                    Africa, a diverse and expansive continent, faces both challenges and progress in
+                                    its socioeconomic landscape. In 2007, Africa's GDP per cap was approximately $3,000.
+                                    """
+                                ),
+                                vm.Card(
+                                    text="""
+                                    #### Asia
+                                    Asia holds a central role in the global economy. It's growth in GDP per capita to
+                                    $12,000 in 2007 and population has been significant, outpacing many other
+                                    continents.
+                                """
+                                ),
+                                vm.Card(
+                                    text="""
+                                    #### Europe
+                                    Europe boasts a strong and thriving economy. In 2007, it exhibited the
+                                    second-highest GDP per capita of $25,000 among continents.
+                                """
+                                ),
+                            ],
+                            layout=vm.Grid(grid=[[0, 1, 2]]),
+                            variant="filled",
+                        ),
                     ],
+                    layout=vm.Grid(grid=[[0, 1], [0, 1], [2, 2]]),
                 ),
             ],
         ),
