@@ -256,7 +256,14 @@ const CascaderFragment = ({
       : collectAllLeaves(options);
     const toAdd = pool.filter((v) => !selectedSet.has(v));
     emitValue([...selectedValues, ...toAdd]);
-  }, [searchValue, searchResults, options, selectedSet, selectedValues, emitValue]);
+  }, [
+    searchValue,
+    searchResults,
+    options,
+    selectedSet,
+    selectedValues,
+    emitValue,
+  ]);
 
   const handleDeselectAll = useCallback(() => {
     const pool = new Set(

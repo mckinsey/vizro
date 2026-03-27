@@ -294,10 +294,12 @@ def test_cascader_shorthand_dict_list(dash_duo):
     """Dict-of-lists shorthand is normalised: keys become parents, list items become leaves."""
     app = Dash(__name__)
     app.layout = dmc.MantineProvider(
-        html.Div([
-            Cascader(id="c", options={"Asia": ["Japan", "China"], "Europe": ["France"]}),
-            html.Div(id="out"),
-        ])
+        html.Div(
+            [
+                Cascader(id="c", options={"Asia": ["Japan", "China"], "Europe": ["France"]}),
+                html.Div(id="out"),
+            ]
+        )
     )
     app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
     dash_duo.start_server(app)
@@ -317,10 +319,12 @@ def test_cascader_shorthand_nested_dict(dash_duo):
     """Nested dict shorthand produces multi-level tree."""
     app = Dash(__name__)
     app.layout = dmc.MantineProvider(
-        html.Div([
-            Cascader(id="c", options={"Europe": {"Western": ["France", "Germany"]}}),
-            html.Div(id="out"),
-        ])
+        html.Div(
+            [
+                Cascader(id="c", options={"Europe": {"Western": ["France", "Germany"]}}),
+                html.Div(id="out"),
+            ]
+        )
     )
     app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
     dash_duo.start_server(app)
@@ -338,7 +342,7 @@ def test_cascader_shorthand_nested_dict(dash_duo):
 
 
 def test_cascader_option_search_field_used_for_filtering(dash_duo):
-    """search field overrides label for search matching."""
+    """Search field overrides label for search matching."""
     options = [
         {
             "label": "Asia",
@@ -354,12 +358,16 @@ def test_cascader_option_search_field_used_for_filtering(dash_duo):
     # "nippon" matches via search field, not label
     dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("nippon")
     dash_duo.wait_for_element(".dash-cascader-result-row")
-    labels = [el.text for el in dash_duo.driver.find_elements("css selector", ".dash-cascader-row-label") if el.is_displayed()]
+    labels = [
+        el.text for el in dash_duo.driver.find_elements("css selector", ".dash-cascader-row-label") if el.is_displayed()
+    ]
     assert "Japan" in labels
     # "japan" does NOT match (search field replaces label matching)
     dash_duo.find_element(".dash-cascader-search-input").clear()
     dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("japan")
-    import time; time.sleep(0.3)
+    import time
+
+    time.sleep(0.3)
     results = dash_duo.driver.find_elements("css selector", ".dash-cascader-result-row")
     assert len(results) == 0
     assert dash_duo.get_logs() == []
@@ -369,7 +377,7 @@ def test_cascader_option_search_field_used_for_filtering(dash_duo):
 
 
 def test_cascader_style_applied_to_wrapper(dash_duo):
-    """style prop is applied inline to the wrapper div."""
+    """Style prop is applied inline to the wrapper div."""
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, style={"width": "400px"}))
     dash_duo.start_server(app)
     wrapper = dash_duo.wait_for_element(".dash-cascader-wrapper")
@@ -378,7 +386,7 @@ def test_cascader_style_applied_to_wrapper(dash_duo):
 
 
 def test_cascader_option_height_applied_to_rows(dash_duo):
-    """optionHeight sets a fixed pixel height on each option row."""
+    """OptionHeight sets a fixed pixel height on each option row."""
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, optionHeight=50))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
@@ -390,10 +398,6 @@ def test_cascader_option_height_applied_to_rows(dash_duo):
 
 def test_cascader_debounce_defers_callback(dash_duo):
     """With debounce=True, the callback is not fired until the panel closes."""
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support import expected_conditions as EC
-    from selenium.webdriver.support.ui import WebDriverWait
-
     app = Dash(__name__)
     app.layout = dmc.MantineProvider(
         html.Div(
@@ -520,13 +524,13 @@ def test_cascader_multi_parent_checkbox_selects_children(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(
-        lambda v: ",".join(sorted(str(x) for x in (v or [])))
-    )
+    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: ",".join(sorted(str(x) for x in (v or []))))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     # Click the Asia parent checkbox (first row, first column)
-    checkboxes = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:first-child .dash-cascader-checkbox")
+    checkboxes = dash_duo.driver.find_elements(
+        "css selector", ".dash-cascader-column:first-child .dash-cascader-checkbox"
+    )
     checkboxes[0].click()
     dash_duo.wait_for_text_to_equal("#out", "china,japan")
     assert dash_duo.get_logs() == []
@@ -588,9 +592,7 @@ def test_cascader_programmatic_value_update(dash_duo):
             ]
         )
     )
-    app.callback(Output("c", "value"), Input("btn", "n_clicks"), prevent_initial_call=True)(
-        lambda n: "japan"
-    )
+    app.callback(Output("c", "value"), Input("btn", "n_clicks"), prevent_initial_call=True)(lambda n: "japan")
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#btn").click()
     dash_duo.wait_for_text_to_equal("#c .dash-cascader-value", "Japan")
@@ -611,9 +613,7 @@ def test_cascader_multi_select_all_scoped_to_search(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(
-        lambda v: ",".join(sorted(str(x) for x in (v or [])))
-    )
+    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: ",".join(sorted(str(x) for x in (v or []))))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("jap")

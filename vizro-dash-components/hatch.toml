@@ -14,7 +14,7 @@ dependencies = [
 installer = "uv"
 
 [envs.default.scripts]
-example = "python examples/{args}.py"
+example = "python examples/app.py"
 generate-components = "npm run build"
 lint = "pre-commit run {args} --all-files"
 pip = '"{env:HATCH_UV}" pip {args}'

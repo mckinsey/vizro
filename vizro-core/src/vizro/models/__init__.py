@@ -33,6 +33,7 @@ __all__ = [
     "AgGrid",
     "Button",
     "Card",
+    "Cascader",
     "Checklist",
     "Container",
     "Dashboard",
@@ -57,7 +58,6 @@ __all__ = [
     "Tabs",
     "Text",
     "Tooltip",
-    "Cascader",
     "VizroBaseModel",
 ]
 

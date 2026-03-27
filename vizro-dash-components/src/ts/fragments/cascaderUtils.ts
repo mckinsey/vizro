@@ -18,7 +18,11 @@ export type CascaderOption = {
  */
 export type CascaderOptionsRaw = CascaderOption[] | CascaderOptionsDict;
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface CascaderOptionsDict extends Record<string, CascaderOptionsRaw | (string | number | CascaderOption)[]> {}
+export interface CascaderOptionsDict
+  extends Record<
+    string,
+    CascaderOptionsRaw | (string | number | CascaderOption)[]
+  > {}
 
 function normalizeLeaf(item: string | number | CascaderOption): CascaderOption {
   if (typeof item === "object") return item;

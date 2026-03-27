@@ -2,7 +2,7 @@
 
 Vizro Dash Components are used by the Vizro framework but can be used in a pure Dash app.
 
-See the [live demo on PyCafe](https://py.cafe/vizro-official/vizro-dash-components) for a full showcase of all components. This uses the code in [`examples`](examples).
+See the [example Dash app](examples) and its [live demo on PyCafe](https://py.cafe/vizro-official/vizro-dash-components) for a full showcase of all components.
 
 ## Installation
 
@@ -42,8 +42,7 @@ print("Hello, World!")
 
 )
 
-if __name__ == "__main__":
-    app.run()
+if __name__ == "__main__": app.run()
 
 ````
 
@@ -91,3 +90,4 @@ def show_selected(value):
 if __name__ == "__main__":
     app.run()
 ```
+````

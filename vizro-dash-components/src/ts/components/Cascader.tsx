@@ -38,7 +38,10 @@ Cascader.propTypes = {
    * `children` array are parents, nodes without are leaves.
    * Only leaf values are ever stored in `value`.
    */
-  options: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.object), PropTypes.object]).isRequired,
+  options: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.object),
+    PropTypes.object,
+  ]).isRequired,
   /**
    * Selected value(s).
    * When `multi=false`: a single leaf value (string or number) or null.

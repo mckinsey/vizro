@@ -1,4 +1,5 @@
 from vizro.models._components.button import Button
+from vizro.models._components.form.cascader import Cascader
 from vizro.models._components.form.checklist import Checklist
 from vizro.models._components.form.date_picker import DatePicker
 from vizro.models._components.form.dropdown import Dropdown
@@ -6,10 +7,10 @@ from vizro.models._components.form.radio_items import RadioItems
 from vizro.models._components.form.range_slider import RangeSlider
 from vizro.models._components.form.slider import Slider
 from vizro.models._components.form.switch import Switch
-from vizro.models._components.form.cascader import Cascader
 
 __all__ = [
     "Button",
+    "Cascader",
     "Checklist",
     "DatePicker",
     "Dropdown",
@@ -17,5 +18,4 @@ __all__ = [
     "RangeSlider",
     "Slider",
     "Switch",
-    "Cascader",
 ]
