@@ -173,9 +173,7 @@ class TestAgGridGetValueFromTrigger:
 
     def test_clicked_cell_value_valid(self, standard_ag_grid):
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
-        value = ag_grid._get_value_from_trigger(
-            value="COLUMN", trigger={"cellClicked": {"colId": "Europe"}}
-        )
+        value = ag_grid._get_value_from_trigger(value="COLUMN", trigger={"cellClicked": {"colId": "Europe"}})
 
         assert value == "Europe"
 
@@ -185,7 +183,10 @@ class TestAgGridGetValueFromTrigger:
             ({"selectedRows": [{"continent": "Europe"}]}, ["Europe"]),
             ({"selectedRows": [{"continent": "Europe"}, {"continent": "Europe"}]}, ["Europe"]),
             # vm.AgGrid._get_value_from_trigger ensures uniqueness but preserves the order
-            ({"selectedRows": [{"continent": "Europe"}, {"continent": "Europe"}, {"continent": "Asia"}]}, ["Europe", "Asia"]),
+            (
+                {"selectedRows": [{"continent": "Europe"}, {"continent": "Europe"}, {"continent": "Asia"}]},
+                ["Europe", "Asia"],
+            ),
         ],
     )
     def test_selected_rows_uniqueness_and_order_multiple_points_selected(
