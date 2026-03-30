@@ -7,7 +7,7 @@ import dash_mantine_components as dmc
 from dash import html
 from vizro_dash_components import Markdown
 
-dash.register_page(__name__, path="/markdown", name="Markdown")
+dash.register_page(__name__)
 
 HEADINGS = """
 # Heading 1

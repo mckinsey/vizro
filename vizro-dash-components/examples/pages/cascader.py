@@ -4,10 +4,10 @@
 
 import dash
 import dash_mantine_components as dmc
-from dash import Input, Output, callback, ctx, html
+from dash import Input, Output, callback, ctx, get_relative_path, html
 from vizro_dash_components import Cascader
 
-dash.register_page(__name__, path="/cascader", name="Cascader", order=0)
+dash.register_page(__name__)
 
 MAX_WIDTH = 400
 
@@ -63,8 +63,26 @@ def value_out(id):
     return dmc.Text(id=id, size="xs", c="dimmed", mt=4)
 
 
+_CROSS_LINK_STYLE = {
+    "color": "var(--mantine-color-dimmed)",
+    "fontSize": "var(--mantine-font-size-sm)",
+    "marginBottom": "var(--mantine-spacing-md)",
+}
+
 layout = html.Div(
     [
+        html.P(
+            [
+                "See also: ",
+                dmc.Anchor(
+                    "vdc.Cascader vs dcc.Dropdown",
+                    href=get_relative_path("/cascader-vs-dropdown"),
+                    fz="sm",
+                    c="dimmed",
+                ),
+            ],
+            style=_CROSS_LINK_STYLE,
+        ),
         section(
             "Single-select",
             "Click through the tree to select a leaf value. The panel closes on selection.",
