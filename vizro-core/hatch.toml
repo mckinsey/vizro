@@ -129,7 +129,6 @@ dependencies = [
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]>=1.0.2",
   "griffe-warnings-deprecated",
-  "mkdocs-llmstxt>=0.5.0",
   "linkchecker",
   "mkdocs-pycafe",
   "griffe-pydantic",
