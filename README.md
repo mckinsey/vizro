@@ -149,6 +149,10 @@ See the [installation guide](https://vizro.readthedocs.io/en/stable/pages/user-g
 
 The [get started documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/first-dashboard/) explains how to create your first dashboard.
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/mckinsey-vizro-mcp).
+
 ## Packages
 
 This repository is a monorepo containing the following packages:
