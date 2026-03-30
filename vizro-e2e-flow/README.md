@@ -133,7 +133,7 @@ Once you're happy with the design, indicate that you want to build it. For examp
 
 This invokes the **dashboard-build** skill, which:
 
-1. **Builds the Dashboard** - Agent writes the Python code using Vizro, integrates your data, and configures layouts based on the design spec from Step 1. Loads  **selecting-vizro-charts** skills as needed for chart implementation.
+1. **Builds the Dashboard** - Agent writes the Python code using Vizro, integrates your data, and configures layouts based on the design spec from Step 1. Loads **selecting-vizro-charts** skills as needed for chart implementation.
 
 1. **Tests & Verifies** - Agent launches the dashboard and uses the Playwright MCP to automatically test it in a browser: validating navigation, filters, controls, and checking for console errors.
 

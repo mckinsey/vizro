@@ -194,19 +194,19 @@ data_manager["reference"].timeout = 0
 1. **Pre-aggregate** dynamic data in the loading function
 1. **Parametrize early** dynamic data in the loading function
 1. **Enable caching** for slow dynamic data loads
-1. **Use FileSystemCache or Redis** in production for dynamic data```
+1. **Use FileSystemCache or Redis** in production for dynamic data\`\`\`
 
 ## Comparison Summary
 
-| Feature                   | Static    | Dynamic      |
-| ------------------------- | --------- | ------------ |
-| Python type               | DataFrame | Function     |
+| Feature                                            | Static    | Dynamic      |
+| -------------------------------------------------- | --------- | ------------ |
+| Python type                                        | DataFrame | Function     |
 | Supply directly in `data_frame` argument of figure | Yes       | No           |
-| Reference by name after adding to data manager         | Yes       | Yes          |
-| Refresh while running     | No        | Yes          |
-| Caching                   | N/A       | Configurable |
-| Parametrized loading      | No        | Yes          |
-| Production ready      | Yes        | Yes          |
+| Reference by name after adding to data manager     | Yes       | Yes          |
+| Refresh while running                              | No        | Yes          |
+| Caching                                            | N/A       | Configurable |
+| Parametrized loading                               | No        | Yes          |
+| Production ready                                   | Yes       | Yes          |
 
 ---
 
