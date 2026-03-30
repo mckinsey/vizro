@@ -9,11 +9,7 @@ _COMPARISON_MODULE = "cascader_vs_dropdown"
 
 
 def _showcase_pages():
-    return [
-        p
-        for p in page_registry.values()
-        if p["module"].split(".")[-1] != _COMPARISON_MODULE
-    ]
+    return [p for p in page_registry.values() if p["module"].split(".")[-1] != _COMPARISON_MODULE]
 
 
 def _comparison_page():

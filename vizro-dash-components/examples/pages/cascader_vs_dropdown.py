@@ -5,10 +5,8 @@
 from __future__ import annotations
 
 import dash
-
 import dash_mantine_components as dmc
 from dash import Input, Output, callback, dcc, get_relative_path, html
-
 from vizro_dash_components import Cascader
 
 # name= required: Dash default title-cases only the first character ("Vdc.cascader vs dropdown").
@@ -118,9 +116,7 @@ def build_stress_tree() -> dict:
         tree[region] = {}
         for c in range(N_COUNTRIES_PER_REGION):
             country = f"{region}-C{c + 1}"
-            tree[region][country] = [
-                f"{country}-city-{k + 1}" for k in range(N_CITIES_PER_COUNTRY)
-            ]
+            tree[region][country] = [f"{country}-city-{k + 1}" for k in range(N_CITIES_PER_COUNTRY)]
     return tree
 
 
