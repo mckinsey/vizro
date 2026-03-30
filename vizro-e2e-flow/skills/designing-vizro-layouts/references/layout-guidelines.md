@@ -61,13 +61,13 @@ See the quick-reference sizing table in the SKILL.md. Below are expanded pattern
 - Divide the 12 columns **evenly** so each card has the same width. All cards must also occupy the **same number of rows** (typically 1 row at 140px).
 - Use `-1` for remaining empty cells when the card count doesn't divide evenly into 12.
 
-| KPI count | Columns per card | Grid row pattern                            |
-| --------- | ---------------- | ------------------------------------------- |
-| 2         | 6                | `[0,0,0,0,0,0, 1,1,1,1,1,1]`               |
-| 3         | 4                | `[0,0,0,0, 1,1,1,1, 2,2,2,2]`              |
-| 4         | 3                | `[0,0,0, 1,1,1, 2,2,2, 3,3,3]`             |
-| 5         | 2                | `[0,0, 1,1, 2,2, 3,3, 4,4, -1,-1]`         |
-| 6         | 2                | `[0,0, 1,1, 2,2, 3,3, 4,4, 5,5]`           |
+| KPI count | Columns per card | Grid row pattern                   |
+| --------- | ---------------- | ---------------------------------- |
+| 2         | 6                | `[0,0,0,0,0,0, 1,1,1,1,1,1]`       |
+| 3         | 4                | `[0,0,0,0, 1,1,1,1, 2,2,2,2]`      |
+| 4         | 3                | `[0,0,0, 1,1,1, 2,2,2, 3,3,3]`     |
+| 5         | 2                | `[0,0, 1,1, 2,2, 3,3, 4,4, -1,-1]` |
+| 6         | 2                | `[0,0, 1,1, 2,2, 3,3, 4,4, 5,5]`   |
 
 ```yaml
 # Example: 4 KPI cards in a 12-col grid (3 cols each, 1 row)
@@ -77,7 +77,7 @@ layout:
     - [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5]   # charts below
     - [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5]
     - [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5]
-  row_min_height: "140px"
+  row_min_height: 140px
   type: grid
 ```
 
@@ -85,12 +85,12 @@ layout:
 
 ### Flexible width distributions (new layouts only)
 
-| Layout                 | Column distribution                                |
-| ---------------------- | -------------------------------------------------- |
-| 3 equal charts         | 4 + 4 + 4                                          |
-| Primary + 2 secondary  | 6 + 3 + 3                                          |
-| Two-thirds + one-third | 8 + 4                                              |
-| Two equal charts       | 6 + 6                                              |
+| Layout                 | Column distribution                                          |
+| ---------------------- | ------------------------------------------------------------ |
+| 3 equal charts         | 4 + 4 + 4                                                    |
+| Primary + 2 secondary  | 6 + 3 + 3                                                    |
+| Two-thirds + one-third | 8 + 4                                                        |
+| Two equal charts       | 6 + 6                                                        |
 | KPI cards (any count)  | Equal cols each (e.g. 4 cards = 3 cols) + `-1` for remainder |
 
 ### Layout rules (new layouts only)

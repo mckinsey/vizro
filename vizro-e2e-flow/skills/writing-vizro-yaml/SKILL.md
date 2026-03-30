@@ -16,7 +16,7 @@ Each mistake below is expanded with code examples and fixes in [yaml-reference.m
 1. **`type: ag_grid` requires `_target_: dash_ag_grid`**.
 1. **Parameter targets** — format: `"component_id.argument_name"`, not `"component_id.figure"`.
 1. **Quote YAML special chars in column names** — `column: "Version #"` (unquoted `#` starts a comment).
-1. **Filter `targets:`** — omit when you want to apply it to all components on the page whose data source includes defined filter `column`. 
+1. **Filter `targets:`** — omit when you want to apply it to all components on the page whose data source includes defined filter `column`.
 1. **Grid must be rectangular** — same component index must span same columns in every row.
 1. **Column type consistency** — filter column must have same dtype across all targeted datasets.
 
