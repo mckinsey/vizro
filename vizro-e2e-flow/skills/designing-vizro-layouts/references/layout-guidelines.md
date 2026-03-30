@@ -111,7 +111,7 @@ Filter needed across multiple visualizations?
 
 ### Filter targets
 
-Page-level filters without `targets:` apply to **all** components on the page. This works when every component shares the same dataset. When components use different datasets, omitting `targets:` causes "column not found" for any dataset missing that column. Specify `targets:` only when components use different datasets, listing the ones whose data contains the filter column.
+Page-level filters without `targets:` apply to all components whose data includes that filter column. This works when datasets are the same, but can cause "column not found" errors if some components have datasets that lack that column. Use `targets`: only if you want the filter to apply to specific components rather than all components on that page.
 
 Prefer **Filters over Parameters**. Use Parameters only when Filters can't achieve the goal (e.g. switching which column to plot).
 
@@ -146,7 +146,7 @@ Use component **size to indicate importance** — larger cells signal higher pri
 1. **Layouts**: Grid or Flex only (no absolute positioning)
 1. **Components**: Graph, AgGrid, Card, Figure
 1. **Containers**: Can use Tabs for organizing content
-1. **Actions**: Export, filter, and parameter actions only
+1. **Actions**: `export_data` and `set_control` actions only
 
 ## References
 

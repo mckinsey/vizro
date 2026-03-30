@@ -1,10 +1,19 @@
 # Vizro e2e Flow Plugin
 
-Vizro e2e Flow is a [Claude Code plugin](https://code.claude.com/docs/en/plugins) for end-to-end Vizro dashboard development. It consists of a 2-skill workflow:
+Vizro e2e Flow is a [Claude Code plugin](https://code.claude.com/docs/en/plugins) for end-to-end Vizro dashboard development. It consists of 5 skills organized into a 2-phase workflow with supporting reference skills.
 
-- **Skill 1: dashboard-design** - Dashboard design phase covering requirements, layout, and individual chart visualization selection.
+### Workflow skills
 
-- **Skill 2: dashboard-build** - Dashboard implementation and testing phase.
+- **dashboard-design** - Phase 1: structured requirements, layout design, and visualization selection.
+- **dashboard-build** - Phase 2: dashboard implementation with Python and browser-based testing.
+
+### Reference skills
+
+These are loaded on demand by the workflow skills when specialized guidance is needed:
+
+- **designing-vizro-layouts** - Grid configuration, component sizing, filter/parameter placement, selector types, and container patterns.
+- **selecting-vizro-charts** - Chart type selection, Plotly Express conventions, color configuration, and KPI card patterns.
+- **writing-vizro-yaml** - YAML configuration syntax, component patterns, data_manager registration, and common pitfalls.
 
 The plugin includes a [Playwright MCP server](https://executeautomation.github.io/mcp-playwright/) delivering browser automation for functional testing.
 
@@ -22,13 +31,13 @@ Skills are a new way of working with agentic and generative AI, and have yet to 
 
 Open a new chat and ask Cursor to import the Vizro e2e skills. Use Agent mode with a capable Claude model. We used `claude-4.6-opus-high`:
 
-> I want to import 2 skills from the vizro repo at https://github.com/mckinsey/vizro.git, which are in the vizro-e2e-flow directory.
+> I want to import skills from the vizro repo at https://github.com/mckinsey/vizro.git, which are in the vizro-e2e-flow directory.
 
 The GIF below shows how Cursor works through the task, shortened for brevity.
 
 ![](cursor-import-skills.gif)
 
-Open a second chat window to ask which skills are available and confirm the dashboard design and dashboard build skills are present.
+Open a second chat window to ask which skills are available and confirm all five skills are present: `dashboard-design`, `dashboard-build`, `designing-vizro-layouts`, `selecting-vizro-charts`, and `writing-vizro-yaml`.
 
 For more details, see [Cursor Skills documentation](https://cursor.com/docs/context/skills#installing-skills-from-github).
 
@@ -73,7 +82,7 @@ Validate the installation by running:
 /plugins
 ```
 
-You should see `vizro-e2e-flow` listed with its skills (`dashboard-design`, `dashboard-build`) and the Playwright MCP connected:
+You should see `vizro-e2e-flow` listed with its skills (`dashboard-design`, `dashboard-build`, `designing-vizro-layouts`, `selecting-vizro-charts`, `writing-vizro-yaml`) and the Playwright MCP connected:
 
 ```
 playwright MCP · ✔ connected
@@ -93,9 +102,9 @@ This invokes the **dashboard-design** skill, which guides you through three sub-
 
 1. **Understand Requirements** - The agent will ask about the audience for the dashboard, the insights the audience are most interested in, the KPIs, and your preferred page structure.
 
-1. **Design Layout & Interactions** - Agent proposes a grid layout, navigation structure, and filter strategy. You review and iterate together.
+1. **Design Layout & Interactions** - Agent proposes a grid layout, navigation structure, and filter strategy (loads **designing-vizro-layouts** skill for detailed guidance). You review and iterate together.
 
-1. **Select Visualizations** - Agent recommends chart types for each metric and establishes a visual hierarchy. You approve or adjust.
+1. **Select Visualizations** - Agent recommends chart types for each metric and establishes a visual hierarchy (loads **selecting-vizro-charts** skill for chart best practices). You approve or adjust.
 
 At the end of this phase, you'll have a complete design spec ready for implementation.
 
@@ -107,15 +116,16 @@ Once you're happy with the design, indicate you want to build it. For example:
 
 This invokes the **dashboard-build** skill, which:
 
-1. **Builds the Dashboard** - Agent writes the Python code using Vizro, integrates your data, and configures layouts based on the design spec from Step 1.
+1. **Builds the Dashboard** - Agent writes the Python code using Vizro, integrates your data, and configures layouts based on the design spec from Step 1. Loads  **selecting-vizro-charts** skills as needed for chart implementation.
 
 1. **Tests & Verifies** - Agent launches the dashboard and uses the Playwright MCP to automatically test it in a browser: validating navigation, filters, controls, and checking for console errors.
 
 ## Requirements
 
-- **dashboard-design skill**: No technical dependencies - pure design guidance
-- **dashboard-build skill (build)**: Python environment with [uv](https://docs.astral.sh/uv/) installed
-- **dashboard-build skill (test)**: [Node.js](https://nodejs.org/) is required for the Playwright MCP.
+- **dashboard-design**: No technical dependencies - pure design guidance
+- **dashboard-build (build)**: Python environment with [uv](https://docs.astral.sh/uv/) installed
+- **dashboard-build (test)**: [Node.js](https://nodejs.org/) is required for the Playwright MCP
+- **designing-vizro-layouts**, **selecting-vizro-charts**, **writing-vizro-yaml**: No technical dependencies - reference guidance loaded automatically by the workflow skills
 
 ## Compatibility
 

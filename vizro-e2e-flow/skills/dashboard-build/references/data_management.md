@@ -181,39 +181,38 @@ data_manager["reference"].timeout = 0
 
 - Data doesn't need to refresh
 - Simple, small datasets
-- Prototype/development phase
 
 ### When to Use Dynamic Data
 
 - Data needs to refresh without restart
 - Large datasets benefiting from caching
 - Need parametrized loading
-- Production environments
 
 ### Performance Tips
 
-1. **Enable caching** for slow data loads
-1. **Pre-aggregate** in the loading function
 1. **Use appropriate dtypes** (`category` for strings)
-1. **Filter early** in the loading function
-1. **Use FileSystemCache or Redis** in production
+1. **Pre-aggregate** dynamic data in the loading function
+1. **Parametrize early** dynamic data in the loading function
+1. **Enable caching** for slow dynamic data loads
+1. **Use FileSystemCache or Redis** in production for dynamic data```
 
 ## Comparison Summary
 
 | Feature                   | Static    | Dynamic      |
 | ------------------------- | --------- | ------------ |
 | Python type               | DataFrame | Function     |
-| Supply directly in figure | Yes       | No           |
-| Reference by name         | Yes       | Yes          |
+| Supply directly in `data_frame` argument of figure | Yes       | No           |
+| Reference by name after adding to data manager         | Yes       | Yes          |
 | Refresh while running     | No        | Yes          |
 | Caching                   | N/A       | Configurable |
 | Parametrized loading      | No        | Yes          |
+| Production ready      | Yes        | Yes          |
 
 ---
 
 # Advanced Patterns
 
-## Parametrized Data Loading
+## Parametrized Dynamic Data Loading
 
 Add parameters to control what data is loaded:
 
