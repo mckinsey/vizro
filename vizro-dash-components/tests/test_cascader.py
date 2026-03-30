@@ -537,9 +537,7 @@ def test_cascader_option_search_field_used_for_filtering(dash_duo):
     dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("east-region")
     dash_duo.wait_for_element(".dash-cascader-result-row-branch").click()
     dash_duo.wait_for_element(".dash-cascader-columns")
-    dash_duo.wait_for_text_to_equal(
-        ".dash-cascader-column:nth-child(2) .dash-cascader-row-label", "Japan"
-    )
+    dash_duo.wait_for_text_to_equal(".dash-cascader-column:nth-child(2) .dash-cascader-row-label", "Japan")
     assert dash_duo.get_logs() == []
 
 

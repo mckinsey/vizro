@@ -115,9 +115,7 @@ def flatten_nested_dict_tree(tree: dict, path: tuple[str, ...] = ()) -> list[dic
     for key, val in tree.items():
         here = (*path, key)
         if isinstance(val, list):
-            out.extend(
-                {"label": " / ".join((*here, str(item))), "value": item} for item in val
-            )
+            out.extend({"label": " / ".join((*here, str(item))), "value": item} for item in val)
         else:
             out.extend(flatten_nested_dict_tree(val, here))
     return out
