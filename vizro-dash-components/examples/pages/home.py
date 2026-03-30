@@ -14,11 +14,5 @@ layout = html.Div(
             "custom Dash components you can use on their own or from Vizro dashboards.",
             mb="md",
         ),
-        dmc.Text(
-            "Use the sidebar to open live demos—Markdown and Cascader—and a side-by-side page "
-            "that compares vdc.Cascader with dcc.Dropdown (layout, search, and a larger stress case).",
-            c="dimmed",
-            size="sm",
-        ),
     ]
 )
