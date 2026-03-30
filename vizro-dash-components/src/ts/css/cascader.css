@@ -1,0 +1,327 @@
+/* Trigger button — identical structure to .dash-dropdown */
+.dash-cascader {
+  background: var(--Dash-Fill-Inverse-Strong);
+  border: 1px solid var(--Dash-Stroke-Strong);
+  border-radius: var(--Dash-Spacing);
+  box-sizing: border-box;
+  color: inherit;
+  cursor: pointer;
+  display: block;
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+}
+
+.dash-cascader:focus {
+  border: 1px solid var(--Dash-Fill-Interactive-Strong);
+  outline: 1px solid var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Trigger inner grid — same pattern as .dash-dropdown-grid-container */
+.dash-cascader-trigger {
+  align-items: center;
+  display: grid;
+  gap: calc(var(--Dash-Spacing) * 2);
+  grid-template-columns: 1fr auto;
+  min-height: 32px;
+  padding: 0 12px;
+}
+
+/* value | count | caret */
+.dash-cascader-trigger.has-count {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
+/* value | clear | caret */
+.dash-cascader-trigger.has-clear {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
+/* value | count | clear | caret */
+.dash-cascader-trigger.has-count.has-clear {
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+}
+
+/* Value display */
+.dash-cascader-value {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dash-cascader-value-item {
+  display: inline;
+}
+
+.dash-cascader-value-item:not(:first-child)::before {
+  content: ", ";
+}
+
+.dash-cascader-placeholder {
+  color: var(--Dash-Text-Disabled);
+}
+
+/* Count badge — same as .dash-dropdown-value-count */
+.dash-cascader-count {
+  background: var(--Dash-Fill-Interactive-Weak);
+  border-radius: 4px;
+  color: var(--Dash-Text-Weak);
+  font-size: 0.875em;
+  line-height: 18px;
+  padding: 4px;
+  white-space: nowrap;
+}
+
+/* Caret icon */
+.dash-cascader-caret {
+  color: var(--Dash-Text-Strong);
+  fill: var(--Dash-Text-Strong);
+  justify-self: end;
+  transition: transform 0.15s;
+}
+
+.dash-cascader[aria-expanded="true"] .dash-cascader-caret {
+  transform: rotate(180deg);
+}
+
+/* Clear button — same as .dash-dropdown-clear */
+.dash-cascader-clear {
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--Dash-Text-Strong);
+  cursor: pointer;
+  display: flex;
+  height: 1em;
+  justify-content: center;
+  justify-self: end;
+  padding: 0;
+  width: 1em;
+}
+
+.dash-cascader-clear:hover {
+  color: var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-clear:focus {
+  border-radius: 2px;
+  outline: 2px solid var(--Dash-Fill-Interactive-Strong);
+  outline-offset: 1px;
+}
+
+/* Panel */
+.dash-cascader-wrapper {
+  position: relative;
+}
+
+.dash-cascader-panel {
+  background: var(--Dash-Fill-Inverse-Strong);
+  border: 1px solid var(--Dash-Stroke-Strong);
+  border-radius: var(--Dash-Spacing);
+  box-shadow:
+    0 10px 38px -10px var(--Dash-Shading-Strong),
+    0 10px 20px -15px var(--Dash-Shading-Weak);
+  left: 0;
+  min-width: 100%;
+  overflow: hidden;
+  position: absolute;
+  top: calc(100% + 5px);
+  z-index: 500;
+}
+
+/* Search bar — same structure as .dash-dropdown-search-container */
+.dash-cascader-search-container {
+  align-items: center;
+  background: var(--Dash-Fill-Inverse-Strong);
+  border: 1px solid var(--Dash-Stroke-Strong);
+  border-radius: 4px;
+  display: grid;
+  gap: calc(var(--Dash-Spacing) * 2);
+  grid-template-columns: auto 1fr auto;
+  margin: calc(var(--Dash-Spacing) * 2);
+  padding: var(--Dash-Spacing);
+}
+
+.dash-cascader-search-container:focus-within {
+  border-color: var(--Dash-Fill-Interactive-Strong);
+  outline: 1px solid var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-search-icon {
+  color: var(--Dash-Text-Weak);
+  flex-shrink: 0;
+  height: 1em;
+  width: 1em;
+}
+
+.dash-cascader-search-container:focus-within .dash-cascader-search-icon {
+  color: var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-search-input {
+  background: transparent;
+  border: none;
+  color: var(--Dash-Text-Strong);
+  font-family: inherit;
+  font-size: inherit;
+  line-height: calc(var(--Dash-Spacing) * 6);
+  outline: none;
+  padding: 0;
+  width: 100%;
+}
+
+.dash-cascader-search-input::-webkit-search-cancel-button {
+  appearance: none;
+  display: none;
+}
+
+/* Actions bar (multi-select only) — same as .dash-dropdown-actions */
+.dash-cascader-actions {
+  border-bottom: 1px solid var(--Dash-Fill-Disabled);
+  border-top: 1px solid var(--Dash-Fill-Disabled);
+  display: flex;
+  gap: calc(var(--Dash-Spacing) * 6);
+  line-height: 18px;
+  padding: var(--Dash-Spacing) calc(var(--Dash-Spacing) * 3);
+}
+
+.dash-cascader-action-button {
+  accent-color: var(--Dash-Fill-Interactive-Strong);
+  background: none;
+  border: none;
+  color: var(--Dash-Text-Weak);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.875em;
+  font-weight: 600;
+  outline-color: var(--Dash-Fill-Interactive-Strong);
+  padding: 0;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.dash-cascader-action-button:hover {
+  color: var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-action-button:focus {
+  text-decoration: underline;
+}
+
+/* Column area */
+.dash-cascader-columns {
+  display: flex;
+  overflow: hidden;
+}
+
+.dash-cascader-column {
+  border-right: 1px solid var(--Dash-Fill-Disabled);
+  flex-shrink: 0;
+  max-height: 100%;
+  min-width: 140px;
+  overflow-y: auto;
+}
+
+.dash-cascader-column:last-child {
+  border-right: none;
+}
+
+/* Rows */
+.dash-cascader-row {
+  align-items: center;
+  box-shadow: 0 -1px 0 0 var(--Dash-Fill-Disabled) inset;
+  cursor: pointer;
+  display: flex;
+  gap: calc(var(--Dash-Spacing) * 2);
+  min-height: 32px;
+  padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
+  white-space: nowrap;
+}
+
+.dash-cascader-row:hover {
+  color: var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-row.active {
+  color: var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-row.selected {
+  color: var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-row.disabled {
+  color: var(--Dash-Text-Disabled);
+  cursor: not-allowed;
+}
+
+.dash-cascader-row-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-cascader-chevron {
+  color: var(--Dash-Text-Weak);
+  fill: var(--Dash-Text-Weak);
+  flex-shrink: 0;
+}
+
+/* Checkbox — matches .dash-options-list-option-checkbox */
+.dash-cascader-checkbox {
+  accent-color: var(--Dash-Fill-Interactive-Strong);
+  border: 1px solid var(--Dash-Stroke-Strong);
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+  flex-shrink: 0;
+  margin: 0;
+  outline-color: var(--Dash-Fill-Interactive-Strong);
+}
+
+/* Search results — flat list */
+.dash-cascader-results {
+  overflow-y: auto;
+}
+
+.dash-cascader-result-row {
+  align-items: center;
+  box-shadow: 0 -1px 0 0 var(--Dash-Fill-Disabled) inset;
+  cursor: pointer;
+  display: flex;
+  gap: calc(var(--Dash-Spacing) * 2);
+  justify-content: space-between;
+  min-height: 32px;
+  padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
+}
+
+.dash-cascader-result-row:hover {
+  color: var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-result-row.selected {
+  color: var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-breadcrumb {
+  color: var(--Dash-Text-Weak);
+  flex-shrink: 0;
+  font-size: 0.875em;
+  white-space: nowrap;
+}
+
+/* No-results message */
+.dash-cascader-no-results {
+  color: var(--Dash-Text-Disabled);
+  padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
+}
