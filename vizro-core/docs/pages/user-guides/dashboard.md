@@ -198,7 +198,7 @@ If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] model disp
 
 ## Add a dashboard logo
 
-Vizro [automatically displays a logo](assets/#add-a-logo-image) in the top-left corner of each page if you place an image named `logo.<extension>` in the [assets](assets.md) folder. You can also add [theme-specific logos](assets.md/#theme-specific-logos) named `logo-dark.<extension>` and `logo-light.<extension>`, which switch automatically with the active theme. By default, clicking the logo takes you to the homepage.
+Vizro [automatically displays a logo](assets/#add-a-logo-image) in the top-left corner of each page if you place an image named `logo.<extension>` in the [assets](assets.md) folder. You can also add [theme-specific logos](./assets/#theme-specific-logos) named `logo-dark.<extension>` and `logo-light.<extension>`, which switch automatically with the active theme. By default, clicking the logo takes you to the homepage.
 
 ![Dashboard with logo](../../assets/user_guides/dashboard/dashboard_with_logo.png)
 
@@ -261,12 +261,12 @@ Vizro automatically adds meta tags to display a preview card when your app is sh
 The preview includes:
 
 - the dashboard `title` and the [Page `title`][vizro.models.Page]
-- an image if a [suitable assets file exists](assets.md/#include-a-meta-tags-image)
+- an image if a [suitable assets file exists](./assets/#include-a-meta-tags-image)
 - the dashboard `description` or the [Page `description`][vizro.models.Page]
 
 ## Browser title
 
-The [website icon](assets.md/#change-the-favicon), Dashboard `title` (if supplied) and [Page `title`][vizro.models.Page] are displayed in the browser's title bar. For example, if your Dashboard `title` is "Vizro Demo" and the Page `title` is "Homepage", then the title in the browser tab will be "Vizro Demo: Homepage".
+The [website icon](./assets/#change-the-favicon), Dashboard `title` (if supplied) and [Page `title`][vizro.models.Page] are displayed in the browser's title bar. For example, if your Dashboard `title` is "Vizro Demo" and the Page `title` is "Homepage", then the title in the browser tab will be "Vizro Demo: Homepage".
 
 [customheader]: ../../assets/user_guides/dashboard/dashboard_custom_header.png
 [dashboard]: ../../assets/user_guides/dashboard/dashboard.png
