@@ -15,10 +15,12 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
-from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch
+from vizro.models._components.form import Cascader, Checklist, DatePicker, Dropdown, RangeSlider, Switch
+from vizro.models._components.form.cascader import _check_no_duplicate_leaves, _extract_leaf_keys
 from vizro.models._controls._controls_utils import (
     SELECTORS,
     _is_boolean_selector,
+    _is_cascader_selector,
     _is_categorical_selector,
     _is_numerical_temporal_selector,
     check_control_targets,
@@ -90,7 +92,15 @@ class Filter(VizroBaseModel):
     """
 
     type: Literal["filter"] = "filter"
-    column: str = Field(description="Column of DataFrame to filter.")
+    column: str | None = Field(
+        default=None,
+        description="Column of DataFrame to filter. Exactly one of `column` or `column_hierarchy` must be set.",
+    )
+    column_hierarchy: list[str] = Field(
+        default=[],
+        description="Ordered list of DataFrame columns forming a hierarchy for Cascader. "
+        "Exactly one of `column` or `column_hierarchy` must be set.",
+    )
     targets: list[ModelID] = Field(
         default=[],
         description="Target component to be affected by filter. "
@@ -112,6 +122,24 @@ class Filter(VizroBaseModel):
     _dynamic: bool = PrivateAttr(False)
     _selector_properties: set[str] = PrivateAttr(set())
     _column_type: Literal["numerical", "categorical", "temporal", "boolean"] = PrivateAttr()
+
+    @model_validator(mode="before")
+    @classmethod
+    def check_column_or_hierarchy(cls, data: Any) -> Any:
+        # mode="before" can receive non-dict input (e.g. a model instance); guard against that.
+        if not isinstance(data, dict):
+            return data
+        column = data.get("column")
+        column_hierarchy = data.get("column_hierarchy")
+        has_column = bool(column)
+        has_hierarchy = bool(column_hierarchy)
+        if has_column and has_hierarchy:
+            # Allow the internal state where pre_build has set column = column_hierarchy[-1].
+            if column != column_hierarchy[-1]:
+                raise ValueError("Only one of `column` or `column_hierarchy` can be set.")
+        elif not has_column and not has_hierarchy:
+            raise ValueError("One of `column` or `column_hierarchy` must be set.")
+        return data
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
@@ -157,29 +185,40 @@ class Filter(VizroBaseModel):
         }
 
     def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any):
-        # Only relevant for a dynamic filter and non-boolean selectors. Boolean selectors don't need to be dynamic,
-        # as their options are always set to True/False.
-        # Although targets are fixed at build time, the validation logic is repeated during runtime, so if a column
-        # is missing then it will raise an error. We could change this if we wanted.
-        targeted_data = self._validate_targeted_data(
-            {target: data_frame for target, data_frame in target_to_data_frame.items() if target in self.targets},
-            eagerly_raise_column_not_found_error=True,
-        )
-
-        if (column_type := self._validate_column_type(targeted_data)) != self._column_type:
-            raise ValueError(
-                f"{self.column} has changed type from {self._column_type} to {column_type}. A filtered column cannot "
-                "change type while the dashboard is running."
-            )
-
         # Cast is justified as the selector is set in pre_build and is not None.
         selector = cast(SelectorType, self.selector)
 
-        if _is_categorical_selector(selector):
-            selector_call_obj = selector(options=self._get_options(targeted_data, current_value))
-        elif _is_numerical_temporal_selector(selector):
-            _min, _max = self._get_min_max(targeted_data, current_value)
-            selector_call_obj = selector(min=_min, max=_max)
+        # Tree selectors handle their own data gathering (across the full hierarchy) and silently skip
+        # targets that are missing hierarchy columns, so they bypass the standard targeted_data validation.
+        if _is_cascader_selector(selector):
+            selector_call_obj = selector(
+                options=self._get_tree_options_dynamic(
+                    {target: df for target, df in target_to_data_frame.items() if target in self.targets},
+                    self.column_hierarchy,
+                    current_value,
+                )
+            )
+        else:
+            # Only relevant for a dynamic filter and non-boolean selectors. Boolean selectors don't need to be dynamic,
+            # as their options are always set to True/False.
+            # Although targets are fixed at build time, the validation logic is repeated during runtime, so if a column
+            # is missing then it will raise an error. We could change this if we wanted.
+            targeted_data = self._validate_targeted_data(
+                {target: data_frame for target, data_frame in target_to_data_frame.items() if target in self.targets},
+                eagerly_raise_column_not_found_error=True,
+            )
+
+            if (column_type := self._validate_column_type(targeted_data)) != self._column_type:
+                raise ValueError(
+                    f"{self.column} has changed type from {self._column_type} to {column_type}. A filtered column "
+                    "cannot change type while the dashboard is running."
+                )
+
+            if _is_categorical_selector(selector):
+                selector_call_obj = selector(options=self._get_options(targeted_data, current_value))
+            elif _is_numerical_temporal_selector(selector):
+                _min, _max = self._get_min_max(targeted_data, current_value)
+                selector_call_obj = selector(min=_min, max=_max)
 
         # The filter is dynamic, so a guard component (data=True) needs to be added to prevent unexpected action firing.
         selector_call_obj = html.Div(
@@ -192,106 +231,195 @@ class Filter(VizroBaseModel):
         return selector_call_obj
 
     @_log_call
-    def pre_build(self):
+    def pre_build(self):  # noqa: PLR0912, PLR0915
         # If page filter validate that targets present on the page where the filter is defined.
         # If container filter validate that targets present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
         check_control_targets(control=self)
 
-        # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
-        # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
-        # This is the case when bool(self.targets) is False.
-        # If filter used within container and if targets aren't explicitly provided it will target all figures within
-        # that container. Possibly in future this will change (which would be breaking change).
-        proposed_targets = self.targets or [
-            model.id
-            for model in cast(
-                Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, get_control_parent(control=self))
-            )
-        ]
+        if self.column_hierarchy:
+            # Step 1: set leaf column immediately — required before _validate_targeted_data.
+            self.column = self.column_hierarchy[-1]
+            user_provided_targets = list(self.targets)  # capture before overwriting
 
-        # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a
-        #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
-        #  column type (and hence selector) and initial values. There are three ways to handle this:
-        #  1. (Current approach) - Propagate {} and use only default arguments value in the dynamic data function.
-        #  2. Propagate values from the model_manager and relax the limitation of requiring argument default values.
-        #  3. Skip the pre-build and do everything in the build method (if possible).
-        #  Find more about the mentioned limitation at: https://github.com/mckinsey/vizro/pull/879/files#r1846609956
-        # Even if the solution changes for dynamic data, static data should still use {} as the arguments here.
-        multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [
-            (cast(FigureType, model_manager[target])["data_frame"], {}) for target in proposed_targets
-        ]
-
-        target_to_data_frame = dict(zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
-        targeted_data = self._validate_targeted_data(
-            target_to_data_frame, eagerly_raise_column_not_found_error=bool(self.targets)
-        )
-        self.targets = list(targeted_data.columns)
-
-        # Set default selector according to column type.
-        self._column_type = self._validate_column_type(targeted_data)
-        self.selector = self.selector or DEFAULT_SELECTORS[self._column_type]()
-        self.selector.title = self.selector.title or self.column.title()
-
-        if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
-            raise ValueError(
-                f"Chosen selector {type(self.selector).__name__} is not compatible with {self._column_type} column "
-                f"'{self.column}'."
-            )
-
-        # Check if the filter is dynamic. Dynamic filter means that the filter is updated when the page is refreshed
-        # which causes "options" for categorical or "min" and "max" for numerical/temporal selectors to be updated.
-        # The filter is dynamic if mentioned attributes ("options"/"min"/"max") are not explicitly provided and
-        # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
-        # but should still count as manually set.
-        if (
-            not _is_boolean_selector(self.selector)
-            and not getattr(self.selector, "options", [])
-            and getattr(self.selector, "min", None) is None
-            and getattr(self.selector, "max", None) is None
-        ):
-            for target_id in self.targets:
-                data_source_name = cast(FigureType, model_manager[target_id])["data_frame"]
-                if isinstance(data_manager[data_source_name], _DynamicData):
-                    self._dynamic = True
-                    self.selector._dynamic = True
-                    break
-
-        if _is_numerical_temporal_selector(self.selector):
-            _min, _max = self._get_min_max(targeted_data)
-            # Note that manually set self.selector.min/max = 0 are Falsey and should not be overwritten.
-            if self.selector.min is None:
-                self.selector.min = _min
-            if self.selector.max is None:
-                self.selector.max = _max
-        elif _is_categorical_selector(self.selector):
-            self.selector.options = self.selector.options or self._get_options(targeted_data)
-
-        # Set default value for the selector if not explicitly provided.
-        self.selector.value = get_selector_default_value(self.selector)
-
-        if not self.selector.actions:
-            if isinstance(self.selector, RangeSlider) or (
-                isinstance(self.selector, DatePicker) and self.selector.range
-            ):
-                filter_function = _filter_between
-            else:
-                filter_function = _filter_isin
-
-            self.selector.actions = [
-                _filter(
-                    id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                    column=self.column,
-                    filter_function=filter_function,
-                    targets=self.targets,
-                ),
+            proposed_targets = self.targets or [
+                model.id
+                for model in cast(
+                    Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, get_control_parent(control=self))
+                )
             ]
 
-        # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
-        # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
-        # Example: "filter-id.options" is forwarded to "checklist.options".
-        if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
-            self._selector_properties = set(selector_inner_component_properties) - set(html.Div().available_properties)
+            multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [
+                (cast(FigureType, model_manager[target])["data_frame"], {}) for target in proposed_targets
+            ]
+            target_to_data_frame = dict(
+                zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs))
+            )
+
+            # Validate leaf column exists in each figure — establishes initial target set
+            targeted_data = self._validate_targeted_data(
+                target_to_data_frame, eagerly_raise_column_not_found_error=bool(user_provided_targets)
+            )
+            self.targets = list(targeted_data.columns)
+
+            # Validate all hierarchy columns exist; exclude or raise for figures missing any
+            validated_targets = []
+            for target in self.targets:
+                df = target_to_data_frame[target]
+                missing = [col for col in self.column_hierarchy if col not in df.columns]
+                if missing:
+                    if bool(user_provided_targets):
+                        raise ValueError(f"Target {target} is missing hierarchy columns {missing} in its DataFrame.")
+                    # silently exclude figures that don't have all hierarchy columns
+                else:
+                    validated_targets.append(target)
+            self.targets = validated_targets
+
+            # Build wide_df from validated targets
+            dfs = [target_to_data_frame[target][self.column_hierarchy] for target in self.targets]
+            wide_df = pd.concat(dfs, ignore_index=True).drop_duplicates()
+
+            # Validate selector type — Cascader is the only allowed selector
+            if self.selector is not None and not isinstance(self.selector, Cascader):
+                raise ValueError(
+                    f"column_hierarchy can only be used with a Cascader selector, got {type(self.selector).__name__}."
+                )
+            self.selector = self.selector or Cascader()
+
+            self._column_type = "categorical"
+            self.selector.title = self.selector.title or self.column.title()
+
+            # Dynamic detection — same pattern as the standard path; skipped if options are user-supplied
+            if not self.selector.options:
+                for target_id in self.targets:
+                    data_source_name = cast(FigureType, model_manager[target_id])["data_frame"]
+                    if isinstance(data_manager[data_source_name], _DynamicData):
+                        self._dynamic = True
+                        self.selector._dynamic = True
+                        break
+
+            # Only set options for static filters; dynamic filters compute them at runtime in __call__
+            if not self._dynamic and not self.selector.options:
+                built_options = self._get_tree_options(wide_df, self.column_hierarchy)
+                _check_no_duplicate_leaves(built_options)
+                self.selector.options = built_options
+
+            self.selector.value = get_selector_default_value(self.selector)
+
+            if not self.selector.actions:
+                self.selector.actions = [
+                    _filter(
+                        id=f"{FILTER_ACTION_PREFIX}_{self.id}",
+                        column=self.column,
+                        filter_function=_filter_isin,
+                        targets=self.targets,
+                    ),
+                ]
+
+            if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
+                self._selector_properties = set(selector_inner_component_properties) - set(
+                    html.Div().available_properties
+                )
+
+        else:
+            # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
+            # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
+            # This is the case when bool(self.targets) is False.
+            # If filter used within container and if targets aren't explicitly provided it will target all figures
+            # within that container. Possibly in future this will change (which would be breaking change).
+            proposed_targets = self.targets or [
+                model.id
+                for model in cast(
+                    Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, get_control_parent(control=self))
+                )
+            ]
+
+            # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a
+            #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
+            #  column type (and hence selector) and initial values. There are three ways to handle this:
+            #  1. (Current approach) - Propagate {} and use only default arguments value in the dynamic data function.
+            #  2. Propagate values from the model_manager and relax the limitation of requiring argument default values.
+            #  3. Skip the pre-build and do everything in the build method (if possible).
+            #  Find more about the mentioned limitation at: https://github.com/mckinsey/vizro/pull/879/files#r1846609956
+            # Even if the solution changes for dynamic data, static data should still use {} as the arguments here.
+            multi_data_source_name_load_kwargs = [
+                (cast(FigureType, model_manager[target])["data_frame"], {}) for target in proposed_targets
+            ]
+
+            target_to_data_frame = dict(
+                zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs))
+            )
+            targeted_data = self._validate_targeted_data(
+                target_to_data_frame, eagerly_raise_column_not_found_error=bool(self.targets)
+            )
+            self.targets = list(targeted_data.columns)
+
+            # Set default selector according to column type.
+            self._column_type = self._validate_column_type(targeted_data)
+            self.selector = self.selector or DEFAULT_SELECTORS[self._column_type]()
+            self.selector.title = self.selector.title or cast(str, self.column).title()
+
+            if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
+                raise ValueError(
+                    f"Chosen selector {type(self.selector).__name__} is not compatible with {self._column_type} column "
+                    f"'{self.column}'."
+                )
+
+            # Check if the filter is dynamic. Dynamic filter means that the filter is updated when the page is
+            # refreshed which causes "options" for categorical or "min" and "max" for numerical/temporal selectors to
+            # be updated. The filter is dynamic if mentioned attributes ("options"/"min"/"max") are not explicitly
+            # provided and filter targets at least one figure that uses dynamic data source. Note that min or max = 0
+            # are Falsey values but should still count as manually set.
+            if (
+                not _is_boolean_selector(self.selector)
+                and not getattr(self.selector, "options", [])
+                and getattr(self.selector, "min", None) is None
+                and getattr(self.selector, "max", None) is None
+            ):
+                for target_id in self.targets:
+                    data_source_name = cast(FigureType, model_manager[target_id])["data_frame"]
+                    if isinstance(data_manager[data_source_name], _DynamicData):
+                        self._dynamic = True
+                        self.selector._dynamic = True
+                        break
+
+            if _is_numerical_temporal_selector(self.selector):
+                _min, _max = self._get_min_max(targeted_data)
+                # Note that manually set self.selector.min/max = 0 are Falsey and should not be overwritten.
+                if self.selector.min is None:
+                    self.selector.min = _min
+                if self.selector.max is None:
+                    self.selector.max = _max
+            elif _is_categorical_selector(self.selector):
+                self.selector.options = self.selector.options or self._get_options(targeted_data)
+
+            # Set default value for the selector if not explicitly provided.
+            self.selector.value = get_selector_default_value(self.selector)
+
+            if not self.selector.actions:
+                if isinstance(self.selector, RangeSlider) or (
+                    isinstance(self.selector, DatePicker) and self.selector.range
+                ):
+                    filter_function = _filter_between
+                else:
+                    filter_function = _filter_isin
+
+                self.selector.actions = [
+                    _filter(
+                        id=f"{FILTER_ACTION_PREFIX}_{self.id}",
+                        column=cast(str, self.column),
+                        filter_function=filter_function,
+                        targets=self.targets,
+                    ),
+                ]
+
+            # A set of properties unique to selector (inner object) that are not present in html.Div (outer wrapper).
+            # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
+            # Example: "filter-id.options" is forwarded to "checklist.options".
+            if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
+                self._selector_properties = set(selector_inner_component_properties) - set(
+                    html.Div().available_properties
+                )
 
     @_log_call
     def build(self):
@@ -419,3 +547,39 @@ class Filter(VizroBaseModel):
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
         return sorted(set(targeted_data))
+
+    @staticmethod
+    def _get_tree_options(wide_df: pd.DataFrame, columns: list[str]) -> dict[str, Any]:
+        """Build a nested dict of options from a wide DataFrame with one column per hierarchy level."""
+        wide_df = wide_df[columns].drop_duplicates()
+
+        def _build_nested(df: pd.DataFrame, remaining_columns: list[str]) -> dict[str, Any] | list[Any]:
+            col = remaining_columns[0]
+            rest = remaining_columns[1:]
+            if not rest:
+                return sorted(df[col].unique().tolist())
+            return {key: _build_nested(group, rest) for key, group in df.groupby(col, sort=True)}
+
+        return _build_nested(wide_df, columns)  # type: ignore[return-value]
+
+    @staticmethod
+    def _get_tree_options_dynamic(
+        target_to_data_frame: dict[ModelID, pd.DataFrame],
+        columns: list[str],
+        current_value: MultiValueType | SingleValueType | None,
+    ) -> dict[str, Any]:
+        """Build tree options from fresh data, preserving stale current_value leaves."""
+        # Build wide_df from targets that have all hierarchy columns (silently skip others)
+        dfs = [df[columns] for df in target_to_data_frame.values() if all(col in df.columns for col in columns)]
+        wide_df = pd.concat(dfs, ignore_index=True).drop_duplicates() if dfs else pd.DataFrame(columns=columns)
+        options = Filter._get_tree_options(wide_df, columns)
+
+        # Re-inject stale selected leaves under "(Stale selection)" — parallel to _get_options behavior
+        if current_value:
+            current_leaves = current_value if isinstance(current_value, list) else [current_value]
+            existing_leaves = _extract_leaf_keys(options)
+            stale = sorted(v for v in current_leaves if v not in existing_leaves)
+            if stale:
+                options["(Stale selection)"] = stale
+
+        return options

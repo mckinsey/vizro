@@ -1,160 +1,130 @@
-"""Development playground exploring markdown variations using built-in Vizro models.
+"""Dev app to try things out."""
 
-This script demonstrates a variety of ways to render markdown content with
-components that internally rely on `vdc.Markdown` (the new built‑in
-markdown component).  The goal is to exercise code blocks, math formulas,
-links, headers and dynamic content without importing `vizro_dash_components`
-explicitly.  We show both static pages (with `vm.Text` and `vm.Card`) and
-custom figures which react to filters/parameters.
-"""
+import json
 
 import pandas as pd
-
 import vizro.models as vm
+import vizro.plotly.express as px
+import vizro_dash_components as vdc
 from vizro import Vizro
+from vizro.models.types import capture
 
-# sample data with several kinds of markdown content
+# --- Data ---
 
-df = pd.DataFrame(
-    {
-        "topic": ["Python", "JavaScript", "SQL", "React"],
-        "description": [
-            "A versatile programming language",
-            "The language of the web",
-            "Database query language",
-            "A JavaScript library for building UIs",
-        ],
-        "code_example": [
-            '```python\ndef hello():\n    return "Hello, World!"\n```',
-            '```javascript\nconst hello = () => "Hello, World!";\n```',
-            "```sql\nSELECT * FROM users WHERE active = true;\n```",
-            "```jsx\nconst App = () => <h1>Hello, World!</h1>;\n```",
-        ],
-        "formula": [
-            r"$f(x) = x^2 + 2x + 1$",
-            r"$y = mx + b$",
-            r"$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$",
-            r"$E = mc^2$",
-        ],
-    }
-)
+_STRUCTURE = {
+    "Electronics": {
+        "Phones": ["iPhone 15", "Android", "Pixel 8"],
+        "Laptops": ["MacBook", "ThinkPad", "Dell XPS"],
+    },
+    "Clothing": {
+        "Tops": ["Oxford Shirt", "Polo Shirt", "T-Shirt"],
+        "Bottoms": ["Jeans", "Chinos", "Shorts"],
+    },
+    "Food": {
+        "Fruit": ["Apple", "Banana", "Orange"],
+        "Vegetables": ["Carrot", "Broccoli", "Spinach"],
+    },
+}
 
-# tests previously used custom figure functions with capture decorators.
-# since we only want to demonstrate vm.Text/vm.Card models we remove
-# all @capture definitions and instead create simple pages directly.
+gapminder = px.data.gapminder()
+continents = gapminder["continent"].unique().tolist()
+GAPMINDER_OPTIONS = {
+    continent: gapminder[gapminder["continent"] == continent]["country"].unique().tolist() for continent in continents
+}
 
-# (helper data still available for manual consumption if desired)
+dummy_df = pd.DataFrame({"category": ["Electronics", "Clothing", "Food"]})
+gapminder_2007 = gapminder[gapminder["year"] == 2007].copy()
 
 
-# -----------------------------------------------------------------------------
-# Pages built from the helper figures and static text/card examples
-# -----------------------------------------------------------------------------
+# --- Custom figures ---
 
-# create a page that showcases various markdown features using vm.Text
-page_static = vm.Page(
-    title="Markdown variations",
+
+@capture("figure")
+def show_selected(data_frame: pd.DataFrame, selected=None):
+    """Display selected values as JSON."""
+    code = json.dumps(selected, indent=2) if selected is not None else "null"
+    return vdc.Markdown(children=f"```json\n{code}\n```")
+
+
+@capture("graph")
+def gapminder_bar(data_frame: pd.DataFrame, countries=None):
+    """Bar chart of 2007 gapminder life expectancy, filtered to selected countries."""
+    if countries:
+        data_frame = data_frame[data_frame["country"].isin(countries)]
+    return px.bar(data_frame, x="country", y="lifeExp", color="continent")
+
+
+# --- Page: Cascader as Parameter ---
+
+page_parameter = vm.Page(
+    title="Cascader as Parameter",
     components=[
-        vm.Text(
-            text="""# Header level 1
-
-This is a paragraph with **bold**, *italic*, and a [link](https://example.com).
-
-Here is some inline code: `print('hi')`.
-
-And a fenced code block:
-```python
-for i in range(3):
-    print(i)
-```
-""",
+        vm.Figure(id="figure-products-single", figure=show_selected(data_frame=dummy_df, selected=None)),
+        vm.Figure(id="figure-products-multi", figure=show_selected(data_frame=dummy_df, selected=[])),
+        vm.Graph(id="graph-gapminder", figure=gapminder_bar(data_frame=gapminder_2007, countries=[])),
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["figure-products-single.selected"],
+            selector=vm.Cascader(
+                options=_STRUCTURE,
+                title="Products (Cascader multi=False)",
+                multi=False,
+            ),
         ),
-        vm.Text(
-            text="""## Math and lists
-
-To render math use `$E = mc^2$` inline or
-
-This example uses the block delimiter:
-$$
-\\frac{1}{(\\sqrt{\\phi \\sqrt{5}}-\\phi) e^{\\frac25 \\pi}} =
-1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}}
-{1+\\frac{e^{-8\\pi}} {1+\\ldots} } } }
-$$
-
-This example uses the inline delimiter:
-$E^2=m^2c^4+p^2c^2$
-
-
-- bullet
-- points
-""",
-            extra={"mathjax": True},
+        vm.Parameter(
+            targets=["figure-products-multi.selected"],
+            selector=vm.Cascader(
+                options=_STRUCTURE,
+                title="Products (Cascader multi=True)",
+                multi=True,
+            ),
         ),
-        vm.Card(
-            header="Card header",
-            text="""Cards can also contain markdown text with **formatting**.
-
-```bash
-$ echo hello
-```""",
-            footer="Footer text",
+        vm.Parameter(
+            targets=["graph-gapminder.countries"],
+            selector=vm.Cascader(
+                options=GAPMINDER_OPTIONS,
+                title="Gapminder countries (Cascader multi=True)",
+            ),
         ),
     ],
 )
 
-# a later page demonstrating layout flexibility and code snippets
-page_snippet = vm.Page(
-    title="Code snippet examples",
+# --- Page: Cascader as Filter vs Dropdown ---
+
+page_filter = vm.Page(
+    title="Cascader vs Dropdown as Filter",
     components=[
-        vm.Card(
-            text="""
-
-Block code snippet:
-```python
-print('hello world')
-```
-
-""",
+        vm.Graph(
+            id="graph-scatter",
+            figure=px.scatter(gapminder_2007, x="lifeExp", y="gdpPercap", color="continent", hover_name="country"),
         ),
-        vm.Card(
-            text="""
-and inline code snippet: `print('hello world')`
-
-and
-```javascript
-console.log('hello world');
-const add = (a, b) => a + b;
-```
-""",
+    ],
+    controls=[
+        vm.Filter(
+            column_hierarchy=["continent", "country"],
+            targets=["graph-scatter"],
+            selector=vm.Cascader(title="Country (Cascader multi=True)", multi=True),
         ),
-        vm.Text(
-            text="""
-
-Another snippet inside ``vm.Text``:
-```python
-# Kadane's Algorithm
-
-class Solution:
-    def maxSubArray(self, nums: List[int]) -> int:
-        curr, summ = nums[0], nums[0]
-        for n in nums[1:]:
-            curr = max(n, curr + n)
-            summ = max(summ, curr)
-        return summ
-```
-
-test test tests
-""",
+        vm.Filter(
+            column_hierarchy=["continent", "country"],
+            targets=["graph-scatter"],
+            selector=vm.Cascader(title="Country (Cascader multi=False)", multi=False),
+        ),
+        vm.Filter(
+            column="continent",
+            targets=["graph-scatter"],
+            selector=vm.Dropdown(title="Continent (Dropdown multi=True)", multi=True),
+        ),
+        vm.Filter(
+            column="continent",
+            targets=["graph-scatter"],
+            selector=vm.Dropdown(title="Continent (Dropdown multi=False)", multi=False),
         ),
     ],
 )
 
-# note: page_snippet already defined above, nothing else needed
-# assemble dashboard
-
-dashboard = vm.Dashboard(
-    title="QB",
-    pages=[page_static, page_snippet],
-)
+dashboard = vm.Dashboard(pages=[page_parameter, page_filter])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+    Vizro().build(dashboard).run(debug=True, port=8052)

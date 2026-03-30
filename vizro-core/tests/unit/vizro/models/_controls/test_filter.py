@@ -6,12 +6,15 @@ import pandas as pd
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
+from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
+from vizro.models._components.form import Cascader
+from vizro.models._controls._controls_utils import get_selector_default_value
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
 
 
@@ -1148,3 +1151,347 @@ class TestFilterBuild:
         )
 
         assert_component_equal(result, expected, keys_to_strip={"children"})
+
+
+class TestGetSelectorDefaultValueCascader:
+    def test_tree_select_multi_true_default_is_empty_list(self):
+        ts = Cascader(multi=True)
+        assert get_selector_default_value(ts) == []
+
+    def test_tree_select_multi_false_default_is_none(self):
+        ts = Cascader(multi=False)
+        assert get_selector_default_value(ts) is None
+
+    def test_tree_select_with_value_returns_value(self):
+        # This test passes BEFORE the new branch is added (early-return handles it),
+        # but it documents the expected contract so is worth keeping.
+        ts = Cascader(options={"A": ["x"]}, value=["x"])
+        assert get_selector_default_value(ts) == ["x"]
+
+
+class TestFilterColumnHierarchyValidation:
+    def test_both_column_and_column_hierarchy_raises(self):
+        with pytest.raises(ValidationError, match="Only one of"):
+            vm.Filter(column="species", column_hierarchy=["a", "b"])
+
+    def test_neither_column_nor_column_hierarchy_raises(self):
+        with pytest.raises(ValidationError, match="One of"):
+            vm.Filter()
+
+    def test_column_hierarchy_sets_field(self):
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        assert f.column_hierarchy == ["continent", "country", "city"]
+        # column is None at construction; set to column_hierarchy[-1] in pre_build
+        assert f.column is None
+
+    def test_column_alone_still_works(self):
+        f = vm.Filter(column="species")
+        assert f.column == "species"
+        assert f.column_hierarchy == []
+
+
+class TestGetTreeOptions:
+    def test_three_level_hierarchy(self):
+        wide_df = pd.DataFrame(
+            {
+                "continent": ["Americas", "Europe", "Europe", "Europe"],
+                "country": ["USA", "France", "France", "Germany"],
+                "city": ["New York", "Lyon", "Paris", "Berlin"],
+            }
+        )
+        result = Filter._get_tree_options(wide_df, ["continent", "country", "city"])
+        assert result == {
+            "Americas": {"USA": ["New York"]},
+            "Europe": {
+                "France": ["Lyon", "Paris"],  # sorted alphabetically
+                "Germany": ["Berlin"],
+            },
+        }
+
+    def test_two_level_hierarchy(self):
+        wide_df = pd.DataFrame(
+            {
+                "continent": ["Americas", "Europe", "Europe"],
+                "city": ["New York", "Lyon", "Paris"],
+            }
+        )
+        result = Filter._get_tree_options(wide_df, ["continent", "city"])
+        assert result == {
+            "Americas": ["New York"],
+            "Europe": ["Lyon", "Paris"],
+        }
+
+    def test_duplicate_rows_deduplicated(self):
+        wide_df = pd.DataFrame(
+            {
+                "continent": ["Europe", "Europe", "Europe"],
+                "country": ["France", "France", "Germany"],
+                "city": ["Paris", "Paris", "Berlin"],  # Paris appears twice
+            }
+        )
+        result = Filter._get_tree_options(wide_df, ["continent", "country", "city"])
+        assert result == {
+            "Europe": {
+                "France": ["Paris"],  # deduped
+                "Germany": ["Berlin"],
+            },
+        }
+
+
+@pytest.fixture
+def managers_column_hierarchy():
+    """Page with two graphs sharing continent/country/city columns."""
+    df1 = pd.DataFrame(
+        {
+            "continent": ["Europe", "Europe", "Americas"],
+            "country": ["France", "France", "USA"],
+            "city": ["Paris", "Lyon", "New York"],
+        }
+    )
+    df2 = pd.DataFrame(
+        {
+            "continent": ["Europe", "Asia"],
+            "country": ["Germany", "Japan"],
+            "city": ["Berlin", "Tokyo"],
+        }
+    )
+    vm.Page(
+        id="test_page",
+        title="Page Title",
+        components=[
+            vm.Graph(id="fig_1", figure=px.scatter(df1, x="city", y="city")),
+            vm.Graph(id="fig_2", figure=px.scatter(df2, x="city", y="city")),
+        ],
+    )
+    Vizro._pre_build()
+
+
+class TestFilterHierarchyPreBuild:
+    def test_default_selector_is_tree_select(self, managers_column_hierarchy):
+        from vizro.models._components.form import Cascader
+
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert isinstance(f.selector, Cascader)
+
+    def test_column_set_to_leaf(self, managers_column_hierarchy):
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f.column == "city"
+
+    def test_title_defaults_to_leaf_column_name(self, managers_column_hierarchy):
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f.selector.title == "City"
+
+    def test_options_built_from_data(self, managers_column_hierarchy):
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        options = f.selector.options
+        assert "Europe" in options
+        assert "France" in options["Europe"]
+        assert "Paris" in options["Europe"]["France"]
+        assert "Berlin" in options["Europe"]["Germany"]
+        assert "Japan" in options["Asia"]
+        assert "Tokyo" in options["Asia"]["Japan"]
+
+    def test_custom_tree_select_config_respected(self, managers_column_hierarchy):
+
+        f = vm.Filter(
+            column_hierarchy=["continent", "country", "city"],
+            selector=vm.Cascader(multi=False, title="Location"),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f.selector.multi is False
+        assert f.selector.title == "Location"
+
+    def test_non_tree_select_selector_raises(self, managers_column_hierarchy):
+        f = vm.Filter(
+            column_hierarchy=["continent", "country", "city"],
+            selector=vm.Dropdown(),
+        )
+        model_manager["test_page"].controls = [f]
+        with pytest.raises(ValueError, match="Cascader"):
+            f.pre_build()
+
+    def test_duplicate_leaf_values_in_data_raises(self):
+        # Creates its own page inline; conftest autouse clears model_manager between tests
+        df = pd.DataFrame(
+            {
+                "continent": ["Europe", "Europe"],
+                "country": ["France", "Belgium"],
+                "city": ["Bruges", "Bruges"],
+            }
+        )
+        vm.Page(
+            id="test_page_dup",
+            title="Page",
+            components=[vm.Graph(id="fig_dup", figure=px.scatter(df, x="city", y="city"))],
+        )
+        Vizro._pre_build()
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page_dup"].controls = [f]
+        with pytest.raises(ValueError, match="Duplicate leaf values"):
+            f.pre_build()
+
+    def test_figure_missing_intermediate_column_excluded(self):
+        df_full = pd.DataFrame({"continent": ["Europe"], "country": ["France"], "city": ["Paris"]})
+        df_missing = pd.DataFrame({"continent": ["Asia"], "city": ["Tokyo"]})  # no "country"
+        vm.Page(
+            id="test_page_missing",
+            title="Page",
+            components=[
+                vm.Graph(id="fig_full", figure=px.scatter(df_full, x="city", y="city")),
+                vm.Graph(id="fig_missing", figure=px.scatter(df_missing, x="city", y="city")),
+            ],
+        )
+        Vizro._pre_build()
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page_missing"].controls = [f]
+        f.pre_build()
+        assert "fig_full" in f.targets
+        assert "fig_missing" not in f.targets
+
+    def test_filter_action_uses_leaf_column(self, managers_column_hierarchy):
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        # f.selector.actions[0] is a _filter action instance with a .column field
+        assert f.selector.actions[0].column == "city"
+
+
+@pytest.fixture
+def managers_column_hierarchy_dynamic(gapminder_dynamic_first_n_last_n_function):
+    """Page with one graph using dynamic gapminder data (has continent and country columns)."""
+    data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
+    vm.Page(
+        id="test_page",
+        title="Page Title",
+        components=[
+            vm.Graph(
+                id="fig_dynamic", figure=px.scatter("gapminder_dynamic_first_n_last_n", x="continent", y="country")
+            )
+        ],
+    )
+    Vizro._pre_build()
+
+
+class TestFilterHierarchyPreBuildDynamic:
+    def test_dynamic_flag_set(self, managers_column_hierarchy_dynamic):
+        f = vm.Filter(column_hierarchy=["continent", "country"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f._dynamic is True
+        assert f.selector._dynamic is True
+
+    def test_options_not_set_for_dynamic_filter(self, managers_column_hierarchy_dynamic):
+        f = vm.Filter(column_hierarchy=["continent", "country"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f.selector.options == {}
+
+    def test_dynamic_flag_not_set_for_static_data(self, managers_column_hierarchy):
+        # managers_column_hierarchy uses static data frames
+        f = vm.Filter(column_hierarchy=["continent", "country", "city"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f._dynamic is False
+        assert f.selector._dynamic is False
+
+    def test_user_supplied_options_prevent_dynamic(self, managers_column_hierarchy_dynamic):
+        # User-supplied options → treated as static regardless of data source
+        f = vm.Filter(
+            column_hierarchy=["continent", "country"],
+            selector=vm.Cascader(options={"Europe": ["France", "Germany"]}),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f._dynamic is False
+        assert f.selector._dynamic is False
+
+
+@pytest.fixture
+def tree_filter_pre_built(managers_column_hierarchy_dynamic):
+    """Pre-built dynamic tree filter targeting fig_dynamic."""
+    f = vm.Filter(
+        column_hierarchy=["continent", "country"],
+        targets=["fig_dynamic"],
+        selector=vm.Cascader(id="tree_selector_id"),
+    )
+    model_manager["test_page"].controls = [f]
+    f.pre_build()
+    return f
+
+
+class TestFilterCallTree:
+    def test_call_returns_fresh_options(self, tree_filter_pre_built):
+        fresh_df = pd.DataFrame({"continent": ["Europe", "Asia"], "country": ["France", "Japan"]})
+        result = tree_filter_pre_built(
+            target_to_data_frame={"fig_dynamic": fresh_df},
+            current_value=[],
+        )
+        tree_component = result["tree_selector_id"]
+        # Options should reflect fresh data: Europe and Asia as top-level groups
+        assert "Europe" in tree_component.options
+        assert "Asia" in tree_component.options
+        assert "(Stale selection)" not in tree_component.options
+
+    def test_call_injects_stale_values(self, tree_filter_pre_built):
+        fresh_df = pd.DataFrame({"continent": ["Europe"], "country": ["France"]})
+        # "OldCountry" was previously selected but is no longer in the data
+        result = tree_filter_pre_built(
+            target_to_data_frame={"fig_dynamic": fresh_df},
+            current_value=["OldCountry"],
+        )
+        tree_component = result["tree_selector_id"]
+        assert "(Stale selection)" in tree_component.options
+        assert "OldCountry" in tree_component.options["(Stale selection)"]
+
+    def test_call_multi_false_stale_string(self, managers_column_hierarchy_dynamic):
+        f = vm.Filter(
+            column_hierarchy=["continent", "country"],
+            targets=["fig_dynamic"],
+            selector=vm.Cascader(id="tree_selector_id_single", multi=False),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        fresh_df = pd.DataFrame({"continent": ["Europe"], "country": ["France"]})
+        result = f(
+            target_to_data_frame={"fig_dynamic": fresh_df},
+            current_value="Atlantis",
+        )
+        tree_component = result["tree_selector_id_single"]
+        assert "(Stale selection)" in tree_component.options
+
+    def test_call_no_stale_when_current_value_empty(self, tree_filter_pre_built):
+        fresh_df = pd.DataFrame({"continent": ["Europe"], "country": ["France"]})
+        result = tree_filter_pre_built(
+            target_to_data_frame={"fig_dynamic": fresh_df},
+            current_value=[],
+        )
+        tree_component = result["tree_selector_id"]
+        assert "(Stale selection)" not in tree_component.options
+
+    def test_call_target_missing_hierarchy_column_excluded(self, tree_filter_pre_built):
+        # DataFrame missing "country" column → silently excluded, options empty
+        bad_df = pd.DataFrame({"continent": ["Europe"]})
+        result = tree_filter_pre_built(
+            target_to_data_frame={"fig_dynamic": bad_df},
+            current_value=[],
+        )
+        tree_component = result["tree_selector_id"]
+        assert tree_component.options == {}
+
+    def test_call_guard_component_is_true(self, tree_filter_pre_built):
+        fresh_df = pd.DataFrame({"continent": ["Europe"], "country": ["France"]})
+        result = tree_filter_pre_built(
+            target_to_data_frame={"fig_dynamic": fresh_df},
+            current_value=[],
+        )
+        guard = result["tree_selector_id_guard_actions_chain"]
+        assert guard.data is True

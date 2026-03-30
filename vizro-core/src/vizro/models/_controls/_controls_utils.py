@@ -9,6 +9,7 @@ from typing_extensions import TypeIs
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import (
+    Cascader,
     Checklist,
     Container,
     DatePicker,
@@ -44,6 +45,10 @@ def _is_categorical_selector(x: object) -> TypeIs[Checklist | Dropdown | RadioIt
 
 def _is_boolean_selector(x: object) -> TypeIs[Switch]:
     return isinstance(x, SELECTORS["boolean"])
+
+
+def _is_cascader_selector(x: object) -> TypeIs[Cascader]:
+    return isinstance(x, Cascader)
 
 
 def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
@@ -111,4 +116,6 @@ def get_selector_default_value(selector: SelectorType) -> Any:
         is_multi = isinstance(selector, Checklist) or getattr(selector, "multi", False)
         _, default_value = get_dict_options_and_default(options=selector.options, multi=is_multi)
         return default_value
+    elif _is_cascader_selector(selector):
+        return [] if selector.multi else None
     # Boolean selectors always have a default value specified so no need to handle them here.
