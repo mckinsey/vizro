@@ -16,7 +16,7 @@ Single reference for grid layout, component sizing, filter placement, and contai
 Vizro provides two layout options:
 
 - **Grid**: Precise control over placement and sizing (recommended for pages)
-- **Flex**: Flexible stacking — `direction="column"` (default) for vertical, `direction="row"` for horizontal. Best used inside a `Container` for component groups like KPI card rows.
+- **Flex**: Flexible stacking — `direction="column"` (default) for vertical, `direction="row"` for horizontal. Best used inside a `Container` for simple component groups.
 
 Use `type: grid` in YAML (not `vm.Layout`, which is deprecated).
 
@@ -57,27 +57,28 @@ See the quick-reference sizing table in the SKILL.md. Below are expanded pattern
 
 **KPI card rules:**
 
-- KPI cards should be compact (2-3 columns in a grid, or auto-sized in a flex container).
-- **Preferred approach**: Wrap KPI cards in a `Container` with `Flex(direction="row")` layout, then place the container as one full-width component inside the page `Grid`. This avoids awkward empty cells and lets the browser handle equal spacing.
-- **Stretching to fill width**: Vizro's `Flex` layout does not expose `flex-grow` on children. To make cards stretch equally, add a CSS rule in `assets/custom.css` targeting the container's `.flex-item` children. Each Vizro flex child is rendered as a `div.flex-item`.
-- **Fallback (grid-only)**: When placing KPI cards directly in a grid, keep them at 2-3 columns. All cards must have **equal width**. Use `-1` for remaining empty cells.
+- Place KPI cards in the page `Grid`, giving each card **equal columns and equal rows**.
+- Divide the 12 columns **evenly** so each card has the same width. All cards must also occupy the **same number of rows** (typically 1 row at 140px).
+- Use `-1` for remaining empty cells when the card count doesn't divide evenly into 12.
 
-```python
-# Python: Flex container for KPI cards inside a Grid page
-vm.Container(
-    id="kpi_banner",
-    components=[kpi_1, kpi_2, kpi_3, kpi_4, kpi_5],
-    layout=vm.Flex(direction="row", gap="12px", wrap=True),
-    variant="plain",
-)
-# Place as component 0 in page grid: [0,0,0,0,0,0,0,0,0,0,0,0]
-```
+| KPI count | Columns per card | Grid row pattern                            |
+| --------- | ---------------- | ------------------------------------------- |
+| 2         | 6                | `[0,0,0,0,0,0, 1,1,1,1,1,1]`               |
+| 3         | 4                | `[0,0,0,0, 1,1,1,1, 2,2,2,2]`              |
+| 4         | 3                | `[0,0,0, 1,1,1, 2,2,2, 3,3,3]`             |
+| 5         | 2                | `[0,0, 1,1, 2,2, 3,3, 4,4, -1,-1]`         |
+| 6         | 2                | `[0,0, 1,1, 2,2, 3,3, 4,4, 5,5]`           |
 
-```css
-/* assets/custom.css — make KPI cards stretch to equal width */
-#kpi_banner .flex-item {
-    flex: 1;
-}
+```yaml
+# Example: 4 KPI cards in a 12-col grid (3 cols each, 1 row)
+layout:
+  grid:
+    - [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3]   # KPI row
+    - [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5]   # charts below
+    - [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5]
+    - [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5]
+  row_min_height: "140px"
+  type: grid
 ```
 
 **Exceptions:** Text-heavy Card -> 3+ rows; small table (\<5 cols) -> doesn't need full width; Button -> 1 row. Charts need at least 2-3 rows to avoid looking squeezed.
@@ -90,7 +91,7 @@ vm.Container(
 | Primary + 2 secondary  | 6 + 3 + 3                                          |
 | Two-thirds + one-third | 8 + 4                                              |
 | Two equal charts       | 6 + 6                                              |
-| KPI cards (any count)  | Flex container (preferred) or 2–3 cols each + `-1` |
+| KPI cards (any count)  | Equal cols each (e.g. 4 cards = 3 cols) + `-1` for remainder |
 
 ### Layout rules (new layouts only)
 

@@ -18,7 +18,7 @@ Dashboard Development Progress:
 - [ ] Step 3: Select Visualizations (chart types, KPIs; colors only if user asked)
 ```
 
-**Decision prompts**: For requirements and design choices, ask focused questions and offer **2–5 numbered options** per turn so the user can pick quickly. Use your client's built-in choice / question UI when it exists; otherwise use the same pattern in plain messages.
+**Interaction style**: When gathering requirements or making design decisions, ask focused questions and present **2–5 numbered options** so the user can choose quickly. Prefer using your client’s built-in multiple-choice or question UI to keep the interaction lightweight and clickable; if that isn’t available, use the same numbered format in plain text
 
 **Do not skip steps.** Handle partial context as follows:
 
