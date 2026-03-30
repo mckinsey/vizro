@@ -24,11 +24,11 @@ Plotly Express does **not** aggregate. Pre-aggregate in `app.py` or inside custo
 
 ### Default: let Vizro handle it
 
-Plotly Express charts automatically use Vizro color schemes via the built-in Vizro plotly templates. **Do not** set explicit colors (`color_discrete_sequence`, `color_continuous_scale`, `marker_color`, hex values, etc.) unless the user explicitly requests it or semantic meaning is required. Qualitative, sequential, diverging, and waterfall colors are all applied automatically.
+Plotly Express charts and KPI cards automatically use Vizro color schemes via the built-in Vizro plotly templates. **Do not** set explicit colors (`color_discrete_sequence`, `color_continuous_scale`, `marker_color`, hex values, etc.) unless the user explicitly requests it. This includes categories with apparent semantic meaning (status flags, source types, plan vs actual) — Vizro's automatic palette handles these well. Qualitative, sequential, diverging, and waterfall colors are all applied automatically.
 
-### When to specify colors manually
+### AG Grid and manual color assignment
 
-Only AG Grid, custom figures, and manual color logic need explicit color imports — they do not pick up Vizro palettes automatically:
+AG Grid does **not** pick up Vizro template colors automatically. When AG Grid cells need coloring (e.g. conditional formatting, heatmaps), always use Vizro palette colors — never invent hex values:
 
 ```python
 from vizro.themes import palettes, colors

@@ -21,7 +21,7 @@ description: Use this skill when designing or building Vizro dashboard layouts �
 | Large Chart | 6       | 4–5  | 560–700px |
 | Table       | 12      | 4–6  | 560–840px |
 
-**KPI cards**: Place directly in the page `Grid`, giving each card **equal columns and equal rows**. Divide the 12 columns evenly among all KPI cards (e.g. 4 cards = 3 cols each, 3 cards = 4 cols each). Use `-1` for remaining empty cells when the count doesn't divide evenly. All KPI cards must occupy the same number of rows (typically 1 row at 140px). Charts need **at least 2–3 rows** to avoid looking squeezed.
+**KPI cards**: Place in the page `Grid` with **equal columns and equal rows** per card (e.g. 4 cards = 3 cols each). Use `-1` for remaining empty cells. See [layout-guidelines.md](references/layout-guidelines.md) for the full KPI count lookup table and YAML examples. Charts need **at least 2–3 rows** to avoid looking squeezed.
 
 ## Filter Placement
 

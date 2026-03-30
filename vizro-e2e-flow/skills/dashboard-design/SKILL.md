@@ -160,7 +160,7 @@ Before proceeding to Step 3:
 Load the **selecting-vizro-charts** skill for chart selection, color strategy, anti-patterns, and KPI card rules. Key design decisions:
 
 - Match chart type to data question (bar for comparison, line for trends, pie only for 2–5 slices)
-- **Colors**: Omit `color_decisions` and all color fields unless the user explicitly asked for branding, semantic coloring, or a named palette. Vizro / Plotly Express assign palettes automatically. If the user did request colors, prefer Vizro `palettes` / `colors` over invented hex.
+- **Colors**: Do NOT include `color_decisions` in the spec. Vizro assigns palettes automatically. Only include if the user explicitly requested custom colors in their message.
 - Use built-in `kpi_card` / `kpi_card_reference`; never rebuild as custom charts
 
 ### REQUIRED OUTPUT: spec/3_visual_design.yaml
@@ -175,7 +175,7 @@ visualizations:
     needs_custom_implementation: true/false
     reason: [if custom: has_reference_line/needs_data_processing/etc]
 
-# color_decisions — OPTIONAL. Omit unless the user explicitly asked for non-default colors.
+# DO NOT include color_decisions unless the user explicitly asked for custom colors in their message.
 
 kpi_cards:
   - name: [KPI Name]
