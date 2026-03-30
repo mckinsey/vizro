@@ -51,6 +51,8 @@ Hierarchical cascading dropdown inspired by [Ant Design Cascader](https://ant.de
 
 **`value`** always reflects **leaf** choices only: a single string or number, or `null` when `multi=False`; a list of leaf values when `multi=True`.
 
+When **`searchable=True`** (default), search matches **leaves and parent branches** (by `label` or `search`). Choosing a **branch** row clears the query and opens the side-by-side columns at that node; it does not change `value`.
+
 ```python
 import vizro_dash_components as vdc
 from dash import Dash, Input, Output, html

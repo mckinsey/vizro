@@ -259,7 +259,7 @@ def test_cascader_multi_deselect_all(dash_duo):
 
 
 def test_cascader_search_filters_results(dash_duo):
-    """Typing in the search bar shows matching leaves."""
+    """Typing in the search bar shows matching leaves and parent branches."""
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
@@ -269,6 +269,14 @@ def test_cascader_search_filters_results(dash_duo):
         el.text for el in dash_duo.driver.find_elements("css selector", ".dash-cascader-row-label") if el.is_displayed()
     ]
     assert "Japan" in result_labels
+
+    dash_duo.find_element(".dash-cascader-search-input").clear()
+    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("asi")
+    dash_duo.wait_for_element(".dash-cascader-result-row-branch")
+    branch_labels = [
+        el.text for el in dash_duo.driver.find_elements("css selector", ".dash-cascader-row-label") if el.is_displayed()
+    ]
+    assert "Asia" in branch_labels
 
 
 def test_cascader_search_single_select_closes_on_pick(dash_duo):
@@ -290,6 +298,48 @@ def test_cascader_search_single_select_closes_on_pick(dash_duo):
     dash_duo.wait_for_text_to_equal("#out", "japan")
     panels = dash_duo.driver.find_elements("css selector", ".dash-cascader-panel")
     assert len(panels) == 0
+
+
+def test_cascader_search_branch_navigates_to_columns(dash_duo):
+    """Clicking a branch search result clears search and opens the column view at that node."""
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("asia")
+    dash_duo.wait_for_element(".dash-cascader-result-row-branch").click()
+    dash_duo.wait_for_element(".dash-cascader-columns")
+    search = dash_duo.wait_for_element(".dash-cascader-search-input")
+    assert search.get_attribute("value") == ""
+    labels_col2 = [
+        el.text
+        for el in dash_duo.driver.find_elements(
+            "css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row-label"
+        )
+    ]
+    assert "Japan" in labels_col2
+    assert "China" in labels_col2
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_multi_select_all_search_only_leaves(dash_duo):
+    """With an active search, Select all adds only leaf hits (not branch node values)."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_2LEVEL, multi=True),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("a")
+    dash_duo.wait_for_element(".dash-cascader-result-row-branch")
+    dash_duo.wait_for_element(".dash-cascader-action-button").click()
+    dash_duo.wait_for_text_to_equal("#out", "china,france,germany,japan")
+    assert dash_duo.get_logs() == []
 
 
 # --- 3-level nesting ---
@@ -453,11 +503,12 @@ def test_cascader_shorthand_search_finds_normalized_leaves(dash_duo):
 
 
 def test_cascader_option_search_field_used_for_filtering(dash_duo):
-    """Search field overrides label for search matching."""
+    """Search field overrides label for search matching; parent search can match branches."""
     options = [
         {
             "label": "Asia",
             "value": "asia",
+            "search": "east-region",
             "children": [
                 {"label": "Japan", "value": "japan", "search": "nippon"},
             ],
@@ -481,6 +532,14 @@ def test_cascader_option_search_field_used_for_filtering(dash_duo):
     time.sleep(0.3)
     results = dash_duo.driver.find_elements("css selector", ".dash-cascader-result-row")
     assert len(results) == 0
+
+    dash_duo.find_element(".dash-cascader-search-input").clear()
+    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("east-region")
+    dash_duo.wait_for_element(".dash-cascader-result-row-branch").click()
+    dash_duo.wait_for_element(".dash-cascader-columns")
+    dash_duo.wait_for_text_to_equal(
+        ".dash-cascader-column:nth-child(2) .dash-cascader-row-label", "Japan"
+    )
     assert dash_duo.get_logs() == []
 
 

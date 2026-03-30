@@ -103,29 +103,59 @@ export function parentCheckState(
   return "indeterminate";
 }
 
+export type CascaderSearchResult =
+  | {
+      kind: "leaf";
+      option: CascaderOption;
+      breadcrumb: string;
+    }
+  | {
+      kind: "branch";
+      option: CascaderOption;
+      breadcrumb: string;
+      branchPath: number[];
+    };
+
 /**
- * Flat list of matching leaf nodes for search.
- * Returns {option, breadcrumb} where breadcrumb is e.g. "Asia › China".
+ * Flat list of matching nodes for search (leaves and non-leaf branches).
+ * Breadcrumb is ancestor labels above the node (not including the node itself).
+ * Branch hits include branchPath (indices from root) to open the column view.
  */
 export function searchOptions(
   options: CascaderOption[],
   query: string,
   ancestors: string[] = [],
-): { option: CascaderOption; breadcrumb: string }[] {
+  pathPrefix: number[] = [],
+): CascaderSearchResult[] {
   const lower = query.toLowerCase();
-  const results: { option: CascaderOption; breadcrumb: string }[] = [];
-  for (const opt of options) {
+  const results: CascaderSearchResult[] = [];
+  for (let i = 0; i < options.length; i++) {
+    const opt = options[i];
+    const myPath = [...pathPrefix, i];
+    const breadcrumb = ancestors.join(" › ");
+
     if (isLeaf(opt)) {
       const searchTarget = (opt.search ?? opt.label).toLowerCase();
       if (searchTarget.includes(lower)) {
-        results.push({
-          option: opt,
-          breadcrumb: ancestors.join(" › "),
-        });
+        results.push({ kind: "leaf", option: opt, breadcrumb });
       }
     } else {
+      const searchTarget = (opt.search ?? opt.label).toLowerCase();
+      if (searchTarget.includes(lower) && !opt.disabled) {
+        results.push({
+          kind: "branch",
+          option: opt,
+          breadcrumb,
+          branchPath: myPath,
+        });
+      }
       results.push(
-        ...searchOptions(opt.children ?? [], query, [...ancestors, opt.label]),
+        ...searchOptions(
+          opt.children ?? [],
+          query,
+          [...ancestors, opt.label],
+          myPath,
+        ),
       );
     }
   }

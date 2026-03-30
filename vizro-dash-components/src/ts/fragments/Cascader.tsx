@@ -232,6 +232,11 @@ const CascaderFragment = ({
     });
   }, []);
 
+  const handleSearchBranchNavigate = useCallback((branchPath: number[]) => {
+    setActivePath(branchPath);
+    setSearchValue("");
+  }, []);
+
   const handleParentCheckbox = useCallback(
     (option: CascaderOption, e: React.ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation();
@@ -251,7 +256,9 @@ const CascaderFragment = ({
 
   const handleSelectAll = useCallback(() => {
     const pool = searchValue
-      ? searchResults.map((r) => r.option.value)
+      ? searchResults
+          .filter((r) => r.kind === "leaf")
+          .map((r) => r.option.value)
       : collectAllLeaves(options);
     const toAdd = pool.filter((v) => !selectedSet.has(v));
     emitValue([...selectedValues, ...toAdd]);
@@ -267,7 +274,9 @@ const CascaderFragment = ({
   const handleDeselectAll = useCallback(() => {
     const pool = new Set(
       searchValue
-        ? searchResults.map((r) => r.option.value)
+        ? searchResults
+            .filter((r) => r.kind === "leaf")
+            .map((r) => r.option.value)
         : collectAllLeaves(options),
     );
     emitValue(selectedValues.filter((v) => !pool.has(v)));
@@ -470,18 +479,38 @@ const CascaderFragment = ({
     }
     return (
       <div className="dash-cascader-results" style={{ maxHeight }}>
-        {searchResults.map(({ option, breadcrumb }) => {
-          const isSelected = selectedSet.has(option.value);
+        {searchResults.map((result) => {
+          const { option, breadcrumb } = result;
+          const isLeafHit = result.kind === "leaf";
+          const isSelected = isLeafHit && selectedSet.has(option.value);
+          const rowKey =
+            result.kind === "branch"
+              ? `branch-${result.branchPath.join("-")}`
+              : `leaf-${breadcrumb}-${String(option.value)}`;
+          const onRowClick = () => {
+            if (option.disabled) return;
+            if (result.kind === "branch") {
+              handleSearchBranchNavigate(result.branchPath);
+            } else {
+              handleLeafClick(option.value);
+            }
+          };
           return (
             // biome-ignore lint/a11y/noStaticElementInteractions: search result row behaves as listbox option
             // biome-ignore lint/a11y/useKeyWithClickEvents: selection uses pointer; full listbox roving focus is out of scope
             <div
-              key={String(option.value)}
-              className={`dash-cascader-result-row${isSelected && !multi ? " selected" : ""}`}
+              key={rowKey}
+              className={[
+                "dash-cascader-result-row",
+                result.kind === "branch" && "dash-cascader-result-row-branch",
+                isSelected && !multi && "selected",
+              ]
+                .filter(Boolean)
+                .join(" ")}
               style={rowStyle}
-              onClick={() => !option.disabled && handleLeafClick(option.value)}
+              onClick={onRowClick}
             >
-              {multi && (
+              {multi && isLeafHit && (
                 <input
                   type="checkbox"
                   className="dash-cascader-checkbox"

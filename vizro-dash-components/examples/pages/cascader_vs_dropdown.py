@@ -102,27 +102,53 @@ def flatten_explicit_nodes(nodes: list[dict]) -> list[dict]:
     return out
 
 
-# --- Stress dataset ---
+def count_leaves_nested(node: dict | list) -> int:
+    """Count scalar leaves in a nested dict-of-dicts-...-of-list tree."""
+    if isinstance(node, list):
+        return len(node)
+    return sum(count_leaves_nested(v) for v in node.values())
 
-N_REGIONS = 6
-N_COUNTRIES_PER_REGION = 12
-N_CITIES_PER_COUNTRY = 25
+
+def flatten_nested_dict_tree(tree: dict, path: tuple[str, ...] = ()) -> list[dict]:
+    """Flat dropdown options: full path label, leaf value (same as flatten_dict_tree shape)."""
+    out: list[dict] = []
+    for key, val in tree.items():
+        here = (*path, key)
+        if isinstance(val, list):
+            out.extend(
+                {"label": " / ".join((*here, str(item))), "value": item} for item in val
+            )
+        else:
+            out.extend(flatten_nested_dict_tree(val, here))
+    return out
+
+
+# --- Stress dataset: 5 nested levels, then terminal lists; uneven fan-out; ≤10k leaves ---
+
+STRESS_DEPTH = 5
+STRESS_BRANCHES = (10, 2, 8, 5, 6)
+STRESS_LEAVES_PER_TERMINAL = 2
 
 
 def build_stress_tree() -> dict:
-    tree: dict = {}
-    for r in range(N_REGIONS):
-        region = f"R{r + 1}"
-        tree[region] = {}
-        for c in range(N_COUNTRIES_PER_REGION):
-            country = f"{region}-C{c + 1}"
-            tree[region][country] = [f"{country}-city-{k + 1}" for k in range(N_CITIES_PER_COUNTRY)]
-    return tree
+    def node(level: int, path: tuple[int, ...]) -> dict | list[str]:
+        if level >= STRESS_DEPTH:
+            p = ".".join(str(i) for i in path)
+            return [f"item-{p}-{k}" for k in range(STRESS_LEAVES_PER_TERMINAL)]
+        n_br = STRESS_BRANCHES[level]
+        out: dict = {}
+        for i in range(n_br):
+            sub = (*path, i)
+            key = f"lvl{level + 1}-{'.'.join(str(j) for j in sub)}"
+            out[key] = node(level + 1, sub)
+        return out
+
+    return node(0, ())
 
 
 STRESS_TREE = build_stress_tree()
-STRESS_LEAVES = count_leaves_dict_tree(STRESS_TREE)
-STRESS_FLAT = flatten_dict_tree(STRESS_TREE)
+STRESS_LEAVES = count_leaves_nested(STRESS_TREE)
+STRESS_FLAT = flatten_nested_dict_tree(STRESS_TREE)
 
 LOCATIONS_FLAT = flatten_dict_tree(LOCATIONS)
 PRODUCTS_FLAT = flatten_dict_tree(PRODUCTS)
@@ -321,8 +347,9 @@ layout = html.Div(
             [
                 dmc.Title("Stress test", order=3, mb="xs"),
                 dmc.Text(
-                    f"Large synthetic tree: {N_REGIONS} regions, {N_REGIONS * N_COUNTRIES_PER_REGION} countries, "
-                    f"{STRESS_LEAVES} leaf values. Use for scroll performance, search, and panel behaviour.",
+                    f"Large synthetic tree: {STRESS_DEPTH} levels deep (nested groups), branching "
+                    f"{STRESS_BRANCHES}, {STRESS_LEAVES_PER_TERMINAL} leaves per terminal → "
+                    f"{STRESS_LEAVES:,} leaf values. Use for scroll performance, search, and panel behavior.",
                     c="dimmed",
                     size="sm",
                     mb="lg",

@@ -272,9 +272,12 @@
 }
 
 .dash-cascader-chevron {
+  align-self: center;
+  block-size: 1em;
   color: var(--Dash-Text-Weak);
   fill: var(--Dash-Text-Weak);
   flex-shrink: 0;
+  inline-size: 1em;
 }
 
 /* Checkbox — matches .dash-options-list-option-checkbox */
