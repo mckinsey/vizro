@@ -41,6 +41,21 @@ OPTIONS_3LEVEL = [
     },
 ]
 
+# Shorthand `options` (see cascaderUtils.normalizeOptions): dict keys become parents; list
+# items are leaves (scalar → label and value identical); nested dicts add levels.
+OPTIONS_SHORTHAND_DICT_LIST = {"Asia": ["Japan", "China"], "Europe": ["France", "Germany"]}
+
+OPTIONS_SHORTHAND_NESTED = {"Europe": {"Western": ["France", "Germany"]}}
+
+OPTIONS_SHORTHAND_MIXED_LEAVES = {
+    "Asia": [
+        {"label": "Nippon", "value": "japan"},
+        "China",
+    ],
+}
+
+OPTIONS_SHORTHAND_NUMERIC = {"Series": [10, 20, 30]}
+
 
 def _app(layout):
     app = Dash(__name__)
@@ -293,12 +308,12 @@ def test_cascader_three_levels(dash_duo):
 
 
 def test_cascader_shorthand_dict_list(dash_duo):
-    """Dict-of-lists shorthand is normalized: keys become parents, list items become leaves."""
+    """Dict-of-lists shorthand: keys become parents; string leaves use the same string as value."""
     app = Dash(__name__)
     app.layout = dmc.MantineProvider(
         html.Div(
             [
-                Cascader(id="c", options={"Asia": ["Japan", "China"], "Europe": ["France"]}),
+                Cascader(id="c", options=OPTIONS_SHORTHAND_DICT_LIST),
                 html.Div(id="out"),
             ]
         )
@@ -309,7 +324,7 @@ def test_cascader_shorthand_dict_list(dash_duo):
     dash_duo.wait_for_text_to_equal(
         ".dash-cascader-column:first-child .dash-cascader-row:first-child .dash-cascader-row-label", "Asia"
     )
-    # Expand Asia and select Japan
+    # Expand Asia and select Japan (value is the leaf string, not slugified)
     dash_duo.wait_for_element(".dash-cascader-row").click()
     rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
     rows[0].click()
@@ -318,12 +333,12 @@ def test_cascader_shorthand_dict_list(dash_duo):
 
 
 def test_cascader_shorthand_nested_dict(dash_duo):
-    """Nested dict shorthand produces multi-level tree."""
+    """Nested dict shorthand produces multi-level tree; leaf selection returns the scalar value."""
     app = Dash(__name__)
     app.layout = dmc.MantineProvider(
         html.Div(
             [
-                Cascader(id="c", options={"Europe": {"Western": ["France", "Germany"]}}),
+                Cascader(id="c", options=OPTIONS_SHORTHAND_NESTED),
                 html.Div(id="out"),
             ]
         )
@@ -337,6 +352,94 @@ def test_cascader_shorthand_nested_dict(dash_duo):
     dash_duo.wait_for_text_to_equal(
         ".dash-cascader-column:nth-child(3) .dash-cascader-row:first-child .dash-cascader-row-label", "France"
     )
+    dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(3) .dash-cascader-row")[0].click()
+    dash_duo.wait_for_text_to_equal("#out", "France")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_shorthand_mixed_list_option_dicts_and_scalars(dash_duo):
+    """List items can mix full option dicts (passed through) with scalar leaves."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_SHORTHAND_MIXED_LEAVES),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
+    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    rows[0].click()  # Nippon → value japan
+    dash_duo.wait_for_text_to_equal("#out", "japan")
+    # Re-open and pick scalar leaf China
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-row").click()
+    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    rows[1].click()
+    dash_duo.wait_for_text_to_equal("#out", "China")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_shorthand_numeric_leaves(dash_duo):
+    """Numeric scalars in shorthand lists keep their type as option value."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_SHORTHAND_NUMERIC),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-row").click()  # Series
+    dash_duo.wait_for_text_to_equal(
+        ".dash-cascader-column:nth-child(2) .dash-cascader-row:first-child .dash-cascader-row-label", "10"
+    )
+    dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")[0].click()
+    dash_duo.wait_for_text_to_equal("#out", "10")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_shorthand_multi_select(dash_duo):
+    """Multi-select works with dict-of-lists shorthand (values are leaf scalars)."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_SHORTHAND_DICT_LIST, multi=True),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: ",".join(sorted(str(x) for x in (v or []))))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
+    checks = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-checkbox")
+    checks[0].click()  # Japan
+    checks[1].click()  # China
+    dash_duo.wait_for_text_to_equal("#out", "China,Japan")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_shorthand_search_finds_normalized_leaves(dash_duo):
+    """Search over shorthand-normalized tree matches leaf labels."""
+    app = _app(Cascader(id="c", options=OPTIONS_SHORTHAND_DICT_LIST))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("Germ")
+    dash_duo.wait_for_element(".dash-cascader-result-row")
+    labels = [
+        el.text for el in dash_duo.driver.find_elements("css selector", ".dash-cascader-row-label") if el.is_displayed()
+    ]
+    assert "Germany" in labels
     assert dash_duo.get_logs() == []
 
 

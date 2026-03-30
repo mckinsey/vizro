@@ -14,9 +14,7 @@ pip install vizro-dash-components
 
 ### Markdown
 
-Renders Markdown content with syntax-highlighted code blocks (via `dmc.CodeHighlight`) and optional MathJax support.
-
-Requires a `dmc.MantineProvider` wrapper for code block styling.
+Based on [`dcc.Markdown`](https://dash.plotly.com/dash-core-components/markdown), with identical properties. Renders Markdown content with syntax-highlighted code blocks via [`dmc.CodeHighlight`](https://www.dash-mantine-components.com/components/code-highlight) and [`dmc.InlineCodeHighlight`](https://www.dash-mantine-components.com/components/inline-code-highlight). Requires a [`dmc.MantineProvider`](https://www.dash-mantine-components.com/components/mantine-provider) wrapper.
 
 ````python
 import dash_mantine_components as dmc
@@ -29,26 +27,29 @@ app.layout = dmc.MantineProvider(
     vdc.Markdown(
         id="my-markdown",
         children="""
-# Hello World
+            # Hello World
 
-```python
-print("Hello, World!")
-````
-
-```
-    """,
-)
-```
-
+            ```python
+            print("Hello, World!")
+            ```
+            """
+    )
 )
 
-if __name__ == "__main__": app.run()
-
+if __name__ == "__main__":
+    app.run()
 ````
 
 ### Cascader
 
-A hierarchical cascading dropdown inspired by Ant Design's Cascader pattern. Users navigate a tree of options via side-by-side panels and select leaf values. Supports single-select and multi-select. Built to visually match [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown).
+Hierarchical cascading dropdown inspired by [Ant Design Cascader](https://ant.design/components/cascader) and [`fac.AntdCascader`](https://fac.feffery.tech/AntdCascader). Users navigate a tree of options via side-by-side panels and select leaf values. Supports single-select and multi-select. It accepts most of the same keyword arguments as [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown) and is built to visually match it.
+
+**`options`** must be a **tree** (not a flat dropdown options list). Use one of these shapes:
+
+- **Explicit list of nodes** — A list of dicts. Each dict has `label`, `value`, and optionally `children` (a list of child dicts). Parents include `children`; leaves do not.
+- **Nested dict / list shorthand** — As in the example below. Each dict key is a parent node (the key is used as both `label` and `value`). The value is either another dict (more levels) or a list of leaf entries (each scalar is both `label` and `value`).
+
+**`value`** always reflects **leaf** choices only: a single string or number, or `null` when `multi=False`; a list of leaf values when `multi=True`.
 
 ```python
 import vizro_dash_components as vdc
@@ -64,12 +65,7 @@ OPTIONS = {
         "France": ["Paris", "Lyon", "Marseille", "Toulouse"],
         "Germany": ["Berlin", "Munich", "Hamburg", "Frankfurt"],
         "UK": ["London", "Manchester", "Birmingham", "Edinburgh"],
-    },
-    "Americas": {
-        "USA": ["New York", "Los Angeles", "Chicago", "Houston"],
-        "Brazil": ["São Paulo", "Rio de Janeiro", "Brasília", "Salvador"],
-        "Canada": ["Toronto", "Vancouver", "Montreal", "Calgary"],
-    },
+    }
 }
 
 app = Dash(__name__)
@@ -90,4 +86,12 @@ def show_selected(value):
 if __name__ == "__main__":
     app.run()
 ```
-````
+
+## Development
+
+Contributor workflows (Hatch, npm, regenerating `vizro_dash_components/`) are documented in [AGENTS.md](AGENTS.md) (same content as [CLAUDE.md](CLAUDE.md) for Claude Code).
+
+## Development
+
+Contributor workflows (Hatch, npm, regenerating `vizro_dash_components/`) are documented in [AGENTS.md](AGENTS.md) (same content as [CLAUDE.md](CLAUDE.md) for Claude Code).
+
