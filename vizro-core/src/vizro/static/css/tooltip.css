@@ -32,7 +32,8 @@
 }
 
 .btn .tooltip-icon,
-.form-label .tooltip-icon {
+.form-label .tooltip-icon,
+.control-group-panel .tooltip-icon {
   color: inherit;
   font-size: 1rem;
 }
