@@ -10,7 +10,14 @@
   "plugins": [
     {
       "name": "vizro-e2e-flow",
-      "source": "./vizro-e2e-flow"
+      "source": "./vizro-e2e-flow",
+      "skills": [
+        "./skills/dashboard-build",
+        "./skills/dashboard-design",
+        "./skills/designing-vizro-layouts",
+        "./skills/selecting-vizro-charts",
+        "./skills/writing-vizro-yaml"
+      ]
     }
   ]
 }

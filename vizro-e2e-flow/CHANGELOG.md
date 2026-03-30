@@ -1,4 +1,14 @@
-<a id='changelog-0.1.3'></a>
+<a id='changelog-0.1.4'></a>
+
+# 0.1.4 — 2026-03-19
+
+## Added
+
+- Add three reusable skills (`designing-vizro-layouts`, `selecting-vizro-charts`, `writing-vizro-yaml`) extracted from duplicated logic across existing skills. ([#1661](https://github.com/mckinsey/vizro/pull/1662))
+
+## Changed
+
+- Refactor `dashboard-design` and `dashboard-build` skills to reference the new reusable skills, removing duplicated content and improving maintainability. ([#1661](https://github.com/mckinsey/vizro/pull/1662)) <a id='changelog-0.1.3'></a>
 
 # 0.1.3 — 2026-03-04
 
