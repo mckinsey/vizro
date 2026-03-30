@@ -1,3 +1,11 @@
+<a id='changelog-0.1.1'></a>
+
+# 0.1.1 — 2026-03-30
+
+## Added
+
+- Add `Cascader` hierarchical dropdown component supporting single-select and multi-select with cascading side-by-side panels. ([#1673](https://github.com/mckinsey/vizro/pull/1673/))
+
 <a id='changelog-0.1.0'></a>
 
 # 0.1.0 — 2026-03-06
