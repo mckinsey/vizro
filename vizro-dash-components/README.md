@@ -32,7 +32,7 @@ app.layout = dmc.MantineProvider(
             ```python
             print("Hello, World!")
             ```
-            """
+            """,
     )
 )
 
@@ -65,15 +65,13 @@ OPTIONS = {
         "France": ["Paris", "Lyon", "Marseille", "Toulouse"],
         "Germany": ["Berlin", "Munich", "Hamburg", "Frankfurt"],
         "UK": ["London", "Manchester", "Birmingham", "Edinburgh"],
-    }
+    },
 }
 
 app = Dash(__name__)
 
 app.layout = [
-    vdc.Cascader(
-        id="cascade", options=OPTIONS, placeholder="Select a city..."
-    ),
+    vdc.Cascader(id="cascade", options=OPTIONS, placeholder="Select a city..."),
     html.Div(id="cascade-output"),
 ]
 
@@ -94,4 +92,3 @@ Contributor workflows (Hatch, npm, regenerating `vizro_dash_components/`) are do
 ## Development
 
 Contributor workflows (Hatch, npm, regenerating `vizro_dash_components/`) are documented in [AGENTS.md](AGENTS.md) (same content as [CLAUDE.md](CLAUDE.md) for Claude Code).
-
