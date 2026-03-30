@@ -90,7 +90,7 @@ def flatten_explicit_nodes(nodes: list[dict]) -> list[dict]:
         label = node["label"]
         value = node["value"]
         kids = node.get("children")
-        segments = path + [label]
+        segments = [*path, label]
         if kids:
             for child in kids:
                 walk(child, segments)

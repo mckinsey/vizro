@@ -1,7 +1,5 @@
 """Tests for the vizro_dash_components.Cascader component."""
 
-# ruff: noqa: PLW0108
-
 import dash_mantine_components as dmc
 from dash import Dash, Input, Output, html
 from vizro_dash_components import Cascader
@@ -61,6 +59,14 @@ def _app(layout):
     app = Dash(__name__)
     app.layout = dmc.MantineProvider(layout)
     return app
+
+
+def _multi_values_joined(v):
+    return ",".join(sorted(str(x) for x in (v or [])))
+
+
+def _sorted_values_string(v):
+    return str(sorted(v or []))
 
 
 # --- Render / open / close ---
@@ -131,7 +137,7 @@ def test_cascader_single_select_leaf(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    app.callback(Output("out", "children"), Input("c", "value"))(str)
     dash_duo.start_server(app)
     # Open
     dash_duo.wait_for_element("#c").click()
@@ -165,7 +171,7 @@ def test_cascader_single_clear(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    app.callback(Output("out", "children"), Input("c", "value"))(str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element(".dash-cascader-clear").click()
     dash_duo.wait_for_text_to_equal("#out", "None")
@@ -185,7 +191,7 @@ def test_cascader_multi_select_leaf(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: ",".join(sorted(str(x) for x in (v or []))))
+    app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
     dash_duo.start_server(app)
     # Open and expand Asia
     dash_duo.wait_for_element("#c").click()
@@ -221,7 +227,7 @@ def test_cascader_multi_select_all(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: ",".join(sorted(str(x) for x in (v or []))))
+    app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-action-button").click()
@@ -240,7 +246,7 @@ def test_cascader_multi_deselect_all(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(sorted(v or [])))
+    app.callback(Output("out", "children"), Input("c", "value"))(_sorted_values_string)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     buttons = dash_duo.driver.find_elements("css selector", ".dash-cascader-action-button")
@@ -276,7 +282,7 @@ def test_cascader_search_single_select_closes_on_pick(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    app.callback(Output("out", "children"), Input("c", "value"))(str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("jap")
@@ -318,7 +324,7 @@ def test_cascader_shorthand_dict_list(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    app.callback(Output("out", "children"), Input("c", "value"))(str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_text_to_equal(
@@ -343,7 +349,7 @@ def test_cascader_shorthand_nested_dict(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    app.callback(Output("out", "children"), Input("c", "value"))(str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Europe
@@ -368,7 +374,7 @@ def test_cascader_shorthand_mixed_list_option_dicts_and_scalars(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    app.callback(Output("out", "children"), Input("c", "value"))(str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
@@ -395,7 +401,7 @@ def test_cascader_shorthand_numeric_leaves(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    app.callback(Output("out", "children"), Input("c", "value"))(str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Series
@@ -418,7 +424,7 @@ def test_cascader_shorthand_multi_select(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: ",".join(sorted(str(x) for x in (v or []))))
+    app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
@@ -512,7 +518,7 @@ def test_cascader_debounce_defers_callback(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    app.callback(Output("out", "children"), Input("c", "value"))(str)
     dash_duo.start_server(app)
     # Open and select a leaf
     dash_duo.wait_for_element("#c").click()
@@ -537,7 +543,7 @@ def test_cascader_debounce_multi_defers_until_close(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: ",".join(sorted(str(x) for x in (v or []))))
+    app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
     dash_duo.start_server(app)
     # Open and check Japan
     dash_duo.wait_for_element("#c").click()
@@ -629,7 +635,7 @@ def test_cascader_multi_parent_checkbox_selects_children(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: ",".join(sorted(str(x) for x in (v or []))))
+    app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     # Click the Asia parent checkbox (first row, first column)
@@ -652,7 +658,7 @@ def test_cascader_multi_clear_resets_to_empty_list(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: repr(v))
+    app.callback(Output("out", "children"), Input("c", "value"))(repr)
     dash_duo.start_server(app)
     dash_duo.wait_for_element(".dash-cascader-clear").click()
     dash_duo.wait_for_text_to_equal("#out", "[]")
@@ -673,7 +679,7 @@ def test_cascader_flat_options(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: str(v))
+    app.callback(Output("out", "children"), Input("c", "value"))(str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()
@@ -718,7 +724,7 @@ def test_cascader_multi_select_all_scoped_to_search(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(lambda v: ",".join(sorted(str(x) for x in (v or []))))
+    app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("jap")
