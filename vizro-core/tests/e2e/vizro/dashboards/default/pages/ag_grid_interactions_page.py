@@ -17,15 +17,7 @@ ag_grid_interactions_page = vm.Page(
                 id="ag_grid_table_country",
                 data_frame=gapminder,
             ),
-            actions=[
-                vm.Action(
-                    function=filter_interaction(
-                        targets=[
-                            cnst.LINE_AG_GRID_INTERACTIONS_ID,
-                        ]
-                    )
-                )
-            ],
+            actions=filter_interaction(targets=[cnst.LINE_AG_GRID_INTERACTIONS_ID]),
         ),
         vm.Graph(
             id=cnst.LINE_AG_GRID_INTERACTIONS_ID,
