@@ -17,10 +17,10 @@
 }
 
 .dash-dropdown-grid-container {
-  place-items: center start;
   display: grid;
   gap: calc(var(--Dash-Spacing) * 2);
   grid-template-columns: auto 1fr;
+  place-items: center start;
 }
 
 .dash-dropdown-grid-container:has(> :nth-child(3)) {
@@ -178,7 +178,6 @@
 
 /* Hide the "x" clear button in search inputs */
 .dash-dropdown-search::-webkit-search-cancel-button {
-  appearance: none;
   appearance: none;
   display: none;
 }
