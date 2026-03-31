@@ -66,7 +66,7 @@ Every page should answer specific questions. Document them explicitly:
 
 ### 4. Select KPIs
 
-**The 5-7 Rule**: No more than 5-7 primary KPIs per page.
+**The 7 ± 2 Rule**: No more than 5–9 primary KPIs per page.
 
 **KPI Selection Criteria**:
 
@@ -185,7 +185,7 @@ Information Architecture Checklist:
 - [ ] Dashboard purpose is clear in one sentence
 - [ ] Target users are identified
 - [ ] Each page answers specific questions (documented)
-- [ ] Primary KPIs are limited (5-7 per page)
+- [ ] Primary KPIs are limited (5–9 per page, 7 ± 2 rule)
 - [ ] Data sources are accessible and understood
 - [ ] Information hierarchy is defined (primary/supporting/detail)
 - [ ] User has explicitly confirmed the structure
