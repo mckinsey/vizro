@@ -342,7 +342,7 @@ def test_notification_with_no_update_actions_chain(dash_br):
     dash_br.multiple_click(button_id_path(btn_id=cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_NO_UPDATE_BUTTON), 1)
 
     # Check that two notifications are shown
-    for alert_id in range(2):
+    for alert_id in range(1, 3):
         dash_br.wait_for_text_to_equal(
             f'div[role="alert"]:nth-of-type({alert_id}) div[class$="Notification-title"]',
             cnst.SUCCESS_NOTIFICATION_TITLE,

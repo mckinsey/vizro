@@ -61,6 +61,10 @@ python = "3.13"
 PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/e2e/vizro/dashboards/yaml:tests/tests_utils:tests/e2e/vizro/custom_components"
 
 [envs.default.scripts]
+tests-e2e-vizro-dom-elements = "pytest -vs tests/e2e/vizro/test_dom_elements/test_notifications.py::test_notification_with_prevent_update_value_error_actions_chain --headless {args}"
+tests-http-e2e-vizro-dom-elements = "pytest -vs tests/e2e/vizro/test_http_requests/test_http_requests.py::test_notification_with_no_update_actions_chain --headless {args}"
+dashboard-e2e-vizro-dom-elements = "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90"
+dashboard-http-e2e-vizro-dom-elements = "gunicorn dashboard_http_requests:app -b 0.0.0.0:5002 -w 1 --timeout 90"
 download-static-files = "python tools/download_static_files.py"
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
 generate-docs-images = "python tools/generate_docs_images.py"
