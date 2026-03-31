@@ -1,27 +1,26 @@
 /* Vendored from dash-core-components dropdown.css — keep in sync with dcc.Dropdown chrome. */
 .dash-dropdown {
-  display: block;
-  flex: 1;
-  box-sizing: border-box;
-  padding: 0;
+  accent-color: var(--Dash-Fill-Interactive-Strong);
   background: var(--Dash-Fill-Inverse-Strong);
   border: none;
-  outline: none;
-  width: 100%;
+  box-sizing: border-box;
   cursor: pointer;
+  display: block;
+  flex: 1;
   font-family: inherit;
   font-size: inherit;
-  overflow: hidden;
-  accent-color: var(--Dash-Fill-Interactive-Strong);
+  outline: none;
   outline-color: var(--Dash-Fill-Interactive-Strong);
+  overflow: hidden;
+  padding: 0;
+  width: 100%;
 }
 
 .dash-dropdown-grid-container {
+  place-items: center start;
   display: grid;
-  grid-template-columns: auto 1fr;
-  justify-items: start;
-  align-items: center;
   gap: calc(var(--Dash-Spacing) * 2);
+  grid-template-columns: auto 1fr;
 }
 
 .dash-dropdown-grid-container:has(> :nth-child(3)) {
@@ -34,16 +33,16 @@
 
 .dash-dropdown,
 .dash-dropdown-content {
-  border-radius: var(--Dash-Spacing);
   border: 1px solid var(--Dash-Stroke-Strong);
+  border-radius: var(--Dash-Spacing);
   color: inherit;
   text-align: left;
 }
 
 .dash-dropdown-trigger {
-  padding: 0 12px;
-  min-height: 32px;
   height: 100%;
+  min-height: 32px;
+  padding: 0 12px;
 }
 
 .dash-dropdown:focus {
@@ -52,14 +51,14 @@
 }
 
 .dash-dropdown:disabled {
-  opacity: 0.6;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .dash-dropdown-value {
   max-width: 100%;
-  text-align: left;
   overflow: hidden;
+  text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -78,23 +77,23 @@
 
 .dash-dropdown-content {
   background: var(--Dash-Fill-Inverse-Strong);
-  width: fit-content;
-  min-width: var(--radix-popover-trigger-width);
-  max-width: 98vw;
-  overflow-y: auto;
-  z-index: 500;
   box-shadow:
-    0px 10px 38px -10px var(--Dash-Shading-Strong),
-    0px 10px 20px -15px var(--Dash-Shading-Weak);
+    0 10px 38px -10px var(--Dash-Shading-Strong),
+    0 10px 20px -15px var(--Dash-Shading-Weak);
+  max-width: 98vw;
+  min-width: var(--radix-popover-trigger-width);
+  overflow-y: auto;
   overscroll-behavior: contain;
+  width: fit-content;
+  z-index: 500;
 }
 
 .dash-dropdown-value-count,
 .dash-dropdown-trigger-icon {
   color: var(--Dash-Text-Strong);
   fill: var(--Dash-Text-Strong);
-  white-space: nowrap;
   justify-self: end;
+  white-space: nowrap;
 }
 
 .dash-dropdown-trigger-icon {
@@ -106,22 +105,22 @@
 }
 
 .dash-dropdown-value-count {
-  line-height: 18px;
-  padding: 4px;
+  background: var(--Dash-Fill-Interactive-Weak);
   border-radius: 4px;
   color: var(--Dash-Text-Weak);
-  background: var(--Dash-Fill-Interactive-Weak);
   font-size: 0.875em;
+  line-height: 18px;
+  padding: 4px;
 }
 
 .dash-dropdown-search-container {
-  position: sticky;
-  top: calc(var(--Dash-Spacing) * 2);
+  background: var(--Dash-Fill-Inverse-Strong);
+  border: 1px solid var(--Dash-Stroke-Strong);
+  border-radius: 4px;
   margin: calc(var(--Dash-Spacing) * 2);
   padding: var(--Dash-Spacing);
-  border-radius: 4px;
-  border: 1px solid var(--Dash-Stroke-Strong);
-  background: var(--Dash-Fill-Inverse-Strong);
+  position: sticky;
+  top: calc(var(--Dash-Spacing) * 2);
 }
 
 .dash-dropdown-search-container:focus-within {
@@ -131,8 +130,8 @@
 
 .dash-dropdown-search-icon,
 .dash-dropdown-clear {
-  width: 1em;
   height: 1em;
+  width: 1em;
 }
 
 .dash-dropdown-search-container:focus-within .dash-dropdown-search-icon {
@@ -144,15 +143,15 @@
 }
 
 .dash-dropdown-clear {
+  align-items: center;
   background: none;
   border: none;
+  color: var(--Dash-Text-Strong);
   cursor: pointer;
-  padding: 0;
   display: flex;
-  align-items: center;
   justify-content: center;
   justify-self: end;
-  color: var(--Dash-Text-Strong);
+  padding: 0;
 }
 
 .dash-dropdown-clear:hover {
@@ -160,26 +159,26 @@
 }
 
 .dash-dropdown-clear:focus {
+  border-radius: 2px;
   outline: 2px solid var(--Dash-Fill-Interactive-Strong);
   outline-offset: 1px;
-  border-radius: 2px;
 }
 
 .dash-dropdown-search {
-  line-height: calc(var(--Dash-Spacing) * 6);
-  width: 100%;
-  border: none;
   background: transparent;
+  border: none;
   color: var(--Dash-Text-Strong);
-  outline: none;
-  padding: 0;
   font-family: inherit;
   font-size: inherit;
+  line-height: calc(var(--Dash-Spacing) * 6);
+  outline: none;
+  padding: 0;
+  width: 100%;
 }
 
 /* Hide the "x" clear button in search inputs */
 .dash-dropdown-search::-webkit-search-cancel-button {
-  -webkit-appearance: none;
+  appearance: none;
   appearance: none;
   display: none;
 }
@@ -189,27 +188,27 @@
 }
 
 .dash-dropdown-actions {
+  border-bottom: 1px solid var(--Dash-Fill-Disabled);
+  border-top: 1px solid var(--Dash-Fill-Disabled);
   display: flex;
   gap: calc(var(--Dash-Spacing) * 6);
   line-height: 18px;
   padding: var(--Dash-Spacing) calc(var(--Dash-Spacing) * 3);
-  border-top: 1px solid var(--Dash-Fill-Disabled);
-  border-bottom: 1px solid var(--Dash-Fill-Disabled);
 }
 
 .dash-dropdown-action-button {
+  accent-color: var(--Dash-Fill-Interactive-Strong);
   background: none;
   border: none;
+  color: var(--Dash-Text-Weak);
   cursor: pointer;
   font-family: inherit;
   font-size: 0.875em;
   font-weight: 600;
+  outline-color: var(--Dash-Fill-Interactive-Strong);
   padding: 0;
   text-decoration: none;
-  color: var(--Dash-Text-Weak);
   white-space: nowrap;
-  accent-color: var(--Dash-Fill-Interactive-Strong);
-  outline-color: var(--Dash-Fill-Interactive-Strong);
 }
 
 .dash-dropdown-action-button:hover {
@@ -225,17 +224,18 @@
 }
 
 .dash-dropdown-option {
-  padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
   box-shadow: 0 -1px 0 0 var(--Dash-Fill-Disabled) inset;
+  padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
 }
 
 .dash-dropdown-option
   .dash-options-list-option-wrapper:has(input[type="radio"]) {
+  overflow: hidden;
+
   /* radio buttons are used in single-select dropdowns to aid keyboard
    * selection and screen readers, but visually, they are hidden
    */
   width: 0;
-  overflow: hidden;
 }
 
 /* Positioning container for the dropdown */

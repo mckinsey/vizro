@@ -1,6 +1,5 @@
 """Cascader stress test: large synthetic tree for scroll, search, and panel performance."""
 
-
 from __future__ import annotations
 
 import dash
