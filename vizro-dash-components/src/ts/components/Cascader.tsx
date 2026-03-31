@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
-// biome-ignore lint/correctness/noUnusedImports: React must be in scope for classic JSX transform
-import type React from "react";
-import { Component } from "react";
+// biome-ignore lint/style/useImportType: "jsx": "react" requires React in scope at runtime
+import React, { Component } from "react";
 import CascaderFragment, { type CascaderProps } from "../fragments/Cascader";
 import type { CascaderOptionsRaw } from "../fragments/cascaderUtils";
 

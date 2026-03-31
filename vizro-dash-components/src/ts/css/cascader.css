@@ -1,5 +1,27 @@
 /* Cascader-specific UI (columns, rows, search results). Trigger/panel chrome: dropdown-chrome.css */
 
+/*
+ * Single vertical scroll: chrome (search, multi actions) stays fixed; only columns / search-results
+ * list scrolls. Overrides .dash-dropdown-content { overflow-y: auto } which would stack with
+ * .dash-cascader-column { overflow-y: auto } (double scrollbar).
+ */
+.dash-dropdown-content.dash-cascader-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dash-cascader-content > .dash-dropdown-search-container,
+.dash-cascader-content > .dash-dropdown-actions {
+  flex-shrink: 0;
+}
+
+.dash-cascader-content > .dash-cascader-columns,
+.dash-cascader-content > .dash-cascader-results {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 /* Column area */
 .dash-cascader-columns {
   box-sizing: border-box;
@@ -12,6 +34,7 @@
   box-sizing: border-box;
   flex-shrink: 0;
   max-height: 100%;
+  min-height: 0;
   min-width: 140px;
   overflow-y: auto;
 }

@@ -343,7 +343,14 @@ const CascaderFragment = ({
       if (nextIndex > -1) {
         focusableElements[nextIndex].focus();
         if (nextIndex === 0) {
-          cascaderContentRef.current?.scrollTo({ top: 0 });
+          const root = cascaderContentRef.current;
+          if (root) {
+            for (const el of root.querySelectorAll(
+              ".dash-cascader-column, .dash-cascader-results",
+            )) {
+              (el as HTMLElement).scrollTop = 0;
+            }
+          }
         } else {
           focusableElements[nextIndex].scrollIntoView({
             behavior: "auto",
@@ -385,7 +392,9 @@ const CascaderFragment = ({
 
   const handleParentClick = useCallback((colIdx: number, rowIdx: number) => {
     setActivePath((prev) => {
-      if (prev[colIdx] === rowIdx && prev.length === colIdx + 1) {
+      // Toggle closed: clicking the active parent at this column collapses this
+      // branch entirely (all deeper segments), not only the deepest column.
+      if (prev[colIdx] === rowIdx) {
         return prev.slice(0, colIdx);
       }
       const next = prev.slice(0, colIdx);
@@ -632,7 +641,7 @@ const CascaderFragment = ({
 
   function renderColumns() {
     return (
-      <div className="dash-cascader-columns" style={{ maxHeight }}>
+      <div className="dash-cascader-columns">
         {columns.map((colOptions, colIdx) => (
           <div
             key={colOptions.map((o) => String(o.value)).join("|")}
@@ -751,7 +760,7 @@ const CascaderFragment = ({
       );
     }
     return (
-      <div className="dash-cascader-results" style={{ maxHeight }}>
+      <div className="dash-cascader-results">
         {searchResults.map((result) => {
           const { option, breadcrumb } = result;
           const isLeafHit = result.kind === "leaf";

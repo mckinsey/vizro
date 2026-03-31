@@ -227,7 +227,7 @@ def test_cascader_single_clear(dash_duo):
     )
     app.callback(Output("out", "children"), Input("c", "value"))(str)
     dash_duo.start_server(app)
-    dash_duo.wait_for_element("#c a.dash-dropdown-clear").click()
+    dash_duo.wait_for_element("#c button.dash-dropdown-clear").click()
     dash_duo.wait_for_text_to_equal("#out", "None")
 
 
@@ -414,6 +414,23 @@ def test_cascader_three_levels(dash_duo):
     assert dash_duo.get_logs() == []
 
 
+def test_cascader_collapse_top_level_closes_whole_branch(dash_duo):
+    """Clicking an expanded top-level parent collapses the full branch, not only the deepest column."""
+    app = _app(Cascader(id="c", options=OPTIONS_3LEVEL))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-column:nth-child(1) .dash-cascader-row").click()  # Asia
+    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    rows[0].click()  # East Asia
+    dash_duo.wait_for_text_to_equal(".dash-cascader-column:nth-child(3) .dash-cascader-row-label", "Japan")
+    assert len(dash_duo.driver.find_elements("css selector", ".dash-cascader-column")) == 3
+    # Click Asia in column 1 again: expect root-only (one column), not Asia + East Asia still open.
+    dash_duo.driver.find_element("css selector", ".dash-cascader-column:nth-child(1) .dash-cascader-row").click()
+    cols_after = dash_duo.driver.find_elements("css selector", ".dash-cascader-column")
+    assert len(cols_after) == 1
+    assert dash_duo.get_logs() == []
+
+
 # --- shorthand options format ---
 
 
@@ -485,10 +502,10 @@ def test_cascader_shorthand_mixed_list_option_dicts_and_scalars(dash_duo):
     rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
     rows[0].click()  # Nippon → value japan
     dash_duo.wait_for_text_to_equal("#out", "japan")
-    # Re-open and pick scalar leaf China
+    # Re-open: activePath still has Asia expanded; clicking col1 would collapse it.
     dash_duo.wait_for_element("#c").click()
-    dash_duo.wait_for_element(".dash-cascader-row").click()
     rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    assert len(rows) >= 2
     rows[1].click()
     dash_duo.wait_for_text_to_equal("#out", "China")
     assert dash_duo.get_logs() == []
@@ -691,7 +708,7 @@ def test_cascader_clearable_false_hides_clear_button(dash_duo):
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, value="japan", clearable=False))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c")
-    clears = dash_duo.driver.find_elements("css selector", "#c a.dash-dropdown-clear")
+    clears = dash_duo.driver.find_elements("css selector", "#c button.dash-dropdown-clear")
     assert len(clears) == 0
     assert dash_duo.get_logs() == []
 
@@ -771,7 +788,7 @@ def test_cascader_multi_clear_resets_to_empty_list(dash_duo):
     )
     app.callback(Output("out", "children"), Input("c", "value"))(repr)
     dash_duo.start_server(app)
-    dash_duo.wait_for_element("#c a.dash-dropdown-clear").click()
+    dash_duo.wait_for_element("#c button.dash-dropdown-clear").click()
     dash_duo.wait_for_text_to_equal("#out", "[]")
     assert dash_duo.get_logs() == []
 

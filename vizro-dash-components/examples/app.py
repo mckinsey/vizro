@@ -94,4 +94,4 @@ def _toggle_shell_navbar(opened, navbar):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
