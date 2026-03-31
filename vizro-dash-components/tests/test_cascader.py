@@ -86,7 +86,44 @@ def test_cascader_opens_on_click(dash_duo):
     dash_duo.start_server(app)
     trigger = dash_duo.wait_for_element("#c")
     trigger.click()
-    dash_duo.wait_for_element(".dash-cascader-panel")
+    dash_duo.wait_for_element(".dash-cascader-content")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_keyboard_arrow_down_opens_and_focuses_search(dash_duo):
+    """ArrowDown on the closed trigger opens the panel and focuses search (dcc.Dropdown parity)."""
+    from selenium.webdriver.common.keys import Keys
+
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL))
+    dash_duo.start_server(app)
+    trigger = dash_duo.wait_for_element("#c")
+    dash_duo.driver.execute_script("arguments[0].focus();", trigger)
+    trigger.send_keys(Keys.ARROW_DOWN)
+    dash_duo.wait_for_element(".dash-cascader-content")
+    active = dash_duo.driver.switch_to.active_element
+    assert "dash-dropdown-search" in (active.get_attribute("class") or "")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_keyboard_backspace_on_trigger_clears(dash_duo):
+    """Backspace on the focused trigger clears selection when clearable (dcc.Dropdown parity)."""
+    from selenium.webdriver.common.keys import Keys
+
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_2LEVEL, value="japan"),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(str)
+    dash_duo.start_server(app)
+    trigger = dash_duo.wait_for_element("#c")
+    dash_duo.driver.execute_script("arguments[0].focus();", trigger)
+    trigger.send_keys(Keys.BACKSPACE)
+    dash_duo.wait_for_text_to_equal("#out", "None")
     assert dash_duo.get_logs() == []
 
 
@@ -116,10 +153,10 @@ def test_cascader_closes_on_outside_click(dash_duo):
     )
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    dash_duo.wait_for_element(".dash-cascader-panel")
+    dash_duo.wait_for_element(".dash-cascader-content")
     dash_duo.find_element("#outside").click()
     WebDriverWait(dash_duo.driver, 3).until(
-        EC.invisibility_of_element_located((By.CSS_SELECTOR, ".dash-cascader-panel"))
+        EC.invisibility_of_element_located((By.CSS_SELECTOR, ".dash-cascader-content"))
     )
 
 
@@ -148,8 +185,25 @@ def test_cascader_single_select_leaf(dash_duo):
     rows[0].click()
     # Panel closes, value updated
     dash_duo.wait_for_text_to_equal("#out", "japan")
-    panels = dash_duo.driver.find_elements("css selector", ".dash-cascader-panel")
+    panels = dash_duo.driver.find_elements("css selector", ".dash-cascader-content")
     assert len(panels) == 0
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_parent_expand_then_collapse(dash_duo):
+    """Clicking an expanded parent again collapses the child column."""
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    asia_row = dash_duo.wait_for_element(".dash-cascader-column:nth-child(1) .dash-cascader-row")
+    asia_row.click()
+    cols = dash_duo.driver.find_elements("css selector", ".dash-cascader-column")
+    assert len(cols) == 2
+    expanded = dash_duo.driver.find_element("css selector", ".dash-cascader-chevron-expanded")
+    assert expanded
+    dash_duo.driver.find_element("css selector", ".dash-cascader-column:nth-child(1) .dash-cascader-row").click()
+    cols_after = dash_duo.driver.find_elements("css selector", ".dash-cascader-column")
+    assert len(cols_after) == 1
     assert dash_duo.get_logs() == []
 
 
@@ -157,7 +211,7 @@ def test_cascader_single_select_shows_label_in_trigger(dash_duo):
     """Selected leaf label is shown in the trigger."""
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, value="japan"))
     dash_duo.start_server(app)
-    dash_duo.wait_for_text_to_equal("#c .dash-cascader-value", "Japan")
+    dash_duo.wait_for_text_to_equal("#c .dash-dropdown-value", "Japan")
 
 
 def test_cascader_single_clear(dash_duo):
@@ -173,7 +227,7 @@ def test_cascader_single_clear(dash_duo):
     )
     app.callback(Output("out", "children"), Input("c", "value"))(str)
     dash_duo.start_server(app)
-    dash_duo.wait_for_element(".dash-cascader-clear").click()
+    dash_duo.wait_for_element("#c a.dash-dropdown-clear").click()
     dash_duo.wait_for_text_to_equal("#out", "None")
 
 
@@ -203,7 +257,7 @@ def test_cascader_multi_select_leaf(dash_duo):
     checkboxes[0].click()
     dash_duo.wait_for_text_to_equal("#out", "japan")
     # Panel still open
-    assert dash_duo.find_element(".dash-cascader-panel")
+    assert dash_duo.find_element(".dash-cascader-content")
     assert dash_duo.get_logs() == []
 
 
@@ -211,8 +265,8 @@ def test_cascader_multi_shows_count_badge(dash_duo):
     """Trigger shows count badge when N > 1 values are selected."""
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, multi=True, value=["japan", "france"]))
     dash_duo.start_server(app)
-    dash_duo.wait_for_element(".dash-cascader-count")
-    badge_text = dash_duo.find_element(".dash-cascader-count").text
+    dash_duo.wait_for_element(".dash-dropdown-value-count")
+    badge_text = dash_duo.find_element(".dash-dropdown-value-count").text
     assert "2" in badge_text
 
 
@@ -230,7 +284,7 @@ def test_cascader_multi_select_all(dash_duo):
     app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    dash_duo.wait_for_element(".dash-cascader-action-button").click()
+    dash_duo.wait_for_element(".dash-dropdown-action-button").click()
     dash_duo.wait_for_text_to_equal("#out", "china,france,germany,japan")
     assert dash_duo.get_logs() == []
 
@@ -249,7 +303,7 @@ def test_cascader_multi_deselect_all(dash_duo):
     app.callback(Output("out", "children"), Input("c", "value"))(_sorted_values_string)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    buttons = dash_duo.driver.find_elements("css selector", ".dash-cascader-action-button")
+    buttons = dash_duo.driver.find_elements("css selector", ".dash-dropdown-action-button")
     buttons[1].click()  # "Deselect all"
     dash_duo.wait_for_text_to_equal("#out", "[]")
     assert dash_duo.get_logs() == []
@@ -263,15 +317,15 @@ def test_cascader_search_filters_results(dash_duo):
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("jap")
+    dash_duo.wait_for_element(".dash-dropdown-search").send_keys("jap")
     dash_duo.wait_for_element(".dash-cascader-result-row")
     result_labels = [
         el.text for el in dash_duo.driver.find_elements("css selector", ".dash-cascader-row-label") if el.is_displayed()
     ]
     assert "Japan" in result_labels
 
-    dash_duo.find_element(".dash-cascader-search-input").clear()
-    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("asi")
+    dash_duo.find_element(".dash-dropdown-search").clear()
+    dash_duo.wait_for_element(".dash-dropdown-search").send_keys("asi")
     dash_duo.wait_for_element(".dash-cascader-result-row-branch")
     branch_labels = [
         el.text for el in dash_duo.driver.find_elements("css selector", ".dash-cascader-row-label") if el.is_displayed()
@@ -293,10 +347,10 @@ def test_cascader_search_single_select_closes_on_pick(dash_duo):
     app.callback(Output("out", "children"), Input("c", "value"))(str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("jap")
+    dash_duo.wait_for_element(".dash-dropdown-search").send_keys("jap")
     dash_duo.wait_for_element(".dash-cascader-result-row").click()
     dash_duo.wait_for_text_to_equal("#out", "japan")
-    panels = dash_duo.driver.find_elements("css selector", ".dash-cascader-panel")
+    panels = dash_duo.driver.find_elements("css selector", ".dash-cascader-content")
     assert len(panels) == 0
 
 
@@ -305,10 +359,10 @@ def test_cascader_search_branch_navigates_to_columns(dash_duo):
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("asia")
+    dash_duo.wait_for_element(".dash-dropdown-search").send_keys("asia")
     dash_duo.wait_for_element(".dash-cascader-result-row-branch").click()
     dash_duo.wait_for_element(".dash-cascader-columns")
-    search = dash_duo.wait_for_element(".dash-cascader-search-input")
+    search = dash_duo.wait_for_element(".dash-dropdown-search")
     assert search.get_attribute("value") == ""
     labels_col2 = [
         el.text
@@ -335,9 +389,9 @@ def test_cascader_multi_select_all_search_only_leaves(dash_duo):
     app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("a")
+    dash_duo.wait_for_element(".dash-dropdown-search").send_keys("a")
     dash_duo.wait_for_element(".dash-cascader-result-row-branch")
-    dash_duo.wait_for_element(".dash-cascader-action-button").click()
+    dash_duo.wait_for_element(".dash-dropdown-action-button").click()
     dash_duo.wait_for_text_to_equal("#out", "china,france,germany,japan")
     assert dash_duo.get_logs() == []
 
@@ -490,7 +544,7 @@ def test_cascader_shorthand_search_finds_normalized_leaves(dash_duo):
     app = _app(Cascader(id="c", options=OPTIONS_SHORTHAND_DICT_LIST))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("Germ")
+    dash_duo.wait_for_element(".dash-dropdown-search").send_keys("Germ")
     dash_duo.wait_for_element(".dash-cascader-result-row")
     labels = [
         el.text for el in dash_duo.driver.find_elements("css selector", ".dash-cascader-row-label") if el.is_displayed()
@@ -518,23 +572,23 @@ def test_cascader_option_search_field_used_for_filtering(dash_duo):
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     # "nippon" matches via search field, not label
-    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("nippon")
+    dash_duo.wait_for_element(".dash-dropdown-search").send_keys("nippon")
     dash_duo.wait_for_element(".dash-cascader-result-row")
     labels = [
         el.text for el in dash_duo.driver.find_elements("css selector", ".dash-cascader-row-label") if el.is_displayed()
     ]
     assert "Japan" in labels
     # "japan" does NOT match (search field replaces label matching)
-    dash_duo.find_element(".dash-cascader-search-input").clear()
-    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("japan")
+    dash_duo.find_element(".dash-dropdown-search").clear()
+    dash_duo.wait_for_element(".dash-dropdown-search").send_keys("japan")
     import time
 
     time.sleep(0.3)
     results = dash_duo.driver.find_elements("css selector", ".dash-cascader-result-row")
     assert len(results) == 0
 
-    dash_duo.find_element(".dash-cascader-search-input").clear()
-    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("east-region")
+    dash_duo.find_element(".dash-dropdown-search").clear()
+    dash_duo.wait_for_element(".dash-dropdown-search").send_keys("east-region")
     dash_duo.wait_for_element(".dash-cascader-result-row-branch").click()
     dash_duo.wait_for_element(".dash-cascader-columns")
     dash_duo.wait_for_text_to_equal(".dash-cascader-column:nth-child(2) .dash-cascader-row-label", "Japan")
@@ -626,8 +680,8 @@ def test_cascader_searchable_false_hides_search_bar(dash_duo):
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, searchable=False))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    dash_duo.wait_for_element(".dash-cascader-panel")
-    inputs = dash_duo.driver.find_elements("css selector", ".dash-cascader-search-input")
+    dash_duo.wait_for_element(".dash-cascader-content")
+    inputs = dash_duo.driver.find_elements("css selector", ".dash-dropdown-search")
     assert len(inputs) == 0
     assert dash_duo.get_logs() == []
 
@@ -637,7 +691,7 @@ def test_cascader_clearable_false_hides_clear_button(dash_duo):
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, value="japan", clearable=False))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c")
-    clears = dash_duo.driver.find_elements("css selector", ".dash-cascader-clear")
+    clears = dash_duo.driver.find_elements("css selector", "#c a.dash-dropdown-clear")
     assert len(clears) == 0
     assert dash_duo.get_logs() == []
 
@@ -652,7 +706,7 @@ def test_cascader_disabled_does_not_open(dash_duo):
     # pointer-events: none blocks Selenium's native click, so use JS
     dash_duo.driver.execute_script("document.querySelector('#c').click()")
     time.sleep(0.3)
-    panels = dash_duo.driver.find_elements("css selector", ".dash-cascader-panel")
+    panels = dash_duo.driver.find_elements("css selector", ".dash-cascader-content")
     assert len(panels) == 0
     assert dash_duo.get_logs() == []
 
@@ -670,10 +724,10 @@ def test_cascader_escape_closes_panel(dash_duo):
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    dash_duo.wait_for_element(".dash-cascader-panel")
-    dash_duo.driver.find_element(By.CSS_SELECTOR, ".dash-cascader-search-input").send_keys(Keys.ESCAPE)
+    dash_duo.wait_for_element(".dash-cascader-content")
+    dash_duo.driver.find_element(By.CSS_SELECTOR, ".dash-dropdown-search").send_keys(Keys.ESCAPE)
     WebDriverWait(dash_duo.driver, 3).until(
-        EC.invisibility_of_element_located((By.CSS_SELECTOR, ".dash-cascader-panel"))
+        EC.invisibility_of_element_located((By.CSS_SELECTOR, ".dash-cascader-content"))
     )
     assert dash_duo.get_logs() == []
 
@@ -717,7 +771,7 @@ def test_cascader_multi_clear_resets_to_empty_list(dash_duo):
     )
     app.callback(Output("out", "children"), Input("c", "value"))(repr)
     dash_duo.start_server(app)
-    dash_duo.wait_for_element(".dash-cascader-clear").click()
+    dash_duo.wait_for_element("#c a.dash-dropdown-clear").click()
     dash_duo.wait_for_text_to_equal("#out", "[]")
     assert dash_duo.get_logs() == []
 
@@ -741,7 +795,7 @@ def test_cascader_flat_options(dash_duo):
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()
     dash_duo.wait_for_text_to_equal("#out", "red")
-    panels = dash_duo.driver.find_elements("css selector", ".dash-cascader-panel")
+    panels = dash_duo.driver.find_elements("css selector", ".dash-cascader-content")
     assert len(panels) == 0
     assert dash_duo.get_logs() == []
 
@@ -763,7 +817,7 @@ def test_cascader_programmatic_value_update(dash_duo):
     app.callback(Output("c", "value"), Input("btn", "n_clicks"), prevent_initial_call=True)(lambda n: "japan")
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#btn").click()
-    dash_duo.wait_for_text_to_equal("#c .dash-cascader-value", "Japan")
+    dash_duo.wait_for_text_to_equal("#c .dash-dropdown-value", "Japan")
     assert dash_duo.get_logs() == []
 
 
@@ -784,9 +838,9 @@ def test_cascader_multi_select_all_scoped_to_search(dash_duo):
     app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    dash_duo.wait_for_element(".dash-cascader-search-input").send_keys("jap")
+    dash_duo.wait_for_element(".dash-dropdown-search").send_keys("jap")
     dash_duo.wait_for_element(".dash-cascader-result-row")
-    dash_duo.wait_for_element(".dash-cascader-action-button").click()  # Select all (filtered)
+    dash_duo.wait_for_element(".dash-dropdown-action-button").click()  # Select all (filtered)
     dash_duo.wait_for_text_to_equal("#out", "japan")
     assert dash_duo.get_logs() == []
 
@@ -804,10 +858,10 @@ def test_cascader_persistence(dash_duo):
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
     rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
     rows[0].click()  # Japan
-    dash_duo.wait_for_text_to_equal("#c .dash-cascader-value", "Japan")
+    dash_duo.wait_for_text_to_equal("#c .dash-dropdown-value", "Japan")
 
     # Reload and check value is restored
     dash_duo.driver.refresh()
     dash_duo.wait_for_element("#c")
-    dash_duo.wait_for_text_to_equal("#c .dash-cascader-value", "Japan")
+    dash_duo.wait_for_text_to_equal("#c .dash-dropdown-value", "Japan")
     assert dash_duo.get_logs() == []

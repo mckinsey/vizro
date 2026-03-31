@@ -4,8 +4,8 @@
 
 import dash
 import dash_mantine_components as dmc
+import vizro_dash_components as vdc
 from dash import html
-from vizro_dash_components import Markdown
 
 dash.register_page(__name__)
 
@@ -119,35 +119,35 @@ def section(title, description, component):
 
 layout = html.Div(
     [
-        section("Headings", "All six heading levels.", Markdown(HEADINGS)),
+        section("Headings", "All six heading levels.", vdc.Markdown(HEADINGS)),
         section(
             "Text formatting",
             "Bold, italic, strikethrough, inline code, blockquote.",
-            Markdown(PARAGRAPHS),
+            vdc.Markdown(PARAGRAPHS),
         ),
-        section("Lists", "Unordered and ordered, with nesting.", Markdown(LISTS)),
-        section("Table", "GFM pipe-table syntax.", Markdown(TABLE)),
+        section("Lists", "Unordered and ordered, with nesting.", vdc.Markdown(LISTS)),
+        section("Table", "GFM pipe-table syntax.", vdc.Markdown(TABLE)),
         section(
             "Code block — Python",
             "Syntax highlighting via dmc.CodeHighlight (requires MantineProvider).",
-            Markdown(CODE_PYTHON),
+            vdc.Markdown(CODE_PYTHON),
         ),
-        section("Code block — JavaScript", None, Markdown(CODE_JS)),
-        section("Code block — SQL", None, Markdown(CODE_SQL)),
+        section("Code block — JavaScript", None, vdc.Markdown(CODE_JS)),
+        section("Code block — SQL", None, vdc.Markdown(CODE_SQL)),
         section(
             "MathJax — inline",
             "mathjax=True enables LaTeX rendering. Inline: $...$",
-            Markdown(MATHJAX_INLINE, mathjax=True),
+            vdc.Markdown(MATHJAX_INLINE, mathjax=True),
         ),
         section(
             "MathJax — block",
             "Display equations: $$...$$",
-            Markdown(MATHJAX_BLOCK, mathjax=True),
+            vdc.Markdown(MATHJAX_BLOCK, mathjax=True),
         ),
         section(
             "Links with link_target",
             'link_target="_blank" opens links in a new tab.',
-            Markdown(LINKS, link_target="_blank"),
+            vdc.Markdown(LINKS, link_target="_blank"),
         ),
         html.Div(style={"height": "200px"}),
     ]

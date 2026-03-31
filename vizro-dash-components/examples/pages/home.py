@@ -10,7 +10,7 @@ layout = html.Div(
     [
         dmc.Title("vizro-dash-components examples", order=2, mb="sm"),
         dmc.Text(
-            "This app is a small Dash + Mantine playground for Vizro Dash Components (vdc): "
+            "This app is a small demo for Vizro Dash Components (vdc): "
             "custom Dash components you can use on their own or from Vizro dashboards.",
             mb="md",
         ),

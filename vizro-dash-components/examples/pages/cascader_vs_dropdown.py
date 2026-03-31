@@ -6,8 +6,8 @@ from __future__ import annotations
 
 import dash
 import dash_mantine_components as dmc
-from dash import Input, Output, callback, dcc, get_relative_path, html
-from vizro_dash_components import Cascader
+import vizro_dash_components as vdc
+from dash import Input, Output, callback, dcc, html
 
 # name= required: Dash default title-cases only the first character ("Vdc.cascader vs dropdown").
 dash.register_page(
@@ -152,12 +152,6 @@ LOCATIONS_FLAT = flatten_dict_tree(LOCATIONS)
 PRODUCTS_FLAT = flatten_dict_tree(PRODUCTS)
 ORG_FLAT = flatten_explicit_nodes(ORG_TREE)
 
-_CROSS_LINK_STYLE = {
-    "color": "var(--mantine-color-dimmed)",
-    "fontSize": "var(--mantine-font-size-sm)",
-    "marginBottom": "var(--mantine-spacing-md)",
-}
-
 _INLINE_CODE_STYLE = {
     "fontFamily": "var(--mantine-font-family-monospace, ui-monospace, monospace)",
     "fontSize": "0.88em",
@@ -203,18 +197,6 @@ layout = html.Div(
             mb="lg",
             span=True,
         ),
-        html.P(
-            [
-                "See also: ",
-                dmc.Anchor(
-                    "Cascader showcase",
-                    href=get_relative_path("/cascader"),
-                    fz="sm",
-                    c="dimmed",
-                ),
-            ],
-            style=_CROSS_LINK_STYLE,
-        ),
         # --- Visual comparison ---
         dmc.Paper(
             [
@@ -229,7 +211,7 @@ layout = html.Div(
                 side_by_side(
                     compare_column(
                         "vdc.Cascader",
-                        Cascader(
+                        vdc.Cascader(
                             id="vis-cascade-cities",
                             options=LOCATIONS,
                             placeholder="Pick a city…",
@@ -258,7 +240,7 @@ layout = html.Div(
                 side_by_side(
                     compare_column(
                         "vdc.Cascader",
-                        Cascader(
+                        vdc.Cascader(
                             id="vis-cascade-products",
                             options=PRODUCTS,
                             placeholder="Pick products…",
@@ -311,7 +293,7 @@ layout = html.Div(
                 side_by_side(
                     compare_column(
                         "vdc.Cascader",
-                        Cascader(
+                        vdc.Cascader(
                             id="vis-cascade-explicit",
                             options=ORG_TREE,
                             placeholder="Pick a person…",
@@ -356,7 +338,7 @@ layout = html.Div(
                 side_by_side(
                     compare_column(
                         "vdc.Cascader",
-                        Cascader(
+                        vdc.Cascader(
                             id="stress-cascade-single",
                             options=STRESS_TREE,
                             placeholder="Open panels…",
@@ -385,7 +367,7 @@ layout = html.Div(
                 side_by_side(
                     compare_column(
                         "vdc.Cascader",
-                        Cascader(
+                        vdc.Cascader(
                             id="stress-cascade-multi",
                             options=STRESS_TREE,
                             placeholder="Multi…",

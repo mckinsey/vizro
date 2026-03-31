@@ -1,18 +1,21 @@
-// biome-ignore lint/style/useImportType: React value import required for classic JSX ("jsx": "react" in tsconfig)
+import {
+  CaretDownIcon,
+  Cross1Icon,
+  MagnifyingGlassIcon,
+} from "@radix-ui/react-icons";
+import * as Popover from "@radix-ui/react-popover";
 import React, {
+  type MouseEvent,
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
 } from "react";
+import "../css/dropdown-chrome.css";
 import "../css/cascader.css";
-import {
-  CaretDownIcon,
-  ChevronRightIcon,
-  Cross1Icon,
-  MagnifyingGlassIcon,
-} from "./CascaderIcons";
+import { ChevronRightIcon } from "./CascaderIcons";
 import {
   buildColumns,
   type CascaderOption,
@@ -23,6 +26,26 @@ import {
   parentCheckState,
   searchOptions,
 } from "./cascaderUtils";
+
+export type CascaderLabels = {
+  select_all?: string;
+  deselect_all?: string;
+  selected_count?: string;
+  search?: string;
+  clear_search?: string;
+  clear_selection?: string;
+  no_options_found?: string;
+};
+
+const defaultLabels: CascaderLabels = {
+  select_all: "Select All",
+  deselect_all: "Deselect All",
+  selected_count: "{num_selected} selected",
+  search: "Search",
+  clear_search: "Clear search",
+  clear_selection: "Clear selection",
+  no_options_found: "No options found",
+};
 
 export type CascaderProps = {
   id?: string;
@@ -39,6 +62,9 @@ export type CascaderProps = {
   style?: React.CSSProperties;
   optionHeight?: "auto" | number;
   debounce?: boolean;
+  closeOnSelect?: boolean;
+  labels?: CascaderLabels;
+  search_value?: string;
   persistence?: boolean | string | number;
   persisted_props?: string[];
   persistence_type?: "local" | "session" | "memory";
@@ -52,30 +78,67 @@ const CascaderFragment = ({
   multi = false,
   searchable = true,
   clearable = true,
-  placeholder = "Select...",
+  placeholder,
   disabled = false,
-  maxHeight = 300,
+  maxHeight = 200,
   className,
   style,
   optionHeight = "auto",
   debounce = false,
+  closeOnSelect,
+  labels: labelsProp,
+  search_value,
 }: CascaderProps) => {
+  const shouldCloseOnSelect = closeOnSelect ?? !multi;
+  const dashApi = (
+    window as unknown as {
+      dash_component_api?: {
+        useDashContext?: () => { useLoading?: () => boolean };
+      };
+    }
+  ).dash_component_api;
+  const ctx = dashApi?.useDashContext?.();
+  const loading = ctx?.useLoading?.();
+  const labels = useMemo(
+    () => ({ ...defaultLabels, ...labelsProp }),
+    [labelsProp],
+  );
   const options = useMemo(() => normalizeOptions(optionsRaw), [optionsRaw]);
 
   const [isOpen, setIsOpen] = useState(false);
   const [activePath, setActivePath] = useState<number[]>([]);
-  const [searchValue, setSearchValue] = useState("");
-  // Local value state for debounce: tracks selection without firing setProps
   const [localValue, setLocalValue] = useState(value);
-  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const searchValue = search_value ?? "";
+  const setSearchValue = useCallback(
+    (v: string) => setProps?.({ search_value: v || undefined }),
+    [setProps],
+  );
+
+  const localValueRef = useRef(localValue);
+  const valueRef = useRef(value);
+  localValueRef.current = localValue;
+  valueRef.current = value;
+
+  const pendingSearchRef = useRef("");
+
+  const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
+    null,
+  );
+  const cascaderContentRef = useRef<HTMLDivElement>(
+    document.createElement("div"),
+  );
   const searchRef = useRef<HTMLInputElement>(null);
 
-  // Sync localValue when external value changes
+  const reactId = useId();
+  const accessibleId = id ?? reactId.replace(/:/g, "");
+
   useEffect(() => {
-    setLocalValue(value);
+    if (JSON.stringify(value) !== JSON.stringify(localValueRef.current)) {
+      setLocalValue(value);
+    }
   }, [value]);
 
-  // Reset activePath when options change
   const prevOptionsRef = useRef(options);
   useEffect(() => {
     if (prevOptionsRef.current !== options) {
@@ -84,48 +147,69 @@ const CascaderFragment = ({
     }
   }, [options]);
 
-  // Commit debounced value and close
-  const closePanel = useCallback(() => {
-    setIsOpen(false);
-    setSearchValue("");
-    if (debounce && localValue !== value) {
-      setProps?.({ value: localValue });
+  const allLeaves = useMemo(
+    () => new Set(collectAllLeaves(options)),
+    [options],
+  );
+  const prevAllLeavesRef = useRef(allLeaves);
+  useEffect(() => {
+    if (
+      prevAllLeavesRef.current === allLeaves ||
+      searchValue ||
+      value === null ||
+      value === undefined
+    ) {
+      prevAllLeavesRef.current = allLeaves;
+      return;
     }
-  }, [debounce, localValue, value, setProps]);
-
-  // Close panel on outside click — also commits debounced value
-  useEffect(() => {
-    if (!isOpen) return;
-    const handler = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (wrapperRef.current && !wrapperRef.current.contains(target)) {
-        closePanel();
+    prevAllLeavesRef.current = allLeaves;
+    if (Array.isArray(value)) {
+      if (multi) {
+        const invalids = value.filter((v) => !allLeaves.has(v));
+        if (invalids.length) {
+          const cleaned = value.filter((v) => allLeaves.has(v));
+          setProps?.({ value: cleaned });
+        }
       }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [isOpen, closePanel]);
-
-  // Close on Escape — also commits debounced value
-  useEffect(() => {
-    if (!isOpen) return;
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        closePanel();
+    } else {
+      if (!allLeaves.has(value)) {
+        setProps?.({ value: null });
       }
-    };
-    document.addEventListener("keydown", handler);
-    return () => document.removeEventListener("keydown", handler);
-  }, [isOpen, closePanel]);
+    }
+  }, [allLeaves, value, multi, searchValue, setProps]);
 
-  // Focus search when panel opens
+  const finalizeClose = useCallback(() => {
+    pendingSearchRef.current = "";
+    const updates: Record<string, unknown> = {};
+    if (search_value) {
+      updates.search_value = undefined;
+    }
+    if (debounce && localValueRef.current !== valueRef.current) {
+      updates.value = localValueRef.current;
+    }
+    if (Object.keys(updates).length > 0) {
+      setProps?.(updates);
+    }
+    setIsOpen(false);
+  }, [debounce, search_value, setProps]);
+
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      if (open) {
+        setIsOpen(true);
+      } else {
+        finalizeClose();
+      }
+    },
+    [finalizeClose],
+  );
+
   useEffect(() => {
     if (isOpen && searchable) {
       requestAnimationFrame(() => searchRef.current?.focus());
     }
   }, [isOpen, searchable]);
 
-  // Fire setProps immediately or defer to close depending on debounce
   const emitValue = useCallback(
     (next: unknown) => {
       if (debounce) {
@@ -138,7 +222,6 @@ const CascaderFragment = ({
     [debounce, setProps],
   );
 
-  // Derived values — use localValue so optimistic updates render during debounce
   const selectedValues: (string | number)[] = useMemo(() => {
     const v = localValue;
     if (v === null || v === undefined) return [];
@@ -161,7 +244,6 @@ const CascaderFragment = ({
     return searchOptions(options, searchValue);
   }, [options, searchValue]);
 
-  // Find the label for a given value (for trigger display)
   const findLabel = useCallback(
     (val: string | number): string => {
       const find = (opts: CascaderOption[]): string | undefined => {
@@ -179,30 +261,98 @@ const CascaderFragment = ({
     [options],
   );
 
-  // --- Interaction handlers ---
+  const clearSelection = useCallback(() => {
+    const next = multi ? [] : null;
+    emitValue(next);
+  }, [multi, emitValue]);
 
-  const handleTriggerClick = useCallback(() => {
-    if (disabled) return;
-    setIsOpen((prev) => {
-      if (prev) {
-        // closing via trigger click — commit debounced value
-        if (debounce && localValue !== value) {
-          setProps?.({ value: localValue });
-        }
-        setSearchValue("");
+  const handleClearSearch = useCallback(
+    (e: MouseEvent) => {
+      if (e.currentTarget instanceof HTMLElement) {
+        const parentElement = e.currentTarget.parentElement;
+        parentElement?.querySelector("input")?.focus();
       }
-      return !prev;
-    });
-  }, [disabled, debounce, localValue, value, setProps]);
-
-  const handleClear = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      const next = multi ? [] : null;
-      setLocalValue(next);
-      setProps?.({ value: next });
+      setSearchValue("");
     },
-    [multi, setProps],
+    [setSearchValue],
+  );
+
+  const handlePanelKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      const relevantKeys = [
+        "ArrowDown",
+        "ArrowUp",
+        "PageDown",
+        "PageUp",
+        "Home",
+        "End",
+      ];
+      if (!relevantKeys.includes(e.key)) {
+        return;
+      }
+
+      if (
+        ["Home", "End"].includes(e.key) &&
+        document.activeElement === searchRef.current
+      ) {
+        return;
+      }
+
+      const focusableSelector =
+        'input[type="search"], input:not([disabled]), button:not([disabled]), .dash-cascader-kbd-row';
+      const focusableElements = e.currentTarget.querySelectorAll(
+        focusableSelector,
+      ) as NodeListOf<HTMLElement>;
+
+      if (focusableElements.length === 0) {
+        return;
+      }
+
+      e.preventDefault();
+
+      const currentIndex = Array.from(focusableElements).indexOf(
+        document.activeElement as HTMLElement,
+      );
+      let nextIndex = -1;
+
+      switch (e.key) {
+        case "ArrowDown":
+          nextIndex =
+            currentIndex < focusableElements.length - 1 ? currentIndex + 1 : 0;
+          break;
+        case "ArrowUp":
+          nextIndex =
+            currentIndex > 0 ? currentIndex - 1 : focusableElements.length - 1;
+          break;
+        case "PageDown":
+          nextIndex = Math.min(currentIndex + 10, focusableElements.length - 1);
+          break;
+        case "PageUp":
+          nextIndex = Math.max(currentIndex - 10, 0);
+          break;
+        case "Home":
+          nextIndex = 0;
+          break;
+        case "End":
+          nextIndex = focusableElements.length - 1;
+          break;
+        default:
+          break;
+      }
+
+      if (nextIndex > -1) {
+        focusableElements[nextIndex].focus();
+        if (nextIndex === 0) {
+          cascaderContentRef.current?.scrollTo({ top: 0 });
+        } else {
+          focusableElements[nextIndex].scrollIntoView({
+            behavior: "auto",
+            block: "nearest",
+          });
+        }
+      }
+    },
+    [],
   );
 
   const handleLeafClick = useCallback(
@@ -213,29 +363,44 @@ const CascaderFragment = ({
           : [...selectedValues, leafValue];
         emitValue(next);
       } else {
-        // Single-select always commits immediately, even with debounce=true,
-        // because the panel closes right away.
+        localValueRef.current = leafValue;
+        valueRef.current = leafValue as typeof value;
         setLocalValue(leafValue);
         setProps?.({ value: leafValue });
-        setIsOpen(false);
-        setSearchValue("");
+      }
+      if (shouldCloseOnSelect) {
+        finalizeClose();
       }
     },
-    [multi, selectedSet, selectedValues, emitValue, setProps],
+    [
+      multi,
+      selectedSet,
+      selectedValues,
+      emitValue,
+      setProps,
+      shouldCloseOnSelect,
+      finalizeClose,
+    ],
   );
 
   const handleParentClick = useCallback((colIdx: number, rowIdx: number) => {
     setActivePath((prev) => {
+      if (prev[colIdx] === rowIdx && prev.length === colIdx + 1) {
+        return prev.slice(0, colIdx);
+      }
       const next = prev.slice(0, colIdx);
       next.push(rowIdx);
       return next;
     });
   }, []);
 
-  const handleSearchBranchNavigate = useCallback((branchPath: number[]) => {
-    setActivePath(branchPath);
-    setSearchValue("");
-  }, []);
+  const handleSearchBranchNavigate = useCallback(
+    (branchPath: number[]) => {
+      setActivePath(branchPath);
+      setSearchValue("");
+    },
+    [setSearchValue],
+  );
 
   const handleParentCheckbox = useCallback(
     (option: CascaderOption, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -282,9 +447,17 @@ const CascaderFragment = ({
     emitValue(selectedValues.filter((v) => !pool.has(v)));
   }, [searchValue, searchResults, options, selectedValues, emitValue]);
 
-  // --- Render helpers ---
-
   const canClear = clearable && !disabled && selectedValues.length > 0;
+
+  const canDeselectAll = useMemo(() => {
+    if (clearable) return true;
+    const pool = searchValue
+      ? searchResults
+          .filter((r) => r.kind === "leaf")
+          .map((r) => r.option.value)
+      : collectAllLeaves(options);
+    return !selectedValues.every((v) => pool.includes(v));
+  }, [clearable, searchValue, searchResults, options, selectedValues]);
 
   const rowStyle: React.CSSProperties | undefined =
     typeof optionHeight === "number" ? { height: optionHeight } : undefined;
@@ -295,187 +468,287 @@ const CascaderFragment = ({
     return selectedValues.map(findLabel);
   }, [selectedValues, multi, findLabel]);
 
-  const renderTrigger = () => (
-    // biome-ignore lint/a11y/useSemanticElements: trigger is a custom combobox control styled like dcc.Dropdown
-    <div
-      id={id}
-      role="button"
-      tabIndex={disabled ? -1 : 0}
-      className={`dash-cascader ${disabled ? "disabled" : ""} ${className ?? ""}`}
-      aria-expanded={isOpen}
-      aria-haspopup="listbox"
-      aria-disabled={disabled}
-      onClick={handleTriggerClick}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") handleTriggerClick();
-      }}
-    >
-      <span
-        className={[
-          "dash-cascader-trigger",
-          multi && selectedValues.length > 1 ? "has-count" : "",
-          canClear ? "has-clear" : "",
-        ]
-          .filter(Boolean)
-          .join(" ")}
-      >
-        {triggerLabels.length === 0 ? (
-          <span className="dash-cascader-value dash-cascader-placeholder">
-            {placeholder}
-          </span>
-        ) : (
-          <span className="dash-cascader-value">
-            {triggerLabels.map((label, i) => (
-              <span
-                key={String(selectedValues[i])}
-                className="dash-cascader-value-item"
-              >
-                {label}
-              </span>
-            ))}
-          </span>
-        )}
-        {multi && selectedValues.length > 1 && (
-          <span className="dash-cascader-count">
-            {selectedValues.length} selected
-          </span>
-        )}
-        {canClear && (
-          <button
-            type="button"
-            className="dash-cascader-clear"
-            onClick={handleClear}
-            aria-label="Clear selection"
-          >
-            <Cross1Icon />
-          </button>
-        )}
-        <CaretDownIcon className="dash-cascader-caret" />
-      </span>
-    </div>
-  );
+  const contentMaxHeight = maxHeight
+    ? `min(${maxHeight}px, calc(100vh - 100px))`
+    : "calc(100vh - 100px)";
 
-  const renderSearchBar = () => (
-    <div className="dash-cascader-search-container">
-      <MagnifyingGlassIcon className="dash-cascader-search-icon" />
-      <input
-        ref={searchRef}
-        type="search"
-        className="dash-cascader-search-input"
-        placeholder="Search..."
-        value={searchValue}
-        autoComplete="off"
-        onChange={(e) => setSearchValue(e.target.value)}
-      />
-      {searchValue && (
+  const popover = (
+    <Popover.Root open={isOpen} onOpenChange={handleOpenChange}>
+      <Popover.Trigger asChild>
         <button
+          id={id}
           type="button"
-          className="dash-cascader-clear"
-          onClick={() => setSearchValue("")}
-          aria-label="Clear search"
+          disabled={disabled}
+          className={`dash-dropdown ${className ?? ""}`}
+          aria-labelledby={`${accessibleId}-value-count ${accessibleId}-value`}
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          data-dash-is-loading={loading || undefined}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowDown" || e.key === "Enter") {
+              e.preventDefault();
+            }
+          }}
+          onKeyUp={(e) => {
+            if (disabled) return;
+            if (e.key === "ArrowDown" || e.key === "Enter") {
+              setIsOpen(true);
+            }
+            if ((e.key === "Delete" || e.key === "Backspace") && canClear) {
+              clearSelection();
+            }
+            if (e.key.length === 1 && searchable) {
+              pendingSearchRef.current += e.key;
+              setSearchValue(pendingSearchRef.current);
+              setIsOpen(true);
+              requestAnimationFrame(() => searchRef.current?.focus());
+            }
+          }}
         >
-          <Cross1Icon />
+          <span className="dash-dropdown-grid-container dash-dropdown-trigger">
+            {triggerLabels.length === 0 ? (
+              <span
+                id={`${accessibleId}-value`}
+                className="dash-dropdown-value dash-dropdown-placeholder"
+              >
+                {placeholder}
+              </span>
+            ) : (
+              <span
+                id={`${accessibleId}-value`}
+                className="dash-dropdown-value"
+              >
+                {triggerLabels.map((label, i) => (
+                  <span
+                    key={String(selectedValues[i])}
+                    className="dash-dropdown-value-item"
+                  >
+                    {label}
+                  </span>
+                ))}
+              </span>
+            )}
+            {multi && selectedValues.length > 1 && (
+              <span
+                id={`${accessibleId}-value-count`}
+                className="dash-dropdown-value-count"
+              >
+                {labels.selected_count?.replace(
+                  "{num_selected}",
+                  `${selectedValues.length}`,
+                )}
+              </span>
+            )}
+            {canClear && (
+              <button
+                type="button"
+                className="dash-dropdown-clear"
+                onClick={() => clearSelection()}
+                title={labels.clear_selection}
+                aria-label={labels.clear_selection}
+              >
+                <Cross1Icon />
+              </button>
+            )}
+            <CaretDownIcon className="dash-dropdown-trigger-icon" />
+          </span>
         </button>
-      )}
-    </div>
-  );
+      </Popover.Trigger>
 
-  const renderActionsBar = () => (
-    <div className="dash-cascader-actions">
-      <button
-        type="button"
-        className="dash-cascader-action-button"
-        onClick={handleSelectAll}
-      >
-        Select All
-      </button>
-      <button
-        type="button"
-        className="dash-cascader-action-button"
-        onClick={handleDeselectAll}
-      >
-        Deselect All
-      </button>
-    </div>
-  );
-
-  const renderColumns = () => (
-    <div className="dash-cascader-columns" style={{ maxHeight }}>
-      {columns.map((colOptions, colIdx) => (
-        <div
-          key={colOptions.map((o) => String(o.value)).join("|")}
-          className="dash-cascader-column"
+      <Popover.Portal container={portalContainer}>
+        <Popover.Content
+          ref={cascaderContentRef}
+          className="dash-dropdown-content dash-cascader-content"
+          align="start"
+          sideOffset={5}
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          onKeyDown={handlePanelKeyDown}
+          style={{ maxHeight: contentMaxHeight }}
         >
-          {colOptions.map((opt, rowIdx) => {
-            const isActive = activePath[colIdx] === rowIdx;
-            const isLeafNode = !opt.children || opt.children.length === 0;
-            const isSelected = selectedSet.has(opt.value);
+          {searchable && (
+            <div className="dash-dropdown-grid-container dash-dropdown-search-container">
+              <MagnifyingGlassIcon className="dash-dropdown-search-icon" />
+              <input
+                ref={searchRef}
+                type="search"
+                className="dash-dropdown-search"
+                placeholder={labels.search}
+                value={searchValue}
+                autoComplete="off"
+                onChange={(e) => setSearchValue(e.target.value)}
+                onKeyUp={(e) => {
+                  if (
+                    !searchValue ||
+                    e.key !== "Enter" ||
+                    !searchResults.length
+                  ) {
+                    return;
+                  }
+                  const firstLeaf = searchResults.find(
+                    (r) => r.kind === "leaf",
+                  );
+                  if (firstLeaf) {
+                    handleLeafClick(firstLeaf.option.value);
+                  }
+                }}
+              />
+              {searchValue && (
+                <button
+                  type="button"
+                  className="dash-dropdown-clear"
+                  onClick={handleClearSearch}
+                  aria-label={labels.clear_search}
+                >
+                  <Cross1Icon />
+                </button>
+              )}
+            </div>
+          )}
+          {multi && (
+            <div className="dash-dropdown-actions">
+              <button
+                type="button"
+                className="dash-dropdown-action-button"
+                onClick={handleSelectAll}
+              >
+                {labels.select_all}
+              </button>
+              {canDeselectAll && (
+                <button
+                  type="button"
+                  className="dash-dropdown-action-button"
+                  onClick={handleDeselectAll}
+                >
+                  {labels.deselect_all}
+                </button>
+              )}
+            </div>
+          )}
+          {searchValue ? renderSearchResults() : renderColumns()}
+        </Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
+  );
 
-            if (isLeafNode) {
+  function renderColumns() {
+    return (
+      <div className="dash-cascader-columns" style={{ maxHeight }}>
+        {columns.map((colOptions, colIdx) => (
+          <div
+            key={colOptions.map((o) => String(o.value)).join("|")}
+            className="dash-cascader-column"
+          >
+            {colOptions.map((opt, rowIdx) => {
+              const isActive = activePath[colIdx] === rowIdx;
+              const isLeafNode = !opt.children || opt.children.length === 0;
+              const isSelected = selectedSet.has(opt.value);
+
+              if (isLeafNode) {
+                const kbdRow = !multi && !opt.disabled;
+                return (
+                  // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style option row
+                  <div
+                    key={String(opt.value)}
+                    className={[
+                      "dash-cascader-row",
+                      isSelected && !multi ? "selected" : "",
+                      opt.disabled ? "disabled" : "",
+                      kbdRow ? "dash-cascader-kbd-row" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    style={rowStyle}
+                    tabIndex={kbdRow ? 0 : undefined}
+                    onClick={() => !opt.disabled && handleLeafClick(opt.value)}
+                    onKeyDown={(e) => {
+                      if (kbdRow && (e.key === "Enter" || e.key === " ")) {
+                        e.preventDefault();
+                        handleLeafClick(opt.value);
+                      }
+                    }}
+                  >
+                    {multi && (
+                      <input
+                        type="checkbox"
+                        className="dash-cascader-checkbox"
+                        checked={isSelected}
+                        disabled={opt.disabled}
+                        onChange={() => handleLeafClick(opt.value)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    )}
+                    <span className="dash-cascader-row-label">{opt.label}</span>
+                  </div>
+                );
+              }
+
+              const checkState = multi
+                ? parentCheckState(opt, selectedSet)
+                : undefined;
+              const kbdRow = !multi && !opt.disabled;
               return (
-                // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style option row (keyboard via cascader container)
-                // biome-ignore lint/a11y/useKeyWithClickEvents: leaf selection uses pointer; full listbox roving focus is out of scope
+                // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style parent row
                 <div
                   key={String(opt.value)}
-                  className={`dash-cascader-row${isSelected && !multi ? " selected" : ""}${opt.disabled ? " disabled" : ""}`}
+                  className={[
+                    "dash-cascader-row",
+                    isActive ? "active" : "",
+                    opt.disabled ? "disabled" : "",
+                    kbdRow ? "dash-cascader-kbd-row" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                   style={rowStyle}
-                  onClick={() => !opt.disabled && handleLeafClick(opt.value)}
+                  tabIndex={kbdRow ? 0 : undefined}
+                  onClick={() =>
+                    !opt.disabled && handleParentClick(colIdx, rowIdx)
+                  }
+                  onKeyDown={(e) => {
+                    if (kbdRow && (e.key === "Enter" || e.key === " ")) {
+                      e.preventDefault();
+                      handleParentClick(colIdx, rowIdx);
+                    }
+                  }}
                 >
                   {multi && (
                     <input
                       type="checkbox"
                       className="dash-cascader-checkbox"
-                      checked={isSelected}
+                      checked={checkState === "checked"}
+                      ref={(el) => {
+                        if (el)
+                          el.indeterminate = checkState === "indeterminate";
+                      }}
                       disabled={opt.disabled}
-                      onChange={() => handleLeafClick(opt.value)}
+                      onChange={(e) => handleParentCheckbox(opt, e)}
                       onClick={(e) => e.stopPropagation()}
                     />
                   )}
                   <span className="dash-cascader-row-label">{opt.label}</span>
+                  <ChevronRightIcon
+                    className={[
+                      "dash-cascader-chevron",
+                      isActive ? "dash-cascader-chevron-expanded" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                  />
                 </div>
               );
-            }
+            })}
+          </div>
+        ))}
+      </div>
+    );
+  }
 
-            const checkState = multi
-              ? parentCheckState(opt, selectedSet)
-              : undefined;
-            return (
-              // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style parent row (keyboard via cascader container)
-              // biome-ignore lint/a11y/useKeyWithClickEvents: parent drill-down uses pointer; full listbox roving focus is out of scope
-              <div
-                key={String(opt.value)}
-                className={`dash-cascader-row${isActive ? " active" : ""}${opt.disabled ? " disabled" : ""}`}
-                style={rowStyle}
-                onClick={() =>
-                  !opt.disabled && handleParentClick(colIdx, rowIdx)
-                }
-              >
-                {multi && (
-                  <input
-                    type="checkbox"
-                    className="dash-cascader-checkbox"
-                    checked={checkState === "checked"}
-                    ref={(el) => {
-                      if (el) el.indeterminate = checkState === "indeterminate";
-                    }}
-                    disabled={opt.disabled}
-                    onChange={(e) => handleParentCheckbox(opt, e)}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                )}
-                <span className="dash-cascader-row-label">{opt.label}</span>
-                <ChevronRightIcon className="dash-cascader-chevron" />
-              </div>
-            );
-          })}
-        </div>
-      ))}
-    </div>
-  );
-
-  const renderSearchResults = () => {
+  function renderSearchResults() {
     if (searchResults.length === 0) {
-      return <div className="dash-cascader-no-results">No options found</div>;
+      return (
+        <div className="dash-cascader-no-results">
+          {labels.no_options_found}
+        </div>
+      );
     }
     return (
       <div className="dash-cascader-results" style={{ maxHeight }}>
@@ -495,20 +768,28 @@ const CascaderFragment = ({
               handleLeafClick(option.value);
             }
           };
+          const kbdRow = !option.disabled && (!multi || (multi && !isLeafHit));
           return (
-            // biome-ignore lint/a11y/noStaticElementInteractions: search result row behaves as listbox option
-            // biome-ignore lint/a11y/useKeyWithClickEvents: selection uses pointer; full listbox roving focus is out of scope
+            // biome-ignore lint/a11y/noStaticElementInteractions: search result row
             <div
               key={rowKey}
               className={[
                 "dash-cascader-result-row",
                 result.kind === "branch" && "dash-cascader-result-row-branch",
                 isSelected && !multi && "selected",
+                kbdRow ? "dash-cascader-kbd-row" : "",
               ]
                 .filter(Boolean)
                 .join(" ")}
               style={rowStyle}
+              tabIndex={kbdRow ? 0 : undefined}
               onClick={onRowClick}
+              onKeyDown={(e) => {
+                if (kbdRow && (e.key === "Enter" || e.key === " ")) {
+                  e.preventDefault();
+                  onRowClick();
+                }
+              }}
             >
               {multi && isLeafHit && (
                 <input
@@ -529,18 +810,15 @@ const CascaderFragment = ({
         })}
       </div>
     );
-  };
+  }
 
   return (
-    <div ref={wrapperRef} className="dash-cascader-wrapper" style={style}>
-      {renderTrigger()}
-      {isOpen && (
-        <div className="dash-cascader-panel">
-          {searchable && renderSearchBar()}
-          {multi && renderActionsBar()}
-          {searchValue ? renderSearchResults() : renderColumns()}
-        </div>
-      )}
+    <div
+      ref={setPortalContainer}
+      className="dash-dropdown-wrapper dash-cascader-wrapper"
+      style={style}
+    >
+      {popover}
     </div>
   );
 };

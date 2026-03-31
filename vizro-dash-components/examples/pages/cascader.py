@@ -1,11 +1,11 @@
-"""Feature showcase for the Cascader component."""
+"""Example page for the Cascader component."""
 
 # ruff: noqa: D103
 
 import dash
 import dash_mantine_components as dmc
-from dash import Input, Output, callback, ctx, get_relative_path, html
-from vizro_dash_components import Cascader
+import vizro_dash_components as vdc
+from dash import Input, Output, callback, ctx, html
 
 dash.register_page(__name__)
 
@@ -63,31 +63,13 @@ def value_out(id):
     return dmc.Text(id=id, size="xs", c="dimmed", mt=4)
 
 
-_CROSS_LINK_STYLE = {
-    "color": "var(--mantine-color-dimmed)",
-    "fontSize": "var(--mantine-font-size-sm)",
-    "marginBottom": "var(--mantine-spacing-md)",
-}
-
 layout = html.Div(
     [
-        html.P(
-            [
-                "See also: ",
-                dmc.Anchor(
-                    "vdc.Cascader vs dcc.Dropdown",
-                    href=get_relative_path("/cascader-vs-dropdown"),
-                    fz="sm",
-                    c="dimmed",
-                ),
-            ],
-            style=_CROSS_LINK_STYLE,
-        ),
         section(
             "Single-select",
             "Click through the tree to select a leaf value. The panel closes on selection.",
             html.Div(
-                [Cascader(id="single", options=LOCATIONS, placeholder="Select a city..."), value_out("single-out")],
+                [vdc.Cascader(id="single", options=LOCATIONS, placeholder="Select a city..."), value_out("single-out")],
                 style={"maxWidth": MAX_WIDTH},
             ),
         ),
@@ -95,7 +77,10 @@ layout = html.Div(
             "Single-select with pre-set value",
             None,
             html.Div(
-                [Cascader(id="single-preseeded", options=LOCATIONS, value="Tokyo"), value_out("single-preseeded-out")],
+                [
+                    vdc.Cascader(id="single-preseeded", options=LOCATIONS, value="Tokyo"),
+                    value_out("single-preseeded-out"),
+                ],
                 style={"maxWidth": MAX_WIDTH},
             ),
         ),
@@ -105,7 +90,7 @@ layout = html.Div(
             "Count badge shown when more than one item is selected.",
             html.Div(
                 [
-                    Cascader(id="multi", options=LOCATIONS, multi=True, placeholder="Select cities..."),
+                    vdc.Cascader(id="multi", options=LOCATIONS, multi=True, placeholder="Select cities..."),
                     value_out("multi-out"),
                 ],
                 style={"maxWidth": MAX_WIDTH},
@@ -116,7 +101,9 @@ layout = html.Div(
             None,
             html.Div(
                 [
-                    Cascader(id="multi-preseeded", options=LOCATIONS, multi=True, value=["Tokyo", "Paris", "Berlin"]),
+                    vdc.Cascader(
+                        id="multi-preseeded", options=LOCATIONS, multi=True, value=["Tokyo", "Paris", "Berlin"]
+                    ),
                     value_out("multi-preseeded-out"),
                 ],
                 style={"maxWidth": MAX_WIDTH},
@@ -127,7 +114,7 @@ layout = html.Div(
             "Any nested dict/list structure works.",
             html.Div(
                 [
-                    Cascader(id="products", options=PRODUCTS, multi=True, placeholder="Select products..."),
+                    vdc.Cascader(id="products", options=PRODUCTS, multi=True, placeholder="Select products..."),
                     value_out("products-out"),
                 ],
                 style={"maxWidth": MAX_WIDTH},
@@ -137,7 +124,7 @@ layout = html.Div(
             "Not searchable, not clearable",
             "searchable=False hides the search input. clearable=False hides the X button.",
             html.Div(
-                Cascader(
+                vdc.Cascader(
                     id="no-search",
                     options=LOCATIONS,
                     searchable=False,
@@ -153,11 +140,11 @@ layout = html.Div(
             dmc.Group(
                 [
                     html.Div(
-                        Cascader(id="disabled-empty", options=LOCATIONS, disabled=True, placeholder="Disabled..."),
+                        vdc.Cascader(id="disabled-empty", options=LOCATIONS, disabled=True, placeholder="Disabled..."),
                         style={"width": MAX_WIDTH},
                     ),
                     html.Div(
-                        Cascader(id="disabled-val", options=LOCATIONS, disabled=True, value="Tokyo"),
+                        vdc.Cascader(id="disabled-val", options=LOCATIONS, disabled=True, value="Tokyo"),
                         style={"width": MAX_WIDTH},
                     ),
                 ],
@@ -177,7 +164,7 @@ layout = html.Div(
                         ],
                         mb="sm",
                     ),
-                    Cascader(id="programmatic", options=LOCATIONS, placeholder="Driven by buttons..."),
+                    vdc.Cascader(id="programmatic", options=LOCATIONS, placeholder="Driven by buttons..."),
                     value_out("programmatic-out"),
                 ],
                 style={"maxWidth": MAX_WIDTH},
@@ -187,7 +174,7 @@ layout = html.Div(
             "Constrained height (maxHeight=150)",
             "Each column scrolls independently within the constrained panel height.",
             html.Div(
-                Cascader(id="maxheight", options=LOCATIONS, multi=True, maxHeight=150),
+                vdc.Cascader(id="maxheight", options=LOCATIONS, multi=True, maxHeight=150),
                 style={"maxWidth": MAX_WIDTH},
             ),
         ),

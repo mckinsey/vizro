@@ -28,6 +28,8 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@radix-ui/react-icons": "^1.3.2",
+    "@radix-ui/react-popover": "^1.1.15",
     "@plotly/dash-component-plugins": "^1.2.3",
     "mathjax": "^3.2.2",
     "prop-types": "^15.8.1",

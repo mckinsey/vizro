@@ -1,239 +1,24 @@
-/* Trigger button — identical structure to .dash-dropdown */
-.dash-cascader {
-  background: var(--Dash-Fill-Inverse-Strong);
-  border: 1px solid var(--Dash-Stroke-Strong);
-  border-radius: var(--Dash-Spacing);
-  box-sizing: border-box;
-  color: inherit;
-  cursor: pointer;
-  display: block;
-  font-family: inherit;
-  font-size: inherit;
-  outline: none;
-  padding: 0;
-  text-align: left;
-  width: 100%;
-}
-
-.dash-cascader:focus {
-  border: 1px solid var(--Dash-Fill-Interactive-Strong);
-  outline: 1px solid var(--Dash-Fill-Interactive-Strong);
-}
-
-.dash-cascader.disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-/* Trigger inner grid — same pattern as .dash-dropdown-grid-container */
-.dash-cascader-trigger {
-  align-items: center;
-  display: grid;
-  gap: calc(var(--Dash-Spacing) * 2);
-  grid-template-columns: 1fr auto;
-  min-height: 32px;
-  padding: 0 12px;
-}
-
-/* value | count | caret */
-.dash-cascader-trigger.has-count {
-  grid-template-columns: minmax(0, 1fr) auto auto;
-}
-
-/* value | clear | caret */
-.dash-cascader-trigger.has-clear {
-  grid-template-columns: minmax(0, 1fr) auto auto;
-}
-
-/* value | count | clear | caret */
-.dash-cascader-trigger.has-count.has-clear {
-  grid-template-columns: minmax(0, 1fr) auto auto auto;
-}
-
-/* Value display */
-.dash-cascader-value {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.dash-cascader-value-item {
-  display: inline;
-}
-
-.dash-cascader-value-item:not(:first-child)::before {
-  content: ", ";
-}
-
-.dash-cascader-placeholder {
-  color: var(--Dash-Text-Disabled);
-}
-
-/* Count badge — same as .dash-dropdown-value-count */
-.dash-cascader-count {
-  background: var(--Dash-Fill-Interactive-Weak);
-  border-radius: 4px;
-  color: var(--Dash-Text-Weak);
-  font-size: 0.875em;
-  line-height: 18px;
-  padding: 4px;
-  white-space: nowrap;
-}
-
-/* Caret icon */
-.dash-cascader-caret {
-  color: var(--Dash-Text-Strong);
-  fill: var(--Dash-Text-Strong);
-  justify-self: end;
-  transition: transform 0.15s;
-}
-
-.dash-cascader[aria-expanded="true"] .dash-cascader-caret {
-  transform: rotate(180deg);
-}
-
-/* Clear button — same as .dash-dropdown-clear */
-.dash-cascader-clear {
-  align-items: center;
-  background: none;
-  border: none;
-  color: var(--Dash-Text-Strong);
-  cursor: pointer;
-  display: flex;
-  height: 1em;
-  justify-content: center;
-  justify-self: end;
-  padding: 0;
-  width: 1em;
-}
-
-.dash-cascader-clear:hover {
-  color: var(--Dash-Fill-Interactive-Strong);
-}
-
-.dash-cascader-clear:focus {
-  border-radius: 2px;
-  outline: 2px solid var(--Dash-Fill-Interactive-Strong);
-  outline-offset: 1px;
-}
-
-/* Panel */
-.dash-cascader-wrapper {
-  position: relative;
-}
-
-.dash-cascader-panel {
-  background: var(--Dash-Fill-Inverse-Strong);
-  border: 1px solid var(--Dash-Stroke-Strong);
-  border-radius: var(--Dash-Spacing);
-  box-shadow:
-    0 10px 38px -10px var(--Dash-Shading-Strong),
-    0 10px 20px -15px var(--Dash-Shading-Weak);
-  left: 0;
-  min-width: 100%;
-  overflow: hidden;
-  position: absolute;
-  top: calc(100% + 5px);
-  z-index: 500;
-}
-
-/* Search bar — same structure as .dash-dropdown-search-container */
-.dash-cascader-search-container {
-  align-items: center;
-  background: var(--Dash-Fill-Inverse-Strong);
-  border: 1px solid var(--Dash-Stroke-Strong);
-  border-radius: 4px;
-  display: grid;
-  gap: calc(var(--Dash-Spacing) * 2);
-  grid-template-columns: auto 1fr auto;
-  margin: calc(var(--Dash-Spacing) * 2);
-  padding: var(--Dash-Spacing);
-}
-
-.dash-cascader-search-container:focus-within {
-  border-color: var(--Dash-Fill-Interactive-Strong);
-  outline: 1px solid var(--Dash-Fill-Interactive-Strong);
-}
-
-.dash-cascader-search-icon {
-  color: var(--Dash-Text-Weak);
-  flex-shrink: 0;
-  height: 1em;
-  width: 1em;
-}
-
-.dash-cascader-search-container:focus-within .dash-cascader-search-icon {
-  color: var(--Dash-Fill-Interactive-Strong);
-}
-
-.dash-cascader-search-input {
-  background: transparent;
-  border: none;
-  color: var(--Dash-Text-Strong);
-  font-family: inherit;
-  font-size: inherit;
-  line-height: calc(var(--Dash-Spacing) * 6);
-  outline: none;
-  padding: 0;
-  width: 100%;
-}
-
-.dash-cascader-search-input::-webkit-search-cancel-button {
-  appearance: none;
-  display: none;
-}
-
-/* Actions bar (multi-select only) — same as .dash-dropdown-actions */
-.dash-cascader-actions {
-  border-bottom: 1px solid var(--Dash-Fill-Disabled);
-  border-top: 1px solid var(--Dash-Fill-Disabled);
-  display: flex;
-  gap: calc(var(--Dash-Spacing) * 6);
-  line-height: 18px;
-  padding: var(--Dash-Spacing) calc(var(--Dash-Spacing) * 3);
-}
-
-.dash-cascader-action-button {
-  accent-color: var(--Dash-Fill-Interactive-Strong);
-  background: none;
-  border: none;
-  color: var(--Dash-Text-Weak);
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 0.875em;
-  font-weight: 600;
-  outline-color: var(--Dash-Fill-Interactive-Strong);
-  padding: 0;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.dash-cascader-action-button:hover {
-  color: var(--Dash-Fill-Interactive-Strong);
-}
-
-.dash-cascader-action-button:focus {
-  text-decoration: underline;
-}
+/* Cascader-specific UI (columns, rows, search results). Trigger/panel chrome: dropdown-chrome.css */
 
 /* Column area */
 .dash-cascader-columns {
+  box-sizing: border-box;
   display: flex;
   overflow: hidden;
 }
 
 .dash-cascader-column {
   border-right: 1px solid var(--Dash-Fill-Disabled);
+  box-sizing: border-box;
   flex-shrink: 0;
   max-height: 100%;
   min-width: 140px;
   overflow-y: auto;
 }
 
+/* Keep a 1px border so column width does not change when the last column is removed (avoids chevron jump). */
 .dash-cascader-column:last-child {
-  border-right: none;
+  border-right-color: transparent;
 }
 
 /* Rows */
@@ -265,6 +50,11 @@
   cursor: not-allowed;
 }
 
+.dash-cascader-kbd-row:focus-visible {
+  outline: 2px solid var(--Dash-Fill-Interactive-Strong);
+  outline-offset: -2px;
+}
+
 .dash-cascader-row-label {
   flex: 1;
   overflow: hidden;
@@ -278,6 +68,11 @@
   fill: var(--Dash-Text-Weak);
   flex-shrink: 0;
   inline-size: 1em;
+  transition: transform 0.15s;
+}
+
+.dash-cascader-chevron-expanded {
+  transform: rotate(180deg);
 }
 
 /* Checkbox — matches .dash-options-list-option-checkbox */
@@ -294,6 +89,7 @@
 
 /* Search results — flat list */
 .dash-cascader-results {
+  box-sizing: border-box;
   overflow-y: auto;
 }
 

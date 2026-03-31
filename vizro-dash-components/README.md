@@ -1,8 +1,8 @@
 # Vizro Dash Components
 
-Vizro Dash Components are used by the Vizro framework but can be used in a pure Dash app.
+Vizro Dash Components are used by the Vizro framework but can be used in a pure Dash app. Use as `import vizro_dash_components as vdc`.
 
-See the [example Dash app](examples) and its [live demo on PyCafe](https://py.cafe/vizro-official/vizro-dash-components) for a full showcase of all components.
+See the [example Dash app](examples) and its [live demo on PyCafe](https://py.cafe/vizro-official/vizro-dash-components) for a full demo of all components.
 
 ## Installation
 
@@ -42,45 +42,80 @@ if __name__ == "__main__":
 
 ### Cascader
 
-Hierarchical cascading dropdown inspired by [Ant Design Cascader](https://ant.design/components/cascader) and [`fac.AntdCascader`](https://fac.feffery.tech/AntdCascader). Users navigate a tree of options via side-by-side panels and select leaf values. Supports single-select and multi-select. It accepts most of the same keyword arguments as [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown) and is built to visually match it.
+Hierarchical cascading dropdown inspired by [Ant Design Cascader](https://ant.design/components/cascader) and [`fac.AntdCascader`](https://fac.feffery.tech/AntdCascader). Users navigate a tree of options via side-by-side panels and select leaf values. Supports single-select and multi-select. It accepts all the same arguments as [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown) (for example `className`, `style`, `clearable`, `searchable`, `search_value`, `placeholder`, `disabled`, `multi`, `optionHeight`, `maxHeight`, `debounce`, `closeOnSelect`, `labels`, and persistence props) and is built to visually match it. Use `help(vdc.Cascader)` for the full list.
 
-**`options`** must be a **tree** (not a single flat list of siblings like a typical `dcc.Dropdown`). The **explicit** form is still the same idea as [`dcc.Dropdown` `options`](https://dash.plotly.com/dash-core-components/dropdown): each entry is a dict with `label` and `value`, but hierarchy is expressed with nested **`children`** lists instead of many items at one level.
+#### `options` format
 
-- **Explicit list of nodes** — A list of dicts. Each dict has `label` and `value`. Parents add **`children`**: a list of child dicts. Leaves omit `children`. You can also set optional fields on any node, same spirit as richer dropdown options: **`disabled`**, **`title`** (native tooltip), and **`search`** (string used for search instead of `label`).
-- **Nested dict / list shorthand** — As in the example below. Each dict key is a parent node (the key is used as both `label` and `value`). The value is either another nested dict (deeper levels) or a list of leaves. List entries are usually scalars (each scalar is both `label` and `value`), or you can use **full dicts** (`label`, `value`, and the optional keys above) where you need different labels, disabled rows, etc.
+`options` for [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown) describes a flat list and can be given in two different formats: a shorthand and an explicit option dict. `options` for `vdc.Cascader` describes a tree and can similarly be given in two different formats:
 
-**`value`** always reflects **leaf** choices only: a single string or number, or `null` when `multi=False`; a list of leaf values when `multi=True`.
+1. **Shorthand**
 
-When **`searchable=True`** (default), search matches **leaves and parent branches** (by `label` or `search`). Choosing a **branch** row clears the query and opens the side-by-side columns at that node; it does not change `value`.
+    - `dcc.Dropdown`: a list, for example `["New York City", "Montreal"]`.
+    - `vdc.Cascader`: a nested dict/list, for example `{"USA": ["New York City", "Boston"], "Canada": ["Toronto", "Montreal"]}`.
+
+1. **Explicit option dicts**
+
+    - `dcc.Dropdown`: a list of dicts, each with `label` and `value`, plus optional keys such as `disabled` and `search`.
+    - `vdc.Cascader`: a list of dicts, each with `label` and `value`, plus optional keys such as `disabled` and `search`. Parents also have `children`, a list of child dicts; leaves omit `children`.
+
+Only leaf values appear in the `vdc.Cascader` component’s `value` (single value or list when `multi=True`).
 
 ```python
-import vizro_dash_components as vdc
 from dash import Dash, Input, Output, html
+import vizro_dash_components as vdc
 
 OPTIONS = {
     "Asia": {
-        "Japan": ["Tokyo", "Osaka", "Kyoto", "Yokohama"],
-        "China": ["Beijing", "Shanghai", "Shenzhen", "Guangzhou"],
-        "India": ["Mumbai", "Delhi", "Bangalore", "Chennai"],
+        "Japan": ["Tokyo", "Osaka", "Kyoto"],
+        "China": ["Beijing", "Shanghai", "Guangzhou"],
     },
     "Europe": {
-        "France": ["Paris", "Lyon", "Marseille", "Toulouse"],
-        "Germany": ["Berlin", "Munich", "Hamburg", "Frankfurt"],
-        "UK": ["London", "Manchester", "Birmingham", "Edinburgh"],
+        "France": ["Paris", "Lyon", "Marseille"],
+        "Germany": ["Berlin", "Munich", "Hamburg"],
     },
 }
 
-app = Dash(__name__)
+# Same tree in explicit form.
+# label doesn't need to match value any more.
+# Optional on any dict: disabled, search.
+# OPTIONS = [
+#     {
+#         "label": "Asia",
+#         "value": "Asia",
+#         "children": [
+#             {
+#                 "label": "Japan",
+#                 "value": "Japan",
+#                 "children": [
+#                     {"label": "Tokyo", "value": "Tokyo"},
+#                     {"label": "Osaka", "value": "Osaka"},
+#                     {"label": "Kyoto", "value": "Kyoto"},
+#                 ],
+#             },
+#             {
+#                 "label": "China",
+#                 "value": "China",
+#                 "children": [
+#                     {"label": "Beijing", "value": "Beijing"},
+#                     {"label": "Shanghai", "value": "Shanghai"},
+#                     {"label": "Guangzhou", "value": "Guangzhou"},
+#                 ],
+#             },
+#         ],
+#     },
+#     ... similarly for Europe
+# ]
 
+app = Dash(__name__)
 app.layout = [
-    vdc.Cascader(id="cascade", options=OPTIONS, placeholder="Select a city..."),
-    html.Div(id="cascade-output"),
+    vdc.Cascader(id="regions", options=OPTIONS, placeholder="Select a city..."),
+    html.Div(id="out"),
 ]
 
 
-@app.callback(Output("cascade-output", "children"), Input("cascade", "value"))
-def show_selected(value):
-    return f"Selected: {value}"
+@app.callback(Output("out", "children"), Input("regions", "value"))
+def show(value):
+    return f"Selected leaf value: {value!r}"
 
 
 if __name__ == "__main__":

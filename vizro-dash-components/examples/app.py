@@ -5,18 +5,15 @@ from dash import Dash, Input, Output, State, callback, html, page_container, pag
 
 app = Dash(__name__, use_pages=True)
 
-_COMPARISON_MODULE = "cascader_vs_dropdown"
+_OTHER_MODULES = {"cascader_vs_dropdown", "cascader_stress_test"}
 
 
-def _showcase_pages():
-    return [p for p in page_registry.values() if p["module"].split(".")[-1] != _COMPARISON_MODULE]
+def _components_pages():
+    return [p for p in page_registry.values() if p["module"].split(".")[-1] not in _OTHER_MODULES]
 
 
-def _comparison_page():
-    for page in page_registry.values():
-        if page["module"].split(".")[-1] == _COMPARISON_MODULE:
-            return page
-    return None
+def _other_pages():
+    return [p for p in page_registry.values() if p["module"].split(".")[-1] in _OTHER_MODULES]
 
 
 def _page_anchor(page):
@@ -28,14 +25,14 @@ def _page_anchor(page):
 
 
 def _navbar_content():
-    main = [_page_anchor(p) for p in _showcase_pages()]
-    comparison = _comparison_page()
-    blocks = [dmc.Stack(main, gap="xs")]
-    if comparison is not None:
+    components = [_page_anchor(p) for p in _components_pages()]
+    other = [_page_anchor(p) for p in _other_pages()]
+    blocks = [dmc.Stack(components, gap="xs")]
+    if other:
         blocks.extend(
             [
                 dmc.Divider(my="sm"),
-                dmc.Stack([_page_anchor(comparison)], gap="xs"),
+                dmc.Stack(other, gap="xs"),
             ]
         )
     return dmc.Stack(blocks, gap=0, align="stretch")
