@@ -2,11 +2,11 @@
 #    uv pip compile requirements.in -o requirements.txt
 annotated-types==0.7.0
     # via pydantic
-autoflake==2.3.1
+autoflake==2.3.3
     # via
     #   -r requirements.in
     #   vizro
-black==24.4.2
+black==26.3.1
     # via
     #   -r requirements.in
     #   vizro
@@ -22,18 +22,21 @@ click==8.3.1
     # via
     #   black
     #   flask
-dash==3.3.0
+dash==4.0.0
     # via
     #   dash-ag-grid
     #   dash-bootstrap-components
     #   dash-mantine-components
     #   vizro
-dash-ag-grid==32.3.2
+    #   vizro-dash-components
+dash-ag-grid==33.3.3
     # via vizro
 dash-bootstrap-components==2.0.4
     # via vizro
 dash-mantine-components==2.4.0
-    # via vizro
+    # via
+    #   vizro
+    #   vizro-dash-components
 flask==3.1.2
     # via
     #   dash
@@ -75,11 +78,11 @@ packaging==25.0
     #   vizro
 pandas==2.3.3
     # via vizro
-pathspec==0.12.1
+pathspec==1.0.4
     # via black
 platformdirs==4.5.1
     # via black
-plotly==6.0.0
+plotly==6.6.0
     # via
     #   -r requirements.in
     #   dash
@@ -94,6 +97,8 @@ python-box==7.3.2
     # via vizro
 python-dateutil==2.9.0.post0
     # via pandas
+pytokens==0.4.1
+    # via black
 pytz==2025.2
     # via pandas
 requests==2.32.5
@@ -116,8 +121,10 @@ tzdata==2025.3
     # via pandas
 urllib3==2.6.2
     # via requests
-vizro==0.1.49
+vizro==0.1.53
     # via -r requirements.in
+vizro-dash-components==0.1.0
+    # via vizro
 werkzeug==3.1.4
     # via
     #   dash
