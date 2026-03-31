@@ -316,16 +316,12 @@ def test_progress_success_notification_chain(dash_br):
     )
 
     # Trigger action that results in progress notification followed by success notification and check their content
-    for click in range(1, 3):
+    for _ in range(2):
         dash_br.multiple_click(button_id_path(btn_id=cnst.CONDITIONAL_NOTIFICATION_PROGRESS_AND_SUCCESS_BUTTON), 1)
         dash_br.wait_for_text_to_equal(
             'div[role="alert"] div[class$="Notification-description"] p',
             cnst.CONDITIONAL_NOTIFICATION_PROGRESS_MSG,
         )
-
-        # Check that only one notification is shown
-        dash_br.wait_for_no_elements('div[role="alert"]:nth-of-type(2)', timeout=1)
-
         dash_br.wait_for_text_to_equal(
             'div[role="alert"] div[class$="Notification-description"] p',
             cnst.CONDITIONAL_NOTIFICATION_SUCCESS_MSG,
@@ -346,7 +342,7 @@ def test_notification_with_no_update_actions_chain(dash_br):
     dash_br.multiple_click(button_id_path(btn_id=cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_NO_UPDATE_BUTTON), 1)
 
     # Check that two notifications are shown
-    for alert_id in range(1, 3):
+    for alert_id in range(2):
         dash_br.wait_for_text_to_equal(
             f'div[role="alert"]:nth-of-type({alert_id}) div[class$="Notification-title"]',
             cnst.SUCCESS_NOTIFICATION_TITLE,

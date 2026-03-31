@@ -415,7 +415,7 @@ def test_notification_with_prevent_update_actions_chain(page, http_requests_path
     page.locator(f"a[href='/{cnst.CONDITIONAL_NOTIFICATIONS_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # click on the button that triggers PreventUpdate actions (1 http)
+    # click on the button that triggers 2 PreventUpdate actions (1 http)
     page.locator(f"#{cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_PREVENT_UPDATE_BUTTON}").click()
     check_http_requests_count(page, http_requests_paths, 3, sleep=3000)
 
@@ -429,7 +429,7 @@ def test_notification_with_value_error_actions_chain(page, http_requests_paths):
     page.locator(f"a[href='/{cnst.CONDITIONAL_NOTIFICATIONS_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # click on the button that triggers PreventUpdate actions (1 http)
+    # click on the button that triggers 2 ValueError actions (1 http)
     page.locator(f"#{cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_VALUE_ERROR_BUTTON}").click()
     check_http_requests_count(page, http_requests_paths, 3, sleep=3000)
 
