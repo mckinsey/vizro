@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from typing import NamedTuple
 
 import dash
 import dash_mantine_components as dmc
@@ -66,8 +66,9 @@ WIDE_TREE: dict[str, list[str]] = {
 WIDE_LEAF_COUNT = WIDE_ROOT_COUNT * WIDE_LEAVES_PER_ROOT
 
 
-@dataclass(frozen=True)
-class _StressIds:
+class _StressIds(NamedTuple):
+    """NamedTuple (not dataclass): Dash loads pages before they appear in sys.modules, which breaks @dataclass."""
+
     single_id: str
     multi_id: str
     single_out: str
