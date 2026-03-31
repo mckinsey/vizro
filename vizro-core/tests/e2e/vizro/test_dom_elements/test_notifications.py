@@ -360,7 +360,7 @@ def test_notification_with_no_update_actions_chain(dash_br):
             cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_PREVENT_UPDATE_BUTTON,
             # Note: PreventUpdate is treated as successfully finished action.
             cnst.SUCCESS_NOTIFICATION_TITLE,
-            "Finished 1st no_update action",
+            "Finished 1st PreventUpdate action",
         ),
         (
             cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_VALUE_ERROR_BUTTON,

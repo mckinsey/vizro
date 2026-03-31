@@ -179,10 +179,12 @@ conditional_notifications_page = vm.Page(
                 vm.Action(
                     function=capture("action")(lambda: no_update)(),
                     notifications={"success": "Finished 1 no_update action"},
+                    outputs="text",
                 ),
                 vm.Action(
                     function=capture("action")(lambda: no_update)(),
                     notifications={"success": "Finished 2 no_update action"},
+                    outputs="text",
                 ),
             ],
         ),
@@ -214,6 +216,7 @@ conditional_notifications_page = vm.Page(
                 ),
             ],
         ),
+        vm.Text(id="text", text="Click the button to run action."),
         vm.Graph(
             figure=px.scatter(
                 iris,
