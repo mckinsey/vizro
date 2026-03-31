@@ -32,7 +32,7 @@ class export_data(_AbstractAction):
 
     type: Literal["export_data"] = "export_data"
     targets: list[ModelID] = Field(
-        default_factory=list,
+        default=[],
         description="List of target component ids for which to download data. If none are given then "
         "download data from all components on the page.",
     )
