@@ -137,7 +137,7 @@ page_2 = vm.Page(
             id="cell_clicked",
             targets=["tips_table_title.cell_clicked"],
             visible=False,
-            selector=vm.RadioItems(options=[str(0) for x in range(100)]),
+            selector=vm.RadioItems(options=[str(x) for x in range(100)]),
         ),
     ],
 )
@@ -152,4 +152,5 @@ page_3 = vm.Page(
 
 dashboard = vm.Dashboard(pages=[page_1, page_2, page_3])
 
-Vizro().build(dashboard).run()
+if __name__ == "__main__":
+    Vizro().build(dashboard).run()

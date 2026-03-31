@@ -1,5 +1,5 @@
 /**
- * Combine and propagate cellClicked and selectedRows AgGrid inputs to tables's action trigger.
+ * Combine and propagate cellClicked and selectedRows AgGrid inputs to the table's action trigger.
  *
  *
  * @param {Object|null} cellClicked     AgGrid cellClicked from the table.
