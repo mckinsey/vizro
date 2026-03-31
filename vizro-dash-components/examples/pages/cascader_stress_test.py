@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import dash
 import dash_mantine_components as dmc
 import vizro_dash_components as vdc
@@ -10,7 +12,6 @@ from dash import Input, Output, callback, html
 dash.register_page(
     __name__,
     name="Cascader stress test",
-    title="Cascader stress test",
 )
 
 MAX_WIDTH = 400
@@ -65,16 +66,15 @@ WIDE_TREE: dict[str, list[str]] = {
 WIDE_LEAF_COUNT = WIDE_ROOT_COUNT * WIDE_LEAVES_PER_ROOT
 
 
-def _stress_scenario(
-    title: str,
-    blurb: str,
-    options: dict,
-    *,
-    single_id: str,
-    multi_id: str,
-    single_out: str,
-    multi_out: str,
-) -> list:
+@dataclass(frozen=True)
+class _StressIds:
+    single_id: str
+    multi_id: str
+    single_out: str
+    multi_out: str
+
+
+def _stress_scenario(title: str, blurb: str, options: dict, ids: _StressIds) -> list:
     base = {**_CASCADE_BASE, "options": options}
     return [
         dmc.Title(title, order=3, mb="xs"),
@@ -82,8 +82,8 @@ def _stress_scenario(
         dmc.Title("Single-select", order=4),
         html.Div(
             [
-                vdc.Cascader(id=single_id, placeholder="Single-select…", **base),
-                dmc.Text(id=single_out, size="sm", c="dimmed"),
+                vdc.Cascader(id=ids.single_id, placeholder="Single-select…", **base),
+                dmc.Text(id=ids.single_out, size="sm", c="dimmed"),
             ],
             style={"maxWidth": MAX_WIDTH},
         ),
@@ -92,13 +92,13 @@ def _stress_scenario(
         html.Div(
             [
                 vdc.Cascader(
-                    id=multi_id,
+                    id=ids.multi_id,
                     placeholder="Multi-select…",
                     multi=True,
                     debounce=True,
                     **base,
                 ),
-                dmc.Text(id=multi_out, size="sm", c="dimmed"),
+                dmc.Text(id=ids.multi_out, size="sm", c="dimmed"),
             ],
             style={"maxWidth": MAX_WIDTH},
         ),
@@ -115,20 +115,24 @@ layout = html.Div(
                     f"{DEEP_LEVELS} levels · branching {DEEP_BRANCHING} · "
                     f"{DEEP_LEAVES_PER_TERMINAL} leaves per terminal → {DEEP_LEAF_COUNT:,} leaf values.",
                     DEEP_TREE,
-                    single_id="stress-single",
-                    multi_id="stress-multi",
-                    single_out="stress-single-out",
-                    multi_out="stress-multi-out",
+                    _StressIds(
+                        single_id="stress-single",
+                        multi_id="stress-multi",
+                        single_out="stress-single-out",
+                        multi_out="stress-multi-out",
+                    ),
                 ),
                 dmc.Divider(),
                 *_stress_scenario(
                     "Wide tree",
-                    f"{WIDE_ROOT_COUNT} roots × {WIDE_LEAVES_PER_ROOT} leaves each → {WIDE_LEAF_COUNT:,} leaf values.",
+                    f"{WIDE_ROOT_COUNT} roots by {WIDE_LEAVES_PER_ROOT} leaves each → {WIDE_LEAF_COUNT:,} leaf values.",
                     WIDE_TREE,
-                    single_id="stress-wide-single",
-                    multi_id="stress-wide-multi",
-                    single_out="stress-wide-single-out",
-                    multi_out="stress-wide-multi-out",
+                    _StressIds(
+                        single_id="stress-wide-single",
+                        multi_id="stress-wide-multi",
+                        single_out="stress-wide-single-out",
+                        multi_out="stress-wide-multi-out",
+                    ),
                 ),
             ],
             gap="md",

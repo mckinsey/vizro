@@ -134,12 +134,12 @@
   width: 1em;
 }
 
-.dash-dropdown-search-container:focus-within .dash-dropdown-search-icon {
-  color: var(--Dash-Fill-Interactive-Strong);
-}
-
 .dash-dropdown-search-icon {
   color: var(--Dash-Text-Weak);
+}
+
+.dash-dropdown-search-container:focus-within .dash-dropdown-search-icon {
+  color: var(--Dash-Fill-Interactive-Strong);
 }
 
 .dash-dropdown-clear {

@@ -12,7 +12,7 @@ from dash import Input, Output, callback, dcc, html
 dash.register_page(
     __name__,
     name="vdc.Cascader vs dcc.Dropdown",
-    title="Comparison: vdc.Cascader vs dcc.Dropdown",
+    title="vdc.Cascader vs dcc.Dropdown",
 )
 
 LOCATIONS = {
