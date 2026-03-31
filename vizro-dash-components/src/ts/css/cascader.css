@@ -1,0 +1,150 @@
+/* Cascader-specific UI (columns, rows, search results). Trigger/panel chrome: dropdown-chrome.css */
+
+/* Base selectors before .dash-cascader-content > … (stylelint no-descending-specificity). */
+.dash-cascader-columns {
+  box-sizing: border-box;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Search results — flat list */
+.dash-cascader-results {
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/*
+ * Single vertical scroll: chrome (search, multi actions) stays fixed; only columns / search-results
+ * list scrolls. Overrides .dash-dropdown-content { overflow-y: auto } which would stack with
+ * .dash-cascader-column { overflow-y: auto } (double scrollbar).
+ */
+.dash-dropdown-content.dash-cascader-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dash-cascader-content > .dash-dropdown-search-container,
+.dash-cascader-content > .dash-dropdown-actions {
+  flex-shrink: 0;
+}
+
+.dash-cascader-content > .dash-cascader-columns,
+.dash-cascader-content > .dash-cascader-results {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* One column within the multi-column row */
+.dash-cascader-column {
+  border-right: 1px solid var(--Dash-Fill-Disabled);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  max-height: 100%;
+  min-height: 0;
+  min-width: 140px;
+  overflow-y: auto;
+}
+
+/* Keep a 1px border so column width does not change when the last column is removed (avoids chevron jump). */
+.dash-cascader-column:last-child {
+  border-right-color: transparent;
+}
+
+/* Rows */
+.dash-cascader-row {
+  align-items: center;
+  box-shadow: 0 -1px 0 0 var(--Dash-Fill-Disabled) inset;
+  cursor: pointer;
+  display: flex;
+  gap: calc(var(--Dash-Spacing) * 2);
+  min-height: 32px;
+  padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
+  white-space: nowrap;
+}
+
+.dash-cascader-row:hover {
+  color: var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-row.active {
+  color: var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-row.selected {
+  color: var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-row.disabled {
+  color: var(--Dash-Text-Disabled);
+  cursor: not-allowed;
+}
+
+.dash-cascader-kbd-row:focus-visible {
+  outline: 2px solid var(--Dash-Fill-Interactive-Strong);
+  outline-offset: -2px;
+}
+
+.dash-cascader-row-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-cascader-chevron {
+  align-self: center;
+  block-size: 1em;
+  color: var(--Dash-Text-Weak);
+  fill: var(--Dash-Text-Weak);
+  flex-shrink: 0;
+  inline-size: 1em;
+  transition: transform 0.15s;
+}
+
+.dash-cascader-chevron-expanded {
+  transform: rotate(180deg);
+}
+
+/* Checkbox — matches .dash-options-list-option-checkbox */
+.dash-cascader-checkbox {
+  accent-color: var(--Dash-Fill-Interactive-Strong);
+  border: 1px solid var(--Dash-Stroke-Strong);
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+  flex-shrink: 0;
+  margin: 0;
+  outline-color: var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-result-row {
+  align-items: center;
+  box-shadow: 0 -1px 0 0 var(--Dash-Fill-Disabled) inset;
+  cursor: pointer;
+  display: flex;
+  gap: calc(var(--Dash-Spacing) * 2);
+  justify-content: space-between;
+  min-height: 32px;
+  padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
+}
+
+.dash-cascader-result-row:hover {
+  color: var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-result-row.selected {
+  color: var(--Dash-Fill-Interactive-Strong);
+}
+
+.dash-cascader-breadcrumb {
+  color: var(--Dash-Text-Weak);
+  flex-shrink: 0;
+  font-size: 0.875em;
+  white-space: nowrap;
+}
+
+/* No-results message */
+.dash-cascader-no-results {
+  color: var(--Dash-Text-Disabled);
+  padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
+}
