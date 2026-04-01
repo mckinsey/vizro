@@ -298,7 +298,7 @@ class Filter(VizroBaseModel):
 
         if isinstance(self.selector, DISALLOWED_SELECTORS[selector_kind]):
             raise ValueError(
-                f"Chosen selector {type(self.selector).__name__} is not compatible with {selector_kind} "
+                f"Chosen selector {type(self.selector).__name__} is not compatible with {selector_kind} column "
                 f"'{self._single_filter_column}'."
             )
 

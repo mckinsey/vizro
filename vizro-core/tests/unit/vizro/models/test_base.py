@@ -383,6 +383,7 @@ def complete_dashboard():
 expected_card = """############ Imports ##############
 import vizro.models as vm
 
+
 ########### Model code ############
 model = vm.Card(text="Foo")
 """
@@ -391,6 +392,7 @@ model = vm.Card(text="Foo")
 expected_graph = """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
+
 
 ####### Data Manager Settings #####
 #######!!! UNCOMMENT BELOW !!!#####
@@ -431,6 +433,7 @@ import vizro.plotly.express as px
 import vizro.models as vm
 import vizro.actions as va
 
+
 ####### Data Manager Settings #####
 #######!!! UNCOMMENT BELOW !!!#####
 # from vizro.managers import data_manager
@@ -450,6 +453,7 @@ model = vm.Page(
 
 excepted_graph_dynamic = """############ Imports ##############
 import vizro.models as vm
+
 
 ####### Data Manager Settings #####
 #######!!! UNCOMMENT BELOW !!!#####
@@ -552,6 +556,7 @@ expected_code_px_via_json = """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 
+
 ####### Data Manager Settings #####
 #######!!! UNCOMMENT BELOW !!!#####
 # from vizro.managers import data_manager
@@ -591,6 +596,7 @@ model = vm.Graph(
 
 expected_code_pass_validation_via_json = """############ Imports ##############
 import vizro.models as vm
+
 
 ####### Data Manager Settings #####
 #######!!! UNCOMMENT BELOW !!!#####
