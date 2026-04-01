@@ -338,6 +338,7 @@
         },
         "options": {
           "additionalProperties": true,
+          "default": {},
           "description": "Nested tree: dict keys are branch labels; each branch is a dict or a non-empty list of scalar leaf values (str, int, float, bool, or date).",
           "title": "Options",
           "type": "object"
