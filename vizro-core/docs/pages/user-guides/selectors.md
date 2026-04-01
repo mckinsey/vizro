@@ -132,7 +132,6 @@ options = {
 
 Hierarchical selectors can be used in [parameters](parameters.md) and[hierarchical filters](filters.md#hierarchical-filters).
 
-
 ## Add a tooltip
 
 The `description` argument enables you to add helpful context to your selector by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your provided text.
@@ -272,7 +271,6 @@ An example would be to make the [`RadioItem`][vizro.models.RadioItems] display i
     === "Result"
 
         [![InlineRadio]][inlineradio]
-
 
 [dropdown]: ../../assets/user_guides/selectors/dropdown.png
 [infoiconselector]: ../../assets/user_guides/selectors/info_icon_selector.png
