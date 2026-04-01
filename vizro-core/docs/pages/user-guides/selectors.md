@@ -115,6 +115,24 @@ For more information, refer to the API reference of the selector, or the documen
 
 - [`Switch`][vizro.models.Switch] based on [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/)
 
+## Hierarchical selectors
+
+For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
+
+- [`Cascader`][vizro.models.Cascader] based on [`vdc.Cascader`](https://github.com/mckinsey/vizro/tree/main/vizro-dash-components)
+
+Hierarchical selectors shows choices in a nested menu. `options` gives the structure of a _tree_ of values (the _leaves_ of the tree), for example:
+
+```python
+options = {
+    "Asia": ["Japan", "India"],
+    "Europe": {"West": ["France", "Germany"], "North": ["Norway"]},
+}
+```
+
+Hierarchical selectors can be used in [parameters](parameters.md) and[hierarchical filters](filters.md#hierarchical-filters).
+
+
 ## Add a tooltip
 
 The `description` argument enables you to add helpful context to your selector by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your provided text.
@@ -255,25 +273,6 @@ An example would be to make the [`RadioItem`][vizro.models.RadioItems] display i
 
         [![InlineRadio]][inlineradio]
 
-## Hierarchical selectors (`Cascader`)
-
-The [`Cascader`][vizro.models.Cascader] shows choices in a nested menu. Selected values are always **leaf** scalars (strings, numbers, booleans, or dates).
-
-**Options shape:** a nested dictionary. Each **key** is a label for the next level. A **branch** is either another dictionary (go deeper) or a **list** of leaf values. For example:
-
-```python
-{
-    "Asia": ["Japan", "India"],
-    "Europe": {"West": ["France", "Germany"], "North": ["Norway"]},
-}
-```
-
-**Where it is used**
-
-- On a [`Parameter`][vizro.models.Parameter], you set `options` yourself (as above).
-- On a [`Filter`][vizro.models.Filter], pass `column` as a **list** of dataframe columns and use `vm.Cascader`; every column in the list must be categorical (same rules as other filters). Vizro fills `options` from your data. See [Hierarchical filters](filters.md#hierarchical-filters).
-
-[`set_control`][vizro.actions.set_control] supports `Cascader` targets: use a single leaf value, or a list of leaves when `multi=True`.
 
 [dropdown]: ../../assets/user_guides/selectors/dropdown.png
 [infoiconselector]: ../../assets/user_guides/selectors/info_icon_selector.png

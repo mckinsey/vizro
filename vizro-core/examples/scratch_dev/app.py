@@ -399,7 +399,7 @@ dashboard = vm.Dashboard(
         page_compare_in_containers,
         page_hierarchical_filter,
         page_set_control_cascader,
-        page_stress,
+        # page_stress,
     ],
 )
 

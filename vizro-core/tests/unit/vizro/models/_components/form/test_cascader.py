@@ -15,8 +15,6 @@ from vizro.models._components.form.cascader import (
     get_cascader_default_value,
 )
 
-MIN_OPTIONS = {"L": ["a"]}
-
 
 class TestCascaderInstantiation:
     """Tests model instantiation."""
@@ -30,11 +28,11 @@ class TestCascaderInstantiation:
             get_cascader_default_value({}, multi=False)
 
     def test_create_cascader_mandatory_only(self):
-        cascader = Cascader(options=MIN_OPTIONS)
+        cascader = Cascader(options={"L": ["a"]})
 
         assert hasattr(cascader, "id")
         assert cascader.type == "cascader"
-        assert cascader.options == MIN_OPTIONS
+        assert cascader.options == {"L": ["a"]}
         assert cascader.value is None
         assert cascader.multi is True
         assert cascader.title == ""
@@ -146,7 +144,7 @@ class TestCascaderInstantiation:
     def test_cascader_trigger(self, identity_action_function):
         cascader = Cascader(
             id="cascader-id",
-            options=MIN_OPTIONS,
+            options={"L": ["a"]},
             actions=[Action(function=identity_action_function())],
         )
         [action] = cascader.actions

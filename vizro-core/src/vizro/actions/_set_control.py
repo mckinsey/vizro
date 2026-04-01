@@ -53,11 +53,6 @@ class set_control(_AbstractAction):
     * [`Card`][vizro.models.Card]: triggers `set_control` when user clicks on the card. `value` specifies a
     literal value to set `control` to.
 
-    For [`Figure`][vizro.models.Figure], [`Button`][vizro.models.Button], and [`Card`][vizro.models.Card], `value` is a
-    literal passed to the target control: use an option value for categorical selectors (Dropdown, Checklist,
-    RadioItems) or a leaf scalar (or list of leaves when the target allows multi-select) for
-    [`Cascader`][vizro.models.Cascader].
-
     Example: `AgGrid` as trigger
         ```python
         import vizro.actions as va

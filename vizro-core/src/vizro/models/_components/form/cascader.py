@@ -55,12 +55,12 @@ def _walk_cascader_branch(node: Any, *, path: str) -> None:
 # root must be a non-empty dict (not a list), leaf lists must be non-empty, every leaf item must match
 # SingleValueType, and the tree must contain at least one leaf. The same helpers (e.g. walking the tree and
 # collecting leaves in depth-first order) are required elsewhere anyway.
-def validate_cascader_options_dict(data: Any) -> Any:
+def validate_cascader_options(data: Any) -> Any:
     """Ensure options are a nested dict with scalar-only leaf lists; reject root list and empty trees."""
     if not isinstance(data, dict):
         raise ValueError("Cascader options must be a nested dictionary (not a list).")
     if not data:
-        # Empty dict is allowed so [`Filter`][vizro.models.Filter] can defer filling options in `pre_build`.
+        # Empty dict is allowed so vm.Filter can defer filling options in `pre_build`.
         return data
     _walk_cascader_branch(data, path="")
     leaves = _iter_cascader_leaves_depth_first(data)
@@ -68,8 +68,7 @@ def validate_cascader_options_dict(data: Any) -> Any:
         raise ValueError("Cascader options must contain at least one leaf value.")
     dup_counts = Counter(leaves)
     if duplicates := [v for v, c in dup_counts.items() if c > 1]:
-        dup_str = ", ".join(repr(v) for v in sorted(duplicates, key=lambda v: (type(v).__name__, repr(v))))
-        raise ValueError(f"Cascader options must not contain duplicate leaf values; duplicates: {dup_str}")
+        raise ValueError(f"Cascader options must not contain duplicate leaf values: {duplicates}.")
     return data
 
 
@@ -116,14 +115,6 @@ def validate_cascader_value(value: Any, info: ValidationInfo) -> Any:
 class Cascader(VizroBaseModel):
     """Cascader selector for [`Parameter`][vizro.models.Parameter] and [`Filter`][vizro.models.Filter].
 
-    On [`Filter`][vizro.models.Filter], set `column` to a **list** of path column names
-    (ordered; the filtered column is the **last** entry). Options are built from data at build time (**static**
-    only; hierarchical filters are not dynamic). On [`Parameter`][vizro.models.Parameter], provide `options` yourself.
-
-    Works with [`set_control`][vizro.actions.set_control] when used as the target control's selector; set leaf scalars
-    (or lists of leaves for multi-select) like other literal `set_control` values. See
-    [Graph and table interactions](../user-guides/graph-table-actions.md).
-
     Abstract: Usage documentation
         [Hierarchical selectors](../user-guides/selectors.md#hierarchical-selectors)
 
@@ -132,7 +123,7 @@ class Cascader(VizroBaseModel):
     type: Literal["cascader"] = "cascader"
     options: Annotated[
         dict[str, Any],
-        BeforeValidator(validate_cascader_options_dict),
+        BeforeValidator(validate_cascader_options),
         Field(
             default_factory=dict,
             description="Nested tree: dict keys are branch labels; each branch is a dict or a non-empty list of "
@@ -146,7 +137,7 @@ class Cascader(VizroBaseModel):
             default=None,
             validate_default=True,
             description="Selected leaf value, or list of leaves when multi=True. Must be valid for `options`. "
-            "If omitted, a default is taken from the first branch in depth-first order.",
+            "If omitted, the first parent node is selected.",
         ),
     ]
     multi: Annotated[
