@@ -255,6 +255,26 @@ An example would be to make the [`RadioItem`][vizro.models.RadioItems] display i
 
         [![InlineRadio]][inlineradio]
 
+## Hierarchical selectors (`Cascader`)
+
+The [`Cascader`][vizro.models.Cascader] shows choices in a nested menu. Selected values are always **leaf** scalars (strings, numbers, booleans, or dates).
+
+**Options shape:** a nested dictionary. Each **key** is a label for the next level. A **branch** is either another dictionary (go deeper) or a **list** of leaf values. For example:
+
+```python
+{
+    "Asia": ["Japan", "India"],
+    "Europe": {"West": ["France", "Germany"], "North": ["Norway"]},
+}
+```
+
+**Where it is used**
+
+- On a [`Parameter`][vizro.models.Parameter], you set `options` yourself (as above).
+- On a [`Filter`][vizro.models.Filter], pass `column` as a **list** of dataframe columns and use `vm.Cascader`; every column in the list must be categorical (same rules as other filters). Vizro fills `options` from your data. See [Hierarchical filters](filters.md#hierarchical-filters).
+
+[`set_control`][vizro.actions.set_control] supports `Cascader` targets: use a single leaf value, or a list of leaves when `multi=True`.
+
 [dropdown]: ../../assets/user_guides/selectors/dropdown.png
 [infoiconselector]: ../../assets/user_guides/selectors/info_icon_selector.png
 [inlineradio]: ../../assets/user_guides/selectors/inlineradio.png

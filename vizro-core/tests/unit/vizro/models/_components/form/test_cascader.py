@@ -21,9 +21,13 @@ MIN_OPTIONS = {"L": ["a"]}
 class TestCascaderInstantiation:
     """Tests model instantiation."""
 
-    def test_cascader_empty_options_rejected(self):
-        with pytest.raises(ValidationError, match="Cascader options cannot be empty"):
-            Cascader(options={})
+    def test_cascader_empty_options_allowed_for_deferred_fill(self):
+        cascader = Cascader(options={})
+        assert cascader.options == {}
+
+    def test_get_cascader_default_value_empty_options_raises(self):
+        with pytest.raises(ValueError, match="non-empty"):
+            get_cascader_default_value({}, multi=False)
 
     def test_create_cascader_mandatory_only(self):
         cascader = Cascader(options=MIN_OPTIONS)
@@ -90,7 +94,6 @@ class TestCascaderInstantiation:
         "test_options, match",
         [
             ([], "nested dictionary"),
-            ({}, "cannot be empty"),
             ({"x": []}, "empty leaf list"),
             ({"x": 1}, "nested dict or a list of scalars"),
             ({"x": {}}, "at least one leaf"),

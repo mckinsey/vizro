@@ -60,7 +60,8 @@ def validate_cascader_options_dict(data: Any) -> Any:
     if not isinstance(data, dict):
         raise ValueError("Cascader options must be a nested dictionary (not a list).")
     if not data:
-        raise ValueError("Cascader options cannot be empty.")
+        # Empty dict is allowed so [`Filter`][vizro.models.Filter] can defer filling options in `pre_build`.
+        return data
     _walk_cascader_branch(data, path="")
     leaves = _iter_cascader_leaves_depth_first(data)
     if not leaves:
@@ -85,6 +86,8 @@ def _iter_cascader_leaves_depth_first(options: dict[str, Any]) -> list[SingleVal
 # `get_cascader_default_value` uses leaves under the first root key in depth-first order: single-select takes
 # `leaves[0]`; multi-select takes the full list.
 def get_cascader_default_value(options: dict[str, Any], *, multi: bool) -> SingleValueType | MultiValueType:
+    if not options:
+        raise ValueError("Cascader options must be non-empty before a default value can be computed.")
     first_value = next(iter(options.values()))
     if isinstance(first_value, list):
         leaves = cast(list[SingleValueType], list(first_value))
@@ -111,9 +114,11 @@ def validate_cascader_value(value: Any, info: ValidationInfo) -> Any:
 
 
 class Cascader(VizroBaseModel):
-    """Hierarchical single or multi-option selector for [`Parameter`][vizro.models.Parameter].
+    """Cascader selector for [`Parameter`][vizro.models.Parameter] and [`Filter`][vizro.models.Filter].
 
-    Not supported on [`Filter`][vizro.models.Filter].
+    On [`Filter`][vizro.models.Filter], set `column` to a **list** of path column names
+    (ordered; the filtered column is the **last** entry). Options are built from data at build time (**static**
+    only; hierarchical filters are not dynamic). On [`Parameter`][vizro.models.Parameter], provide `options` yourself.
 
     Works with [`set_control`][vizro.actions.set_control] when used as the target control's selector; set leaf scalars
     (or lists of leaves for multi-select) like other literal `set_control` values. See

@@ -13,7 +13,7 @@ When the dashboard is running there are two ways for a user to set a filter:
 - Direct user interaction with the underlying selector. For example, the user selects values from a checklist.
 - [User interaction with a graph or table](graph-table-actions.md) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-filtering](graph-table-actions.md#cross-filter). To achieve a visually cleaner dashboard you might like to hide the filter's underlying selector with `visible=False`.
 
-By default, filters that control components with [dynamic data](data.md#dynamic-data) are [dynamically updated](data.md#filters) when the underlying data changes while the dashboard is running.
+By default, filters that control components with [dynamic data](data.md#dynamic-data) are [dynamically updated](data.md#filters) when the underlying data changes while the dashboard is running. **Hierarchical** [`Cascader`][vizro.models.Cascader] filters (see [below](#hierarchical-filters)) are an exception: their options are computed once when the dashboard is built and do **not** follow dynamic filter reloading.
 
 ## Basic filters
 
@@ -152,9 +152,57 @@ The following example demonstrates these default selector types.
 
         [![FilterDefault]][filterdefault]
 
+## Hierarchical filters
+
+For a **hierarchical filter**, pass `column` as a **list** of column names in order from the top of the tree down to the **leaf**. **Every** column in that list must be **categorical** in the same sense as a flat filter column: not boolean, not numeric, and not datetime. Filtering still uses the **leaf** column’s values. Vizro builds [`vm.Cascader`][vizro.models.Cascader] `options` from the unique combinations of those columns in your targets’ data. Use `selector=vm.Cascader(...)` or omit `selector` to use the default cascader.
+
+Requirements and limitations:
+
+- At least **two** column names in the list.
+- **Static only**: hierarchical filters are **not** [dynamic filters](data.md#filters); options do not refresh when dynamic data changes.
+- Leaf values must be **unique** across the whole tree (the same scalar cannot appear under two different paths). This matches how [`Cascader`][vizro.models.Cascader] options work; see [Hierarchical selectors](selectors.md#hierarchical-selectors-cascader) for the options shape.
+
+!!! example "Hierarchical filter (continent → country) with Gapminder"
+
+    === "app.py"
+
+        ```python
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        gapminder = px.data.gapminder().query("year == 2007")
+
+        page = vm.Page(
+            title="Gapminder 2007",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        gapminder,
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        hover_name="country",
+                    )
+                ),
+            ],
+            controls=[
+                vm.Filter(
+                    column=["continent", "country"],
+                    selector=vm.Cascader(multi=True, title="Region → country"),
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    Picking countries in the cascader filters rows by the **`country`** column (the last name in `column`).
+
 ## Change selector
 
-If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] model a different selector model. Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker] and [`Switch`][vizro.models.Switch].
+If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] model a different selector model. For a **single** `column` string, available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker] and [`Switch`][vizro.models.Switch]. For a **hierarchical** filter (`column` as a list), use [`Cascader`][vizro.models.Cascader] as in the [section above](#hierarchical-filters).
 
 You can explore and test all available selectors interactively on our [feature demo dashboard](https://vizro-demo-features.hf.space/selectors).
 
