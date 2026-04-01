@@ -20,8 +20,8 @@ from vizro.models import (
     Switch,
     VizroBaseModel,
 )
-from vizro.models._components.form.cascader import get_cascader_default_value
 from vizro.models._components.form._form_utils import get_dict_options_and_default
+from vizro.models._components.form.cascader import get_cascader_default_value
 from vizro.models.types import ControlType, SelectorType
 
 if TYPE_CHECKING:
@@ -119,8 +119,6 @@ def get_selector_default_value(selector: SelectorType) -> Any:
         _, default_value = get_dict_options_and_default(options=selector.options, multi=is_multi)
         return default_value
     elif _is_hierarchical_selector(selector):
-       
-
         is_multi = getattr(selector, "multi", False)
         return get_cascader_default_value(selector.options, multi=is_multi)
     # Boolean selectors always have a default value specified so no need to handle them here.

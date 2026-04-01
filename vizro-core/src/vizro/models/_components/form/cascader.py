@@ -19,6 +19,7 @@ from vizro.models.types import (
     _IdProperty,
 )
 
+
 def _walk_cascader_branch(node: Any, *, path: str) -> None:
     if isinstance(node, dict):
         for key, child in node.items():
@@ -48,9 +49,7 @@ def _walk_cascader_branch(node: Any, *, path: str) -> None:
 # can express that in Pydantic, but we still need imperative validation for rules a single type does not capture:
 # root must be a non-empty dict (not a list), leaf lists must be non-empty, every leaf item must match
 # SingleValueType, and the tree must contain at least one leaf. The same helpers (e.g. walking the tree and
-# collecting leaves in depth-first order) are required elsewhere anyway—`validate_cascader_value` must check
-# `value` against the flattened leaves, and `get_cascader_default_value` walks in the same depth-first order
-# to resolve the first leaf list (siblings of `leaves[0]`) for multi-select defaults.
+# collecting leaves in depth-first order) are required elsewhere anyway.
 def validate_cascader_options_dict(data: Any) -> Any:
     """Ensure options are a nested dict with scalar-only leaf lists; reject root list and empty trees."""
     if not isinstance(data, dict):
@@ -73,20 +72,17 @@ def _iter_cascader_leaves_depth_first(options: dict[str, Any]) -> list[SingleVal
     return leaves
 
 
-def _first_cascader_leaf_list_depth_first(options: dict[str, Any]) -> list[SingleValueType]:
-    """First leaf list encountered in depth-first key order; equals all siblings of `leaves[0]` including `leaves[0]`."""
-    for value in options.values():
-        if isinstance(value, list):
-            return cast(list[SingleValueType], list(value))
-        return _first_cascader_leaf_list_depth_first(value)
-    raise ValueError("Cascader options must contain at least one leaf value.")
-
-
+# `get_cascader_default_value` uses leaves under the first root key in depth-first order: single-select takes
+# `leaves[0]`; multi-select takes the full list.
 def get_cascader_default_value(options: dict[str, Any], *, multi: bool) -> SingleValueType | MultiValueType:
-    first_sibling_group = _first_cascader_leaf_list_depth_first(options)
+    first_value = next(iter(options.values()))
+    if isinstance(first_value, list):
+        leaves = cast(list[SingleValueType], list(first_value))
+    else:
+        leaves = _iter_cascader_leaves_depth_first(first_value)
     if multi:
-        return cast(MultiValueType, list(first_sibling_group))
-    return first_sibling_group[0]
+        return cast(MultiValueType, list(leaves))
+    return leaves[0]
 
 
 def _cascader_value_allowed(value: SingleValueType | MultiValueType, leaves: list[SingleValueType]) -> bool:
@@ -105,23 +101,37 @@ def validate_cascader_value(value: Any, info: ValidationInfo) -> Any:
 
 
 class Cascader(VizroBaseModel):
-    """Hierarchical single/multi-option selector.
+    """Hierarchical single or multi-option selector for [`Parameter`][vizro.models.Parameter].
 
-    For use with [`Parameter`][vizro.models.Parameter] only — not supported on [`Filter`][vizro.models.Filter].
+    Not supported on [`Filter`][vizro.models.Filter].
 
-    [`set_control`][vizro.actions.set_control] does not treat this selector as categorical yet.
+    [`set_control`][vizro.actions.set_control] does not treat this selector as categorical yet; see
+    [Graph and table interactions](../user-guides/graph-table-actions.md).
 
     Abstract: Usage documentation
-        [How to use parameters](../user-guides/parameters.md)
+        [Hierarchical selectors](../user-guides/selectors.md#hierarchical-selectors)
 
     """
 
     type: Literal["cascader"] = "cascader"
-    options: Annotated[dict[str, Any], BeforeValidator(validate_cascader_options_dict)] = {}
+    options: Annotated[
+        dict[str, Any],
+        BeforeValidator(validate_cascader_options_dict),
+        Field(
+            default_factory=dict,
+            description="Nested tree: dict keys are branch labels; each branch is a dict or a non-empty list of "
+            "scalar leaf values (str, int, float, bool, or date).",
+        ),
+    ]
     value: Annotated[
         SingleValueType | MultiValueType | None,
         AfterValidator(validate_cascader_value),
-        Field(default=None, validate_default=True),
+        Field(
+            default=None,
+            validate_default=True,
+            description="Selected leaf value, or list of leaves when multi=True. Must be valid for `options`. "
+            "If omitted, a default is taken from the first branch in depth-first order.",
+        ),
     ]
     multi: Annotated[
         bool,
@@ -157,9 +167,7 @@ underlying component may change in the future.""",
 
     _in_container: bool = PrivateAttr(False)
     # Unlike dcc.Dropdonw, vdc.Cascader has options as a required field (maybe a mistake).
-    _inner_component_properties: list[str] = PrivateAttr(
-        vdc.Cascader(options={}).available_properties
-    )
+    _inner_component_properties: list[str] = PrivateAttr(vdc.Cascader(options={}).available_properties)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):

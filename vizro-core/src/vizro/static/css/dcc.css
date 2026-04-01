@@ -78,6 +78,25 @@
   text-align: center;
 }
 
+/* Cascader parent rows: partial selection (vdc sets input.indeterminate) */
+.dash-cascader-row .dash-cascader-checkbox:indeterminate,
+.dash-cascader-result-row .dash-cascader-checkbox:indeterminate {
+  background: none;
+  background-color: transparent;
+  border-color: var(--bs-secondary);
+}
+
+.dash-cascader-row .dash-cascader-checkbox:indeterminate::before,
+.dash-cascader-result-row .dash-cascader-checkbox:indeterminate::before {
+  color: var(--bs-secondary);
+  content: "−";
+  display: block;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 14px;
+  text-align: center;
+}
+
 .dash-options-list-option .dash-options-list-option-text,
 .dash-cascader-row .dash-cascader-row-label,
 .dash-cascader-result-row .dash-cascader-row-label {
