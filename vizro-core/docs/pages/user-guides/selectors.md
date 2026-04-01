@@ -137,6 +137,8 @@ By default, `value` is set according to the first group at the top of the tree:
 
 You can pick a different starting selection by setting `value` on [`Cascader`][vizro.models.Cascader].
 
+TODO NOW: screenshot/gif of this as standalone selector with multi=True/False
+
 Hierarchical selectors can be used in [parameters](parameters.md) and [hierarchical filters](filters.md#hierarchical-filters).
 
 ## Add a tooltip
