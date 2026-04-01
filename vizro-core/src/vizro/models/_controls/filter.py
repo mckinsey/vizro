@@ -51,7 +51,7 @@ DISALLOWED_SELECTORS = {
     "temporal": SELECTORS["numerical"] + SELECTORS["boolean"] + SELECTORS["hierarchical"],
     "categorical": SELECTORS["numerical"] + SELECTORS["temporal"] + SELECTORS["boolean"] + SELECTORS["hierarchical"],
     "boolean": SELECTORS["numerical"] + SELECTORS["temporal"] + SELECTORS["hierarchical"],
-    "hierarchical": (SELECTORS["numerical"] + SELECTORS["categorical"] + SELECTORS["temporal"] + SELECTORS["boolean"]),
+    "hierarchical": SELECTORS["numerical"] + SELECTORS["categorical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
 }
 
 
@@ -331,6 +331,14 @@ class Filter(VizroBaseModel):
         elif _is_categorical_selector(self.selector):
             self.selector.options = self.selector.options or self._get_options(targeted_data)
         elif _is_hierarchical_selector(self.selector):
+            if not self.selector.options and any(
+                isinstance(data_manager[cast(FigureType, model_manager[target])["data_frame"]], _DynamicData)
+                for target in self.targets
+            ):
+                raise ValueError(
+                    "Hierarchical filters cannot derive Cascader options from dynamic data. "
+                    "Set explicit `selector=vm.Cascader(options=...)` or use a static `data_frame`. "
+                )
             self.selector.options = self.selector.options or self._get_hierarchical_options(target_to_data_frame)
 
         # Set default value for the selector if not explicitly provided.

@@ -13,7 +13,7 @@ When the dashboard is running there are two ways for a user to set a filter:
 - Direct user interaction with the underlying selector. For example, the user selects values from a checklist.
 - [User interaction with a graph or table](graph-table-actions.md) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-filtering](graph-table-actions.md#cross-filter). To achieve a visually cleaner dashboard you might like to hide the filter's underlying selector with `visible=False`.
 
-By default, filters that control components with [dynamic data](data.md#dynamic-data) are [dynamically updated](data.md#filters) when the underlying data changes while the dashboard is running. **Hierarchical** [`Cascader`][vizro.models.Cascader] filters (see [below](#hierarchical-filters)) are an exception: their options are computed once when the dashboard is built and do **not** follow dynamic filter reloading.
+By default, filters that control components with [dynamic data](data.md#dynamic-data) are [dynamically updated](data.md#filters) when the underlying data changes while the dashboard is running.
 
 ## Basic filters
 
@@ -154,19 +154,20 @@ The following example demonstrates these default selector types.
 
 ## Hierarchical filters
 
-For a **hierarchical filter**, pass `column` as a **list** of column names in order from the top of the tree down to the **leaf**. **Every** column in that list must be **categorical** in the same sense as a flat filter column: not boolean, not numeric, and not datetime. Filtering still uses the **leaf** column’s values. Vizro builds [`vm.Cascader`][vizro.models.Cascader] `options` from the unique combinations of those columns in your targets’ data. Use `selector=vm.Cascader(...)` or omit `selector` to use the default cascader.
+A hierarchical filter is a filter where the user chooses values from a _tree_ of grouped value. For example, cities around the world could be grouped into a hierarchy by continent and then by country. Rows of the data are filtered using the finest-grained (most "zoomed in") value (the _leaves_ of the tree). In the continent/country/city example, this would be city.
 
-Requirements and limitations:
+To add one to your page, do the following:
 
-- At least **two** column names in the list.
-- **Static only**: hierarchical filters are **not** [dynamic filters](data.md#filters); options do not refresh when dynamic data changes.
-- Leaf values must be **unique** across the whole tree (the same scalar cannot appear under two different paths). This matches how [`Cascader`][vizro.models.Cascader] options work; see [Hierarchical selectors](selectors.md#hierarchical-selectors-cascader) for the options shape.
+1. add a [`Filter`][vizro.models.Filter] to `controls`, the same as for a basic filter
+1. set `column` to a list of at least two columns names from the top level of the hierarchy down to the column you want to filter on
 
-!!! example "Hierarchical filter (continent → country) with Gapminder"
+All columns in a hierarchical filter must be categorical. By default, as with a basic filter, Vizro builds the selector's `options` from your target data, but you can override this and other settings by editing the [underlying selector](selectors.md#hierarchical-selectors).
+
+!!! example "Hierarchical filter"
 
     === "app.py"
 
-        ```python
+        ```{.python pycafe-link hl_lines="20"}
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm
@@ -186,19 +187,39 @@ Requirements and limitations:
                     )
                 ),
             ],
-            controls=[
-                vm.Filter(
-                    column=["continent", "country"],
-                    selector=vm.Cascader(multi=True, title="Region → country"),
-                ),
-            ],
+            controls=[vm.Filter(column=["continent", "country"])],
         )
 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
-    Picking countries in the cascader filters rows by the **`country`** column (the last name in `column`).
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: scatter
+                  data_frame: gapminder
+                  x: gdpPercap
+                  y: lifeExp
+                  size: pop
+                  hover_name: country
+                type: graph
+            controls:
+              - column:
+                  - continent
+                  - country
+                type: filter
+            title: Gapminder 2007
+        ```
+
+    === "Result"
+
+        TODO NOW: screenshot/gif
 
 ## Change selector
 

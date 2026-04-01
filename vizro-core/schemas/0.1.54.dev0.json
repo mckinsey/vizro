@@ -321,6 +321,131 @@
       "title": "Card",
       "type": "object"
     },
+    "Cascader": {
+      "additionalProperties": false,
+      "description": "Cascader selector for [`Parameter`][vizro.models.Parameter] and [`Filter`][vizro.models.Filter].\n\nAbstract: Usage documentation\n    [Hierarchical selectors](../user-guides/selectors.md#hierarchical-selectors)",
+      "properties": {
+        "id": {
+          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "cascader",
+          "default": "cascader",
+          "title": "Type",
+          "type": "string"
+        },
+        "options": {
+          "additionalProperties": true,
+          "description": "Nested tree: dict keys are branch labels; each branch is a dict or a non-empty list of scalar leaf values (str, int, float, bool, or date).",
+          "title": "Options",
+          "type": "object"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "boolean"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "format": "date",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Selected leaf value, or list of leaves when multi=True. Must be valid for `options`. If omitted, the first parent node is selected.",
+          "title": "Value"
+        },
+        "multi": {
+          "default": true,
+          "description": "Whether to allow selection of multiple values",
+          "title": "Multi",
+          "type": "boolean"
+        },
+        "title": {
+          "default": "",
+          "description": "Title to be displayed",
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
+              },
+              {
+                "$ref": "#/$defs/show_notification"
+              },
+              {
+                "$ref": "#/$defs/update_notification"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "title": "Cascader",
+      "type": "object"
+    },
     "Checklist": {
       "additionalProperties": false,
       "description": "Categorical multi-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)",
@@ -1017,7 +1142,7 @@
     },
     "Filter": {
       "additionalProperties": false,
-      "description": "Filter the data supplied to `targets`.\n\nAbstract: Usage documentation\n    [How to use filters](../user-guides/filters.md)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    vm.Filter(column=\"species\")\n    ```",
+      "description": "Filter the data supplied to `targets`.\n\nAbstract: Usage documentation\n    [How to use filters](../user-guides/filters.md)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    vm.Filter(column=\"species\")\n    vm.Filter(column=[\"continent\", \"country\"])\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1031,9 +1156,19 @@
           "type": "string"
         },
         "column": {
-          "description": "Column of DataFrame to filter.",
-          "title": "Column",
-          "type": "string"
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ],
+          "description": "Name of the column to filter, or an ordered list of column names for a hierarchical filter.",
+          "title": "Column"
         },
         "targets": {
           "default": [],
@@ -1050,6 +1185,7 @@
               "description": "Selectors to be used inside a control.",
               "discriminator": {
                 "mapping": {
+                  "cascader": "#/$defs/Cascader",
                   "checklist": "#/$defs/Checklist",
                   "date_picker": "#/$defs/DatePicker",
                   "dropdown": "#/$defs/Dropdown",
@@ -1061,6 +1197,9 @@
                 "propertyName": "type"
               },
               "oneOf": [
+                {
+                  "$ref": "#/$defs/Cascader"
+                },
                 {
                   "$ref": "#/$defs/Checklist"
                 },
@@ -1692,6 +1831,7 @@
           "description": "Selectors to be used inside a control.",
           "discriminator": {
             "mapping": {
+              "cascader": "#/$defs/Cascader",
               "checklist": "#/$defs/Checklist",
               "date_picker": "#/$defs/DatePicker",
               "dropdown": "#/$defs/Dropdown",
@@ -1703,6 +1843,9 @@
             "propertyName": "type"
           },
           "oneOf": [
+            {
+              "$ref": "#/$defs/Cascader"
+            },
             {
               "$ref": "#/$defs/Checklist"
             },

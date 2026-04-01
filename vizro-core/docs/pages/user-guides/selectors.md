@@ -121,7 +121,7 @@ For more information, refer to the API reference of the selector, or the documen
 
 - [`Cascader`][vizro.models.Cascader] based on [`vdc.Cascader`](https://github.com/mckinsey/vizro/tree/main/vizro-dash-components)
 
-Hierarchical selectors shows choices in a nested menu. `options` gives the structure of a _tree_ of values (the _leaves_ of the tree), for example:
+Hierarchical selectors show choices in a nested menu of groups. `options` gives the structure of a _tree_ of values (the _leaves_ of the tree), for example:
 
 ```python
 options = {
@@ -130,7 +130,14 @@ options = {
 }
 ```
 
-Hierarchical selectors can be used in [parameters](parameters.md) and[hierarchical filters](filters.md#hierarchical-filters).
+By default, `value` is set according to the first group at the top of the tree:
+
+- If `multi=False`, by default `value` is the _first_ leaf listed under the first group. Here the first group is `Asia`, and its first country is `Japan`, so `value="Japan"`.
+- If `multi=True`, by default `value` is _all_ leaves listed under the first group. Here the first group is `Asia`, so `value=["Japan", "India"]`.
+
+You can pick a different starting selection by setting `value` on [`Cascader`][vizro.models.Cascader].
+
+Hierarchical selectors can be used in [parameters](parameters.md) and [hierarchical filters](filters.md#hierarchical-filters).
 
 ## Add a tooltip
 

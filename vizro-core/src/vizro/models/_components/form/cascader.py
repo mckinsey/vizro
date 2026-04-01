@@ -125,11 +125,10 @@ class Cascader(VizroBaseModel):
         dict[str, Any],
         BeforeValidator(validate_cascader_options),
         Field(
-            default_factory=dict,
             description="Nested tree: dict keys are branch labels; each branch is a dict or a non-empty list of "
             "scalar leaf values (str, int, float, bool, or date).",
         ),
-    ]
+    ] = {}
     value: Annotated[
         SingleValueType | MultiValueType | None,
         AfterValidator(validate_cascader_value),

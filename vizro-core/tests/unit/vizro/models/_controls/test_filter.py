@@ -1157,7 +1157,7 @@ class TestFilterHierarchicalColumn:
         assert default_action.column == "country"
         assert default_action.filter_function == _filter_isin
 
-    def test_hierarchical_stays_static_with_dynamic_data_source(
+    def test_hierarchical_dynamic_data_without_explicit_options_raises(
         self, managers_one_page_two_graphs_with_dynamic_data, gapminder_dynamic_first_n_last_n_function
     ):
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
@@ -1167,11 +1167,24 @@ class TestFilterHierarchicalColumn:
             selector=vm.Cascader(multi=False),
         )
         model_manager["test_page"].controls = [f]
+        with pytest.raises(ValueError, match="Hierarchical filters cannot derive Cascader options from dynamic data"):
+            f.pre_build()
+
+    def test_hierarchical_dynamic_data_with_explicit_options_pre_builds(
+        self, managers_one_page_two_graphs_with_dynamic_data, gapminder_dynamic_first_n_last_n_function
+    ):
+        data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["scatter_chart"],
+            selector=vm.Cascader(multi=False, options={"Oceania": ["NZ"], "Europe": ["DE"]}),
+        )
+        model_manager["test_page"].controls = [f]
         f.pre_build()
         assert not f._dynamic
         assert not getattr(f.selector, "_dynamic", False)
         assert isinstance(f.selector, vm.Cascader)
-        assert f.selector.options
+        assert f.selector.options == {"Oceania": ["NZ"], "Europe": ["DE"]}
 
     def test_hierarchical_missing_path_column_raises(self, managers_column_only_exists_in_some):
         f = vm.Filter(
