@@ -34,6 +34,16 @@ def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid, stan
                 column="continent",
                 selector=vm.Dropdown(multi=False),
             ),
+            vm.Parameter(
+                id="cascade_param_single",
+                targets=["scatter_chart_1.x"],
+                selector=vm.Cascader(multi=False, options={"K": ["leaf_a", "leaf_b"]}),
+            ),
+            vm.Parameter(
+                id="cascade_param_multi",
+                targets=["scatter_chart_1.y"],
+                selector=vm.Cascader(multi=True, options={"K": ["leaf_a", "leaf_b", "leaf_c"]}),
+            ),
         ],
     )
 
@@ -149,7 +159,8 @@ class TestSetControlPreBuild:
             TypeError,
             match=re.escape(
                 "Model with ID `scatter_chart_2` used as a `control` in `set_control` action must be a control model "
-                "(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."
+                "(e.g. Filter, Parameter) whose selector is categorical (Dropdown, Checklist, RadioItems) or "
+                "hierarchical (Cascader)."
             ),
         ):
             action.pre_build()
@@ -172,10 +183,22 @@ class TestSetControlPreBuild:
             TypeError,
             match=re.escape(
                 "Model with ID `non_categorical` used as a `control` in `set_control` action must be a control model "
-                "(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."
+                "(e.g. Filter, Parameter) whose selector is categorical (Dropdown, Checklist, RadioItems) or "
+                "hierarchical (Cascader)."
             ),
         ):
             action.pre_build()
+
+    def test_pre_build_allows_cascader_parameter(self):
+        action = set_control(control="cascade_param_single", value="leaf_b")
+        model_manager["button_1"].actions = action
+        action.pre_build()
+        assert action._same_page is True
+
+        action_multi = set_control(control="cascade_param_multi", value=["leaf_a", "leaf_c"])
+        model_manager["button_1"].actions = action_multi
+        action_multi.pre_build()
+        assert action_multi._same_page is True
 
     def test_pre_build_control_model_on_different_page_show_in_url_false(self):
         # Add action to relevant component and target a control on different page with show_in_url=False
@@ -232,6 +255,15 @@ class TestSetControlFunction:
             ("filter_page_1", "Europe", ["Europe"]),
             ("filter_page_1", ["Europe"], ["Europe"]),
             ("filter_page_1", ["Asia", "Europe"], ["Asia", "Europe"]),
+            # Cascader single-select
+            ("cascade_param_single", [], no_update),
+            ("cascade_param_single", "leaf_a", "leaf_a"),
+            ("cascade_param_single", ["leaf_b"], "leaf_b"),
+            ("cascade_param_single", ["leaf_a", "leaf_b"], no_update),
+            # Cascader multi-select
+            ("cascade_param_multi", [], []),
+            ("cascade_param_multi", "leaf_a", ["leaf_a"]),
+            ("cascade_param_multi", ["leaf_b", "leaf_c"], ["leaf_b", "leaf_c"]),
         ],
     )
     def test_function_different_value_for_different_controls(self, control, value, expected_result):

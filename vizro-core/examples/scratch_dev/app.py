@@ -1,12 +1,11 @@
-"""Scratch demo: Cascader vs Dropdown, edge cases, and stress tests.
+"""Scratch demo: Cascader vs Dropdown, set_control, and stress tests.
 
 Page 1 tree size: set ``CASCADER_SHAPE`` to a tuple of positive ints (fan-out per level; last entry is leaf list
 length). Dict keys / list values use letters ``a``, ``b``, ``c``, … by depth.
 
 - **Page 1:** same comparison with page-level controls.
 - **Page 2:** same four figure/parameter pairs, each parameter on a nested ``Container`` (outlined), 2x2 grid.
-- **Page 3:** duplicated leaf *values* on a two-level cascader (region → leaves); multi-select cascader vs dropdown
-  only.
+- **Page 3:** ``set_control`` + ``Parameter`` with ``Cascader`` (single vs multi), driven by buttons.
 - **Page 4:** mirrors ``vizro-dash-components/examples/pages/cascader_stress_test.py`` (deep 6-level uneven tree and
   wide 100x100 tree, ~10k+ leaves each).
 """
@@ -19,6 +18,7 @@ from operator import mul
 from typing import Any
 
 import pandas as pd
+import vizro.actions as va
 import vizro.models as vm
 from dash import dcc, html
 from vizro import Vizro
@@ -135,7 +135,7 @@ def _compare_figures_and_parameters(
 ) -> tuple[list[vm.Figure], list[vm.Parameter]]:
     """Build four echo figures and matching cascader/dropdown parameters."""
     co = CASCADER_OPTIONS if cascade_options is None else cascade_options
-    fo = LEAF_VALUES if flat_options is None else flat_options
+    flat_opts = LEAF_VALUES if flat_options is None else flat_options
     figures = [
         vm.Figure(
             id=f"{id_prefix}cascader_single",
@@ -176,7 +176,7 @@ def _compare_figures_and_parameters(
             selector=vm.Dropdown(
                 multi=False,
                 title="Dropdown multi=False",
-                options=fo,
+                options=flat_opts,
             ),
         ),
         vm.Parameter(
@@ -184,7 +184,7 @@ def _compare_figures_and_parameters(
             selector=vm.Dropdown(
                 multi=True,
                 title="Dropdown multi=True",
-                options=fo,
+                options=flat_opts,
             ),
         ),
     ]
@@ -226,45 +226,52 @@ page_compare_in_containers = vm.Page(
     controls=[],
 )
 
-# Two-level tree: region → leaf list. Same scalar appears under both regions.
-DUP_LEAF_CASCADE: dict[str, Any] = {
-    "East": ["shared_leaf", "east_only"],
-    "West": ["shared_leaf", "west_only"],
+SET_CONTROL_CASCADE_OPTIONS: dict[str, Any] = {
+    "Asia": ["Tokyo", "Osaka"],
+    "Europe": ["Paris", "Berlin"],
 }
-DUP_LEAF_FLAT = _iter_cascader_leaves_depth_first(DUP_LEAF_CASCADE)
 
-page_duplicate_leaves = vm.Page(
-    title="Duplicated leaf values",
+page_set_control_cascader = vm.Page(
+    title="set_control + Cascader",
     description=(
-        "Two-level cascader (region → leaves). The string **`shared_leaf`** appears under both **East** and **West**. "
-        "The cascader keeps path context; the dropdown options list is the depth-first flatten "
-        f"`{DUP_LEAF_FLAT}` (note the repeated value). Multi-select only."
+        "Buttons use **set_control** to set leaf values on two **Cascader** parameters "
+        "(``multi=False`` vs ``multi=True``)."
     ),
     components=[
+        vm.Button(
+            text="Set single cascader to Paris",
+            actions=va.set_control(control="param_cascade_setctl_single", value="Paris"),
+        ),
+        vm.Button(
+            text="Set multi cascader to Tokyo + Berlin",
+            actions=va.set_control(control="param_cascade_setctl_multi", value=["Tokyo", "Berlin"]),
+        ),
         vm.Figure(
-            id="echo_dupleaf_cascader_multi",
+            id="echo_setctl_cascader_single",
             figure=selected_echo(data_frame=_DUMMY_DF),
         ),
         vm.Figure(
-            id="echo_dupleaf_dropdown_multi",
+            id="echo_setctl_cascader_multi",
             figure=selected_echo(data_frame=_DUMMY_DF),
         ),
     ],
     controls=[
         vm.Parameter(
-            targets=["echo_dupleaf_cascader_multi.selected"],
+            id="param_cascade_setctl_single",
+            targets=["echo_setctl_cascader_single.selected"],
             selector=vm.Cascader(
-                multi=True,
-                title="Cascader multi=True",
-                options=DUP_LEAF_CASCADE,
+                multi=False,
+                title="Cascader multi=False",
+                options=SET_CONTROL_CASCADE_OPTIONS,
             ),
         ),
         vm.Parameter(
-            targets=["echo_dupleaf_dropdown_multi.selected"],
-            selector=vm.Dropdown(
+            id="param_cascade_setctl_multi",
+            targets=["echo_setctl_cascader_multi.selected"],
+            selector=vm.Cascader(
                 multi=True,
-                title="Dropdown multi=True",
-                options=DUP_LEAF_FLAT,
+                title="Cascader multi=True",
+                options=SET_CONTROL_CASCADE_OPTIONS,
             ),
         ),
     ],
@@ -338,7 +345,12 @@ page_stress = vm.Page(
 )
 
 dashboard = vm.Dashboard(
-    pages=[page_compare, page_compare_in_containers, page_duplicate_leaves, page_stress],
+    pages=[
+        page_compare,
+        page_compare_in_containers,
+        page_set_control_cascader,
+        page_stress,
+    ],
 )
 
 if __name__ == "__main__":

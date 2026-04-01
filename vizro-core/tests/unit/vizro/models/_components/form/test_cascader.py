@@ -95,6 +95,8 @@ class TestCascaderInstantiation:
             ({"x": 1}, "nested dict or a list of scalars"),
             ({"x": {}}, "at least one leaf"),
             ({"x": [{"a": 1}]}, "scalar values"),
+            ({"R": ["a", "a"]}, "duplicate leaf"),
+            ({"A": ["x"], "B": ["x"]}, "duplicate leaf"),
         ],
     )
     def test_create_cascader_invalid_options(self, test_options, match):

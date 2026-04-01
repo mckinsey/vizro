@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import Counter
 from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
@@ -20,6 +21,16 @@ from vizro.models.types import (
 )
 
 
+def _validate_cascader_leaf_scalar(item: Any) -> None:
+    try:
+        TypeAdapter(SingleValueType).validate_python(item)
+    except Exception as exc:
+        raise ValueError(
+            "Cascader leaf lists must contain only scalar values "
+            "(str, number, bool, or date), not dicts or nested structures."
+        ) from exc
+
+
 def _walk_cascader_branch(node: Any, *, path: str) -> None:
     if isinstance(node, dict):
         for key, child in node.items():
@@ -30,13 +41,7 @@ def _walk_cascader_branch(node: Any, *, path: str) -> None:
                 f"Cascader options at '{path or 'root'}' contain an empty leaf list; provide at least one scalar leaf."
             )
         for item in node:
-            try:
-                TypeAdapter(SingleValueType).validate_python(item)
-            except Exception as exc:
-                raise ValueError(
-                    "Cascader leaf lists must contain only scalar values "
-                    "(str, number, bool, or date), not dicts or nested structures."
-                ) from exc
+            _validate_cascader_leaf_scalar(item)
     else:
         raise ValueError(
             f"Cascader options at '{path or 'root'}' must be a nested dict or a list of scalars, "
@@ -57,8 +62,13 @@ def validate_cascader_options_dict(data: Any) -> Any:
     if not data:
         raise ValueError("Cascader options cannot be empty.")
     _walk_cascader_branch(data, path="")
-    if not _iter_cascader_leaves_depth_first(data):
+    leaves = _iter_cascader_leaves_depth_first(data)
+    if not leaves:
         raise ValueError("Cascader options must contain at least one leaf value.")
+    dup_counts = Counter(leaves)
+    if duplicates := [v for v, c in dup_counts.items() if c > 1]:
+        dup_str = ", ".join(repr(v) for v in sorted(duplicates, key=lambda v: (type(v).__name__, repr(v))))
+        raise ValueError(f"Cascader options must not contain duplicate leaf values; duplicates: {dup_str}")
     return data
 
 
@@ -105,7 +115,8 @@ class Cascader(VizroBaseModel):
 
     Not supported on [`Filter`][vizro.models.Filter].
 
-    [`set_control`][vizro.actions.set_control] does not treat this selector as categorical yet; see
+    Works with [`set_control`][vizro.actions.set_control] when used as the target control's selector; set leaf scalars
+    (or lists of leaves for multi-select) like other literal `set_control` values. See
     [Graph and table interactions](../user-guides/graph-table-actions.md).
 
     Abstract: Usage documentation
@@ -166,7 +177,7 @@ underlying component may change in the future.""",
     ]
 
     _in_container: bool = PrivateAttr(False)
-    # Unlike dcc.Dropdonw, vdc.Cascader has options as a required field (maybe a mistake).
+    # Unlike dcc.Dropdown, vdc.Cascader has options as a required field (maybe a mistake).
     _inner_component_properties: list[str] = PrivateAttr(vdc.Cascader(options={}).available_properties)
 
     @model_validator(mode="after")

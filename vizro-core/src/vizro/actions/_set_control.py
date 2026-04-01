@@ -53,6 +53,11 @@ class set_control(_AbstractAction):
     * [`Card`][vizro.models.Card]: triggers `set_control` when user clicks on the card. `value` specifies a
     literal value to set `control` to.
 
+    For [`Figure`][vizro.models.Figure], [`Button`][vizro.models.Button], and [`Card`][vizro.models.Card], `value` is a
+    literal passed to the target control: use an option value for categorical selectors (Dropdown, Checklist,
+    RadioItems) or a leaf scalar (or list of leaves when the target allows multi-select) for
+    [`Cascader`][vizro.models.Cascader].
+
     Example: `AgGrid` as trigger
         ```python
         import vizro.actions as va
@@ -127,7 +132,7 @@ class set_control(_AbstractAction):
 
     @_log_call
     def pre_build(self):
-        from vizro.models._controls._controls_utils import _is_categorical_selector
+        from vizro.models._controls._controls_utils import _is_categorical_selector, _is_hierarchical_selector
 
         # Validate that action's parent model supports `set_control` action.
         if not isinstance(self._parent_model, _SupportsSetControl):
@@ -147,11 +152,13 @@ class set_control(_AbstractAction):
                 f"dashboard. Please provide a valid control ID that exists in the dashboard."
             )
 
-        # Validate that control model has a categorical selector.
-        if not _is_categorical_selector(getattr(control_model, "selector", None)):
+        # Validate that control model has a categorical or hierarchical selector.
+        selector = getattr(control_model, "selector", None)
+        if not (_is_categorical_selector(selector) or _is_hierarchical_selector(selector)):
             raise TypeError(
                 f"Model with ID `{self.control}` used as a `control` in `set_control` action must be a control model "
-                f"(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."
+                f"(e.g. Filter, Parameter) whose selector is categorical (Dropdown, Checklist, RadioItems) or "
+                f"hierarchical (Cascader)."
             )
 
         if control_model_page == model_manager._get_model_page(self):
