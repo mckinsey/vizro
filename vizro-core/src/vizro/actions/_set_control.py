@@ -175,7 +175,11 @@ class set_control(_AbstractAction):
 
     def function(self, _trigger, _controls_store):
         from vizro.models import Checklist, DatePicker, RangeSlider, Slider
-        from vizro.models._controls._controls_utils import _is_categorical_selector, _is_numerical_temporal_selector
+        from vizro.models._controls._controls_utils import (
+            _is_boolean_selector,
+            _is_categorical_selector,
+            _is_numerical_temporal_selector,
+        )
 
         value = cast(_SupportsSetControl, self._parent_model)._get_value_from_trigger(self.value, _trigger)
 
@@ -186,50 +190,29 @@ class set_control(_AbstractAction):
         # Normalize returned value based on target selector type.
         selector = cast(ControlType, model_manager[self.control]).selector
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
+        is_valid_single_value, value = self._set_single_value(value, selector)
 
         if _is_categorical_selector(selector):
             if is_multi:
                 value = value if isinstance(value, list) else [value]
-            elif isinstance(value, list):
-                # Target is single-value selector but value is list.
-                if len(value) != 1:
-                    # Single-value selector cannot be set to empty list or multiple values.
-                    # Returning no_update will leave control unchanged.
-                    # Don't raise PreventUpdate exception as it stops other actions in the chain from running.
-                    logger.debug(
-                        "set_control %s received list with %d items but targets a single-select control %s; "
-                        "return no_update",
-                        self.id,
-                        len(value),
-                        self.control,
-                    )
-                    return no_update if self._same_page else (no_update, no_update)
-                [value] = value
+            elif not is_valid_single_value:
+                return self._get_no_update_response()
 
         elif _is_numerical_temporal_selector(selector):
             if isinstance(selector, RangeSlider) or (isinstance(selector, DatePicker) and selector.range):
                 # RangeSlider and DatePicker(range=True): coerce value to [min, max].
                 normalized_value = _set_range_value_from_trigger(value)
                 if normalized_value is None:
-                    return no_update if self._same_page else (no_update, no_update)
+                    return self._get_no_update_response()
                 value = normalized_value
 
             elif isinstance(selector, (DatePicker, Slider)):
-                # Non-range DatePicker and Slider cannot be set to empty list or multiple values.
-                # Returning no_update will leave control unchanged.
-                # Don't raise PreventUpdate exception as it stops other actions in the chain from running.
-                if isinstance(value, list):
-                    if len(value) != 1:
-                        logger.debug(
-                            "set_control %s received list with %d items but targets a single-value %s %s; "
-                            "return no_update",
-                            self.id,
-                            len(value),
-                            type(selector).__name__,
-                            self.control,
-                        )
-                        return no_update if self._same_page else (no_update, no_update)
-                    [value] = value
+                if not is_valid_single_value:
+                    return self._get_no_update_response()
+
+        elif _is_boolean_selector(selector):
+            if not is_valid_single_value:
+                return self._get_no_update_response()
 
         if self._same_page:
             return value
@@ -243,3 +226,22 @@ class set_control(_AbstractAction):
         if self._same_page:
             return self.control
         return ["vizro_url.pathname", "vizro_url.search"]
+
+    def _get_no_update_response(self):
+        return no_update if self._same_page else (no_update, no_update)
+
+    def _set_single_value(self, current_value, selector):
+        if not isinstance(current_value, list):
+            return True, current_value
+
+        if len(current_value) == 1:
+            return True, current_value[0]
+
+        logger.debug(
+            "set_control %s received list with %d items but targets a single-value %s %s; return no_update",
+            self.id,
+            len(current_value),
+            type(selector).__name__,
+            self.control,
+        )
+        return False, current_value

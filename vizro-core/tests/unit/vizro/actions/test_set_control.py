@@ -251,10 +251,10 @@ class TestSetControlFunction:
             ("filter_page_1_range_slider", [70, 74], [70, 74]),
             ("filter_page_1_range_slider", [70, 74, 76, 77], [70, 77]),
             # Single-value boolean control
-            # ("filter_page_1_boolean", [], no_update),
+            ("filter_page_1_boolean", [], no_update),
             ("filter_page_1_boolean", True, True),
-            # ("filter_page_1_boolean", [True], True),
-            # ("filter_page_1_boolean", [True, False], no_update),
+            ("filter_page_1_boolean", [True], True),
+            ("filter_page_1_boolean", [True, False], no_update),
             # Single-value temporal control
             ("filter_page_1_date_picker", [], no_update),
             ("filter_page_1_date_picker", "1992", "1992"),
