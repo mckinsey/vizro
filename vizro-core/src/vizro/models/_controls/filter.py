@@ -20,6 +20,7 @@ from vizro.models._controls._controls_utils import (
     SELECTORS,
     _is_boolean_selector,
     _is_categorical_selector,
+    _is_hierarchical_selector,
     _is_numerical_temporal_selector,
     check_control_targets,
     get_control_parent,
@@ -44,10 +45,10 @@ DEFAULT_SELECTORS = {
 # something we should avoid at least until we have moved to narwhals since maybe it's an unnecessary
 # performance hit.
 DISALLOWED_SELECTORS = {
-    "numerical": SELECTORS["temporal"],
-    "temporal": SELECTORS["numerical"] + SELECTORS["boolean"],
-    "categorical": SELECTORS["numerical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
-    "boolean": SELECTORS["numerical"] + SELECTORS["temporal"],
+    "numerical": SELECTORS["temporal"] + SELECTORS["hierarchical"],
+    "temporal": SELECTORS["numerical"] + SELECTORS["boolean"] + SELECTORS["hierarchical"],
+    "categorical": SELECTORS["numerical"] + SELECTORS["temporal"] + SELECTORS["boolean"] + SELECTORS["hierarchical"],
+    "boolean": SELECTORS["numerical"] + SELECTORS["temporal"] + SELECTORS["hierarchical"],
 }
 
 
@@ -192,11 +193,16 @@ class Filter(VizroBaseModel):
         return selector_call_obj
 
     @_log_call
-    def pre_build(self):
+    def pre_build(self):  # noqa: PLR0912
         # If page filter validate that targets present on the page where the filter is defined.
         # If container filter validate that targets present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
         check_control_targets(control=self)
+
+        if self.selector is not None and _is_hierarchical_selector(self.selector):
+            raise TypeError(
+                "Hierarchical selectors (e.g. vm.Cascader) are only supported with vm.Parameter, not vm.Filter."
+            )
 
         # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.

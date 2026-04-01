@@ -1,4 +1,8 @@
-/* DROPDOWN  ------------------------------------------------------------ */
+/* DROPDOWN  ------------------------------------------------------------
+ * vdc.Cascader is styled in this file alongside dcc.Dropdown since
+ * it reuses the same dash-dropdown-* class names.
+ */
+
 .dash-dropdown {
   background: var(--bs-dropdown-bg);
   border: 0;
@@ -37,8 +41,10 @@
   padding-bottom: 4px;
 }
 
-/* Dropdown Checkboxes */
-.dash-options-list-option-wrapper .dash-options-list-option-checkbox {
+/* Dropdown & Cascader Checkboxes */
+.dash-options-list-option-wrapper .dash-options-list-option-checkbox,
+.dash-cascader-row .dash-cascader-checkbox,
+.dash-cascader-result-row .dash-cascader-checkbox {
   appearance: none;
   background: none;
   background-color: transparent;
@@ -51,14 +57,18 @@
   width: 16px;
 }
 
-.dash-options-list-option-wrapper .dash-options-list-option-checkbox:checked {
+.dash-options-list-option-wrapper .dash-options-list-option-checkbox:checked,
+.dash-cascader-row .dash-cascader-checkbox:checked,
+.dash-cascader-result-row .dash-cascader-checkbox:checked {
   background: none;
   background-color: transparent;
   border-color: var(--bs-secondary);
 }
 
 .dash-options-list-option-wrapper
-  .dash-options-list-option-checkbox:checked::before {
+  .dash-options-list-option-checkbox:checked::before,
+.dash-cascader-row .dash-cascader-checkbox:checked::before,
+.dash-cascader-result-row .dash-cascader-checkbox:checked::before {
   color: var(--bs-secondary);
   content: "✓";
   display: block;
@@ -68,11 +78,15 @@
   text-align: center;
 }
 
-.dash-options-list-option-text {
+.dash-options-list-option .dash-options-list-option-text,
+.dash-cascader-row .dash-cascader-row-label,
+.dash-cascader-result-row .dash-cascader-row-label {
   color: var(--bs-body-color);
 }
 
-.dash-options-list-option-text:hover {
+.dash-options-list-option:hover .dash-options-list-option-text,
+.dash-cascader-row:hover .dash-cascader-row-label,
+.dash-cascader-result-row:hover .dash-cascader-row-label {
   color: var(--bs-primary-text-emphasis);
 }
 
@@ -100,6 +114,12 @@
   display: flex;
   gap: 4px;
   min-height: 32px;
+  padding: 6px 8px;
+}
+
+.dash-cascader-row,
+.dash-cascader-result-row {
+  gap: 4px;
   padding: 6px 8px;
 }
 

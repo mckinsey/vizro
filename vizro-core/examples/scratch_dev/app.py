@@ -1,111 +1,140 @@
-"""Development playground exploring markdown variations using built-in Vizro models."""
+"""Scratch demo: Cascader vs Dropdown (same leaf set), each driving a custom Figure.
 
+Tree size: set ``CASCADER_SHAPE`` to a tuple of positive ints — fan-out at each level, last entry is leaf list
+length. Dict keys / list values use letters ``a``, ``b``, ``c``, … by depth (e.g. ``a_0``, ``b_0_1``,
+``c_0_1_2``). Requires at least two entries (root must be a dict, not a list).
+"""
+
+from __future__ import annotations
+
+import string
+from functools import reduce
+from operator import mul
+from typing import Any
+
+import pandas as pd
 import vizro.models as vm
-import vizro.plotly.express as px
+from dash import dcc, html
 from vizro import Vizro
+from vizro.models._components.form.cascader import _iter_cascader_leaves_depth_first
+from vizro.models.types import capture
 
-gapminder_2007 = px.data.gapminder().query("year == 2007")
+
+def _level_letter(depth: int) -> str:
+    if 0 <= depth < len(string.ascii_lowercase):
+        return string.ascii_lowercase[depth]
+    return f"l{depth}"
+
+
+def _label_at_depth(depth: int, path: tuple[int, ...]) -> str:
+    return f"{_level_letter(depth)}_" + "_".join(str(p) for p in path)
+
+
+def _build_cascader_options(shape: tuple[int, ...], path_prefix: tuple[int, ...] = ()) -> dict[str, Any] | list[str]:
+    if len(shape) == 1:
+        if not path_prefix:
+            msg = "CASCADER_SHAPE needs at least two ints (dict root + leaf list length)."
+            raise ValueError(msg)
+        n = shape[0]
+        depth = len(path_prefix)
+        return [_label_at_depth(depth, (*path_prefix, i)) for i in range(n)]
+    if not shape:
+        msg = "CASCADER_SHAPE must not be empty."
+        raise ValueError(msg)
+    n_branch, *rest = shape
+    depth = len(path_prefix)
+    return {
+        _label_at_depth(depth, (*path_prefix, i)): _build_cascader_options(rest, (*path_prefix, i))
+        for i in range(n_branch)
+    }
+
+
+# e.g. (10, 2, 10): ten ``a_*`` branches, two ``b_*_*`` each, ten ``c_*_*_*`` leaves per branch
+CASCADER_SHAPE = (10, 2, 10)
+CASCADER_OPTIONS = _build_cascader_options(CASCADER_SHAPE)
+num_leaves = reduce(mul, CASCADER_SHAPE, 1)
+# Depth-first leaf order matches vdc Cascader normalization — Dropdowns use the same values, flattened
+LEAF_VALUES = _iter_cascader_leaves_depth_first(CASCADER_OPTIONS)
+
+# Placeholder DataFrame: vm.Figure + @capture("figure") always wire a data_frame argument
+_DUMMY_DF = pd.DataFrame({"_": [0]})
+
+
+def _format_selected(selected: Any) -> str:
+    if selected is None:
+        return "—"
+    if isinstance(selected, list):
+        return ", ".join(str(x) for x in selected) if selected else "—"
+    return str(selected)
+
+
+@capture("figure")
+def selected_echo(
+    data_frame: pd.DataFrame,
+    selected: Any = None,
+) -> html.Div:
+    """Shows the parameter-driven `selected` value; `data_frame` is unused but required by `@capture('figure')`."""
+    return html.Div(dcc.Markdown(f"**Selected:** {_format_selected(selected)}"))
+
 
 page = vm.Page(
-    title="Container title in Tabs",
+    title="Cascader demo",
+    description=(
+        f"**{' × '.join(str(n) for n in CASCADER_SHAPE)}** fan-out ({num_leaves} leaves). "
+        "Same leaf values in the tree and in the dropdowns."
+    ),
     components=[
-        vm.Tabs(
-            title="Tabs Title",
-            tabs=[
-                vm.Container(
-                    title="Tab I",
-                    components=[
-                        vm.Container(
-                            title="Inner container I",
-                            components=[
-                                vm.Graph(
-                                    title="Graph 1",
-                                    figure=px.bar(
-                                        gapminder_2007,
-                                        x="continent",
-                                        y="lifeExp",
-                                        color="continent",
-                                    ),
-                                )
-                            ],
-                            variant="filled",
-                        ),
-                        vm.Container(
-                            title="Inner container II",
-                            components=[
-                                vm.Graph(
-                                    title="Graph 2",
-                                    figure=px.box(
-                                        gapminder_2007,
-                                        x="continent",
-                                        y="lifeExp",
-                                        color="continent",
-                                    ),
-                                ),
-                            ],
-                            collapsed=False,
-                        ),
-                    ],
-                    layout=vm.Grid(grid=[[0, 1]]),
-                ),
-                vm.Container(
-                    title="Tab II",
-                    components=[
-                        vm.Graph(
-                            title="Graph 3",
-                            figure=px.scatter(
-                                gapminder_2007,
-                                x="gdpPercap",
-                                y="lifeExp",
-                                size="pop",
-                                color="continent",
-                            ),
-                        ),
-                        vm.Graph(
-                            title="Graph 2",
-                            figure=px.box(
-                                gapminder_2007,
-                                x="continent",
-                                y="lifeExp",
-                                color="continent",
-                            ),
-                        ),
-                        vm.Container(
-                            title="Inner container III",
-                            components=[
-                                vm.Card(
-                                    text="""
-                                    #### Africa
-                                    Africa, a diverse and expansive continent, faces both challenges and progress in
-                                    its socioeconomic landscape. In 2007, Africa's GDP per cap was approximately $3,000.
-                                    """
-                                ),
-                                vm.Card(
-                                    text="""
-                                    #### Asia
-                                    Asia holds a central role in the global economy. It's growth in GDP per capita to
-                                    $12,000 in 2007 and population has been significant, outpacing many other
-                                    continents.
-                                """
-                                ),
-                                vm.Card(
-                                    text="""
-                                    #### Europe
-                                    Europe boasts a strong and thriving economy. In 2007, it exhibited the
-                                    second-highest GDP per capita of $25,000 among continents.
-                                """
-                                ),
-                            ],
-                            layout=vm.Grid(grid=[[0, 1, 2]]),
-                            variant="filled",
-                        ),
-                    ],
-                    layout=vm.Grid(grid=[[0, 1], [0, 1], [2, 2]]),
-                ),
-            ],
+        vm.Figure(
+            id="echo_cascader_single",
+            figure=selected_echo(data_frame=_DUMMY_DF),
+        ),
+        vm.Figure(
+            id="echo_cascader_multi",
+            figure=selected_echo(data_frame=_DUMMY_DF),
+        ),
+        vm.Figure(
+            id="echo_dropdown_single",
+            figure=selected_echo(data_frame=_DUMMY_DF),
+        ),
+        vm.Figure(
+            id="echo_dropdown_multi",
+            figure=selected_echo(data_frame=_DUMMY_DF),
         ),
     ],
-    controls=[vm.Filter(column="continent")],
+    controls=[
+        vm.Parameter(
+            targets=["echo_cascader_single.selected"],
+            selector=vm.Cascader(
+                multi=False,
+                title="Cascader multi=False",
+                options=CASCADER_OPTIONS,
+            ),
+        ),
+        vm.Parameter(
+            targets=["echo_cascader_multi.selected"],
+            selector=vm.Cascader(
+                multi=True,
+                title="Cascader multi=True",
+                options=CASCADER_OPTIONS,
+            ),
+        ),
+        vm.Parameter(
+            targets=["echo_dropdown_single.selected"],
+            selector=vm.Dropdown(
+                multi=False,
+                title="Dropdown multi=False",
+                options=LEAF_VALUES,
+            ),
+        ),
+        vm.Parameter(
+            targets=["echo_dropdown_multi.selected"],
+            selector=vm.Dropdown(
+                multi=True,
+                title="Dropdown multi=True",
+                options=LEAF_VALUES,
+            ),
+        ),
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
