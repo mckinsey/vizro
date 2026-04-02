@@ -100,7 +100,7 @@ Explore a few live dashboards to see different Vizro patterns in action:
   <tr>
     <td align="center" valign="top" width="33%">
       <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard">
-        <img src="" alt="Basic Dashboard" width="100%">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/basic_dashboard.png" alt="Basic Dashboard" width="100%">
       </a>
       <br>
       <strong>Basic Dashboard</strong>
@@ -109,7 +109,7 @@ Explore a few live dashboards to see different Vizro patterns in action:
     </td>
     <td align="center" valign="top" width="33%">
       <a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary">
-        <img src="" alt="Visual Vocabulary" width="100%">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/visual_vocabulary.png" alt="Visual Vocabulary" width="100%">
       </a>
       <br>
       <strong>Visual Vocabulary</strong>
@@ -118,7 +118,7 @@ Explore a few live dashboards to see different Vizro patterns in action:
     </td>
     <td align="center" valign="top" width="33%">
       <a href="https://huggingface.co/spaces/vizro/BI-dashboard">
-        <img src="" alt="BI Dashboard" width="100%">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/bi_dashboard.png" alt="BI Dashboard" width="100%">
       </a>
       <br>
       <strong>BI Dashboard</strong>
@@ -129,7 +129,7 @@ Explore a few live dashboards to see different Vizro patterns in action:
   <tr>
     <td align="center" valign="top" width="33%">
       <a href="https://huggingface.co/spaces/vizro/call-center-dashboard">
-        <img src="" alt="Call Center Dashboard" width="100%">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/call_center_dashboard.png" alt="Call Center Dashboard" width="100%">
       </a>
       <br>
       <strong>Call Center Dashboard</strong>
@@ -138,7 +138,7 @@ Explore a few live dashboards to see different Vizro patterns in action:
     </td>
     <td align="center" valign="top" width="33%">
       <a href="https://huggingface.co/spaces/vizro/demo-kpi">
-        <img src="" alt="KPI Dashboard" width="100%">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/kpi_dashboard.png" alt="KPI Dashboard" width="100%">
       </a>
       <br>
       <strong>KPI Dashboard</strong>
@@ -147,7 +147,7 @@ Explore a few live dashboards to see different Vizro patterns in action:
     </td>
     <td align="center" valign="top" width="33%">
       <a href="https://huggingface.co/spaces/vizro/demo-features">
-        <img src="" alt="Features Dashboard" width="100%">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/features_dashboard.png" alt="Features Dashboard" width="100%">
       </a>
       <br>
       <strong>Features Dashboard</strong>
@@ -157,7 +157,7 @@ Explore a few live dashboards to see different Vizro patterns in action:
   </tr>
 </table>
 
-Browse the full [Vizro Official Gallery](https://huggingface.co/collections/vizro/vizro-official-gallery) for more examples.
+Browse the full [Vizro Gallery](https://huggingface.co/collections/vizro/vizro-official-gallery) for more examples.
 
 ## [Vizro framework](https://vizro.readthedocs.io/en/stable/)
 
