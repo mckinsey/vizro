@@ -94,7 +94,7 @@ Use Vizro when you need to combine the speed and ease of low-code Python tools, 
 
 ## How to use Vizro?
 
-Explore a few live dashboards to see different Vizro patterns in action:
+Explore a few live demos to see different Vizro dashboards in action:
 
 <table>
   <tr>
