@@ -52,7 +52,7 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     [FAQs](pages/explanation/faq.md)
 
-    [:sparkles:Cheatsheet:sparkles:](pages/cheatsheet/cheatsheet.html)
+    [:sparkles: Cheatsheet :sparkles:](pages/cheatsheet/cheatsheet.html)
 
 - :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Get involved__
 
@@ -61,5 +61,13 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
     [Contribute code](pages/explanation/contributing.md)
 
     [Contribute to our docs](pages/explanation/documentation-style-guide.md)
+
+- :fontawesome-solid-play:{ .lg .middle } __Demo dashboards__
+
+    ---
+
+    [Vizro HuggingFace collection](https://huggingface.co/vizro)
+
+    [Vizro PyCafe collection](https://py.cafe/vizro-official)
 
 </div>

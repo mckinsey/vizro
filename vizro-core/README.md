@@ -94,6 +94,71 @@ Use Vizro when you need to combine the speed and ease of low-code Python tools, 
 
 ## How to use Vizro?
 
+Explore a few live dashboards to see different Vizro patterns in action:
+
+<table>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard">
+        <img src="" alt="Basic Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>Basic Dashboard</strong>
+      <br>
+      <a href="">Try it live</a>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary">
+        <img src="" alt="Visual Vocabulary" width="100%">
+      </a>
+      <br>
+      <strong>Visual Vocabulary</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary">Try it live</a>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/BI-dashboard">
+        <img src="" alt="BI Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>BI Dashboard</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/BI-dashboard">Try it live</a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/call-center-dashboard">
+        <img src="" alt="Call Center Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>Call Center Dashboard</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/call-center-dashboard">Try it live</a>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/demo-kpi">
+        <img src="" alt="KPI Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>KPI Dashboard</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/demo-kpi">Try it live</a>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/demo-features">
+        <img src="" alt="Features Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>Features Dashboard</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/demo-features">Try it live</a>
+    </td>
+  </tr>
+</table>
+
+Browse the full [Vizro Official Gallery](https://huggingface.co/collections/vizro/vizro-official-gallery) for more examples.
+
 ## [Vizro framework](https://vizro.readthedocs.io/en/stable/)
 
 **Low-code framework for building dashboards.**
