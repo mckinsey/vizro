@@ -66,8 +66,8 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     ---
 
-    <a href="https://huggingface.co/vizro" target="_blank" rel="noopener noreferrer">Vizro HuggingFace collection</a>
+    <a href="https://huggingface.co/vizro" target="_blank" rel="noopener noreferrer">Vizro HuggingFace collection </a>
 
-    <a href="https://py.cafe/vizro-official" target="_blank" rel="noopener noreferrer">Vizro PyCafe collection</a>
+    <a href="https://py.cafe/vizro-official" target="_blank" rel="noopener noreferrer">Vizro PyCafe collection </a>
 
 </div>
