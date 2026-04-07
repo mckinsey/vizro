@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Enable use of `set_controls` action with non-categorical selectors. ([#1684](https://github.com/mckinsey/vizro/pull/1684))
+- Enable use of `set_control` action with non-categorical selectors. ([#1684](https://github.com/mckinsey/vizro/pull/1684))
 
 <!--
 ### Changed

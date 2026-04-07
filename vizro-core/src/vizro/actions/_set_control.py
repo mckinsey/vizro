@@ -28,16 +28,6 @@ def _encode_to_base64(value):
     return f"b64_{b64_bytes.decode('utf-8').rstrip('=')}"
 
 
-def _set_range_value_from_trigger(value: JsonValue):
-    if isinstance(value, list):
-        if len(value) >= 2:  # noqa: PLR2004
-            return [min(value), max(value)]  # type: ignore[type-var]
-        if len(value) == 1:
-            return [value[0], value[0]]
-        return None
-    return [value, value]
-
-
 class set_control(_AbstractAction):
     """Sets the value of a control, which then updates its targets.
 
@@ -155,7 +145,7 @@ class set_control(_AbstractAction):
                 f"dashboard. Please provide a valid control ID that exists in the dashboard."
             )
 
-        # Validate that control model is a selector.
+        # Validate that target control model Filer or Parameter.
         if not hasattr(control_model, "selector"):
             raise TypeError(
                 f"Model with ID `{self.control}` used as a `control` in `set_control` action must be a control model "
@@ -189,11 +179,11 @@ class set_control(_AbstractAction):
 
         # Normalize returned value based on target selector type.
         selector = cast(ControlType, model_manager[self.control]).selector
-        is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
-        is_valid_single_value, value = self._set_single_value(value, selector)
+        is_valid_single_value, value = self._coerce_to_single_value_or_log(value, selector)
 
         if _is_categorical_selector(selector):
-            if is_multi:
+            # target control is multi-select
+            if getattr(selector, "multi", isinstance(selector, Checklist)):
                 value = value if isinstance(value, list) else [value]
             elif not is_valid_single_value:
                 return self._get_no_update_response()
@@ -201,7 +191,7 @@ class set_control(_AbstractAction):
         elif _is_numerical_temporal_selector(selector):
             if isinstance(selector, RangeSlider) or (isinstance(selector, DatePicker) and selector.range):
                 # RangeSlider and DatePicker(range=True): coerce value to [min, max].
-                normalized_value = _set_range_value_from_trigger(value)
+                normalized_value = self._set_range_value_from_trigger(value)
                 if normalized_value is None:
                     return self._get_no_update_response()
                 value = normalized_value
@@ -230,18 +220,27 @@ class set_control(_AbstractAction):
     def _get_no_update_response(self):
         return no_update if self._same_page else (no_update, no_update)
 
-    def _set_single_value(self, current_value, selector):
-        if not isinstance(current_value, list):
-            return True, current_value
+    def _coerce_to_single_value_or_log(self, value, selector):
+        if not isinstance(value, list):
+            return True, value
 
-        if len(current_value) == 1:
-            return True, current_value[0]
+        if len(value) == 1:
+            return True, value[0]
 
         logger.debug(
             "set_control %s received list with %d items but targets a single-value %s %s; return no_update",
             self.id,
-            len(current_value),
+            len(value),
             type(selector).__name__,
             self.control,
         )
-        return False, current_value
+        return False, value
+
+    def _set_range_value_from_trigger(self, value: JsonValue):
+        if isinstance(value, list):
+            if len(value) >= 2:  # noqa: PLR2004
+                return [min(value), max(value)]  # type: ignore[type-var]
+            if len(value) == 1:
+                return [value[0], value[0]]
+            return None
+        return [value, value]
