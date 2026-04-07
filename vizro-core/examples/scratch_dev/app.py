@@ -142,15 +142,21 @@ page_2 = vm.Page(
     ],
 )
 
-page_3 = vm.Page(
-    title="Filter Interaction",
-    components=[
-        vm.AgGrid(figure=dash_ag_grid(tips), actions=va.filter_interaction(targets=["fi_target"])),
-        vm.AgGrid(id="fi_target", figure=dash_ag_grid(tips)),
-    ],
-)
+# page_3 = vm.Page(
+#     title="Filter Interaction",
+#     components=[
+#         vm.AgGrid(figure=dash_ag_grid(tips), actions=va.filter_interaction(targets=["fi_target"])),
+#         vm.AgGrid(id="fi_target", figure=dash_ag_grid(tips)),
+#     ],
+# )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2, page_3])
+dashboard = vm.Dashboard(
+    pages=[
+        page_1,
+        page_2,
+        # page_3,
+    ]
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
