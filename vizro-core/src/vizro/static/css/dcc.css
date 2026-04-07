@@ -159,6 +159,12 @@
   min-width: 240px;
 }
 
+.control-group-panel .dash-slider-container {
+  align-items: start;
+  gap: 4px !important;
+  min-width: 238px;
+}
+
 .dash-input-container {
   background: none;
   border: none;
