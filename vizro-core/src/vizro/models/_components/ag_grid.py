@@ -191,7 +191,7 @@ class AgGrid(VizroBaseModel):
         figure = self.figure(**kwargs)
         figure.id = self._inner_component_id
 
-        figure.dashGridOptions.setdefault("getRowId", f"params.data.{kwargs["data_frame"].columns[0]}")
+        figure.dashGridOptions.setdefault("getRowId", f"params.data.{kwargs['data_frame'].columns[0]}")
 
         # Configure default grid interaction behavior based on the type of actions provided:
         all_set_control = all(isinstance(a, set_control) for a in self.actions)
