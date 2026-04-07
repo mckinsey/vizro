@@ -1,5 +1,5 @@
 import logging
-from typing import Annotated, Any, Literal, cast
+from typing import Annotated, Any, Literal, TypeAlias, TypedDict, cast
 
 import dash_ag_grid as dag
 import pandas as pd
@@ -44,7 +44,23 @@ logger = logging.getLogger(__name__)
 DAG_AG_GRID_PROPERTIES = set(dag.AgGrid().available_properties) - set(html.Div().available_properties)
 
 # User-friendly shortcuts for accessing `cellClicked` trigger fields since its structure differs from `selectedRows`.
-CELL_CLICKED_MAPPING = {"CELL": "value", "COLUMN": "colId", "ROW-ID": "rowId", "ROW-INDEX": "rowIndex"}
+CELL_CLICKED_MAPPING = {"cell": "value", "column": "colId", "row": "rowId"}
+
+
+class CellClicked(TypedDict):
+    value: Any
+    colId: str
+    rowId: Any
+    rowIndex: int
+    timestamp: int
+
+
+SelectedRow: TypeAlias = dict[str, Any]
+
+
+class Trigger(TypedDict):
+    cellClicked: CellClicked
+    selectedRows: list[SelectedRow]
 
 
 class AgGrid(VizroBaseModel):
@@ -122,9 +138,7 @@ class AgGrid(VizroBaseModel):
             **{ag_grid_prop: f"{self._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 
-    def _get_value_from_trigger(
-        self, value: str, trigger: dict[str, dict[str, Any] | list[dict[str, str]]]
-    ) -> MultiValueType | SingleValueType | None:
+    def _get_value_from_trigger(self, value: str, trigger: Trigger) -> MultiValueType | SingleValueType | None:
         """Extract values from the trigger that represents selected dag.AgGrid rows. Value is the name of the column.
 
         Example `trigger` structure: {
@@ -147,7 +161,7 @@ class AgGrid(VizroBaseModel):
                 # Keep the target control unchanged if `cellClicked` is missing (e.g. checkbox row selection)
                 return no_update
 
-        selected_rows = cast(list[dict[str, str]], trigger.get("selectedRows"))
+        selected_rows = trigger.get("selectedRows")
 
         # If `selectedRows` doesn't exist leave the target control unchanged except resetting it.
         if selected_rows is None:
@@ -176,6 +190,8 @@ class AgGrid(VizroBaseModel):
 
         figure = self.figure(**kwargs)
         figure.id = self._inner_component_id
+
+        figure.dashGridOptions.setdefault("getRowId", f"params.data.{kwargs["data_frame"].columns[0]}")
 
         # Configure default grid interaction behavior based on the type of actions provided:
         all_set_control = all(isinstance(a, set_control) for a in self.actions)

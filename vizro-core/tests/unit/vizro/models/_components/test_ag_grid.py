@@ -153,7 +153,7 @@ class TestAgGridGetValueFromTrigger:
 
     def test_clicked_cell_no_trigger_data(self, standard_ag_grid):
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
-        value = ag_grid._get_value_from_trigger(value="COLUMN", trigger={})
+        value = ag_grid._get_value_from_trigger(value="column", trigger={})
 
         assert value is no_update
 
@@ -173,7 +173,7 @@ class TestAgGridGetValueFromTrigger:
 
     def test_clicked_cell_value_valid(self, standard_ag_grid):
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
-        value = ag_grid._get_value_from_trigger(value="COLUMN", trigger={"cellClicked": {"colId": "Europe"}})
+        value = ag_grid._get_value_from_trigger(value="column", trigger={"cellClicked": {"colId": "Europe"}})
 
         assert value == "Europe"
 

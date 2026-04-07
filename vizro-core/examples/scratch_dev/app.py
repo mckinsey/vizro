@@ -99,27 +99,27 @@ page_2 = vm.Page(
     title="dash_ag_grid using cellClicked",
     components=[
         vm.AgGrid(
-            title="set_control.value=COLUMN",
+            title="set_control.value=column",
             figure=dash_ag_grid(pivot_tips),
             actions=[
-                va.set_control(control="day_filter", value="COLUMN"),
+                va.set_control(control="day_filter", value="column"),
             ],
         ),
         vm.AgGrid(
-            title=" set_control.value=COLUMN + set_control.value=column_name",
+            title=" set_control.value=column + set_control.value=column_name",
             figure=dash_ag_grid(pivot_tips),
             actions=[
-                va.set_control(control="day_filter", value="COLUMN"),
+                va.set_control(control="day_filter", value="column"),
                 va.set_control(control="sex_filter", value="sex"),
             ],
         ),
         vm.AgGrid(
-            title="set_control.value=COLUMN + set_control.value=column_name + set_control.value=CELL",
+            title="set_control.value=column + set_control.value=column_name + set_control.value=cell",
             figure=dash_ag_grid(pivot_tips),
             actions=[
-                va.set_control(control="day_filter", value="COLUMN"),
+                va.set_control(control="day_filter", value="column"),
                 va.set_control(control="sex_filter", value="sex"),
-                va.set_control(control="cell_clicked", value="CELL"),
+                va.set_control(control="cell_clicked", value="cell"),
             ],
         ),
         vm.Container(
