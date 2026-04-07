@@ -1,0 +1,55 @@
+{
+  "skill_name": "vizro-e2e-flow",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We run a chain of retail stores across four regions and I need a dashboard for our weekly leadership meeting. The main questions we want to answer are: how is overall revenue trending month over month, which regions are pulling their weight and which are falling behind, and which product categories are driving growth versus dragging us down. We also want to quickly see the headline numbers — total revenue, total units moved, and average order value — so the execs can get the picture in the first five seconds. It would also be really useful to have a heatmap showing revenue by region and month so we can spot seasonal patterns at a glance — like which regions spike during the holidays and which ones dip in summer. The audience is regional directors who are not technical but need to make staffing and inventory decisions based on what they see. Generate some realistic-looking mock data for this.",
+      "expected_output": "A working Vizro dashboard that launches without errors, with pages addressing the business questions, KPIs, and regional/product breakdowns. After grading, launch the dashboard on a unique port (starting at 8050 for eval-1/with_skill, 8051 for eval-1/without_skill, etc.) so the reviewer can visually compare with-skill vs baseline side-by-side.",
+      "files": [],
+      "expectations": [
+        "All 5 spec files (spec/1 through spec/5) are generated",
+        "app.py launches and all pages are navigable (verified by Playwright)",
+        "No hardcoded colors in app.py — Vizro handles colors automatically",
+        "Grid layout uses 12 columns with rectangular components",
+        "Interactive options were presented during the design phase",
+        "app.py uses vizro.plotly.express (not plain plotly.express)",
+        "Charts use pre-aggregated data (no raw detail rows dumped into bar/line charts)",
+        "KPI cards use built-in kpi_card or kpi_card_reference (not rebuilt as custom charts)",
+        "Heatmap uses Vizro default color palette (no explicit color_continuous_scale like 'Blues' or 'RdYlGn')"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I work at a SaaS company and our product team needs a way to monitor feature adoption. We want to understand which features users are actually engaging with after launch, how adoption rates change over time, and whether there is a difference between free-tier and paid-tier users. The PM wants to see at a glance how many users tried each feature in the last 30 days, what the retention curve looks like for each feature, and which features have high trial rates but low stickiness — because those are the ones where the UX probably needs work. This is for the weekly product review so it needs to be clear enough for non-technical stakeholders. Please generate mock data that makes sense for this.",
+      "expected_output": "A working dashboard with feature adoption metrics, tier comparisons, and retention insights. After grading, launch on a unique port (8052 for with_skill, 8053 for without_skill) for visual review.",
+      "files": [],
+      "expectations": [
+        "All 5 spec files are generated",
+        "app.py launches and all pages are navigable (verified by Playwright)",
+        "No hardcoded colors — Vizro handles colors automatically",
+        "Grid layout uses 12 columns with rectangular components",
+        "KPI cards use built-in kpi_card or kpi_card_reference (not rebuilt as custom charts)",
+        "app.py uses vizro.plotly.express (not plain plotly.express)",
+        "Charts use pre-aggregated data (no raw detail rows dumped into bar/line charts)",
+        "Interactive options were presented during the design phase"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "We manage a fleet of 200 delivery trucks and the ops team needs a dashboard to monitor daily performance. The key questions are: how many deliveries are we completing versus planned, what is the on-time delivery rate by depot and by driver, and where are the bottlenecks — is it loading time, transit time, or last-mile delays? We also want to flag trucks that are consistently underperforming or routes that always run late so we can investigate whether it is a vehicle issue, a driver issue, or a route planning issue. The audience is the dispatch manager and the regional ops leads. They want to be able to drill into the raw delivery records when something looks off. Generate mock data for about 6 months of operations across 5 depots.",
+      "expected_output": "A working multi-page dashboard with fleet KPIs, depot/driver breakdowns, and a detailed data table for drill-down. After grading, launch on a unique port (8054 for with_skill, 8055 for without_skill) for visual review.",
+      "files": [],
+      "expectations": [
+        "All 5 spec files are generated",
+        "app.py launches and all pages are navigable (verified by Playwright)",
+        "No hardcoded colors — Vizro handles colors automatically",
+        "Grid layout uses 12 columns with rectangular components",
+        "AG Grid is used for the detailed data table",
+        "Interactive options were presented during the design phase",
+        "app.py uses vizro.plotly.express (not plain plotly.express)",
+        "Charts use pre-aggregated data (no raw detail rows dumped into bar/line charts)",
+        "KPI cards use built-in kpi_card or kpi_card_reference (not rebuilt as custom charts)"
+      ]
+    }
+  ]
+}
