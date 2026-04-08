@@ -21,7 +21,7 @@ choropleth_page = vm.Page(
 
             #### When should I use it?
 
-            Use a chloropleth map when you wish to show how a measurement varies across a geographic area, or to show
+            Use a choropleth map when you wish to show how a measurement varies across a geographic area, or to show
             variability or patterns within a region. Typically, you will blend one color into another, take a color
             shade from light to dark, or introduce patterns to depict the variation in the data.
 
