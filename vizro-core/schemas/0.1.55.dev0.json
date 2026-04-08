@@ -625,6 +625,67 @@
       "title": "Container",
       "type": "object"
     },
+    "ControlGroup": {
+      "additionalProperties": false,
+      "description": "Container to group together a set of controls.\n\nAbstract: Usage documentation\n    [How to group controls](../user-guides/controls.md/#group-controls)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    vm.ControlGroup(\n        title=\"Control group title\",\n        controls=[vm.Filter(column=\"species\"), vm.Filter(column=\"sepal_length\")],\n    )\n    ```",
+      "properties": {
+        "id": {
+          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "control_group",
+          "default": "control_group",
+          "title": "Type",
+          "type": "string"
+        },
+        "controls": {
+          "items": {
+            "description": "Control that affects components on the page.",
+            "discriminator": {
+              "mapping": {
+                "filter": "#/$defs/Filter",
+                "parameter": "#/$defs/Parameter"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Filter"
+              },
+              {
+                "$ref": "#/$defs/Parameter"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Controls",
+          "type": "array"
+        },
+        "title": {
+          "default": "",
+          "description": "Title of the control group.",
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
+        }
+      },
+      "required": ["controls"],
+      "title": "ControlGroup",
+      "type": "object"
+    },
     "DatePicker": {
       "additionalProperties": false,
       "description": "Temporal single/range option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use temporal selectors](../user-guides/selectors.md#temporal-selectors)",
@@ -1538,20 +1599,27 @@
         "controls": {
           "default": [],
           "items": {
-            "description": "Control that affects components on the page.",
-            "discriminator": {
-              "mapping": {
-                "filter": "#/$defs/Filter",
-                "parameter": "#/$defs/Parameter"
-              },
-              "propertyName": "type"
-            },
-            "oneOf": [
+            "anyOf": [
               {
-                "$ref": "#/$defs/Filter"
+                "description": "Control that affects components on the page.",
+                "discriminator": {
+                  "mapping": {
+                    "filter": "#/$defs/Filter",
+                    "parameter": "#/$defs/Parameter"
+                  },
+                  "propertyName": "type"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/Filter"
+                  },
+                  {
+                    "$ref": "#/$defs/Parameter"
+                  }
+                ]
               },
               {
-                "$ref": "#/$defs/Parameter"
+                "$ref": "#/$defs/ControlGroup"
               }
             ]
           },

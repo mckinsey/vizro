@@ -13,7 +13,7 @@ def get_dict_options_and_default(
 ) -> tuple[list[_OptionsDictType], SingleValueType | MultiValueType]:
     """Gets list of full options and default value based on user input type of `options`."""
     # Omitted string conversion for "label" to avoid unintended formatting issues (e.g., 2002 becoming '2002.0').
-    dict_options = [option if isinstance(option, dict) else {"label": option, "value": option} for option in options]  # type: ignore[typeddict-item]
+    dict_options = [option if isinstance(option, dict) else {"label": option, "value": option} for option in options]
 
     list_values = [dict_option["value"] for dict_option in dict_options]
     default_value = list_values if multi else list_values[0]
