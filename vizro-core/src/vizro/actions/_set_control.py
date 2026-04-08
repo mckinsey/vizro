@@ -145,7 +145,7 @@ class set_control(_AbstractAction):
                 f"dashboard. Please provide a valid control ID that exists in the dashboard."
             )
 
-        # Validate that target control model Filer or Parameter.
+        # Validate that target control model is Filter or Parameter.
         if not hasattr(control_model, "selector"):
             raise TypeError(
                 f"Model with ID `{self.control}` used as a `control` in `set_control` action must be a control model "
