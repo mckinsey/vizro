@@ -10,7 +10,7 @@
 
 #### Vizro is a low-code toolkit for building high-quality data visualization apps
 
-[![Python version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md) [![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
+[![Python version](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Fmckinsey%2Fvizro%2Frefs%2Fheads%2Fmain%2Fvizro-core%2Fpyproject.toml)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md) [![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
 
 [Documentation](https://vizro.readthedocs.io/en/stable/) | [Get Started](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/)
 
@@ -47,9 +47,9 @@ Every Vizro app is defined by a simple configuration, using these high-level cat
 
 Configuration can be written in multiple formats including **Pydantic models**, **JSON**, **YAML** or **Python dictionaries** for added flexibility of implementation.
 
-Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke [**visual formatting**](https://vizro.readthedocs.io/en/stable/pages/user-guides/visual-formatting/) and [**custom components**](https://vizro.readthedocs.io/en/stable/pages/user-guides/extensions/).
+Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke [**visual formatting**](https://vizro.readthedocs.io/en/stable/pages/user-guides/visual-formatting/) and [**custom components**](https://vizro.readthedocs.io/en/stable/pages/user-guides/extensions/).
 
-Visit our ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
+Visit the ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
 
 ## Why use Vizro?
 
@@ -94,6 +94,71 @@ Use Vizro when you need to combine the speed and ease of low-code Python tools, 
 
 ## How to use Vizro?
 
+Explore a few live demos to see different Vizro dashboards in action:
+
+<table>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard" target="_blank" rel="noopener noreferrer">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/basic_dashboard.png" alt="Basic Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>Basic Dashboard</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard" target="_blank" rel="noopener noreferrer">Try it live</a>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary" target="_blank" rel="noopener noreferrer">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/visual_vocabulary.png" alt="Visual Vocabulary" width="100%">
+      </a>
+      <br>
+      <strong>Visual Vocabulary</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary" target="_blank" rel="noopener noreferrer">Try it live</a>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/BI-dashboard" target="_blank" rel="noopener noreferrer">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/bi_dashboard.png" alt="BI Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>BI Dashboard</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/BI-dashboard" target="_blank" rel="noopener noreferrer">Try it live</a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/call-center-dashboard" target="_blank" rel="noopener noreferrer">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/call_center_dashboard.png" alt="Call Center Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>Call Center Dashboard</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/call-center-dashboard" target="_blank" rel="noopener noreferrer">Try it live</a>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/demo-kpi" target="_blank" rel="noopener noreferrer">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/kpi_dashboard.png" alt="KPI Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>KPI Dashboard</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/demo-kpi" target="_blank" rel="noopener noreferrer">Try it live</a>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/demo-features" target="_blank" rel="noopener noreferrer">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/features_dashboard.png" alt="Features Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>Features Dashboard</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/demo-features" target="_blank" rel="noopener noreferrer">Try it live</a>
+    </td>
+  </tr>
+</table>
+
+Browse the full [Vizro Gallery](https://huggingface.co/collections/vizro/vizro-official-gallery) for more examples.
+
 ## [Vizro framework](https://vizro.readthedocs.io/en/stable/)
 
 **Low-code framework for building dashboards.**
@@ -114,7 +179,7 @@ Visit the [visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png" width="600">
 </a>
 
-## [Vizro-MCP](https://github.com/mckinsey/vizro/tree/main/vizro-mcp)
+## [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/)
 
 **A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for Vizro.**
 
@@ -153,11 +218,11 @@ The [get started documentation](https://vizro.readthedocs.io/en/stable/pages/tut
 
 This repository is a monorepo containing the following packages:
 
-|           Folder           |                                            Version                                            |                           Documentation                            |
-| :------------------------: | :-------------------------------------------------------------------------------------------: | :----------------------------------------------------------------: |
-| [vizro-core](./vizro-core) |     [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)     |       [Vizro Docs](https://vizro.readthedocs.io/en/stable/)        |
-|   [vizro-ai](./vizro-ai)   |  [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai)  |  [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/)  |
-|  [vizro-mcp](./vizro-mcp)  | [![PyPI version](https://badge.fury.io/py/vizro-mcp.svg)](https://badge.fury.io/py/vizro-mcp) | [Vizro-MCP Docs](https://vizro.readthedocs.io/projects/vizro-mcp/) |
+|           Folder           |                                            Version                                            |                                   Documentation                                   |
+| :------------------------: | :-------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------: |
+| [vizro-core](./vizro-core) |     [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)     |               [Vizro Docs](https://vizro.readthedocs.io/en/stable/)               |
+|   [vizro-ai](./vizro-ai)   |  [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai)  |         [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/)          |
+|  [vizro-mcp](./vizro-mcp)  | [![PyPI version](https://badge.fury.io/py/vizro-mcp.svg)](https://badge.fury.io/py/vizro-mcp) | [Vizro-MCP Docs](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) |
 
 ## Community and development
 
