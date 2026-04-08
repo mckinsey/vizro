@@ -388,25 +388,3 @@ def test_notification_with_prevent_update_value_error_actions_chain(
 
     # Check that only one notification is shown
     dash_br.wait_for_no_elements('div[role="alert"]:nth-of-type(2)', timeout=1)
-
-
-@pytest.mark.xfail(reason="Waiting for implementation of showing notifications inside built-in actions")
-def test_notifications_inside_builtin_action(dash_br):
-    """Testing if notification inside built-in action is shown."""
-    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
-    page_select(
-        dash_br,
-        page_name=cnst.CONDITIONAL_NOTIFICATIONS_PAGE,
-    )
-
-    # Trigger action that results in notification inside built-in action and check its content
-    select_slider_value(dash_br, elem_id=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID, max_value=5)
-    dash_br.multiple_click(button_id_path(btn_id=cnst.CONDITIONAL_NOTIFICATION_EXPORT_BUTTON), 1)
-    dash_br.wait_for_text_to_equal(
-        f'#{cnst.CONDITIONAL_NOTIFICATION_PROGRESS_NOTIFICATION_ID} div[class$="Notification-description"]',
-        cnst.CONDITIONAL_NOTIFICATION_PROGRESS_MSG,
-    )
-    dash_br.wait_for_text_to_equal(
-        f'#{cnst.CONDITIONAL_NOTIFICATION_PROGRESS_NOTIFICATION_ID} div[class$="Notification-description"]',
-        cnst.CONDITIONAL_NOTIFICATION_SUCCESS_MSG,
-    )

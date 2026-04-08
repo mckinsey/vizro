@@ -6,7 +6,7 @@ from dash import no_update
 import vizro.actions._set_control as set_control_module
 import vizro.models as vm
 from vizro import Vizro
-from vizro.actions import set_control, show_notification
+from vizro.actions import set_control
 from vizro.managers import model_manager
 
 
@@ -68,47 +68,6 @@ class TestSetControlInstantiation:
         assert action.type == "set_control"
         assert action.control == "control_id"
         assert action.value == "some_value"
-        assert action.success_text == "The control value is set."
-
-
-class TestSetControlNotificationsProperty:
-    """Tests for set_control notifications property."""
-
-    def test_default_set_control_notifications(self):
-        result_set_control_notifications = set_control(control="control_id", value="some_value").notifications
-
-        assert len(result_set_control_notifications) == 2
-
-        # default success notification
-        result_success_notification = result_set_control_notifications["success"]
-        assert type(result_success_notification) is show_notification
-        assert result_success_notification.variant == "success"
-        assert result_success_notification.text == "The control value is set."
-        assert result_success_notification._is_conditional is True
-
-        # default error notification - None
-        assert result_set_control_notifications["error"] is None
-
-    def test_set_control_notifications_with_success_text_none(self):
-        set_control_model = set_control(control="control_id", value="some_value", success_text=None)
-        assert set_control_model.notifications == {"success": None, "error": None}
-
-    def test_set_control_notifications_with_custom_success_text(self):
-        result_set_control_notifications = set_control(
-            control="control_id", value="some_value", success_text="test"
-        ).notifications
-
-        assert len(result_set_control_notifications) == 2
-
-        # default success notification
-        result_success_notification = result_set_control_notifications["success"]
-        assert type(result_success_notification) is show_notification
-        assert result_success_notification.variant == "success"
-        assert result_success_notification.text == "test"
-        assert result_success_notification._is_conditional is True
-
-        # default error notification - None
-        assert result_set_control_notifications["error"] is None
 
 
 @pytest.mark.usefixtures("managers_two_pages_for_set_control")

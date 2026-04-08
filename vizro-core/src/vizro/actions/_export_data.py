@@ -10,7 +10,7 @@ from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, ModelID, _Controls, _normalize_action_notifications
+from vizro.models.types import FigureType, ModelID, _Controls
 
 
 class export_data(_AbstractAction):
@@ -37,11 +37,6 @@ class export_data(_AbstractAction):
         "download data from all components on the page.",
     )
     file_format: Literal["csv", "xlsx"] = Field(default="csv", description="Format of downloaded files.")
-    error_text: str | None = Field(
-        default="Exporting failed.",
-        description="Text that will be displayed in the notification if the export fails. "
-        "Set `None` to not display the notification.",
-    )
 
     @_log_call
     def pre_build(self):
@@ -75,14 +70,6 @@ class export_data(_AbstractAction):
 
     def function(self, _controls: _Controls) -> dict[str, Any]:
         """Exports data after applying _controls."""
-        # TODO PP IMPORTANT: REMOVE SLEEP AND EXCEPTION AFTER TESTING
-        import random
-        from time import sleep
-
-        sleep(0.5)
-        if random.random() > 0.5:
-            raise Exception("Random error occurred during data export!")
-
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880
@@ -127,7 +114,3 @@ class export_data(_AbstractAction):
             dcc.Download(id={"type": "download_dataframe", "action_id": self.id, "target_id": target})
             for target in self.targets
         ]
-
-    @property
-    def notifications(self):  # type: ignore[override]
-        return _normalize_action_notifications({"error": self.error_text})

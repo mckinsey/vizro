@@ -31,14 +31,6 @@ class _parameter(_AbstractAction):
             Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
 
         """
-        # TODO PP IMPORTANT: REMOVE SLEEP AND EXCEPTION AFTER TESTING
-        import random
-        from time import sleep
-
-        sleep(0.5)
-        if random.random() > 0.5:
-            raise Exception("Random error occurred during parametrisation!")
-
         # This is identical to _on_page_load but with self._target_ids rather than self.targets.
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.

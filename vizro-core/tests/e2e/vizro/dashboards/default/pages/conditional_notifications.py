@@ -6,7 +6,7 @@ from dash.exceptions import PreventUpdate
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import export_data, show_notification
+from vizro.actions import show_notification
 from vizro.models.types import capture
 
 iris = px.data.iris()
@@ -223,26 +223,6 @@ conditional_notifications_page = vm.Page(
                 x="sepal_length",
                 y="petal_width",
                 color="sepal_width",
-            ),
-        ),
-        vm.Button(
-            text="Export page",
-            id=cnst.CONDITIONAL_NOTIFICATION_EXPORT_BUTTON,
-            actions=export_data(
-                file_format="csv",
-                # TODO: Change this setting and test after end of feature development
-                # notifications={
-                # "progress": show_notification(
-                #     id=cnst.CONDITIONAL_NOTIFICATION_PROGRESS_NOTIFICATION_ID,
-                #     text=cnst.CONDITIONAL_NOTIFICATION_PROGRESS_MSG,
-                #     variant="progress",
-                # ),
-                # "success": update_notification(
-                #     notification=cnst.CONDITIONAL_NOTIFICATION_PROGRESS_NOTIFICATION_ID,
-                #     text=cnst.CONDITIONAL_NOTIFICATION_SUCCESS_MSG,
-                #     variant="success",
-                # ),
-                # },
             ),
         ),
     ],

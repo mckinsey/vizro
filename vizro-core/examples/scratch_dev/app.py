@@ -2,11 +2,10 @@ import random
 
 from time import sleep
 
-import vizro.plotly.express as px
 import vizro.models as vm
 import vizro.actions as va
 from vizro import Vizro
-from vizro.actions import export_data, show_notification, set_control, update_notification
+from vizro.actions import show_notification, update_notification
 from vizro.models.types import capture
 
 SPECIES_COLORS = {"setosa": "#097DFE", "versicolor": "#6F39E3", "virginica": "#05D0F0"}
@@ -547,60 +546,6 @@ page_8 = vm.Page(
     ],
 )
 
-pre = "p9"
-page_9 = vm.Page(
-    id="page_9",
-    title="Builtin actions",
-    layout=vm.Flex(),
-    components=[
-        vm.Graph(
-            id=f"{pre}_graph_1",
-            title="Select data on this graph to apply cross-filtering",
-            figure=px.bar(
-                data_frame=px.data.iris(),
-                x="species",
-                y="sepal_length",
-                color="species",
-                color_discrete_map=SPECIES_COLORS,
-                custom_data="species",
-            ),
-            actions=set_control(control=f"{pre}_filter", value="species"),
-        ),
-        vm.Container(
-            layout=vm.Flex(direction="row"),
-            components=[
-                vm.Button(text="Export Graph 2 - standard", actions=export_data(targets=[f"{pre}_graph_2"])),
-                vm.Button(
-                    text="Export Graph 2 with custom err_msg",
-                    actions=export_data(targets=[f"{pre}_graph_2"], error_text="Custom export failed text."),
-                ),
-                vm.Button(
-                    text="Export Graph 2 with err_msg None",
-                    actions=export_data(targets=[f"{pre}_graph_2"], error_text=None),
-                ),
-            ],
-        ),
-        vm.Graph(
-            id=f"{pre}_graph_2",
-            title="Graph 2",
-            figure=px.scatter(
-                data_frame=px.data.iris(),
-                x="sepal_length",
-                y="sepal_width",
-                color="species",
-                color_discrete_map=SPECIES_COLORS,
-            ),
-        ),
-    ],
-    controls=[
-        vm.Filter(id=f"{pre}_filter", column="species", targets=[f"{pre}_graph_2"]),
-        vm.Parameter(
-            targets=[f"{pre}_graph_2.x"],
-            selector=vm.RadioItems(options=["sepal_length", "sepal_width"]),
-        ),
-    ],
-)
-
 dashboard = vm.Dashboard(
     pages=[
         page_0,
@@ -612,7 +557,6 @@ dashboard = vm.Dashboard(
         page_6,
         page_7,
         page_8,
-        page_9,
     ]
 )
 
