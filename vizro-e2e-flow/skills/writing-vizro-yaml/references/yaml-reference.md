@@ -73,18 +73,22 @@ data_manager["pivot"] = pivot  # register the derived result
 
 ## Standard Charts (Graph)
 
-When a chart can be expressed with Plotly Express arguments alone:
+When a chart can be expressed with Plotly Express arguments alone and does not need aggregation (e.g., scatter — each row is one data point):
 
 ```yaml
   - figure:
-      _target_: bar
+      _target_: scatter
       data_frame: sales_data
-      x: region
+      x: units
       y: revenue
       color: category
     type: graph
-    title: Revenue by Region
+    title: Revenue vs Units
 ```
+
+Bar and line charts on detail-level data need `@capture("graph")` — see Custom Charts below.
+
+**IMPORTANT**: Plotly Express does NOT aggregate. Bar and line charts on detail-level data stack rows as separate rectangles. Use `@capture("graph")` functions that aggregate inside. Scatter charts do not need aggregation.
 
 Available standard `_target_` values correspond to any `plotly.express` function name (e.g. `bar`, `scatter`, `line`, `area`, `histogram`, `box`, `violin`, `strip`, `funnel`, `pie`, `treemap`, `sunburst`, `density_heatmap`). Full list: https://plotly.com/python-api-reference/plotly.express.html
 
@@ -124,14 +128,14 @@ Key points:
 
 ### When to Use Custom vs Standard
 
-| Scenario                                  | Approach             | File                  |
-| ----------------------------------------- | -------------------- | --------------------- |
-| Simple bar/line/scatter with px args      | YAML `_target_: bar` | `dashboard.yaml` only |
-| Chart needing aggregation before plotting | Custom function      | `custom_charts.py`    |
-| Dual-axis charts                          | Custom function      | `custom_charts.py`    |
-| Shared legend (hide on some charts)       | Custom function      | `custom_charts.py`    |
-| Heatmap table with cell coloring          | Custom function      | `custom_tables.py`    |
-| Custom KPI/figure logic                   | Custom function      | `custom_figures.py`   |
+| Scenario                                      | Approach                 | File                  |
+| --------------------------------------------- | ------------------------ | --------------------- |
+| Scatter/histogram/box (no aggregation needed) | YAML `_target_: scatter` | `dashboard.yaml` only |
+| Bar/line charts (need aggregation)            | `@capture("graph")`      | `custom_charts.py`    |
+| Dual-axis charts                              | Custom function          | `custom_charts.py`    |
+| Shared legend (hide on some charts)           | Custom function          | `custom_charts.py`    |
+| Heatmap table with cell coloring              | Custom function          | `custom_tables.py`    |
+| Custom KPI/figure logic                       | Custom function          | `custom_figures.py`   |
 
 ## KPI Cards
 
@@ -463,7 +467,7 @@ Variants: `plain`, `outlined`, `filled`.
         type: container
         components:
           - figure:
-              _target_: bar
+              _target_: scatter
               data_frame: my_data
               x: category
               y: value

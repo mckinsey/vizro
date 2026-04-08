@@ -18,7 +18,7 @@ Consolidated reference for chart selection, Plotly implementation, color strateg
 - **100% stacked bar**: Pre-calculate percentages per category; use `barmode="stack"`; set y-axis range [0, 100] or [0, 1] with `tickformat=".0%"`.
 - **Axis/legend**: Remove axis title when ticks make meaning obvious; remove legend title (keep items only). For long or numerous x-axis labels, place legend top-right: `legend=dict(x=1, y=1, xanchor="right", yanchor="top")`.
 
-Plotly Express does **not** aggregate. Pre-aggregate in `app.py` or inside custom chart functions; for YAML-only charts, register pre-aggregated datasets in `data_manager`.
+Plotly Express does **not** aggregate. Bar and line charts on detail-level data stack individual rows as separate rectangles instead of summing — producing visually broken charts. Use `@capture("graph")` functions that aggregate inside for bar and line charts. Scatter charts do not need aggregation — each row is one data point.
 
 ## Color strategy
 

@@ -15,6 +15,7 @@ import yaml
 
 
 def check_file_exists(spec_dir: Path, filename: str) -> dict:
+    """Check whether a spec file exists in the spec directory."""
     path = spec_dir / filename
     return {
         "check": f"{filename} exists",
@@ -24,6 +25,7 @@ def check_file_exists(spec_dir: Path, filename: str) -> dict:
 
 
 def load_yaml(spec_dir: Path, filename: str) -> tuple[dict | None, dict | None]:
+    """Load and validate a YAML file, returning the parsed data and a check result."""
     path = spec_dir / filename
     if not path.exists():
         return None, {"check": f"{filename} valid YAML", "status": "FAIL", "detail": "File does not exist"}
@@ -37,6 +39,7 @@ def load_yaml(spec_dir: Path, filename: str) -> tuple[dict | None, dict | None]:
 
 
 def get_nested(data: dict, *keys):
+    """Traverse nested dicts by a sequence of keys, returning None if any key is missing."""
     for k in keys:
         if not isinstance(data, dict) or k not in data:
             return None
@@ -45,10 +48,12 @@ def get_nested(data: dict, *keys):
 
 
 def check_required_fields(data: dict | None, filename: str, field_paths: list[str]) -> list[dict]:
+    """Verify that required dot-separated field paths exist in the parsed YAML data."""
     results = []
     if data is None:
-        for fp in field_paths:
-            results.append({"check": f"{filename} has '{fp}'", "status": "FAIL", "detail": "Could not load file"})
+        results.extend(
+            {"check": f"{filename} has '{fp}'", "status": "FAIL", "detail": "Could not load file"} for fp in field_paths
+        )
         return results
     for fp in field_paths:
         keys = fp.split(".")
@@ -61,6 +66,7 @@ def check_required_fields(data: dict | None, filename: str, field_paths: list[st
 
 
 def extract_page_names(data: dict | None) -> set[str]:
+    """Extract normalized page names from a spec's pages list."""
     if data is None:
         return set()
     pages = data.get("pages", [])
@@ -74,6 +80,7 @@ def extract_page_names(data: dict | None) -> set[str]:
 
 
 def check_page_consistency(specs: dict[str, dict | None]) -> list[dict]:
+    """Check that page names are consistent across spec files."""
     results = []
     names = {}
     for label, data in specs.items():
@@ -83,29 +90,38 @@ def check_page_consistency(specs: dict[str, dict | None]) -> list[dict]:
     for i, a in enumerate(all_labels):
         for b in all_labels[i + 1 :]:
             if not names[a] or not names[b]:
-                results.append({
-                    "check": f"Page names consistent: {a} vs {b}",
-                    "status": "FAIL",
-                    "detail": f"Could not extract page names from one or both specs ({a}: {names[a]}, {b}: {names[b]})",
-                })
+                results.append(
+                    {
+                        "check": f"Page names consistent: {a} vs {b}",
+                        "status": "FAIL",
+                        "detail": (
+                            f"Could not extract page names from one or both specs ({a}: {names[a]}, {b}: {names[b]})"
+                        ),
+                    }
+                )
             elif names[a] == names[b]:
-                results.append({
-                    "check": f"Page names consistent: {a} vs {b}",
-                    "status": "PASS",
-                    "detail": f"Pages: {names[a]}",
-                })
+                results.append(
+                    {
+                        "check": f"Page names consistent: {a} vs {b}",
+                        "status": "PASS",
+                        "detail": f"Pages: {names[a]}",
+                    }
+                )
             else:
                 only_a = names[a] - names[b]
                 only_b = names[b] - names[a]
-                results.append({
-                    "check": f"Page names consistent: {a} vs {b}",
-                    "status": "FAIL",
-                    "detail": f"Only in {a}: {only_a}; Only in {b}: {only_b}",
-                })
+                results.append(
+                    {
+                        "check": f"Page names consistent: {a} vs {b}",
+                        "status": "FAIL",
+                        "detail": f"Only in {a}: {only_a}; Only in {b}: {only_b}",
+                    }
+                )
     return results
 
 
 def validate(project_dir: str) -> dict:
+    """Validate that all 5 spec files exist with correct structure and cross-spec consistency."""
     project = Path(project_dir)
     spec_dir = project / "spec"
     checks = []
@@ -150,9 +166,9 @@ def validate(project_dir: str) -> dict:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print(f"Usage: {sys.argv[0]} <project_dir>", file=sys.stderr)
+    if len(sys.argv) != 2:  # noqa: PLR2004
+        print(f"Usage: {sys.argv[0]} <project_dir>", file=sys.stderr)  # noqa: T201
         sys.exit(1)
     result = validate(sys.argv[1])
-    print(json.dumps(result, indent=2))
+    print(json.dumps(result, indent=2))  # noqa: T201
     sys.exit(0 if result["status"] == "PASS" else 1)

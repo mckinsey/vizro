@@ -15,26 +15,32 @@ import yaml
 
 
 def check_twelve_columns(grid_pattern: list[list[int]], page_name: str) -> list[dict]:
+    """Verify every row in the grid has exactly 12 columns."""
     checks = []
     all_twelve = True
     for i, row in enumerate(grid_pattern):
-        if len(row) != 12:
+        if len(row) != 12:  # noqa: PLR2004
             all_twelve = False
-            checks.append({
-                "check": f"{page_name}: row {i} has 12 columns",
-                "status": "FAIL",
-                "detail": f"Row {i} has {len(row)} columns: {row}",
-            })
+            checks.append(
+                {
+                    "check": f"{page_name}: row {i} has 12 columns",
+                    "status": "FAIL",
+                    "detail": f"Row {i} has {len(row)} columns: {row}",
+                }
+            )
     if all_twelve:
-        checks.append({
-            "check": f"{page_name}: all rows have 12 columns",
-            "status": "PASS",
-            "detail": f"{len(grid_pattern)} rows checked",
-        })
+        checks.append(
+            {
+                "check": f"{page_name}: all rows have 12 columns",
+                "status": "PASS",
+                "detail": f"{len(grid_pattern)} rows checked",
+            }
+        )
     return checks
 
 
 def check_rectangularity(grid_pattern: list[list[int]], page_name: str) -> list[dict]:
+    """Verify each component occupies a rectangular region in the grid."""
     checks = []
     # Collect column positions for each component index
     component_cols: dict[int, dict[int, set[int]]] = {}
@@ -51,34 +57,41 @@ def check_rectangularity(grid_pattern: list[list[int]], page_name: str) -> list[
     all_rectangular = True
     for comp_id, rows_dict in sorted(component_cols.items()):
         col_sets = list(rows_dict.values())
-        if len(set(frozenset(s) for s in col_sets)) > 1:
+        if len({frozenset(s) for s in col_sets}) > 1:
             all_rectangular = False
-            checks.append({
-                "check": f"{page_name}: component {comp_id} is rectangular",
-                "status": "FAIL",
-                "detail": f"Component {comp_id} spans different columns in different rows: {dict(rows_dict)}",
-            })
+            checks.append(
+                {
+                    "check": f"{page_name}: component {comp_id} is rectangular",
+                    "status": "FAIL",
+                    "detail": f"Component {comp_id} spans different columns in different rows: {dict(rows_dict)}",
+                }
+            )
 
     if all_rectangular:
-        checks.append({
-            "check": f"{page_name}: all components form rectangles",
-            "status": "PASS",
-            "detail": f"{len(component_cols)} components checked",
-        })
+        checks.append(
+            {
+                "check": f"{page_name}: all components form rectangles",
+                "status": "PASS",
+                "detail": f"{len(component_cols)} components checked",
+            }
+        )
     return checks
 
 
 def check_row_min_height(page_data: dict, page_name: str) -> list[dict]:
+    """Check that row_min_height is 140px when specified."""
     rmh = page_data.get("row_min_height")
     if rmh is None:
         return [{"check": f"{page_name}: row_min_height", "status": "PASS", "detail": "Not specified (ok)"}]
     if str(rmh).strip('"').strip("'") == "140px":
         return [{"check": f"{page_name}: row_min_height is 140px", "status": "PASS", "detail": ""}]
-    return [{
-        "check": f"{page_name}: row_min_height is 140px",
-        "status": "FAIL",
-        "detail": f"Found: {rmh}",
-    }]
+    return [
+        {
+            "check": f"{page_name}: row_min_height is 140px",
+            "status": "FAIL",
+            "detail": f"Found: {rmh}",
+        }
+    ]
 
 
 def check_component_sizing(grid_pattern: list[list[int]], page_name: str) -> list[dict]:
@@ -99,18 +112,21 @@ def check_component_sizing(grid_pattern: list[list[int]], page_name: str) -> lis
         n_rows = len(spans["rows"])
         n_cols = len(spans["cols"])
         # Charts should be at least 3 rows tall (except KPI cards which are 1 row)
-        if n_rows == 2:
-            advisories.append({
-                "check": f"{page_name}: component {comp_id} sizing advisory",
-                "status": "WARN",
-                "detail": f"Component {comp_id} spans {n_cols} cols x {n_rows} rows. "
-                f"2 rows is unusual — KPIs should be 1 row, charts should be 3+.",
-            })
+        if n_rows == 2:  # noqa: PLR2004
+            advisories.append(
+                {
+                    "check": f"{page_name}: component {comp_id} sizing advisory",
+                    "status": "WARN",
+                    "detail": f"Component {comp_id} spans {n_cols} cols x {n_rows} rows. "
+                    f"2 rows is unusual — KPIs should be 1 row, charts should be 3+.",
+                }
+            )
 
     return advisories
 
 
 def validate(project_dir: str) -> dict:
+    """Validate grid layout rules for all pages in spec/2."""
     project = Path(project_dir)
     spec2_path = project / "spec" / "2_interaction_ux.yaml"
     checks = []
@@ -143,11 +159,13 @@ def validate(project_dir: str) -> dict:
         page_name = page.get("name", "unnamed")
         grid_pattern = page.get("grid_pattern")
         if not grid_pattern or not isinstance(grid_pattern, list):
-            checks.append({
-                "check": f"{page_name}: grid_pattern exists",
-                "status": "FAIL",
-                "detail": "Missing or invalid grid_pattern",
-            })
+            checks.append(
+                {
+                    "check": f"{page_name}: grid_pattern exists",
+                    "status": "FAIL",
+                    "detail": "Missing or invalid grid_pattern",
+                }
+            )
             continue
 
         checks.append({"check": f"{page_name}: grid_pattern exists", "status": "PASS", "detail": ""})
@@ -163,9 +181,9 @@ def validate(project_dir: str) -> dict:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print(f"Usage: {sys.argv[0]} <project_dir>", file=sys.stderr)
+    if len(sys.argv) != 2:  # noqa: PLR2004
+        print(f"Usage: {sys.argv[0]} <project_dir>", file=sys.stderr)  # noqa: T201
         sys.exit(1)
     result = validate(sys.argv[1])
-    print(json.dumps(result, indent=2))
+    print(json.dumps(result, indent=2))  # noqa: T201
     sys.exit(0 if result["status"] == "PASS" else 1)

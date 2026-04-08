@@ -35,7 +35,7 @@ description: Use this skill when choosing chart types, applying Plotly Express c
 
 Use when: aggregation/sorting needed, `update_layout()`/`update_traces()` calls, reference lines, parameter-driven logic, dual-axis, multi-trace `go.Figure()`, shared legend control.
 
-Standard `px` charts expressible via YAML args do **not** need custom functions. Full list: https://plotly.com/python-api-reference/plotly.express.html
+**In practice, most bar and line charts need `@capture("graph")` functions** that aggregate data inside. Inline `px.bar(data_frame="raw", x="region", y="revenue")` on detail-level data stacks individual rows as separate rectangles instead of summing — producing visually broken charts. Scatter charts do not need aggregation — each row is one data point.
 
 ## KPI Cards
 
