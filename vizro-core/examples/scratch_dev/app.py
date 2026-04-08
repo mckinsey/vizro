@@ -137,7 +137,7 @@ page_2 = vm.Page(
             id="cell_clicked",
             targets=["tips_table_title.cell_clicked"],
             visible=False,
-            selector=vm.RadioItems(options=[str(x) for x in range(100)]),
+            selector=vm.RadioItems(options=[x for x in range(100)]),
         ),
     ],
 )
