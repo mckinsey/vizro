@@ -11,6 +11,7 @@ from vizro.models.types import capture
 df = px.data.iris()
 df_6 = df.iloc[[0, 1, 50, 51, 100, 101]]
 
+
 tips = px.data.tips()
 pivot_tips = (
     tips.pivot_table(index="sex", columns="day", aggfunc="size", fill_value=0)
