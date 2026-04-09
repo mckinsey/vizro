@@ -191,9 +191,6 @@ class AgGrid(VizroBaseModel):
         figure = self.figure(**kwargs)
         figure.id = self._inner_component_id
 
-        # Default getRowId to be equal to the value from the first column of data, instead of index starting from zero.
-        figure.dashGridOptions.setdefault("getRowId", f"params.data.{kwargs['data_frame'].columns[0]}")
-
         # Configure default grid interaction behavior based on the type of actions provided:
         all_set_control = all(isinstance(a, set_control) for a in self.actions)
         all_cell_clicked_actions = all_set_control and all(a.value in CELL_CLICKED_MAPPING for a in self.actions)
