@@ -139,7 +139,7 @@ You can pick a different starting selection by setting `value` on [`Cascader`][v
 
 TODO NOW: screenshot/gif of this as standalone selector with multi=True/False
 
-Hierarchical selectors can be used in [parameters](parameters.md) and [hierarchical filters](filters.md#hierarchical-filters).
+Hierarchical selectors can be used in [hierarchical filters](filters.md#hierarchical-filters) and [parameters](parameters.md).
 
 ## Add a tooltip
 

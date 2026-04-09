@@ -113,7 +113,7 @@ def validate_cascader_value(value: Any, info: ValidationInfo) -> Any:
 
 
 class Cascader(VizroBaseModel):
-    """Cascader selector for [`Parameter`][vizro.models.Parameter] and [`Filter`][vizro.models.Filter].
+    """Cascader selector for [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
 
     Abstract: Usage documentation
         [Hierarchical selectors](../user-guides/selectors.md#hierarchical-selectors)
