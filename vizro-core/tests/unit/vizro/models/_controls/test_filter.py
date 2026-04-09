@@ -1196,23 +1196,6 @@ class TestFilterHierarchicalColumn:
         with pytest.raises(ValueError, match="continent"):
             f.pre_build()
 
-    def test_hierarchical_non_categorical_branch_column_raises(self):
-        df = pd.DataFrame({"branch_num": [1, 2], "leaf": ["a", "b"], "y": [1.0, 2.0]})
-        vm.Page(
-            id="test_page_hier_branch_dtype",
-            title="Page Title",
-            components=[vm.Graph(id="g_num_branch", figure=px.scatter(df, x="leaf", y="y"))],
-        )
-        Vizro._pre_build()
-        f = vm.Filter(
-            column=["branch_num", "leaf"],
-            targets=["g_num_branch"],
-            selector=vm.Cascader(multi=False),
-        )
-        model_manager["test_page_hier_branch_dtype"].controls = [f]
-        with pytest.raises(ValueError, match="branch_num"):
-            f.pre_build()
-
 
 class TestFilterBuild:
     """Tests filter build method."""

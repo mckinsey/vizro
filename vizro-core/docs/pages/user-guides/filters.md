@@ -156,12 +156,10 @@ The following example demonstrates these default selector types.
 
 A hierarchical filter is a filter where the user chooses values from a _tree_ of grouped value. For example, cities around the world could be grouped into a hierarchy by continent and then by country. Rows of the data are filtered using the finest-grained (most "zoomed in") value (the _leaves_ of the tree). In the continent/country/city example, this would be city.
 
-To add one to your page, do the following:
+To add a hierarchical filter to your page:
 
 1. add a [`Filter`][vizro.models.Filter] to `controls`, the same as for a basic filter
-1. set `column` to a list of at least two columns names from the top level of the hierarchy down to the column you want to filter on
-
-All columns in a hierarchical filter must be categorical. By default, as with a basic filter, Vizro builds the selector's `options` from your target data, but you can override this and other settings by editing the [underlying selector](selectors.md#hierarchical-selectors).
+1. set `column` to a list of at least two columns' names from the top level of the hierarchy down to the column you want to filter on
 
 !!! example "Hierarchical filter"
 
@@ -223,7 +221,7 @@ All columns in a hierarchical filter must be categorical. By default, as with a 
 
 ## Change selector
 
-If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] model a different selector model. For a **single** `column` string, available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker] and [`Switch`][vizro.models.Switch]. For a **hierarchical** filter (`column` as a list), use [`Cascader`][vizro.models.Cascader] as in the [section above](#hierarchical-filters).
+Use a different `selector` argument for the [`Filter`][vizro.models.Filter] model for a different selector model. For a **single** `column` string, available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker] and [`Switch`][vizro.models.Switch]. For a **hierarchical** filter (`column` as a list), use [`Cascader`][vizro.models.Cascader] as in the [section above](#hierarchical-filters).
 
 You can explore and test all available selectors interactively on our [feature demo dashboard](https://vizro-demo-features.hf.space/selectors).
 

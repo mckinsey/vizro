@@ -47,10 +47,10 @@ DEFAULT_SELECTORS = {
 # something we should avoid at least until we have moved to narwhals since maybe it's an unnecessary
 # performance hit.
 DISALLOWED_SELECTORS = {
-    "numerical": SELECTORS["temporal"] + SELECTORS["hierarchical"],
-    "temporal": SELECTORS["numerical"] + SELECTORS["boolean"] + SELECTORS["hierarchical"],
-    "categorical": SELECTORS["numerical"] + SELECTORS["temporal"] + SELECTORS["boolean"] + SELECTORS["hierarchical"],
-    "boolean": SELECTORS["numerical"] + SELECTORS["temporal"] + SELECTORS["hierarchical"],
+    "numerical": SELECTORS["temporal"],
+    "temporal": SELECTORS["numerical"] + SELECTORS["boolean"],
+    "categorical": SELECTORS["numerical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
+    "boolean": SELECTORS["numerical"] + SELECTORS["temporal"],
     "hierarchical": SELECTORS["numerical"] + SELECTORS["categorical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
 }
 
@@ -62,11 +62,6 @@ def _filter_between(series: pd.Series, value: list[float] | list[str]) -> pd.Ser
         value = pd.to_datetime(value)
         series = pd.to_datetime(series.dt.date)
     return series.between(value[0], value[1], inclusive="both")
-
-
-def _series_is_categorical_column(series: pd.Series) -> bool:
-    """True if `series` is non-boolean, non-numeric, non-datetime (Vizro 'categorical' filter column)."""
-    return not (is_bool_dtype(series) or is_numeric_dtype(series) or is_datetime64_any_dtype(series))
 
 
 def _dataframe_path_to_cascader_options(df: pd.DataFrame, path_columns: list[str]) -> dict[str, Any]:
@@ -407,20 +402,12 @@ class Filter(VizroBaseModel):
 
         # One code path for flat and hierarchical filters: `path_or_leaf` is always a list (a single name when
         # `column` is a str, or the ordered path when `column` is a list). We require every path name on the dataframe,
-        # then take the leaf column `path_or_leaf[-1]` for the series used downstream. Only when len > 1 do we run
-        # hierarchical-only checks (every path column categorical).
+        # then take the leaf column `path_or_leaf[-1]` for the series used downstream.
         path_or_leaf = [self.column] if isinstance(self.column, str) else self.column
         leaf = path_or_leaf[-1]
         for target, data_frame in target_to_data_frame.items():
             missing = [c for c in path_or_leaf if c not in data_frame.columns]
             if not missing:
-                if len(path_or_leaf) > 1:
-                    for col in path_or_leaf:
-                        if not _series_is_categorical_column(data_frame[col]):
-                            raise ValueError(
-                                f"Hierarchical filter path column {col!r} must be categorical "
-                                f"(non-boolean, non-numeric, non-datetime) for target {target!r}."
-                            )
                 # reset_index so that when we make a DataFrame out of all these pd.Series pandas doesn't try to align
                 # the columns by index.
                 target_to_series[target] = data_frame[leaf].reset_index(drop=True)
@@ -451,7 +438,7 @@ class Filter(VizroBaseModel):
         is_boolean = targeted_data.apply(is_bool_dtype)
         is_numerical = targeted_data.apply(is_numeric_dtype)
         is_temporal = targeted_data.apply(is_datetime64_any_dtype)
-        is_categorical = targeted_data.apply(_series_is_categorical_column)
+        is_categorical = ~(is_boolean | is_numerical | is_temporal)
 
         if is_boolean.all():
             return "boolean"
