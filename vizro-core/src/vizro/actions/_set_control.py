@@ -173,20 +173,29 @@ class set_control(_AbstractAction):
 
         selector = cast(ControlType, model_manager[self.control]).selector
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
-        is_range = isinstance(selector, RangeSlider) or getattr(selector, "range", False)
-
-        if not (is_multi or is_range):
-            value = self._coerce_to_single_value_or_log(value, selector)
-            if not value:
-                return self._get_no_update_response()
+        is_range = getattr(selector, "range", isinstance(selector, RangeSlider))
 
         if is_multi:
             value = value if isinstance(value, list) else [value]
         elif is_range:
-            normalized_value = self._set_range_value_from_trigger(value)
-            if normalized_value is None:
+            if not isinstance(value, list):
+                value = [value, value]
+            elif len(value) == 0:
                 return self._get_no_update_response()
-            value = normalized_value
+            else:
+                value = [min(value), max(value)]  # type: ignore[type-var]
+        elif isinstance(value, list):
+            if len(value) == 1:
+                value = value[0]
+            else:
+                logger.debug(
+                    "set_control %s received list with %d items but targets a single-value %s %s; return no_update",
+                    self.id,
+                    len(value),
+                    type(selector).__name__,
+                    self.control,
+                )
+                return self._get_no_update_response()
 
         if self._same_page:
             return value
@@ -203,26 +212,3 @@ class set_control(_AbstractAction):
 
     def _get_no_update_response(self):
         return no_update if self._same_page else (no_update, no_update)
-
-    def _coerce_to_single_value_or_log(self, value, selector):
-        if not isinstance(value, list):
-            return value
-        elif len(value) == 1:
-            return value[0]
-        else:
-            logger.debug(
-                "set_control %s received list with %d items but targets a single-value %s %s; return no_update",
-                self.id,
-                len(value),
-                type(selector).__name__,
-                self.control,
-            )
-
-    def _set_range_value_from_trigger(self, value: JsonValue):
-        if isinstance(value, list):
-            if len(value) >= 2:  # noqa: PLR2004
-                return [min(value), max(value)]  # type: ignore[type-var]
-            if len(value) == 1:
-                return [value[0], value[0]]
-            return None
-        return [value, value]

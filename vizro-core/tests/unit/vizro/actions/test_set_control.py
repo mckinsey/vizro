@@ -252,7 +252,9 @@ class TestSetControlFunction:
             # Single-value boolean control
             ("filter_page_1_boolean", [], no_update),
             ("filter_page_1_boolean", True, True),
+            ("filter_page_1_boolean", False, False),
             ("filter_page_1_boolean", [True], True),
+            ("filter_page_1_boolean", [False], False),
             ("filter_page_1_boolean", [True, False], no_update),
             # Single-value temporal control
             ("filter_page_1_date_picker", [], no_update),
