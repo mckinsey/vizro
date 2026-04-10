@@ -365,8 +365,9 @@ class _BaseAction(VizroBaseModel):
             if return_value is not None:
                 raise ValueError(
                     "Action function has returned a value but the action has no defined outputs. "
-                    "If you want to return a notification, make sure the returned value matches the notification key "
-                    "in the action's notifications."
+                    "If you want to return a notification, make sure the returned action's value matches the "
+                    "notification key in the action's `notifications` dictionary. For example, do `return 'my_success'`" 
+                    " if the action has a `notification` dictionary defined with the key 'my_success'."
                 )
 
         # --- Dict outputs ---
@@ -376,14 +377,15 @@ class _BaseAction(VizroBaseModel):
 
             if not isinstance(return_value, Mapping):
                 raise ValueError(
-                    "Action function has not returned a dictionary-like object "
-                    "but the action's defined outputs are a dictionary. "
-                    "If you want to return a notification, make sure the returned value matches the notification key "
-                    "in the action's notifications."
+                    "Action function has not returned a dictionary-like object but the action's defined outputs are " 
+                    "a dictionary. If you want to return a notification, make sure the returned action's value matches " 
+                    "the notification key in the action's `notifications` dictionary. For example, do " 
+                    "`return {'a': 1}, 'my_success'` if the action has a `notification` dictionary defined with the "
+                    "key 'my_success'."
                 )
             if set(outputs) != set(return_value):
                 raise ValueError(
-                    f"Keys of action's returned value {set(return_value) or {}} "
+                    f"Keys of action's returned value {set(return_value) or {}} " 
                     f"do not match the action's defined outputs {set(outputs) or {}})."
                 )
 
@@ -417,9 +419,10 @@ class _BaseAction(VizroBaseModel):
             if len(return_value) != len(outputs):
                 raise ValueError(
                     f"Number of action's returned elements {len(return_value)} does not match the number "
-                    f"of action's defined outputs {len(outputs)}. "
-                    "If you want to return a notification, make sure the returned value matches the notification key "
-                    "in the action's notifications."
+                    f"of action's defined outputs {len(outputs)}. If you want to return a notification, make sure the "
+                    "returned action's value matches the notification key in the action's `notifications` dictionary. " 
+                    "For example, do `return 1, 2, 'my_success'` if the action has a `notification` dictionary defined " 
+                    "with the key 'my_success'."
                 )
 
         # --- Single output ---
@@ -612,9 +615,9 @@ class _BaseAction(VizroBaseModel):
                 external_return = self._no_update_outputs(external_outputs_spec)
 
                 error_msg, notification_payload = (
-                    (exc.args[0], exc.args[1])
+                    (str(exc.args[0]), exc.args[1])
                     if len(exc.args) == 2 and self._is_notification_payload(exc.args[1])  # noqa: PLR2004
-                    else (exc, None)
+                    else (str(exc), None)
                 )
                 notification_key, notification_result = self._parse_notification_payload(notification_payload)
                 # Treat PreventUpdate exception as a special case by showing a `success` notification by default.
