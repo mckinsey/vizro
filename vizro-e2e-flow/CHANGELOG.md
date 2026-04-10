@@ -1,10 +1,16 @@
 <a id='changelog-0.1.5'></a>
 
-# 0.1.5 — 2026-04-08
+# 0.1.5 — 2026-04-09
 
 ## Added
 
-- Add eval framework with 3 business-first test cases and updated skill guidance for data pre-aggregation. ([#1692](https://github.com/mckinsey/vizro/pull/1692)) <a id='changelog-0.1.4'></a>
+- Add eval framework (`evals/evals.json`) with 3 business-first test cases, validation scripts (`validate_colors.py`, `validate_aggregation.py`), and Playwright Python fallback for browser testing. ([#1692](https://github.com/mckinsey/vizro/pull/1692))
+
+## Changed
+
+- Make Step 2 (Testing) in dashboard-build non-optional, strengthen pre-aggregation guidance, and add `vizro.plotly.express` import warning. ([#1692](https://github.com/mckinsey/vizro/pull/1692))
+
+<a id='changelog-0.1.4'></a>
 
 # 0.1.4 — 2026-03-19
 

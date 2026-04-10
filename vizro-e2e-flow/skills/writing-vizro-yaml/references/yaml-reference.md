@@ -126,14 +126,14 @@ Key points:
 
 ### When to Use Custom vs Standard
 
-| Scenario                                      | Approach                 | File                  |
-| --------------------------------------------- | ------------------------ | --------------------- |
-| Scatter/histogram/box (no aggregation needed) | YAML `_target_: scatter` | `dashboard.yaml` only |
-| Bar/line charts (need aggregation)            | `@capture("graph")`      | `custom_charts.py`    |
-| Dual-axis charts                              | Custom function          | `custom_charts.py`    |
-| Shared legend (hide on some charts)           | Custom function          | `custom_charts.py`    |
-| Heatmap table with cell coloring              | Custom function          | `custom_tables.py`    |
-| Custom KPI/figure logic                       | Custom function          | `custom_figures.py`   |
+| Scenario                                   | Approach                 | File                  |
+| ------------------------------------------ | ------------------------ | --------------------- |
+| Simple charts with px args (e.g., scatter) | YAML `_target_: scatter` | `dashboard.yaml` only |
+| Chart needing aggregation before plotting  | Custom function          | `custom_charts.py`    |
+| Dual-axis charts                           | Custom function          | `custom_charts.py`    |
+| Shared legend (hide on some charts)        | Custom function          | `custom_charts.py`    |
+| Heatmap table with cell coloring           | Custom function          | `custom_tables.py`    |
+| Custom KPI/figure logic                    | Custom function          | `custom_figures.py`   |
 
 ## KPI Cards
 
