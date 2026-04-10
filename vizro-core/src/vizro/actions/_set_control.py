@@ -170,6 +170,11 @@ class set_control(_AbstractAction):
 
         value = cast(_SupportsSetControl, self._parent_model)._get_value_from_trigger(self.value, _trigger)
 
+        # Returning no_update will leave control unchanged and control's action will not be triggered.
+        # Don't raise PreventUpdate exception as it stops other actions in the chain from running.
+        if value is no_update:
+            return no_update if self._same_page else (no_update, no_update)
+
         # If value is None then reset control to original value.
         if value is None:
             value = _controls_store[self.control]["originalValue"]
