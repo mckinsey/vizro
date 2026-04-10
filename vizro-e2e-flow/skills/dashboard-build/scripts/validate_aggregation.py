@@ -13,20 +13,6 @@ from pathlib import Path
 # Chart types that require pre-aggregated data (stacking raw rows produces broken visuals)
 AGGREGATION_REQUIRED_CHARTS = {"bar", "line", "area", "funnel"}
 
-# Chart types where raw detail rows are fine (each row = one data point)
-RAW_OK_CHARTS = {
-    "scatter",
-    "histogram",
-    "box",
-    "violin",
-    "strip",
-    "density_heatmap",
-    "imshow",
-    "pie",
-    "treemap",
-    "sunburst",
-}
-
 
 class AggregationVisitor(ast.NodeVisitor):
     """Check that inline px.bar/px.line calls use pre-aggregated data."""

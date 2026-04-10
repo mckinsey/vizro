@@ -15,7 +15,7 @@ from pathlib import Path
 
 import yaml
 
-# All valid Vizro hex colors from vizro-core/src/vizro/themes/_colors.py
+# All valid Vizro hex colors — keep in sync with vizro-core/src/vizro/themes/_colors.py
 # These are whitelisted — using them explicitly (e.g. for AG Grid styling) is acceptable.
 VIZRO_HEX_COLORS = frozenset(
     {
@@ -33,7 +33,6 @@ VIZRO_HEX_COLORS = frozenset(
         "#BDDCFE",
         "#8CC6FF",
         "#4BA5FF",
-        "#097DFE",
         "#0063F6",
         "#004DE0",
         "#0B40B4",
@@ -43,14 +42,12 @@ VIZRO_HEX_COLORS = frozenset(
         "#C0B6FB",
         "#A08AF8",
         "#855FF6",
-        "#6F39E3",
         "#6630D5",
         "#5529B1",
         "#47268E",
         "#D2F9FC",
         "#AAF2FA",
         "#68E8F7",
-        "#05D0F0",
         "#00B7D4",
         "#0092B2",
         "#087490",
@@ -60,7 +57,6 @@ VIZRO_HEX_COLORS = frozenset(
         "#ADF1D3",
         "#73E6BA",
         "#2CD099",
-        "#11B883",
         "#07966B",
         "#0B7859",
         "#0F5E48",
@@ -68,7 +64,6 @@ VIZRO_HEX_COLORS = frozenset(
         "#F8E9F5",
         "#F3D3EB",
         "#EDAFDD",
-        "#E77EC2",
         "#DB5AB1",
         "#C84194",
         "#AB3478",
@@ -78,7 +73,6 @@ VIZRO_HEX_COLORS = frozenset(
         "#EAF3A9",
         "#DBE973",
         "#CBD740",
-        "#C0CA33",
         "#979912",
         "#76720C",
         "#605B11",
@@ -89,7 +83,6 @@ VIZRO_HEX_COLORS = frozenset(
         "#97A1B0",
         "#6D788A",
         "#505C6F",
-        "#3E495B",
         "#2A3241",
         "#1D222E",
         "#D0FAF3",
@@ -98,7 +91,6 @@ VIZRO_HEX_COLORS = frozenset(
         "#1BD0C1",
         "#00B5A9",
         "#00918A",
-        "#0F766E",
         "#0F5B59",
         "#144B49",
         "#FBE4E2",
@@ -129,6 +121,7 @@ VIZRO_HEX_LOWER = frozenset(c.lower() for c in VIZRO_HEX_COLORS)
 FORBIDDEN_COLOR_KWARGS = {
     "color_discrete_map",
     "color_discrete_sequence",
+    "color_continuous_scale",
     "marker_color",
 }
 

@@ -56,6 +56,10 @@ def gapminder_life_expectancy_chart(data_frame: pd.DataFrame) -> go.Figure:
 
 ## Common mistakes
 
+### Using plain `plotly.express` instead of `vizro.plotly.express`
+
+Always use `import vizro.plotly.express as px` — never `import plotly.express`. This applies inside `@capture("graph")` functions too. `vizro.plotly.express` is a drop-in replacement that ensures Vizro theming works correctly. Plain `plotly.express` bypasses Vizro's color templates. `import plotly.graph_objects as go` is fine (there is no vizro wrapper for it).
+
 ### Custom charts as KPI cards
 
 Never use custom charts for building KPI cards. Use built-in `kpi_card` / `kpi_card_reference` and do data manipulation in `app.py`. See **selecting-vizro-charts** skill for full rules.

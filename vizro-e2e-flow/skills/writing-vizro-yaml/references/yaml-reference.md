@@ -88,8 +88,6 @@ When a chart can be expressed with Plotly Express arguments alone and does not n
 
 Bar and line charts on detail-level data need `@capture("graph")` — see Custom Charts below.
 
-**IMPORTANT**: Plotly Express does NOT aggregate. Bar and line charts on detail-level data stack rows as separate rectangles. Use `@capture("graph")` functions that aggregate inside. Scatter charts do not need aggregation.
-
 Available standard `_target_` values correspond to any `plotly.express` function name (e.g. `bar`, `scatter`, `line`, `area`, `histogram`, `box`, `violin`, `strip`, `funnel`, `pie`, `treemap`, `sunburst`, `density_heatmap`). Full list: https://plotly.com/python-api-reference/plotly.express.html
 
 ## Custom Charts (Graph)

@@ -1,5 +1,5 @@
 {
-  "skill_name": "vizro-e2e-flow",
+  "skill_name": "dashboard-design + dashboard-build",
   "evals": [
     {
       "id": 1,
@@ -8,12 +8,12 @@
       "files": [],
       "expectations": [
         "All 5 spec files (spec/1 through spec/5) are generated",
-        "app.py launches and all pages are navigable (verified by Playwright)",
-        "No hardcoded colors in app.py — Vizro handles colors automatically",
+        "Agent tested the dashboard in a browser (using any automation tool — e.g., Playwright), fixed console errors and callback errors on page navigation, and produced a bug-free app.py",
+        "Agent ran validate_colors.py and produced a PASS result (no hardcoded colors in app.py)",
         "Grid layout uses 12 columns with rectangular components",
         "Interactive options were presented during the design phase",
         "app.py uses vizro.plotly.express (not plain plotly.express)",
-        "Charts use pre-aggregated data (no raw detail rows dumped into bar/line charts)",
+        "Agent ran validate_aggregation.py and produced a PASS result (bar/line charts use @capture('graph') with pre-aggregated data)",
         "KPI cards use built-in kpi_card or kpi_card_reference (not rebuilt as custom charts)",
         "Heatmap uses Vizro default color palette (no explicit color_continuous_scale like 'Blues' or 'RdYlGn')"
       ]
@@ -25,12 +25,12 @@
       "files": [],
       "expectations": [
         "All 5 spec files are generated",
-        "app.py launches and all pages are navigable (verified by Playwright)",
-        "No hardcoded colors — Vizro handles colors automatically",
+        "Agent tested the dashboard in a browser (using any automation tool — e.g., Playwright), fixed console errors and callback errors on page navigation, and produced a bug-free app.py",
+        "Agent ran validate_colors.py and produced a PASS result (no hardcoded colors in app.py)",
         "Grid layout uses 12 columns with rectangular components",
         "KPI cards use built-in kpi_card or kpi_card_reference (not rebuilt as custom charts)",
         "app.py uses vizro.plotly.express (not plain plotly.express)",
-        "Charts use pre-aggregated data (no raw detail rows dumped into bar/line charts)",
+        "Agent ran validate_aggregation.py and produced a PASS result (bar/line charts use @capture('graph') with pre-aggregated data)",
         "Interactive options were presented during the design phase"
       ]
     },
@@ -41,13 +41,13 @@
       "files": [],
       "expectations": [
         "All 5 spec files are generated",
-        "app.py launches and all pages are navigable (verified by Playwright)",
-        "No hardcoded colors — Vizro handles colors automatically",
+        "Agent tested the dashboard in a browser (using any automation tool — e.g., Playwright), fixed console errors and callback errors on page navigation, and produced a bug-free app.py",
+        "Agent ran validate_colors.py and produced a PASS result (no hardcoded colors in app.py)",
         "Grid layout uses 12 columns with rectangular components",
         "AG Grid is used for the detailed data table",
         "Interactive options were presented during the design phase",
         "app.py uses vizro.plotly.express (not plain plotly.express)",
-        "Charts use pre-aggregated data (no raw detail rows dumped into bar/line charts)",
+        "Agent ran validate_aggregation.py and produced a PASS result (bar/line charts use @capture('graph') with pre-aggregated data)",
         "KPI cards use built-in kpi_card or kpi_card_reference (not rebuilt as custom charts)"
       ]
     }
