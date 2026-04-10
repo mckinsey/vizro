@@ -122,6 +122,7 @@ FORBIDDEN_COLOR_KWARGS = {
     "color_discrete_map",
     "color_discrete_sequence",
     "color_continuous_scale",
+    "colorscale",
     "marker_color",
 }
 
@@ -241,7 +242,12 @@ def check_app_py(project_dir: Path) -> list[dict]:
                     {
                         "check": f"app.py: no '{v['kwarg']}' in {v['function']}",
                         "status": "FAIL",
-                        "detail": f"Line {v['line']}: {v['function']}({v['kwarg']}=...)",
+                        "detail": (
+                            f"Line {v['line']}: {v['function']}({v['kwarg']}=...). "
+                            f"FIX: Remove the '{v['kwarg']}' argument — Vizro applies colors automatically "
+                            f"via its built-in template. If this is an AG Grid, use "
+                            f"'from vizro.themes import palettes, colors' instead."
+                        ),
                     }
                 )
             elif v["type"] == "forbidden_layout_kwarg":
@@ -249,7 +255,11 @@ def check_app_py(project_dir: Path) -> list[dict]:
                     {
                         "check": f"app.py: no '{v['kwarg']}' override",
                         "status": "FAIL",
-                        "detail": f"Line {v['line']}: {v['function']}({v['kwarg']}=...)",
+                        "detail": (
+                            f"Line {v['line']}: {v['function']}({v['kwarg']}=...). "
+                            f"FIX: Remove the '{v['kwarg']}' argument — Vizro's dark/light theme "
+                            f"handles background colors automatically."
+                        ),
                     }
                 )
             elif v["type"] == "non_vizro_hex_color":
@@ -257,7 +267,13 @@ def check_app_py(project_dir: Path) -> list[dict]:
                     {
                         "check": "app.py: no non-Vizro hex color",
                         "status": "FAIL",
-                        "detail": f"Line {v['line']}: {v['color']} in {v['function']}({v.get('kwarg', '?')}=...)",
+                        "detail": (
+                            f"Line {v['line']}: {v['color']} in {v['function']}({v.get('kwarg', '?')}=...). "
+                            f"FIX: Remove the hardcoded hex color. Vizro assigns colors automatically. "
+                            f"If you need explicit colors for AG Grid styling, use "
+                            f"'from vizro.themes import palettes, colors' and reference "
+                            f"Vizro palette values (e.g., colors.blue, palettes.sequential)."
+                        ),
                     }
                 )
 
@@ -324,7 +340,16 @@ def validate(project_dir: str, custom_colors_requested: bool = False) -> dict:
     """Validate Vizro color consistency across app.py and spec/3."""
     project = Path(project_dir)
     checks = []
-    checks.extend(check_app_py(project))
+    if custom_colors_requested:
+        checks.append(
+            {
+                "check": "Custom colors requested — skipping app.py color checks",
+                "status": "PASS",
+                "detail": "User explicitly asked for custom colors; hardcoded color values are acceptable.",
+            }
+        )
+    else:
+        checks.extend(check_app_py(project))
     checks.extend(check_spec3(project, custom_colors_requested))
 
     status = "PASS" if all(c["status"] == "PASS" for c in checks) else "FAIL"

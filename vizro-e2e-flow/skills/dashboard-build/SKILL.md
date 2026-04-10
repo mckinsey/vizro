@@ -83,25 +83,23 @@ When conducting the below tests, go back to Step 1 to fix any issues you find, t
 
 Run these validation scripts against your app.py to catch common issues:
 
-1. **Color validation**: `uv run ./scripts/validate_colors.py .` — Checks for hardcoded colors (color_discrete_map, hex codes, plot_bgcolor) that bypass Vizro theming. Fix any FAIL.
+1. **Color validation**: `uv run ./scripts/validate_colors.py .` — Checks for hardcoded colors (color_discrete_map, hex codes, plot_bgcolor) that bypass Vizro theming. Fix any FAIL. If the user explicitly asked for custom colors, add `--custom-colors-requested` to skip app.py color checks.
 1. **Aggregation validation**: `uv run ./scripts/validate_aggregation.py .` — Checks that bar/line charts use pre-aggregated data via `@capture("graph")`, not raw detail rows passed to inline `px.bar`/`px.line`. Fix any FAIL.
 
 ### Browser Testing
 
 Navigate the running dashboard to catch two types of errors that code review alone cannot find: (1) console errors on launch, and (2) callback errors when navigating between pages.
 
-1. Navigate to dashboard URL (e.g., `http://localhost:8050`)
-1. Click through all pages
-1. Check browser console for errors
-1. Fix any errors found, then retest
+1. Determine which browser automation tool is available:
 
-**How to test** (in order of preference):
+    **Playwright MCP tools available?** → Use them directly to navigate, click pages, and check console **No Playwright MCP?** → Install the Python package: `uv pip install playwright && uv run playwright install chromium`, then write a test script
 
-1. **Playwright MCP** — if available in your MCP tools, use it directly
-1. **Playwright Python package** — if no MCP, install and use it: `uv pip install playwright && uv run playwright install chromium`, then write a short test script that navigates each page and checks `page.on("console")` for errors
-1. **Other tools** — Selenium, curl + manual check, or any browser automation available
+1. Using your chosen tool, perform these checks:
 
-The important thing is that you actually launch the dashboard and verify it works in a real browser — do not skip this.
+    - Navigate to dashboard URL (e.g., `http://localhost:8050`)
+    - Click through all pages
+    - Check browser console for errors
+    - Fix any errors found, then retest
 
 ### Advanced Testing flow
 

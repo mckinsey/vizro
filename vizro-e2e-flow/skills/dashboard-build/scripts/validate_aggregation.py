@@ -75,8 +75,15 @@ class AggregationVisitor(ast.NodeVisitor):
                                 "chart_type": method,
                                 "data_frame": data_ref,
                                 "line": node.lineno,
-                                "detail": f"px.{method}() uses raw dataset '{data_ref}' without aggregation. "
-                                f"This will stack individual rows as separate rectangles.",
+                                "detail": (
+                                    f"Line {node.lineno}: px.{method}(data_frame='{data_ref}') uses raw "
+                                    f"detail-level data without aggregation. This will stack individual rows "
+                                    f"as separate rectangles instead of summing them. "
+                                    f"FIX: Move this chart into a @capture('graph') custom function that "
+                                    f"aggregates with .groupby().sum()/.mean() before calling px.{method}(). "
+                                    f"Example: agg = data_frame.groupby('x_col', as_index=False)['y_col'].sum(); "
+                                    f"fig = px.{method}(agg, x='x_col', y='y_col')"
+                                ),
                             }
                         )
                     elif dataset_type == "unknown":
@@ -88,8 +95,10 @@ class AggregationVisitor(ast.NodeVisitor):
                                 "data_frame": data_ref,
                                 "line": node.lineno,
                                 "detail": (
-                                    f"px.{method}() uses dataset '{data_ref}' — cannot confirm if pre-aggregated. "
-                                    f"Verify manually that data has one row per x-axis category."
+                                    f"Line {node.lineno}: px.{method}(data_frame='{data_ref}') — cannot confirm "
+                                    f"if data is pre-aggregated. If '{data_ref}' has multiple rows per x-axis "
+                                    f"category, bars/lines will stack instead of summing. FIX: Move "
+                                    f"this chart into a @capture('graph') function that aggregates inside."
                                 ),
                             }
                         )
