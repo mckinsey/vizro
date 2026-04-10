@@ -6,7 +6,7 @@ from dash import Output, State, dcc, no_update
 from pydantic import ValidationError
 
 from vizro.actions import show_notification, update_notification
-from vizro.models._action._action import Action
+from vizro.models._action._action import Action, NotificationPayload
 from vizro.models.types import _get_action_discriminator, capture
 
 
@@ -638,7 +638,6 @@ class TestActionInputs:
             r"Specify the input explicitly as 'known_model_with_no_default_props.<property>'.",
         ):
             action = Action(function=action_with_one_arg("known_model_with_no_default_props"))
-
             # Mock private attribute set by parent component's validation, not Action's.
             action._first_in_chain_trigger = action._trigger = "trigger.property"
 
@@ -834,29 +833,6 @@ class TestBaseActionUtilMethods:
         assert result == expected_split_trailing_notification_payload
 
     @pytest.mark.parametrize(
-        "input_notification_payload, expected_notification_key, expected_notification_result",
-        [
-            (None, None, None),
-            ("notification_key", "notification_key", None),
-            (("notification_key", "notification_result"), "notification_key", "notification_result"),
-        ],
-    )
-    def test_parse_notification_payload(
-        self,
-        input_notification_payload,
-        expected_notification_key,
-        expected_notification_result,
-    ):
-        action = Action(function=action_with_no_args())
-
-        result_notification_key, result_notification_result = action._parse_notification_payload(
-            notification_payload=input_notification_payload
-        )
-
-        assert result_notification_key == expected_notification_key
-        assert result_notification_result == expected_notification_result
-
-    @pytest.mark.parametrize(
         "callback_outputs, expected_no_update_outputs",
         [
             (Output("component", "property"), no_update),
@@ -980,7 +956,7 @@ class TestBaseActionCallbackFunction:
         # as the output of the action_with_mock_return_value.
         assert action._action_callback_function(inputs={}, outputs=callback_outputs) == {
             "external_return": action_with_mock_return_value()(),
-            "notification_payload": None,
+            "notification_payload": NotificationPayload.model_validate("success"),
         }
 
     @pytest.mark.parametrize(
@@ -1058,7 +1034,7 @@ class TestBaseActionCallbackFunction:
         # as the output of the action_with_mock_return_value.
         assert action._action_callback_function(inputs={}, outputs=callback_outputs) == {
             "external_return": expected_external_return,
-            "notification_payload": expected_notification_payload,
+            "notification_payload": NotificationPayload.model_validate(expected_notification_payload),
         }
 
     @pytest.mark.parametrize("callback_outputs", [[], {}, None])

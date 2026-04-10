@@ -14,7 +14,17 @@ from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
 from dash.exceptions import PreventUpdate
-from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, field_validator
+from pydantic import (
+    BaseModel,
+    BeforeValidator,
+    Field,
+    PrivateAttr,
+    TypeAdapter,
+    ValidationError,
+    ValidationInfo,
+    field_validator,
+    model_validator,
+)
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
@@ -44,6 +54,29 @@ class ControlsStates(TypedDict):
     filters: list[State]
     parameters: list[State]
     filter_interaction: list[dict[str, State]]
+
+
+class NotificationPayload(BaseModel):
+    key: str
+    result: Any | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def coerce_none_str_or_tuple_to_notification_payload(cls, data: Any, info: ValidationInfo) -> Any:
+        """Coerce none, string or tuple to notification payload if possible. Otherwise, raise ValidationError."""
+        default_key = (info.context or {}).get("default_key")
+
+        if data is None and default_key is not None:
+            return {"key": default_key}
+
+        if isinstance(data, str):
+            return {"key": data}
+
+        if isinstance(data, tuple) and len(data) == 2 and isinstance(data[0], str):  # noqa: PLR2004
+            return {"key": data[0], "result": data[1]}
+
+        # This raises ValidationError as input `data` is not in expected format.
+        return data
 
 
 class _BaseAction(VizroBaseModel):
@@ -317,26 +350,24 @@ class _BaseAction(VizroBaseModel):
         The value is considered as the notification payload if it is either a string that matches a key in
         `self.notifications`, or a tuple whose first element is a string that matches a key in `self.notifications`.
         """
-        if isinstance(value, str):
-            key = value
-        elif isinstance(value, tuple) and len(value) == 2 and isinstance(value[0], str):  # noqa: PLR2004
-            key = value[0]
-        else:
+        try:
+            notification_payload = NotificationPayload.model_validate(value)
+        except ValidationError:
             return False
 
-        return key in getattr(self, "notifications", {})
+        return notification_payload.key in getattr(self, "notifications", {})
 
     def _split_trailing_notification_payload(self, return_value: Any) -> tuple[Any, Any | None]:
         """If return_value is a tuple whose last element is a notification payload, split it off."""
         if not isinstance(return_value, tuple) or return_value == ():
             return return_value, None
 
-        if self._is_notification_payload(last := return_value[-1]):
+        if self._is_notification_payload(notification_payload := return_value[-1]):
             external_return = return_value[:-1]
             # Unwrap single external_value tuple to just the external_value.
             if isinstance(external_return, tuple) and len(external_return) == 1:
                 external_return = external_return[0]
-            return external_return, last
+            return external_return, notification_payload
 
         return return_value, None
 
@@ -366,7 +397,7 @@ class _BaseAction(VizroBaseModel):
                 raise ValueError(
                     "Action function has returned a value but the action has no defined outputs. "
                     "If you want to return a notification, make sure the returned action's value matches the "
-                    "notification key in the action's `notifications` dictionary. For example, do `return 'my_success'`" 
+                    "notification key in the action's `notifications` dictionary. For example, do `return 'my_success'`"
                     " if the action has a `notification` dictionary defined with the key 'my_success'."
                 )
 
@@ -377,15 +408,15 @@ class _BaseAction(VizroBaseModel):
 
             if not isinstance(return_value, Mapping):
                 raise ValueError(
-                    "Action function has not returned a dictionary-like object but the action's defined outputs are " 
-                    "a dictionary. If you want to return a notification, make sure the returned action's value matches " 
-                    "the notification key in the action's `notifications` dictionary. For example, do " 
+                    "Action function has not returned a dictionary-like object but the action's defined outputs are "
+                    "a dictionary. If you want to return a notification, make sure the returned action's value matches "
+                    "the notification key in the action's `notifications` dictionary. For example, do "
                     "`return {'a': 1}, 'my_success'` if the action has a `notification` dictionary defined with the "
                     "key 'my_success'."
                 )
             if set(outputs) != set(return_value):
                 raise ValueError(
-                    f"Keys of action's returned value {set(return_value) or {}} " 
+                    f"Keys of action's returned value {set(return_value) or {}} "
                     f"do not match the action's defined outputs {set(outputs) or {}})."
                 )
 
@@ -420,8 +451,8 @@ class _BaseAction(VizroBaseModel):
                 raise ValueError(
                     f"Number of action's returned elements {len(return_value)} does not match the number "
                     f"of action's defined outputs {len(outputs)}. If you want to return a notification, make sure the "
-                    "returned action's value matches the notification key in the action's `notifications` dictionary. " 
-                    "For example, do `return 1, 2, 'my_success'` if the action has a `notification` dictionary defined " 
+                    "returned action's value matches the notification key in the action's `notifications` dictionary. "
+                    "For example, do `return 1, 2, 'my_success'` if the action has a `notification` dictionary defined "
                     "with the key 'my_success'."
                 )
 
@@ -432,18 +463,13 @@ class _BaseAction(VizroBaseModel):
             # it will be split into (return_value[:-1], notification_payload).
             return_value, notification_payload = self._split_trailing_notification_payload(return_value=return_value)
 
-        return {"external_return": return_value, "notification_payload": notification_payload}
-
-    @staticmethod
-    def _parse_notification_payload(
-        notification_payload: str | tuple[str, Any] | None,
-    ) -> tuple[str | None, str | None]:
-        """Extract and return (notification_key, notification result) tuple from the notification_payload."""
-        if isinstance(notification_payload, tuple):
-            return notification_payload
-        if isinstance(notification_payload, str):
-            return notification_payload, None
-        return None, None
+        return {
+            "external_return": return_value,
+            # The `notification_payload` matches the notification payload format or is None (default it to "success").
+            "notification_payload": NotificationPayload.model_validate(
+                notification_payload, context={"default_key": "success"}
+            ),
+        }
 
     @staticmethod
     def _no_update_outputs(outputs_spec):
@@ -458,7 +484,7 @@ class _BaseAction(VizroBaseModel):
         self,
         notification_key: str,
         notification_result: Any | None = None,
-        error_msg: str | None = None,
+        error_msg: str | Exception | None = None,
     ):
         """Renders the notification based on the notification_key, notification_result and error_msg."""
         # Skip setting `vizro_notification` output if the action does not support notifications.
@@ -597,10 +623,8 @@ class _BaseAction(VizroBaseModel):
                 action_finished = time.time()
 
                 external_return = action_return_value["external_return"]
-                notification_payload = action_return_value["notification_payload"]
-
-                notification_key, notification_result = self._parse_notification_payload(notification_payload)
-                notification_key = notification_key or "success"
+                notification_key = action_return_value["notification_payload"].key
+                notification_result = action_return_value["notification_payload"].result
                 error_msg = None
 
             except Exception as exc:
@@ -615,13 +639,18 @@ class _BaseAction(VizroBaseModel):
                 external_return = self._no_update_outputs(external_outputs_spec)
 
                 error_msg, notification_payload = (
-                    (str(exc.args[0]), exc.args[1])
+                    (exc.args[0], exc.args[1])
                     if len(exc.args) == 2 and self._is_notification_payload(exc.args[1])  # noqa: PLR2004
-                    else (str(exc), None)
+                    else (exc, None)
                 )
-                notification_key, notification_result = self._parse_notification_payload(notification_payload)
-                # Treat PreventUpdate exception as a special case by showing a `success` notification by default.
-                notification_key = notification_key or ("success" if isinstance(exc, PreventUpdate) else "error")
+
+                # Here, the `notification_payload` matches the notification payload format or is None.
+                # Default it to "success" if PreventUpdate is raised. Otherwise, default it to "error".
+                notification_payload = NotificationPayload.model_validate(
+                    notification_payload,
+                    context={"default_key": "success" if isinstance(exc, PreventUpdate) else "error"},
+                )
+                notification_key, notification_result = notification_payload.key, notification_payload.result
 
             return_value = {"internal": {"action_finished": action_finished, "action_progress_indicator": no_update}}
             if "external" in callback_outputs:

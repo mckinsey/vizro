@@ -775,9 +775,13 @@ a list of strings, or a dictionary mapping strings to strings. Each output can b
 ActionNotificationType = Annotated[
     "dict[str, str | show_notification | update_notification | None]",
     AfterValidator(_normalize_action_notifications),
-    Field(default_factory=dict, validate_default=True, description="Notifications shown before or after the action "
-"completes. Which notification will be shown after the action finished depends on the action's output."
-)]
+    Field(
+        default_factory=dict,
+        validate_default=True,
+        description="Notifications shown before or after the action "
+        "completes. Which notification will be shown after the action finished depends on the action's output.",
+    ),
+]
 
 
 # Extra type groups used only for static type checking, not at runtime.

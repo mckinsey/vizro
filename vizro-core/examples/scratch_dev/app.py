@@ -328,7 +328,7 @@ page_6 = vm.Page(
                                 "progress": "Running custom pipeline.\n\nException will happen: {{switch_successfulness}}.\n\nExit path: {{exit_path_slider}}",
                                 "success": "Custom pipeline completed!\n\n{{result}}",
                                 "my_custom_success": "Pipeline completed, neither success nor failure!\n\n{{result}}",
-                                "error": "Custom pipeline failed!\n\nException: {{error_msg}}",
+                                "error": "Custom pipeline failed!\n\nException: {{error_msg}}\n\n{{result}}",
                                 "my_custom_err": "Custom pipeline failed!\n\nError Message: {{error_msg}}\n\n{{result}}",
                             },
                         )
