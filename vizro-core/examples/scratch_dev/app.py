@@ -1,114 +1,163 @@
-"""Development playground exploring markdown variations using built-in Vizro models."""
+from dash import html
 
+import vizro.actions as va
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.tables import dash_ag_grid
+from vizro.models.types import capture
 
-gapminder_2007 = px.data.gapminder().query("year == 2007")
 
-page = vm.Page(
-    title="Container title in Tabs",
+df = px.data.iris()
+df_6 = df.iloc[[0, 1, 50, 51, 100, 101]]
+
+
+tips = px.data.tips()
+pivot_tips = (
+    tips.pivot_table(index="sex", columns="day", aggfunc="size", fill_value=0)
+    .reindex(columns=["Thur", "Fri", "Sat", "Sun"])
+    .reset_index()
+)
+
+
+@capture("ag_grid")
+def custom_dash_ag_grid(data_frame, **kwargs):
+    grid = dash_ag_grid(data_frame, **kwargs)()
+    return grid
+
+
+pre = "p1"
+page_1 = vm.Page(
+    title="AgGrid set_control",
     components=[
         vm.Tabs(
-            title="Tabs Title",
             tabs=[
                 vm.Container(
-                    title="Tab I",
+                    title="standard dash_ag_grid",
+                    layout=vm.Flex(direction="row"),
                     components=[
-                        vm.Container(
-                            title="Inner container I",
-                            components=[
-                                vm.Graph(
-                                    title="Graph 1",
-                                    figure=px.bar(
-                                        gapminder_2007,
-                                        x="continent",
-                                        y="lifeExp",
-                                        color="continent",
-                                    ),
-                                )
-                            ],
-                            variant="filled",
+                        vm.AgGrid(
+                            id=f"{pre}_ag_grid_1",
+                            title="Standard AgGrid with no actions",
+                            figure=dash_ag_grid(df_6),
                         ),
-                        vm.Container(
-                            title="Inner container II",
-                            components=[
-                                vm.Graph(
-                                    title="Graph 2",
-                                    figure=px.box(
-                                        gapminder_2007,
-                                        x="continent",
-                                        y="lifeExp",
-                                        color="continent",
-                                    ),
-                                ),
-                            ],
-                            collapsed=False,
+                        vm.AgGrid(
+                            id=f"{pre}_ag_grid_2",
+                            title="AgGrid with set_control.value=column_name",
+                            figure=dash_ag_grid(df_6),
+                            actions=va.set_control(control=f"{pre}_filter_1", value="species"),
+                        ),
+                        vm.AgGrid(
+                            id=f"{pre}_ag_grid_3",
+                            title="AgGrid with set_control.value=column_name and explicit checkboxes=False config",
+                            figure=dash_ag_grid(
+                                df_6, dashGridOptions=dict(rowSelection=dict(checkboxes=False, headerCheckbox=False))
+                            ),
+                            actions=va.set_control(control=f"{pre}_filter_1", value="species"),
                         ),
                     ],
-                    layout=vm.Grid(grid=[[0, 1]]),
                 ),
                 vm.Container(
-                    title="Tab II",
+                    title="Custom AgGrid",
+                    layout=vm.Flex(direction="row"),
                     components=[
-                        vm.Graph(
-                            title="Graph 3",
-                            figure=px.scatter(
-                                gapminder_2007,
-                                x="gdpPercap",
-                                y="lifeExp",
-                                size="pop",
-                                color="continent",
-                            ),
+                        vm.AgGrid(id=f"{pre}_ag_grid_4", title="Custom AgGrid", figure=dash_ag_grid(df_6)),
+                        vm.AgGrid(
+                            id=f"{pre}_ag_grid_5",
+                            title="Custom AgGrid with set_control.value=column_name",
+                            figure=custom_dash_ag_grid(df_6),
+                            actions=va.set_control(control=f"{pre}_filter_1", value="species"),
                         ),
-                        vm.Graph(
-                            title="Graph 2",
-                            figure=px.box(
-                                gapminder_2007,
-                                x="continent",
-                                y="lifeExp",
-                                color="continent",
+                        vm.AgGrid(
+                            id=f"{pre}_ag_grid_6",
+                            title="Custom AgGrid with set_control.value=column_name and explicit checkboxes=False config",
+                            figure=custom_dash_ag_grid(
+                                df_6, dashGridOptions=dict(rowSelection=dict(checkboxes=False, headerCheckbox=False))
                             ),
-                        ),
-                        vm.Container(
-                            title="Inner container III",
-                            components=[
-                                vm.Card(
-                                    text="""
-                                    #### Africa
-                                    Africa, a diverse and expansive continent, faces both challenges and progress in
-                                    its socioeconomic landscape. In 2007, Africa's GDP per cap was approximately $3,000.
-                                    """
-                                ),
-                                vm.Card(
-                                    text="""
-                                    #### Asia
-                                    Asia holds a central role in the global economy. It's growth in GDP per capita to
-                                    $12,000 in 2007 and population has been significant, outpacing many other
-                                    continents.
-                                """
-                                ),
-                                vm.Card(
-                                    text="""
-                                    #### Europe
-                                    Europe boasts a strong and thriving economy. In 2007, it exhibited the
-                                    second-highest GDP per capita of $25,000 among continents.
-                                """
-                                ),
-                            ],
-                            layout=vm.Grid(grid=[[0, 1, 2]]),
-                            variant="filled",
+                            actions=va.set_control(control=f"{pre}_filter_1", value="species"),
                         ),
                     ],
-                    layout=vm.Grid(grid=[[0, 1], [0, 1], [2, 2]]),
                 ),
+            ]
+        ),
+        vm.AgGrid(id=f"{pre}_target_table", title="Control Target", figure=dash_ag_grid(px.data.iris())),
+    ],
+    controls=[vm.Filter(id=f"{pre}_filter_1", column="species", targets=[f"{pre}_target_table"])],
+)
+
+
+@capture("figure")
+def dynamic_title(data_frame, cell_clicked=0):
+    try:
+        cell_clicked = int(cell_clicked)
+    except ValueError:
+        cell_clicked = 0
+
+    return (html.H2(f"One tip one '|': {'|' * cell_clicked}"),)
+
+
+page_2 = vm.Page(
+    title="dash_ag_grid using cellClicked",
+    components=[
+        vm.AgGrid(
+            title="set_control.value=column",
+            figure=dash_ag_grid(pivot_tips),
+            actions=[
+                va.set_control(control="day_filter", value="column"),
+            ],
+        ),
+        vm.AgGrid(
+            title=" set_control.value=column + set_control.value=column_name",
+            figure=dash_ag_grid(pivot_tips),
+            actions=[
+                va.set_control(control="day_filter", value="column"),
+                va.set_control(control="sex_filter", value="sex"),
+            ],
+        ),
+        vm.AgGrid(
+            title="set_control.value=column + set_control.value=column_name + set_control.value=cell",
+            figure=dash_ag_grid(pivot_tips),
+            actions=[
+                va.set_control(control="day_filter", value="column"),
+                va.set_control(control="sex_filter", value="sex"),
+                va.set_control(control="cell_clicked", value="cell"),
+            ],
+        ),
+        vm.Container(
+            layout=vm.Flex(direction="column"),
+            components=[
+                vm.Figure(id="tips_table_title", figure=dynamic_title(df_6, cell_clicked="")),
+                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),
             ],
         ),
     ],
-    controls=[vm.Filter(column="continent")],
+    controls=[
+        vm.Filter(id="day_filter", column="day", targets=["tips_table"]),
+        vm.Filter(id="sex_filter", column="sex", targets=["tips_table"]),
+        vm.Parameter(
+            id="cell_clicked",
+            targets=["tips_table_title.cell_clicked"],
+            visible=False,
+            selector=vm.RadioItems(options=[x for x in range(100)]),
+        ),
+    ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+# page_3 = vm.Page(
+#     title="Filter Interaction",
+#     components=[
+#         vm.AgGrid(figure=dash_ag_grid(tips), actions=va.filter_interaction(targets=["fi_target"])),
+#         vm.AgGrid(id="fi_target", figure=dash_ag_grid(tips)),
+#     ],
+# )
+
+dashboard = vm.Dashboard(
+    pages=[
+        page_1,
+        page_2,
+        # page_3,
+    ]
+)
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+    Vizro().build(dashboard).run()
