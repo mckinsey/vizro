@@ -115,16 +115,17 @@ export default class DashMarkdown extends Component {
     // for built-in copy button and to avoid DOM manipulation anti-patterns.
     // These are loaded via React.lazy from DMCComponents.js.
     const codeRenderer = ({ language, value }) => {
+      const code = value || "";
       return (
         <Suspense
           fallback={
             <pre>
-              <code>{value}</code>
+              <code>{code}</code>
             </pre>
           }
         >
           <DMCCodeHighlight
-            code={value}
+            code={code}
             language={language || "text"}
             withCopyButton={true}
           />
@@ -166,11 +167,14 @@ export default class DashMarkdown extends Component {
 
             // DEVIATION FROM ORIGINAL DCC:
             // Inline code rendering using DMC's InlineCodeHighlight via window global
-            inlineCode: ({ value }) => (
-              <Suspense fallback={<code>{value}</code>}>
-                <DMCInlineCodeHighlight code={value} language="text" />
-              </Suspense>
-            ),
+            inlineCode: ({ value }) => {
+              const code = value || "";
+              return (
+                <Suspense fallback={<code>{code}</code>}>
+                  <DMCInlineCodeHighlight code={code} language="text" />
+                </Suspense>
+              );
+            },
 
             // HTML rendering with JSX parsing support
             // This enables dccLink, dccMarkdown, and dashMathjax in HTML blocks
