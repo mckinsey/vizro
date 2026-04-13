@@ -127,8 +127,6 @@ class set_control(_AbstractAction):
 
     @_log_call
     def pre_build(self):
-        from vizro.models._controls._controls_utils import _is_categorical_selector
-
         # Validate that action's parent model supports `set_control` action.
         if not isinstance(self._parent_model, _SupportsSetControl):
             raise ValueError(
@@ -147,11 +145,11 @@ class set_control(_AbstractAction):
                 f"dashboard. Please provide a valid control ID that exists in the dashboard."
             )
 
-        # Validate that control model has a categorical selector.
-        if not _is_categorical_selector(getattr(control_model, "selector", None)):
+        # Validate that target control model is Filter or Parameter.
+        if not hasattr(control_model, "selector"):
             raise TypeError(
                 f"Model with ID `{self.control}` used as a `control` in `set_control` action must be a control model "
-                f"(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."
+                f"(e.g. Filter, Parameter)."
             )
 
         if control_model_page == model_manager._get_model_page(self):
@@ -166,34 +164,45 @@ class set_control(_AbstractAction):
             self._same_page = False
 
     def function(self, _trigger, _controls_store):
-        from vizro.models import Checklist
+        from vizro.models import Checklist, RangeSlider
 
         value = cast(_SupportsSetControl, self._parent_model)._get_value_from_trigger(self.value, _trigger)
+
+        # Returning no_update will leave control unchanged and control's action will not be triggered.
+        # Don't raise PreventUpdate exception as it stops other actions in the chain from running.
+        if value is no_update:
+            return no_update if self._same_page else (no_update, no_update)
 
         # If value is None then reset control to original value.
         if value is None:
             value = _controls_store[self.control]["originalValue"]
 
-        # Normalize returned value based on target selector type.
         selector = cast(ControlType, model_manager[self.control]).selector
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
+        is_range = getattr(selector, "range", isinstance(selector, RangeSlider))
+
         if is_multi:
             value = value if isinstance(value, list) else [value]
+        elif is_range:
+            if not isinstance(value, list):
+                value = [value, value]
+            elif len(value) == 0:
+                return self._get_no_update_response()
+            else:
+                value = [min(value), max(value)]  # type: ignore[type-var]
         elif isinstance(value, list):
             # Target is single-value selector but value is list.
-            if len(value) != 1:
-                # Single-value selector cannot be set to empty list or multiple values.
-                # Returning no_update will leave control unchanged.
-                # Don't raise PreventUpdate exception as it stops other actions in the chain from running.
+            if len(value) == 1:
+                value = value[0]
+            else:
                 logger.debug(
-                    "set_control %s received list with %d items but targets a single-select control %s; "
-                    "return no_update",
+                    "set_control %s received list with %d items but targets a single-value %s %s; return no_update",
                     self.id,
                     len(value),
+                    type(selector).__name__,
                     self.control,
                 )
-                return no_update if self._same_page else (no_update, no_update)
-            [value] = value
+                return self._get_no_update_response()
 
         if self._same_page:
             return value
@@ -207,3 +216,6 @@ class set_control(_AbstractAction):
         if self._same_page:
             return self.control
         return ["vizro_url.pathname", "vizro_url.search"]
+
+    def _get_no_update_response(self):
+        return no_update if self._same_page else (no_update, no_update)
