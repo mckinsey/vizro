@@ -444,10 +444,9 @@ class _BaseAction(VizroBaseModel):
             # Allow: `(rv_1, ..., rv_N)`, `(rv_1, ..., rv_N, notification_payload)`,
             #        `[rv_1, ..., rv_N]`, and `([rv_1, ..., rv_N], notification_payload)`.
             # Extract a trailing `notification_payload` only when the tuple shape clearly indicates it.
-            # This happens when the tuple has one more element than the defined outputs, or when it is
-            # `([rv_1, ..., rv_N], notification_payload)` (a 2-tuple whose first element matches the number of elements
-            # in the defined outputs). This for example avoids misinterpreting legitimate return values like
-            # `(X, Y, "success")` for three defined outputs as containing a notification payload.
+            # Valid cases for `return_value` with a `notification_payload`:
+            #  - (rv_1, ..., rv_N, notification_payload): one extra element in a tuple beyond defined outputs
+            #  - ([rv_1, ..., rv_N], notification_payload): first element of a 2-tuple is list matching defined outputs
             if isinstance(return_value, tuple):
                 # Matches: `(rv_1, ..., rv_N, notification_payload)` for N defined outputs.
                 tuple_has_extra_output = len(return_value) == len(outputs) + 1
