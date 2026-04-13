@@ -185,6 +185,7 @@ class set_control(_AbstractAction):
             else:
                 value = [min(value), max(value)]  # type: ignore[type-var]
         elif isinstance(value, list):
+            # Target is single-value selector but value is list.
             if len(value) == 1:
                 value = value[0]
             else:
