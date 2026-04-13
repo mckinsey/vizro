@@ -161,11 +161,11 @@ To add a hierarchical filter to your page:
 1. add a [`Filter`][vizro.models.Filter] to `controls`, the same as for a basic filter
 1. set `column` to a list of at least two columns' names from the top level of the hierarchy down to the column you want to filter on
 
-!!! example "Hierarchical filter"
+!!! example "Hierarchical Filter"
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="20"}
+        ```{.python pycafe-link hl_lines="21"}
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm
@@ -182,6 +182,7 @@ To add a hierarchical filter to your page:
                         y="lifeExp",
                         size="pop",
                         hover_name="country",
+                        color="continent",
                     )
                 ),
             ],
@@ -205,6 +206,7 @@ To add a hierarchical filter to your page:
                   x: gdpPercap
                   y: lifeExp
                   size: pop
+                  color: continent
                   hover_name: country
                 type: graph
             controls:
@@ -217,7 +219,7 @@ To add a hierarchical filter to your page:
 
     === "Result"
 
-        TODO NOW: screenshot/gif
+        ![](../../assets/user_guides/filters/hierarchical_filter.gif)
 
 ## Change selector
 

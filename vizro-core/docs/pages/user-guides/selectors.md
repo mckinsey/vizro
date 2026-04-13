@@ -137,7 +137,85 @@ By default, `value` is set according to the first group at the top of the tree:
 
 You can pick a different starting selection by setting `value` on [`Cascader`][vizro.models.Cascader].
 
-TODO NOW: screenshot/gif of this as standalone selector with multi=True/False
+!!! example "Hierarchical selector multi vs single"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="27-28"}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        gapminder = px.data.gapminder().query("year == 2007")
+
+        options = {
+            "Asia": ["Japan", "India"],
+            "Europe": {"West": ["France", "Germany"], "North": ["Norway"]},
+        }
+
+        page = vm.Page(
+            title="Gapminder 2007",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        gapminder,
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                        hover_name="country",
+                    )
+                ),
+            ],
+            controls=[
+                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options)),
+                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, multi=False, value="France"))
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: scatter
+                  data_frame: gapminder
+                  x: gdpPercap
+                  y: lifeExp
+                  size: pop
+                  color: continent
+                  hover_name: country
+                type: graph
+            controls:
+              - column:
+                  - continent
+                  - country
+                type: filter
+                selector:
+                  type: cascader
+                  options: options
+              - column:
+                  - continent
+                  - country
+                type: filter
+                selector:
+                  type: cascader
+                  options: options
+                  multi: false
+                  value: France
+            title: Gapminder 2007
+        ```
+
+    === "Result"
+
+        ![](../../assets/user_guides/selectors/hierarchical_selectors.gif)
 
 Hierarchical selectors can be used in [hierarchical filters](filters.md#hierarchical-filters) and [parameters](parameters.md).
 
