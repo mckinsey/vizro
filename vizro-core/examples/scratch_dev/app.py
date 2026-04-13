@@ -1,163 +1,122 @@
-from dash import html
+"""Dev app to try things out."""
 
-import vizro.actions as va
+import pandas as pd
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.actions import set_control
 from vizro.tables import dash_ag_grid
-from vizro.models.types import capture
-
 
 df = px.data.iris()
-df_6 = df.iloc[[0, 1, 50, 51, 100, 101]]
+df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq="D")
+df["is_setosa"] = df["species"] == "setosa"
 
-
-tips = px.data.tips()
-pivot_tips = (
-    tips.pivot_table(index="sex", columns="day", aggfunc="size", fill_value=0)
-    .reindex(columns=["Thur", "Fri", "Sat", "Sun"])
-    .reset_index()
+custom_scatter = px.scatter(
+    data_frame=df,
+    x="sepal_width",
+    y="sepal_length",
+    color="species",
+    custom_data=["species", "sepal_length", "date_column", "is_setosa"],
+    hover_data=["species", "sepal_length", "date_column", "is_setosa"],
 )
 
 
-@capture("ag_grid")
-def custom_dash_ag_grid(data_frame, **kwargs):
-    grid = dash_ag_grid(data_frame, **kwargs)()
-    return grid
-
-
-pre = "p1"
 page_1 = vm.Page(
-    title="AgGrid set_control",
+    title="Graph targets different selectors",
     components=[
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="standard dash_ag_grid",
-                    layout=vm.Flex(direction="row"),
-                    components=[
-                        vm.AgGrid(
-                            id=f"{pre}_ag_grid_1",
-                            title="Standard AgGrid with no actions",
-                            figure=dash_ag_grid(df_6),
-                        ),
-                        vm.AgGrid(
-                            id=f"{pre}_ag_grid_2",
-                            title="AgGrid with set_control.value=column_name",
-                            figure=dash_ag_grid(df_6),
-                            actions=va.set_control(control=f"{pre}_filter_1", value="species"),
-                        ),
-                        vm.AgGrid(
-                            id=f"{pre}_ag_grid_3",
-                            title="AgGrid with set_control.value=column_name and explicit checkboxes=False config",
-                            figure=dash_ag_grid(
-                                df_6, dashGridOptions=dict(rowSelection=dict(checkboxes=False, headerCheckbox=False))
-                            ),
-                            actions=va.set_control(control=f"{pre}_filter_1", value="species"),
-                        ),
+        vm.Container(
+            title="Click set_control",
+            components=[
+                vm.Graph(
+                    figure=custom_scatter,
+                    title="Click on points to set the filters below",
+                    actions=[
+                        set_control(control="p1_filter_click_1", value="species"),
+                        set_control(control="p1_filter_click_2", value="species"),
+                        set_control(control="p1_filter_click_3", value="species"),
+                        set_control(control="p1_filter_click_4", value="species"),
+                        set_control(control="p1_filter_click_5", value="sepal_length"),
+                        set_control(control="p1_filter_click_6", value="sepal_length"),
+                        set_control(control="p1_filter_click_7", value="date_column"),
+                        set_control(control="p1_filter_click_8", value="date_column"),
+                        set_control(control="p1_filter_click_9", value="is_setosa"),
                     ],
                 ),
                 vm.Container(
-                    title="Custom AgGrid",
-                    layout=vm.Flex(direction="row"),
                     components=[
-                        vm.AgGrid(id=f"{pre}_ag_grid_4", title="Custom AgGrid", figure=dash_ag_grid(df_6)),
-                        vm.AgGrid(
-                            id=f"{pre}_ag_grid_5",
-                            title="Custom AgGrid with set_control.value=column_name",
-                            figure=custom_dash_ag_grid(df_6),
-                            actions=va.set_control(control=f"{pre}_filter_1", value="species"),
-                        ),
-                        vm.AgGrid(
-                            id=f"{pre}_ag_grid_6",
-                            title="Custom AgGrid with set_control.value=column_name and explicit checkboxes=False config",
-                            figure=custom_dash_ag_grid(
-                                df_6, dashGridOptions=dict(rowSelection=dict(checkboxes=False, headerCheckbox=False))
-                            ),
-                            actions=va.set_control(control=f"{pre}_filter_1", value="species"),
-                        ),
+                        vm.Graph(figure=px.scatter(df, x="sepal_width", y="petal_length", color="species")),
+                    ],
+                    controls=[
+                        # Categorical-Single
+                        vm.Filter(id="p1_filter_click_1", column="species", selector=vm.RadioItems()),
+                        vm.Filter(id="p1_filter_click_2", column="species", selector=vm.Dropdown(multi=False)),
+                        # # Categorical-Multi
+                        vm.Filter(id="p1_filter_click_3", column="species", selector=vm.Checklist()),
+                        vm.Filter(id="p1_filter_click_4", column="species", selector=vm.Dropdown()),
+                        # Numeric-Single
+                        vm.Filter(id="p1_filter_click_5", column="sepal_length", selector=vm.Slider()),
+                        # Numeric-Range
+                        vm.Filter(id="p1_filter_click_6", column="sepal_length", selector=vm.RangeSlider()),
+                        # Temporal-Single
+                        vm.Filter(id="p1_filter_click_7", column="date_column", selector=vm.DatePicker(range=False)),
+                        # # Temporal-Range
+                        vm.Filter(id="p1_filter_click_8", column="date_column", selector=vm.DatePicker(range=True)),
+                        # Boolean Single
+                        vm.Filter(id="p1_filter_click_9", column="is_setosa", selector=vm.Switch()),
                     ],
                 ),
-            ]
+            ],
         ),
-        vm.AgGrid(id=f"{pre}_target_table", title="Control Target", figure=dash_ag_grid(px.data.iris())),
     ],
-    controls=[vm.Filter(id=f"{pre}_filter_1", column="species", targets=[f"{pre}_target_table"])],
 )
-
-
-@capture("figure")
-def dynamic_title(data_frame, cell_clicked=0):
-    try:
-        cell_clicked = int(cell_clicked)
-    except ValueError:
-        cell_clicked = 0
-
-    return (html.H2(f"One tip one '|': {'|' * cell_clicked}"),)
-
 
 page_2 = vm.Page(
-    title="dash_ag_grid using cellClicked",
+    title="AgGrid targets different selectors",
     components=[
-        vm.AgGrid(
-            title="set_control.value=column",
-            figure=dash_ag_grid(pivot_tips),
-            actions=[
-                va.set_control(control="day_filter", value="column"),
-            ],
-        ),
-        vm.AgGrid(
-            title=" set_control.value=column + set_control.value=column_name",
-            figure=dash_ag_grid(pivot_tips),
-            actions=[
-                va.set_control(control="day_filter", value="column"),
-                va.set_control(control="sex_filter", value="sex"),
-            ],
-        ),
-        vm.AgGrid(
-            title="set_control.value=column + set_control.value=column_name + set_control.value=cell",
-            figure=dash_ag_grid(pivot_tips),
-            actions=[
-                va.set_control(control="day_filter", value="column"),
-                va.set_control(control="sex_filter", value="sex"),
-                va.set_control(control="cell_clicked", value="cell"),
-            ],
-        ),
         vm.Container(
-            layout=vm.Flex(direction="column"),
+            title="Click set_control",
             components=[
-                vm.Figure(id="tips_table_title", figure=dynamic_title(df_6, cell_clicked="")),
-                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),
+                vm.AgGrid(
+                    figure=dash_ag_grid(df),
+                    title="Click on row to set the filters below",
+                    actions=[
+                        set_control(control="p2_filter_click_1", value="species"),
+                        set_control(control="p2_filter_click_2", value="species"),
+                        set_control(control="p2_filter_click_3", value="species"),
+                        set_control(control="p2_filter_click_4", value="species"),
+                        set_control(control="p2_filter_click_5", value="sepal_length"),
+                        set_control(control="p2_filter_click_6", value="sepal_length"),
+                        set_control(control="p2_filter_click_7", value="date_column"),
+                        set_control(control="p2_filter_click_8", value="date_column"),
+                        set_control(control="p2_filter_click_9", value="is_setosa"),
+                    ],
+                ),
+                vm.Container(
+                    components=[
+                        vm.Graph(figure=px.scatter(df, x="sepal_width", y="petal_length", color="species")),
+                    ],
+                    controls=[
+                        vm.Filter(id="p2_filter_click_1", column="species", selector=vm.RadioItems()),
+                        vm.Filter(id="p2_filter_click_2", column="species", selector=vm.Dropdown(multi=False)),
+                        vm.Filter(id="p2_filter_click_3", column="species", selector=vm.Checklist()),
+                        vm.Filter(id="p2_filter_click_4", column="species", selector=vm.Dropdown()),
+                        vm.Filter(id="p2_filter_click_5", column="sepal_length", selector=vm.Slider()),
+                        vm.Filter(id="p2_filter_click_6", column="sepal_length", selector=vm.RangeSlider()),
+                        vm.Filter(id="p2_filter_click_7", column="date_column", selector=vm.DatePicker(range=False)),
+                        vm.Filter(id="p2_filter_click_8", column="date_column", selector=vm.DatePicker(range=True)),
+                        vm.Filter(id="p2_filter_click_9", column="is_setosa", selector=vm.Switch()),
+                    ],
+                ),
             ],
-        ),
-    ],
-    controls=[
-        vm.Filter(id="day_filter", column="day", targets=["tips_table"]),
-        vm.Filter(id="sex_filter", column="sex", targets=["tips_table"]),
-        vm.Parameter(
-            id="cell_clicked",
-            targets=["tips_table_title.cell_clicked"],
-            visible=False,
-            selector=vm.RadioItems(options=[x for x in range(100)]),
         ),
     ],
 )
 
-# page_3 = vm.Page(
-#     title="Filter Interaction",
-#     components=[
-#         vm.AgGrid(figure=dash_ag_grid(tips), actions=va.filter_interaction(targets=["fi_target"])),
-#         vm.AgGrid(id="fi_target", figure=dash_ag_grid(tips)),
-#     ],
-# )
 
 dashboard = vm.Dashboard(
-    pages=[
-        page_1,
-        page_2,
-        # page_3,
-    ]
+    pages=[page_1, page_2],
 )
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro().build(dashboard).run(debug=True)
