@@ -112,13 +112,17 @@ class show_notification(_AbstractAction):
 
     @property
     def _dash_components(self) -> list[Component]:
-        # Skip adding util dash components for conditional notifications, which are typically required for the actions
-        # chain. Conditional notifications are handled separately and are not part of the actions chain execution.
+        # Skip adding util dash components for conditional notifications, as they are not part of the actions chain.
+        # They are handled separately within the same HTTP request as the associated action.
+        # This avoids multiple requests. For example, an action with "progress" (pre) and "success" (post)
+        # notifications would otherwise require three HTTP calls instead of a single callback.
         return [] if self._is_conditional else super()._dash_components
 
     def _define_callback(self):
-        # Skip defining util callbacks for conditional notifications, which are typically required for the actions
-        # chain. Conditional notifications are handled separately and are not part of the actions chain execution.
+        # Skip defining util callbacks for conditional notifications, as they are not part of the actions chain.
+        # They are handled separately within the same HTTP request as the associated action.
+        # This avoids multiple requests. For example, an action with "progress" (pre) and "success" (post)
+        # notifications would otherwise require three HTTP calls instead of a single callback.
         if not self._is_conditional:
             super()._define_callback()
 
