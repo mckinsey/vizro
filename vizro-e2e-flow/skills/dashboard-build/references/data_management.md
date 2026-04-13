@@ -57,7 +57,7 @@ df = pd.read_csv("sales.csv")
 page = vm.Page(
     title="Sales Dashboard",
     components=[
-        vm.Graph(figure=px.bar(df, x="region", y="revenue")),
+        vm.Graph(figure=px.scatter(df, x="units", y="revenue")),
     ],
 )
 
@@ -79,7 +79,7 @@ import pandas as pd
 data_manager["sales"] = pd.read_csv("sales.csv")
 
 # Reference by name (string, not DataFrame)
-vm.Graph(figure=px.bar("sales", x="region", y="revenue"))
+vm.Graph(figure=px.scatter("sales", x="units", y="revenue"))
 ```
 
 ## Dynamic Data
@@ -103,7 +103,7 @@ data_manager["sales"] = load_sales  # Correct: function reference
 # data_manager["sales"] = load_sales()  # Wrong: this is static!
 
 # Reference by name
-vm.Graph(figure=px.bar("sales", x="region", y="revenue"))
+vm.Graph(figure=px.scatter("sales", x="units", y="revenue"))
 ```
 
 ### With Caching
@@ -350,7 +350,7 @@ data_manager["data"] = load_data
 page = vm.Page(
     title="Dynamic Filters",
     components=[
-        vm.Graph(id="chart", figure=px.bar("data", x="category", y="value")),
+        vm.Graph(id="chart", figure=px.scatter("data", x="category", y="value")),
     ],
     controls=[
         # Filter options update when data refreshes

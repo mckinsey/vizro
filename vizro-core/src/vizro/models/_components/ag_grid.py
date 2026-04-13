@@ -1,10 +1,10 @@
 import logging
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal, TypeAlias, TypedDict, cast
 
 import dash_ag_grid as dag
 import pandas as pd
 import vizro_dash_components as vdc
-from dash import State, dcc, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, no_update
 from pydantic import (
     AfterValidator,
     BeforeValidator,
@@ -15,7 +15,7 @@ from pydantic import (
 )
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.actions import filter_interaction
+from vizro.actions import filter_interaction, set_control
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_model
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
@@ -27,7 +27,14 @@ from vizro.models._models_utils import (
     warn_description_without_title,
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, CapturedCallable, MultiValueType, _IdProperty, _validate_captured_callable
+from vizro.models.types import (
+    ActionsType,
+    CapturedCallable,
+    MultiValueType,
+    SingleValueType,
+    _IdProperty,
+    _validate_captured_callable,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +42,25 @@ logger = logging.getLogger(__name__)
 # Creates _action_outputs and _action_inputs for accessing inner dag.AgGrid properties via the outer vm.AgGrid ID.
 # Example: "outer-ag-grid-id.cellClicked" is transformed to "inner-ag-grid-id.cellClicked".
 DAG_AG_GRID_PROPERTIES = set(dag.AgGrid().available_properties) - set(html.Div().available_properties)
+
+# User-friendly shortcuts for accessing `cellClicked` trigger fields since its structure differs from `selectedRows`.
+CELL_CLICKED_MAPPING = {"cell": "value", "column": "colId", "row": "rowId"}
+
+
+class CellClicked(TypedDict):
+    value: Any
+    colId: str
+    rowId: Any
+    rowIndex: int
+    timestamp: int
+
+
+SelectedRow: TypeAlias = dict[str, Any]
+
+
+class Trigger(TypedDict):
+    cellClicked: CellClicked
+    selectedRows: list[SelectedRow]
 
 
 class AgGrid(VizroBaseModel):
@@ -92,7 +118,7 @@ class AgGrid(VizroBaseModel):
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self._inner_component_id}.selectedRows"}
+        return {"__default__": f"{self.id}_action_trigger.data"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -112,24 +138,42 @@ class AgGrid(VizroBaseModel):
             **{ag_grid_prop: f"{self._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 
-    def _get_value_from_trigger(self, value: str, trigger: list[dict[str, str]]) -> MultiValueType | None:
+    def _get_value_from_trigger(self, value: str, trigger: Trigger) -> MultiValueType | SingleValueType | None:
         """Extract values from the trigger that represents selected dag.AgGrid rows. Value is the name of the column.
 
-        Example `trigger` structure: [{"col_1": value_1, "col_2": value_2, ...}, {...}], one dict per selected row.
+        Example `trigger` structure: {
+            "cellClicked": {"value": 1, "colId": "col_1", "rowId": 0, "rowIndex": 0},
+            "selectedRows": [{"col_1": value_1, "col_2": value_2, ...}, {...}, ...]  # one dict per selected row.
+        }
 
         Returns:
-          - list of values (one per row) or None if no row selected (signals reset).
+          - a single value (from `cellClicked`) or list of values (from `selectedRows`) or None  (signals reset).
 
         Raises:
           - ValueError if `value` column name can't be found.
         """
-        # Returning None signals a reset of control to its original value.
-        if not trigger:
+        if cell_clicked_value := CELL_CLICKED_MAPPING.get(value):
+            if "cellClicked" in trigger:
+                cell_clicked = cast(dict[str, Any], trigger["cellClicked"])
+                # `cell_clicked_value` always present in the `cell_clicked`.
+                return cell_clicked[cell_clicked_value]
+            else:
+                # Keep the target control unchanged if `cellClicked` is missing (e.g. checkbox row selection)
+                return no_update
+
+        selected_rows = trigger.get("selectedRows")
+
+        # If `selectedRows` doesn't exist leave the target control unchanged except resetting it.
+        if selected_rows is None:
+            return no_update
+
+        # Covers [] - Returning None signals a reset of control to its original value.
+        if not selected_rows:
             return None
 
         try:
             # Use dict.fromkeys to remove duplicates while preserving order.
-            return list(dict.fromkeys(row[value] for row in trigger))
+            return list(dict.fromkeys(row[value] for row in selected_rows))
         except KeyError:
             raise ValueError(
                 f"Couldn't find value column name: `{value}` in trigger for `set_control` action. "
@@ -145,18 +189,29 @@ class AgGrid(VizroBaseModel):
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
 
         figure = self.figure(**kwargs)
+        figure.id = self._inner_component_id
 
-        if self.actions:
-            # Set the AgGrid "rowSelection" if any action is defined and if the "rowSelection" is not explicitly set.
-            # The "rowSelection" has to be set so that the AgGrid's actions can be triggered.
-            # TODO: Revisit after https://github.com/McK-Internal/vizro-internal/issues/2402 is resolved.
+        # Configure default grid interaction behavior based on the type of actions provided:
+        all_set_control = all(isinstance(a, set_control) for a in self.actions)
+        all_cell_clicked_actions = all_set_control and all(a.value in CELL_CLICKED_MAPPING for a in self.actions)
+        all_selected_rows_actions = all_set_control and all(a.value not in CELL_CLICKED_MAPPING for a in self.actions)
+
+        # No actions - Disable cell focus and row hover effects
+        if not self.actions:
+            figure.dashGridOptions.setdefault("suppressCellFocus", True)
+            figure.dashGridOptions.setdefault("suppressRowHoverHighlight", True)
+        # Any scenario except pure cell-click actions - Enable row selection UI
+        elif not all_cell_clicked_actions:
             row_sel = figure.dashGridOptions.setdefault("rowSelection", {})
             row_sel.setdefault("mode", "multiRow")
             row_sel.setdefault("enableClickSelection", True)
             row_sel.setdefault("checkboxes", True)
             row_sel.setdefault("headerCheckbox", True)
 
-        figure.id = self._inner_component_id
+            # If all actions are row-selection (no cell-click actions) - Suppress cell focus
+            if all_selected_rows_actions:
+                figure.dashGridOptions.setdefault("suppressCellFocus", True)
+
         return html.Div([figure, dcc.Store(id=f"{self._inner_component_id}_guard_actions_chain", data=True)])
 
     # Convenience wrapper/syntactic sugar.
@@ -218,10 +273,20 @@ class AgGrid(VizroBaseModel):
             )
 
     def build(self):
+        clientside_callback(
+            ClientsideFunction(namespace="ag_grid", function_name="update_ag_grid_action_trigger"),
+            Output(f"{self.id}_action_trigger", "data"),
+            Input(self._inner_component_id, "cellClicked"),
+            Input(self._inner_component_id, "selectedRows"),
+            prevent_initial_call=True,
+            hidden=True,
+        )
+
         description = self.description.build().children if self.description else [None]
         return dcc.Loading(
             children=html.Div(
                 children=[
+                    dcc.Store(id=f"{self.id}_action_trigger"),
                     html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
                     if self.title
                     else None,

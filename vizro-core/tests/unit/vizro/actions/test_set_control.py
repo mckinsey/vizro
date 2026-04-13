@@ -19,6 +19,7 @@ def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid, stan
         components=[
             vm.Button(id="button_1", text="Set Europe"),
             vm.Graph(id="scatter_chart_1", figure=standard_px_chart),
+            vm.AgGrid(id="ag_grid_1", figure=standard_ag_grid),
             vm.Table(id="table_1", figure=standard_dash_table),
         ],
         controls=[
@@ -223,6 +224,21 @@ class TestSetControlFunction:
         # Call function method with a mock trigger value of None
         result = action.function(_trigger=None, _controls_store=controls_store)
         expected = original_value
+
+        assert result == expected
+
+    @pytest.mark.parametrize("same_page, expected", [(True, no_update), (False, (no_update, no_update))])
+    def test_function_trigger_returns_no_update(self, same_page, expected):
+        # Add action to an AgGrid as the AgGrid returns no_update if set_control value is a key from the
+        # CELL_CLICKED_MAPPING (e.g. "column"), and trigger does not contain "cellClicked"
+        action = set_control(control="filter_page_1", value="column")
+        model_manager["ag_grid_1"].actions = action
+
+        # Set _same_page as the output depends on it.
+        action._same_page = same_page
+
+        # Call function method with a mock trigger value of None
+        result = action.function(_trigger={"selectedRows": []}, _controls_store={})
 
         assert result == expected
 
