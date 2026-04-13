@@ -229,10 +229,8 @@ class Filter(VizroBaseModel):
         elif _is_numerical_temporal_selector(selector):
             _min, _max = self._get_min_max(targeted_data, current_value)
             selector_call_obj = selector(min=_min, max=_max)
-        # Hierarchical filters cannot yet be dynamic.
-        elif _is_hierarchical_selector(selector):
-            selector_call_obj = selector.build()
         else:
+            # Hierarchical filters cannot yet be dynamic.
             selector_call_obj = selector.build()
 
         # The filter is dynamic, so a guard component (data=True) needs to be added to prevent unexpected action firing.
