@@ -345,10 +345,29 @@ class _BaseAction(VizroBaseModel):
         return {output_name: _transform_output(output) for output_name, output in self._validated_outputs.items()}
 
     def _is_notification_payload(self, value: Any) -> bool:
-        """Determine whether the given value represents a valid notification payload returned from the action.
+        """Determine whether a value is a valid notification payload.
 
-        The value is considered as the notification payload if it is either a string that matches a key in
-        `self.notifications`, or a tuple whose first element is a string that matches a key in `self.notifications`.
+        A notification payload is an extra value returned by an action that signals a notification should be displayed.
+        It can be either:
+        - A string that matches a key in `self.notifications`, or
+        - A tuple whose first element is a string that matches a key in `self.notifications`,
+          with optional additional data following it (usually called the notification's result).
+
+        The optional additional data provides context for the notification handler, such as parameters,
+        metadata, or identifiers used to customize the notification's content.
+
+        Examples:
+            "email_sent"
+                -> Trigger the "email_sent" notification with default behavior.
+
+            ("email_sent", {"user_id": 123})
+                -> Trigger "email_sent" and pass a user ID to personalize the message.
+
+            ("retry_failed", {"attempt": 2, "error": "timeout"})
+                -> Trigger "retry_failed" with details about the failure.
+
+            ("show_alert", "Something went wrong")
+                -> Trigger "show_alert" with a message string.
         """
         try:
             notification_payload = NotificationPayload.model_validate(value)
