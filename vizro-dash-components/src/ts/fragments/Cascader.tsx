@@ -5,14 +5,17 @@ import {
 } from "@radix-ui/react-icons";
 import * as Popover from "@radix-ui/react-popover";
 import React, {
+  Fragment,
   type MouseEvent,
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 import "../css/dropdown-chrome.css";
 import "../css/cascader.css";
 import { ChevronRightIcon } from "./CascaderIcons";
@@ -46,6 +49,44 @@ const defaultLabels: CascaderLabels = {
   clear_selection: "Clear selection",
   no_options_found: "No options found",
 };
+
+const scrollListenerOpts: AddEventListenerOptions = { passive: true };
+
+const wheelCaptureOpts: AddEventListenerOptions = {
+  capture: true,
+  passive: true,
+};
+
+/** Scroll does not bubble; attach to overflow ancestors (and window) so we can react. */
+function subscribeScrollRelevantAncestors(
+  anchors: (HTMLElement | null)[],
+  handler: (e: Event) => void,
+): () => void {
+  const targets = new Set<EventTarget>();
+  targets.add(window);
+  for (const start of anchors) {
+    let node: HTMLElement | null = start;
+    while (node) {
+      const { overflow, overflowX, overflowY } = window.getComputedStyle(node);
+      const s = (v: string) => /auto|scroll|overlay/.test(v);
+      if (s(overflow) || s(overflowX) || s(overflowY)) {
+        targets.add(node);
+      }
+      node = node.parentElement;
+    }
+  }
+  if (document.scrollingElement) {
+    targets.add(document.scrollingElement);
+  }
+  for (const t of targets) {
+    t.addEventListener("scroll", handler, scrollListenerOpts);
+  }
+  return () => {
+    for (const t of targets) {
+      t.removeEventListener("scroll", handler, scrollListenerOpts);
+    }
+  };
+}
 
 export type CascaderProps = {
   id?: string;
@@ -128,7 +169,16 @@ const CascaderFragment = ({
   const cascaderContentRef = useRef<HTMLDivElement>(
     document.createElement("div"),
   );
+  const rootColumnRef = useRef<HTMLDivElement>(null);
+  /** One ref per portaled flyout depth (L2, L3, …). */
+  const flyoutPanelRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [flyoutDockStyles, setFlyoutDockStyles] = useState<
+    React.CSSProperties[]
+  >([]);
   const searchRef = useRef<HTMLInputElement>(null);
+  /** Ignore scroll-to-close briefly after open (focus / layout can scroll the viewport). */
+  const viewportScrollCloseGraceUntilRef = useRef(0);
 
   const reactId = useId();
   const accessibleId = id ?? reactId.replace(/:/g, "");
@@ -203,6 +253,12 @@ const CascaderFragment = ({
     },
     [finalizeClose],
   );
+
+  useLayoutEffect(() => {
+    if (isOpen) {
+      viewportScrollCloseGraceUntilRef.current = performance.now() + 200;
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen && searchable) {
@@ -351,6 +407,9 @@ const CascaderFragment = ({
               (el as HTMLElement).scrollTop = 0;
             }
           }
+          for (const panel of flyoutPanelRefs.current) {
+            if (panel) panel.scrollTop = 0;
+          }
         } else {
           focusableElements[nextIndex].scrollIntoView({
             behavior: "auto",
@@ -481,10 +540,277 @@ const CascaderFragment = ({
     ? `min(${maxHeight}px, calc(100vh - 100px))`
     : "calc(100vh - 100px)";
 
+  const flyoutContainsNode = useCallback((n: Node | null | undefined) => {
+    if (!n) return false;
+    return flyoutPanelRefs.current.some(
+      (el) => el && (el === n || el.contains(n)),
+    );
+  }, []);
+
+  const updateFlyoutDockPositions = useCallback(() => {
+    if (!isOpen || columns.length <= 1 || searchValue) {
+      setFlyoutDockStyles([]);
+      return;
+    }
+    const root = rootColumnRef.current;
+    if (!root) {
+      setFlyoutDockStyles([]);
+      return;
+    }
+    const depthCount = columns.length - 1;
+    const contentEl = cascaderContentRef.current;
+    const rootRect = root.getBoundingClientRect();
+    const panelWidth = Math.round(
+      contentEl?.getBoundingClientRect().width ?? rootRect.width,
+    );
+    const gap = 4;
+    const pad = 8;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const styles: React.CSSProperties[] = [];
+    let left = rootRect.right + gap;
+
+    for (let depthIdx = 0; depthIdx < depthCount; depthIdx++) {
+      const panelEl = flyoutPanelRefs.current[depthIdx];
+      const fh = panelEl?.offsetHeight ?? 0;
+      const fw = panelWidth;
+
+      let useLeft = left;
+      if (useLeft + fw + pad > vw) {
+        if (depthIdx === 0) {
+          useLeft = Math.max(pad, rootRect.left - fw - gap);
+        } else {
+          const prev = flyoutPanelRefs.current[depthIdx - 1];
+          if (prev) {
+            const pr = prev.getBoundingClientRect();
+            useLeft = Math.max(pad, pr.left - fw - gap);
+          }
+        }
+      }
+      if (useLeft < pad) {
+        useLeft = pad;
+      }
+
+      const ridx = activePath[depthIdx];
+      let top: number;
+      if (depthIdx === 0) {
+        const rows = root.querySelectorAll(":scope > .dash-cascader-row");
+        const row = rows[ridx ?? 0] as HTMLElement | undefined;
+        top = row?.getBoundingClientRect().top ?? rootRect.top;
+      } else {
+        const prev = flyoutPanelRefs.current[depthIdx - 1];
+        const rows =
+          prev?.querySelectorAll(":scope > .dash-cascader-row") ?? [];
+        const row = rows[ridx ?? 0] as HTMLElement | undefined;
+        top =
+          row?.getBoundingClientRect().top ??
+          prev?.getBoundingClientRect().top ??
+          rootRect.top;
+      }
+
+      if (fh > 0 && top + fh + pad > vh) {
+        top = Math.max(pad, vh - fh - pad);
+      }
+      if (top < pad) {
+        top = pad;
+      }
+
+      styles.push({
+        boxSizing: "border-box",
+        left: useLeft,
+        position: "fixed",
+        top,
+        width: panelWidth,
+        zIndex: 100_000 + depthIdx,
+      });
+
+      left = useLeft + fw + gap;
+    }
+
+    setFlyoutDockStyles(styles);
+  }, [isOpen, columns.length, activePath, searchValue]);
+
+  /** Close on page / outer scroll; only keep open while scrolling inside the panel or flyout. */
+  const handleScrollDockOrClose = useCallback(
+    (e: Event) => {
+      if (!isOpen) return;
+      const t = e.target;
+      const skipScrollClose =
+        performance.now() < viewportScrollCloseGraceUntilRef.current;
+      const closeFromScroll = () => {
+        if (!skipScrollClose) {
+          finalizeClose();
+        }
+      };
+      if (t === window || t === document) {
+        closeFromScroll();
+        return;
+      }
+      if (!(t instanceof Element)) {
+        closeFromScroll();
+        return;
+      }
+      if (
+        t === document.documentElement ||
+        t === document.body ||
+        (document.scrollingElement && t === document.scrollingElement)
+      ) {
+        closeFromScroll();
+        return;
+      }
+
+      const content = cascaderContentRef.current;
+      const root = rootColumnRef.current;
+
+      // Scroll `target` is the scrolling element only — never an outer `main`, so no `contains` on ancestors.
+      const scrollInsidePanel =
+        (content && t === content) ||
+        (root && t === root) ||
+        flyoutContainsNode(t) ||
+        (triggerRef.current &&
+          (t === triggerRef.current || triggerRef.current.contains(t)));
+      if (scrollInsidePanel) {
+        if (columns.length > 1 && !searchValue) {
+          updateFlyoutDockPositions();
+        }
+        return;
+      }
+      closeFromScroll();
+    },
+    [
+      isOpen,
+      columns.length,
+      searchValue,
+      updateFlyoutDockPositions,
+      flyoutContainsNode,
+      finalizeClose,
+    ],
+  );
+
+  useLayoutEffect(() => {
+    if (!isOpen || columns.length <= 1 || searchValue) {
+      setFlyoutDockStyles([]);
+      return;
+    }
+    updateFlyoutDockPositions();
+    const root = rootColumnRef.current;
+    const ro = new ResizeObserver(() => {
+      updateFlyoutDockPositions();
+    });
+    if (root) ro.observe(root);
+    for (const panel of flyoutPanelRefs.current) {
+      if (panel) ro.observe(panel);
+    }
+    window.addEventListener("resize", updateFlyoutDockPositions);
+    const flyoutEls = flyoutPanelRefs.current.filter((n): n is HTMLDivElement =>
+      Boolean(n),
+    );
+    const unsubScroll = subscribeScrollRelevantAncestors(
+      [root, cascaderContentRef.current, ...flyoutEls],
+      handleScrollDockOrClose,
+    );
+    const vv = window.visualViewport;
+    const dockFlyoutOnly = () => {
+      if (columns.length > 1 && !searchValue) {
+        updateFlyoutDockPositions();
+      }
+    };
+    if (vv) {
+      vv.addEventListener("scroll", dockFlyoutOnly, scrollListenerOpts);
+      vv.addEventListener("resize", dockFlyoutOnly, scrollListenerOpts);
+    }
+    const id = requestAnimationFrame(() => updateFlyoutDockPositions());
+    return () => {
+      cancelAnimationFrame(id);
+      ro.disconnect();
+      window.removeEventListener("resize", updateFlyoutDockPositions);
+      unsubScroll();
+      if (vv) {
+        vv.removeEventListener("scroll", dockFlyoutOnly, scrollListenerOpts);
+        vv.removeEventListener("resize", dockFlyoutOnly, scrollListenerOpts);
+      }
+    };
+  }, [
+    isOpen,
+    columns,
+    searchValue,
+    updateFlyoutDockPositions,
+    handleScrollDockOrClose,
+  ]);
+
+  /* Close when the panel leaves the viewport (portaled flyout would otherwise stay). */
+  useLayoutEffect(() => {
+    if (!isOpen || typeof IntersectionObserver === "undefined") {
+      return;
+    }
+    const panel = cascaderContentRef.current;
+    if (!panel) {
+      return;
+    }
+    // Radix can report one initial `isIntersecting: false` while the popover is
+    // still being positioned; only close after we have seen it intersect.
+    let sawIntersecting = false;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) {
+          return;
+        }
+        if (entry.isIntersecting) {
+          sawIntersecting = true;
+          return;
+        }
+        if (sawIntersecting) {
+          finalizeClose();
+        }
+      },
+      { root: null, threshold: 0 },
+    );
+    io.observe(panel);
+    return () => io.disconnect();
+  }, [isOpen, finalizeClose]);
+
+  /* Trackpad / mouse wheel on any scrollable surface outside the panel + flyout + trigger. */
+  useLayoutEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    const onWheel = (e: WheelEvent) => {
+      const n = e.target as Node | null;
+      if (!n) {
+        finalizeClose();
+        return;
+      }
+      if (
+        cascaderContentRef.current?.contains(n) ||
+        flyoutContainsNode(n) ||
+        triggerRef.current?.contains(n)
+      ) {
+        return;
+      }
+      finalizeClose();
+    };
+    document.addEventListener("wheel", onWheel, wheelCaptureOpts);
+    return () => {
+      document.removeEventListener("wheel", onWheel, wheelCaptureOpts);
+    };
+  }, [isOpen, finalizeClose, flyoutContainsNode]);
+
+  const suppressDismissFromFlyout = useCallback(
+    (e: Event) => {
+      if (flyoutContainsNode(e.target as Node)) {
+        e.preventDefault();
+      }
+    },
+    [flyoutContainsNode],
+  );
+
   const popover = (
     <Popover.Root open={isOpen} onOpenChange={handleOpenChange}>
       <Popover.Trigger asChild>
         <button
+          ref={triggerRef}
           id={id}
           type="button"
           disabled={disabled}
@@ -571,8 +897,15 @@ const CascaderFragment = ({
           align="start"
           sideOffset={5}
           onOpenAutoFocus={(e) => e.preventDefault()}
+          onPointerDownOutside={suppressDismissFromFlyout}
+          onFocusOutside={suppressDismissFromFlyout}
           onKeyDown={handlePanelKeyDown}
-          style={{ maxHeight: contentMaxHeight }}
+          style={{
+            maxHeight: contentMaxHeight,
+            ...({
+              "--dash-cascader-flyout-max-height": `${maxHeight}px`,
+            } as React.CSSProperties),
+          }}
         >
           {searchable && (
             <div className="dash-dropdown-grid-container dash-dropdown-search-container">
@@ -640,114 +973,145 @@ const CascaderFragment = ({
   );
 
   function renderColumns() {
-    return (
-      <div className="dash-cascader-columns">
-        {columns.map((colOptions, colIdx) => (
+    const [rootOptions, ...flyoutLevels] = columns;
+
+    const renderOptionRow = (
+      colIdx: number,
+      opt: CascaderOption,
+      rowIdx: number,
+    ) => {
+      const isActive = activePath[colIdx] === rowIdx;
+      const isLeafNode = !opt.children || opt.children.length === 0;
+      const isSelected = selectedSet.has(opt.value);
+
+      if (isLeafNode) {
+        const kbdRow = !multi && !opt.disabled;
+        return (
+          // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style option row
           <div
-            key={colOptions.map((o) => String(o.value)).join("|")}
-            className="dash-cascader-column"
-          >
-            {colOptions.map((opt, rowIdx) => {
-              const isActive = activePath[colIdx] === rowIdx;
-              const isLeafNode = !opt.children || opt.children.length === 0;
-              const isSelected = selectedSet.has(opt.value);
-
-              if (isLeafNode) {
-                const kbdRow = !multi && !opt.disabled;
-                return (
-                  // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style option row
-                  <div
-                    key={String(opt.value)}
-                    className={[
-                      "dash-cascader-row",
-                      isSelected && !multi ? "selected" : "",
-                      opt.disabled ? "disabled" : "",
-                      kbdRow ? "dash-cascader-kbd-row" : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    style={rowStyle}
-                    tabIndex={kbdRow ? 0 : undefined}
-                    onClick={() => !opt.disabled && handleLeafClick(opt.value)}
-                    onKeyDown={(e) => {
-                      if (kbdRow && (e.key === "Enter" || e.key === " ")) {
-                        e.preventDefault();
-                        handleLeafClick(opt.value);
-                      }
-                    }}
-                  >
-                    {multi && (
-                      <input
-                        type="checkbox"
-                        className="dash-cascader-checkbox"
-                        checked={isSelected}
-                        disabled={opt.disabled}
-                        onChange={() => handleLeafClick(opt.value)}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    )}
-                    <span className="dash-cascader-row-label">{opt.label}</span>
-                  </div>
-                );
+            key={String(opt.value)}
+            className={[
+              "dash-cascader-row",
+              isSelected && !multi ? "selected" : "",
+              opt.disabled ? "disabled" : "",
+              kbdRow ? "dash-cascader-kbd-row" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            style={rowStyle}
+            tabIndex={kbdRow ? 0 : undefined}
+            onClick={() => !opt.disabled && handleLeafClick(opt.value)}
+            onKeyDown={(e) => {
+              if (kbdRow && (e.key === "Enter" || e.key === " ")) {
+                e.preventDefault();
+                handleLeafClick(opt.value);
               }
-
-              const checkState = multi
-                ? parentCheckState(opt, selectedSet)
-                : undefined;
-              const kbdRow = !multi && !opt.disabled;
-              return (
-                // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style parent row
-                <div
-                  key={String(opt.value)}
-                  className={[
-                    "dash-cascader-row",
-                    isActive ? "active" : "",
-                    opt.disabled ? "disabled" : "",
-                    kbdRow ? "dash-cascader-kbd-row" : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  style={rowStyle}
-                  tabIndex={kbdRow ? 0 : undefined}
-                  onClick={() =>
-                    !opt.disabled && handleParentClick(colIdx, rowIdx)
-                  }
-                  onKeyDown={(e) => {
-                    if (kbdRow && (e.key === "Enter" || e.key === " ")) {
-                      e.preventDefault();
-                      handleParentClick(colIdx, rowIdx);
-                    }
-                  }}
-                >
-                  {multi && (
-                    <input
-                      type="checkbox"
-                      className="dash-cascader-checkbox"
-                      checked={checkState === "checked"}
-                      ref={(el) => {
-                        if (el)
-                          el.indeterminate = checkState === "indeterminate";
-                      }}
-                      disabled={opt.disabled}
-                      onChange={(e) => handleParentCheckbox(opt, e)}
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  )}
-                  <span className="dash-cascader-row-label">{opt.label}</span>
-                  <ChevronRightIcon
-                    className={[
-                      "dash-cascader-chevron",
-                      isActive ? "dash-cascader-chevron-expanded" : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                  />
-                </div>
-              );
-            })}
+            }}
+          >
+            {multi && (
+              <input
+                type="checkbox"
+                className="dash-cascader-checkbox"
+                checked={isSelected}
+                disabled={opt.disabled}
+                onChange={() => handleLeafClick(opt.value)}
+                onClick={(e) => e.stopPropagation()}
+              />
+            )}
+            <span className="dash-cascader-row-label">{opt.label}</span>
           </div>
-        ))}
-      </div>
+        );
+      }
+
+      const checkState = multi ? parentCheckState(opt, selectedSet) : undefined;
+      const kbdRow = !multi && !opt.disabled;
+      return (
+        // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style parent row
+        <div
+          key={String(opt.value)}
+          className={[
+            "dash-cascader-row",
+            isActive ? "active" : "",
+            opt.disabled ? "disabled" : "",
+            kbdRow ? "dash-cascader-kbd-row" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+          style={rowStyle}
+          tabIndex={kbdRow ? 0 : undefined}
+          onClick={() => !opt.disabled && handleParentClick(colIdx, rowIdx)}
+          onKeyDown={(e) => {
+            if (kbdRow && (e.key === "Enter" || e.key === " ")) {
+              e.preventDefault();
+              handleParentClick(colIdx, rowIdx);
+            }
+          }}
+        >
+          {multi && (
+            <input
+              type="checkbox"
+              className="dash-cascader-checkbox"
+              checked={checkState === "checked"}
+              ref={(el) => {
+                if (el) el.indeterminate = checkState === "indeterminate";
+              }}
+              disabled={opt.disabled}
+              onChange={(e) => handleParentCheckbox(opt, e)}
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
+          <span className="dash-cascader-row-label">{opt.label}</span>
+          <ChevronRightIcon
+            className={[
+              "dash-cascader-chevron",
+              isActive ? "dash-cascader-chevron-expanded" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          />
+        </div>
+      );
+    };
+
+    const flyoutPortals =
+      !isOpen || typeof document === "undefined"
+        ? null
+        : flyoutLevels.map((colOptions, depthIdx) => {
+            const colIdx = depthIdx + 1;
+            const panelKey = `${depthIdx}-${colOptions.map((o) => String(o.value)).join("|")}`;
+            return (
+              <Fragment key={panelKey}>
+                {createPortal(
+                  <div
+                    ref={(el) => {
+                      flyoutPanelRefs.current[depthIdx] = el;
+                    }}
+                    className="dash-cascader-flyout-panel"
+                    data-dash-cascader-flyout-depth={depthIdx}
+                    style={flyoutDockStyles[depthIdx] ?? {}}
+                  >
+                    {colOptions.map((opt, rowIdx) =>
+                      renderOptionRow(colIdx, opt, rowIdx),
+                    )}
+                  </div>,
+                  document.body,
+                )}
+              </Fragment>
+            );
+          });
+
+    return (
+      <>
+        <div className="dash-cascader-columns">
+          <div
+            ref={rootColumnRef}
+            className="dash-cascader-column dash-cascader-column-root"
+          >
+            {rootOptions.map((opt, rowIdx) => renderOptionRow(0, opt, rowIdx))}
+          </div>
+        </div>
+        {flyoutPortals}
+      </>
     );
   }
 
