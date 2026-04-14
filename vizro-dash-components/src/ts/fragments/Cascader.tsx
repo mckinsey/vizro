@@ -254,12 +254,6 @@ const CascaderFragment = ({
     [finalizeClose],
   );
 
-  useLayoutEffect(() => {
-    if (isOpen) {
-      viewportScrollCloseGraceUntilRef.current = performance.now() + 200;
-    }
-  }, [isOpen]);
-
   useEffect(() => {
     if (isOpen && searchable) {
       requestAnimationFrame(() => searchRef.current?.focus());
@@ -574,17 +568,16 @@ const CascaderFragment = ({
     for (let depthIdx = 0; depthIdx < depthCount; depthIdx++) {
       const panelEl = flyoutPanelRefs.current[depthIdx];
       const fh = panelEl?.offsetHeight ?? 0;
-      const fw = panelWidth;
 
       let useLeft = left;
-      if (useLeft + fw + pad > vw) {
+      if (useLeft + panelWidth + pad > vw) {
         if (depthIdx === 0) {
-          useLeft = Math.max(pad, rootRect.left - fw - gap);
+          useLeft = Math.max(pad, rootRect.left - panelWidth - gap);
         } else {
           const prev = flyoutPanelRefs.current[depthIdx - 1];
           if (prev) {
             const pr = prev.getBoundingClientRect();
-            useLeft = Math.max(pad, pr.left - fw - gap);
+            useLeft = Math.max(pad, pr.left - panelWidth - gap);
           }
         }
       }
@@ -625,7 +618,7 @@ const CascaderFragment = ({
         zIndex: 100_000 + depthIdx,
       });
 
-      left = useLeft + fw + gap;
+      left = useLeft + panelWidth + gap;
     }
 
     setFlyoutDockStyles(styles);
@@ -636,27 +629,23 @@ const CascaderFragment = ({
     (e: Event) => {
       if (!isOpen) return;
       const t = e.target;
-      const skipScrollClose =
+      const inScrollCloseGrace =
         performance.now() < viewportScrollCloseGraceUntilRef.current;
-      const closeFromScroll = () => {
-        if (!skipScrollClose) {
+      const maybeCloseFromOuterScroll = () => {
+        if (!inScrollCloseGrace) {
           finalizeClose();
         }
       };
-      if (t === window || t === document) {
-        closeFromScroll();
-        return;
-      }
-      if (!(t instanceof Element)) {
-        closeFromScroll();
-        return;
-      }
+
       if (
+        t === window ||
+        t === document ||
+        !(t instanceof Element) ||
         t === document.documentElement ||
         t === document.body ||
-        (document.scrollingElement && t === document.scrollingElement)
+        t === document.scrollingElement
       ) {
-        closeFromScroll();
+        maybeCloseFromOuterScroll();
         return;
       }
 
@@ -676,7 +665,7 @@ const CascaderFragment = ({
         }
         return;
       }
-      closeFromScroll();
+      maybeCloseFromOuterScroll();
     },
     [
       isOpen,
@@ -711,14 +700,17 @@ const CascaderFragment = ({
       handleScrollDockOrClose,
     );
     const vv = window.visualViewport;
-    const dockFlyoutOnly = () => {
-      if (columns.length > 1 && !searchValue) {
-        updateFlyoutDockPositions();
-      }
-    };
     if (vv) {
-      vv.addEventListener("scroll", dockFlyoutOnly, scrollListenerOpts);
-      vv.addEventListener("resize", dockFlyoutOnly, scrollListenerOpts);
+      vv.addEventListener(
+        "scroll",
+        updateFlyoutDockPositions,
+        scrollListenerOpts,
+      );
+      vv.addEventListener(
+        "resize",
+        updateFlyoutDockPositions,
+        scrollListenerOpts,
+      );
     }
     const id = requestAnimationFrame(() => updateFlyoutDockPositions());
     return () => {
@@ -727,8 +719,16 @@ const CascaderFragment = ({
       window.removeEventListener("resize", updateFlyoutDockPositions);
       unsubScroll();
       if (vv) {
-        vv.removeEventListener("scroll", dockFlyoutOnly, scrollListenerOpts);
-        vv.removeEventListener("resize", dockFlyoutOnly, scrollListenerOpts);
+        vv.removeEventListener(
+          "scroll",
+          updateFlyoutDockPositions,
+          scrollListenerOpts,
+        );
+        vv.removeEventListener(
+          "resize",
+          updateFlyoutDockPositions,
+          scrollListenerOpts,
+        );
       }
     };
   }, [
@@ -741,7 +741,11 @@ const CascaderFragment = ({
 
   /* Close when the panel leaves the viewport (portaled flyout would otherwise stay). */
   useLayoutEffect(() => {
-    if (!isOpen || typeof IntersectionObserver === "undefined") {
+    if (!isOpen) {
+      return;
+    }
+    viewportScrollCloseGraceUntilRef.current = performance.now() + 200;
+    if (typeof IntersectionObserver === "undefined") {
       return;
     }
     const panel = cascaderContentRef.current;
