@@ -35,7 +35,7 @@ class Vizro:
         """Initialize a Vizro app.
 
         Abstract: Usage documentation
-            [How to run or deploy a dashboard](../user-guides/run-deploy.md/#advanced-dockerfile-configuration)
+            [How to run or deploy a dashboard](../user-guides/run-deploy/#advanced-dockerfile-configuration)
 
         Keyword Arguments:
             **kwargs: Arbitrary keyword arguments passed through to `Dash`, for example `assets_folder`,

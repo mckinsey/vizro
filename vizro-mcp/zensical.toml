@@ -1,0 +1,167 @@
+[project]
+site_name = "Vizro-MCP"
+site_url = "https://vizro.readthedocs.io/projects/vizro-mcp"
+site_description = "Vizro-MCP documentation"
+site_dir = "site"
+docs_dir = "docs"
+use_directory_urls = true
+
+nav = [
+  {"Vizro-MCP" = "index.md"},
+  {"Get started" = [
+    {"First dashboard tutorial" = "pages/tutorials/first-dashboard-tutorial.md"},
+    {"Use Claude Desktop" = "pages/guides/set-up-vizro-mcp-with-claude.md"},
+    {"Use Cursor" = "pages/guides/set-up-vizro-mcp-with-cursor.md"},
+    {"Use VS Code" = "pages/guides/set-up-vizro-mcp-with-vscode.md"},
+    {"Use any MCP host" = "pages/guides/set-up-vizro-mcp-basics.md"}
+  ]},
+  {"Tutorials" = [
+    {"Claude Desktop and Vizro-MCP" = "pages/tutorials/claude-desktop-tutorial.md"},
+    {"Cursor and Vizro-MCP" = "pages/tutorials/cursor-tutorial.md"},
+    {"VS Code and Vizro-MCP" = "pages/tutorials/vs-code-tutorial.md"}
+  ]},
+  {"How-to guides" = [
+    {"Use prompt templates" = "pages/guides/use-prompt-templates.md"},
+    {"Create only charts" = "pages/guides/create-charts-only.md"},
+    {"Use local or remote data" = "pages/guides/use-data.md"},
+    {"Get a live preview" = "pages/guides/get-live-preview.md"}
+  ]},
+  {"Explanation" = [
+    {"FAQs" = "pages/explanation/faqs.md"},
+    {"Contribute" = "pages/explanation/contribute.md"},
+    {"Disclaimers" = "pages/explanation/disclaimers.md"}
+  ]},
+  {"API reference" = "pages/API-reference/API-reference.md"},
+  {"Vizro" = "https://vizro.readthedocs.io"},
+  {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"}
+]
+
+# This infers the version number of the latest release of whole repo, so we're hiding it for sub-packages in extra.css
+repo_url = "https://github.com/mckinsey/vizro/tree/main/vizro-mcp"
+repo_name = "mckinsey/vizro-mcp"
+
+extra_css = ["stylesheets/extra.css"]
+
+# -------------------------
+# theme
+# -------------------------
+[project.theme]
+language = "en"
+variant = "classic"
+favicon = "images/favicon/favicon.png"
+features = [
+  "header.autohide",
+  "navigation.path",
+  "navigation.expand",
+  "navigation.instant",
+  "navigation.indexes",
+  "navigation.tabs",
+  "navigation.tabs.sticky",
+  "navigation.tracking",
+  "search.suggest",
+  "search.highlight",
+  "content.tabs.link",
+  "content.code.annotation",
+  "content.code.copy",
+  "content.code.annotate"
+]
+
+[[project.theme.palette]]
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+[project.theme.font]
+text = "Google sans"
+code = "Source Code Pro"
+
+[project.theme.icon]
+repo = "fontawesome/brands/github"
+
+# -------------------------
+# markdown_extensions
+# -------------------------
+[project.markdown_extensions.pymdownx.highlight]
+anchor_linenums = true
+
+[project.markdown_extensions.pymdownx.inlinehilite]
+
+[project.markdown_extensions.pymdownx.snippets]
+
+[project.markdown_extensions.admonition]
+
+[project.markdown_extensions.pymdownx.arithmatex]
+generic = true
+
+[project.markdown_extensions.footnotes]
+
+[project.markdown_extensions.pymdownx.details]
+
+[project.markdown_extensions.pymdownx.superfences]
+
+[[project.markdown_extensions.pymdownx.superfences.custom_fences]]
+name = "mermaid"
+class = "mermaid"
+format = "pymdownx.superfences.fence_code_format"
+
+[[project.markdown_extensions.pymdownx.superfences.custom_fences]]
+name = "python"
+class = "highlight"
+validator = "mkdocs_pycafe.validator"
+format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.53"}}
+
+[project.markdown_extensions.pymdownx.tabbed]
+alternate_style = true
+
+[project.markdown_extensions.pymdownx.mark]
+
+[project.markdown_extensions.attr_list]
+
+[project.markdown_extensions.md_in_html]
+
+[project.markdown_extensions.pymdownx.emoji]
+emoji_index = "zensical.extensions.emoji.twemoji"
+emoji_generator = "zensical.extensions.emoji.to_svg"
+
+# -------------------------
+# plugins
+# -------------------------
+[project.plugins.search]
+
+[project.plugins.autorefs]
+
+[project.plugins.mkdocstrings]
+
+[project.plugins.mkdocstrings.handlers.python]
+paths = ["src"]
+
+[project.plugins.mkdocstrings.handlers.python.options]
+show_source = false
+docstring_style = "google"
+merge_init_into_class = true
+docstring_section_style = "list"
+separate_signature = true
+show_root_heading = true
+
+[project.plugins.mkdocstrings.handlers.python.options.docstring_options]
+ignore_init_summary = true
+warn_unknown_params = false
+
+[project.plugins.git-revision-date-localized]
+enable_creation_date = false
+
+[project.plugins.glightbox]
+manual = true
+
+# Zensical does not yet support strict/validation settings (as of 0.0.28).
+# When supported, add:
+# validation:
+#   omitted_files: warn
+#   absolute_links: warn
+#   unrecognized_links: warn
+#   anchors: warn

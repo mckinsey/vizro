@@ -91,7 +91,7 @@ When you click the "Export data" button, the data for all graphs, tables and fig
 
 !!! tip
 
-    If you have many buttons that trigger actions then you might like to [give them icons](button.md/#add-an-icon). You can even have icon-only buttons with no text.
+    If you have many buttons that trigger actions then you might like to [give them icons](./button/#add-an-icon). You can even have icon-only buttons with no text.
 
 ## Trigger an action with a graph
 

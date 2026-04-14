@@ -148,6 +148,10 @@ This invokes the **dashboard-build** skill, which:
 
 At the time of writing, this plugin is compatible with products which support [Claude Agent Skills](https://agentskills.io/). As is often the case with generative AI products, we expect this to work with more products in the future.
 
+## Tested models
+
+These skills have been tested with **Claude Sonnet 4.6** and **Claude Opus 4.6**.
+
 ## Support
 
 For issues or questions about this skill, please file an issue in the [Vizro GitHub repository](https://github.com/mckinsey/vizro).

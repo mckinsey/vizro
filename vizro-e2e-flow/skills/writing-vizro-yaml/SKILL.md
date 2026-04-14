@@ -23,14 +23,14 @@ Each mistake below is expanded with code examples and fixes in [yaml-reference.m
 ## Quick Patterns
 
 ```yaml
-# Standard chart
+# Standard chart (scatter — no aggregation needed, each row is one point)
 - figure:
-    _target_: bar
+    _target_: scatter
     data_frame: sales_data
-    x: region
+    x: units
     y: revenue
   type: graph
-  title: Revenue by Region
+  title: Revenue vs Units
 
 # KPI card (title inside figure args, NOT on component)
 - figure:

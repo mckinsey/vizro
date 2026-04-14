@@ -15,7 +15,7 @@ Requires Phase 1 spec files from the **dashboard-design** skill: `spec/1_informa
 - When iterating on the dashboard after completing all steps, do not forget key points from below, especially regarding spec compliance and updating and terminal handling: always keep all specs up to date, and always check if terminal output is clean after each iteration.
 - Execute all scripts from this skill, and the `app.py` you will create, with `uv run <script_name>.py` or `uv run app.py` - this will ensure you use the correct dependencies and versions.
 - **ABSOLUTELY NEVER** type ANY commands (including `sleep`, `echo`, or anything else) in the terminal where the dashboard app is running, even if you started it with `isBackground=true`. This WILL kill the dashboard process. The dashboard startup takes time - be patient and let it run undisturbed.
-- Step 2 (Testing) requires a Playwright MCP server. If unavailable, skip testing and inform the user.
+- Step 2 (Testing) is critical — do not skip it. Use Playwright MCP if available, otherwise use any browser automation tool in your environment.
 
 ## Spec Files: Documenting Decisions
 
@@ -73,19 +73,33 @@ Before proceeding to Step 2, verify against spec files:
 - [ ] You have read the terminal output of the dashboard app for errors and warnings, you have not put any commands in the terminal after starting the app
 - [ ] Any deviations are documented in `spec/4_implementation.yaml`
 
-## Step 2: Testing (optional)
+## Step 2: Testing
 
-This requires a Playwright MCP server. If not available, inform the user and skip this step. Look for Playwright-related tools in your available MCP tools (naming varies by client).
+This step is critical for producing bug-free dashboards. Do NOT skip it.
 
-When conducting the below tests, feel free to go back to Step 1 to fix any issues you find, then come back here.
+When conducting the below tests, go back to Step 1 to fix any issues you find, then come back here.
 
-### Basic Testing Flow
+### Automated Code Validation
 
-1. Navigate to dashboard URL
-1. Click through all pages
-1. Check console for errors
+Run these validation scripts against your app.py to catch common issues:
 
-Use your Playwright MCP tools to navigate to `http://localhost:8050`, click through each page, and check the browser console for errors.
+1. **Color validation**: `uv run ./scripts/validate_colors.py .` — Checks for hardcoded colors (color_discrete_map, hex codes, plot_bgcolor) that bypass Vizro theming. Fix any FAIL. If the user explicitly asked for custom colors, add `--custom-colors-requested` to skip app.py color checks.
+1. **Aggregation validation**: `uv run ./scripts/validate_aggregation.py .` — Checks that bar/line charts use pre-aggregated data via `@capture("graph")`, not raw detail rows passed to inline `px.bar`/`px.line`. Fix any FAIL.
+
+### Browser Testing
+
+Navigate the running dashboard to catch two types of errors that code review alone cannot find: (1) console errors on launch, and (2) callback errors when navigating between pages.
+
+1. Determine which browser automation tool is available:
+
+    **Playwright MCP tools available?** → Use them directly to navigate, click pages, and check console **No Playwright MCP?** → Install the Python package: `uv pip install playwright && uv run playwright install chromium`, then write a test script
+
+1. Using your chosen tool, perform these checks:
+
+    - Navigate to dashboard URL (e.g., `http://localhost:8050`)
+    - Click through all pages
+    - Check browser console for errors
+    - Fix any errors found, then retest
 
 ### Advanced Testing flow
 
@@ -132,7 +146,8 @@ testing:
 
 ### Done When
 
-- Dashboard launches without errors, no console errors
+- Validation scripts (`validate_colors.py`, `validate_aggregation.py`) both PASS
+- Dashboard launches without errors, no console errors, no callback errors on page navigation
 - User confirms requirements are met
 - All spec files from this Phase 2 saved in `spec/` directory
 
@@ -147,3 +162,5 @@ testing:
 | [data_management.md](./references/data_management.md)         | Static vs dynamic data, caching, databases, APIs        |
 | [custom_charts_guide.md](./references/custom_charts_guide.md) | Implementing custom `@capture("graph")` charts          |
 | [example_app.py](./references/example_app.py)                 | Starting template for dashboard implementation          |
+| [validate_colors.py](./scripts/validate_colors.py)            | Automated check for hardcoded colors in app.py          |
+| [validate_aggregation.py](./scripts/validate_aggregation.py)  | Automated check for pre-aggregation in bar/line charts  |

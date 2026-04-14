@@ -102,6 +102,11 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
         run: pip install hatch
+      - name: Update components compendium version badge
+        if: needs.check-version.outputs.package_name == 'vizro-core'
+        env:
+          RELEASE_VERSION: ${{ needs.check-version.outputs.package_version }}
+        run: python tools/update_components_compendium_version.py
       # if you want to change this step please contact tech lead
       - name: Push bumped version to main
         run: |

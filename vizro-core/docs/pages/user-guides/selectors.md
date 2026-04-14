@@ -115,6 +115,110 @@ For more information, refer to the API reference of the selector, or the documen
 
 - [`Switch`][vizro.models.Switch] based on [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/)
 
+## Hierarchical selectors
+
+For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
+
+- [`Cascader`][vizro.models.Cascader] based on [`vdc.Cascader`](https://github.com/mckinsey/vizro/tree/main/vizro-dash-components)
+
+Hierarchical selectors show choices in a nested menu of groups. `options` gives the structure of a _tree_ of values (the _leaves_ of the tree), for example:
+
+```python
+options = {
+    "Asia": ["Japan", "India"],
+    "Europe": {"West": ["France", "Germany"], "North": ["Norway"]},
+}
+```
+
+By default, `value` is set according to the first group at the top of the tree:
+
+- If `multi=False`, by default `value` is the _first_ leaf listed under the first group. Here the first group is `Asia`, and its first country is `Japan`, so `value="Japan"`.
+- If `multi=True`, by default `value` is _all_ leaves listed under the first group. Here the first group is `Asia`, so `value=["Japan", "India"]`.
+
+You can pick a different starting selection by setting `value` on [`Cascader`][vizro.models.Cascader].
+
+!!! example "Hierarchical selector multi vs single"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="27-28"}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        gapminder = px.data.gapminder().query("year == 2007")
+
+        options = {
+            "Asia": ["Japan", "India"],
+            "Europe": {"West": ["France", "Germany"], "North": ["Norway"]},
+        }
+
+        page = vm.Page(
+            title="Gapminder 2007",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        gapminder,
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                        hover_name="country",
+                    )
+                ),
+            ],
+            controls=[
+                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options)),
+                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, multi=False, value="France"))
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: scatter
+                  data_frame: gapminder
+                  x: gdpPercap
+                  y: lifeExp
+                  size: pop
+                  color: continent
+                  hover_name: country
+                type: graph
+            controls:
+              - column:
+                  - continent
+                  - country
+                type: filter
+                selector:
+                  type: cascader
+                  options: options
+              - column:
+                  - continent
+                  - country
+                type: filter
+                selector:
+                  type: cascader
+                  options: options
+                  multi: false
+                  value: France
+            title: Gapminder 2007
+        ```
+
+    === "Result"
+
+        ![](../../assets/user_guides/selectors/hierarchical_selectors.gif)
+
+Hierarchical selectors can be used in [hierarchical filters](filters.md#hierarchical-filters) and [parameters](parameters.md).
+
 ## Add a tooltip
 
 The `description` argument enables you to add helpful context to your selector by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your provided text.
