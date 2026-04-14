@@ -125,15 +125,11 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
-  "mkdocs>=1.6",
-  "mkdocs-material",
+  "zensical>=0.0.28",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
-  "mkdocstrings[python]",
+  "mkdocstrings[python]>=1.0.2",
   "griffe-warnings-deprecated",
-  "mkdocs-llmstxt-md",
-  "mkdocs-llmstxt>=0.5.0",
   "linkchecker",
-  "mkdocs-open-in-new-tab",
   "mkdocs-pycafe",
   "griffe-pydantic",
   "PyGithub",
@@ -143,7 +139,7 @@ installer = "uv"
 template = "docs"  # Can't be detached = true since griffe_extensions:DynamicallyInspect needs vizro to be importable.
 
 [envs.docs.scripts]
-build = "mkdocs build --strict"
+build = "zensical build --clean"
 # Disable warnings on the linkcheck so that HTTP redirects are accepted. We could ignore only that warning and specify
 # more advanced settings using a linkcheckerrc config file.
 link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.ploomber.io/register --ignore-url=https://huggingface.co/join --ignore-url=https://www.ag-grid.com/ --ignore-url=https://cursor.com/ --ignore-url=https://docs.streamlit.io/get-started/fundamentals/main-concepts --ignore-url=https://medium.com/"
@@ -151,7 +147,7 @@ link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --
 logo-check = "grep -q 'logo_watermark_extended.svg' docs/pages/user-guides/install.md"
 pip = '"{env:HATCH_UV}" pip {args}'
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
-serve = "mkdocs serve --open {args}"
+serve = "zensical serve --open {args}"
 
 [envs.examples]
 # TODO: once the visual-vocabulary dashboard has moved out of this repo, this environment should be removed fully and
