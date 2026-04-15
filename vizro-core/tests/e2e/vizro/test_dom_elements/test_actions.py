@@ -1,5 +1,6 @@
 import time
 
+import pytest
 from e2e.asserts import assert_files_equal
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
@@ -7,6 +8,7 @@ from e2e.vizro.checkers import (
     check_graph_y_axis_value,
     check_selected_categorical_component,
     check_selected_dropdown,
+    check_table_ag_grid_rows_number,
 )
 from e2e.vizro.navigation import (
     accordion_select,
@@ -22,6 +24,7 @@ from e2e.vizro.paths import (
     scatter_point_path,
     select_all_path,
     table_ag_grid_cell_path_by_row,
+    table_ag_grid_cell_value_path,
     table_ag_grid_checkbox_path_by_row,
 )
 from hamcrest import assert_that, equal_to
@@ -1008,3 +1011,54 @@ def test_self_filtered_graph(dash_br):
         ],
     )
     check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_SET_CONTROL_SELF_FILTER, tick_index="6", value="2.5")
+
+
+@pytest.mark.parametrize(
+    "table_id, row_index, col_id, column_vals, cell_vals, row_vals, rows_num",
+    [
+        (cnst.SET_CONTROL_AG_GRID_COLUMN_CLICKED_ID, 1, "petal_width", "petal_width", "0.4", "3", 20),
+        (cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_ID, 1, "sepal_width", "sepal_width", "3", "29", 1),
+        (cnst.SET_CONTROL_AG_GRID_ROW_CLICKED_ID, 2, "species", "petal_length", "0.3", "2", 1),
+        (cnst.SET_CONTROL_AG_GRID_MIXED_CLICKED_ID, 1, "sepal_length", "sepal_length", "4.9", "48", 1),
+    ],
+    ids=[
+        "column",
+        "cell",
+        "row",
+        "mixed",
+    ],
+)
+def test_set_control_cellclicked(dash_br, table_id, row_index, col_id, column_vals, cell_vals, row_vals, rows_num):  # noqa
+    """Test set_control action is using value of the clicked cell, column and row according to configuration."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_PAGE,
+    )
+
+    # click on the cell in column 'sepal_length' with value '4.9' in ag_grid
+    dash_br.multiple_click(table_ag_grid_cell_path_by_row(table_id, row_index=row_index, col_id=col_id), 1)
+    # check the targeted ag_grid values were filtered according to clicked column and cell value
+    dash_br.wait_for_text_to_equal(
+        table_ag_grid_cell_value_path(
+            table_id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID, row_number=1, column_number=1
+        ),
+        column_vals,
+    )
+    dash_br.wait_for_text_to_equal(
+        table_ag_grid_cell_value_path(
+            table_id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID, row_number=1, column_number=2
+        ),
+        cell_vals,
+    )
+    dash_br.wait_for_text_to_equal(
+        table_ag_grid_cell_value_path(
+            table_id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID, row_number=1, column_number=3
+        ),
+        row_vals,
+    )
+
+    # check that number of rows with data is 1
+    check_table_ag_grid_rows_number(
+        dash_br, table_id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID, expected_rows_num=rows_num
+    )
