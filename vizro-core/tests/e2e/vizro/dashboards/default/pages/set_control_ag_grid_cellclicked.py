@@ -12,7 +12,6 @@ iris = px.data.iris()
 unique_species = iris["species"].unique()
 iris_species_cycle = iris.copy()
 iris_species_cycle["species"] = np.resize(unique_species, len(iris_species_cycle))
-cell_filter_values = [round(x, 1) for x in np.arange(0.1, 10.1, 0.1)]
 
 # Data for target ag_grid
 # float values from 0.1 to 10, step 0.1, rounded to 1 decimal

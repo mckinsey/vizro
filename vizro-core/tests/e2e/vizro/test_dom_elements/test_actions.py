@@ -1036,9 +1036,9 @@ def test_set_control_cellclicked(dash_br, table_id, row_index, col_id, column_va
         page_name=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_PAGE,
     )
 
-    # click on the cell in column 'sepal_length' with value '4.9' in ag_grid
+    # click on the parametrized ag_grid cell for the current test case
     dash_br.multiple_click(table_ag_grid_cell_path_by_row(table_id, row_index=row_index, col_id=col_id), 1)
-    # check the targeted ag_grid values were filtered according to clicked column and cell value
+    # check the targeted ag_grid values were filtered according to clicked cell
     dash_br.wait_for_text_to_equal(
         table_ag_grid_cell_value_path(
             table_id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID, row_number=1, column_number=1
