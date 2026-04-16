@@ -56,7 +56,7 @@
 .dash-cascader-flyout-panel {
   background: var(--Dash-Fill-Inverse-Strong);
   border: 1px solid var(--Dash-Stroke-Strong);
-  border-radius: var(--Dash-Spacing);
+  border-radius: 0;
   box-shadow:
     0 10px 38px -10px var(--Dash-Shading-Strong),
     0 10px 20px -15px var(--Dash-Shading-Weak);
