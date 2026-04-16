@@ -56,8 +56,8 @@ A cross-filter is when the user clicks on one _source_ graph or table to filter 
 
 The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking on a row or a cell in the table. The `value` argument of the [`set_control` action][vizro.actions.set_control] tells the action what to send to the `control`:
 
-- `"cell"`, `"column"`, `"row"` values use the clicked cell’s value, column id, or row id respectively.
-- Any other string will be treated as a column name. The value is always taken from that column.
+- `"cell"`, `"column"`, `"row"` use the clicked cell’s value, column id, or row id respectively. The row id is AG Grid's `rowId`, which defaults to the row's index unless you configure `getRowId` in `dashGridOptions`.
+- Any other string is treated as a **column name** and values are taken from **selected rows**.
 
 !!! example "Cross-filter from table to graph"
 
@@ -137,6 +137,8 @@ In the example above, when you click on a row in the table, the graph is cross-f
     1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter to be re-applied on its `targets=["tips_graph"]` so that a filtered graph is shown.
 
     The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
+
+When all rows are deselected, the control is reset to its original value. This effectively clears any cross-filter or cross-parameter that was applied. You can also reset all controls on a page by clicking the ["Reset controls" button](controls.md#reset-controls).
 
 You can set `set_control.value` argument to `value="cell"` and in this case, the value of the clicked cell will be propagated to the `control`. Multi-select is not possible for this option.
 
@@ -223,9 +225,13 @@ You can set `set_control.value` argument to `value="cell"` and in this case, the
 
     Ranges of rows can be selected by holding down ++shift++ while clicking on rows. This behavior also applies when checkbox selection is disabled, and in group selection. See the [Dash AG Grid multi-row selection documentation](https://dash.plotly.com/dash-ag-grid/multi-row-selection#selecting-multiple-rows-without-the-ctrl-key) for more examples.
 
+    If you use multi-row selection but your filter or parameter uses a single-value selector (for example `vm.RadioItemas()`), the control only updates when exactly one row is selected. Selecting two or more rows leaves the control unchanged.
+
 ### Cross-filter from graph
 
-The trigger for a cross-filter from a [graph](graph.md) is clicking on data or selecting data points in the graph. The `value` argument of the [`set_control` action][vizro.actions.set_control] can be used in two ways to specify what sets `control`:
+The trigger for a cross-filter from a [graph](graph.md) is clicking on data in the graph. A single click sends one value to the control. You can also use **box select** or **lasso select** to select multiple data points at once; see [Cross-filter from graph with selection](#cross-filter-from-graph-with-selection) for details and examples.
+
+The `value` argument of the [`set_control` action][vizro.actions.set_control] can be used in two ways to specify what sets `control`:
 
 - Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function. For example, for a graph `px.bar(..., color="country", custom_data="country")` you can use `va.set_control(value="country", ...)`.
 - As a shortcut, if the value is encoded by a _positional dimension_ such as `x` or `y` then you can use that variable directly and do not need to set `custom_data`. For example, for a graph `px.bar(x="country", ...)` you can use `va.set_control(value="x", ...)`. Positional dimensions include `x`, `y`, `z` for Cartesian plots and `lat`, `lon`, `location` for choropleth maps.
@@ -323,7 +329,7 @@ When you click on a box in the graph, the table is cross-filtered to show data f
 
     In full, what happens is as follows:
 
-    1. Clicking on the box triggers the `va.set_control` action. This uses the value of `sex` taken from the graph's `custom_data` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
+    1. Clicking on the box (or using box/lasso select on multiple data points) triggers the `va.set_control` action. This uses the value of `sex` taken from the graph's `custom_data` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`. When multiple points are selected, unique values across all points are sent.
     1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter to be re-applied on its `targets=["tips_table"]` so that a filtered table is shown.
 
     The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
@@ -415,10 +421,111 @@ When you click on a box in the graph, the table is cross-filtered to show data f
 
     In full, what happens is as follows:
 
-    1. Clicking on the box triggers the `va.set_control` action. This uses the value of `y` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
+    1. Clicking on the box (or using box/lasso select on multiple data points) triggers the `va.set_control` action. This uses the value of `y` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`. When multiple points are selected, unique values across all points are sent.
     1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter to be re-applied on its `targets=["tips_table"]` so that a filtered table is shown.
 
     The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
+
+### Cross-filter from graph - multi-select
+
+In addition to clicking on a single data point, graphs also support **box select** and **lasso select** to select multiple data points at once. When multiple points are selected, the unique values across all selected points are sent to the control.
+
+Vizro automatically enables this when a graph has `actions` defined: the graph's `clickmode` is set to `"event+select"` and the box/lasso selection tools are kept in the graph's modebar. When a graph has no `actions`, these selection tools are removed from the modebar.
+
+!!! example "Cross-filter from graph with multi-select"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="15"}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+
+        tips = px.data.tips()
+
+        page = vm.Page(
+            title="Cross-filter from graph with selection",
+            components=[
+                vm.Graph(
+                    title="Use box or lasso select to filter by day",
+                    figure=px.scatter(tips, x="total_bill", y="tip", color="day", custom_data="day"),
+                    actions=va.set_control(control="day_filter", value="day"),
+                ),
+                vm.Graph(
+                    id="total_tips",
+                    title="Total tips by day",
+                    figure=px.bar(tips, x="day", y="tip", color="day"),
+                ),
+            ],
+            controls=[vm.Filter(id="day_filter", column="day", targets=["total_tips"])],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - actions:
+                  - control: day_filter
+                    type: set_control
+                    value: day
+                figure:
+                  _target_: scatter
+                  color: day
+                  custom_data: day
+                  data_frame: tips
+                  x: total_bill
+                  y: tip
+                title: Use box or lasso select to filter by day
+                type: graph
+              - figure:
+                  _target_: bar
+                  color: day
+                  data_frame: tips
+                  x: day
+                  y: tip
+                id: total_tips
+                title: Total tips by day
+                type: graph
+            controls:
+              - column: day
+                id: day_filter
+                targets:
+                  - total_tips
+                type: filter
+            title: Cross-filter from graph with selection
+        ```
+
+    === "Result"
+
+        ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_3.gif)
+
+When you use box select or lasso select to select multiple points in the scatter plot, the bar chart is cross-filtered to show data for all the selected days. If only one point is clicked, the filter is set to that single value. If you deselect all points (for example by clicking on an empty area of the plot), the control resets to its original value and the filter is cleared.
+
+??? details "Behind the scenes mechanism"
+
+    In full, what happens is as follows:
+
+    1. A clientside callback combines the graph's `clickData` and `selectedData` into a single trigger. If box or lasso selection is used, the trigger contains all selected points; otherwise it contains the single clicked point.
+    1. `Graph._get_value_from_trigger` iterates over all points in the trigger, extracts the unique values for the specified `value`, and returns a sorted list.
+    1. The `set_control` action receives this list and sets the control accordingly: for a multi-value selector the full list is used, for a range selector the min and max are used, and for a single-value selector the control only updates when exactly one value is present.
+    1. If no points are selected (deselection), `None` is returned, which resets the control to its original value.
+
+    The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
+
+!!! tip
+
+    If you use box/lasso selection but your filter or parameter uses a single-value selector (for example `vm.Dropdown(multi=False)`), the control only updates when exactly one point is selected. Selecting two or more points with different values leaves the control unchanged.
+
+    You can override the automatic `clickmode` by setting it explicitly in your figure function, for example `fig.update_layout(clickmode="event")` to disable multi-point selection while keeping click actions enabled.
 
 ### Cross-filter between containers
 
@@ -691,7 +798,7 @@ When you click on a colored cell in the heatmap, the table is cross-filtered to 
 
     In full, what happens is as follows:
 
-    1. Clicking on a cell triggers the first `va.set_control` action. This uses the value of `day` (in other words, "Thur", "Fri", "Sat" or "Sun") to set the selector underlying `vm.Filter(id="day_filter")`.
+    1. Clicking on a cell (or using box/lasso select on multiple cells) triggers the first `va.set_control` action. This uses the value of `day` (in other words, "Thur", "Fri", "Sat" or "Sun") to set the selector underlying `vm.Filter(id="day_filter")`. When multiple points are selected, unique values across all points are sent.
     1. When the `day_filter` has been set, the second `va.set_control` action runs. This uses the value of `sex` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
     1. The change in value of `vm.Filter(id="day_filter")` triggers the filter on its `targets=["tips_table"]` so that a filtered table is shown.
     1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter on its `targets=["tips_table"]` so that a filtered table is shown.
@@ -712,7 +819,7 @@ vm.AgGrid(
 )
 ```
 
-However, it is not yet possible to cross-filter from a pivot table according to the row and column of the clicked cell.
+However, it is not yet possible to automatically extract both the row header and column header from a pivoted AG Grid as a pair of filter values. You can still use `value="cell"`, `value="column"`, or `value="row"` to get individual properties of the clicked cell.
 
 ## Cross-parameter
 
