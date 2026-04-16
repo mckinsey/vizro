@@ -25,7 +25,7 @@ All these interactions use the [`set_control` action][vizro.actions.set_control]
 
 A cross-filter is when the user clicks on one _source_ graph or table to filter one or more _target_ components. In Vizro, a cross-filter operates through an intermediate [filter](filters.md). To configure a cross-filter:
 
-1. Create a filter that targets the [graphs](graph.md), [tables](table.md) or [figures](figure.md) you would like to filter. The filter must have a [categorical selector](selectors.md#categorical-selectors) (both multi- and single-option are allowed).
+1. Create a filter that targets the [graphs](graph.md), [tables](table.md) or [figures](figure.md) you would like to filter. The filter can have any type of [selector](selectors.md). For non-categorical selectors, see [cross-filter with non-categorical selectors](#cross-filter-with-non-categorical-selectors).
 
     ```python
     import vizro.models as vm
@@ -632,11 +632,63 @@ vm.AgGrid(
 
 However, it is not yet possible to cross-filter from a pivot table according to the row and column of the clicked cell.
 
+### Cross-filter with non-categorical selectors
+
+The examples above use categorical selectors such as `Dropdown` and `Checklist`, but you can target non-categorical selectors with `set_control` action. The example below uses (`vm.DatePicker(range=True)`:
+
+!!! example "Cross-filter from table with `DatePicker(range=True)`"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="17"}
+        import pandas as pd
+
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        stocks = px.data.stocks()
+        stocks["date"] = pd.to_datetime(stocks["date"])
+
+        page = vm.Page(
+            title="Cross-filter from table with DatePicker",
+            components=[
+                vm.Graph(
+                    id="stocks_graph",
+                    title="GOOG vs AAPL Price Relationship",
+                    figure=px.scatter(stocks, x="GOOG", y="AAPL", custom_data="date"),
+                    actions=va.set_control(control="date_filter", value="date"),
+                ),
+                vm.Graph(
+                    id="stocks_graph_2",
+                    title="Stock Prices (Selected Points)",
+                    figure=px.line(stocks, x="date", y=["GOOG", "AAPL", "AMZN", "MSFT"])
+                )
+            ],
+            controls=[
+                vm.Filter(
+                    id="date_filter",
+                    column="date",
+                    targets=["stocks_graph_2"],
+                    selector=vm.DatePicker(range=True),
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. We give the `vm.Graph` an `id` so that it can be targeted explicitly by `vm.Filter(id="date_filter")`.
+        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+        1. `range=True` is the default for `DatePicker`. Since the trigger value is a single date, it is normalized to `[date, date]`.
+
 ## Cross-parameter
 
 A cross-parameter is when the user clicks on one _source_ graph or table to update any argument other than `data_frame` of one or more _target_ components. In Vizro, a cross-parameter operates through an intermediate [parameter](parameters.md). To configure a cross-parameter:
 
-1. Create a parameter that targets the [graphs](graph.md), [tables](table.md) or [figures](figure.md) you would like to update. The parameter must have a [categorical selector](selectors.md#categorical-selectors) (both multi- and single-option are allowed).
+1. Create a parameter that targets the [graphs](graph.md), [tables](table.md) or [figures](figure.md) you would like to update. The parameter can have any type of [selector](selectors.md).
 
     ```python
     import vizro.models as vm
