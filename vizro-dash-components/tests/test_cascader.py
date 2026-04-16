@@ -408,6 +408,8 @@ def test_cascader_three_levels(dash_duo):
     rows[0].click()
     # Third column should show Japan
     dash_duo.wait_for_text_to_equal(f"{_CASCADER_COL_L3} .dash-cascader-row-label", "Japan")
+    flyouts = dash_duo.driver.find_elements("css selector", ".dash-cascader-flyout-panel")
+    assert [el.get_attribute("data-dash-cascader-flyout-depth") for el in flyouts] == ["0", "1"]
     assert dash_duo.get_logs() == []
 
 

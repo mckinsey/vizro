@@ -5,7 +5,6 @@ import {
 } from "@radix-ui/react-icons";
 import * as Popover from "@radix-ui/react-popover";
 import React, {
-  Fragment,
   type MouseEvent,
   useCallback,
   useEffect,
@@ -289,6 +288,13 @@ const CascaderFragment = ({
     [options, activePath],
   );
 
+  const flyoutCount = Math.max(0, columns.length - 1);
+  useLayoutEffect(() => {
+    if (flyoutPanelRefs.current.length > flyoutCount) {
+      flyoutPanelRefs.current.length = flyoutCount;
+    }
+  }, [flyoutCount]);
+
   const searchResults = useMemo(() => {
     if (!searchValue) return [];
     return searchOptions(options, searchValue);
@@ -350,9 +356,28 @@ const CascaderFragment = ({
 
       const focusableSelector =
         'input[type="search"], input:not([disabled]), button:not([disabled]), .dash-cascader-kbd-row';
-      const focusableElements = e.currentTarget.querySelectorAll(
-        focusableSelector,
-      ) as NodeListOf<HTMLElement>;
+      const collectFocusables = (): HTMLElement[] => {
+        const out: HTMLElement[] = [];
+        const content = cascaderContentRef.current;
+        if (content) {
+          out.push(
+            ...(Array.from(
+              content.querySelectorAll(focusableSelector),
+            ) as HTMLElement[]),
+          );
+        }
+        for (const panel of flyoutPanelRefs.current) {
+          if (panel) {
+            out.push(
+              ...(Array.from(
+                panel.querySelectorAll(focusableSelector),
+              ) as HTMLElement[]),
+            );
+          }
+        }
+        return out;
+      };
+      const focusableElements = collectFocusables();
 
       if (focusableElements.length === 0) {
         return;
@@ -360,7 +385,7 @@ const CascaderFragment = ({
 
       e.preventDefault();
 
-      const currentIndex = Array.from(focusableElements).indexOf(
+      const currentIndex = focusableElements.indexOf(
         document.activeElement as HTMLElement,
       );
       let nextIndex = -1;
@@ -368,17 +393,28 @@ const CascaderFragment = ({
       switch (e.key) {
         case "ArrowDown":
           nextIndex =
-            currentIndex < focusableElements.length - 1 ? currentIndex + 1 : 0;
+            currentIndex < 0
+              ? 0
+              : currentIndex < focusableElements.length - 1
+                ? currentIndex + 1
+                : 0;
           break;
         case "ArrowUp":
           nextIndex =
-            currentIndex > 0 ? currentIndex - 1 : focusableElements.length - 1;
+            currentIndex < 0
+              ? focusableElements.length - 1
+              : currentIndex > 0
+                ? currentIndex - 1
+                : focusableElements.length - 1;
           break;
         case "PageDown":
-          nextIndex = Math.min(currentIndex + 10, focusableElements.length - 1);
+          nextIndex = Math.min(
+            Math.max(currentIndex, 0) + 10,
+            focusableElements.length - 1,
+          );
           break;
         case "PageUp":
-          nextIndex = Math.max(currentIndex - 10, 0);
+          nextIndex = Math.max(Math.max(currentIndex, 0) - 10, 0);
           break;
         case "Home":
           nextIndex = 0;
@@ -564,6 +600,8 @@ const CascaderFragment = ({
 
     const styles: React.CSSProperties[] = [];
     let left = rootRect.right + gap;
+    /** Assigned `top` for flyout at depthIdx - 1; deeper levels align using row offset inside parent (not raw viewport row top, which is wrong before the parent flyout is `position: fixed`). */
+    let prevFlyoutTop = 0;
 
     for (let depthIdx = 0; depthIdx < depthCount; depthIdx++) {
       const panelEl = flyoutPanelRefs.current[depthIdx];
@@ -592,14 +630,18 @@ const CascaderFragment = ({
         const row = rows[ridx ?? 0] as HTMLElement | undefined;
         top = row?.getBoundingClientRect().top ?? rootRect.top;
       } else {
-        const prev = flyoutPanelRefs.current[depthIdx - 1];
+        const prevPanel = flyoutPanelRefs.current[depthIdx - 1];
         const rows =
-          prev?.querySelectorAll(":scope > .dash-cascader-row") ?? [];
+          prevPanel?.querySelectorAll(":scope > .dash-cascader-row") ?? [];
         const row = rows[ridx ?? 0] as HTMLElement | undefined;
-        top =
-          row?.getBoundingClientRect().top ??
-          prev?.getBoundingClientRect().top ??
-          rootRect.top;
+        if (row && prevPanel) {
+          const delta =
+            row.getBoundingClientRect().top -
+            prevPanel.getBoundingClientRect().top;
+          top = prevFlyoutTop + delta;
+        } else {
+          top = prevFlyoutTop;
+        }
       }
 
       if (fh > 0 && top + fh + pad > vh) {
@@ -618,6 +660,7 @@ const CascaderFragment = ({
         zIndex: 100_000 + depthIdx,
       });
 
+      prevFlyoutTop = top;
       left = useLeft + panelWidth + gap;
     }
 
@@ -733,7 +776,7 @@ const CascaderFragment = ({
     };
   }, [
     isOpen,
-    columns,
+    columns.length,
     searchValue,
     updateFlyoutDockPositions,
     handleScrollDockOrClose,
@@ -1083,24 +1126,23 @@ const CascaderFragment = ({
         : flyoutLevels.map((colOptions, depthIdx) => {
             const colIdx = depthIdx + 1;
             const panelKey = `${depthIdx}-${colOptions.map((o) => String(o.value)).join("|")}`;
-            return (
-              <Fragment key={panelKey}>
-                {createPortal(
-                  <div
-                    ref={(el) => {
-                      flyoutPanelRefs.current[depthIdx] = el;
-                    }}
-                    className="dash-cascader-flyout-panel"
-                    data-dash-cascader-flyout-depth={depthIdx}
-                    style={flyoutDockStyles[depthIdx] ?? {}}
-                  >
-                    {colOptions.map((opt, rowIdx) =>
-                      renderOptionRow(colIdx, opt, rowIdx),
-                    )}
-                  </div>,
-                  document.body,
+            return createPortal(
+              // biome-ignore lint/a11y/noStaticElementInteractions: Arrow keys bubble from rows; same handler as popover content.
+              <div
+                ref={(el) => {
+                  flyoutPanelRefs.current[depthIdx] = el;
+                }}
+                className="dash-cascader-flyout-panel"
+                data-dash-cascader-flyout-depth={depthIdx}
+                style={flyoutDockStyles[depthIdx] ?? {}}
+                onKeyDown={handlePanelKeyDown}
+              >
+                {colOptions.map((opt, rowIdx) =>
+                  renderOptionRow(colIdx, opt, rowIdx),
                 )}
-              </Fragment>
+              </div>,
+              document.body,
+              panelKey,
             );
           });
 

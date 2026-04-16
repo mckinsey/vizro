@@ -68,7 +68,10 @@
   overflow: hidden auto;
 }
 
-/* One column within the multi-column row (legacy / search) */
+/*
+ * Shared column chrome for the root column (combined with .dash-cascader-column-root)
+ * and for multi-column / search layouts that keep every level inside one panel.
+ */
 .dash-cascader-column {
   border-right: 1px solid var(--Dash-Fill-Disabled);
   box-sizing: border-box;
