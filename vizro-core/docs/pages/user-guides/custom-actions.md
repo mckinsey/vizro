@@ -50,6 +50,10 @@ You can also execute [multiple actions with a single trigger](#multiple-actions)
 
     You should never assume that the values of inputs in your action function are restricted to those that show on the user's screen. A malicious user can execute your action functions with arbitrary inputs. In the tutorial, we discuss in more detail [how to write secure actions](../tutorials/custom-actions-tutorial.md#security).
 
+!!! tip "Outcome-based notifications"
+
+    **Conditional notifications** are messages that appear automatically based on the outcome of an action and can indicate whether an action was completed successfully or failed. See [How to use conditional notifications](conditional-notifications-actions/#conditional-notifications-for-custom-actions) for details.
+
 ## Trigger an action with a button
 
 Here is an example action that gives the current time when a [button](./button.md) is clicked.
