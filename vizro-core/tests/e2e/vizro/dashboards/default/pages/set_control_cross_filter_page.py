@@ -21,7 +21,7 @@ cross_filter_graph_page = vm.Page(
                 color="species",
                 custom_data=["species"],
             ),
-            actions=[set_control(control="filter_interactions", value="species")],
+            actions=set_control(control="filter_interactions", value="species"),
         ),
         vm.Graph(
             id=cnst.BOX_SET_CONTROL_CROSS_FILTER_ID,
@@ -55,7 +55,7 @@ cross_filter_ag_grid_page = vm.Page(
                         id="set_control_ag_grid_table_country",
                         data_frame=gapminder[gapminder["year"] == 2007],
                     ),
-                    actions=[set_control(control="filter_continent", value="continent")],
+                    actions=set_control(control="filter_continent", value="continent"),
                 ),
             ],
             variant="filled",

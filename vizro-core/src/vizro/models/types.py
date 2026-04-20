@@ -15,6 +15,7 @@ from typing import Annotated, Any, Literal, Protocol, TypeAlias, cast, runtime_c
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import (
+    AfterValidator,
     BeforeValidator,
     Discriminator,
     Field,
@@ -98,6 +99,49 @@ def _coerce_to_list(value: Any) -> Any:
     if isinstance(value, (list, dict)):
         return value
     return [value]
+
+
+def _normalize_action_notifications(value: Any) -> Any:
+    """Normalize action notifications dict.
+
+    Input value: dict[str, str | show_notification | update_notification | None]
+    Return value: dict[str, show_notification | update_notification | None] with the following transformations:
+
+    - If "error" missing, default to "Action failed." (show vs update depends on presence of a "progress" notification).
+    - Convert existing string dict values to show_notification or update_notification:
+        * "progress" string key -> show_notification(variant="progress")
+        * other string keys -> update_notification(...) if progress exists, else show_notification(...)
+    - Mark all non-None notifications as conditional.
+    """
+    from vizro.actions import show_notification, update_notification
+
+    # Default "error" to string first. It will be converted to notification action below.
+    value.setdefault("error", "Action failed.")
+
+    # If present, ensure that the "progress" is a notification action and not a string to extract its ID.
+    if isinstance(progress := value.get("progress"), str):
+        progress = value["progress"] = show_notification(text=progress, variant="progress")
+
+    # Convert all string notifications to actions and set _is_conditional=True.
+    for notif_key, notif_value in value.items():
+        if isinstance(notif_value, str):
+            defaults = {
+                "text": notif_value,
+                "variant": notif_key if notif_key in {"progress", "success", "error"} else "info",
+            }
+
+            notification_action: show_notification | update_notification
+            if notif_key != "progress" and progress is not None:
+                notification_action = update_notification(**defaults, notification=progress.id)  # type: ignore[arg-type]
+            else:
+                notification_action = show_notification(**defaults)  # type: ignore[arg-type]
+
+            value[notif_key] = notification_action
+
+        if value[notif_key] is not None:
+            value[notif_key]._is_conditional = True
+
+    return value
 
 
 # Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
@@ -727,6 +771,19 @@ OutputsType = Annotated[list[str] | dict[str, str], BeforeValidator(_coerce_to_l
 """List or dictionary of outputs modified by the action function. Accepts either a single string,
 a list of strings, or a dictionary mapping strings to strings. Each output can be specified as
 `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`."""
+
+
+ActionNotificationType = Annotated[
+    "dict[str, str | show_notification | update_notification | None]",
+    AfterValidator(_normalize_action_notifications),
+    Field(
+        default_factory=dict,
+        validate_default=True,
+        description="Notifications shown before or after the action "
+        "completes. Which notification will be shown after the action finished depends on the action's output.",
+    ),
+]
+
 
 # Extra type groups used only for static type checking, not at runtime.
 FigureWithFilterInteractionType: TypeAlias = "Graph | Table | AgGrid"
