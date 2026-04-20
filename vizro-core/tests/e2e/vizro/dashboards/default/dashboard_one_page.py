@@ -12,4 +12,4 @@ dashboard = vm.Dashboard(
 app = Vizro(assets_folder="../assets_themed_logo").build(dashboard)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
