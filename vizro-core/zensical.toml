@@ -1,0 +1,249 @@
+[project]
+site_name = "Vizro"
+site_url = "https://vizro.readthedocs.io/en/stable/"
+site_description = "Core Vizro documentation"
+site_dir = "site"
+docs_dir = "docs"
+use_directory_urls = true
+
+nav = [
+  {"Vizro" = "index.md"},
+  {"Tutorials" = [
+    {"Quickstart tutorial" = "pages/tutorials/quickstart-tutorial.md"},
+    {"Explore Vizro" = "pages/tutorials/explore-components.md"},
+    {"Write your own actions" = "pages/tutorials/custom-actions-tutorial.md"}
+  ]},
+  {"How-to guides" = [
+    {"Fundamentals" = [
+      {"Install Vizro" = "pages/user-guides/install.md"},
+      {"Dashboard" = "pages/user-guides/dashboard.md"},
+      {"Page" = "pages/user-guides/pages.md"},
+      {"Run or deploy dashboards" = "pages/user-guides/run-deploy.md"}
+    ]},
+    {"Components" = [
+      {"Overview" = "pages/user-guides/components.md"},
+      {"Graph" = "pages/user-guides/graph.md"},
+      {"Table" = "pages/user-guides/table.md"},
+      {"Figure" = "pages/user-guides/figure.md"},
+      {"Card" = "pages/user-guides/card.md"},
+      {"Text" = "pages/user-guides/text.md"},
+      {"Button" = "pages/user-guides/button.md"},
+      {"Container" = "pages/user-guides/container.md"},
+      {"Tab" = "pages/user-guides/tabs.md"}
+    ]},
+    {"Controls" = [
+      {"Overview" = "pages/user-guides/controls.md"},
+      {"Filter" = "pages/user-guides/filters.md"},
+      {"Parameter" = "pages/user-guides/parameters.md"},
+      {"Selector" = "pages/user-guides/selectors.md"}
+    ]},
+    {"Navigation" = "pages/user-guides/navigation.md"},
+    {"Actions" = [
+      {"Overview" = "pages/user-guides/actions.md"},
+      {"Handle data" = "pages/user-guides/data-actions.md"},
+      {"Graph and table interactions" = "pages/user-guides/graph-table-actions.md"},
+      {"Notifications" = "pages/user-guides/notification-actions.md"},
+      {"Conditional notifications" = "pages/user-guides/conditional-notifications-actions.md"}
+    ]},
+    {"Visual formatting" = [
+      {"Overview" = "pages/user-guides/visual-formatting.md"},
+      {"Layout" = "pages/user-guides/layouts.md"},
+      {"Themes and colors" = "pages/user-guides/themes.md"},
+      {"Assets" = "pages/user-guides/assets.md"},
+      {"Custom CSS" = "pages/user-guides/custom-css.md"}
+    ]},
+    {"Data" = [
+      {"Overview" = "pages/user-guides/data.md"},
+      {"Kedro Data Catalog" = "pages/user-guides/kedro-data-catalog.md"}
+    ]},
+    {"Extensions" = [
+      {"Overview" = "pages/user-guides/extensions.md"},
+      {"Custom actions" = "pages/user-guides/custom-actions.md"},
+      {"Custom charts" = "pages/user-guides/custom-charts.md"},
+      {"Custom tables" = "pages/user-guides/custom-tables.md"},
+      {"Custom figures" = "pages/user-guides/custom-figures.md"},
+      {"Custom components" = "pages/user-guides/custom-components.md"}
+    ]}
+  ]},
+  {"API reference" = [
+    {"Vizro" = "pages/API-reference/vizro.md"},
+    {"Models" = "pages/API-reference/models.md"},
+    {"Actions" = "pages/API-reference/actions.md"},
+    {"Themes" = "pages/API-reference/themes.md"},
+    {"Table functions" = "pages/API-reference/table-callables.md"},
+    {"Figure functions" = "pages/API-reference/figure-callables.md"},
+    {"Kedro integration" = "pages/API-reference/kedro-integration.md"},
+    {"Deprecations" = "pages/API-reference/deprecations.md"}
+  ]},
+  {"Find out more" = [
+    {"Technical" = [
+      {"Vizro schema" = "pages/explanation/schema.md"},
+      {"Actions" = "pages/explanation/actions-explanation.md"}
+    ]},
+    {"About Vizro" = [
+      {"FAQs" = "pages/explanation/faq.md"},
+      {"User examples" = "pages/explanation/your-examples.md"},
+      {"Cheatsheet" = "pages/cheatsheet/cheatsheet.html"},
+      {"Contribute to Vizro" = "pages/explanation/contributing.md"},
+      {"Documentation style" = "pages/explanation/documentation-style-guide.md"},
+      {"Authors" = "pages/explanation/authors.md"}
+    ]}
+  ]},
+  {"Vizro-MCP" = [
+    {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"}
+  ]},
+  {"Vizro-AI" = [
+    {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"}
+  ]}
+]
+
+repo_url = "https://github.com/mckinsey/vizro"
+repo_name = "mckinsey/vizro"
+
+extra_css = ["stylesheets/extra.css"]
+
+# -------------------------
+# theme
+# -------------------------
+[project.theme]
+language = "en"
+custom_dir = "docs/overrides"
+variant = "classic"
+favicon = "images/favicon/favicon.png"
+features = [
+  "navigation.path",
+  "navigation.expand",
+  "navigation.instant",
+  "navigation.indexes",
+  "navigation.tabs",
+  "navigation.tabs.sticky",
+  "navigation.tracking",
+  "search.suggest",
+  "search.highlight",
+  "content.tabs.link",
+  "content.code.annotation",
+  "content.code.copy",
+  "content.code.annotate"
+]
+
+[[project.theme.palette]]
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+[project.theme.font]
+text = "Google sans"
+code = "Source Code Pro"
+
+[project.theme.icon]
+repo = "fontawesome/brands/github"
+
+# -------------------------
+# markdown_extensions
+# -------------------------
+[project.markdown_extensions.pymdownx.highlight]
+anchor_linenums = true
+
+[project.markdown_extensions.pymdownx.inlinehilite]
+
+[project.markdown_extensions.pymdownx.snippets]
+
+[project.markdown_extensions.admonition]
+
+[project.markdown_extensions.pymdownx.arithmatex]
+generic = true
+
+[project.markdown_extensions.footnotes]
+
+[project.markdown_extensions.pymdownx.keys]
+
+[project.markdown_extensions.pymdownx.details]
+
+[project.markdown_extensions.pymdownx.superfences]
+
+[[project.markdown_extensions.pymdownx.superfences.custom_fences]]
+name = "mermaid"
+class = "mermaid"
+format = "pymdownx.superfences.fence_code_format"
+
+[[project.markdown_extensions.pymdownx.superfences.custom_fences]]
+name = "python"
+class = "highlight"
+validator = "mkdocs_pycafe.validator"
+format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.52"}}
+
+[project.markdown_extensions.pymdownx.tabbed]
+alternate_style = true
+
+[project.markdown_extensions.pymdownx.mark]
+
+[project.markdown_extensions.md_in_html]
+
+[project.markdown_extensions.attr_list]
+
+[project.markdown_extensions.pymdownx.emoji]
+emoji_index = "zensical.extensions.emoji.twemoji"
+emoji_generator = "zensical.extensions.emoji.to_svg"
+
+# -------------------------
+# plugins
+# -------------------------
+[project.plugins.search]
+
+[project.plugins.autorefs]
+
+# -------------------------
+# mkdocstrings (supported since Zensical 0.0.11, autorefs since 0.0.22)
+# -------------------------
+[project.plugins.mkdocstrings]
+custom_templates = "docs/templates"
+
+[project.plugins.mkdocstrings.handlers.python]
+paths = ["src"]
+inventories = [
+  "https://docs.python.org/3/objects.inv",
+  "https://docs.pydantic.dev/latest/objects.inv"
+]
+
+[project.plugins.mkdocstrings.handlers.python.options]
+show_bases = false
+show_source = false
+docstring_style = "google"
+merge_init_into_class = true
+docstring_section_style = "spacy"
+separate_signature = true
+unwrap_annotated = true
+show_symbol_type_heading = true
+show_symbol_type_toc = false
+signature_crossrefs = true
+show_signature_annotations = true
+filters = ["!^_"]
+show_root_heading = true
+extensions = [
+  {"docs/griffe_extensions.py:DynamicallyInspect" = {paths = ["vizro.figures.kpi_card", "vizro.figures.kpi_card_reference"]}},
+  {griffe_warnings_deprecated = {kind = "danger", title = "Deprecated"}},
+  {griffe_pydantic = {schema = true}},
+  "docs/griffe_extensions.py:PydanticDocsCleaner"
+]
+
+[project.plugins.mkdocstrings.handlers.python.options.docstring_options]
+ignore_init_summary = true
+warn_unknown_params = false
+returns_named_value = false
+
+[project.plugins.git-revision-date-localized]
+enable_creation_date = false
+
+# Zensical does not yet support strict/validation settings (as of 0.0.28).
+# See https://zensical.org/docs/setup/basics/#unsupported-settings
+# When supported, add:
+# validation:
+#   omitted_files: warn
+#   absolute_links: warn
+#   unrecognized_links: warn
+#   anchors: warn

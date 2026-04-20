@@ -152,9 +152,78 @@ The following example demonstrates these default selector types.
 
         [![FilterDefault]][filterdefault]
 
+## Hierarchical filters
+
+A hierarchical filter is a filter where the user chooses values from a _tree_ of grouped value. For example, cities around the world could be grouped into a hierarchy by continent and then by country. Rows of the data are filtered using the finest-grained (most "zoomed in") value (the _leaves_ of the tree). In the continent/country/city example, this would be city.
+
+To add a hierarchical filter to your page:
+
+1. add a [`Filter`][vizro.models.Filter] to `controls`, the same as for a basic filter
+1. set `column` to a list of at least two columns' names from the top level of the hierarchy down to the column you want to filter on
+
+!!! example "Hierarchical Filter"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="21"}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        gapminder = px.data.gapminder().query("year == 2007")
+
+        page = vm.Page(
+            title="Gapminder 2007",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        gapminder,
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        hover_name="country",
+                        color="continent",
+                    )
+                ),
+            ],
+            controls=[vm.Filter(column=["continent", "country"])],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: scatter
+                  data_frame: gapminder
+                  x: gdpPercap
+                  y: lifeExp
+                  size: pop
+                  color: continent
+                  hover_name: country
+                type: graph
+            controls:
+              - column:
+                  - continent
+                  - country
+                type: filter
+            title: Gapminder 2007
+        ```
+
+    === "Result"
+
+        ![](../../assets/user_guides/filters/hierarchical_filter.gif)
+
 ## Change selector
 
-If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] model a different selector model. Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker] and [`Switch`][vizro.models.Switch].
+Use a different `selector` argument for the [`Filter`][vizro.models.Filter] model for a different selector model. For a **single** `column` string, available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker] and [`Switch`][vizro.models.Switch]. For a **hierarchical** filter (`column` as a list), use [`Cascader`][vizro.models.Cascader] as in the [section above](#hierarchical-filters).
 
 You can explore and test all available selectors interactively on our [feature demo dashboard](https://vizro-demo-features.hf.space/selectors).
 
