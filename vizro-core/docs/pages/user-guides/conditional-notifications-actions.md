@@ -330,7 +330,7 @@ This allows the progress message to reflect the current inputs of the action, ma
                         function=run_pipeline(max_retries="slider_id"),
                         outputs="pipeline_output",
                         notifications={
-                            "progress": "Running pipeline... (max retries: {{max_retries}})...",  # (4)!
+                            "progress": "Running pipeline... (max retries: {{max_retries}})...",  # (2)!
                             "success": "Pipeline done. {{result}}",
                             "error": "Pipeline failed: {{error_msg}} - {{result}}",
                             "pipeline_partial_success": "Pipeline partially completed. {{result}}",
