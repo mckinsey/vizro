@@ -580,7 +580,7 @@ class capture:
             # The "normal" case where we just capture the function call.
             @functools.wraps(func)
             def wrapped(*args, **kwargs) -> CapturedCallable:
-                # Note this is basically the same as partial(func, *args, **kwargs)
+                # Note this is the same as partial(func, *args, **kwargs)
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
                 captured_callable._mode = self._mode
                 captured_callable._model_example = self._model_example
