@@ -295,6 +295,13 @@ TABLE_SET_CONTROL_BUTTON_CARD = "table_set_control_button_card"
 CHECKLIST_SET_CONTROL_BUTTON_CARD = "checklist_set_control_button_card"
 RADIOITEMS_SET_CONTROL_BUTTON_CARD = "radioitems_set_control_button_card"
 
+SET_CONTROL_AG_GRID_CELL_CLICKED_PAGE = "set-control-ag-grid-cell-clicked-page"
+SET_CONTROL_AG_GRID_COLUMN_CLICKED_ID = "ag_grid_column_clicked_set_control"
+SET_CONTROL_AG_GRID_CELL_CLICKED_ID = "ag_grid_cell_clicked_set_control"
+SET_CONTROL_AG_GRID_ROW_CLICKED_ID = "ag_grid_row_clicked_set_control"
+SET_CONTROL_AG_GRID_MIXED_CLICKED_ID = "ag_grid_mixed_clicked_set_control"
+SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID = "set_control_column_ag_grid_target"
+
 FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE = "filtered-graph-or-aggrid-not-trigger-set-control-page"
 FILTERED_SCATTER_TRIGGER_SET_CONTROL_ID = "filtered_scatter_trigger_set_control"
 CHECKLIST_FT_GRAPH_SET_CONTROL = "checklist_ft_graph_set_control"

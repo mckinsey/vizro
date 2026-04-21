@@ -36,6 +36,7 @@ from pages.layout_pages import (
 from pages.notifications_page import static_notifications_page
 from pages.parameters_multi_page import parameters_multi_page
 from pages.parameters_page import parameters_page
+from pages.set_control_ag_grid_cellclicked import set_control_ag_grid_cellclicked
 from pages.set_control_cross_filter_page import (
     cross_filter_ag_grid_page,
     cross_filter_card_graph_page,
@@ -118,6 +119,7 @@ dashboard = vm.Dashboard(
         button_card_trigger_set_control,
         filtered_graph_aggrid_trigger_set_control,
         self_filter_set_control_page,
+        set_control_ag_grid_cellclicked,
     ],
     navigation=vm.Navigation(
         pages={
@@ -183,6 +185,7 @@ dashboard = vm.Dashboard(
                 cnst.SET_CONTROL_BUTTON_CARD_PAGE,
                 cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE,
                 cnst.SELF_FILTER_SET_CONTROL_PAGE,
+                cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_PAGE,
             ],
         }
     ),
