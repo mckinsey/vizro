@@ -204,7 +204,7 @@ Notification messages can include **template variables** that are filled in with
 
 Two templates are supported:
   - `**{{result}}**`: Replaced with additional information returned by the action. This value is optional and can be included in the tuple alongside the notification key when the action completes or raises an exception. If no value is provided, it resolves to an empty string.
-  - `**{{error_msg}}:**`: Replaced with the error message from an exception. If no error message is available, it resolves to an empty string.
+  - `**{{error_msg}}**`: Replaced with the error message from an exception. If no error message is available, it resolves to an empty string.
 
 These templates make it possible to provide more informative and contextual feedback to users without hardcoding the message content.
 
