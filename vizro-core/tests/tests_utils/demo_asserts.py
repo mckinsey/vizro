@@ -42,6 +42,6 @@ def test_Y_build():
     # ignore the children:
     assert_component_equal(result, html.Div(id="y", className="container"), keys_to_strip={"children"})
     # And also compare the "interface" between X and Y. Use STRIP_ALL to not look at any properties of the html.Div.
-    # This is basically the same as doing:
+    # This is the same as doing:
     # assert all(isinstance(child, html.Div) for child in result.children) and len(result.children) == 4
     assert_component_equal(result.children, [html.Div()] * 4, keys_to_strip=STRIP_ALL)
