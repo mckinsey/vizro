@@ -634,13 +634,13 @@ However, it is not yet possible to cross-filter from a pivot table according to 
 
 ### Cross-filter with non-categorical selectors
 
-The examples above use categorical selectors such as `Dropdown` and `Checklist`, but you can target non-categorical selectors with `set_control` action. The example below uses (`vm.DatePicker(range=True)`:
+The examples above use categorical selectors such as `Dropdown` and `Checklist`, but you can target non-categorical selectors as well with `set_control` action. The example below uses (`vm.DatePicker(range=True)`:
 
-!!! example "Cross-filter from table with `DatePicker(range=True)`"
+!!! example "Cross-filter from table with non-categorical selector"
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="17"}
+        ```{.python pycafe-link hl_lines="18"}
         import pandas as pd
 
         import vizro.actions as va
@@ -652,7 +652,7 @@ The examples above use categorical selectors such as `Dropdown` and `Checklist`,
         stocks["date"] = pd.to_datetime(stocks["date"])
 
         page = vm.Page(
-            title="Cross-filter from table with DatePicker",
+            title="Cross-filter with DatePicker",
             components=[
                 vm.Graph(
                     id="stocks_graph",
@@ -680,9 +680,53 @@ The examples above use categorical selectors such as `Dropdown` and `Checklist`,
         Vizro().build(dashboard).run()
         ```
 
-        1. We give the `vm.Graph` an `id` so that it can be targeted explicitly by `vm.Filter(id="date_filter")`.
-        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
-        1. `range=True` is the default for `DatePicker`. Since the trigger value is a single date, it is normalized to `[date, date]`.
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - actions:
+                  - control: date_filter
+                    type: set_control
+                    value: date
+                figure:
+                  _target_: scatter
+                  data_frame: stocks
+                  x: GOOG
+                  y: AAPL
+                  custom_data: date
+                id: stocks_graph
+                title: GOOG vs AAPL Price Relationship
+                type: graph
+              - figure:
+                  _target_: line
+                  data_frame: stocks
+                  x: date
+                  y:
+                    - GOOG
+                    - AAPL
+                    - AMZN
+                    - MSFT
+                id: stocks_graph_2
+                title: Stock Prices (Selected Points)
+                type: graph
+            controls:
+              - column: date
+                id: date_filter
+                selector:
+                  range: true
+                  type: date_picker
+                targets:
+                  - stocks_graph_2
+                type: filter
+            title: Cross-filter with DatePicker
+        ```
+
+    === "Result"
+
+        ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_3.gif)
 
 ## Cross-parameter
 
