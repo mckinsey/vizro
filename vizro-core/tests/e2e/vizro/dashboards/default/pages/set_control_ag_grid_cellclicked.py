@@ -13,17 +13,12 @@ unique_species = iris["species"].unique()
 iris_species_cycle = iris.copy()
 iris_species_cycle["species"] = np.resize(unique_species, len(iris_species_cycle))
 
-# Data for target ag_grid
-# float values from 0.1 to 10, step 0.1, rounded to 1 decimal
-cell_values = [round(x, 1) for x in np.arange(0.1, 10.1, 0.1)]
-# str values from 1 to 100, step 1
-row_values = [str(x) for x in range(0, 101)]
-# Repeat lengths to match float_values length
-column_list = ["sepal_length", "sepal_width", "petal_length", "petal_width"]
-column_values = (column_list * (len(cell_values) // len(column_list) + 1))[: len(cell_values)]
-# Build DataFrame
-df = pd.DataFrame(
-    {"column_values": column_values, "cell_values": cell_values, "row_values": row_values[: len(cell_values)]}
+target_ag_grid_df = pd.DataFrame(
+    {
+        "column_values": ["sepal_length", "sepal_width", "petal_length", "petal_width"],
+        "cell_values": [4.9, 3, 5.7, 0.4],
+        "row_values": ["0", "1", "2", "3"],
+    }
 )
 
 set_control_ag_grid_cellclicked = vm.Page(
@@ -60,7 +55,7 @@ set_control_ag_grid_cellclicked = vm.Page(
         vm.AgGrid(
             title="AG Grid Cell Clicked Target",
             id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID,
-            figure=dash_ag_grid(df),
+            figure=dash_ag_grid(target_ag_grid_df),
         ),
     ],
     controls=[
@@ -68,7 +63,6 @@ set_control_ag_grid_cellclicked = vm.Page(
             id="set_control_column",
             column="column_values",
             targets=[cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID],
-            selector=vm.Dropdown(),
         ),
         vm.Filter(
             id="set_control_cell",
