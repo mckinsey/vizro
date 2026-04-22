@@ -25,7 +25,7 @@ All these interactions use the [`set_control` action][vizro.actions.set_control]
 
 A cross-filter is when the user clicks on one _source_ graph or table to filter one or more _target_ components. In Vizro, a cross-filter operates through an intermediate [filter](filters.md). To configure a cross-filter:
 
-1. Create a filter that targets the [graphs](graph.md), [tables](table.md) or [figures](figure.md) you would like to filter (both multi- and single-option are allowed).
+1. Create a filter that targets the [graphs](graph.md), [tables](table.md) or [figures](figure.md) you would like to filter.
 
     ```python
     import vizro.models as vm
@@ -54,7 +54,7 @@ A cross-filter is when the user clicks on one _source_ graph or table to filter 
 
 ### Cross-filter from table
 
-The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking on a row or a cell in the table. The `value` argument of the [`set_control` action][vizro.actions.set_control] tells the action what to send to the `control`:
+The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking on a row, selecting a row's checkbox or clicking a cell in the table. The `value` argument of the [`set_control` action][vizro.actions.set_control] tells the action what to send to the `control`:
 
 - `"cell"`, `"column"`, `"row"` use the clicked cell’s value, column id, or row id respectively. The row id is AG Grid's `rowId`, which defaults to the row's index unless you configure `getRowId` in `dashGridOptions`.
 - Any other string is treated as a **column name** and values are taken from **selected rows**.
@@ -140,7 +140,7 @@ In the example above, when you click on a row in the table, the graph is cross-f
 
 When all rows are deselected, the control is reset to its original value. This effectively clears any cross-filter or cross-parameter that was applied. You can also reset all controls on a page by clicking the ["Reset controls" button](controls.md#reset-controls).
 
-You can set `set_control.value` argument to `value="cell"` and in this case, the value of the clicked cell will be propagated to the `control`. Multi-select is not possible for this option.
+You can set `set_control.value` argument to `value="cell"` and in this case, the value of the clicked cell will be propagated to the `control`.
 
 
 !!! example "Cross-filter from table to graph - propagating cell value"
@@ -217,15 +217,15 @@ You can set `set_control.value` argument to `value="cell"` and in this case, the
     **Multi-select** depends on how you set `value` in `set_control`:
 
     - If `value` is a **column name** (values are taken from **selected rows**), **multi-row selection** is turned on by default, including checkboxes.
-    - If `value` is **`"cell"`**, **`"column"`**, or **`"row"`** (values come from the **clicked cell**), **multi-select is not available** as interaction is driven by cell clicks.
+    - If `value` is **`"cell"`**, **`"column"`**, or **`"row"`**, **multi-select is not available** as interaction is driven by single cell clicks.
 
     You can still customize selection with `dashGridOptions` on `dash_ag_grid(...)`, for example `figure=dash_ag_grid(..., dashGridOptions={"rowSelection": {"mode": "singleRow"}})` when you use a column name and want only one row selected. The Dash AG Grid offers many [options to configure row selection](https://dash.plotly.com/dash-ag-grid/single-row-selection). These can be [passed directly](table.md#basic-usage) into `dash_ag_grid` as keyword arguments or set for multiple tables by creating a [custom table function](custom-tables.md).
 
-    When multi-row selection is enabled, click checkboxes to select or deselect a row. Alternatively, `set_control` is also triggered by pressing ++space++ while focused on a row.
+    When multi-row (or single-row) selection is enabled, click checkboxes or click any cell to select or deselect its row. Alternatively, `set_control` is also triggered by pressing ++space++ while focused on a row.
 
     Ranges of rows can be selected by holding down ++shift++ while clicking on rows. This behavior also applies when checkbox selection is disabled, and in group selection. See the [Dash AG Grid multi-row selection documentation](https://dash.plotly.com/dash-ag-grid/multi-row-selection#selecting-multiple-rows-without-the-ctrl-key) for more examples.
 
-    If you use multi-row selection but your filter or parameter uses a single-value selector (for example `vm.RadioItemas()`), the control only updates when exactly one row is selected. Selecting two or more rows leaves the control unchanged.
+    If you use multi-row selection but your filter or parameter uses a single-value selector (for example `vm.RadioItems()`), the control only updates when exactly one row is selected. Selecting two or more rows leaves the control unchanged.
 
 ### Cross-filter from graph
 
@@ -430,7 +430,7 @@ When you click on a box in the graph, the table is cross-filtered to show data f
 
 In addition to clicking on a single data point, graphs also support **box select** and **lasso select** to select multiple data points at once. When multiple points are selected, the unique values across all selected points are sent to the control.
 
-Vizro automatically enables this when a graph has `actions` defined: the graph's `clickmode` is set to `"event+select"` and the box/lasso selection tools are kept in the graph's modebar. When a graph has no `actions`, these selection tools are removed from the modebar.
+Vizro automatically turns on click selection (`clickmode` is set to `"event+select"`) and keeps the box and lasso tools in the graph's modebar when a graph has `actions`.
 
 !!! example "Cross-filter from graph with multi-select"
 
@@ -508,7 +508,7 @@ Vizro automatically enables this when a graph has `actions` defined: the graph's
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_3.gif)
 
-When you use box select or lasso select to select multiple points in the scatter plot, the bar chart is cross-filtered to show data for all the selected days. If only one point is clicked, the filter is set to that single value. If you deselect all points (for example by clicking on an empty area of the plot), the control resets to its original value and the filter is cleared.
+When select multiple points in the scatter plot, the bar chart is cross-filtered to show data for all the selected days. If only one point is clicked, the filter is set to that single value. If you deselect all points the control resets to its original value. You can unselect all points by double clicking on an empty area of the plot or by clicking on the last single selected point.
 
 ??? details "Behind the scenes mechanism"
 
