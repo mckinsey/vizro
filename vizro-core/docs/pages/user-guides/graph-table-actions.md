@@ -140,9 +140,9 @@ In the example above, when you click on a row in the table, the graph is cross-f
 
     The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
-When all rows are deselected, the control is reset to its original value. This effectively clears any cross-filter or cross-parameter that was applied. You can also reset all controls on a page by clicking the ["Reset controls" button](controls.md#reset-controls).
+When all rows are deselected, the control resets to its original value. This effectively clears any cross-filter or cross-parameter that was applied. You can also reset all controls on a page by clicking the ["Reset controls" button](controls.md#reset-controls).
 
-You can set `set_control.value` argument to `value="cell"` and in this case, the value of the clicked cell will be propagated to the `control`.
+If you set the `set_control.value` argument to `value="cell"`, the value of the clicked cell propagates to the `control`.
 
 
 !!! example "Cross-filter from table to graph - propagating cell value"
@@ -518,7 +518,7 @@ When select multiple points in the scatter plot, the bar chart is cross-filtered
 
     In full, what happens is as follows:
 
-    1. A clientside callback combines the graph's `clickData` and `selectedData` into a single trigger. If box or lasso selection is used, the trigger contains all selected points; otherwise it contains the single clicked point.
+    1. A client-side callback combines the graph's `clickData` and `selectedData` into a single trigger. If box or lasso selection is used, the trigger contains all selected points; otherwise it contains the single clicked point.
     1. `Graph._get_value_from_trigger` iterates over all points in the trigger, extracts the unique values for the specified `value`, and returns a sorted list.
     1. The `set_control` action receives this list and sets the control accordingly: for a multi-value selector the full list is used, for a range selector the min and max are used, and for a single-value selector the control only updates when exactly one value is present.
     1. If no points are selected (deselection), `None` is returned, which resets the control to its original value.
@@ -876,23 +876,15 @@ vm.AgGrid(
               - actions:
                   - control: day_filter
                     type: set_control
-                    value: x
+                    value: column
                   - control: sex_filter
                     type: set_control
-                    value: y
+                    value: sex
                 figure:
-                  _target_: density_heatmap
-                  category_orders:
-                    day:
-                      - Thur
-                      - Fri
-                      - Sat
-                      - Sun
-                  data_frame: tips
-                  x: day
-                  y: sex
-                title: Click on a cell to use that cell's sex and day to filter table
-                type: graph
+                  _target_: dash_ag_grid
+                  data_frame: pivot_tips
+                title: set_control.value=column
+                type: ag_grid
               - figure:
                   _target_: dash_ag_grid
                   data_frame: tips
@@ -909,7 +901,7 @@ vm.AgGrid(
                 targets:
                   - tips_table
                 type: filter
-            title: Cross-filter over 2 dimensions
+            title: dash_ag_grid using cellClicked
         ```
 
     === "Result"
