@@ -56,7 +56,9 @@ A cross-filter is when the user clicks on one _source_ graph or table to filter 
 
 The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking on a row, selecting a row's checkbox or clicking a cell in the table. The `value` argument of the [`set_control` action][vizro.actions.set_control] tells the action what to send to the `control`:
 
-- `"cell"`, `"column"`, `"row"` use the clicked cell’s value, column id, or row id respectively. The row id is AG Grid's `rowId`, which defaults to the row's index unless you configure `getRowId` in `dashGridOptions`.
+- `"cell"` uses the clicked cell’s value.
+- `"column"` uses the clicked cell’s column id, which corresponds to the DataFrame column name.
+- `"row"` uses the clicked cell’s row id. The row id is AG Grid's `rowId`, which defaults to the row's index unless you configure `getRowId` in `dashGridOptions`.
 - Any other string is treated as a **column name** and values are taken from **selected rows**.
 
 !!! example "Cross-filter from table to graph"
@@ -160,7 +162,7 @@ You can set `set_control.value` argument to `value="cell"` and in this case, the
             title="Cross-filter from table to graph",
             components=[
                 vm.AgGrid(
-                    title="Click on a row to use that row's sex to filter graph",
+                    title=Click on a cell to use that cell's value to filter graph",
                     figure=dash_ag_grid(tips),
                     actions=va.set_control(control="sex_filter", value="cell"),
                 ),
@@ -190,7 +192,7 @@ You can set `set_control.value` argument to `value="cell"` and in this case, the
                 figure:
                   _target_: dash_ag_grid
                   data_frame: tips
-                title: Click on a row to use that row's sex to filter graph
+                title: Click on a row to use that row's value to filter graph
                 type: ag_grid
               - figure:
                   _target_: histogram
@@ -223,13 +225,15 @@ You can set `set_control.value` argument to `value="cell"` and in this case, the
 
     When multi-row (or single-row) selection is enabled, click checkboxes or click any cell to select or deselect its row. Alternatively, `set_control` is also triggered by pressing ++space++ while focused on a row.
 
-    Ranges of rows can be selected by holding down ++shift++ while clicking on rows. This behavior also applies when checkbox selection is disabled, and in group selection. See the [Dash AG Grid multi-row selection documentation](https://dash.plotly.com/dash-ag-grid/multi-row-selection#selecting-multiple-rows-without-the-ctrl-key) for more examples.
+    Ranges of rows can be selected by holding down ++shift++ while clicking on rows. This behavior also applies when checkbox selection is disabled, and in group selection. Ranges of rows can be selected by holding down ++shift++ while clicking on rows.
+
+    Use ++cmd++ click (or ++ctrl++ click on Windows/Linux) to select or deselect individual rows one by one. This behavior also applies when checkbox selection is disabled, and in group selection. See the [Dash AG Grid multi-row selection documentation](https://dash.plotly.com/dash-ag-grid/multi-row-selection#selecting-multiple-rows-without-the-ctrl-key) for more examples.
 
     If you use multi-row selection but your filter or parameter uses a single-value selector (for example `vm.RadioItems()`), the control only updates when exactly one row is selected. Selecting two or more rows leaves the control unchanged.
 
 ### Cross-filter from graph
 
-The trigger for a cross-filter from a [graph](graph.md) is clicking on data in the graph. A single click sends one value to the control. You can also use **box select** or **lasso select** to select multiple data points at once; see [Cross-filter from graph with selection](#cross-filter-from-graph-with-selection) for details and examples.
+The trigger for a cross-filter from a [graph](graph.md) is clicking on data in the graph. A single click sends one value to the control. You can also use box/lasso select, or ++cmd++ (++ctrl++ on Windows/Linux) + click to select multiple data points at once; see [Cross-filter from graph with selection](#cross-filter-from-graph-with-selection) for details and examples.
 
 The `value` argument of the [`set_control` action][vizro.actions.set_control] can be used in two ways to specify what sets `control`:
 
@@ -430,7 +434,7 @@ When you click on a box in the graph, the table is cross-filtered to show data f
 
 In addition to clicking on a single data point, graphs also support **box select** and **lasso select** to select multiple data points at once. When multiple points are selected, the unique values across all selected points are sent to the control.
 
-Vizro automatically turns on click selection (`clickmode` is set to `"event+select"`) and keeps the box and lasso tools in the graph's modebar when a graph has `actions`.
+Vizro automatically turns on click selection (`clickmode` is set to `"event+select"`) and keeps the box and lasso tools in the graph's modebar when a graph has `actions`. This means that when a graph's point is clicked, it is highlighted. It also enables selecting multiple points by holding ++shift++ and clicking, and unselecting a point by clicking on it again.
 
 !!! example "Cross-filter from graph with multi-select"
 
@@ -798,7 +802,7 @@ When you click on a colored cell in the heatmap, the table is cross-filtered to 
 
     In full, what happens is as follows:
 
-    1. Clicking on a cell (or using box/lasso select on multiple cells) triggers the first `va.set_control` action. This uses the value of `day` (in other words, "Thur", "Fri", "Sat" or "Sun") to set the selector underlying `vm.Filter(id="day_filter")`. When multiple points are selected, unique values across all points are sent.
+    1. Clicking on a cell triggers the first `va.set_control` action. This uses the value of `day` (in other words, "Thur", "Fri", "Sat" or "Sun") to set the selector underlying `vm.Filter(id="day_filter")`. When multiple points are selected, unique values across all points are sent.
     1. When the `day_filter` has been set, the second `va.set_control` action runs. This uses the value of `sex` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
     1. The change in value of `vm.Filter(id="day_filter")` triggers the filter on its `targets=["tips_table"]` so that a filtered table is shown.
     1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter on its `targets=["tips_table"]` so that a filtered table is shown.
@@ -819,7 +823,98 @@ vm.AgGrid(
 )
 ```
 
-However, it is not yet possible to automatically extract both the row header and column header from a pivoted AG Grid as a pair of filter values. You can still use `value="cell"`, `value="column"`, or `value="row"` to get individual properties of the clicked cell.
+!!! example "Cross-filter over 2 dimensions - table"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="22-25"}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+
+
+        tips = px.data.tips()
+        pivot_tips = (
+            tips.pivot_table(index="sex", columns="day", aggfunc="size", fill_value=0)
+            .reindex(columns=["Thur", "Fri", "Sat", "Sun"])
+            .reset_index()
+        )
+
+
+        page = vm.Page(
+            title="dash_ag_grid using cellClicked",
+            components=[
+                vm.AgGrid(
+                    title="set_control.value=column",
+                    figure=dash_ag_grid(pivot_tips),
+                    actions=[
+                        va.set_control(control="day_filter", value="column"),
+                        va.set_control(control="sex_filter", value="sex"),
+                    ],
+                ),
+                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),
+            ],
+            controls=[
+                vm.Filter(id="day_filter", column="day", targets=["tips_table"]),
+                vm.Filter(id="sex_filter", column="sex", targets=["tips_table"]),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - actions:
+                  - control: day_filter
+                    type: set_control
+                    value: x
+                  - control: sex_filter
+                    type: set_control
+                    value: y
+                figure:
+                  _target_: density_heatmap
+                  category_orders:
+                    day:
+                      - Thur
+                      - Fri
+                      - Sat
+                      - Sun
+                  data_frame: tips
+                  x: day
+                  y: sex
+                title: Click on a cell to use that cell's sex and day to filter table
+                type: graph
+              - figure:
+                  _target_: dash_ag_grid
+                  data_frame: tips
+                id: tips_table
+                type: ag_grid
+            controls:
+              - column: day
+                id: day_filter
+                targets:
+                  - tips_table
+                type: filter
+              - column: sex
+                id: sex_filter
+                targets:
+                  - tips_table
+                type: filter
+            title: Cross-filter over 2 dimensions
+        ```
+
+    === "Result"
+
+        ![](../../assets/user_guides/graph_table_actions/cross_filter_pivoted_table.gif)
 
 ## Cross-parameter
 
