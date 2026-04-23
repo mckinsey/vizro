@@ -173,7 +173,7 @@ _GAP_SCATTER = dict(
 )
 
 page_gapminder_2007 = vm.Page(
-    title="Gapminder 2007",
+    title="Gapminder 2007 - Random change",
     layout=vm.Flex(),
     components=[
         vm.Graph(
