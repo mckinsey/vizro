@@ -66,13 +66,17 @@ set_control_non_categorical_graph = vm.Page(
                         vm.Filter(
                             id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE,
                             column="date_column",
-                            selector=vm.DatePicker(range=False),
+                            selector=vm.DatePicker(
+                                id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE_ID, range=False
+                            ),
                         ),
-                        # # Temporal-Range
+                        # Temporal-Range
                         vm.Filter(
                             id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE,
                             column="date_column",
-                            selector=vm.DatePicker(range=True),
+                            selector=vm.DatePicker(
+                                id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE_ID, range=True
+                            ),
                         ),
                         # Boolean Single
                         vm.Filter(
@@ -135,13 +139,17 @@ set_control_non_categorical_ag_grid = vm.Page(
                         vm.Filter(
                             id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE,
                             column="date_column",
-                            selector=vm.DatePicker(range=False),
+                            selector=vm.DatePicker(
+                                id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE_ID, range=False
+                            ),
                         ),
-                        # # Temporal-Range
+                        # Temporal-Range
                         vm.Filter(
                             id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE,
                             column="date_column",
-                            selector=vm.DatePicker(range=True),
+                            selector=vm.DatePicker(
+                                id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE_ID, range=True
+                            ),
                         ),
                         # Boolean Single
                         vm.Filter(

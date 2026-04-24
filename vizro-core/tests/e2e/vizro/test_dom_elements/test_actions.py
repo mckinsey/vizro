@@ -4,8 +4,10 @@ import pytest
 from e2e.asserts import assert_files_equal
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
+    check_date_picker_value,
     check_exported_file_exists,
     check_graph_y_axis_value,
+    check_range_date_picker_value,
     check_range_slider_value,
     check_selected_categorical_component,
     check_selected_dropdown,
@@ -111,6 +113,56 @@ def test_set_control_cross_filter_graph(dash_br):
     )
 
 
+def test_set_control_cross_filter_graph_non_categorical(dash_br):
+    """Test cross filter between two graphs with multi select and non categorical controls."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_PAGE_TITLE,
+    )
+
+    # select versicolor point in scatter graph
+    dash_br.click_at_coord_fractions(
+        scatter_point_path(cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL, point_number=21), 0, 0
+    )
+
+    # select second versicolor point with SHIFT key
+    modifier_click(
+        dash_br, selector=scatter_point_path(cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL, point_number=22), key=Keys.SHIFT
+    )
+
+    # check that graph y axis value changed according to selected points in scatter graph
+    check_graph_y_axis_value(
+        dash_br, graph_id=cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL_TARGET, tick_index="4", value="5.5"
+    )
+
+    # check that appropriate values were selected in non categorical controls
+    check_slider_value(
+        dash_br,
+        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SLIDER,
+        expected_max_value="5.9",
+    )
+    check_range_slider_value(
+        dash_br,
+        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_RANGE_SLIDER,
+        expected_min_value="5.9",
+        expected_max_value="6.1",
+    )
+    check_date_picker_value(
+        dash_br, elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE_ID, expected_date_value="Mar 11, 2024"
+    )
+    check_range_date_picker_value(
+        dash_br,
+        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE_ID,
+        expected_min_date_value="Mar 11, 2024",
+        expected_max_date_value="Mar 14, 2024",
+    )
+    status = dash_br.find_element(
+        categorical_components_value_path(elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SWITCH, value=1)
+    )
+    assert_that(status.is_selected(), equal_to(False))
+
+
 def test_set_control_cross_filter_ag_grid(dash_br):
     """Test cross filter between ag_grid and line graph."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
@@ -131,6 +183,52 @@ def test_set_control_cross_filter_ag_grid(dash_br):
     check_graph_y_axis_value(
         dash_br, graph_id=cnst.SET_CONTROL_LINE_AG_GRID_CROSS_FILTER_ID, tick_index="6", value="50k"
     )
+
+
+def test_set_control_cross_filter_aggrid_non_categorical(dash_br):
+    """Test cross filter between AgGrid and graph with checkbox multi select and non categorical controls."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_PAGE_TITLE,
+    )
+
+    # select 3rd and 2nd row in ag_grid with checkbox click
+    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL, row_index=2), 1)
+    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL, row_index=1), 1)
+
+    # check that appropriate values were selected in target graph
+    check_graph_y_axis_value(
+        dash_br, graph_id=cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL_TARGET_AG_GRID, tick_index="4", value="2"
+    )
+
+    # check that appropriate values were selected in non categorical controls
+    check_slider_value(
+        dash_br,
+        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SLIDER,
+        expected_max_value="4.7",
+    )
+    check_range_slider_value(
+        dash_br,
+        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_RANGE_SLIDER,
+        expected_min_value="4.7",
+        expected_max_value="4.9",
+    )
+    check_date_picker_value(
+        dash_br,
+        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE_ID,
+        expected_date_value="Jan 3, 2024",
+    )
+    check_range_date_picker_value(
+        dash_br,
+        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE_ID,
+        expected_min_date_value="Jan 2, 2024",
+        expected_max_date_value="Jan 3, 2024",
+    )
+    status = dash_br.find_element(
+        categorical_components_value_path(elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SWITCH, value=1)
+    )
+    assert_that(status.is_selected(), equal_to(True))
 
 
 def test_set_control_filter_kpi_card(dash_br):
@@ -537,54 +635,6 @@ def test_set_control_clickmode_event_select(dash_br):
     )
 
 
-def test_set_control_clickmode_event_select_non_categorical(dash_br):
-    """Test cross filter between two graphs with multi select and non categorical controls."""
-    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
-    page_select(
-        dash_br,
-        page_name=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_PAGE_TITLE,
-    )
-
-    # select versicolor point in scatter graph
-    dash_br.click_at_coord_fractions(
-        scatter_point_path(cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL, point_number=21), 0, 0
-    )
-
-    # select second versicolor point with SHIFT key
-    modifier_click(
-        dash_br, selector=scatter_point_path(cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL, point_number=22), key=Keys.SHIFT
-    )
-
-    # check that graph y axis value changed according to selected points in scatter graph
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL_TARGET, tick_index="4", value="5.5"
-    )
-
-    # check that appropriate values were selected in non categorical controls
-    check_slider_value(
-        dash_br,
-        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SLIDER,
-        expected_max_value="5.9",
-    )
-    check_range_slider_value(
-        dash_br,
-        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_RANGE_SLIDER,
-        expected_min_value="5.9",
-        expected_max_value="6.1",
-    )
-    dash_br.wait_for_text_to_equal(
-        f'div[id="{cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE}"] button', "Mar 11, 2024"
-    )
-    dash_br.wait_for_text_to_equal(
-        f'div[id="{cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE}"] button',
-        "Mar 11, 2024 – Mar 14, 2024",  # noqa: RUF001
-    )
-    status = dash_br.find_element(
-        categorical_components_value_path(elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SWITCH, value=1)
-    )
-    assert_that(status.is_selected(), equal_to(False))
-
-
 def test_set_control_clickmode_event(dash_br):
     """Test cross filter between two graphs without multi select."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
@@ -727,48 +777,6 @@ def test_set_control_clickmode_aggrid_checkbox_click(dash_br):
             {"value": 3, "selected": False, "value_name": "virginica"},
         ],
     )
-
-
-def test_set_control_clickmode_aggrid_checkbox_click_non_categorical(dash_br):
-    """Test cross filter between AgGrid and graph with checkbox multi select and non categorical controls."""
-    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
-    page_select(
-        dash_br,
-        page_name=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_PAGE_TITLE,
-    )
-
-    # select 3rd and 2nd row in ag_grid with checkbox click
-    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL, row_index=2), 1)
-    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL, row_index=1), 1)
-
-    # check that appropriate values were selected in target graph
-    check_graph_y_axis_value(
-        dash_br, graph_id=cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL_TARGET_AG_GRID, tick_index="4", value="2"
-    )
-
-    # check that appropriate values were selected in non categorical controls
-    check_slider_value(
-        dash_br,
-        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SLIDER,
-        expected_max_value="4.7",
-    )
-    check_range_slider_value(
-        dash_br,
-        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_RANGE_SLIDER,
-        expected_min_value="4.7",
-        expected_max_value="4.9",
-    )
-    dash_br.wait_for_text_to_equal(
-        f'div[id="{cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE}"] button', "Jan 3, 2024"
-    )
-    dash_br.wait_for_text_to_equal(
-        f'div[id="{cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE}"] button',
-        "Jan 2, 2024 – Jan 3, 2024",  # noqa: RUF001
-    )
-    status = dash_br.find_element(
-        categorical_components_value_path(elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SWITCH, value=1)
-    )
-    assert_that(status.is_selected(), equal_to(True))
 
 
 def test_set_control_clickmode_aggrid_command_and_shift_click(dash_br):

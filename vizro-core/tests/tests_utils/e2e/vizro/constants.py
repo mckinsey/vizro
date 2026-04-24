@@ -320,7 +320,9 @@ SCATTER_SET_CONTROL_NON_CATEGORICAL_TARGET_AG_GRID = "scatter-set-control-non-ca
 SET_CONTROL_NON_CATEGORICAL_AG_GRID_SLIDER = "set-control-non-categorical-ag-grid-slider"
 SET_CONTROL_NON_CATEGORICAL_AG_GRID_RANGE_SLIDER = "set-control-non-categorical-ag-grid-range-slider"
 SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE = "set-control-non-categorical-ag-grid-datepicker-single"
+SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE_ID = "set-control-non-categorical-ag-grid-datepicker-single-id"
 SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE = "set-control-non-categorical-ag-grid-datepicker-range"
+SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE_ID = "set-control-non-categorical-ag-grid-datepicker-range-id"
 SET_CONTROL_NON_CATEGORICAL_AG_GRID_SWITCH = "set-control-non-categorical-ag-grid-switch"
 
 SET_CONTROL_NON_CATEGORICAL_GRAPH_PAGE_TITLE = "set-control-non-categorical-graph-page-title"
@@ -329,7 +331,9 @@ SCATTER_SET_CONTROL_NON_CATEGORICAL_TARGET = "scatter-set-control-non-categorica
 SET_CONTROL_NON_CATEGORICAL_GRAPH_SLIDER = "set-control-non-categorical-graph-slider"
 SET_CONTROL_NON_CATEGORICAL_GRAPH_RANGE_SLIDER = "set-control-non-categorical-graph-range-slider"
 SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE = "set-control-non-categorical-graph-datepicker-single"
+SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE_ID = "set-control-non-categorical-graph-datepicker-single-id"
 SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE = "set-control-non-categorical-graph-datepicker-range"
+SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE_ID = "set-control-non-categorical-graph-datepicker-range-id"
 SET_CONTROL_NON_CATEGORICAL_GRAPH_SWITCH = "set-control-non-categorical-graph-switch"
 
 
