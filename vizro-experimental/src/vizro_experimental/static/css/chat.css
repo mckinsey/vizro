@@ -2,295 +2,299 @@
 
 /* ==================== CSS Variables ==================== */
 :root {
-    --chat-max-width: 788px;
-    --chat-border-radius: 0px;
-    --chat-spacing-md: 12px;
-    --chat-spacing-lg: 24px;
-    --chat-font-size: 16px;
-    --chat-line-height: 24px;
-    --chat-letter-spacing: -0.002em;
+  --chat-max-width: 788px;
+  --chat-border-radius: 0px;
+  --chat-spacing-md: 12px;
+  --chat-spacing-lg: 24px;
+  --chat-font-size: 16px;
+  --chat-line-height: 24px;
+  --chat-letter-spacing: -0.002em;
 }
 
 /* ==================== Message Bubbles ==================== */
 
 /* Base message bubble styles */
 .chat-message-bubble {
-    max-width: 100%;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    margin-bottom: var(--chat-spacing-md);
-    border-radius: var(--chat-border-radius);
-    line-height: var(--chat-line-height);
-    letter-spacing: var(--chat-letter-spacing);
-    white-space: pre-wrap;
-    word-break: break-word;
-    display: inline-block;
-    color: var(--text-primary);
+  border-radius: var(--chat-border-radius);
+  color: var(--text-primary);
+  display: inline-block;
+  letter-spacing: var(--chat-letter-spacing);
+  line-height: var(--chat-line-height);
+  margin-bottom: var(--chat-spacing-md);
+  max-width: 100%;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 /* User message styling */
 .chat-user-message {
-    background-color: var(--surfaces-bg-card);
-    margin-left: 0;
-    margin-right: auto;
-    padding-left: 15px;
-    padding-right: 15px;
+  background-color: var(--surfaces-bg-card);
+  margin-left: 0;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 /* Assistant message styling */
 .chat-assistant-message {
-    background-color: var(--bs-body-bg);
-    margin-left: 0;
-    margin-right: auto;
+  background-color: var(--bs-body-bg);
+  margin-left: 0;
+  margin-right: auto;
 }
 
 /* Message wrapper for flex alignment */
 .chat-message-wrapper {
-    display: flex;
-    justify-content: flex-start;
-    width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 /* User message text styling */
 .chat-user-text {
-    font-size: var(--chat-font-size);
+  font-size: var(--chat-font-size);
 }
 
 /* ==================== Container Styles ==================== */
 
 /* Chat component root container */
 .chat-root {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
 }
 
 /* Messages history section */
 .chat-history-section {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    flex: 1;
-    overflow: hidden;
-    padding-top: var(--chat-spacing-md);
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  overflow: hidden;
+  padding-top: var(--chat-spacing-md);
+  width: 100%;
 }
 
 /* Messages container with scrolling */
 .chat-history-container {
-    min-width: var(--chat-max-width);
-    max-width: var(--chat-max-width);
-    width: 100%;
-    padding-bottom: var(--chat-spacing-lg);
-    padding-left: 5px;
-    padding-right: 5px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0 auto;
+  max-width: var(--chat-max-width);
+  min-width: var(--chat-max-width);
+  overflow: hidden auto;
+  padding-bottom: var(--chat-spacing-lg);
+  padding-left: 5px;
+  padding-right: 5px;
+  width: 100%;
 }
 
 /* Input section at bottom */
 .chat-input-section {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-top: auto;
-    padding-bottom: var(--chat-spacing-lg);
-    padding-left: 10px;
-    padding-right: 10px;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  padding-bottom: var(--chat-spacing-lg);
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 100%;
 }
 
 /* Input area inner container */
 .chat-input-inner {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    width: 100%;
-    max-width: var(--chat-max-width);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: var(--chat-max-width);
+  width: 100%;
 }
 
 /* ==================== Loading Indicator ==================== */
 
 .chat-loading-message {
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    min-height: 48px;
+  align-items: center;
+  display: flex;
+  min-height: 48px;
+  padding: 16px;
 }
 
 /* ==================== File Upload ==================== */
+
 /* Chip design per Application Blueprint Figma (File Upload frame):
    thumbnail + two-line label + floating corner remove. */
 
 .chat-file-preview {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px;
-    max-width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 8px;
+  max-width: 100%;
 }
 
 .chat-data-info {
-    margin-bottom: 8px;
-    min-height: 0px;
+  margin-bottom: 8px;
+  min-height: 0;
 }
 
 .chat-file-chip {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px 8px 8px;
-    border: 1px solid var(--border-subtler);
-    border-radius: 8px;
-    background-color: var(--surfaces-bg-card);
-    max-width: 260px;
-    min-width: 0;
+  align-items: center;
+  background-color: var(--surfaces-bg-card);
+  border: 1px solid var(--border-subtler);
+  border-radius: 8px;
+  display: flex;
+  gap: 10px;
+  max-width: 260px;
+  min-width: 0;
+  padding: 8px 12px 8px 8px;
+  position: relative;
 }
 
 .chat-file-chip-thumb {
-    flex-shrink: 0;
-    width: 36px;
-    height: 36px;
-    border-radius: 4px;
-    object-fit: cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+  align-items: center;
+  border-radius: 4px;
+  display: flex;
+  flex-shrink: 0;
+  height: 36px;
+  justify-content: center;
+  object-fit: cover;
+  overflow: hidden;
+  width: 36px;
 }
 
 .chat-file-chip-thumb-icon {
-    background-color: var(--bs-body-bg);
-    color: var(--text-secondary);
+  background-color: var(--bs-body-bg);
+  color: var(--text-secondary);
 }
 
 .chat-file-chip-text {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-right: 8px;
 }
 
 .chat-file-chip-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-primary);
-    line-height: 18px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chat-file-chip-subtitle {
-    font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 16px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
 }
 
 /* Floating corner remove button */
 .chat-root .mantine-ActionIcon-root.chat-file-chip-remove,
 .chat-popup-panel .mantine-ActionIcon-root.chat-file-chip-remove {
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    width: 18px !important;
-    height: 18px !important;
-    min-width: 18px;
-    min-height: 18px;
-    border-radius: 50% !important;
-    background-color: var(--text-primary) !important;
-    color: var(--bs-body-bg) !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  background-color: var(--text-primary) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  color: var(--bs-body-bg) !important;
+  height: 18px !important;
+  min-height: 18px;
+  min-width: 18px;
+  position: absolute;
+  right: -6px;
+  top: -6px;
+  width: 18px !important;
 }
 
 .chat-root .mantine-ActionIcon-root.chat-file-chip-remove:hover,
 .chat-popup-panel .mantine-ActionIcon-root.chat-file-chip-remove:hover {
-    background-color: var(--text-primary) !important;
-    color: var(--bs-body-bg) !important;
-    opacity: 0.85;
+  background-color: var(--text-primary) !important;
+  color: var(--bs-body-bg) !important;
+  opacity: 0.85;
 }
 
 .chat-file-chip-uploading .chat-file-chip-title,
 .chat-file-chip-uploading .chat-file-chip-subtitle {
-    color: var(--text-secondary);
-    font-style: italic;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
 /* ==================== Textarea Override ==================== */
+
 /* Vizro >= 0.1.53 adds box-shadow to .mantine-Input-input via vizro_overwrites.css.
    Override to preserve the clean bottom-border-only style for chat inputs. */
 
 .chat-input-inner .mantine-Textarea-input {
-    box-shadow: none !important;
-    border-bottom-color: var(--mantine-color-default-border, #ced4da) !important;
+  border-bottom-color: var(--mantine-color-default-border, #ced4da) !important;
+  box-shadow: none !important;
 }
 
 .chat-input-inner .mantine-Textarea-input:focus,
 .chat-input-inner .mantine-Textarea-input:focus-within {
-    box-shadow: none !important;
-    border-bottom-color: var(--border-enabled, var(--mantine-color-gray-6, #868e96)) !important;
+  border-bottom-color: var(
+    --border-enabled,
+    var(--mantine-color-gray-6, #868e96)
+  ) !important;
+  box-shadow: none !important;
 }
 
 /* ==================== Input Controls ==================== */
 
 .chat-button-row {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .chat-left-buttons {
-    display: flex;
-    gap: 4px;
-    align-items: center;
+  align-items: center;
+  display: flex;
+  gap: 4px;
 }
 
 /* ==================== Markdown Rendering ==================== */
 
 .assistant-markdown {
-    color: inherit;
-    font-size: var(--chat-font-size);
+  color: inherit;
+  font-size: var(--chat-font-size);
 }
 
 /* ==================== Icon Button Hover ==================== */
+
 /* Align with Vizro-core convention (see vizro-core/src/vizro/static/css/tooltip.css,
    container.css, layout.css, notifications.css): interactive icon buttons change
    color on hover with no background fill, rather than Mantine's default grey-tint. */
 
 .chat-root .mantine-ActionIcon-root,
 .chat-popup-panel .mantine-ActionIcon-root {
-    background: transparent !important;
-    transition: color 0.15s ease;
+  background: transparent !important;
+  transition: color 0.15s ease;
 }
 
 .chat-root .mantine-ActionIcon-root:hover,
 .chat-popup-panel .mantine-ActionIcon-root:hover {
-    background: transparent !important;
-    color: var(--bs-primary-text-emphasis) !important;
+  background: transparent !important;
+  color: var(--bs-primary-text-emphasis) !important;
 }
 
 /* ==================== Example Questions Menu ==================== */
 
 .mantine-Menu-item:hover,
 .mantine-Menu-item[data-hovered] {
-    background-color: var(--hover-bg-subtle) !important;
+  background-color: var(--hover-bg-subtle) !important;
 }
 
 .chat-example-question-item {
-    font-size: var(--chat-font-size);
-    padding: 12px 16px;
-    white-space: normal;
-    line-height: var(--chat-line-height);
-    color: var(--text-primary);
+  color: var(--text-primary);
+  font-size: var(--chat-font-size);
+  line-height: var(--chat-line-height);
+  padding: 12px 16px;
+  white-space: normal;
 }
 
 .chat-example-menu-dropdown {
-    min-width: 400px;
-    max-width: var(--chat-max-width);
-    background-color: var(--surfaces-bg-card);
-    border: 1px solid var(--border-subtler);
+  background-color: var(--surfaces-bg-card);
+  border: 1px solid var(--border-subtler);
+  max-width: var(--chat-max-width);
+  min-width: 400px;
 }

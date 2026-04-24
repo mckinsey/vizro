@@ -31,11 +31,11 @@ const CSS_LOADING_MESSAGE = "chat-loading-message";
  * @param {Array} storeData - Current conversation store data
  * @returns {Array} [updatedChildren, updatedStoreData]
  */
-window.dash_clientside.vizroChatComponent.processStreamingChunk = function (
+window.dash_clientside.vizroChatComponent.processStreamingChunk = (
   animatedText,
   existingChildren,
   storeData,
-) {
+) => {
   const CHUNK_DELIMITER = "|END|";
   const STREAM_DONE_SIGNAL = "[DONE]";
 
@@ -155,10 +155,10 @@ window.dash_clientside.vizroChatComponent.processStreamingChunk = function (
  * @param {Array} children - Hidden message children to process
  * @returns {Array} Rendered message components
  */
-window.dash_clientside.vizroChatComponent.renderMessages = function (
+window.dash_clientside.vizroChatComponent.renderMessages = (
   children,
   linkTarget,
-) {
+) => {
   const CODE_BLOCK_REGEX = /```(\w+)?\n([\s\S]*?)```/g;
 
   // Component factory helpers
@@ -190,11 +190,10 @@ window.dash_clientside.vizroChatComponent.renderMessages = function (
   function parseContent(content) {
     const parts = [];
     let lastIndex = 0;
-    let match;
-
     CODE_BLOCK_REGEX.lastIndex = 0; // Reset regex state
 
-    while ((match = CODE_BLOCK_REGEX.exec(content)) !== null) {
+    let match = CODE_BLOCK_REGEX.exec(content);
+    while (match !== null) {
       const [, language, code] = match;
 
       // Add preceding text as markdown
@@ -206,6 +205,8 @@ window.dash_clientside.vizroChatComponent.renderMessages = function (
       // Add code block
       parts.push(createCodeHighlight(code, language));
       lastIndex = CODE_BLOCK_REGEX.lastIndex;
+
+      match = CODE_BLOCK_REGEX.exec(content);
     }
 
     // Add trailing text
@@ -278,10 +279,10 @@ window.dash_clientside.vizroChatComponent.renderMessages = function (
  * Sets up Enter key handler for a chat input.
  * Submits on Enter, allows Shift+Enter for new lines.
  */
-window.dash_clientside.vizroChatComponent.setupEnterKeyHandler = function (
+window.dash_clientside.vizroChatComponent.setupEnterKeyHandler = (
   value,
   inputId,
-) {
+) => {
   const chatInput = document.getElementById(inputId);
   if (!chatInput || chatInput.dataset.listenerAdded) {
     return window.dash_clientside.no_update;
@@ -289,7 +290,7 @@ window.dash_clientside.vizroChatComponent.setupEnterKeyHandler = function (
 
   const componentId = inputId.substring(0, inputId.lastIndexOf("-chat-input"));
   chatInput.dataset.listenerAdded = "true";
-  chatInput.addEventListener("keydown", function (e) {
+  chatInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       const sendButton = document.getElementById(`${componentId}-send-button`);
@@ -319,7 +320,7 @@ window.dash_clientside.vizroChatComponent.renderMessagesInPopup = (
  * Toggles the popup panel open/closed.
  */
 window.dash_clientside.vizroChatComponent.togglePanel = (n, currentClass) => {
-  const isOpen = currentClass && currentClass.includes("chat-popup-panel-open");
+  const isOpen = currentClass?.includes("chat-popup-panel-open");
   return isOpen ? "chat-popup-panel" : "chat-popup-panel chat-popup-panel-open";
 };
 

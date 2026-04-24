@@ -3,120 +3,122 @@
 /* ==================== Popup Panel ==================== */
 
 .chat-popup-panel {
-    position: fixed;
-    bottom: 90px;
-    right: 20px;
-    width: 420px;
-    height: 600px;
-    max-height: calc(100vh - 120px);
-    background-color: var(--bs-body-bg);
-    border: 2px solid var(--border-subtler);
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    z-index: 299;
-    overflow: hidden;
-    flex-direction: column;
-    display: none;
+  background-color: var(--bs-body-bg);
+  border: 2px solid var(--border-subtler);
+  border-radius: 12px;
+  bottom: 90px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  display: none;
+  flex-direction: column;
+  height: 600px;
+  max-height: calc(100vh - 120px);
+  overflow: hidden;
+  position: fixed;
+  right: 20px;
+  width: 420px;
+  z-index: 299;
 }
 
 .chat-popup-panel-open {
-    display: flex !important;
+  display: flex !important;
 }
 
 /* ==================== Popup Header ==================== */
 
 .chat-popup-header {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border-subtler);
-    flex-shrink: 0;
-    background-color: var(--bs-secondary-bg);
+  background-color: var(--bs-secondary-bg);
+  border-bottom: 1px solid var(--border-subtler);
+  flex-shrink: 0;
+  padding: 14px 16px;
 }
 
 /* ==================== Overrides for popup context ==================== */
 
 /* The chat root inside the popup should take remaining height */
 .chat-popup-panel .chat-root {
-    flex: 1;
-    overflow: hidden;
-    min-height: 0;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* Override the history container for narrow popup context */
 .chat-popup-panel .chat-history-container {
-    min-width: unset;
-    max-width: unset;
-    margin: 0;
-    padding-left: 6px;
-    padding-right: 6px;
-    padding-bottom: 8px;
+  margin: 0;
+  max-width: unset;
+  min-width: unset;
+  padding-bottom: 8px;
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 /* Remove centering from history section */
 .chat-popup-panel .chat-history-section {
-    justify-content: flex-start;
-    padding-top: 8px;
-    padding-left: 10px;
-    padding-right: 10px;
+  justify-content: flex-start;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 8px;
 }
 
 /* Ensure history section children fill full width */
 .chat-popup-panel .chat-history-section > * {
-    width: 100%;
+  width: 100%;
 }
 
 /* Remove centering from input section */
 .chat-popup-panel .chat-input-section {
-    justify-content: flex-start;
-    padding-bottom: 10px;
-    padding-left: 8px;
-    padding-right: 6px;
+  justify-content: flex-start;
+  padding-bottom: 10px;
+  padding-left: 8px;
+  padding-right: 6px;
 }
 
 /* Remove max-width constraint from input inner */
 .chat-popup-panel .chat-input-inner {
-    max-width: unset;
+  max-width: unset;
 }
 
 /* Place user messages on the right */
 .chat-popup-panel .chat-message-wrapper:has(.chat-user-message) {
-    justify-content: flex-end;
+  justify-content: flex-end;
 }
 
 .chat-popup-panel .chat-user-message {
-    margin-right: 0;
-    margin-left: auto;
-    padding-left: 6px;
-    padding-right: 6px;
+  margin-left: auto;
+  margin-right: 0;
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 /* Align assistant message text with user bubble text */
 .chat-popup-panel .chat-assistant-message {
-    padding-left: 6px;
+  padding-left: 6px;
 }
 
 /* ==================== Toggle Button ==================== */
 
 .chat-popup-toggle {
-    width: 56px;
-    height: 56px;
-    background-color: var(--primary-900-inverted) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background-color: var(--primary-900-inverted) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  height: 56px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  width: 56px;
 }
 
 .chat-popup-toggle:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
 }
 
 /* ==================== Responsive ==================== */
 
-@media (max-width: 480px) {
-    .chat-popup-panel {
-        width: calc(100vw - 24px);
-        right: 12px;
-        bottom: 80px;
-        height: calc(100vh - 100px);
-        max-height: calc(100vh - 100px);
-    }
+@media (width <= 480px) {
+  .chat-popup-panel {
+    bottom: 80px;
+    height: calc(100vh - 100px);
+    max-height: calc(100vh - 100px);
+    right: 12px;
+    width: calc(100vw - 24px);
+  }
 }
