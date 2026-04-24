@@ -8,9 +8,9 @@ from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
 iris = px.data.iris()
-unique_species = iris["species"].unique()
+# Reshuffling "species" column values so they repeat in cycle
 iris_species_cycle = iris.copy()
-iris_species_cycle["species"] = np.resize(unique_species, len(iris_species_cycle))
+iris_species_cycle["species"] = np.resize(iris["species"].unique(), len(iris))
 
 
 @capture("graph")
