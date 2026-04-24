@@ -1,0 +1,79 @@
+[build.targets.sdist]
+include = [
+  "src/",
+  "LICENSE.txt",
+  "README.md",
+  "pyproject.toml"
+]
+
+[envs.all]
+
+[[envs.all.matrix]]
+python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+[envs.changelog]
+dependencies = ["scriv"]
+detached = true
+installer = "uv"
+scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-commit run --files=CHANGELOG.md > /dev/null"]}
+
+[envs.default]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+  "pytest-mock",
+  "pytest-rerunfailures",
+  "playwright"
+]
+features = ["agent", "examples"]
+installer = "uv"
+
+[envs.default.scripts]
+benchmark = "pytest tests/benchmark -m benchmark {args}"
+# Run any example folder by name. Defaults to scratch_dev (the per-PR sandbox).
+# hatch run example                   -> examples/scratch_dev/app.py
+# hatch run example chat_component    -> examples/chat_component/app.py
+# hatch run example popup             -> examples/popup/app.py
+example = "cd examples/{args:scratch_dev}; python app.py"
+lint = "pre-commit run {args} --all-files"
+pip = '"{env:HATCH_UV}" pip {args}'
+prep-release = [
+  "hatch version release",
+  "hatch run changelog:collect",
+  "hatch run changelog:add",
+  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-experimental $(hatch version)"'
+]
+pypath = "python -c 'import sys; print(sys.executable)'"
+test = "pytest tests {args}"
+test-integration-browser = "pytest tests/integration/browser {args}"
+test-integration-llm = "pytest tests/integration/llm {args}"
+test-unit = "pytest tests/unit {args}"
+test-unit-coverage = [
+  "coverage run -m pytest tests/unit {args}",
+  "- coverage combine",
+  "coverage report"
+]
+
+[envs.docs]
+dependencies = [
+  "zensical",
+  "mkdocs-git-revision-date-localized-plugin>=1.2.5",
+  "mkdocstrings[python]",
+  "linkchecker",
+  "mkdocs-pycafe",
+  "mkdocs-glightbox",
+  "vizro"
+]
+detached = true
+installer = "uv"
+
+[envs.docs.scripts]
+build = "zensical build --clean"
+pip = '"{env:HATCH_UV}" pip {args}'
+serve = "zensical serve --open {args}"
+
+[publish.index]
+disable = true
+
+[version]
+path = "src/vizro_experimental/__init__.py"
