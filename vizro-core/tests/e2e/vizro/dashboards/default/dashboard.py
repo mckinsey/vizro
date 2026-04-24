@@ -57,6 +57,10 @@ from pages.set_control_multi_select_pages import (
     filtered_graph_aggrid_trigger_set_control,
     self_filter_set_control_page,
 )
+from pages.set_control_non_categorical_controls_page import (
+    set_control_non_categorical_ag_grid,
+    set_control_non_categorical_graph,
+)
 from pages.switch_control_page import switch_control_page
 from pages.table_interactions_page import table_interactions_page
 from pages.table_page import table_page
@@ -120,6 +124,8 @@ dashboard = vm.Dashboard(
         filtered_graph_aggrid_trigger_set_control,
         self_filter_set_control_page,
         set_control_ag_grid_cellclicked,
+        set_control_non_categorical_graph,
+        set_control_non_categorical_ag_grid,
     ],
     navigation=vm.Navigation(
         pages={
@@ -186,6 +192,8 @@ dashboard = vm.Dashboard(
                 cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE,
                 cnst.SELF_FILTER_SET_CONTROL_PAGE,
                 cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_PAGE,
+                cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_PAGE_TITLE,
+                cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_PAGE_TITLE,
             ],
         }
     ),
