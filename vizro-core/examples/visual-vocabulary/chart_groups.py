@@ -57,7 +57,7 @@ deviation_chart_group = ChartGroup(
 
 correlation_intro_text = """
 #### Correlation helps you show the relationship between two or more variables. It is important that you make it clear\
- to your audience whether or not the relationship is causal, i.e., whether one causes the other.
+ to your audience whether or not the relationship is causal, that is, whether one causes the other.
 """
 correlation_chart_group = ChartGroup(
     name="Correlation",
