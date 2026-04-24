@@ -21,7 +21,7 @@ def test_single_date(dash_br):
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_SINGLE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="17 May 2016"]', 1)
-    check_date_picker_value(dash_br, elem_id=cnst.DATEPICKER_SINGLE_ID, expected_date_value="Mar 17, 2016")
+    check_date_picker_value(dash_br, elem_id=cnst.DATEPICKER_SINGLE_ID, expected_date_value="May 17, 2016")
 
     # check bar graph has bar with light blue color
     dash_br.wait_for_element(
