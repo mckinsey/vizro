@@ -49,7 +49,7 @@ export function normalizeOptions(raw: CascaderOptionsRaw): CascaderOption[] {
   });
 }
 
-/** True if the node has no children (i.e. is a leaf). */
+/** True if the node has no children (that is, is a leaf). */
 export function isLeaf(option: CascaderOption): boolean {
   return !option.children || option.children.length === 0;
 }
