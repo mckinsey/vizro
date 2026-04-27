@@ -36,8 +36,11 @@ class set_control(_AbstractAction):
 
     The following Vizro models can be a source of `set_control`:
 
-    * [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when user clicks on a row in the table. `value` is string
-    specifying which column in the clicked row is used to set `control`.
+    * [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when `cellClicked` or `selectedRows` changes (for example
+    after a cell click or when the row selection changes). `value` can be:
+
+        * `"cell"`, `"column"`, or `"row"` to use the clicked cell's value, column id, or row id respectively.
+        * Any other string to treat as a column name, taking values from the selected row(s).
     * [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. `value` is string
     that can be used in two ways to specify how to set `control`:
 

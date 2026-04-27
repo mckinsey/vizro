@@ -7,11 +7,9 @@ import vizro.plotly.express as px
 from vizro.actions import set_control
 from vizro.tables import dash_ag_grid
 
-# Data for source ag_grid
 iris = px.data.iris()
-unique_species = iris["species"].unique()
-iris_species_cycle = iris.copy()
-iris_species_cycle["species"] = np.resize(unique_species, len(iris_species_cycle))
+# Reshuffling "species" column values so they repeat in cycle
+iris["species"] = np.resize(iris["species"].unique(), len(iris))
 
 target_ag_grid_df = pd.DataFrame(
     {
@@ -28,25 +26,25 @@ set_control_ag_grid_cellclicked = vm.Page(
         vm.AgGrid(
             title="set_control.value=column",
             id=cnst.SET_CONTROL_AG_GRID_COLUMN_CLICKED_ID,
-            figure=dash_ag_grid(iris_species_cycle),
+            figure=dash_ag_grid(iris),
             actions=set_control(control="set_control_column", value="column"),
         ),
         vm.AgGrid(
             title="set_control.value=cell",
             id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_ID,
-            figure=dash_ag_grid(iris_species_cycle),
+            figure=dash_ag_grid(iris),
             actions=set_control(control="set_control_cell", value="cell"),
         ),
         vm.AgGrid(
             title="set_control.value=row",
             id=cnst.SET_CONTROL_AG_GRID_ROW_CLICKED_ID,
-            figure=dash_ag_grid(iris_species_cycle),
+            figure=dash_ag_grid(iris),
             actions=set_control(control="set_control_row", value="row"),
         ),
         vm.AgGrid(
             title="set_control.value=mixed",
             id=cnst.SET_CONTROL_AG_GRID_MIXED_CLICKED_ID,
-            figure=dash_ag_grid(iris_species_cycle),
+            figure=dash_ag_grid(iris),
             actions=[
                 set_control(control="set_control_column", value="column"),
                 set_control(control="set_control_cell", value="cell"),
