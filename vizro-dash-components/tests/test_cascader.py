@@ -54,6 +54,12 @@ OPTIONS_SHORTHAND_MIXED_LEAVES = {
 
 OPTIONS_SHORTHAND_NUMERIC = {"Series": [10, 20, 30]}
 
+# Cascader renders the root list in `.dash-cascader-column-root` and deeper levels in
+# separate `.dash-cascader-flyout-panel` elements (fixed-position, portaled to body).
+_CASCADER_ROOT = ".dash-cascader-column-root"
+_CASCADER_COL_L2 = '[data-dash-cascader-flyout-depth="0"]'
+_CASCADER_COL_L3 = '[data-dash-cascader-flyout-depth="1"]'
+
 
 def _app(layout):
     app = Dash(__name__)
@@ -132,9 +138,7 @@ def test_cascader_shows_root_column(dash_duo):
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    dash_duo.wait_for_text_to_equal(
-        ".dash-cascader-column:first-child .dash-cascader-row:first-child .dash-cascader-row-label", "Asia"
-    )
+    dash_duo.wait_for_text_to_equal(f"{_CASCADER_ROOT} .dash-cascader-row:first-child .dash-cascader-row-label", "Asia")
 
 
 def test_cascader_closes_on_outside_click(dash_duo):
@@ -181,7 +185,7 @@ def test_cascader_single_select_leaf(dash_duo):
     # Click "Asia" to expand
     dash_duo.wait_for_element(".dash-cascader-row").click()
     # Click "Japan" (leaf in second column)
-    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    rows = dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L2} .dash-cascader-row")
     rows[0].click()
     # Panel closes, value updated
     dash_duo.wait_for_text_to_equal("#out", "japan")
@@ -195,15 +199,13 @@ def test_cascader_parent_expand_then_collapse(dash_duo):
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    asia_row = dash_duo.wait_for_element(".dash-cascader-column:nth-child(1) .dash-cascader-row")
+    asia_row = dash_duo.wait_for_element(f"{_CASCADER_ROOT} .dash-cascader-row")
     asia_row.click()
-    cols = dash_duo.driver.find_elements("css selector", ".dash-cascader-column")
-    assert len(cols) == 2
+    assert len(dash_duo.driver.find_elements("css selector", ".dash-cascader-flyout-panel")) == 1
     expanded = dash_duo.driver.find_element("css selector", ".dash-cascader-chevron-expanded")
     assert expanded
-    dash_duo.driver.find_element("css selector", ".dash-cascader-column:nth-child(1) .dash-cascader-row").click()
-    cols_after = dash_duo.driver.find_elements("css selector", ".dash-cascader-column")
-    assert len(cols_after) == 1
+    dash_duo.driver.find_element("css selector", f"{_CASCADER_ROOT} .dash-cascader-row").click()
+    assert len(dash_duo.driver.find_elements("css selector", ".dash-cascader-flyout-panel")) == 0
     assert dash_duo.get_logs() == []
 
 
@@ -251,9 +253,7 @@ def test_cascader_multi_select_leaf(dash_duo):
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()
     # Check Japan checkbox (second column, first row)
-    checkboxes = dash_duo.driver.find_elements(
-        "css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-checkbox"
-    )
+    checkboxes = dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L2} .dash-cascader-checkbox")
     checkboxes[0].click()
     dash_duo.wait_for_text_to_equal("#out", "japan")
     # Panel still open
@@ -365,10 +365,7 @@ def test_cascader_search_branch_navigates_to_columns(dash_duo):
     search = dash_duo.wait_for_element(".dash-dropdown-search")
     assert search.get_attribute("value") == ""
     labels_col2 = [
-        el.text
-        for el in dash_duo.driver.find_elements(
-            "css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row-label"
-        )
+        el.text for el in dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L2} .dash-cascader-row-label")
     ]
     assert "Japan" in labels_col2
     assert "China" in labels_col2
@@ -405,12 +402,14 @@ def test_cascader_three_levels(dash_duo):
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     # Expand Asia
-    dash_duo.wait_for_element(".dash-cascader-row").click()
+    dash_duo.wait_for_element(f"{_CASCADER_ROOT} .dash-cascader-row").click()
     # Expand East Asia
-    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    rows = dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L2} .dash-cascader-row")
     rows[0].click()
     # Third column should show Japan
-    dash_duo.wait_for_text_to_equal(".dash-cascader-column:nth-child(3) .dash-cascader-row-label", "Japan")
+    dash_duo.wait_for_text_to_equal(f"{_CASCADER_COL_L3} .dash-cascader-row-label", "Japan")
+    flyouts = dash_duo.driver.find_elements("css selector", ".dash-cascader-flyout-panel")
+    assert [el.get_attribute("data-dash-cascader-flyout-depth") for el in flyouts] == ["0", "1"]
     assert dash_duo.get_logs() == []
 
 
@@ -419,15 +418,14 @@ def test_cascader_collapse_top_level_closes_whole_branch(dash_duo):
     app = _app(Cascader(id="c", options=OPTIONS_3LEVEL))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    dash_duo.wait_for_element(".dash-cascader-column:nth-child(1) .dash-cascader-row").click()  # Asia
-    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    dash_duo.wait_for_element(f"{_CASCADER_ROOT} .dash-cascader-row").click()  # Asia
+    rows = dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L2} .dash-cascader-row")
     rows[0].click()  # East Asia
-    dash_duo.wait_for_text_to_equal(".dash-cascader-column:nth-child(3) .dash-cascader-row-label", "Japan")
-    assert len(dash_duo.driver.find_elements("css selector", ".dash-cascader-column")) == 3
+    dash_duo.wait_for_text_to_equal(f"{_CASCADER_COL_L3} .dash-cascader-row-label", "Japan")
+    assert len(dash_duo.driver.find_elements("css selector", ".dash-cascader-flyout-panel")) == 2
     # Click Asia in column 1 again: expect root-only (one column), not Asia + East Asia still open.
-    dash_duo.driver.find_element("css selector", ".dash-cascader-column:nth-child(1) .dash-cascader-row").click()
-    cols_after = dash_duo.driver.find_elements("css selector", ".dash-cascader-column")
-    assert len(cols_after) == 1
+    dash_duo.driver.find_element("css selector", f"{_CASCADER_ROOT} .dash-cascader-row").click()
+    assert len(dash_duo.driver.find_elements("css selector", ".dash-cascader-flyout-panel")) == 0
     assert dash_duo.get_logs() == []
 
 
@@ -448,12 +446,10 @@ def test_cascader_shorthand_dict_list(dash_duo):
     app.callback(Output("out", "children"), Input("c", "value"))(str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    dash_duo.wait_for_text_to_equal(
-        ".dash-cascader-column:first-child .dash-cascader-row:first-child .dash-cascader-row-label", "Asia"
-    )
+    dash_duo.wait_for_text_to_equal(f"{_CASCADER_ROOT} .dash-cascader-row:first-child .dash-cascader-row-label", "Asia")
     # Expand Asia and select Japan (value is the leaf string, not slugified)
     dash_duo.wait_for_element(".dash-cascader-row").click()
-    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    rows = dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L2} .dash-cascader-row")
     rows[0].click()
     dash_duo.wait_for_text_to_equal("#out", "Japan")
     assert dash_duo.get_logs() == []
@@ -474,12 +470,12 @@ def test_cascader_shorthand_nested_dict(dash_duo):
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Europe
-    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    rows = dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L2} .dash-cascader-row")
     rows[0].click()  # Western
     dash_duo.wait_for_text_to_equal(
-        ".dash-cascader-column:nth-child(3) .dash-cascader-row:first-child .dash-cascader-row-label", "France"
+        f"{_CASCADER_COL_L3} .dash-cascader-row:first-child .dash-cascader-row-label", "France"
     )
-    dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(3) .dash-cascader-row")[0].click()
+    dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L3} .dash-cascader-row")[0].click()
     dash_duo.wait_for_text_to_equal("#out", "France")
     assert dash_duo.get_logs() == []
 
@@ -499,12 +495,12 @@ def test_cascader_shorthand_mixed_list_option_dicts_and_scalars(dash_duo):
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
-    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    rows = dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L2} .dash-cascader-row")
     rows[0].click()  # Nippon → value japan
     dash_duo.wait_for_text_to_equal("#out", "japan")
     # Re-open: activePath still has Asia expanded; clicking col1 would collapse it.
     dash_duo.wait_for_element("#c").click()
-    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    rows = dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L2} .dash-cascader-row")
     assert len(rows) >= 2
     rows[1].click()
     dash_duo.wait_for_text_to_equal("#out", "China")
@@ -526,10 +522,8 @@ def test_cascader_shorthand_numeric_leaves(dash_duo):
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Series
-    dash_duo.wait_for_text_to_equal(
-        ".dash-cascader-column:nth-child(2) .dash-cascader-row:first-child .dash-cascader-row-label", "10"
-    )
-    dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")[0].click()
+    dash_duo.wait_for_text_to_equal(f"{_CASCADER_COL_L2} .dash-cascader-row:first-child .dash-cascader-row-label", "10")
+    dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L2} .dash-cascader-row")[0].click()
     dash_duo.wait_for_text_to_equal("#out", "10")
     assert dash_duo.get_logs() == []
 
@@ -549,7 +543,7 @@ def test_cascader_shorthand_multi_select(dash_duo):
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
-    checks = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-checkbox")
+    checks = dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L2} .dash-cascader-checkbox")
     checks[0].click()  # Japan
     checks[1].click()  # China
     dash_duo.wait_for_text_to_equal("#out", "China,Japan")
@@ -608,7 +602,7 @@ def test_cascader_option_search_field_used_for_filtering(dash_duo):
     dash_duo.wait_for_element(".dash-dropdown-search").send_keys("east-region")
     dash_duo.wait_for_element(".dash-cascader-result-row-branch").click()
     dash_duo.wait_for_element(".dash-cascader-columns")
-    dash_duo.wait_for_text_to_equal(".dash-cascader-column:nth-child(2) .dash-cascader-row-label", "Japan")
+    dash_duo.wait_for_text_to_equal(f"{_CASCADER_COL_L2} .dash-cascader-row-label", "Japan")
     assert dash_duo.get_logs() == []
 
 
@@ -651,7 +645,7 @@ def test_cascader_debounce_defers_callback(dash_duo):
     # Open and select a leaf
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
-    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    rows = dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L2} .dash-cascader-row")
     rows[0].click()  # Japan — panel closes immediately in single mode, committing the value
     dash_duo.wait_for_text_to_equal("#out", "japan")
     assert dash_duo.get_logs() == []
@@ -676,9 +670,7 @@ def test_cascader_debounce_multi_defers_until_close(dash_duo):
     # Open and check Japan
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
-    checkboxes = dash_duo.driver.find_elements(
-        "css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-checkbox"
-    )
+    checkboxes = dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L2} .dash-cascader-checkbox")
     checkboxes[0].click()  # Japan
     # Callback should NOT have fired yet (still empty from initial render)
     time.sleep(0.5)
@@ -767,9 +759,7 @@ def test_cascader_multi_parent_checkbox_selects_children(dash_duo):
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     # Click the Asia parent checkbox (first row, first column)
-    checkboxes = dash_duo.driver.find_elements(
-        "css selector", ".dash-cascader-column:first-child .dash-cascader-checkbox"
-    )
+    checkboxes = dash_duo.driver.find_elements("css selector", f"{_CASCADER_ROOT} .dash-cascader-checkbox")
     checkboxes[0].click()
     dash_duo.wait_for_text_to_equal("#out", "china,japan")
     assert dash_duo.get_logs() == []
@@ -873,7 +863,7 @@ def test_cascader_persistence(dash_duo):
     # Open panel and select Japan (Asia > Japan)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
-    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    rows = dash_duo.driver.find_elements("css selector", f"{_CASCADER_COL_L2} .dash-cascader-row")
     rows[0].click()  # Japan
     dash_duo.wait_for_text_to_equal("#c .dash-dropdown-value", "Japan")
 

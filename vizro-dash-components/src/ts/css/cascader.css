@@ -3,8 +3,8 @@
 /* Base selectors before .dash-cascader-content > … (stylelint no-descending-specificity). */
 .dash-cascader-columns {
   box-sizing: border-box;
-  display: flex;
-  overflow: hidden;
+  display: block;
+  overflow: visible;
 }
 
 /* Search results — flat list */
@@ -21,7 +21,12 @@
 .dash-dropdown-content.dash-cascader-content {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+
+  /* Narrow trees should not inherit the full trigger width (chevrons align to panel edge). */
+  max-width: 98vw;
+  min-width: max(140px, min(var(--radix-popover-trigger-width), max-content));
+  overflow: visible auto;
+  width: max-content;
 }
 
 .dash-cascader-content > .dash-dropdown-search-container,
@@ -35,7 +40,38 @@
   min-height: 0;
 }
 
-/* One column within the multi-column row */
+/* Root column: fills panel width when it is the only column (chevrons align to panel edge). */
+.dash-cascader-column.dash-cascader-column-root {
+  border-right: none;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  max-height: 100%;
+  min-height: 0;
+  min-width: 140px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+/* Each deeper level is its own portaled panel (same width as main panel; see TS). */
+.dash-cascader-flyout-panel {
+  background: var(--Dash-Fill-Inverse-Strong);
+  border: 1px solid var(--Dash-Stroke-Strong);
+  border-radius: 0;
+  box-shadow:
+    0 10px 38px -10px var(--Dash-Shading-Strong),
+    0 10px 20px -15px var(--Dash-Shading-Weak);
+  box-sizing: border-box;
+  max-height: min(
+    var(--dash-cascader-flyout-max-height, 360px),
+    calc(100vh - 100px)
+  );
+  overflow: hidden auto;
+}
+
+/*
+ * Shared column chrome for the root column (combined with .dash-cascader-column-root)
+ * and for multi-column / search layouts that keep every level inside one panel.
+ */
 .dash-cascader-column {
   border-right: 1px solid var(--Dash-Fill-Disabled);
   box-sizing: border-box;
@@ -59,6 +95,7 @@
   display: flex;
   gap: calc(var(--Dash-Spacing) * 2);
   min-height: 32px;
+  min-width: 0;
   padding: calc(var(--Dash-Spacing) * 2) calc(var(--Dash-Spacing) * 3);
   white-space: nowrap;
 }
