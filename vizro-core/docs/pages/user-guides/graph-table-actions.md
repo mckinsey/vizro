@@ -913,7 +913,7 @@ vm.AgGrid(
 
 ### Cross-filter with non-categorical selectors
 
-The examples above use categorical selectors such as `Dropdown` and `Checklist`, but you can target non-categorical selectors as well with `set_control` action. The example below uses (`vm.DatePicker(range=True)`:
+The examples above use categorical selectors such as [`Dropdown`][vizro.models.Dropdown] and [`Checklist`][vizro.models.Checklist], but you can target non-categorical selectors as well with `set_control` action. The example below uses (`vm.DatePicker(range=True)`):
 
 !!! example "Cross-filter from table with non-categorical selector"
 
