@@ -279,7 +279,7 @@ class _BaseAction(VizroBaseModel):
             # _AbstractAction._transformed_outputs does the same validation manually with TypeAdapter.
             return Output(*self._transform_dependency(output, type="output").split("."), allow_duplicate=True)
 
-        # By this point self._validated_outputs is guaranteed to be OutputsType i.e. list[str] or dict[str, str].
+        # By this point self._validated_outputs is guaranteed to be OutputsType, that is, list[str] or dict[str, str].
         # A single str value will have been coerced to list already.
         if isinstance(self._validated_outputs, list):
             callback_outputs = [_transform_output(output) for output in self._validated_outputs]
@@ -383,6 +383,7 @@ class _BaseAction(VizroBaseModel):
                 State(component_guard_id, "data", allow_optional=True),
                 State(trigger_component_id, "id"),
                 prevent_initial_call=self._prevent_initial_call_of_guard,
+                hidden=True,
             )
         else:
             trigger = Input(*self._trigger.split("."))
@@ -435,13 +436,6 @@ class Action(_BaseAction):
     Abstract: Usage documentation
         [How to create custom actions](../user-guides/custom-actions.md)
 
-    Args:
-        function (CapturedCallable): Custom action function.
-        inputs (list[str]): List of inputs provided to the action function. Each input can be specified as
-            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
-            ❗Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](
-            deprecations.md#action-model-inputs-argument).
-        outputs (OutputsType): See [`OutputsType`][vizro.models.types.OutputsType].
     """
 
     # TODO-AV2 D 5: when it's made public, add something like below to docstring:
@@ -471,7 +465,7 @@ class Action(_BaseAction):
         Field(
             default=[],
             description="""List of inputs provided to the action function. Each input can be specified as
-            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
+            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.
             ❗Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](
             deprecations.md#action-model-inputs-argument).""",
         ),

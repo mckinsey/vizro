@@ -23,27 +23,32 @@ from dash import (
     html,
 )
 from dash.development.base_component import Component
-from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
+from pydantic import (
+    AfterValidator,
+    BeforeValidator,
+    Field,
+    ValidationInfo,
+)
 from typing_extensions import TypedDict
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
-from vizro._themes._templates import dashboard_overrides
 from vizro.managers import model_manager
-from vizro.models import Navigation, Tooltip, VizroBaseModel
+from vizro.models import NavBar, Navigation, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
 from vizro.models._controls import Filter, Parameter
 from vizro.models._models_utils import _all_hidden, _log_call, warn_description_without_title
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ControlType
+from vizro.themes._mantine_theme import mantine_theme
+from vizro.themes._templates import dashboard_overrides
 
 if TYPE_CHECKING:
     from vizro.models import Page
     from vizro.models._page import _PageBuildType
 
 logger = logging.getLogger(__name__)
-
 
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
@@ -88,21 +93,11 @@ class Dashboard(VizroBaseModel):
     Abstract: Usage documentation
         [How to create a dashboard](../user-guides/dashboard.md)
 
-    Args:
-        pages (list[Page]): See [`Page`][vizro.models.Page].
-        theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
-            Defaults to `vizro_dark`.
-        navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
-        title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.
-
     """
 
     pages: list[Page]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
-        default="vizro_dark", description="Theme to be applied across dashboard. Defaults to `vizro_dark`."
+        default="vizro_dark", description="Theme to be applied across dashboard."
     )
     navigation: Annotated[
         Navigation | None, AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
@@ -118,9 +113,17 @@ class Dashboard(VizroBaseModel):
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.""",
+            tags.""",
         ),
     ]
+
+    @property
+    def _is_top_navigation(self) -> bool:
+        """Returns True if navigation is positioned on the top side."""
+        if self.navigation is None:
+            return False
+        nav_selector = self.navigation.nav_selector
+        return isinstance(nav_selector, NavBar) and nav_selector.position == "top"
 
     @_log_call
     def pre_build(self):
@@ -163,6 +166,7 @@ class Dashboard(VizroBaseModel):
             # This currently doesn't do anything, but we need to define an Output such that the callback is triggered.
             Output("dashboard-container", "className"),
             Input("theme-selector", "value"),
+            hidden=True,
         )
         left_side_div_present = any([len(self.pages) > 1, self.pages[0].controls])
         if left_side_div_present:
@@ -175,6 +179,7 @@ class Dashboard(VizroBaseModel):
                 ],
                 Input("collapse-icon", "n_clicks"),
                 State("collapse-left-side", "is_open"),
+                hidden=True,
             )
 
         layout = html.Div(
@@ -203,25 +208,25 @@ class Dashboard(VizroBaseModel):
         # children=[layout] as a list rather than children=layout, so that app.dash.layout.children.append works to
         # easily add things to the Dash layout. In future we might have a neater function for patching components into
         # the Dash layout in which case this could change.
-        return dmc.MantineProvider(
-            children=[layout],
-            # Change global mantine settings here. For component specific styling, see Card example below.
-            # Reference: https://www.dash-mantine-components.com/theme-object
-            theme={
-                "primaryColor": "gray",
-                "defaultRadius": 0,
-                "components": {
-                    "Card": {
-                        "styles": {
-                            "root": {
-                                "backgroundColor": "var(--surfaces-bg-card)",
-                                "boxShadow": "var(--bs-box-shadow)",
-                            }
-                        }
-                    },
-                },
-            },
-        )
+        return dmc.MantineProvider(children=[layout], theme=mantine_theme)
+
+    def custom_header(self) -> Component | list[Component]:
+        """Adds custom content that will appear to the left of the theme switch.
+
+        Returns:
+             A Dash component of list of components for the dashboard header's custom content area.
+
+        Example:
+            ```python
+            import vizro.models as vm
+
+
+            class CustomDashboard(vm.Dashboard):
+                def custom_header(self):
+                    return [html.Div("Hello!"), dbc.Badge("Tuesday")]
+            ```
+        """
+        return []
 
     def _validate_logos(self):
         logo_img = self._infer_image(filename="logo")
@@ -300,6 +305,10 @@ class Dashboard(VizroBaseModel):
         )
 
         header_left_content = [logo, logo_dark, logo_light, dashboard_title]
+        # Add nav-bar to header_left for top navigation
+        if self._is_top_navigation:
+            header_left_content.append(nav_bar)
+
         header_left = html.Div(id="header-left", children=header_left_content, hidden=_all_hidden(header_left_content))
         header_right_content = [custom_header]
 
@@ -312,39 +321,8 @@ class Dashboard(VizroBaseModel):
         )
 
         # Page header controls that appear on the right side of the header.
-        action_progress_indicator = dcc.Loading(
-            id="action-progress-indicator",
-            delay_show=300,
-            delay_hide=300,
-            custom_spinner=html.Span(
-                className="material-symbols-outlined progress-indicator",
-                # Keep "progress_activity" children so the CSS spinner can render/display correctly.
-                children="progress_activity",
-            ),
-            # Placeholder div is added as used as target from actions to show loading indicator.
-            children=html.Div(id="action-progress-indicator-placeholder"),
-        )
-        reset_controls_button = dbc.Button(
-            id="reset-button",
-            children=[
-                html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
-                dbc.Tooltip(children="Reset all page controls", target="reset-button"),
-            ],
-            color="link",
-            class_name="btn-circular",
-        )
-        theme_switch = dbc.Switch(
-            id="theme-selector", value=self.theme == "vizro_light", persistence=True, persistence_type="session"
-        )
-        header_controls = html.Div(
-            id="header-controls",
-            children=[
-                action_progress_indicator,
-                # Show the reset icon button in the header when there are page controls but no control panel.
-                reset_controls_button if has_page_controls and _all_hidden(control_panel) else None,
-                theme_switch,
-            ],
-        )
+        control_panel_hidden = _all_hidden(control_panel)
+        header_controls = self._build_header_controls(has_page_controls, control_panel_hidden)
 
         # Apply different container position logic based on condition
         if _all_hidden(header_left_content + header_right_content):
@@ -359,7 +337,7 @@ class Dashboard(VizroBaseModel):
         )
 
         # Show reset button with the icon in the control panel when both page controls and control panel exist.
-        if has_page_controls and not _all_hidden(control_panel):
+        if has_page_controls and not control_panel_hidden:
             icon = html.Span("reset_settings", className="material-symbols-outlined tooltip-icon")
             text = html.Span("Reset controls", className="btn-text")
 
@@ -400,15 +378,8 @@ class Dashboard(VizroBaseModel):
         page_components = inner_page["page-components"]
         nav_bar = inner_page["nav-bar"]
         nav_control_panel = inner_page["nav-control-panel"]
-
-        # Construct outer page containers
-        header = html.Div(
-            id="header",
-            children=[header_left, header_right],
-            hidden=_all_hidden([header_left, header_right]),
-            className="no-left" if _all_hidden(header_left) else "",
-        )
         right_side = html.Div(id="right-side", children=[page_header, page_components])
+
         collapse_left_side = dbc.Collapse(
             id="collapse-left-side",
             children=html.Div(id="left-side", children=[nav_control_panel]),
@@ -428,6 +399,13 @@ class Dashboard(VizroBaseModel):
             id="collapse-icon-outer",
             hidden=_all_hidden([nav_control_panel]),
         )
+        header = html.Div(
+            id="header",
+            children=[header_left, header_right],
+            hidden=_all_hidden([header_left, header_right]),
+            className="no-left" if _all_hidden(header_left) else "",
+        )
+
         return html.Div(
             [
                 header,
@@ -451,9 +429,17 @@ class Dashboard(VizroBaseModel):
         collapse_left_side = outer_page["collapse-left-side"]
         collapse_icon_outer = outer_page["collapse-icon-outer"]
         right_side = outer_page["right-side"]
+
+        # Build header
         header = outer_page["header"]
 
-        page_main = html.Div(id="page-main", children=[nav_bar, collapse_left_side, collapse_icon_outer, right_side])
+        page_main = html.Div(
+            id="page-main",
+            children=[nav_bar, collapse_left_side, collapse_icon_outer, right_side]
+            if not self._is_top_navigation
+            else [collapse_left_side, collapse_icon_outer, right_side],
+        )
+
         page_main_outer = html.Div(
             children=[header, page_main],
             className="page-main-outer no-left" if _all_hidden(collapse_icon_outer) else "page-main-outer",
@@ -491,6 +477,48 @@ class Dashboard(VizroBaseModel):
             className="d-flex flex-column align-items-center justify-content-center min-vh-100",
         )
 
+    def _build_header_controls(self, has_page_controls: bool, control_panel_hidden: bool) -> html.Div:
+        """Builds header controls: action indicator, reset button, and theme switch.
+
+        The reset button appears in the header only when there are page controls
+        but the control panel is hidden.
+        """
+        # Page header controls that appear on the right side of the header.
+        action_progress_indicator = dcc.Loading(
+            id="action-progress-indicator",
+            delay_show=300,
+            delay_hide=300,
+            custom_spinner=html.Span(
+                className="material-symbols-outlined progress-indicator",
+                # Keep "progress_activity" children so the CSS spinner can render/display correctly.
+                children="progress_activity",
+            ),
+            # Placeholder div is added as used as target from actions to show loading indicator.
+            children=html.Div(id="action-progress-indicator-placeholder"),
+        )
+
+        reset_controls_button = dbc.Button(
+            id="reset-button",
+            children=[
+                html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
+                dbc.Tooltip(children="Reset all page controls", target="reset-button"),
+            ],
+            color="link",
+            class_name="btn-circular",
+        )
+        theme_switch = dbc.Switch(
+            id="theme-selector", value=self.theme == "vizro_light", persistence=True, persistence_type="session"
+        )
+
+        return html.Div(
+            id="header-controls",
+            children=[
+                action_progress_indicator,
+                reset_controls_button if has_page_controls and control_panel_hidden else None,
+                theme_switch,
+            ],
+        )
+
     @staticmethod
     def _infer_image(filename: str):
         valid_extensions = [".apng", ".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"]
@@ -500,21 +528,3 @@ class Dashboard(VizroBaseModel):
                 if path.suffix in valid_extensions:
                     # Return path as posix so image source comes out correctly on Windows.
                     return path.relative_to(assets_folder).as_posix()
-
-    def custom_header(self) -> Component | list[Component]:
-        """Adds custom content that will appear to the left of the theme switch.
-
-        Returns:
-             A Dash component of list of components for the dashboard header's custom content area.
-
-        Example:
-            ```python
-            import vizro.models as vm
-
-
-            class CustomDashboard(vm.Dashboard):
-                def custom_header(self):
-                    return [html.Div("Hello!"), dbc.Badge("Tuesday")]
-            ```
-        """
-        return []

@@ -49,9 +49,7 @@ positive, neutral or negative sentiment.
 deviation_chart_group = ChartGroup(
     name="Deviation",
     pages=pages.deviation.pages,
-    incomplete_pages=[
-        IncompletePage(title="Surplus deficit filled line"),
-    ],
+    incomplete_pages=[],
     icon="Contrast Square",
     intro_text=deviation_intro_text,
 )
@@ -59,7 +57,7 @@ deviation_chart_group = ChartGroup(
 
 correlation_intro_text = """
 #### Correlation helps you show the relationship between two or more variables. It is important that you make it clear\
- to your audience whether or not the relationship is causal, i.e., whether one causes the other.
+ to your audience whether or not the relationship is causal, that is, whether one causes the other.
 """
 correlation_chart_group = ChartGroup(
     name="Correlation",
@@ -153,7 +151,6 @@ part_to_whole_chart_group = ChartGroup(
         IncompletePage("Marimekko"),
         IncompletePage("Arc"),
         IncompletePage("Gridplot"),
-        IncompletePage("Venn"),
     ],
     icon="Donut Small",
     intro_text=part_to_whole_intro_text,

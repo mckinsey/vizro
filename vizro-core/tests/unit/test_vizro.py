@@ -19,7 +19,7 @@ def test_vizro_bootstrap():
     )
 
 
-# Using Vizro as a framework should include both the library and framework resources i.e. all files in
+# Using Vizro as a framework should include both the library and framework resources, that is, all files in
 # VIZRO_ASSETS_PATH.
 class TestVizroResources:
     # Only external_url or relative_package_path will exist in the resource specification depending on
@@ -52,11 +52,11 @@ class TestVizroResources:
     @pytest.mark.parametrize(
         "serve_locally, resource_key, resource_value",
         [
-            (True, "relative_package_path", "static/js/models/slider.js"),
+            (True, "relative_package_path", "static/js/models/page.js"),
             (
                 False,
                 "external_url",
-                f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/static/js/models/slider.min.js",
+                f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/static/js/models/page.min.js",
             ),
         ],
     )

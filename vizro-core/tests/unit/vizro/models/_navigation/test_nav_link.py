@@ -69,13 +69,25 @@ class TestNavLinkPreBuildMethod:
         nav_link.pre_build()
         assert isinstance(nav_link._nav_selector, vm.Accordion)
         assert nav_link._nav_selector.pages == {group: [page_1_id, page_2_id] for group in pages_as_dict}
+        assert nav_link._nav_position == "left"
+
+    def test_nav_link_warning_raised_icon_top_nav_position(self, page_1_id):
+        nav_link = vm.NavLink(pages=[page_1_id], label="Foo", icon="home")
+        nav_link._nav_position = "top"
+
+        with pytest.raises(
+            UserWarning,
+            match=r'Using the `icon` argument when `vm.NavBar\(position="top"\)` is set is not currently supported. '
+            'Icons are only supported for `position="left"`.',
+        ):
+            nav_link.pre_build()
 
 
 @pytest.mark.parametrize("pages", ["pages_as_dict", "pages_as_list"])
 class TestNavLinkBuildMethod:
     """Tests NavLink model build method."""
 
-    def test_nav_link_active(self, pages, request, page_1_id):
+    def test_nav_link_left_position_active(self, pages, request, page_1_id):
         pages = request.getfixturevalue(pages)
         nav_link = vm.NavLink(id="nav-link", label="Label", icon="Icon", pages=pages)
         nav_link.pre_build()
@@ -96,7 +108,7 @@ class TestNavLinkBuildMethod:
         assert_component_equal(built_nav_link["nav-link"], expected_nav_link)
         assert_component_equal(built_nav_link["nav-panel"].children, [dbc.Accordion()], keys_to_strip=STRIP_ALL)
 
-    def test_nav_link_not_active(self, pages, request):
+    def test_nav_link_left_position_not_active(self, pages, request):
         pages = request.getfixturevalue(pages)
         nav_link = vm.NavLink(id="nav-link", label="Label", icon="Icon", pages=pages)
         nav_link.pre_build()
@@ -116,3 +128,18 @@ class TestNavLinkBuildMethod:
         )
         assert_component_equal(built_nav_link["nav-link"], expected_button)
         assert "nav-panel" not in built_nav_link
+
+    def test_nav_link_top_position_active(self, pages, request, page_1_id):
+        pages = request.getfixturevalue(pages)
+        nav_link = vm.NavLink(id="nav-link", label="Label", pages=pages)
+        nav_link.pre_build()
+        nav_link._nav_position = "top"
+        built_nav_link = nav_link.build(active_page_id=page_1_id)
+
+        expected_nav_link = dbc.NavLink(
+            children="Label",
+            active=True,
+            href="/",
+            id="nav-link",
+        )
+        assert_component_equal(built_nav_link["nav-link"], expected_nav_link)

@@ -12,7 +12,6 @@ img[src*="#chart-icon"] {
   margin-left: 4px;
 }
 
-
 .code-clipboard-container {
   display: flex;
   flex-direction: column;
@@ -27,7 +26,7 @@ img[src*="#chart-icon"] {
 }
 
 .flex-item .card {
-  height: 232px;
+  height: 250px;
   margin: 0 0 auto;
   opacity: 0.3;
   width: 176px;

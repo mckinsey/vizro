@@ -6,7 +6,7 @@ from pathlib import Path
 import autoflake
 import black
 import isort
-from custom_components import CodeClipboard
+import vizro.models as vm
 
 # To disable logging info messages caused by black.format_str: https://github.com/psf/black/issues/2058
 logging.getLogger("blib2to3").setLevel(logging.ERROR)
@@ -49,11 +49,7 @@ def make_code_clipboard_from_py_file(filepath: str, mode="vizro"):
         for old_code, new_code in replacements.items():
             example_code = example_code.replace(old_code, new_code)
 
-    return CodeClipboard(
-        code=_format_and_lint(example_code, line_length=80),
-        mode=mode,
-        language="python",
-    )
+    return vm.Text(text=f"""```python {_format_and_lint(example_code, line_length=80)}```""")
 
 
 PAGE_GRID = [[0, 0, 0, 0, 0, 0, 0]] * 2 + [[1, 1, 1, 1, 2, 2, 2]] * 5

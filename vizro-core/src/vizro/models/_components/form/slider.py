@@ -1,13 +1,13 @@
 from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
+from dash import dcc, html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components.form._form_utils import (
-    set_default_marks,
+    to_int_if_whole,
     validate_max,
     validate_range_value,
     validate_step,
@@ -30,21 +30,6 @@ class Slider(VizroBaseModel):
     Abstract: Usage documentation
         [How to use numerical selectors](../user-guides/selectors.md/#numerical-selectors)
 
-    Args:
-        min (float | None): Start value for slider. Defaults to `None`.
-        max (float | None): End value for slider. Defaults to `None`.
-        step (float | None): Step-size for marks on slider. Defaults to `None`.
-        marks (dict[float, str]): Marks to be displayed on slider. Defaults to `{}`.
-        value (float | None): Default value for slider. Defaults to `None`.
-        title (str): Title to be displayed. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
-        extra (dict[str, Any]): Extra keyword arguments that are passed to `dcc.Slider` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/slider)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
     """
 
     type: Literal["slider"] = "slider"
@@ -57,7 +42,6 @@ class Slider(VizroBaseModel):
     ]
     marks: Annotated[
         dict[float, str] | None,
-        AfterValidator(set_default_marks),
         Field(default={}, description="Marks to be displayed on slider.", validate_default=True),
     ]
     value: Annotated[
@@ -75,7 +59,7 @@ class Slider(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     actions: ActionsType = []
@@ -85,10 +69,10 @@ class Slider(VizroBaseModel):
             Field(
                 default={},
                 description="""Extra keyword arguments that are passed to `dcc.Slider` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/slider)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.""",
+defaults chosen by the Vizro team. This may have unexpected behavior.
+Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/slider)
+to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+underlying component may change in the future.""",
             ),
         ]
     ]
@@ -117,69 +101,31 @@ class Slider(VizroBaseModel):
         return {"__default__": f"{self.id}.value"}
 
     def __call__(self, min, max):
-        output = [
-            Output(self.id, "value", allow_duplicate=True),
-            Output(f"{self.id}_end_value", "value"),
-        ]
-        inputs = [
-            Input(self.id, "value"),
-            Input(f"{self.id}_end_value", "value"),
-            State(self.id, "id"),
-        ]
-
-        clientside_callback(
-            ClientsideFunction(namespace="slider", function_name="update_slider_values"),
-            output=output,
-            inputs=inputs,
-            prevent_initial_call=True,
-        )
-
-        current_value = self.value if self.value is not None else min
+        # Overwrite default marks with min and max boundary marks if marks are not provided.
+        marks = self.marks if self.marks != {} else {min: str(to_int_if_whole(min)), max: str(to_int_if_whole(max))}
 
         defaults = {
             "id": self.id,
             "min": min,
             "max": max,
-            "step": self.step,
-            "marks": self.marks,
-            "value": current_value,
-            "included": False,
+            # Only include `step` when defined. Passing None prevents dcc.Slider from displaying input values.
+            **({"step": self.step} if self.step is not None else {}),
+            "marks": marks,
+            "value": self.value if self.value is not None else min,
             "persistence": True,
             "persistence_type": "session",
-            "className": "slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
+            "dots": True,
         }
 
         description = self.description.build().children if self.description else [None]
         return html.Div(
             children=[
-                html.Div(
-                    children=[
-                        dbc.Label(
-                            children=[html.Span(id=f"{self.id}_title", children=self.title), *description],
-                            html_for=self.id,
-                        )
-                        if self.title
-                        else None,
-                        html.Div(
-                            [
-                                dcc.Input(
-                                    id=f"{self.id}_end_value",
-                                    type="number",
-                                    placeholder="max",
-                                    min=min,
-                                    max=max,
-                                    step=self.step,
-                                    value=current_value,
-                                    persistence=True,
-                                    persistence_type="session",
-                                    className="slider-text-input-field",
-                                ),
-                            ],
-                            className="slider-text-input-container",
-                        ),
-                    ],
-                    className="slider-label-input",
-                ),
+                dbc.Label(
+                    children=[html.Span(id=f"{self.id}_title", children=self.title), *description],
+                    html_for=self.id,
+                )
+                if self.title
+                else None,
                 dcc.Slider(**(defaults | self.extra)),
             ]
         )

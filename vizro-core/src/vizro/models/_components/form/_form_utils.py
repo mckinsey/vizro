@@ -13,12 +13,17 @@ def get_dict_options_and_default(
 ) -> tuple[list[_OptionsDictType], SingleValueType | MultiValueType]:
     """Gets list of full options and default value based on user input type of `options`."""
     # Omitted string conversion for "label" to avoid unintended formatting issues (e.g., 2002 becoming '2002.0').
-    dict_options = [option if isinstance(option, dict) else {"label": option, "value": option} for option in options]  # type: ignore[typeddict-item]
+    dict_options = [option if isinstance(option, dict) else {"label": option, "value": option} for option in options]
 
     list_values = [dict_option["value"] for dict_option in dict_options]
     default_value = list_values if multi else list_values[0]
 
     return dict_options, default_value  # type: ignore[return-value]
+
+
+# Util for vm.Slider and vm.RangeSlider
+def to_int_if_whole(value: float | int) -> float | int:
+    return int(value) if isinstance(value, float) and value.is_integer() else value
 
 
 # Utils for validators
@@ -104,18 +109,6 @@ def validate_step(step, info: ValidationInfo):
             "The step value of the slider must be less than or equal to the difference between max and min."
         )
     return step
-
-
-def set_default_marks(marks: dict[float, str] | None, info: ValidationInfo) -> dict[float | int, str] | None:
-    if not marks and info.data.get("step") is None:
-        marks = None
-
-    # Dash has a bug where marks provided as floats that can be converted to integers are not displayed.
-    # So we need to convert the floats to integers if possible.
-    # https://github.com/plotly/dash-core-components/issues/159#issuecomment-380581043
-    if marks:
-        marks = {int(k) if k.is_integer() else k: v for k, v in marks.items()}
-    return marks
 
 
 def validate_date_picker_range(range, info: ValidationInfo):

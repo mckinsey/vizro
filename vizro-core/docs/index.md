@@ -36,13 +36,11 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     ---
 
+    [:new: Agent skills (design & build)](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow)
+
     [:fontawesome-solid-star: Vizro-MCP :fontawesome-solid-star:](https://vizro.readthedocs.io/projects/vizro-mcp/)
 
-    [Vizro-AI (deprecated)](https://vizro.readthedocs.io/projects/vizro-ai/)
-
-    [`llms.txt` (stable)](https://vizro.readthedocs.io/llms.txt)
-
-    [`llms-full.txt` (stable)](https://vizro.readthedocs.io/llms-full.txt)
+    [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
 
 - :fontawesome-solid-book-open:{ .lg .middle } __Find out more__
 
@@ -50,7 +48,9 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     [FAQs](pages/explanation/faq.md)
 
-    [:sparkles:Cheatsheet:sparkles:](pages/cheatsheet/cheatsheet.html)
+    [:sparkles: Cheatsheet :sparkles:](pages/cheatsheet/cheatsheet.html)
+
+    [:sparkles:Components Compendium:sparkles:](pages/components_compendium/index.html)
 
 - :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Get involved__
 
@@ -59,5 +59,13 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
     [Contribute code](pages/explanation/contributing.md)
 
     [Contribute to our docs](pages/explanation/documentation-style-guide.md)
+
+- :fontawesome-solid-play:{ .lg .middle } __Demo dashboards__
+
+    ---
+
+    <a href="https://huggingface.co/vizro" target="_blank" rel="noopener noreferrer">Vizro HuggingFace collection </a>
+
+    <a href="https://py.cafe/vizro-official" target="_blank" rel="noopener noreferrer">Vizro PyCafe collection </a>
 
 </div>

@@ -51,7 +51,7 @@ You can add a [`Text`][vizro.models.Text] model to your dashboard by inserting [
 
 ## Customize text
 
-The [`Text`][vizro.models.Text] model uses the `dcc.Markdown` component from Dash as its underlying text component. For more details on customizing the [Markdown text](https://markdown-guide.readthedocs.io/), refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). Based on examples from Dash, the [`Text`][vizro.models.Text] model supports the following:
+The [`Text`][vizro.models.Text] model uses the[`vdc.Markdown` component](https://github.com/mckinsey/vizro/tree/main/vizro-dash-components) as its underlying text component. `vdc.Markdown` is a clone of `dcc.Markdown` that additionally uses [`dmc.CodeHighlight`](https://www.dash-mantine-components.com/components/code-highlight) and [`dmc.InlineCodeHighlight`](https://www.dash-mantine-components.com/components/code-highlight#inline-code) for rendering code blocks and inline code. For more details on customizing the [Markdown text](https://markdown-guide.readthedocs.io/), refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). Based on examples from Dash, the [`Text`][vizro.models.Text] model supports the following:
 
 - Headers
 - Emphasis

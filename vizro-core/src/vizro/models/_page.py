@@ -19,7 +19,7 @@ from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import Filter, Parameter, Tooltip, VizroBaseModel
+from vizro.models import ControlGroup, Filter, Parameter, Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
     _all_hidden,
@@ -56,17 +56,6 @@ class Page(VizroBaseModel):
     Abstract: Usage documentation
         [How to make dashboard pages](../user-guides/pages.md)
 
-    Args:
-        components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
-            has to be provided.
-        title (str): Title of the `Page`.
-        layout (LayoutType | None): Layout to place components in. Defaults to `None`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.
-        controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
-        path (str): Path to navigate to page. Defaults to `""`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
 
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
@@ -83,10 +72,10 @@ class Page(VizroBaseModel):
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
-            tags. Defaults to `None`.""",
+            tags.""",
         ),
     ]
-    controls: list[ControlType] = []
+    controls: list[ControlType | ControlGroup] = []
     path: Annotated[str, Field(default="", description="Path to navigate to page.")]
     actions: ActionsType = []
 
@@ -97,6 +86,7 @@ class Page(VizroBaseModel):
     # This should ideally be a field validator, but we need access to the model_fields_set
     @model_validator(mode="after")
     def validate_path(self):
+        """Validate that the path is unique and clean."""
         if self.path:
             new_path = clean_path(self.path, "-_/")
         elif "id" in self.model_fields_set:
@@ -133,7 +123,7 @@ class Page(VizroBaseModel):
         #  Probably it's better where it is now since it avoid navigating up the model hierarchy
         #  (action -> page -> figures) and instead just looks down (page -> figures).
         #  Should there be validation inside _on_page_load to check that targets exist and are
-        #  on the page and target-able components (i.e. are dynamic and hence have _action_outputs)?
+        #  on the page and target-able components (that is, are dynamic and hence have _action_outputs)?
         #  It's not needed urgently since we always calculate the targets ourselves so we know they are valid.
         #  Similar comments apply to filter and parameter. Note that export_data has this logic built into the action
         #  itself since the user specifies the target. In future we'll probably have a helper function like
@@ -176,6 +166,7 @@ class Page(VizroBaseModel):
                 State("vizro_controls_store", "data"),
                 State(self.id, "id"),  # Assigned to outermost Div in Dashboard._make_page_layout.
                 prevent_initial_call=True,
+                hidden=True,
             )
 
         # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
@@ -205,6 +196,7 @@ class Page(VizroBaseModel):
                 *selector_values_inputs,
                 *control_ids_states,
                 *control_selector_ids_states,
+                hidden=True,
             )
 
     @_log_call

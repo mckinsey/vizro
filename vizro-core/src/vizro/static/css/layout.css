@@ -18,7 +18,7 @@
 }
 
 #left-side {
-  background-color: var(--left-side-bg);
+  background-color: var(--bs-tertiary-bg);
   display: flex;
   flex-direction: row;
   height: 100%;
@@ -43,7 +43,7 @@
 }
 
 #header {
-  background-color: var(--left-side-bg);
+  background-color: var(--bs-tertiary-bg);
   display: flex;
   height: 60px;
   justify-content: space-between;
@@ -66,6 +66,7 @@
   display: flex;
   gap: 8px;
   height: 100%;
+  width: max-content;
 }
 
 #header-controls {
@@ -174,16 +175,20 @@ a:has(#logo-dark),
   display: none;
 }
 
+[data-bs-theme="dark"] a:has(#logo-dark),
 [data-bs-theme="dark"] #logo-dark {
-  display: inline;
+  align-items: center;
+  display: flex;
 }
 
+[data-bs-theme="light"] a:has(#logo-light),
 [data-bs-theme="light"] #logo-light {
-  display: inline;
+  align-items: center;
+  display: flex;
 }
 
 #collapse-icon.material-symbols-outlined {
-  background-color: var(--left-side-bg);
+  background-color: var(--bs-tertiary-bg);
   border: 1px solid var(--bs-border-color);
   border-radius: 50%;
   color: var(--bs-tertiary-color);
@@ -351,9 +356,35 @@ Current logic:
 }
 
 .card-wrapper-actions > .card {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .card-wrapper-actions > .card:hover {
   border: 1px solid var(--bs-border-color);
+}
+
+#header-left .navbar-top {
+  border: none;
+  display: flex;
+  gap: 2rem;
+  padding: 0;
+  padding-left: 24px;
+}
+
+#header-left .navbar-top .nav-link {
+  border-bottom: 1px solid transparent;
+  font-size: 1rem;
+  padding: 0;
+  white-space: nowrap;
+  width: unset;
+}
+
+#header-left .navbar-top .nav-link:hover {
+  border-bottom: 1px solid var(--bs-primary) !important;
+}
+
+#header-left .navbar-top .nav-link:active,
+#header-left .navbar-top .nav-link.active {
+  border-bottom: 1px solid var(--bs-primary) !important;
+  color: var(--bs-primary) !important;
 }

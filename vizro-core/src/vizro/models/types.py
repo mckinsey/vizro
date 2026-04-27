@@ -456,9 +456,9 @@ def _pio_templates_default():
         template_changed = True
         pio.templates.default = "vizro_dark"
 
-    # Revert the template. This is done in a try/finally so that if the code wrapped inside the context manager (i.e.
-    # plotting functions) raises an exception, pio.templates.default is still reverted. This is not very important
-    # but easy to achieve.
+    # Revert the template. This is done in a try/finally so that if the code wrapped inside the context manager
+    # (that is, plotting functions) raises an exception, pio.templates.default is still reverted. This is not very
+    # important but easy to achieve.
     try:
         # This will always be vizro_light or vizro_dark and corresponds to the default theme that has been set.
         yield pio.templates.default
@@ -580,7 +580,7 @@ class capture:
             # The "normal" case where we just capture the function call.
             @functools.wraps(func)
             def wrapped(*args, **kwargs) -> CapturedCallable:
-                # Note this is basically the same as partial(func, *args, **kwargs)
+                # Note this is the same as partial(func, *args, **kwargs)
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
                 captured_callable._mode = self._mode
                 captured_callable._model_example = self._model_example
@@ -640,12 +640,14 @@ class _OptionsDictType(TypedDict):
 OptionsType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date] | list[_OptionsDictType]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
-# All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
+# All the below types rely on models and so must use ForwardRef (that is, "Checklist" rather than actual
+# Checklist class).
 SelectorType = Annotated[
-    "Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch",
+    "Cascader | Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch",
     Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
-"""Discriminated union. Type of selector to be used inside a control: [`Checklist`][vizro.models.Checklist],
+"""Discriminated union. Type of selector to be used inside a control: [`Cascader`][vizro.models.Cascader],
+[`Checklist`][vizro.models.Checklist],
 [`DatePicker`][vizro.models.DatePicker], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
 [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider] or [`Switch`][vizro.models.Switch]."""
 

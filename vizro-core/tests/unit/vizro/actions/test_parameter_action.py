@@ -15,28 +15,37 @@ from vizro.managers import data_manager, model_manager
 def target_scatter_parameter_y(request, gapminder_2007, scatter_params):
     y = request.param
     scatter_params["y"] = y
-    return px.scatter(gapminder_2007, **scatter_params)
+    fig = px.scatter(gapminder_2007, **scatter_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
 def target_scatter_matrix_parameter_dimensions(request, iris, scatter_matrix_params):
     dimensions = request.param
     scatter_matrix_params["dimensions"] = dimensions
-    return px.scatter_matrix(iris, **scatter_matrix_params)
+
+    fig = px.scatter_matrix(iris, **scatter_matrix_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
 def target_scatter_parameter_hover_data(request, gapminder_2007, scatter_params):
     hover_data = request.param
     scatter_params["hover_data"] = hover_data
-    return px.scatter(gapminder_2007, **scatter_params)
+    fig = px.scatter(gapminder_2007, **scatter_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
 def target_box_parameter_y(request, gapminder_2007, box_params):
     y = request.param
     box_params["y"] = y
-    return px.box(gapminder_2007, **box_params)
+    fig = px.box(gapminder_2007, **box_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
@@ -44,7 +53,9 @@ def target_scatter_parameter_y_and_x(request, gapminder_2007, scatter_params):
     y, x = request.param
     scatter_params["y"] = y
     scatter_params["x"] = x
-    return px.scatter(gapminder_2007, **scatter_params)
+    fig = px.scatter(gapminder_2007, **scatter_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
@@ -52,13 +63,17 @@ def target_scatter_parameter_data_frame_first_n_last_n(
     request, gapminder_dynamic_first_n_last_n_function, scatter_params
 ):
     first_n_last_n_args = request.param
-    return px.scatter(gapminder_dynamic_first_n_last_n_function(**first_n_last_n_args), **scatter_params)
+    fig = px.scatter(gapminder_dynamic_first_n_last_n_function(**first_n_last_n_args), **scatter_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
 def target_box_parameter_data_frame_first_n_last_n(request, gapminder_dynamic_first_n_last_n_function, box_params):
     first_n_last_n_args = request.param
-    return px.box(gapminder_dynamic_first_n_last_n_function(**first_n_last_n_args), **box_params)
+    fig = px.box(gapminder_dynamic_first_n_last_n_function(**first_n_last_n_args), **box_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
@@ -66,7 +81,9 @@ def target_box_parameter_y_and_x(request, gapminder_2007, box_params):
     y, x = request.param
     box_params["y"] = y
     box_params["x"] = x
-    return px.box(gapminder_2007, **box_params)
+    fig = px.box(gapminder_2007, **box_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
@@ -256,6 +273,32 @@ class TestParameter:
         y_parameter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function(_controls=None)
+        expected = {"scatter_chart": target_scatter_parameter_y}
+
+        assert result == expected
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
+    @pytest.mark.parametrize(
+        "ctx_parameter_y, target_scatter_parameter_y",
+        [("pop", "pop"), ("gdpPercap", "gdpPercap"), ("NONE", None)],
+        indirect=True,
+    )
+    def test_one_parameter_one_target_cascader(self, ctx_parameter_y, target_scatter_parameter_y):
+        y_parameter = vm.Parameter(
+            id="test_parameter",
+            targets=["scatter_chart.y"],
+            selector=vm.Cascader(
+                id="y_parameter",
+                options={"Metrics": ["lifeExp", "pop", "gdpPercap"]},
+                value="lifeExp",
+                multi=False,
+            ),
+        )
+        model_manager["test_page"].controls = [y_parameter]
+
+        y_parameter.pre_build()
+
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_parameter_y}
 

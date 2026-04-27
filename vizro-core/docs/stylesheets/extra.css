@@ -37,9 +37,87 @@
   --md-code-hl-color: #119bec3e;
 }
 
-.md-typeset th,
-td:not([class]):not(:last-child) {
-  border-right: 1px solid lightgrey;
+/* Pydantic field spacy layout styling */
+.pydantic-field-spacy {
+  font-size: 0.8em;
+  margin: 1em 0;
+}
+
+.pydantic-field-header {
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  display: flex;
+  font-weight: 700;
+  padding: 0.5em 0;
+}
+
+.pydantic-field-item {
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+  display: flex;
+  padding: 1em 0.5em;
+  transition: background-color 0.2s ease;
+}
+
+.pydantic-field-item:first-of-type {
+  border-top: none;
+}
+
+.pydantic-field-item:hover {
+  background-color: var(--md-default-fg-color--lightest);
+}
+
+.pydantic-field-item:last-child {
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.pydantic-field-header .field-name,
+.pydantic-field-item .field-name {
+  flex-shrink: 0;
+  padding-right: 1.5em;
+  width: 120px;
+}
+
+.pydantic-field-item .field-name code {
+  background: var(--md-code-bg-color);
+  font-size: 0.95em;
+  padding: 0.1em 0.3em;
+}
+
+.pydantic-field-header .field-content,
+.pydantic-field-item .field-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.pydantic-field-item .field-description {
+  margin-bottom: 0.5em;
+}
+
+.pydantic-field-item .field-description p {
+  margin: 0;
+}
+
+.pydantic-field-item .field-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.pydantic-field-item .field-type,
+.pydantic-field-item .field-default {
+  font-size: 0.9em;
+}
+
+.pydantic-field-item .field-type strong,
+.pydantic-field-item .field-default strong {
+  color: var(--md-default-fg-color);
+  font-weight: 700;
+}
+
+.pydantic-field-item .field-type code,
+.pydantic-field-item .field-default code {
+  background: var(--md-code-bg-color);
+  font-size: 0.95em;
+  padding: 0.1em 0.3em;
 }
 
 :root {
@@ -61,48 +139,4 @@ td:not([class]):not(:last-child) {
 .md-typeset .details > summary::before {
   background-color: rgb(3, 3, 3);
   mask-image: var(--md-admonition-icon--details);
-}
-
-.md-content:has(.markdown-buttons) h1 {
-  margin-bottom: 0.5rem;
-}
-
-.markdown-buttons {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 1rem;
-}
-
-.markdown-buttons button {
-  align-items: center;
-  background: none;
-  border-bottom: 1px solid var(--md-primary-fg-color);
-  cursor: pointer;
-  display: flex;
-  font-size: 0.6rem;
-  gap: 4px;
-  justify-content: center;
-  padding: 4px 8px;
-}
-
-.markdown-buttons button#md-copy {
-  width: 125px;
-}
-
-.markdown-buttons button span {
-  font-size: 20px;
-}
-
-.material-symbols-outlined.loading {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
 }

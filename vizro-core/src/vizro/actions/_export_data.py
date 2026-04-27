@@ -19,11 +19,6 @@ class export_data(_AbstractAction):
     Abstract: Usage documentation
         [How to export data](../user-guides/data-actions.md#export-data)
 
-    Args:
-        targets (list[ModelID]): List of target component ids for which to download data. If none are given then
-            download data from all components on the page.
-        file_format (Literal["csv", "xlsx"]): Format of downloaded files. Defaults to `"csv"`.
-
     Example:
         ```python
         import vizro.actions as va
@@ -41,9 +36,7 @@ class export_data(_AbstractAction):
         description="List of target component ids for which to download data. If none are given then "
         "download data from all components on the page.",
     )
-    file_format: Literal["csv", "xlsx"] = Field(
-        default="csv", description="Format of downloaded files. Defaults to `'csv'`."
-    )
+    file_format: Literal["csv", "xlsx"] = Field(default="csv", description="Format of downloaded files.")
 
     @_log_call
     def pre_build(self):
@@ -97,7 +90,7 @@ class export_data(_AbstractAction):
     #  to use a single built-in vizro_download component.
     #  This would mean we don't need to provide dash_components any more.
     #  If it turns out in https://github.com/McK-Internal/vizro-internal/issues/1612 that we need dash_components anyway
-    #  to do e.g. synced filters between pages then this change becomes basically pointless.
+    #  to do e.g. synced filters between pages then this change becomes pointless.
 
     @property
     def _transformed_outputs(self) -> dict[str, Output]:

@@ -1,5 +1,5 @@
 .card-kpi {
-  border-left: 4px solid var(--bs-body-color);
+  border-left: 4px solid var(--bs-gray);
   height: 100%;
   padding: 0.75rem;
 }
@@ -10,7 +10,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 */
 @font-face {
   font-display: block;
-  font-family: 'Material Symbols Outlined';
+  font-family: "Material Symbols Outlined";
   font-style: normal;
   font-weight: 400;
   src: url("./fonts/material-symbols-outlined.woff2") format("woff2");
@@ -19,8 +19,8 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 .material-symbols-outlined {
   direction: ltr;
   display: inline-block;
-  font-family: 'Material Symbols Outlined', sans-serif;
-  font-feature-settings: 'liga';
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-feature-settings: "liga";
   font-size: 24px;
   -webkit-font-smoothing: antialiased;
   font-style: normal;
@@ -78,23 +78,23 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .card-kpi .color-pos.card-footer {
-  color: var(--bs-blue);
+  color: var(--bs-success);
 }
 
 .card-kpi .color-neg.card-footer {
-  color: var(--bs-pink);
+  color: var(--bs-danger);
 }
 
 .card-kpi:has(.color-pos) {
-  border-left: 4px solid var(--bs-blue);
+  border-left: 4px solid var(--bs-success);
 }
 
 .card-kpi:has(.color-neg) {
-  border-left: 4px solid var(--bs-pink);
+  border-left: 4px solid var(--bs-danger);
 }
 
 .is-clickable > .card-kpi {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .is-clickable > .card-kpi:hover {
