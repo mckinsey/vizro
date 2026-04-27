@@ -33,6 +33,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" integrity="sha512-AKaNmg8COK0zEbjTdMHJAPJ0z6VeNqvRvH4/d5M4sHJbQQUToMBtodq4HaV4fa+WV2UTfoperElm66c9/8cKmQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-highlight/prism-line-highlight.min.js" integrity="sha512-255MpVHZHmxNdOj/PivQ+WSTYFjBxTMfmIszxwsJobUeaoDNUAnAQjYF5TznbiZXrXqpCy8q4QyvJzhykpof3Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Fuse.js for fuzzy search (loaded before script.js; both deferred so order is preserved) -->
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script src="assets/js/script.js" defer></script>
   </head>
   <body>
@@ -483,7 +485,13 @@
                 </div>
               </div>
               <div class="search-container">
-                <div class="search-results" id="search-results"></div>
+                <div
+                  class="search-results"
+                  id="search-results"
+                  role="status"
+                  aria-live="polite"
+                  aria-atomic="true"
+                ></div>
               </div>
 
               <!-- Components Category -->
