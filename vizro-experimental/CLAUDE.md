@@ -88,9 +88,20 @@ layout in miniature, so graduation is a mechanical move.
    e.g. `examples/chat_component/actions.py`). Leave `examples/scratch_dev/`
    as the shared per-PR sandbox — do *not* create `examples/<feature>/scratch/`.
 
-8. **Docs**: add a how-to guide at `docs/pages/guides/<feature>-*.md` and add
-   the feature's modules to `docs/pages/API-reference/API-reference.md`
-   (mkdocstrings renders from docstrings). Update `nav` in `zensical.toml`.
+8. **Docs**: add a sibling top-level group in `zensical.toml`'s `nav` (next to
+   `Chat`) — only the feature group becomes a horizontal nav tab. Each feature
+   owns its full doc subtree under `docs/pages/<feature>/`: how-to guides as
+   individual pages plus an `api-reference.md` (mkdocstrings renders from
+   docstrings). Inside the tab, the sidebar should have a `How-to guides`
+   group and an `API reference` entry. If the feature has a *sub-feature* with
+   meaningfully different concepts (like Chat → "Chat component" vs.
+   "Chat popup"), nest one more level: each sub-feature gets its own sidebar
+   group with its own how-to(s) and API reference (e.g.
+   `popup-api-reference.md`). Don't promote sub-features to top-level tabs —
+   keep one tab per feature so the horizontal nav stays scannable. The
+   grouping makes `vizro-experimental` scale to many features without one
+   section dominating the sidebar — and a feature's whole docs subtree moves
+   cleanly when it graduates to `vizro-core`.
 
 9. **Changelog**: `hatch run changelog:add` and write an `### Added` entry.
 

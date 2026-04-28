@@ -72,6 +72,11 @@ installer = "uv"
 
 [envs.docs.scripts]
 build = "zensical build --clean"
+# Disable warnings on the linkcheck so that HTTP redirects are accepted. We could ignore only that warning and specify
+# more advanced settings using a linkcheckerrc config file.
+# The github.com/.../vizro-experimental ignores are temporary: the URLs 404 until this branch merges to main, after
+# which they resolve. Once the package is on main, the two ignore-url entries can be removed.
+link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://github.com/mckinsey/vizro/tree/main/vizro-experimental --ignore-url=https://github.com/mckinsey/vizro/blob/main/vizro-experimental"
 pip = '"{env:HATCH_UV}" pip {args}'
 serve = "zensical serve --open {args}"
 
