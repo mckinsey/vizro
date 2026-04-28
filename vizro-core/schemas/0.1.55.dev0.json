@@ -321,6 +321,132 @@
       "title": "Card",
       "type": "object"
     },
+    "Cascader": {
+      "additionalProperties": false,
+      "description": "Cascader selector for [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [Hierarchical selectors](../user-guides/selectors.md#hierarchical-selectors)",
+      "properties": {
+        "id": {
+          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "cascader",
+          "default": "cascader",
+          "title": "Type",
+          "type": "string"
+        },
+        "options": {
+          "additionalProperties": true,
+          "default": {},
+          "description": "Nested tree: dict keys are branch labels; each branch is a dict or a non-empty list of scalar leaf values (str, int, float, bool, or date).",
+          "title": "Options",
+          "type": "object"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "boolean"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "format": "date",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Selected leaf value, or list of leaves when multi=True. Must be valid for `options`. If omitted, the first parent node is selected.",
+          "title": "Value"
+        },
+        "multi": {
+          "default": true,
+          "description": "Whether to allow selection of multiple values",
+          "title": "Multi",
+          "type": "boolean"
+        },
+        "title": {
+          "default": "",
+          "description": "Title to be displayed",
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
+              },
+              {
+                "$ref": "#/$defs/show_notification"
+              },
+              {
+                "$ref": "#/$defs/update_notification"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "title": "Cascader",
+      "type": "object"
+    },
     "Checklist": {
       "additionalProperties": false,
       "description": "Categorical multi-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)",
@@ -1017,7 +1143,7 @@
     },
     "Filter": {
       "additionalProperties": false,
-      "description": "Filter the data supplied to `targets`.\n\nAbstract: Usage documentation\n    [How to use filters](../user-guides/filters.md)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    vm.Filter(column=\"species\")\n    ```",
+      "description": "Filter the data supplied to `targets`.\n\nAbstract: Usage documentation\n    [How to use filters](../user-guides/filters.md)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    vm.Filter(column=\"species\")\n    vm.Filter(column=[\"continent\", \"country\"])\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1031,9 +1157,19 @@
           "type": "string"
         },
         "column": {
-          "description": "Column of DataFrame to filter.",
-          "title": "Column",
-          "type": "string"
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ],
+          "description": "Name of the column to filter, or an ordered list of column names for a hierarchical filter.",
+          "title": "Column"
         },
         "targets": {
           "default": [],
@@ -1050,6 +1186,7 @@
               "description": "Selectors to be used inside a control.",
               "discriminator": {
                 "mapping": {
+                  "cascader": "#/$defs/Cascader",
                   "checklist": "#/$defs/Checklist",
                   "date_picker": "#/$defs/DatePicker",
                   "dropdown": "#/$defs/Dropdown",
@@ -1061,6 +1198,9 @@
                 "propertyName": "type"
               },
               "oneOf": [
+                {
+                  "$ref": "#/$defs/Cascader"
+                },
                 {
                   "$ref": "#/$defs/Checklist"
                 },
@@ -1692,6 +1832,7 @@
           "description": "Selectors to be used inside a control.",
           "discriminator": {
             "mapping": {
+              "cascader": "#/$defs/Cascader",
               "checklist": "#/$defs/Checklist",
               "date_picker": "#/$defs/DatePicker",
               "dropdown": "#/$defs/Dropdown",
@@ -1703,6 +1844,9 @@
             "propertyName": "type"
           },
           "oneOf": [
+            {
+              "$ref": "#/$defs/Cascader"
+            },
             {
               "$ref": "#/$defs/Checklist"
             },
@@ -2478,7 +2622,7 @@
     },
     "set_control": {
       "additionalProperties": false,
-      "description": "Sets the value of a control, which then updates its targets.\n\nAbstract: Usage documentation\n    [Graph and table interactions](../user-guides/graph-table-actions.md)\n\nThe following Vizro models can be a source of `set_control`:\n\n* [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when user clicks on a row in the table. `value` is string\nspecifying which column in the clicked row is used to set `control`.\n* [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. `value` is string\nthat can be used in two ways to specify how to set `control`:\n\n    * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.\n    * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the\n    trigger data [`clickData[\"points\"][0]`](https://dash.plotly.com/interactive-graphing). This is typically\n    useful for a positional variable, for example `\"x\"`, and does not require setting `custom_data`.\n\n* [`Figure`][vizro.models.Figure]: triggers `set_control` when user clicks on the figure. `value` specifies a\nliteral value to set `control` to.\n* [`Button`][vizro.models.Button]: triggers `set_control` when user clicks on the button. `value` specifies a\nliteral value to set `control` to.\n* [`Card`][vizro.models.Card]: triggers `set_control` when user clicks on the card. `value` specifies a\nliteral value to set `control` to.\n\nExample: `AgGrid` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.AgGrid(\n        figure=dash_ag_grid(iris),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger with `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger without `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.box(iris, x=\"species\", y=\"sepal_length\"),\n        actions=va.set_control(control=\"target_control\", value=\"x\"),\n    )\n    ```\n\nExample: `Figure` as trigger\n    ```python\n    import vizro.actions as va\n    from vizro.figures import kpi_card\n\n    vm.Figure(\n        figure=kpi_card(tips, value_column=\"tip\", title=\"Click KPI to set control to A\"),\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: `Button` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Button(\n        text=\"Click to set control to A\",\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: `Card` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Card(\n        title=\"Click Card to set control to A\",\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```",
+      "description": "Sets the value of a control, which then updates its targets.\n\nAbstract: Usage documentation\n    [Graph and table interactions](../user-guides/graph-table-actions.md)\n\nThe following Vizro models can be a source of `set_control`:\n\n* [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when `cellClicked` or `selectedRows` changes (for example\nafter a cell click or when the row selection changes). `value` can be:\n\n    * `\"cell\"`, `\"column\"`, or `\"row\"` to use the clicked cell's value, column id, or row id respectively.\n    * Any other string to treat as a column name, taking values from the selected row(s).\n* [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. `value` is string\nthat can be used in two ways to specify how to set `control`:\n\n    * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.\n    * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the\n    trigger data [`clickData[\"points\"][0]`](https://dash.plotly.com/interactive-graphing). This is typically\n    useful for a positional variable, for example `\"x\"`, and does not require setting `custom_data`.\n\n* [`Figure`][vizro.models.Figure]: triggers `set_control` when user clicks on the figure. `value` specifies a\nliteral value to set `control` to.\n* [`Button`][vizro.models.Button]: triggers `set_control` when user clicks on the button. `value` specifies a\nliteral value to set `control` to.\n* [`Card`][vizro.models.Card]: triggers `set_control` when user clicks on the card. `value` specifies a\nliteral value to set `control` to.\n\nExample: `AgGrid` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.AgGrid(\n        figure=dash_ag_grid(iris),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger with `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger without `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.box(iris, x=\"species\", y=\"sepal_length\"),\n        actions=va.set_control(control=\"target_control\", value=\"x\"),\n    )\n    ```\n\nExample: `Figure` as trigger\n    ```python\n    import vizro.actions as va\n    from vizro.figures import kpi_card\n\n    vm.Figure(\n        figure=kpi_card(tips, value_column=\"tip\", title=\"Click KPI to set control to A\"),\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: `Button` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Button(\n        text=\"Click to set control to A\",\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: `Card` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Card(\n        title=\"Click Card to set control to A\",\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",

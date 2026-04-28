@@ -234,7 +234,8 @@ class AgGrid(VizroBaseModel):
         self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: dict[str, CallbackTriggerDict]
     ) -> pd.DataFrame:
         """Function to be carried out for `filter_interaction`."""
-        # data_frame is the DF of the target, ie the data to be filtered, hence we cannot get the DF from this model
+        # data_frame is the DF of the target, that is, the data to be filtered, hence we cannot get the DF from
+        # this model
         ctd_cellClicked = ctd_filter_interaction["cellClicked"]
         if not ctd_cellClicked["value"]:
             return data_frame

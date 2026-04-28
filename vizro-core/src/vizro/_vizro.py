@@ -35,7 +35,7 @@ class Vizro:
         """Initialize a Vizro app.
 
         Abstract: Usage documentation
-            [How to run or deploy a dashboard](../user-guides/run-deploy.md/#advanced-dockerfile-configuration)
+            [How to run or deploy a dashboard](../user-guides/run-deploy/#advanced-dockerfile-configuration)
 
         Keyword Arguments:
             **kwargs: Arbitrary keyword arguments passed through to `Dash`, for example `assets_folder`,
@@ -146,7 +146,7 @@ class Vizro:
         self._dashboard = dashboard
 
         # Add data-bs-theme attribute that is always present, even for pages without theme selector,
-        # i.e. the Dash "Loading..." screen.
+        # that is, the Dash "Loading..." screen.
         bootstrap_theme = dashboard.theme.removeprefix("vizro_")
         self.dash.index_string = self.dash.index_string.replace("<html>", f"<html data-bs-theme='{bootstrap_theme}'>")
 

@@ -29,7 +29,7 @@ IMPORTANT:
 - DO NOT show any code or config to the user until you have validated the solution, do not say you are preparing a solution, just do it and validate it
 - ALWAYS CHECK SCHEMA: to start with, or when stuck, try enquiring the schema of the component in question with the `get_model_json_schema` tool (available models see below)
 
-- IF the user has no plan (ie no components or pages), use the config at the bottom of this prompt, OTHERWISE:
+- IF the user has no plan (that is, no components or pages), use the config at the bottom of this prompt, OTHERWISE:
 - make a plan of what components you would like to use, then request all necessary schemas using the `get_model_json_schema` tool
   - start with `Dashboard`, don't forget `Graph`,
   - MUST explicitly set layout (layout setting is NOT optional, contrary to what schema says)
@@ -76,7 +76,7 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
         vm.Container,
         vm.Tabs,
     ],
-    "dynamic components - ie reactive to controls": [vm.Figure, vm.Graph, vm.AgGrid],
+    "dynamic components - that is, reactive to controls": [vm.Figure, vm.Graph, vm.AgGrid],
     "layouts": [vm.Grid, vm.Flex],
     "controls - control display of dynamic components": [vm.Filter, vm.Parameter],
     "selectors - input mechanisms for controls": [

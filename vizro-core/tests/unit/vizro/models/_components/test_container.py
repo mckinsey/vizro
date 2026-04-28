@@ -141,6 +141,14 @@ class TestContainerPreBuildMethod:
                             targets=["graph.custom_data"],
                             selector=vm.Checklist(options=["country", "continent"]),
                         ),
+                        vm.Parameter(
+                            id="parameter_cascader",
+                            targets=["graph.color"],
+                            selector=vm.Cascader(
+                                options={"Color": ["continent", "country"]},
+                                multi=False,
+                            ),
+                        ),
                         # Wrapped parameter to test that _in_container is correctly propagated to the selector:
                         MockControlWrapper(
                             control=vm.Parameter(
@@ -169,6 +177,7 @@ class TestContainerPreBuildMethod:
         assert model_manager["parameter_dropdown"].selector._in_container
         assert model_manager["parameter_radio_items"].selector._in_container
         assert model_manager["parameter_checklist"].selector._in_container
+        assert model_manager["parameter_cascader"].selector._in_container
         assert model_manager["parameter_wrapped"].selector._in_container
         assert model_manager["parameter_wrapped_in_container"].selector._in_container
 

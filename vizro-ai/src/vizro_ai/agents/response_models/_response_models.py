@@ -57,7 +57,7 @@ def _format_and_lint(code_string: str) -> str:
 def _exec_code(code: str, namespace: dict) -> dict:
     """Execute code and return the local dictionary."""
     # Need the global namespace for the imports to work for executed code
-    # Tried just handling it in local scope, ie getting the import statement into ldict, but it didn't work
+    # Tried just handling it in local scope, that is, getting the import statement into ldict, but it didn't work
     # TODO: ideally in future we properly handle process and namespace separation, or even Docke execution
     # TODO: this is also important as it can affect unit-tests influencing one another, which is really not good!
     ldict = {}
