@@ -90,7 +90,7 @@ class export_data(_AbstractAction):
     #  to use a single built-in vizro_download component.
     #  This would mean we don't need to provide dash_components any more.
     #  If it turns out in https://github.com/McK-Internal/vizro-internal/issues/1612 that we need dash_components anyway
-    #  to do e.g. synced filters between pages then this change becomes basically pointless.
+    #  to do e.g. synced filters between pages then this change becomes pointless.
 
     @property
     def _transformed_outputs(self) -> dict[str, Output]:

@@ -42,10 +42,6 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
 
-    [`llms.txt` (stable)](https://vizro.readthedocs.io/llms.txt)
-
-    [`llms-full.txt` (stable)](https://vizro.readthedocs.io/llms-full.txt)
-
 - :fontawesome-solid-book-open:{ .lg .middle } __Find out more__
 
     ---
@@ -53,6 +49,8 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
     [FAQs](pages/explanation/faq.md)
 
     [:sparkles: Cheatsheet :sparkles:](pages/cheatsheet/cheatsheet.html)
+
+    [:sparkles:Components Compendium:sparkles:](pages/components_compendium/index.html)
 
 - :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Get involved__
 

@@ -35,6 +35,46 @@ def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid, stan
                 column="continent",
                 selector=vm.Dropdown(multi=False),
             ),
+            vm.Filter(
+                id="filter_page_1_slider",
+                targets=["table_1"],
+                column="lifeExp",
+                selector=vm.Slider(),
+            ),
+            vm.Filter(
+                id="filter_page_1_range_slider",
+                targets=["table_1"],
+                column="lifeExp",
+                selector=vm.RangeSlider(),
+            ),
+            vm.Filter(
+                id="filter_page_1_boolean",
+                targets=["table_1"],
+                column="is_europe",
+                selector=vm.Switch(),
+            ),
+            vm.Filter(
+                id="filter_page_1_date_picker",
+                targets=["table_1"],
+                column="year",
+                selector=vm.DatePicker(range=False),
+            ),
+            vm.Filter(
+                id="filter_page_1_date_picker_range",
+                targets=["table_1"],
+                column="year",
+                selector=vm.DatePicker(),
+            ),
+            vm.Parameter(
+                id="cascade_param_single",
+                targets=["scatter_chart_1.x"],
+                selector=vm.Cascader(multi=False, options={"K": ["leaf_a", "leaf_b"]}),
+            ),
+            vm.Parameter(
+                id="cascade_param_multi",
+                targets=["scatter_chart_1.y"],
+                selector=vm.Cascader(multi=True, options={"K": ["leaf_a", "leaf_b", "leaf_c"]}),
+            ),
         ],
     )
 
@@ -57,6 +97,27 @@ def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid, stan
         ],
     )
 
+    Vizro._pre_build()
+
+
+@pytest.fixture
+def managers_page_hierarchical_filter_set_control(standard_px_chart):
+    vm.Page(
+        id="hier-set-page",
+        title="hier",
+        components=[
+            vm.Button(id="hier_set_btn", text="Set"),
+            vm.Graph(id="hier_set_chart", figure=standard_px_chart),
+        ],
+        controls=[
+            vm.Filter(
+                id="hier_set_filter",
+                targets=["hier_set_chart"],
+                column=["continent", "country"],
+                selector=vm.Cascader(multi=False),
+            ),
+        ],
+    )
     Vizro._pre_build()
 
 
@@ -150,30 +211,7 @@ class TestSetControlPreBuild:
             TypeError,
             match=re.escape(
                 "Model with ID `scatter_chart_2` used as a `control` in `set_control` action must be a control model "
-                "(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."
-            ),
-        ):
-            action.pre_build()
-
-    @pytest.mark.parametrize(
-        "selector",
-        [vm.Slider, vm.RangeSlider, vm.DatePicker, vm.Switch],
-    )
-    def test_pre_build_control_selector_is_not_categorical(self, selector):
-        # Add control with non-categorical selector to test-page-1
-        model_manager["test-page-1"].controls.append(
-            vm.Filter(id="non_categorical", column="continent", selector=selector())
-        )
-
-        # Add action to relevant component and target a non-categorical control
-        action = set_control(control="non_categorical", value="Europe")
-        model_manager["button_1"].actions = action
-
-        with pytest.raises(
-            TypeError,
-            match=re.escape(
-                "Model with ID `non_categorical` used as a `control` in `set_control` action must be a control model "
-                "(e.g. Filter, Parameter) that uses a categorical selector (e.g. Dropdown, Checklist or RadioItems)."
+                "(e.g. Filter, Parameter)."
             ),
         ):
             action.pre_build()
@@ -248,6 +286,47 @@ class TestSetControlFunction:
             ("filter_page_1", "Europe", ["Europe"]),
             ("filter_page_1", ["Europe"], ["Europe"]),
             ("filter_page_1", ["Asia", "Europe"], ["Asia", "Europe"]),
+            # Single-value numerical control
+            ("filter_page_1_slider", [], no_update),
+            ("filter_page_1_slider", 1, 1),
+            ("filter_page_1_slider", [1], 1),
+            ("filter_page_1_slider", [1, 2], no_update),
+            # Range-value numerical control
+            ("filter_page_1_range_slider", [], no_update),
+            ("filter_page_1_range_slider", 1, [1, 1]),
+            ("filter_page_1_range_slider", [1], [1, 1]),
+            ("filter_page_1_range_slider", [1, 2, 3, 4], [1, 4]),
+            # Single-value boolean control
+            ("filter_page_1_boolean", [], no_update),
+            ("filter_page_1_boolean", True, True),
+            ("filter_page_1_boolean", False, False),
+            ("filter_page_1_boolean", [True], True),
+            ("filter_page_1_boolean", [False], False),
+            ("filter_page_1_boolean", [True, False], no_update),
+            # Single-value temporal control
+            ("filter_page_1_date_picker", [], no_update),
+            ("filter_page_1_date_picker", "1992-01-01", "1992-01-01"),
+            ("filter_page_1_date_picker", ["1992-01-01"], "1992-01-01"),
+            ("filter_page_1_date_picker", ["1992-01-01", "1993-01-01"], no_update),
+            # Range temporal control
+            ("filter_page_1_date_picker_range", [], no_update),
+            ("filter_page_1_date_picker_range", "1992-01-01", ["1992-01-01", "1992-01-01"]),
+            ("filter_page_1_date_picker_range", ["1992-01-01"], ["1992-01-01", "1992-01-01"]),
+            ("filter_page_1_date_picker_range", ["1992-01-01", "1993-01-01"], ["1992-01-01", "1993-01-01"]),
+            (
+                "filter_page_1_date_picker_range",
+                ["1992-01-01", "1993-01-01", "1994-01-01"],
+                ["1992-01-01", "1994-01-01"],
+            ),
+            # Hierarchical single-select
+            ("cascade_param_single", [], no_update),
+            ("cascade_param_single", "leaf_a", "leaf_a"),
+            ("cascade_param_single", ["leaf_b"], "leaf_b"),
+            ("cascade_param_single", ["leaf_a", "leaf_b"], no_update),
+            # Hierarchical multi-select
+            ("cascade_param_multi", [], []),
+            ("cascade_param_multi", "leaf_a", ["leaf_a"]),
+            ("cascade_param_multi", ["leaf_b", "leaf_c"], ["leaf_b", "leaf_c"]),
         ],
     )
     def test_function_different_value_for_different_controls(self, control, value, expected_result):
@@ -323,3 +402,12 @@ class TestSetControlOutputs:
         action.pre_build()
 
         assert action.outputs == ["vizro_url.pathname", "vizro_url.search"]
+
+
+@pytest.mark.usefixtures("managers_page_hierarchical_filter_set_control")
+class TestSetControlHierarchicalFilter:
+    def test_pre_build_same_page(self):
+        action = set_control(control="hier_set_filter", value="Germany")
+        model_manager["hier_set_btn"].actions = action
+        action.pre_build()
+        assert action._same_page is True

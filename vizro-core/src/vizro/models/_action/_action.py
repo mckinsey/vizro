@@ -279,7 +279,7 @@ class _BaseAction(VizroBaseModel):
             # _AbstractAction._transformed_outputs does the same validation manually with TypeAdapter.
             return Output(*self._transform_dependency(output, type="output").split("."), allow_duplicate=True)
 
-        # By this point self._validated_outputs is guaranteed to be OutputsType i.e. list[str] or dict[str, str].
+        # By this point self._validated_outputs is guaranteed to be OutputsType, that is, list[str] or dict[str, str].
         # A single str value will have been coerced to list already.
         if isinstance(self._validated_outputs, list):
             callback_outputs = [_transform_output(output) for output in self._validated_outputs]
