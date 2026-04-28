@@ -26,59 +26,65 @@ Vision models accept content as a list of `input_text` and `input_image` parts �
 
 !!! example "Chat that analyzes uploaded images"
 
-    ```python
-    from collections.abc import Iterator
+    === "app.py"
 
-    from openai import OpenAI
-    from pydantic import Field
+        ```python hl_lines="17 46"
+        from collections.abc import Iterator
 
-    import vizro.models as vm
-    from vizro import Vizro
-    from vizro_experimental.chat import Chat, Message, StreamingChatAction
+        from openai import OpenAI
+        from pydantic import Field
 
-
-    class OpenAIVisionChat(StreamingChatAction):
-        model: str = Field(default="gpt-4.1-nano")
-
-        def generate_response(
-            self,
-            messages: list[Message],
-            uploaded_files: list[dict] | None = None,
-        ) -> Iterator[str]:
-            prior = [{"role": m["role"], "content": m["content"]} for m in messages[:-1]]
-            last_text = messages[-1]["content"]
-
-            content = [{"type": "input_text", "text": last_text}]
-            for file in uploaded_files or []:
-                if file["content"].startswith("data:image/"):
-                    content.append({"type": "input_image", "image_url": file["content"]})
-
-            client = OpenAI()
-            response = client.responses.create(
-                model=self.model,
-                input=[*prior, {"role": "user", "content": content}],
-                stream=True,
-            )
-            for event in response:
-                if event.type == "response.output_text.delta":
-                    yield event.delta
+        import vizro.models as vm
+        from vizro import Vizro
+        from vizro_experimental.chat import Chat, Message, StreamingChatAction
 
 
-    vm.Page.add_type("components", Chat)
+        class OpenAIVisionChat(StreamingChatAction):
+            model: str = Field(default="gpt-4.1-nano")
 
-    page = vm.Page(
-        title="Vision chat",
-        components=[
-            Chat(
-                actions=[OpenAIVisionChat()],
-                placeholder="Upload images and ask questions about them…",
-                file_upload=True,
-            )
-        ],
-    )
+            def generate_response(
+                self,
+                messages: list[Message],
+                uploaded_files: list[dict] | None = None,
+            ) -> Iterator[str]:
+                prior = [{"role": m["role"], "content": m["content"]} for m in messages[:-1]]
+                last_text = messages[-1]["content"]
 
-    Vizro().build(vm.Dashboard(pages=[page])).run()
-    ```
+                content = [{"type": "input_text", "text": last_text}]
+                for file in uploaded_files or []:
+                    if file["content"].startswith("data:image/"):
+                        content.append({"type": "input_image", "image_url": file["content"]})
+
+                client = OpenAI()
+                response = client.responses.create(
+                    model=self.model,
+                    input=[*prior, {"role": "user", "content": content}],
+                    stream=True,
+                )
+                for event in response:
+                    if event.type == "response.output_text.delta":
+                        yield event.delta
+
+
+        vm.Page.add_type("components", Chat)
+
+        page = vm.Page(
+            title="Vision chat",
+            components=[
+                Chat(
+                    actions=[OpenAIVisionChat()],
+                    placeholder="Upload images and ask questions about them…",
+                    file_upload=True,
+                )
+            ],
+        )
+
+        Vizro().build(vm.Dashboard(pages=[page])).run()
+        ```
+
+    === "Result"
+
+        ![File upload](../../assets/images/file-upload.png)
 
 ## Handle non-image files
 

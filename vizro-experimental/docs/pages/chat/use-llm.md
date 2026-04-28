@@ -18,38 +18,44 @@ Add a Pydantic field for the model name so it's configurable per `Chat` instance
 
 !!! example "Chat backed by Claude"
 
-    ```python
-    from anthropic import Anthropic
-    from pydantic import Field
+    === "app.py"
 
-    import vizro.models as vm
-    from vizro import Vizro
-    from vizro_experimental.chat import Chat, ChatAction, Message
+        ```python hl_lines="13-20"
+        from anthropic import Anthropic
+        from pydantic import Field
 
-
-    class ClaudeChat(ChatAction):
-        model: str = Field(default="claude-haiku-4-5-20251001", description="Anthropic model name.")
-
-        def generate_response(self, messages: list[Message]) -> str:
-            client = Anthropic()
-            api_messages = [{"role": m["role"], "content": m["content"]} for m in messages]
-            response = client.messages.create(
-                model=self.model,
-                max_tokens=1024,
-                messages=api_messages,
-            )
-            return response.content[0].text
+        import vizro.models as vm
+        from vizro import Vizro
+        from vizro_experimental.chat import Chat, ChatAction, Message
 
 
-    vm.Page.add_type("components", Chat)
+        class ClaudeChat(ChatAction):
+            model: str = Field(default="claude-haiku-4-5-20251001", description="Anthropic model name.")
 
-    page = vm.Page(
-        title="LLM chat",
-        components=[Chat(actions=[ClaudeChat()])],
-    )
+            def generate_response(self, messages: list[Message]) -> str:
+                client = Anthropic()
+                api_messages = [{"role": m["role"], "content": m["content"]} for m in messages]
+                response = client.messages.create(
+                    model=self.model,
+                    max_tokens=1024,
+                    messages=api_messages,
+                )
+                return response.content[0].text
 
-    Vizro().build(vm.Dashboard(pages=[page])).run()
-    ```
+
+        vm.Page.add_type("components", Chat)
+
+        page = vm.Page(
+            title="LLM chat",
+            components=[Chat(actions=[ClaudeChat()])],
+        )
+
+        Vizro().build(vm.Dashboard(pages=[page])).run()
+        ```
+
+    === "Result"
+
+        ![Claude chat](../../assets/images/use-llm.png)
 
 The action returns the full assistant message in one shot. To stream tokens as they arrive, see [Stream text responses](streaming-chat.md).
 

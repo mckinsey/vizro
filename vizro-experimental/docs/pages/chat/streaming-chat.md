@@ -18,44 +18,50 @@ Subclass [`StreamingChatAction`][vizro_experimental.chat.StreamingChatAction] an
 
 !!! example "OpenAI streaming chat"
 
-    ```python
-    from collections.abc import Iterator
+    === "app.py"
 
-    from openai import OpenAI
-    from pydantic import Field
+        ```python hl_lines="22 24-26"
+        from collections.abc import Iterator
 
-    import vizro.models as vm
-    from vizro import Vizro
-    from vizro_experimental.chat import Chat, Message, StreamingChatAction
+        from openai import OpenAI
+        from pydantic import Field
 
-
-    class OpenAIStreamingChat(StreamingChatAction):
-        model: str = Field(default="gpt-4.1-nano")
-
-        def generate_response(self, messages: list[Message]) -> Iterator[str]:
-            client = OpenAI()
-            api_messages = [{"role": m["role"], "content": m["content"]} for m in messages]
-            response = client.responses.create(
-                model=self.model,
-                input=api_messages,
-                instructions="Be polite and creative.",
-                store=False,
-                stream=True,
-            )
-            for event in response:
-                if event.type == "response.output_text.delta":
-                    yield event.delta
+        import vizro.models as vm
+        from vizro import Vizro
+        from vizro_experimental.chat import Chat, Message, StreamingChatAction
 
 
-    vm.Page.add_type("components", Chat)
+        class OpenAIStreamingChat(StreamingChatAction):
+            model: str = Field(default="gpt-4.1-nano")
 
-    page = vm.Page(
-        title="Streaming chat",
-        components=[Chat(actions=[OpenAIStreamingChat()])],
-    )
+            def generate_response(self, messages: list[Message]) -> Iterator[str]:
+                client = OpenAI()
+                api_messages = [{"role": m["role"], "content": m["content"]} for m in messages]
+                response = client.responses.create(
+                    model=self.model,
+                    input=api_messages,
+                    instructions="Be polite and creative.",
+                    store=False,
+                    stream=True,
+                )
+                for event in response:
+                    if event.type == "response.output_text.delta":
+                        yield event.delta
 
-    Vizro().build(vm.Dashboard(pages=[page])).run()
-    ```
+
+        vm.Page.add_type("components", Chat)
+
+        page = vm.Page(
+            title="Streaming chat",
+            components=[Chat(actions=[OpenAIStreamingChat()])],
+        )
+
+        Vizro().build(vm.Dashboard(pages=[page])).run()
+        ```
+
+    === "Result"
+
+        ![Streaming chat](../../assets/images/streaming-chat.png)
 
 For a non-streaming version of the same pattern (full reply in one shot), see [Use a real LLM](use-llm.md).
 

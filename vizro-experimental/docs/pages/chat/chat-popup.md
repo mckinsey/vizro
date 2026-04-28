@@ -18,30 +18,36 @@ Call [`add_chat_popup`][vizro_experimental.chat.popup.popup.add_chat_popup] afte
 
 !!! example "Popup with the auto-agent"
 
-    ```python
-    import vizro.models as vm
-    import vizro.plotly.express as px
-    from vizro import Vizro
-    from vizro.managers import data_manager
-    from vizro_experimental.chat.popup import add_chat_popup
+    === "app.py"
 
-    data_manager["iris"] = px.data.iris()
+        ```python hl_lines="21"
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.managers import data_manager
+        from vizro_experimental.chat.popup import add_chat_popup
 
-    dashboard = vm.Dashboard(
-        pages=[
-            vm.Page(
-                title="Iris",
-                components=[
-                    vm.Graph(figure=px.scatter("iris", x="sepal_width", y="sepal_length"))
-                ],
-            )
-        ]
-    )
+        data_manager["iris"] = px.data.iris()
 
-    app = Vizro().build(dashboard)
-    add_chat_popup(app)
-    app.run()
-    ```
+        dashboard = vm.Dashboard(
+            pages=[
+                vm.Page(
+                    title="Iris",
+                    components=[
+                        vm.Graph(figure=px.scatter("iris", x="sepal_width", y="sepal_length"))
+                    ],
+                )
+            ]
+        )
+
+        app = Vizro().build(dashboard)
+        add_chat_popup(app)
+        app.run()
+        ```
+
+    === "Result"
+
+        ![Chat popup](../../assets/images/chat-popup.png)
 
 The popup auto-discovers `iris` from `data_manager` and includes its schema and a sample of rows in the agent's system prompt. Questions like *"how many rows does the iris dataset have?"* or *"what columns are available?"* now work out of the box.
 

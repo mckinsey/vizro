@@ -29,60 +29,66 @@ The action below decodes the first uploaded file into a `pandas.DataFrame`, pass
 
 !!! example "Chat that turns a file plus a prompt into a chart"
 
-    ```python
-    import base64
-    import io
+    === "app.py"
 
-    import pandas as pd
-    from dash import dcc
-    from vizro_ai.agents import chart_agent
+        ```python hl_lines="41-47"
+        import base64
+        import io
 
-    import vizro.models as vm
-    from vizro import Vizro
-    from vizro_experimental.chat import Chat, ChatAction, Message
+        import pandas as pd
+        from dash import dcc
+        from vizro_ai.agents import chart_agent
 
-
-    class VizroAIChat(ChatAction):
-        def generate_response(
-            self,
-            messages: list[Message],
-            uploaded_files: list[dict] | None = None,
-        ) -> dcc.Graph | str:
-            if not uploaded_files:
-                return "Please upload a CSV or Excel file first."
-
-            file = uploaded_files[0]
-            raw = base64.b64decode(file["content"].split(",", 1)[1])
-            if file["filename"].endswith(".csv"):
-                df = pd.read_csv(io.BytesIO(raw))
-            else:
-                df = pd.read_excel(io.BytesIO(raw))
-
-            chart = chart_agent(df=df, user_prompt=messages[-1]["content"])
-            return dcc.Graph(figure=chart.figure)
+        import vizro.models as vm
+        from vizro import Vizro
+        from vizro_experimental.chat import Chat, ChatAction, Message
 
 
-    vm.Page.add_type("components", Chat)
+        class VizroAIChat(ChatAction):
+            def generate_response(
+                self,
+                messages: list[Message],
+                uploaded_files: list[dict] | None = None,
+            ) -> dcc.Graph | str:
+                if not uploaded_files:
+                    return "Please upload a CSV or Excel file first."
 
-    page = vm.Page(
-        title="Combined features",
-        components=[
-            Chat(
-                actions=[VizroAIChat()],
-                placeholder="Upload a file and describe the chart you want…",
-                file_upload=True,
-                example_questions=[
-                    "Show a bar chart of the data",
-                    "Create a scatter plot of price vs quantity",
-                    "Make a pie chart showing distribution",
-                    "Plot a line chart over time",
-                ],
-            )
-        ],
-    )
+                file = uploaded_files[0]
+                raw = base64.b64decode(file["content"].split(",", 1)[1])
+                if file["filename"].endswith(".csv"):
+                    df = pd.read_csv(io.BytesIO(raw))
+                else:
+                    df = pd.read_excel(io.BytesIO(raw))
 
-    Vizro().build(vm.Dashboard(pages=[page])).run()
-    ```
+                chart = chart_agent(df=df, user_prompt=messages[-1]["content"])
+                return dcc.Graph(figure=chart.figure)
+
+
+        vm.Page.add_type("components", Chat)
+
+        page = vm.Page(
+            title="Combined features",
+            components=[
+                Chat(
+                    actions=[VizroAIChat()],
+                    placeholder="Upload a file and describe the chart you want…",
+                    file_upload=True,
+                    example_questions=[
+                        "Show a bar chart of the data",
+                        "Create a scatter plot of price vs quantity",
+                        "Make a pie chart showing distribution",
+                        "Plot a line chart over time",
+                    ],
+                )
+            ],
+        )
+
+        Vizro().build(vm.Dashboard(pages=[page])).run()
+        ```
+
+    === "Result"
+
+        ![Combined features](../../assets/images/combine-features.png)
 
 The chat input now pairs two on-ramps:
 
