@@ -209,6 +209,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --hover-bg-subtle: var(--bs-gray-900);
   --Dash-Fill-Interactive-Weak: var(--bs-dark-bg-subtle);
   --input-field-bg: var(--bs-primary-bg-subtle);
+  --bs-card-bg-inverted: #f5f6f6;
 }
 
 [data-bs-theme="light"] {
@@ -221,6 +222,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-dropdown-bg: var(--bs-body-bg); /* Dropdown bg on left-side */
   --left-side-bg: var(--bs-body-bg);
   --Dash-Fill-Interactive-Weak: var(--bs-light-bg-subtle);
+  --bs-card-bg-inverted: #272a35;
 
   /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white. */
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
