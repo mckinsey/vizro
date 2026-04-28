@@ -5,6 +5,7 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models.types import capture
 from vizro.managers import data_manager
+from vizro.actions import update_figures
 
 
 df = px.data.iris()
@@ -42,7 +43,7 @@ page_0_1 = vm.Page(
 
 page_1_1 = vm.Page(
     id="page_1_1",
-    title="Apply controls on button click",
+    title="Apply the filter on the parameter change",
     components=[
         vm.Graph(
             id="p11_graph",
@@ -66,7 +67,44 @@ page_1_1 = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(pages=[page_0_1, page_1_1])
+# ====== **NEW** Apply controls on button click ======
+
+vm.Page.add_type("controls", vm.Button)
+
+page_2_1 = vm.Page(
+    id="page_2_1",
+    title="Apply controls on button click",
+    components=[
+        vm.Graph(
+            id="p21_graph",
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
+        vm.Text(id="p21_text", text="Placeholder"),
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+            targets=["p21_graph"],
+            selector=vm.RadioItems(
+                title="Filter that does NOT auto-apply, but is taken into account when its target Graph is updated.",
+                actions=vm.Action(function=capture("action")(lambda _trigger: _trigger)(), outputs="p21_text"),
+            ),
+        ),
+        vm.Parameter(
+            targets=["p21_graph.x"],
+            selector=vm.RadioItems(
+                title="Parameter that does NOT auto-apply, but is taken into account when its target Graph is updated.",
+                options=["sepal_width", "sepal_length"],
+                actions=vm.Action(function=capture("action")(lambda _trigger: _trigger)(), outputs="p21_text"),
+            ),
+        ),
+        vm.Button(text="Apply controls", actions=update_figures()),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page_0_1, page_1_1, page_2_1])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

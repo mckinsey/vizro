@@ -7,6 +7,7 @@ from dash import html
 from dash.development.base_component import Component
 from pydantic import ValidationInfo
 
+from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.managers import model_manager
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 
@@ -127,7 +128,6 @@ def make_actions_chain(self):
     Table and AgGrid. Even though it's a model validator it is also run on assignment e.g. selector.actions = ...
     """
     from vizro.actions import export_data, filter_interaction
-    from vizro.actions._on_page_load import _on_page_load
 
     converted_actions = []
 
@@ -164,7 +164,8 @@ def make_actions_chain(self):
         action._first_in_chain_trigger = model_action_trigger
 
         # The actions chain guard should be called only for on page load.
-        action._prevent_initial_call_of_guard = not isinstance(action, _on_page_load)
+        # TODO AM-PP OQ: Revisit this and make the implementation better if possible.
+        action._prevent_initial_call_of_guard = not action.id.startswith(ON_PAGE_LOAD_ACTION_PREFIX)
 
         # Temporary workaround for lookups in filter_interaction and set_control. This should become unnecessary once
         # the model manager supports `parent_model` access for all Vizro models.
