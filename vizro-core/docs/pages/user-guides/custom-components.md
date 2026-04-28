@@ -156,7 +156,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 
 You may want to use this strategy to:
 
-- Create a new component that does not exist as a [built-ninVizro model][vizro.models].
+- Create a new component that does not exist as a [built-in Vizro model][vizro.models].
 - Make extensive changes to an existing component.
 - Combine multiple components into a single higher-level component, similar to a Dash [All-in-One component](https://dash.plotly.com/all-in-one-components).
 

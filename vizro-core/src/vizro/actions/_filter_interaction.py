@@ -19,12 +19,7 @@ from vizro.models.types import FigureType, ModelID, _Controls
     category=FutureWarning,
 )
 class filter_interaction(_AbstractAction):
-    """Filters targeted graph, tables and figures when a source graph or table is clicked.
-
-    Args:
-        targets (list[ModelID]): Target component to be affected by filter. If none are given then target all
-            valid components on the page.
-    """
+    """Filters targeted graph, tables and figures when a source graph or table is clicked."""
 
     type: Literal["filter_interaction"] = "filter_interaction"
 

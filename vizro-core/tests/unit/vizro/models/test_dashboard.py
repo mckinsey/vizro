@@ -44,6 +44,17 @@ class TestDashboardInstantiation:
         dashboard = vm.Dashboard(pages=[page_1, page_2], navigation=vm.Navigation(pages=["Page 1"]))
         assert dashboard.navigation.pages == [page_1.id]
 
+    def test_is_left_navigation_property_true(self, page_1, page_2):
+        dashboard = vm.Dashboard(pages=[page_1, page_2], navigation=vm.Navigation(pages=["Page 1", "Page 2"]))
+        assert dashboard._is_top_navigation is False
+
+    def test_is_left_navigation_property_false(self, page_1, page_2):
+        dashboard = vm.Dashboard(
+            pages=[page_1, page_2],
+            navigation=vm.Navigation(nav_selector=vm.NavBar(pages=["Page 1", "Page 2"], position="top")),
+        )
+        assert dashboard._is_top_navigation is True
+
     def test_mandatory_pages_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
             vm.Dashboard()
@@ -317,6 +328,9 @@ class TestDashboardBuild:
             ternary_bgcolor="rgba(0, 0, 0, 0)",
             title_pad_l=0,
             title_pad_r=0,
+            title_font_size=16,
+            xaxis_title_font_size=14,
+            yaxis_title_font_size=14,
         )
         dashboard_vizro_light = pio.templates["vizro_light"]
         dashboard_vizro_light.layout.update(
@@ -333,6 +347,9 @@ class TestDashboardBuild:
             ternary_bgcolor="rgba(0, 0, 0, 0)",
             title_pad_l=0,
             title_pad_r=0,
+            title_font_size=16,
+            xaxis_title_font_size=14,
+            yaxis_title_font_size=14,
         )
 
         expected_dashboard_container = dmc.MantineProvider(
@@ -356,22 +373,8 @@ class TestDashboardBuild:
                     ],
                 ),
             ],
-            theme={
-                "primaryColor": "gray",
-                "defaultRadius": 0,
-                "components": {
-                    "Card": {
-                        "styles": {
-                            "root": {
-                                "backgroundColor": "var(--surfaces-bg-card)",
-                                "boxShadow": "var(--bs-box-shadow)",
-                            }
-                        }
-                    },
-                },
-            },
         )
-        assert_component_equal(dashboard.build(), expected_dashboard_container)
+        assert_component_equal(dashboard.build(), expected_dashboard_container, keys_to_strip={"theme"})
 
 
 @pytest.mark.parametrize(

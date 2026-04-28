@@ -44,6 +44,21 @@ custom_fig_df = pd.DataFrame(
 
 df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
+SPECIES_COLORS = {"setosa": "#097DFE", "versicolor": "#6F39E3", "virginica": "#05D0F0"}
+
+selected_countries = [
+    "Singapore",
+    "Malaysia",
+    "Thailand",
+    "Indonesia",
+    "Philippines",
+    "Vietnam",
+    "Cambodia",
+    "Myanmar",
+]
+
+selected_countries_gapminder = px.data.gapminder()[gapminder["country"].isin(selected_countries)]
+
 example_cards = [
     kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
     kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with aggregation", agg_func="median"),
@@ -228,16 +243,25 @@ cards = vm.Page(
                 >
                 > A block quote is a long quotation, indented to create a separate block of text.
                 >
-            """
-        ),
-        vm.Card(
-            text="""
+
                 ### Lists
 
                 * Item A
                     * Sub Item 1
                     * Sub Item 2
                 * Item B
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Code snippet examples
+
+                Python inline code snippet: `print('hello world')`
+
+                ```javascript
+                console.log('hello world');
+                const add = (a, b) => a + b;
+                ```
             """
         ),
         vm.Card(
@@ -251,7 +275,17 @@ cards = vm.Page(
                 This word will be _**bold and italic**_
             """
         ),
+        vm.Card(
+            text="""Cards can also contain markdown text with **formatting**.
+
+```bash
+$ echo hello
+```""",
+            header="Card header",
+            footer="Card footer",
+        ),
     ],
+    layout=vm.Grid(grid=[[0, 1, 2], [3, 4, 5]]),
 )
 
 figure = vm.Page(
@@ -537,6 +571,87 @@ tooltip = vm.Page(
     """,
 )
 
+text = vm.Page(
+    title="Text",
+    components=[
+        vm.Text(
+            text="""
+                # Header level 1 <h1>
+
+                ## Header level 2 <h2>
+
+                ### Header level 3 <h3>
+
+                #### Header level 4 <h4>
+            """
+        ),
+        vm.Text(
+            text="""
+                 ### Paragraphs
+                 Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+
+                 Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+
+                 Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+
+                 Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
+            """
+        ),
+        vm.Text(
+            text="""
+                ### Block Quotes
+
+                >
+                > A block quote is a long quotation, indented to create a separate block of text.
+                >
+
+                ### Lists
+
+                * Item A
+                    * Sub Item 1
+                    * Sub Item 2
+                * Item B
+            """
+        ),
+        vm.Text(
+            text="""
+                ### Code snippet examples
+
+                Python inline code snippet: `print('hello world')`
+
+                ```javascript
+                console.log('hello world');
+                const add = (a, b) => a + b;
+                ```
+            """
+        ),
+        vm.Text(
+            text="""
+                ### Emphasis
+
+                This word will be *italic*
+
+                This word will be **bold**
+
+                This word will be _**bold and italic**_
+            """
+        ),
+        vm.Text(
+            text="""
+              ### Math
+              This example uses the block delimiter:
+              $$
+              \\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}
+              $$
+
+              This example uses the inline delimiter:
+              $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$
+            """,
+            extra={"mathjax": True},
+        ),
+    ],
+    layout=vm.Grid(grid=[[0, 1, 2], [3, 4, 5]]),
+)
 
 # CONTROLS --------------------------------------------------------------------
 filters = vm.Page(
@@ -548,6 +663,7 @@ filters = vm.Page(
                 x="sepal_length",
                 y="petal_width",
                 color="species",
+                color_discrete_map=SPECIES_COLORS,
             )
         ),
         vm.Graph(
@@ -557,6 +673,7 @@ filters = vm.Page(
                 x="petal_length",
                 y="sepal_width",
                 color="species",
+                color_discrete_map=SPECIES_COLORS,
             ),
         ),
     ],
@@ -584,7 +701,7 @@ parameters = vm.Page(
                 y="sepal_length",
                 color="species",
                 size="petal_length",
-                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
+                color_discrete_map={"setosa": "#097DFE", "versicolor": "#6F39E3"},
             ),
         ),
         vm.Graph(
@@ -594,14 +711,14 @@ parameters = vm.Page(
                 x="sepal_width",
                 y="sepal_length",
                 color="species",
-                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
+                color_discrete_map={"setosa": "#097DFE", "versicolor": "#6F39E3"},
             ),
         ),
     ],
     controls=[
         vm.Parameter(
             targets=["scatter_chart_pm.color_discrete_map.virginica", "bar_chart_pm.color_discrete_map.virginica"],
-            selector=vm.Dropdown(options=["#ff5267", "#3949ab"], multi=False, value="#3949ab"),
+            selector=vm.Dropdown(options=["#05D0F0", "#0F766E"], multi=False, value="#05D0F0"),
         )
     ],
 )
@@ -690,6 +807,7 @@ controls_in_containers = vm.Page(
                                 x="sepal_width",
                                 y="sepal_length",
                                 color="species",
+                                color_discrete_map=SPECIES_COLORS,
                                 marginal_y="violin",
                                 marginal_x="box",
                             ),
@@ -873,6 +991,24 @@ flex_layout = vm.Page(
 
 
 # ACTIONS ---------------------------------------------------------------------
+
+
+@capture("graph")
+def bump_chart_with_highlight(data_frame, highlight_countries=None):
+    """Custom bump chart based on px."""
+    rank = data_frame.groupby("year")["lifeExp"].rank(method="dense", ascending=False)
+
+    fig = px.line(data_frame, x="year", y=rank, color="country", markers=True)
+    fig.update_yaxes(title="Rank (1 = Highest lifeExp)", autorange="reversed", dtick=1)
+    fig.update_traces(opacity=0.3, line_width=2)
+
+    if highlight_countries:
+        for country in highlight_countries:
+            fig.update_traces(selector={"name": country}, opacity=1, line_width=3)
+
+    return fig
+
+
 export_data_action = vm.Page(
     title="Export data",
     components=[
@@ -881,6 +1017,71 @@ export_data_action = vm.Page(
         vm.Button(text="Export data", actions=va.export_data()),
     ],
     controls=[vm.Filter(column="species")],
+)
+
+set_controls_action_cross_filter = vm.Page(
+    title="Set controls - cross filter",
+    components=[
+        vm.Graph(
+            figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species", custom_data="species"),
+            header="💡 Select one or more points to filter the histogram below "
+            "(use Box Select or Lasso Select to select multiple points)",
+            actions=va.set_control(value="species", control="species-filter"),
+        ),
+        vm.Graph(
+            id="histogram_chart",
+            figure=px.histogram(iris, x="petal_length", color="species", color_discrete_map=SPECIES_COLORS),
+        ),
+    ],
+    controls=[vm.Filter(column="species", id="species-filter", visible=False, targets=["histogram_chart"])],
+)
+
+set_controls_action_cross_parameter = vm.Page(
+    title="Set controls - cross parameter",
+    components=[
+        vm.Graph(
+            figure=px.bar(
+                selected_countries_gapminder.query("year == 2007"),
+                y="country",
+                x="lifeExp",
+                labels={"lifeExp": "lifeExp in 2007"},
+            ),
+            header="💡 Click any bar to highlight that country in the bump chart "
+            "(use Shift + click to add/remove bars)",
+            actions=va.set_control(control="highlight_parameter", value="y"),
+        ),
+        vm.Graph(
+            id="bump_chart",
+            figure=bump_chart_with_highlight(data_frame=selected_countries_gapminder),
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            id="highlight_parameter",
+            targets=["bump_chart.highlight_countries"],
+            selector=vm.Dropdown(value=[], options=["NONE", *selected_countries], multi=True),
+            visible=False,
+        ),
+    ],
+)
+
+notifications = vm.Page(
+    title="Notifications",
+    layout=vm.Flex(),
+    components=[
+        vm.Graph(figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species", custom_data="species")),
+        vm.Button(
+            text="Export data",
+            actions=[
+                va.export_data(),
+                va.show_notification(
+                    text="Data exported successfully!",
+                    variant="success",
+                    icon="download",
+                ),
+            ],
+        ),
+    ],
 )
 
 
@@ -903,9 +1104,6 @@ def waterfall(data_frame, measure, x, y, text, title=None):
             x=data_frame[x],
             y=data_frame[y],
             text=data_frame[text],
-            decreasing={"marker": {"color": "#ff5267"}},
-            increasing={"marker": {"color": "#08bdba"}},
-            totals={"marker": {"color": "#00b4ff"}},
         )
     )
     fig.update_layout(title=title)
@@ -1093,9 +1291,9 @@ kpi_indicators = vm.Page(
 
 
 # DASHBOARD -------------------------------------------------------------------
-components = [graphs, ag_grid, table, cards, figure, button, containers, tabs, tooltip]
+components = [graphs, ag_grid, table, cards, figure, button, containers, tabs, tooltip, text]
 controls = [filters, parameters, selectors, controls_in_containers]
-actions = [export_data_action]
+actions = [export_data_action, set_controls_action_cross_filter, set_controls_action_cross_parameter, notifications]
 layout = [grid_layout, flex_layout]
 extensions = [custom_charts, custom_tables, custom_figures, custom_components]
 
@@ -1119,10 +1317,16 @@ dashboard = vm.Dashboard(
                             "Containers",
                             "Tabs",
                             "Tooltip",
+                            "Text",
                         ],
                         "Controls": ["Filters", "Parameters", "Selectors", "Controls in containers"],
                         "Layout": ["Grid layout", "flex-layout"],
-                        "Actions": ["Export data"],
+                        "Actions": [
+                            "Export data",
+                            "Set controls - cross filter",
+                            "Set controls - cross parameter",
+                            "Notifications",
+                        ],
                         "Extensions": [
                             "Custom Charts",
                             "Custom Tables",

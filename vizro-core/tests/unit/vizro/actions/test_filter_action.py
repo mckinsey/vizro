@@ -15,7 +15,9 @@ def target_scatter_filtered_continent_and_pop(request, gapminder_2007, scatter_p
     data = gapminder_2007[
         gapminder_2007["continent"].isin(continent) & gapminder_2007["pop"].between(pop[0], pop[1], inclusive="both")
     ]
-    return px.scatter(data, **scatter_params)
+    fig = px.scatter(data, **scatter_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture
@@ -24,7 +26,9 @@ def target_box_filtered_continent_and_pop(request, gapminder_2007, box_params):
     data = gapminder_2007[
         gapminder_2007["continent"].isin(continent) & gapminder_2007["pop"].between(pop[0], pop[1], inclusive="both")
     ]
-    return px.box(data, **box_params)
+    fig = px.box(data, **box_params)
+    fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+    return fig
 
 
 @pytest.fixture

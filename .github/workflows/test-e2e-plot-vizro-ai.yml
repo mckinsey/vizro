@@ -1,5 +1,8 @@
 name: e2e plot tests for VizroAI
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: vizro-ai
@@ -43,6 +46,9 @@ jobs:
             os: ubuntu-latest
           - python-version: "3.13"
             hatch-env: all.py3.13
+            os: ubuntu-latest
+          - python-version: "3.14"
+            hatch-env: all.py3.14
             os: ubuntu-latest
           - python-version: "3.10"
             hatch-env: lower-bounds
@@ -92,6 +98,9 @@ jobs:
             os: ubuntu-latest
           - python-version: "3.13"
             hatch-env: all.py3.13
+            os: ubuntu-latest
+          - python-version: "3.14"
+            hatch-env: all.py3.14
             os: ubuntu-latest
           - python-version: "3.10"
             hatch-env: lower-bounds
@@ -143,7 +152,7 @@ jobs:
       - name: Send custom JSON data to Slack
         id: slack
         # used pinned commit hash for security reasons
-        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
+        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 # v3.0.1
         if: failure()
         with:
           payload: |

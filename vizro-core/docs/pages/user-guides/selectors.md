@@ -25,6 +25,69 @@ If you have binary data (such as `False`/`True` or `0`/`1`), you might prefer to
 
     The later is required if you want to provide different display labels to your option values or in case you want to provide boolean values as options. In this case, you need to provide a string label for your boolean values as boolean values cannot be displayed properly as labels in the underlying Dash components.
 
+### Styled dropdowns
+
+You can customize two predefined dropdown styles that can be customized using the variant argument. If no `variant` is specified, the default style applied is `variant="filled"`.
+
+!!! example "Styled dropdowns"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="13-14"}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Styled dropdown",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+            ],
+            controls=[
+                vm.Filter(column="species", selector=vm.Dropdown(title="Filled")),
+                vm.Filter(column="species", selector=vm.Dropdown(variant="plain", title="Plain")),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: scatter
+                  data_frame: iris
+                  x: sepal_length
+                  y: petal_width
+                  color: species
+                type: graph
+            controls:
+              - column: species
+                selector:
+                  type: dropdown
+                  title: Plain
+                  variant: plain
+                type: filter
+              - column: species
+                selector:
+                  type: dropdown
+                  title: Filled
+                type: filter
+            title: Styled dropdown
+        ```
+
+    === "Result"
+
+        [![Dropdown]][dropdown]
+
 ## Numerical selectors
 
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
@@ -51,6 +114,110 @@ For more information, refer to the API reference of the selector, or the documen
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
 - [`Switch`][vizro.models.Switch] based on [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/)
+
+## Hierarchical selectors
+
+For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
+
+- [`Cascader`][vizro.models.Cascader] based on [`vdc.Cascader`](https://github.com/mckinsey/vizro/tree/main/vizro-dash-components)
+
+Hierarchical selectors show choices in a nested menu of groups. `options` gives the structure of a _tree_ of values (the _leaves_ of the tree), for example:
+
+```python
+options = {
+    "Asia": ["Japan", "India"],
+    "Europe": {"West": ["France", "Germany"], "North": ["Norway"]},
+}
+```
+
+By default, `value` is set according to the first group at the top of the tree:
+
+- If `multi=False`, by default `value` is the _first_ leaf listed under the first group. Here the first group is `Asia`, and its first country is `Japan`, so `value="Japan"`.
+- If `multi=True`, by default `value` is _all_ leaves listed under the first group. Here the first group is `Asia`, so `value=["Japan", "India"]`.
+
+You can pick a different starting selection by setting `value` on [`Cascader`][vizro.models.Cascader].
+
+!!! example "Hierarchical selector multi vs single"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="27-28"}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        gapminder = px.data.gapminder().query("year == 2007")
+
+        options = {
+            "Asia": ["Japan", "India"],
+            "Europe": {"West": ["France", "Germany"], "North": ["Norway"]},
+        }
+
+        page = vm.Page(
+            title="Gapminder 2007",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        gapminder,
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                        hover_name="country",
+                    )
+                ),
+            ],
+            controls=[
+                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options)),
+                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, multi=False, value="France"))
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: scatter
+                  data_frame: gapminder
+                  x: gdpPercap
+                  y: lifeExp
+                  size: pop
+                  color: continent
+                  hover_name: country
+                type: graph
+            controls:
+              - column:
+                  - continent
+                  - country
+                type: filter
+                selector:
+                  type: cascader
+                  options: options
+              - column:
+                  - continent
+                  - country
+                type: filter
+                selector:
+                  type: cascader
+                  options: options
+                  multi: false
+                  value: France
+            title: Gapminder 2007
+        ```
+
+    === "Result"
+
+        ![](../../assets/user_guides/selectors/hierarchical_selectors.gif)
+
+Hierarchical selectors can be used in [hierarchical filters](filters.md#hierarchical-filters) and [parameters](parameters.md).
 
 ## Add a tooltip
 
@@ -192,5 +359,6 @@ An example would be to make the [`RadioItem`][vizro.models.RadioItems] display i
 
         [![InlineRadio]][inlineradio]
 
+[dropdown]: ../../assets/user_guides/selectors/dropdown.png
 [infoiconselector]: ../../assets/user_guides/selectors/info_icon_selector.png
 [inlineradio]: ../../assets/user_guides/selectors/inlineradio.png

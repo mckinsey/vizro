@@ -2,8 +2,16 @@ import logging
 from typing import Annotated, Literal
 
 import pandas as pd
+import vizro_dash_components as vdc
 from dash import State, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator, model_validator
+from pydantic import (
+    AfterValidator,
+    BeforeValidator,
+    Field,
+    PrivateAttr,
+    field_validator,
+    model_validator,
+)
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
@@ -29,17 +37,6 @@ class Table(VizroBaseModel):
     Abstract: Usage documentation
         [How to use tables](../user-guides/table.md)
 
-    Args:
-        figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].
-        title (str): Title of the `Table`. Defaults to `""`.
-        header (str): Markdown text positioned below the `Table.title`. Follows the CommonMark specification.
-            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
-            Defaults to `""`.
-        footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.
-            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        description (Tooltip | None): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (ActionsType): See [`ActionsType`][vizro.models.types.ActionsType].
     """
 
     type: Literal["table"] = "table"
@@ -71,12 +68,13 @@ class Table(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description.""",
         ),
     ]
     actions: ActionsType = []
 
     _inner_component_id: str = PrivateAttr()
+
     _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
     @model_validator(mode="after")
@@ -137,7 +135,8 @@ class Table(VizroBaseModel):
         self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: dict[str, CallbackTriggerDict]
     ) -> pd.DataFrame:
         """Function to be carried out for `filter_interaction`."""
-        # data_frame is the DF of the target, ie the data to be filtered, hence we cannot get the DF from this model
+        # data_frame is the DF of the target, that is, the data to be filtered, hence we cannot get the DF from
+        # this model
         ctd_active_cell = ctd_filter_interaction["active_cell"]
         ctd_derived_viewport_data = ctd_filter_interaction["derived_viewport_data"]
         if not ctd_active_cell["value"] or not ctd_derived_viewport_data["value"]:
@@ -185,7 +184,7 @@ class Table(VizroBaseModel):
                     html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
                     if self.title
                     else None,
-                    dcc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
+                    vdc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
                     if self.header
                     else None,
                     # Refer to the vm.AgGrid build method for details on why we return the
@@ -196,7 +195,7 @@ class Table(VizroBaseModel):
                         children=[html.Div(id=self._inner_component_id)],
                         className="table-container",
                     ),
-                    dcc.Markdown(self.footer, className="figure-footer", id=f"{self.id}_footer")
+                    vdc.Markdown(self.footer, className="figure-footer", id=f"{self.id}_footer")
                     if self.footer
                     else None,
                 ],

@@ -2,8 +2,9 @@
 
 import dash_bootstrap_components as dbc
 import pytest
+import vizro_dash_components as vdc
 from asserts import STRIP_ALL, assert_component_equal
-from dash import dcc, html
+from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -74,6 +75,21 @@ class TestContainerInstantiation:
         ):
             vm.Container(components=[vm.Button()], collapsed=True)
 
+    def test_control_group_not_allowed_in_container_controls(self):
+        with pytest.raises(
+            ValidationError,
+            match=r"Input tag 'control_group' found using 'type' does not match any of the expected tags: "
+            r"'filter', 'parameter'.",
+        ):
+            vm.Container(
+                components=[vm.Button()],
+                controls=[
+                    vm.ControlGroup(
+                        controls=[vm.Filter(column="x", selector=vm.Dropdown(options=["a"]))],
+                    ),
+                ],
+            )
+
 
 class TestContainerPreBuildMethod:
     def test_controls_have_in_container_set(self, standard_px_chart, MockControlWrapper):
@@ -125,6 +141,14 @@ class TestContainerPreBuildMethod:
                             targets=["graph.custom_data"],
                             selector=vm.Checklist(options=["country", "continent"]),
                         ),
+                        vm.Parameter(
+                            id="parameter_cascader",
+                            targets=["graph.color"],
+                            selector=vm.Cascader(
+                                options={"Color": ["continent", "country"]},
+                                multi=False,
+                            ),
+                        ),
                         # Wrapped parameter to test that _in_container is correctly propagated to the selector:
                         MockControlWrapper(
                             control=vm.Parameter(
@@ -153,6 +177,7 @@ class TestContainerPreBuildMethod:
         assert model_manager["parameter_dropdown"].selector._in_container
         assert model_manager["parameter_radio_items"].selector._in_container
         assert model_manager["parameter_checklist"].selector._in_container
+        assert model_manager["parameter_cascader"].selector._in_container
         assert model_manager["parameter_wrapped"].selector._in_container
         assert model_manager["parameter_wrapped_in_container"].selector._in_container
 
@@ -279,7 +304,7 @@ class TestContainerBuildMethod:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Tooltip test", id="info-text", className="card-text"),
+                children=vdc.Markdown("Tooltip test", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

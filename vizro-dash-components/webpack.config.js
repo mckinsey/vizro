@@ -1,0 +1,137 @@
+const path = require("path");
+const webpack = require("webpack");
+const WebpackDashDynamicImport = require("@plotly/webpack-dash-dynamic-import");
+
+const packagejson = require("./package.json");
+
+const dashLibraryName = packagejson.name.replace(/-/g, "_");
+
+module.exports = function (env, argv) {
+  const mode = (argv && argv.mode) || "production";
+  const entry = [path.join(__dirname, "src/ts/index.ts")];
+  const output = {
+    path: path.join(__dirname, dashLibraryName),
+    filename: `${dashLibraryName}.js`,
+    chunkFilename: "[name].js",
+    library: dashLibraryName,
+    libraryTarget: "umd",
+  };
+
+  const externals = {
+    react: {
+      commonjs: "react",
+      commonjs2: "react",
+      amd: "react",
+      umd: "react",
+      root: "React",
+    },
+    "react-dom": {
+      commonjs: "react-dom",
+      commonjs2: "react-dom",
+      amd: "react-dom",
+      umd: "react-dom",
+      root: "ReactDOM",
+    },
+  };
+
+  return {
+    output,
+    mode,
+    entry,
+    target: "web",
+    externals,
+    resolve: {
+      extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
+      fallback: {
+        path: require.resolve("path-browserify"),
+      },
+    },
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          use: "ts-loader",
+          exclude: /node_modules/,
+        },
+        {
+          test: /\.jsx?$/,
+          exclude: /node_modules/,
+          use: {
+            loader: "ts-loader",
+            options: {
+              transpileOnly: true,
+              compilerOptions: {
+                allowJs: true,
+                checkJs: false,
+              },
+            },
+          },
+        },
+        {
+          test: /\.css$/,
+          use: [
+            {
+              loader: "style-loader",
+              options: {
+                insert: function insertAtTop(element) {
+                  var parent = document.querySelector("head");
+                  var lastInsertedElement =
+                    window._lastElementInsertedByStyleLoader;
+
+                  if (!lastInsertedElement) {
+                    parent.insertBefore(element, parent.firstChild);
+                  } else if (lastInsertedElement.nextSibling) {
+                    parent.insertBefore(
+                      element,
+                      lastInsertedElement.nextSibling,
+                    );
+                  } else {
+                    parent.appendChild(element);
+                  }
+
+                  window._lastElementInsertedByStyleLoader = element;
+                },
+              },
+            },
+            {
+              loader: "css-loader",
+            },
+          ],
+        },
+      ],
+    },
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          async: {
+            chunks: "async",
+            minSize: 0,
+            name(module, chunks, cacheGroupKey) {
+              return `async-${chunks[0].name}`;
+            },
+          },
+        },
+      },
+    },
+    performance: {
+      hints: "error",
+      maxAssetSize: 400 * 1024, // 400 KB default for all assets
+      // Radix Popover + icons (Cascader mirrors dcc.Dropdown) live in the main chunk.
+      maxEntrypointSize: 100 * 1024,
+      assetFilter(assetFilename) {
+        // MathJax is a known large dependency (~2 MB); exempt from the default limit.
+        if (assetFilename === "async-mathjax.js") return false;
+        return assetFilename.endsWith(".js");
+      },
+    },
+    plugins: [
+      new WebpackDashDynamicImport(),
+      new webpack.ProvidePlugin({
+        process: "process/browser.js",
+      }),
+      new webpack.DefinePlugin({
+        "process.env.NODE_ENV": JSON.stringify(mode),
+      }),
+    ],
+  };
+};

@@ -11,6 +11,78 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.54'></a>
+
+# 0.1.54 — 2026-04-07
+
+## Added
+
+- Add `ControlGroup` model for grouping page level controls. See the [user guide on `ControlGroup`](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls/#group-controls). ([#1660](https://github.com/mckinsey/vizro/pull/1660))
+
+## Fixed
+
+- Fix `vm.Container` titles hidden under tabs. ([#1671](https://github.com/mckinsey/vizro/pull/1671))
+
+<a id='changelog-0.1.53'></a>
+
+# 0.1.53 — 2026-03-16
+
+## Added
+
+- Add `position` argument to `vm.NavBar` model to enable horizontal navigation. See the [user guide on horizontal navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/#use-a-horizontal-navigation-bar). ([#1576](https://github.com/mckinsey/vizro/pull/1576))
+
+- Add new sequential palettes (positive, negative, warning) and diverging color scales to themes. See the [API reference](https://vizro.readthedocs.io/en/stable/pages/API-reference/themes/#vizro.themes) for all available palettes and colors. ([#1655](https://github.com/mckinsey/vizro/pull/1655))
+
+## Changed
+
+- Extend global Mantine theme so that DMC-based custom components better match Vizro's theme. ([#1623](https://github.com/mckinsey/vizro/pull/1623))
+
+- Update waterfall increase/decrease/total colors and KPI positive/negative indicator colors. ([#1650](https://github.com/mckinsey/vizro/pull/1650))
+
+<a id='changelog-0.1.52'></a>
+
+# 0.1.52 — 2026-02-24
+
+## Highlights ✨
+
+- Refreshed, colorblind-safe palettes for charts and an interface for accessing them via `vizro.themes`. See the [themes user guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/themes/#palettes) and [API reference](https://vizro.readthedocs.io/en/stable/pages/API-reference/themes/) for details. ([#1482](https://github.com/mckinsey/vizro/pull/1482))
+
+## Added
+
+- Add `extra` argument to `Flex` model to enable passing additional properties (e.g., `justify`, `align`) to the underlying `dmc.Flex` component. ([#1561](https://github.com/mckinsey/vizro/pull/1561))
+
+- Export png button in modebar inside `Graph`. ([#1566](https://github.com/mckinsey/vizro/pull/1566))
+
+- Enable styling of `vm.Dropdown` with a new argument `variant="plain"/"filled"`. See the [user guide on styled dropdowns](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#styled-dropdown) for more details. ([#1581](https://github.com/mckinsey/vizro/pull/1581))
+
+## Changed
+
+- Add support for `dash>=4.0.0`, including the redesigned `Dropdown`, `Slider`, and `RangeSlider` components. ([#1462](https://github.com/mckinsey/vizro/pull/1462))
+
+- Switch `Flex` model implementation from Bootstrap-based `html.Div` to [`dmc.Flex`](https://www.dash-mantine-components.com/components/flex). ([#1561](https://github.com/mckinsey/vizro/pull/1561))
+
+- Migrated AG Grid to use new theming API v33 for improved theme consistency and customization. ([#1569](https://github.com/mckinsey/vizro/pull/1569))
+
+- Chart backgrounds are no longer transparent. ([#1566](https://github.com/mckinsey/vizro/pull/1566))
+
+## Fixed
+
+- Fix theme-specific logo visibility when using `logo_dark` and `logo_light` assets. ([#1559](https://github.com/mckinsey/vizro/pull/1559))
+
+<a id='changelog-0.1.51'></a>
+
+# 0.1.51 — 2026-01-23
+
+## Changed
+
+- Simplify chart UI when graph is not an action trigger. ([#1544](https://github.com/mckinsey/vizro/pull/1544))
+
+- Hide all internal Vizro callbacks in the Dash dev tools callback graph. ([#1502](https://github.com/mckinsey/vizro/pull/1502))
+
+## Fixed
+
+- Fix `rowSelection` checkboxes for custom AgGrid with `actions`. ([#1539](https://github.com/mckinsey/vizro/pull/1539))
+
 <a id='changelog-0.1.50'></a>
 
 # 0.1.50 — 2025-12-18
@@ -23,7 +95,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- Set `clickmode="event+select"` as the default for all `plotly.express` charts, enabling point/data highlighting on click. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
+- Set `clickmode="event+select"` as the default for all charts in a dashboard, enabling point/data highlighting on click. ([#1515](https://github.com/mckinsey/vizro/pull/1515))
 
 <a id='changelog-0.1.49'></a>
 

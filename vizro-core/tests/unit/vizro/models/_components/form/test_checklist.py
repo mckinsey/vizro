@@ -2,8 +2,9 @@
 
 import dash_bootstrap_components as dbc
 import pytest
+import vizro_dash_components as vdc
 from asserts import assert_component_equal
-from dash import dcc, html
+from dash import html
 from pydantic import ValidationError
 
 from vizro.models import Tooltip
@@ -92,6 +93,14 @@ class TestChecklistInstantiation:
     def test_create_checklist_invalid_options_dict(self):
         with pytest.raises(ValidationError, match="Field required"):
             Checklist(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
+
+    def test_validate_options_dict_produces_clean_errors(self):
+        """Test that _validate_options produces 2 clean errors instead of 8 messy ones."""
+        with pytest.raises(ValidationError) as exc_info:
+            Checklist(options=[{"hello": "A", "world": "A"}])
+
+        # With validator: 2 errors (label, value). Without: 8 errors with nested paths.
+        assert len(exc_info.value.errors()) == 2
 
     @pytest.mark.parametrize(
         "test_value, options",
@@ -253,7 +262,7 @@ class TestChecklistBuild:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+                children=vdc.Markdown("Test description", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

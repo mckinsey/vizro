@@ -2,8 +2,9 @@
 
 import dash_bootstrap_components as dbc
 import pytest
+import vizro_dash_components as vdc
 from asserts import assert_component_equal
-from dash import dcc, html
+from dash import html
 from pydantic import ValidationError
 
 import vizro.actions as va
@@ -80,7 +81,7 @@ class TestBuildMethod:
                     None,
                     dbc.CardBody(
                         children=[
-                            dcc.Markdown(
+                            vdc.Markdown(
                                 id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
                             ),
                             None,
@@ -107,7 +108,7 @@ class TestBuildMethod:
                     None,
                     dbc.CardBody(
                         children=[
-                            dcc.Markdown(
+                            vdc.Markdown(
                                 id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
                             ),
                             None,
@@ -134,7 +135,7 @@ class TestBuildMethod:
                     dbc.CardBody(
                         children=[
                             dbc.NavLink(
-                                dcc.Markdown(
+                                vdc.Markdown(
                                     id="card_id-text",
                                     children="Hello",
                                     dangerously_allow_html=False,
@@ -168,7 +169,7 @@ class TestBuildMethod:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Tooltip test", id="info-text", className="card-text"),
+                children=vdc.Markdown("Tooltip test", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,
@@ -184,7 +185,7 @@ class TestBuildMethod:
                         id="card_id_header",
                         children=html.Div(
                             children=[
-                                dcc.Markdown(children="Card header", dangerously_allow_html=False),
+                                vdc.Markdown(children="Card header", dangerously_allow_html=False),
                                 *expected_description,
                             ],
                             className="card-header-outer",
@@ -192,7 +193,7 @@ class TestBuildMethod:
                     ),
                     dbc.CardBody(
                         children=[
-                            dcc.Markdown(
+                            vdc.Markdown(
                                 id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
                             ),
                         ],
@@ -218,7 +219,7 @@ class TestBuildMethod:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Tooltip test", id="info-text", className="card-text"),
+                children=vdc.Markdown("Tooltip test", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,
@@ -233,7 +234,7 @@ class TestBuildMethod:
                     None,
                     dbc.CardBody(
                         children=[
-                            dcc.Markdown(
+                            vdc.Markdown(
                                 id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
                             ),
                             *expected_description,
@@ -260,20 +261,20 @@ class TestBuildMethod:
                     dbc.CardHeader(
                         id="card_id_header",
                         children=html.Div(
-                            children=[dcc.Markdown(children="Header", dangerously_allow_html=False), None],
+                            children=[vdc.Markdown(children="Header", dangerously_allow_html=False), None],
                             className="card-header-outer",
                         ),
                     ),
                     dbc.CardBody(
                         children=[
-                            dcc.Markdown(
+                            vdc.Markdown(
                                 id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
                             ),
                         ],
                         className="card-body-outer",
                     ),
                     dbc.CardFooter(
-                        id="card_id_footer", children=dcc.Markdown(children="Footer", dangerously_allow_html=False)
+                        id="card_id_footer", children=vdc.Markdown(children="Footer", dangerously_allow_html=False)
                     ),
                 ],
                 class_name="",
@@ -305,7 +306,7 @@ class TestBuildMethod:
         card = card.build()
         card_markdown = card["id_valid-text"]
 
-        assert isinstance(card_markdown, dcc.Markdown)
+        assert isinstance(card_markdown, vdc.Markdown)
         assert card_markdown.dangerously_allow_html is False
         assert card_markdown.children == expected
 
@@ -322,6 +323,6 @@ class TestBuildMethod:
         card = card.build()
         card_markdown = card["test_id-text"]
 
-        assert isinstance(card_markdown, dcc.Markdown)
+        assert isinstance(card_markdown, vdc.Markdown)
         assert card_markdown.dangerously_allow_html is False
         assert card_markdown.children == expected

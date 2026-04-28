@@ -15,11 +15,13 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
-from vizro.models._components.form import DatePicker, Dropdown, RangeSlider, Switch
+from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch
+from vizro.models._components.form.cascader import Cascader
 from vizro.models._controls._controls_utils import (
     SELECTORS,
     _is_boolean_selector,
     _is_categorical_selector,
+    _is_hierarchical_selector,
     _is_numerical_temporal_selector,
     check_control_targets,
     get_control_parent,
@@ -34,6 +36,7 @@ DEFAULT_SELECTORS = {
     "categorical": Dropdown,
     "temporal": DatePicker,
     "boolean": Switch,
+    "hierarchical": Cascader,
 }
 
 # This disallowed selectors for each column type map is based on the discussion at the following link:
@@ -48,6 +51,7 @@ DISALLOWED_SELECTORS = {
     "temporal": SELECTORS["numerical"] + SELECTORS["boolean"],
     "categorical": SELECTORS["numerical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
     "boolean": SELECTORS["numerical"] + SELECTORS["temporal"],
+    "hierarchical": SELECTORS["numerical"] + SELECTORS["categorical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
 }
 
 
@@ -58,6 +62,36 @@ def _filter_between(series: pd.Series, value: list[float] | list[str]) -> pd.Ser
         value = pd.to_datetime(value)
         series = pd.to_datetime(series.dt.date)
     return series.between(value[0], value[1], inclusive="both")
+
+
+def _dataframe_path_to_cascader_options(df: pd.DataFrame, path_columns: list[str]) -> dict[str, Any]:
+    """Build nested Cascader options from unique rows via groupby then nested dict (str keys, list leaves).
+
+    Callers must pass at least two column names (hierarchical filter path + leaf); see `Filter.column`.
+    """
+    sub = df[path_columns].drop_duplicates()
+    if sub.empty:
+        raise ValueError("Cannot build cascader options from empty path data.")
+
+    branch_cols = path_columns[:-1]
+    leaf_col = path_columns[-1]
+
+    def _sorted_unique_leaves(s: pd.Series) -> list[Any]:
+        return sorted(s.dropna().unique().tolist())
+
+    leaves_by_branch = sub.groupby(branch_cols, observed=True, sort=True)[leaf_col].apply(_sorted_unique_leaves)
+
+    def _assign_nested(root: dict[str, Any], branch_key: Any, leaves: list[Any]) -> None:
+        parts = branch_key if isinstance(branch_key, tuple) else (branch_key,)
+        node = root
+        for k in parts[:-1]:
+            node = node.setdefault(str(k), {})
+        node[str(parts[-1])] = leaves
+
+    out: dict[str, Any] = {}
+    for branch_key, leaves in leaves_by_branch.items():
+        _assign_nested(out, branch_key, leaves)
+    return out
 
 
 def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
@@ -81,25 +115,19 @@ class Filter(VizroBaseModel):
     Abstract: Usage documentation
         [How to use filters](../user-guides/filters.md)
 
-    Args:
-        column (str): Column of `DataFrame` to filter.
-        targets (list[ModelID]): Target component to be affected by filter. If none are given then target all components
-            on the page that use `column`. Defaults to `[]`.
-        selector (SelectorType | None): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
-        show_in_url (bool): Whether the filter should be included in the URL query string. Defaults to `False`.
-            Useful for bookmarking or sharing dashboards with specific filter values pre-set.
-        visible (bool): Whether the filter should be visible. Defaults to `True`.
-
     Example:
         ```python
         import vizro.models as vm
 
         vm.Filter(column="species")
+        vm.Filter(column=["continent", "country"])
         ```
     """
 
     type: Literal["filter"] = "filter"
-    column: str = Field(description="Column of DataFrame to filter.")
+    column: str | list[str] = Field(
+        description="Name of the column to filter, or an ordered list of column names for a hierarchical filter."
+    )
     targets: list[ModelID] = Field(
         default=[],
         description="Target component to be affected by filter. "
@@ -109,13 +137,13 @@ class Filter(VizroBaseModel):
     show_in_url: bool = Field(
         default=False,
         description=(
-            "Whether the filter should be included in the URL query string. Defaults to `False`. "
+            "Whether the filter should be included in the URL query string. "
             "Useful for bookmarking or sharing dashboards with specific filter values pre-set."
         ),
     )
     visible: bool = Field(
         default=True,
-        description="Whether the filter should be visible. Defaults to `True`.",
+        description="Whether the filter should be visible.",
     )
 
     _dynamic: bool = PrivateAttr(False)
@@ -125,9 +153,22 @@ class Filter(VizroBaseModel):
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
+        """Check that the filter has an `id` set if it is shown in the URL."""
         # If the filter is shown in the URL, it should have an `id` set to ensure stable and readable URLs.
         warn_missing_id_for_url_control(control=self)
         return self
+
+    @model_validator(mode="after")
+    def _validate_column_and_selector_pairing(self):
+        if isinstance(self.column, list) and len(self.column) <= 1:
+            raise ValueError("When column is a list, provide at least two column names.")
+        elif isinstance(self.column, str) and self.selector is not None and _is_hierarchical_selector(self.selector):
+            raise TypeError("For a hierarchical selector, `column` must be a list of column names.")
+        return self
+
+    @property
+    def _single_filter_column(self) -> str:
+        return self.column if isinstance(self.column, str) else self.column[-1]
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -177,8 +218,8 @@ class Filter(VizroBaseModel):
 
         if (column_type := self._validate_column_type(targeted_data)) != self._column_type:
             raise ValueError(
-                f"{self.column} has changed type from {self._column_type} to {column_type}. A filtered column cannot "
-                "change type while the dashboard is running."
+                f"{self._single_filter_column} has changed type from {self._column_type} to {column_type}. "
+                "A filtered column cannot change type while the dashboard is running."
             )
 
         # Cast is justified as the selector is set in pre_build and is not None.
@@ -189,6 +230,9 @@ class Filter(VizroBaseModel):
         elif _is_numerical_temporal_selector(selector):
             _min, _max = self._get_min_max(targeted_data, current_value)
             selector_call_obj = selector(min=_min, max=_max)
+        else:
+            # Hierarchical filters cannot yet be dynamic.
+            selector_call_obj = selector.build()
 
         # The filter is dynamic, so a guard component (data=True) needs to be added to prevent unexpected action firing.
         selector_call_obj = html.Div(
@@ -201,7 +245,7 @@ class Filter(VizroBaseModel):
         return selector_call_obj
 
     @_log_call
-    def pre_build(self):
+    def pre_build(self):  # noqa: PLR0912
         # If page filter validate that targets present on the page where the filter is defined.
         # If container filter validate that targets present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
@@ -237,24 +281,29 @@ class Filter(VizroBaseModel):
         )
         self.targets = list(targeted_data.columns)
 
-        # Set default selector according to column type.
+        # Set default selector according to column type and whether it's a hierarchical filter.
         self._column_type = self._validate_column_type(targeted_data)
-        self.selector = self.selector or DEFAULT_SELECTORS[self._column_type]()
-        self.selector.title = self.selector.title or self.column.title()
+        is_hierarchical_column = isinstance(self.column, list)
+        selector_kind: Literal["hierarchical", "numerical", "categorical", "temporal", "boolean"] = (
+            "hierarchical" if is_hierarchical_column else self._column_type
+        )
+        self.selector = self.selector or DEFAULT_SELECTORS[selector_kind]()
+        self.selector.title = self.selector.title or self._single_filter_column.title()
 
-        if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
+        if isinstance(self.selector, DISALLOWED_SELECTORS[selector_kind]):
             raise ValueError(
-                f"Chosen selector {type(self.selector).__name__} is not compatible with {self._column_type} column "
-                f"'{self.column}'."
+                f"Chosen selector {type(self.selector).__name__} is not compatible with {selector_kind} column "
+                f"'{self._single_filter_column}'."
             )
 
         # Check if the filter is dynamic. Dynamic filter means that the filter is updated when the page is refreshed
         # which causes "options" for categorical or "min" and "max" for numerical/temporal selectors to be updated.
         # The filter is dynamic if mentioned attributes ("options"/"min"/"max") are not explicitly provided and
         # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
-        # but should still count as manually set.
+        # but should still count as manually set. Hierarchical and boolean filters are always static.
         if (
-            not _is_boolean_selector(self.selector)
+            not _is_hierarchical_selector(self.selector)
+            and not _is_boolean_selector(self.selector)
             and not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None
@@ -275,6 +324,16 @@ class Filter(VizroBaseModel):
                 self.selector.max = _max
         elif _is_categorical_selector(self.selector):
             self.selector.options = self.selector.options or self._get_options(targeted_data)
+        elif _is_hierarchical_selector(self.selector):
+            if not self.selector.options and any(
+                isinstance(data_manager[cast(FigureType, model_manager[target])["data_frame"]], _DynamicData)
+                for target in self.targets
+            ):
+                raise ValueError(
+                    "Hierarchical filters cannot derive Cascader options from dynamic data. "
+                    "Set explicit `selector=vm.Cascader(options=...)` or use a static `data_frame`. "
+                )
+            self.selector.options = self.selector.options or self._get_hierarchical_options(target_to_data_frame)
 
         # Set default value for the selector if not explicitly provided.
         self.selector.value = get_selector_default_value(self.selector)
@@ -310,17 +369,12 @@ class Filter(VizroBaseModel):
         if not self._dynamic:
             return html.Div(id=self.id, children=selector_build_obj, hidden=not self.visible)
 
-        # Temporarily hide the selector and numeric dcc.Input components during the filter reloading process.
-        # Other components, such as the title, remain visible because of the configuration:
-        # overlay_style={"visibility": "visible"} in dcc.Loading.
-        # Note: dcc.Slider and dcc.RangeSlider do not support the "style" property directly,
-        # so the "className" attribute is used to apply custom CSS for visibility control.
-        # Reference for Dash class names: https://dashcheatsheet.pythonanywhere.com/
+        # Temporarily hide the selector during the filter reloading process. Other components, such as the title,
+        # remain visible because of the configuration: overlay_style={"visibility": "visible"} in dcc.Loading.
+        # If the selector is a Checklist with show_select_all=True, then hide the select all checkbox too.
         selector_build_obj[selector.id].className = "invisible"
-        if f"{selector.id}_start_value" in selector_build_obj:
-            selector_build_obj[f"{selector.id}_start_value"].className = "d-none"
-        if f"{selector.id}_end_value" in selector_build_obj:
-            selector_build_obj[f"{selector.id}_end_value"].className = "d-none"
+        if isinstance(selector, Checklist) and selector.show_select_all:
+            selector_build_obj[f"{selector.id}_select_all"].className = "invisible"
 
         # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
         #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
@@ -338,25 +392,33 @@ class Filter(VizroBaseModel):
     ) -> pd.DataFrame:
         target_to_series = {}
 
+        # One code path for flat and hierarchical filters: `path_or_leaf` is always a list (a single name when
+        # `column` is a str, or the ordered path when `column` is a list). We require every path name on the dataframe,
+        # then take the leaf column `path_or_leaf[-1]` for the series used downstream.
+        path_or_leaf = [self.column] if isinstance(self.column, str) else self.column
+        leaf = path_or_leaf[-1]
         for target, data_frame in target_to_data_frame.items():
-            if self.column in data_frame.columns:
+            missing = [c for c in path_or_leaf if c not in data_frame.columns]
+            if not missing:
                 # reset_index so that when we make a DataFrame out of all these pd.Series pandas doesn't try to align
                 # the columns by index.
-                target_to_series[target] = data_frame[self.column].reset_index(drop=True)
+                target_to_series[target] = data_frame[leaf].reset_index(drop=True)
             elif eagerly_raise_column_not_found_error:
-                raise ValueError(f"Selected column {self.column} not found in dataframe for {target}.")
+                if len(path_or_leaf) == 1:
+                    raise ValueError(f"Selected column {path_or_leaf[0]} not found in dataframe for {target}.")
+                raise ValueError(f"Selected column(s) {missing} not found in dataframe for {target}.")
 
         targeted_data = pd.DataFrame(target_to_series)
         if targeted_data.columns.empty:
             # Still raised when eagerly_raise_column_not_found_error=False.
             raise ValueError(
-                f"Selected column {self.column} not found in any dataframe for "
+                f"Selected column {self._single_filter_column} not found in any dataframe for "
                 f"{', '.join(target_to_data_frame.keys())}."
             )
         # TODO: Enable empty data_frame handling
         if targeted_data.empty:
             raise ValueError(
-                f"Selected column {self.column} does not contain anything in any dataframe for "
+                f"Selected column {self._single_filter_column} does not contain anything in any dataframe for "
                 f"{', '.join(target_to_data_frame.keys())}."
             )
 
@@ -368,7 +430,7 @@ class Filter(VizroBaseModel):
         is_boolean = targeted_data.apply(is_bool_dtype)
         is_numerical = targeted_data.apply(is_numeric_dtype)
         is_temporal = targeted_data.apply(is_datetime64_any_dtype)
-        is_categorical = ~is_boolean & ~is_numerical & ~is_temporal
+        is_categorical = ~(is_boolean | is_numerical | is_temporal)
 
         if is_boolean.all():
             return "boolean"
@@ -380,8 +442,8 @@ class Filter(VizroBaseModel):
             return "categorical"
         else:
             raise ValueError(
-                f"Inconsistent types detected in column {self.column}. This column must have the same type for all "
-                "targets."
+                f"Inconsistent types detected in column {self._single_filter_column}. "
+                "This column must have the same type for all targets."
             )
 
     @staticmethod
@@ -426,3 +488,12 @@ class Filter(VizroBaseModel):
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
         return sorted(set(targeted_data))
+
+    def _get_hierarchical_options(self, target_to_data_frame: dict[ModelID, pd.DataFrame]) -> dict[str, Any]:
+        """Build Cascader options from path columns; needs full dataframes (not the leaf-only `targeted_data`)."""
+        path_cols = list(cast(list[str], self.column))
+        combined = pd.concat(
+            [target_to_data_frame[target_id][path_cols] for target_id in self.targets],
+            ignore_index=True,
+        ).drop_duplicates()
+        return _dataframe_path_to_cascader_options(combined, path_cols)

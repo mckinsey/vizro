@@ -60,7 +60,6 @@ differences to previous `app.py`""",
 import vizro.models as vm
 from vizro import Vizro
 
-
 ########### Model code ############
 model = vm.Dashboard(
     pages=[
