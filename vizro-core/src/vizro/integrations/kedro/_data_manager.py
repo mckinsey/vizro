@@ -145,8 +145,8 @@ def datasets_from_catalog(catalog: DataCatalog, *, pipeline: Pipeline = None) ->
         return _legacy_datasets_from_catalog(catalog, pipeline)
 
     if pipeline:
-        # Resolve dataset factory patterns, i.e. datasets that are used in pipeline but not explicitly defined in the
-        # catalog. After this, subsequent catalog.filter calls contain the resolved dataset patterns too.
+        # Resolve dataset factory patterns, that is, datasets that are used in pipeline but not explicitly defined
+        # in the catalog. After this, subsequent catalog.filter calls contain the resolved dataset patterns too.
         for dataset_name in set(pipeline.datasets()) - set(catalog.filter()):
             catalog.get(dataset_name)
 
