@@ -12,7 +12,7 @@
         "connector": {
           "line": {
             "width": 1,
-            "color": "rgba(255, 255, 255, 0.3019607843)"
+            "color": "rgba(255, 255, 255, 0.3803921569)"
           }
         },
         "decreasing": {
@@ -50,7 +50,7 @@
     "sankey": [
       {
         "link": {
-          "color": "rgba(255, 255, 255, 0.3019607843)"
+          "color": "rgba(255, 255, 255, 0.3803921569)"
         },
         "type": "sankey"
       }
@@ -85,7 +85,7 @@
             "color": "rgba(255, 255, 255, 0.6)"
           }
         },
-        "tickcolor": "rgba(255, 255, 255, 0.3019607843)"
+        "tickcolor": "rgba(255, 255, 255, 0.3803921569)"
       }
     },
     "colorscale": {
@@ -217,9 +217,9 @@
       },
       "visible": true,
       "zeroline": false,
-      "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
-      "linecolor": "rgba(255, 255, 255, 0.3019607843)",
-      "tickcolor": "rgba(255, 255, 255, 0.3019607843)"
+      "gridcolor": "rgba(255, 255, 255, 0.0784313725)",
+      "linecolor": "rgba(255, 255, 255, 0.3803921569)",
+      "tickcolor": "rgba(255, 255, 255, 0.3803921569)"
     },
     "yaxis": {
       "automargin": true,
@@ -244,9 +244,9 @@
       },
       "visible": true,
       "zeroline": false,
-      "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
-      "linecolor": "rgba(255, 255, 255, 0.3019607843)",
-      "tickcolor": "rgba(255, 255, 255, 0.3019607843)"
+      "gridcolor": "rgba(255, 255, 255, 0.0784313725)",
+      "linecolor": "rgba(255, 255, 255, 0.3803921569)",
+      "tickcolor": "rgba(255, 255, 255, 0.3803921569)"
     },
     "geo": {
       "bgcolor": "#141721",
@@ -257,28 +257,28 @@
     "plot_bgcolor": "#141721",
     "polar": {
       "angularaxis": {
-        "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
-        "linecolor": "rgba(255, 255, 255, 0.3019607843)"
+        "gridcolor": "rgba(255, 255, 255, 0.0784313725)",
+        "linecolor": "rgba(255, 255, 255, 0.3803921569)"
       },
       "bgcolor": "#141721",
       "radialaxis": {
-        "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
-        "linecolor": "rgba(255, 255, 255, 0.3019607843)"
+        "gridcolor": "rgba(255, 255, 255, 0.0784313725)",
+        "linecolor": "rgba(255, 255, 255, 0.3803921569)"
       }
     },
     "ternary": {
       "aaxis": {
-        "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
-        "linecolor": "rgba(255, 255, 255, 0.3019607843)"
+        "gridcolor": "rgba(255, 255, 255, 0.0784313725)",
+        "linecolor": "rgba(255, 255, 255, 0.3803921569)"
       },
       "baxis": {
-        "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
-        "linecolor": "rgba(255, 255, 255, 0.3019607843)"
+        "gridcolor": "rgba(255, 255, 255, 0.0784313725)",
+        "linecolor": "rgba(255, 255, 255, 0.3803921569)"
       },
       "bgcolor": "#141721",
       "caxis": {
-        "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
-        "linecolor": "rgba(255, 255, 255, 0.3019607843)"
+        "gridcolor": "rgba(255, 255, 255, 0.0784313725)",
+        "linecolor": "rgba(255, 255, 255, 0.3803921569)"
       }
     }
   }
