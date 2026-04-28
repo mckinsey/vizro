@@ -45,7 +45,10 @@ prep-release = [
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
 test = "pytest tests {args}"
-test-integration-browser = "pytest tests/integration/browser {args}"
+test-integration-browser = [
+  "python -m playwright install chromium",
+  "pytest tests/integration/browser {args}"
+]
 test-integration-llm = "pytest tests/integration/llm {args}"
 test-unit = "pytest tests/unit {args}"
 test-unit-coverage = [

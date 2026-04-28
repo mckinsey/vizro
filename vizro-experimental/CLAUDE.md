@@ -26,6 +26,15 @@ scripts:
 - `hatch run example chat_component` — runs the Chat demo.
 - `hatch run example popup` — runs the floating-popup demo.
 
+### Test prerequisites
+
+`hatch run test-integration-browser` self-installs the Chromium binary
+Playwright needs (`~/.cache/ms-playwright/`, ~150 MB on first run, instant
+afterwards). LLM integration tests (`tests/integration/llm/`) and the
+benchmark suite (`tests/benchmark/`) need an `OPENAI_API_KEY` (and
+optionally `ANTHROPIC_API_KEY` for the Claude action) and skip themselves
+otherwise.
+
 ## Adding a new feature
 
 Each feature is a self-contained subpackage that mirrors the `vizro-core`
