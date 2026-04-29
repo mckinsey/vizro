@@ -5,13 +5,18 @@ VULN-001: query_dataframe used eval() with only first-method validation,
           Fixed by replacing eval() with a dispatch table of safe handlers.
 
 VULN-002: SSE streaming endpoints accepted raw JSON and forwarded all extra
-          fields as **kwargs (mass parameter assignment). Fixed by validating
-          through _StreamingRequest Pydantic model before forwarding.
+          fields as **kwargs (mass parameter assignment). Fixed by:
+          - validating through _StreamingRequest Pydantic model with
+            extra="ignore" so unknown JSON keys are dropped at parse time;
+          - in _kwargs_for_generate_response, only forwarding payload_extras
+            that the action declares by name (NOT via **kwargs).
+          Both layers are exercised by tests below.
 """
 
 import pandas as pd
 import pytest
 
+from vizro_experimental.chat.actions._base_chat_action import _kwargs_for_generate_response
 from vizro_experimental.chat.actions.streaming_chat_action import _StreamingRequest
 from vizro_experimental.chat.popup.dashboard_agent import (
     _SAFE_OPERATIONS,
@@ -131,8 +136,14 @@ class TestStreamingRequestValidation:
         with pytest.raises(Exception):
             _StreamingRequest(messages=[])  # missing prompt
 
-    def test_extra_fields_isolated_in_model_extra(self):
-        """Attacker-injected fields land in model_extra, not on the model itself."""
+    def test_extra_fields_are_dropped(self):
+        """Regression for VULN-002: unknown JSON keys must be dropped at validation.
+
+        Earlier the model used ``extra="allow"`` so injected keys lived in
+        ``model_extra`` and could leak into ``generate_response`` whenever the action
+        signature happened to have ``**kwargs``. The model now uses ``extra="ignore"``
+        — extras don't survive validation at all.
+        """
         req = _StreamingRequest(
             prompt="hello",
             messages=[],
@@ -140,4 +151,47 @@ class TestStreamingRequestValidation:
             injected="malicious",
         )
         assert req.prompt == "hello"
-        assert req.model_extra == {"model": "gpt-4", "injected": "malicious"}
+        assert req.messages == []
+        # extra="ignore" leaves model_extra unset
+        assert not req.model_extra
+        # The injected key must not have leaked onto the model as an attribute either.
+        assert getattr(req, "injected", None) is None
+
+
+# ---------------------------------------------------------------------------
+# VULN-002: payload_extras forwarding via **kwargs is not a wildcard
+# ---------------------------------------------------------------------------
+class TestKwargsForGenerateResponseDoesNotForwardExtrasViaVarKw:
+    """_kwargs_for_generate_response must only forward extras the action declares by name.
+
+    Earlier the helper would forward *all* payload_extras as soon as the action
+    signature contained ``**kwargs``, re-opening the mass-parameter-assignment hole
+    that ``_StreamingRequest`` was meant to close. It now ignores ``**kwargs`` for
+    extras: only declared parameter names get bound.
+    """
+
+    def test_var_kw_action_does_not_receive_attacker_extras(self):
+        def action(messages, **kwargs):
+            return None
+
+        out = _kwargs_for_generate_response(
+            action,
+            uploaded_files=None,
+            payload_extras={"injected": "malicious", "model": "gpt-4"},
+        )
+        assert "injected" not in out
+        assert "model" not in out
+
+    def test_declared_param_still_receives_value(self):
+        """Legitimate use case: extras DO bind when the action declares them by name."""
+
+        def action(messages, model: str = "default", **kwargs):
+            return None
+
+        out = _kwargs_for_generate_response(
+            action,
+            uploaded_files=None,
+            payload_extras={"model": "gpt-4", "injected": "malicious"},
+        )
+        assert out["model"] == "gpt-4"
+        assert "injected" not in out

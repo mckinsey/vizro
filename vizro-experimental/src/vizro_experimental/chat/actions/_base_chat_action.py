@@ -77,7 +77,15 @@ def _kwargs_for_generate_response(
     uploaded_files: list[dict[str, Any]] | None,
     payload_extras: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Build kwargs for ``generate_response`` so unsupported parameters are not passed."""
+    """Build kwargs for ``generate_response`` so unsupported parameters are not passed.
+
+    ``uploaded_files`` is framework-injected (sourced from the chat's file-store data),
+    so it's safe to forward through ``**kwargs``. ``payload_extras`` come from the
+    untrusted SSE JSON body — they are only forwarded when the action declares the
+    matching parameter **by name**. ``**kwargs`` in the action signature is
+    intentionally **not** treated as a wildcard for extras: that would re-open the
+    mass-parameter-assignment hole that ``_StreamingRequest`` is meant to close.
+    """
     sig = inspect.signature(generate_response_method)
     params = sig.parameters
     has_var_kw = any(p.kind == inspect.Parameter.VAR_KEYWORD for p in params.values())
@@ -88,7 +96,7 @@ def _kwargs_for_generate_response(
         for key, value in payload_extras.items():
             if key == "uploaded_files":
                 continue
-            if key in params or has_var_kw:
+            if key in params:
                 out[key] = value
     return out
 

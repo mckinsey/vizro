@@ -29,7 +29,12 @@ class _StreamingRequest(BaseModel):
 
     """
 
-    model_config = ConfigDict(extra="allow")
+    # ``extra="ignore"`` drops unknown JSON keys at validation. This pairs with the
+    # ``_kwargs_for_generate_response`` change that no longer treats ``**kwargs`` in
+    # an action signature as a wildcard for forwarding extras (VULN-002 hardening).
+    # If a custom action needs to receive extra fields from the SSE body, subclass
+    # this model with explicit named fields rather than re-enabling ``extra="allow"``.
+    model_config = ConfigDict(extra="ignore")
 
     prompt: str = Field(description="The user's input prompt.")
     messages: list[dict[str, Any]] = Field(

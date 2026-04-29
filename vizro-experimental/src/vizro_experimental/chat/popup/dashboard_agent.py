@@ -9,6 +9,8 @@ not the filesystem / subagent / planning scaffolding.
 
 from __future__ import annotations
 
+import inspect
+from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, Literal
 
 import dash
@@ -27,8 +29,11 @@ if TYPE_CHECKING:
 ReasoningEffort = Literal["low", "medium", "high"]
 
 
-def _safe_describe(df: pd.DataFrame, **kwargs: Any) -> str:
-    return str(df.describe(**kwargs))
+def _safe_describe(df: pd.DataFrame, **_: Any) -> str:
+    # Absorb the tool's flat-schema kwargs via **_ instead of forwarding them into
+    # df.describe (which rejects agg/n/ascending). _select_handler_params filters at
+    # the dispatch layer too — both layers are intentional.
+    return str(df.describe())
 
 
 def _safe_head(df: pd.DataFrame, n: int = 5, **_: Any) -> str:
@@ -233,6 +238,25 @@ def _get_dataset_names() -> list[str]:
     return list(data_manager._DataManager__data.keys())
 
 
+def _select_handler_params(handler: Callable[..., Any], candidates: dict[str, Any]) -> dict[str, Any]:
+    """Return only ``candidates`` the handler accepts as named kwargs.
+
+    Defense in depth. Handlers should already absorb unused params via ``**_``, but
+    filtering here means a future handler that forgets ``**_`` and forwards
+    ``**kwargs`` into a pandas method (the bug pattern that broke ``_safe_describe``)
+    still cannot leak the tool's flat-schema defaults (``agg``, ``n``, ``ascending``,
+    …) into pandas methods that don't accept them. ``**kwargs`` in the handler
+    signature is intentionally not treated as a wildcard.
+    """
+    sig = inspect.signature(handler)
+    allowed = {
+        name
+        for name, p in sig.parameters.items()
+        if p.kind in (inspect.Parameter.POSITIONAL_OR_KEYWORD, inspect.Parameter.KEYWORD_ONLY) and name != "df"
+    }
+    return {k: v for k, v in candidates.items() if k in allowed}
+
+
 @tool
 def query_dataframe(  # noqa: PLR0913 — explicit kwargs required so @tool emits a flat schema (see comment below)
     dataset_name: str,
@@ -293,7 +317,7 @@ def query_dataframe(  # noqa: PLR0913 — explicit kwargs required so @tool emit
 
     df = data_manager[dataset_name].load()
     try:
-        return handler(df, **params)
+        return handler(df, **_select_handler_params(handler, params))
     except Exception as exc:
         return f"Error executing operation: {exc}"
 

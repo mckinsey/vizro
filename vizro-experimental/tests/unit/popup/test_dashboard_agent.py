@@ -113,3 +113,15 @@ class TestInvocation:
     def test_unknown_operation_returns_error(self, registered_dataset):
         result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": "rm_rf"})
         assert result.startswith("Error: Operation 'rm_rf' is not allowed")
+
+    def test_describe_succeeds_despite_flat_schema_defaults(self, registered_dataset):
+        """Regression for the ``_safe_describe`` bug: ``query_dataframe`` exposes
+        ``agg="mean"`` / ``n=10`` / ``ascending=True`` defaults that pandas
+        ``df.describe`` rejects. The handler must absorb them via ``**_`` and
+        ``_select_handler_params`` must filter them at dispatch — both layers tested
+        here by exercising the operation with no extra args.
+        """
+        result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": "describe"})
+        assert "Error" not in result
+        for label in ("count", "mean", "std", "min", "max"):
+            assert label in result, f"describe output missing '{label}': {result}"
