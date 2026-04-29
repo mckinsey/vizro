@@ -97,14 +97,6 @@ The chat input now pairs two on-ramps:
 
 A non-streaming `ChatAction` is used so the response can be a full `dcc.Graph` rather than a stream of text chunks.
 
-## Other useful combinations
-
-The same composition pattern works for other use cases:
-
-- **File upload + streaming + vision** for image-aware chat (see [Add file upload](file-upload.md)).
-- **Streaming + example questions** for guided LLM Q&A.
-- **Mixed content + custom action** for canned dashboards-as-replies.
-
 ## What's next
 
 - [Add a chat popup](chat-popup.md) — for dashboards where chat should live across pages rather than on a dedicated builder page.

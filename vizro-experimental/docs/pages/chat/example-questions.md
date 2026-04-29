@@ -2,7 +2,7 @@
 
 This guide shows you how to surface predefined prompts next to the chat input as a popup menu.
 
-The `example_questions` argument on [`Chat`][vizro_experimental.chat.Chat] takes a list of strings. Each one becomes a clickable item in a menu next to the input field. Clicking an item fills the textarea — the user still has to press Send to submit.
+The `example_questions` argument on [`Chat`][vizro_experimental.chat.Chat] takes a list of strings. Each one becomes a clickable item in a menu next to the input field. Clicking an item fills the textarea.
 
 ## Configure example questions
 

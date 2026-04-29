@@ -67,19 +67,3 @@ def my_generate(messages: list[Message]) -> Iterator[str]:
 
 add_chat_popup(app, generate_response=my_generate, streaming=True)
 ```
-
-## When to use the popup vs. the Chat component
-
-| Use the popup when… | Use the Chat component when… |
-|---|---|
-| You want a chatbot available across every page | You want chat on a specific page |
-| The auto-agent's data-aware Q&A is enough | You need a fully custom backend pattern |
-| One chat per dashboard is fine | You need multiple chats with different backends on the same dashboard |
-| You don't want to register `Chat` as a page component | You're already composing chats with other Vizro components |
-
-For multi-chat dashboards, custom UI flows, or non-LLM backends, prefer the [Chat component](chat-component.md).
-
-## What's next
-
-- [Chat component](chat-component.md) — the full-featured component if the popup's defaults aren't a fit.
-- [API reference](popup-api-reference.md) — `add_chat_popup`, `create_dashboard_agent`, and `make_generate_response`.

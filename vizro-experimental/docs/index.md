@@ -16,8 +16,9 @@ or be removed between releases. Once a feature stabilises, it graduates to `vizr
 
 - :fontawesome-solid-comments:{ .lg .middle } __Chat component__
 
-    Add a Chat to a page and back it with an action. Subclass `ChatAction` (sync) or
-    `StreamingChatAction` (SSE) for any LLM, file upload, or rich response pattern.
+    Add a Chat to a page and back it with an action. Bring any LLM, support file
+    uploads, or return rich Dash-component responses by subclassing `ChatAction`
+    or `StreamingChatAction`.
 
     [:octicons-arrow-right-24: Get started](pages/chat/chat-component.md)
 

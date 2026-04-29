@@ -33,7 +33,7 @@ from ..actions._base_chat_action import _BaseChatAction
 
 
 def _coerce_chat_actions(value: Any) -> Any:
-    """Accept a single action or a list (empty omits validation pass-through for [])."""
+    """Wrap a single action in a list to match Vizro's action-chain field shape."""
     if value is None:
         return []
     return value if isinstance(value, list) else [value]
@@ -44,7 +44,9 @@ class Chat(VizroBaseModel):
 
     Args:
         type (Literal["chat"]): Defaults to `"chat"`.
-        actions (list[_BaseChatAction] | _BaseChatAction): One action or a list of actions. Defaults to `[]`.
+        actions (list[_BaseChatAction] | _BaseChatAction): The action that handles responses. Pass an action
+            instance directly; the field stores it as a single-element list to match Vizro's action-chain
+            convention. Defaults to `[]`.
         placeholder (str): Placeholder text for the input field. Defaults to `"How can I help you?"`.
         file_upload (bool): Enable file upload functionality. Defaults to `False`.
         example_questions (list[str]): List of example questions to show in a popup menu. Defaults to `[]`.
@@ -54,7 +56,7 @@ class Chat(VizroBaseModel):
     type: Literal["chat"] = "chat"
     actions: Annotated[list[_BaseChatAction], BeforeValidator(_coerce_chat_actions)] = Field(
         default_factory=list,
-        description="Chat action(s) to handle responses. Pass one action or a list.",
+        description="Chat action that handles responses. Pass an action instance.",
     )
     placeholder: str = Field(default="How can I help you?", description="Placeholder text for the input field.")
     file_upload: bool = Field(default=False, description="Enable file upload functionality.")

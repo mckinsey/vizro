@@ -10,7 +10,7 @@ A [`StreamingChatAction`][vizro_experimental.chat.StreamingChatAction] differs f
 pip install openai
 ```
 
-Set `OPENAI_API_KEY` (and optionally `OPENAI_BASE_URL` for Azure or self-hosted deployments).
+Set `OPENAI_API_KEY` (and optionally `OPENAI_BASE_URL`).
 
 ## Define a streaming action
 

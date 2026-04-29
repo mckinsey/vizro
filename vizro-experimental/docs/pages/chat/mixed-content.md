@@ -129,10 +129,6 @@ A [`ChatAction`][vizro_experimental.chat.ChatAction]'s `generate_response` can r
 
 The highlighted blocks are the response body: Markdown intro, an Alert, a Table, an Accordion (containing a Plotly chart, a syntax-highlighted code block, and an image), and a Blockquote — all returned as a single `html.Div`.
 
-## Streaming caveat
-
-[`StreamingChatAction`][vizro_experimental.chat.StreamingChatAction] only streams strings. To return a Dash component, use the synchronous `ChatAction` instead.
-
 ## What's next
 
 - [Add example questions](example-questions.md) — guide users with predefined prompts.

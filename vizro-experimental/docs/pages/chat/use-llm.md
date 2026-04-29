@@ -2,7 +2,7 @@
 
 This guide shows you how to wire a real LLM as the backend for a chat.
 
-The pattern is the same regardless of provider: subclass [`ChatAction`][vizro_experimental.chat.ChatAction], call the model inside `generate_response`, and return the assistant message. We use Anthropic Claude as the example below — replace the SDK call with OpenAI, an in-house model, or any other backend.
+The pattern is the same regardless of provider: subclass [`ChatAction`][vizro_experimental.chat.ChatAction], call the model inside `generate_response`, and return the assistant message. We use Anthropic Claude as the example below — replace the SDK call with any other backend like OpenAI.
 
 ## Install a provider SDK
 
@@ -75,14 +75,6 @@ class OpenAIChat(ChatAction):
         api_messages = [{"role": m["role"], "content": m["content"]} for m in messages]
         response = client.responses.create(model=self.model, input=api_messages, store=False)
         return response.output_text
-```
-
-## Switch models per page
-
-Because `model` is a Pydantic field, you can pick the model per `Chat` instance:
-
-```python
-Chat(actions=[ClaudeChat(model="claude-sonnet-4-5-20251001")])
 ```
 
 ## What's next
