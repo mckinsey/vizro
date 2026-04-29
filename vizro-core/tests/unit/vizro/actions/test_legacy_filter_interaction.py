@@ -149,7 +149,7 @@ class TestFilterInteraction:
 
         assert result == expected
 
-    @pytest.mark.xfail  # This is the desired behavior, ie when no target is provided, then all charts filtered
+    @pytest.mark.xfail  # This is the desired behavior, that is, when no target is provided, then all charts filtered
     @pytest.mark.parametrize(
         "ctx_filter_interaction,target_scatter_filtered_continent,target_box_filtered_continent",
         [
