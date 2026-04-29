@@ -1,16 +1,19 @@
 # How to use conditional notifications
 
-Conditional notifications are messages that are displayed automatically based on the outcome of an action. For example, a notification can indicate whether an action was completed successfully or failed.
+Notifications are displayed automatically to show the outcome of an [action](action.md), for example, to indicate whether an action completed successfully or failed.
 
-The following sections cover how conditional notifications can represent different outcomes, such as success and error states, display progress indicators while actions are running, and support more specific scenarios and dynamic content.
+Conditional notifications represent different outcomes, such as to indicate success or errors, to display progress indicators for running actions, and to support more specific scenarios and dynamic content.
 
-## Conditional notifications for custom actions
+Conditional notifications for Vizro's built-in actions (such as [`export_data`][vizro.actions.export_data]) are not yet supported and will be added in a future release.
 
-This section focuses on conditional notifications used with actions defined via `@capture("action")`. If you're not familiar with custom actions, see [How to create custom actions](custom-actions.md) first.
+This page describes conditional notifications for custom actions defined via `@capture("action")`. If you're not familiar with custom actions, see [How to create custom actions](custom-actions.md) first.
 
-### Success and error notifications
+## Success and error notifications
 
-Two common types of conditional notifications are **"success"** and **"error"**. A **"success"** notification is shown when an action completes as expected. An **"error"** notification is shown automatically if the action raises an exception, indicating that something went wrong during execution.
+Two common types of conditional notifications are: 
+
+* **`"success"`**: shown when an action completes as expected. 
+* **`"error"`**: shown automatically if the action raises an exception to indicate that something went wrong during execution.
 
 !!! example "Success and error notifications"
 
@@ -59,11 +62,11 @@ Two common types of conditional notifications are **"success"** and **"error"**.
         1. An `error` notification with the "Pipeline failed." text is shown when the action raises an exception.
 
 
-### Progress notifications
+## Progress notifications
 
-A `"progress"` notification is shown while an action is running. It appears before the action starts and is automatically replaced by a `"success"` or `"error"` notification once the action completes.
+A **`"progress"`** notification is shown while an action runs. It appears before the action starts and is automatically replaced by a **`"success"`** or **`"error"`** notification once the action completes.
 
-This is useful for long-running actions where you want to indicate that work is in progress and provide feedback to the user.
+This is useful for long-running actions where you want to indicate that the action is in progress and provide feedback to the user.
 
 !!! example "Progress notification"
 
@@ -114,9 +117,9 @@ This is useful for long-running actions where you want to indicate that work is 
         1. A `"progress"` notification with the "Running pipeline..." text is shown immediately when the action starts, and then replaced by either the `"success"` or `"error"` notification once the action completes.
 
 
-### Custom notification keys
+## Custom notification keys
 
-In addition to the built-in keys (`progress`, `success`, `error`), you can define your own custom notification keys. These allow you to handle more specific outcomes beyond just `success` or `error`.
+In addition to the built-in keys (`progress`, `success`, `error`), you can define your own custom notification keys to handle more specific outcomes beyond just `success` or `error`.
 
 Custom notifications are only shown when the action explicitly selects them. This happens when the action function either returns a key or raises an exception with a key that matches one defined in notifications.
 
@@ -132,9 +135,12 @@ To show a custom notification on error, include the key when raising an exceptio
 raise Exception("Pipeline failed.", "pipeline_partial_error")
 ```
 
-If no custom key is provided, the default behavior applies: a "success" notification is shown when the action completes, and an "error" notification is shown if an exception is raised (if these are defined).
+If no custom key is provided, the default behavior applies:
 
-Custom notifications use the "info" style by default, unless configured otherwise (see our user guide on [customizing notifications](#customizing-notification-appearance-and-behavior)).
+* a `"success"` notification is shown when the action completes.
+* an `"error"` notification is shown if an exception is raised (if these are defined).
+
+Custom notifications use the "info" style by default unless configured otherwise (see the section on [customizing notifications](#customizing-notification-appearance-and-behavior)).
 
 !!! example "Custom notification keys"
 
@@ -198,9 +204,9 @@ Custom notifications use the "info" style by default, unless configured otherwis
         1. Definition of the custom notification for the `"pipeline_partial_error"` key.
 
 
-### Dynamic notification content
+## Dynamic notification content
 
-Notification messages can include **template variables** that are filled in with values from the action at runtime. This allows you to display dynamic information, such as results or error details, directly in the notification.
+Notification messages can include **template variables** that are filled in with values from the action at runtime. This enables you to display dynamic information, such as results or error details, directly in the notification.
 
 Two templates are supported:
   - `**{{result}}**`: Replaced with additional information returned by the action. This value is optional and can be included in the tuple alongside the notification key when the action completes or raises an exception. If no value is provided, it resolves to an empty string.
@@ -278,11 +284,11 @@ In this example, `**{{result}}**` is filled with the additional detail returned 
 
 The `**{{error_msg}}**` template is filled with the error message from the exception (for example, "Random error.").
 
-### Using action inputs in progress notifications
+## Using action inputs in progress notifications
 
 Progress notifications can also include template variables based on the runtime action's input values. These variables are referenced using the parameter names, for example `{{param_name}}`.
 
-This allows the progress message to reflect the current inputs of the action, making it more informative. For example, you can display the number of retries configured while the action is running.
+The progress message reflects the current inputs of the action to make it more informative. For example, you can display the number of retries configured while the action is running.
 
 !!! example "Dynamic progress text"
 
@@ -351,11 +357,11 @@ This allows the progress message to reflect the current inputs of the action, ma
         1. Defining the `"progress"` notification text with the `{{max_retries}}` template that gets replaced by the runtime value of the `max_retries` argument when the action runs.
 
 
-### Customizing notification appearance and behavior
+## Customizing notification appearance and behavior
 
-Notifications don't have to be limited to plain text. You can customize how they look and behave, for example, by adjusting the variant, adding a title or icon, or controlling whether they close automatically. See the [notifications guide](notification-actions.md) for a full list of available options.
+Notifications do not have to be limited to plain text. You can customize how they look and behave, for example, by adjusting the variant, adding a title or icon, or controlling whether they close automatically. See the [notifications guide](notification-actions.md) for a full list of available options.
 
-To do this, use the [show_notification][vizro.actions.show_notification] or [update_notification][vizro.actions.update_notification] models instead of plain text when defining notifications. This allows notifications to be tailored to different scenarios, such as highlighting important errors or distinguishing partial successes from full successes. Template variables like `{{result}}` can still be used within customized notification text.
+To customize notifications when you define them, use the [show_notification][vizro.actions.show_notification] or [update_notification][vizro.actions.update_notification] models instead of plain text. Notifications can be tailored to different scenarios, such as highlighting important errors or distinguishing partial successes from full successes. Template variables like `{{result}}` can still be used within customized notification text.
 
 !!! example "Customized notification with `show_notification`"
 
@@ -427,13 +433,13 @@ To do this, use the [show_notification][vizro.actions.show_notification] or [upd
         1. Using `va.update_notification` to update the `"progress"` notification with new text and variant when the `"pipeline_max_retries_error"` key is raised.
 
 
-### Debugging and error handling
+## Debugging and error handling
 
 By default, every custom action shows a generic error notification ("Action failed.") if something goes wrong. You can override this with a more specific message, or disable error notifications entirely by setting `"error": None`.
 
 If error notifications are disabled and the app is running in debug mode `(Vizro().build(dashboard).run(debug=True))`, any unhandled exceptions are shown in the [Dash Dev Tools](https://dash.plotly.com/devtools) debugger instead of in the app. If an "error" notification is defined, the exception is caught and displayed as a notification within the app.
 
-All exceptions (except `PreventUpdate`) are always logged to the server console, regardless of how notifications are configured.
+All exceptions, except `PreventUpdate`, are always logged to the server console, regardless of how notifications are configured.
 
 !!! example "Default error vs disabled error"
 
@@ -487,8 +493,6 @@ All exceptions (except `PreventUpdate`) are always logged to the server console,
 Other important behaviors:
 
 - **`PreventUpdate`**: raising `PreventUpdate` is treated as a success (shows the `"success"` notification if defined) but **stops** the action chain from continuing to execute.
-- **`dash.no_update`**: returning `no_update` is also treated as success and **allows** the action chain to continue.
+- **`dash.no_update`**: returning `no_update` is also treated as success and the action chain **continues**.
 
-## Conditional notifications for built-in actions
 
-Conditional notifications for Vizro's built-in actions (such as [`export_data`][vizro.actions.export_data]) are not yet supported. This will be added in a future release.
