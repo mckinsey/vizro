@@ -359,15 +359,7 @@ class Filter(VizroBaseModel):
             update_figures_action = update_figures(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets)
             set_control_actions = []
             for control_id in targeted_controls:
-                # Do cascading if the targeted control is a Filter with different column defined.
-                # Parameters don't support cascading yet.
-                # TODO NOW PP: Think and implement this:
-                if getattr(model_manager[control_id], "column", self.column) != self.column:
-                    pass
-                # Otherwise, sync two controls.
-                # TODO AM-PP OQ: We can do it on the client side.
-                else:
-                    set_control_actions.append(set_control(control=control_id, value=None))
+                set_control_actions.append(set_control(control=control_id, value=None))
 
             # Post assignment to trigger the _make_actions_chain pydantic validator.
             self.selector.actions = [update_figures_action, *set_control_actions]

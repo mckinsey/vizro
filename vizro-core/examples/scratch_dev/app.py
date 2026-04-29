@@ -365,37 +365,6 @@ page_3_6 = vm.Page(
 )
 
 
-"""
-# ====== Cascading controls ======
-# TODO: Does not work as:
-#  1. Form component does not support the `set_control` action yet.
-#  2. Can't be used as and "value" and "options" have to be updated too.
-#  3. TODO PP (CT): Can't be used with custom action/dash callback as "select_all" option will be overwritten. We should improve "select_all" here. Ben suggested the same.
-#  4. Think about dynamic data here.
-#  5. Think about persistence per cascading filter value. Investigate dash docs about this.
-
-@capture("action")
-def update_country_options_value(_trigger):
-    continent = _trigger
-    if continent:
-        filtered_df = df_gapminder[df_gapminder["continent"].isin([continent])]
-        options = [{"label": c, "value": c} for c in sorted(filtered_df["country"].unique())]
-        value = [options[0]["value"]] if options else []
-        return options, value
-    return [], []
-"""
-
-
-# TODO OQs:
-#  1. Should we enable that Filter targets a filter on another page?
-#  2. Cascading control has an issue if target is multi dropdown as we need to add the __SELECT_ALL option.
-#  3. Think about dynamic data here. If filter is targeted should we set it to _dynamic? Should update_figures be used
-#   for cascading filters as update figures means recreating and set_control for syncing values? How about
-#   if source and target filter have the same column -> use set_control (sync)
-#   if columns are different, use _dynamic/recreating cascading filter (update_figures)?.
-#   There's no dynamic parameters yet, so enable only syncing there, and not cascading.
-#  4. Cascading control: Think about persistence per cascading filter value. Investigate dash docs about this.
-
 dashboard = vm.Dashboard(
     pages=[
         page_0_1,
