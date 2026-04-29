@@ -47,9 +47,12 @@ pypath = "python -c 'import sys; print(sys.executable)'"
 test = "pytest tests {args}"
 test-integration-browser = [
   "python -m playwright install chromium",
-  "pytest tests/integration/browser {args}"
+  "pytest tests/integration/browser -m integration_browser {args}"
 ]
-test-integration-llm = "pytest tests/integration/llm {args}"
+test-integration-llm = [
+  "python -m playwright install chromium",
+  "pytest tests/integration/llm -m integration_llm {args}"
+]
 test-unit = "pytest tests/unit {args}"
 test-unit-coverage = [
   "coverage run -m pytest tests/unit {args}",

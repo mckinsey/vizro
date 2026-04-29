@@ -333,5 +333,3 @@ window.dash_clientside.vizroChatComponent.closePanel = () => "chat-popup-panel";
  * Clears the chat history.
  */
 window.dash_clientside.vizroChatComponent.clearChat = () => [[], []];
-
-console.log("vizro_chat_component JS loaded");

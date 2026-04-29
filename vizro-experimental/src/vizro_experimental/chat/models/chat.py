@@ -58,7 +58,9 @@ class Chat(VizroBaseModel):
     )
     placeholder: str = Field(default="How can I help you?", description="Placeholder text for the input field.")
     file_upload: bool = Field(default=False, description="Enable file upload functionality.")
-    example_questions: list[str] = Field(default=[], description="List of example questions to show in a popup menu.")
+    example_questions: list[str] = Field(
+        default_factory=list, description="List of example questions to show in a popup menu."
+    )
 
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)
 

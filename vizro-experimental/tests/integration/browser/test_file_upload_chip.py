@@ -30,10 +30,10 @@ def _write_png(dir: Path) -> Path:
     return path
 
 
-def test_csv_upload_renders_doc_chip_and_remove_deletes_it(page: Page, app_url: str, tmp_path: Path) -> None:
+def test_csv_upload_renders_doc_chip_and_remove_deletes_it(page: Page, chat_app_url: str, tmp_path: Path) -> None:
     csv = _write_csv(tmp_path)
 
-    page.goto(app_url + "/examples--upload")
+    page.goto(chat_app_url + "/examples--upload")
     expect(page.get_by_placeholder("Upload a file and ask questions...")).to_be_visible()
 
     page.set_input_files("input[type=file]", str(csv))
@@ -51,10 +51,10 @@ def test_csv_upload_renders_doc_chip_and_remove_deletes_it(page: Page, app_url: 
     expect(page.locator(f".{CSS_FILE_CHIP}")).to_have_count(0)
 
 
-def test_png_upload_renders_image_chip_with_img_thumbnail(page: Page, app_url: str, tmp_path: Path) -> None:
+def test_png_upload_renders_image_chip_with_img_thumbnail(page: Page, chat_app_url: str, tmp_path: Path) -> None:
     png = _write_png(tmp_path)
 
-    page.goto(app_url + "/examples--upload")
+    page.goto(chat_app_url + "/examples--upload")
     expect(page.get_by_placeholder("Upload a file and ask questions...")).to_be_visible()
 
     page.set_input_files("input[type=file]", str(png))

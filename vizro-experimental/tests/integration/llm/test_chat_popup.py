@@ -40,8 +40,8 @@ from tests.integration.llm.question_and_reference import (
         "query_dataframe with invalid operation",
     ],
 )
-def test_chatbot_popup(page, question, reference):
-    page.goto("http://127.0.0.1:8050/")
+def test_chatbot_popup(page, popup_app_url, question, reference):
+    page.goto(f"{popup_app_url}/")
     page.locator('button[class*="chat-popup-toggle"]').click()
     textarea = page.locator('textarea[class*="mantine-Textarea-input"]')
     textarea.fill(question)

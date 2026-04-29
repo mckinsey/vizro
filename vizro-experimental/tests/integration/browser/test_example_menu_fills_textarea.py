@@ -4,8 +4,8 @@ from playwright.sync_api import Page, expect
 from tests.integration.browser.conftest import SEND_ICON_FILLED, wait_for_send_icon
 
 
-def test_clicking_example_question_fills_textarea_and_activates_send(page: Page, app_url: str) -> None:
-    page.goto(app_url + "/example-questions")
+def test_clicking_example_question_fills_textarea_and_activates_send(page: Page, chat_app_url: str) -> None:
+    page.goto(chat_app_url + "/example-questions")
     textarea = page.get_by_placeholder("Ask me anything or select an example...")
     expect(textarea).to_be_visible()
 

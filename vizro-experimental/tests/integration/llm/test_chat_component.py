@@ -12,8 +12,8 @@ from tests.integration.llm.question_and_reference import FRANCE_CAPITAL
     ],
     ids=["Capital of France"],
 )
-def test_openai_streaming_chat(page, question, reference):
-    page.goto("http://127.0.0.1:8050/example-questions")
+def test_openai_streaming_chat(page, chat_app_url, question, reference):
+    page.goto(f"{chat_app_url}/example-questions")
     page.locator("#example_chat-example-questions-button").click()
     page.locator('div[class*="chat-example-menu-dropdown"] button:nth-of-type(1)').click()
     page.locator("#example_chat-send-button").click()

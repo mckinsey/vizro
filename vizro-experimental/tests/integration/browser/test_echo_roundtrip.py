@@ -4,8 +4,8 @@ from playwright.sync_api import Page, expect
 from tests.integration.browser.conftest import SEND_ICON_OUTLINED, wait_for_send_icon
 
 
-def test_simple_echo_roundtrip(page: Page, app_url: str) -> None:
-    page.goto(app_url + "/")
+def test_simple_echo_roundtrip(page: Page, chat_app_url: str) -> None:
+    page.goto(chat_app_url + "/")
     textarea = page.get_by_placeholder("How can I help you?")
     expect(textarea).to_be_visible()
 

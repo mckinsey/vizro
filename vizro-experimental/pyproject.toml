@@ -68,10 +68,14 @@ packages = ["src/vizro_experimental"]
 addopts = [
   "--import-mode=importlib",
   "-m",
-  "not benchmark"
+  "not benchmark and not integration_browser and not integration_llm"
 ]
 filterwarnings = ["error"]
-markers = ["benchmark: agent perf/quality suite (on-demand)"]
+markers = [
+  "benchmark: agent perf/quality suite (on-demand)",
+  "integration_browser: Playwright browser tests; require Chromium and a self-hosted example app subprocess",
+  "integration_llm: LLM-judge tests; require OPENAI_API_KEY and self-host the example app subprocess"
+]
 pythonpath = ["src"]
 
 [tool.ruff]
