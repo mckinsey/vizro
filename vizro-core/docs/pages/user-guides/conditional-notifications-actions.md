@@ -10,9 +10,9 @@ This page describes conditional notifications for custom actions defined via `@c
 
 ## Success and error notifications
 
-Two common types of conditional notifications are: 
+Two common types of conditional notifications are:
 
-* **`"success"`**: shown when an action completes as expected. 
+* **`"success"`**: shown when an action completes as expected.
 * **`"error"`**: shown automatically if the action raises an exception to indicate that something went wrong during execution.
 
 !!! example "Success and error notifications"
@@ -494,5 +494,3 @@ Other important behaviors:
 
 - **`PreventUpdate`**: raising `PreventUpdate` is treated as a success (shows the `"success"` notification if defined) but **stops** the action chain from continuing to execute.
 - **`dash.no_update`**: returning `no_update` is also treated as success and the action chain **continues**.
-
-
