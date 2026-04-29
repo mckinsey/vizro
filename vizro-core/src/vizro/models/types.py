@@ -140,8 +140,8 @@ def _validate_captured_callable(cls, value: Any, info: ValidationInfo):
     )
 
 
-# CapturedCallable now allows instantiation via string, which will instantiate an object with ._prevent_run = True.
-# This allows us to instantiate dashboard objects without needing to execute/import the function definition.
+# CapturedCallable now enables instantiation via string, which will instantiate an object with ._prevent_run = True.
+# This enables us to instantiate dashboard objects without needing to execute/import the function definition.
 # Useful in the context of untrusted code generation (e.g. by LLMs).
 class CapturedCallable:
     """Stores a captured function call to use in a dashboard.
@@ -327,7 +327,7 @@ class CapturedCallable:
 
         This uses the hydra syntax for _target_ but none of the other bits and we don't actually use hydra
         to implement it. In future, we might like to switch to using hydra's actual implementation
-        which would allow nested functions (e.g. for transformers?) and to specify the path to a _target_ that lives
+        which would enable nested functions (e.g. for transformers?) and to specify the path to a _target_ that lives
         outside of vizro.plotly_express. See https://hydra.cc/docs/advanced/instantiate_objects/overview/.
         """
         if not isinstance(captured_callable_config, dict):
@@ -446,7 +446,7 @@ def _pio_templates_default():
     This works even if users have tweaked the templates, so long as pio.templates has been updated correctly and you
     refer to template by name rather than trying to take from vizro.themes.
 
-    If pio.templates.default has already been set to vizro_dark or vizro_light then no change is made to allow a user
+    If pio.templates.default has already been set to vizro_dark or vizro_light then no change is made to enable a user
     to set these without it being overridden.
     """
     old_default = pio.templates.default
