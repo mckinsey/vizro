@@ -21,7 +21,7 @@ diverging_bar_page = vm.Page(
 
             A diverging bar chart is a version of a bar chart used to display both positive and negative values across
             a common baseline. Bars extend either to the left or right of the central axis, indicating negative or
-            positive values, respectively. This allows for easy comparison of data points that deviate in opposite
+            positive values, respectively. This enables easy comparison of data points that deviate in opposite
             directions.
 
             &nbsp;
