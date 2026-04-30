@@ -147,16 +147,20 @@ class StreamingChatAction(_BaseChatAction):
         Args:
             prompt: User's input text.
             messages: Store-shaped history (`role` + `content_json`); mutated in place when sending.
-            uploaded_files: Data from ``{chat_id}-file-store.data`` (included in the SSE POST body when set).
+            uploaded_files: File-store payload at send time. Snapshotted into the new user message
+                as ``attachments`` so the bubble renders them and the file-store can clear.
 
         Returns:
-            List of outputs for store, hidden-messages, chat-input, SSE url, and SSE options.
+            List of outputs for store, hidden-messages, chat-input, SSE url, SSE options,
+            file-store, and data-info (matching ``self.outputs``).
 
         """
         if not prompt or not prompt.strip():
             return [no_update] * len(self.outputs)
 
-        latest_input = {"role": "user", "content_json": json.dumps(prompt)}
+        latest_input: dict[str, Any] = {"role": "user", "content_json": json.dumps(prompt)}
+        if uploaded_files:
+            latest_input["attachments"] = uploaded_files
         messages.append(latest_input)
 
         store = Patch()
@@ -180,6 +184,8 @@ class StreamingChatAction(_BaseChatAction):
             no_update,
             f"{base_pathname}/streaming-{self._chat_id}",
             sse_options(sse_request),
+            [],
+            "",
         ]
 
     @property
@@ -196,4 +202,6 @@ class StreamingChatAction(_BaseChatAction):
             f"{self._chat_id}-chat-input.value",
             f"{self._chat_id}-sse.url",
             f"{self._chat_id}-sse.options",
+            f"{self._chat_id}-file-store.data",
+            f"{self._chat_id}-data-info.children",
         ]

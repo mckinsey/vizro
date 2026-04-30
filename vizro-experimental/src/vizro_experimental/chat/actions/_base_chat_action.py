@@ -34,6 +34,7 @@ from .._constants import (
     CSS_LOADING_MESSAGE,
     CSS_MESSAGE_BUBBLE,
     CSS_MESSAGE_WRAPPER,
+    CSS_USER_ATTACHMENTS,
     CSS_USER_MESSAGE,
     CSS_USER_TEXT,
 )
@@ -113,11 +114,45 @@ def _loading_bubble() -> html.Div:
     )
 
 
-def _message_to_html(message: dict[str, str]) -> html.Div:
+def _chip_body(filename: str, content: str) -> list[Any]:
+    """Build the thumbnail + two-line label shared by every file chip variant.
+
+    Used by both the input-preview chip (with a remove button) and the in-bubble
+    history chip (read-only). Pulled out so the two variants can't drift visually.
+    """
+    if _is_image_content(content):
+        thumb = html.Img(src=content, alt=filename, className=CSS_FILE_CHIP_THUMB)
+    else:
+        thumb = html.Div(
+            DashIconify(icon="material-symbols-light:description-outline", width=24, height=24),
+            className=f"{CSS_FILE_CHIP_THUMB} {CSS_FILE_CHIP_THUMB_ICON}",
+        )
+    return [
+        thumb,
+        html.Div(
+            [
+                html.Div(filename, className=CSS_FILE_CHIP_TITLE, title=filename),
+                html.Div(_file_meta_label(filename, content), className=CSS_FILE_CHIP_SUBTITLE),
+            ],
+            className=CSS_FILE_CHIP_TEXT,
+        ),
+    ]
+
+
+def _attachment_chip(file: dict[str, Any]) -> html.Div:
+    """Render a non-removable file chip for use above a user message bubble."""
+    return html.Div(
+        _chip_body(file.get("filename", ""), file.get("content") or ""),
+        className=CSS_FILE_CHIP,
+    )
+
+
+def _message_to_html(message: dict[str, Any]) -> html.Div:
     """Convert a store message dict to the HTML structure expected by ``renderMessages``.
 
     Args:
-        message: Dict with 'role' and 'content_json' keys.
+        message: Dict with ``role`` and ``content_json`` keys; user messages may also carry
+            ``attachments`` (list of ``{filename, content}`` dicts) which render inside the bubble.
 
     Returns:
         Dash HTML Div component representing the message.
@@ -127,13 +162,20 @@ def _message_to_html(message: dict[str, str]) -> html.Div:
     content = json.loads(message["content_json"])
 
     if role == "user":
-        return html.Div(
-            html.Div(
-                html.Div(str(content) if content else "", className=CSS_USER_TEXT),
-                className=f"{CSS_MESSAGE_BUBBLE} {CSS_USER_MESSAGE}",
-            ),
-            className=CSS_MESSAGE_WRAPPER,
-        )
+        # Chips render as a sibling row ABOVE the text bubble (mirrors ChatGPT / Gemini).
+        wrapper_children: list[Any] = []
+        attachments = message.get("attachments") or []
+        if attachments:
+            wrapper_children.append(
+                html.Div([_attachment_chip(f) for f in attachments], className=CSS_USER_ATTACHMENTS)
+            )
+        text = str(content) if content else ""
+        # An attachment-only message (no prompt text) skips the bubble so we don't render an empty pill.
+        if text or not attachments:
+            wrapper_children.append(
+                html.Div(text, className=f"{CSS_MESSAGE_BUBBLE} {CSS_USER_MESSAGE} {CSS_USER_TEXT}")
+            )
+        return html.Div(wrapper_children, className=CSS_MESSAGE_WRAPPER)
     elif isinstance(content, str):
         return html.Div(
             [
@@ -179,17 +221,23 @@ def _register_loading_indicator_callback(
     @callback(
         Output(f"{chat_id}-hidden-messages", "children", allow_duplicate=True),
         Output(f"{chat_id}-chat-input", "value", allow_duplicate=True),
+        Output(f"{chat_id}-file-store", "data", allow_duplicate=True),
+        Output(f"{chat_id}-data-info", "children", allow_duplicate=True),
         Input(f"{chat_id}-send-button", "n_clicks"),
         State(f"{chat_id}-chat-input", "value"),
+        State(f"{chat_id}-file-store", "data"),
         prevent_initial_call=True,
     )
-    def _update_with_user_input(_, prompt):
+    def _update_with_user_input(_, prompt, files):
         if not prompt or not prompt.strip():
             raise PreventUpdate
+        user_msg: dict[str, Any] = {"role": "user", "content_json": json.dumps(prompt)}
+        if files:
+            user_msg["attachments"] = files
         html_messages = Patch()
-        html_messages.append(message_to_html({"role": "user", "content_json": json.dumps(prompt)}))
+        html_messages.append(message_to_html(user_msg))
         html_messages.append(_loading_bubble())
-        return html_messages, ""
+        return html_messages, "", [], ""
 
 
 class _BaseChatAction(_AbstractAction):
@@ -353,51 +401,37 @@ class _BaseChatAction(_AbstractAction):
         content = file.get("content") or ""
 
         if status == "uploading":
-            thumb = html.Div(dmc.Loader(size="sm"), className=f"{CSS_FILE_CHIP_THUMB} {CSS_FILE_CHIP_THUMB_ICON}")
-            title, subtitle = "Uploading file…", "fetching name…"
-            chip_class = f"{CSS_FILE_CHIP} {CSS_FILE_CHIP_UPLOADING}"
-            remove_button: list[Any] = []
-        else:
-            if _is_image_content(content):
-                thumb = html.Img(src=content, alt=filename, className=CSS_FILE_CHIP_THUMB)
-            else:
-                thumb = html.Div(
-                    DashIconify(icon="material-symbols-light:description-outline", width=24, height=24),
-                    className=f"{CSS_FILE_CHIP_THUMB} {CSS_FILE_CHIP_THUMB_ICON}",
-                )
-            title = filename
-            subtitle = _file_meta_label(filename, content)
-            chip_class = CSS_FILE_CHIP
-            tooltip_target = f"{self._chat_id}-remove-file-tooltip-{index}"
-            remove_button = [
-                html.Span(
-                    dmc.ActionIcon(
-                        DashIconify(icon="material-symbols-light:close", width=12, height=12),
-                        id={"type": f"{self._chat_id}-remove-file", "index": index},
-                        n_clicks=0,
-                        size="xs",
-                        radius="xl",
-                        className=CSS_FILE_CHIP_REMOVE,
-                    ),
-                    id=tooltip_target,
-                ),
-                dbc.Tooltip("Remove file", target=tooltip_target),
-            ]
-
-        return html.Div(
-            [
-                thumb,
+            body = [
+                html.Div(dmc.Loader(size="sm"), className=f"{CSS_FILE_CHIP_THUMB} {CSS_FILE_CHIP_THUMB_ICON}"),
                 html.Div(
                     [
-                        html.Div(title, className=CSS_FILE_CHIP_TITLE, title=title),
-                        html.Div(subtitle, className=CSS_FILE_CHIP_SUBTITLE),
+                        html.Div("Uploading file…", className=CSS_FILE_CHIP_TITLE),
+                        html.Div("fetching name…", className=CSS_FILE_CHIP_SUBTITLE),
                     ],
                     className=CSS_FILE_CHIP_TEXT,
                 ),
-                *remove_button,
-            ],
-            className=chip_class,
-        )
+            ]
+            return html.Div(body, className=f"{CSS_FILE_CHIP} {CSS_FILE_CHIP_UPLOADING}")
+
+        # The button uses a pattern-matching id so one shared callback can dispatch on
+        # any chip's "x" via dash.ALL. dbc.Tooltip's target= only accepts string ids,
+        # so we wrap the button in a string-id Span just to give the tooltip an anchor.
+        tooltip_target = f"{self._chat_id}-remove-file-tooltip-{index}"
+        remove_button = [
+            html.Span(
+                dmc.ActionIcon(
+                    DashIconify(icon="material-symbols-light:close", width=12, height=12),
+                    id={"type": f"{self._chat_id}-remove-file", "index": index},
+                    n_clicks=0,
+                    size="xs",
+                    radius="xl",
+                    className=CSS_FILE_CHIP_REMOVE,
+                ),
+                id=tooltip_target,
+            ),
+            dbc.Tooltip("Remove file", target=tooltip_target),
+        ]
+        return html.Div([*_chip_body(filename, content), *remove_button], className=CSS_FILE_CHIP)
 
     def message_to_html(self, message: dict[str, str]) -> html.Div:
         """Convert a message dict to HTML structure.

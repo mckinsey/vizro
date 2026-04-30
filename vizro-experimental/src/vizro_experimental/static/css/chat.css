@@ -46,7 +46,9 @@
 
 /* Message wrapper for flex alignment */
 .chat-message-wrapper {
+  align-items: flex-start;
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
   width: 100%;
 }
@@ -54,6 +56,15 @@
 /* User message text styling */
 .chat-user-text {
   font-size: var(--chat-font-size);
+}
+
+/* Attachments row that sits above the user text bubble (mirrors ChatGPT / Gemini). */
+.chat-user-attachments {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+  max-width: 100%;
 }
 
 /* ==================== Container Styles ==================== */

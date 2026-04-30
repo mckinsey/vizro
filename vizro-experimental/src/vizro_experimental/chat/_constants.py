@@ -31,6 +31,7 @@ CSS_FILE_CHIP_TITLE = "chat-file-chip-title"
 CSS_FILE_CHIP_SUBTITLE = "chat-file-chip-subtitle"
 CSS_FILE_CHIP_REMOVE = "chat-file-chip-remove"
 CSS_FILE_CHIP_UPLOADING = "chat-file-chip-uploading"
+CSS_USER_ATTACHMENTS = "chat-user-attachments"
 
 # -------------------- Inline-style constants --------------------
 

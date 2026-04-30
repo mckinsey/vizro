@@ -2,6 +2,7 @@
 
 import base64
 import inspect
+import json
 from pathlib import Path
 
 import dash_bootstrap_components as dbc
@@ -14,10 +15,12 @@ from vizro_experimental.chat._constants import (
     CSS_ASSISTANT_MESSAGE,
     CSS_FILE_CHIP,
     CSS_FILE_CHIP_REMOVE,
+    CSS_FILE_CHIP_THUMB,
     CSS_FILE_CHIP_UPLOADING,
     CSS_LOADING_MESSAGE,
     CSS_MESSAGE_BUBBLE,
     CSS_MESSAGE_WRAPPER,
+    CSS_USER_MESSAGE,
 )
 from vizro_experimental.chat.actions._base_chat_action import (
     _BaseChatAction,
@@ -26,6 +29,7 @@ from vizro_experimental.chat.actions._base_chat_action import (
     _format_size,
     _is_image_content,
     _loading_bubble,
+    _message_to_html,
     _register_loading_indicator_callback,
     _register_send_icon_toggle_callback,
 )
@@ -116,6 +120,12 @@ class TestStreamingChunkHandlerPreservesLoadingUX:
     def test_has_first_chunk_replacement_branch(self):
         assert '"assistant"' in self.js_source
         assert "isLoadingPlaceholder" in self.js_source
+
+    def test_render_messages_passes_through_pre_styled_user_messages(self):
+        # Regression: renderMessages must not re-wrap messages that aren't the legacy
+        # [hidden role marker, raw text] placeholder, otherwise attachment chips
+        # rendered Python-side get stripped on every hidden-messages update.
+        assert 'role !== "user" && role !== "assistant"' in self.js_source
 
 
 class TestFormatSize:
@@ -324,3 +334,110 @@ class TestPopupTooltipInvariant:
             if isinstance(vnode, html.Span) and isinstance(getattr(vnode, "id", None), str)
         }
         assert wrapper_ids & targets, "File chip remove button is not wrapped by a tooltip target"
+
+
+# ---------------------------------------------------------------------------
+# Attachments-in-bubble redesign (TDD: written before the refactor lands).
+#
+# Goal: when a user sends a message with files attached, the input preview clears
+# and the files render as chips inside the user's message bubble. The LLM still
+# sees attachments cumulatively across the conversation.
+# ---------------------------------------------------------------------------
+
+
+def _count_chips(node) -> int:
+    return sum(
+        1
+        for v in _walk(node)
+        if isinstance(getattr(v, "className", None), str)
+        and CSS_FILE_CHIP in v.className.split()
+        and CSS_FILE_CHIP_THUMB not in v.className.split()
+    )
+
+
+def _stub_action(cls, chat_id="tc"):
+    action = cls.__new__(cls)
+    action._parent_model = type("P", (), {"id": chat_id})()
+    return action
+
+
+class TestAttachmentsInUserBubble:
+    """The user bubble shows attachment chips above the text — the core UX fix."""
+
+    def test_attachment_chip_has_no_remove_button_or_tooltip(self):
+        from vizro_experimental.chat.actions._base_chat_action import _attachment_chip
+
+        chip = _attachment_chip({"filename": "report.csv", "content": ""})
+        assert CSS_FILE_CHIP_REMOVE not in _collect_class_names(chip)
+        assert not any(isinstance(v, dbc.Tooltip) for v in _walk(chip))
+
+    @pytest.mark.parametrize("n", [0, 1, 3])
+    def test_message_renders_chip_per_attachment(self, n):
+        files = [{"filename": f"f{i}.txt", "content": ""} for i in range(n)]
+        msg = {"role": "user", "content_json": json.dumps("hi"), "attachments": files}
+        assert _count_chips(_message_to_html(msg)) == n
+
+    def test_chips_are_siblings_of_bubble_not_descendants(self):
+        # Visual contract: chips sit alongside the text pill (ChatGPT / Gemini layout),
+        # not nested inside it.
+        msg = {
+            "role": "user",
+            "content_json": json.dumps("Hi"),
+            "attachments": [{"filename": "x.txt", "content": ""}],
+        }
+        rendered = _message_to_html(msg)
+        bubbles = [v for v in _walk(rendered) if CSS_USER_MESSAGE in (getattr(v, "className", "") or "")]
+        assert bubbles and all(_count_chips(b) == 0 for b in bubbles)
+        assert _count_chips(rendered) == 1
+
+
+class TestSendClearsAndEmbedsAttachments:
+    """``function`` clears the file-store + embeds uploaded files as message attachments."""
+
+    def _action_clears_and_embeds(self, action):
+        files = [{"filename": "x.txt", "content": "abc"}]
+        messages: list = []
+        result = action.function(prompt="Hi", messages=messages, uploaded_files=files)
+        # File-store and data-info are the last two outputs in both action shapes.
+        assert action.outputs[-2].endswith("-file-store.data")
+        assert action.outputs[-1].endswith("-data-info.children")
+        assert result[-2] == [] and not result[-1]
+        assert messages[-1].get("attachments") == files
+
+    def test_chat_action(self):
+        from vizro_experimental.chat import ChatAction
+
+        class _Echo(ChatAction):
+            def generate_response(self, messages, **_):
+                return "ok"
+
+        self._action_clears_and_embeds(_stub_action(_Echo))
+
+    def test_streaming_chat_action(self):
+        from vizro import Vizro
+
+        from vizro_experimental.chat import StreamingChatAction
+
+        class _Echo(StreamingChatAction):
+            def generate_response(self, messages, **_):
+                yield "ok"
+
+        # The streaming function reads dash.get_app() for the URL prefix; needs a real Vizro app.
+        Vizro._reset()
+        Vizro()
+        self._action_clears_and_embeds(_stub_action(_Echo))
+
+
+class TestPopupHasFileStoreStubs:
+    """Popup layout includes hidden file-store / data-info stubs.
+
+    The shared loading-indicator callback writes to those ids on send; the popup has no
+    upload UI of its own, but the stubs keep the callback's wiring valid.
+    """
+
+    def test_panel_mounts_stubs(self):
+        from vizro_experimental.chat.popup.popup import _build_chat_panel
+
+        panel = _build_chat_panel(chat_id="popup", placeholder="...", title="A", streaming=True)
+        ids = {getattr(v, "id", None) for v in _walk(panel)}
+        assert {"popup-file-store", "popup-data-info"} <= ids

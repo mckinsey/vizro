@@ -272,6 +272,10 @@ def _build_chat_panel(chat_id: str, placeholder: str, title: str, streaming: boo
         header,
         html.Div([messages_area, input_area], className=CSS_ROOT),
         dcc.Store(id=f"{chat_id}-store", data=[], storage_type="session"),
+        # Stubs: popup has no upload UI, but the loading-indicator callback (shared with the
+        # Chat component) writes to these on send, so they must exist in the layout.
+        dcc.Store(id=f"{chat_id}-file-store", data=[], storage_type="session"),
+        html.Div(id=f"{chat_id}-data-info", style={"display": "none"}),
     ]
 
     if streaming:

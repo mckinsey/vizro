@@ -53,16 +53,20 @@ class ChatAction(_BaseChatAction):
         Args:
             prompt: User's input text.
             messages: Store-shaped history (`role` + `content_json`); mutated in place when sending.
-            uploaded_files: File-store payload from ``{chat_id}-file-store.data`` (always wired).
+            uploaded_files: File-store payload at send time. Snapshotted into the new user message
+                as ``attachments`` so the bubble renders them and the file-store can clear.
 
         Returns:
-            List of outputs for store, hidden-messages, and chat-input.
+            List of outputs for store, hidden-messages, chat-input, file-store, and data-info
+            (matching ``self.outputs``).
 
         """
         if not prompt or not prompt.strip():
             return [no_update] * len(self.outputs)
 
-        latest_input = {"role": "user", "content_json": json.dumps(prompt)}
+        latest_input: dict[str, Any] = {"role": "user", "content_json": json.dumps(prompt)}
+        if uploaded_files:
+            latest_input["attachments"] = uploaded_files
         messages.append(latest_input)
 
         store = Patch()
@@ -80,7 +84,7 @@ class ChatAction(_BaseChatAction):
         html_messages = [self.message_to_html(msg) for msg in messages]
         html_messages.append(self.message_to_html(latest_output))
 
-        return [store, html_messages, no_update]
+        return [store, html_messages, no_update, [], ""]
 
     @property
     def outputs(self) -> list[str]:
@@ -94,4 +98,6 @@ class ChatAction(_BaseChatAction):
             f"{self._chat_id}-store.data",
             f"{self._chat_id}-hidden-messages.children",
             f"{self._chat_id}-chat-input.value",
+            f"{self._chat_id}-file-store.data",
+            f"{self._chat_id}-data-info.children",
         ]

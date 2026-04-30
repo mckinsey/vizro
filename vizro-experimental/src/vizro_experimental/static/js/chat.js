@@ -229,7 +229,11 @@ window.dash_clientside.vizroChatComponent.renderMessages = (
       const role = roleDiv?.props?.children;
       const content = contentDiv?.props?.children;
 
-      // Only process string content
+      // Only wrap messages with the placeholder shape that processStreamingChunk
+      // emits for incoming text: [hidden role-marker div, raw-text div]. Pre-styled
+      // messages from _message_to_html (e.g. wrapper > [attachments, bubble]) must
+      // pass through untouched — re-wrapping them would strip the attachments div.
+      if (role !== "user" && role !== "assistant") return msg;
       if (typeof content !== "string") return msg;
 
       // Apply styling based on role
