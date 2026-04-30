@@ -471,10 +471,10 @@ class capture:
     """Captures a function call to create a custom [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
     Abstract: Usage documentation
-        [How to create custom actions](../user-guides/custom-actions.md),
-        [How to create custom charts](../user-guides/custom-charts.md),
-        [How to create custom tables](../user-guides/custom-tables.md),
-        [How to create figures](../user-guides/custom-figures.md).
+        [How to create custom actions](user-guides/custom-actions.md),
+        [How to create custom charts](user-guides/custom-charts.md),
+        [How to create custom tables](user-guides/custom-tables.md),
+        [How to create figures](user-guides/custom-figures.md).
 
     Args:
         mode: The mode of the captured callable.

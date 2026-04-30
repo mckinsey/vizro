@@ -21,7 +21,7 @@ class ControlGroup(VizroBaseModel):
     """Container to group together a set of controls.
 
     Abstract: Usage documentation
-        [How to group controls](../user-guides/controls.md/#group-controls)
+        [How to group controls](user-guides/controls.md/#group-controls)
 
     Example:
         ```python

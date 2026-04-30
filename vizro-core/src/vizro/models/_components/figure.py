@@ -15,7 +15,7 @@ class Figure(VizroBaseModel):
     """Object that is reactive to controls, for example a KPI card.
 
     Abstract: Usage documentation
-        [How to use figures](../user-guides/figure.md)
+        [How to use figures](user-guides/figure.md)
 
     """
 

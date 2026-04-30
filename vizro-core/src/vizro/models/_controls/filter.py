@@ -113,7 +113,7 @@ class Filter(VizroBaseModel):
     """Filter the data supplied to `targets`.
 
     Abstract: Usage documentation
-        [How to use filters](../user-guides/filters.md)
+        [How to use filters](user-guides/filters.md)
 
     Example:
         ```python

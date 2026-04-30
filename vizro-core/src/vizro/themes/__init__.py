@@ -1,7 +1,7 @@
 """Palettes and colors.
 
 Abstract: Usage documentation
-    [How to use palettes](../user-guides/themes.md#palettes)
+    [How to use palettes](user-guides/themes.md#palettes)
 """
 
 from ._colors import colors

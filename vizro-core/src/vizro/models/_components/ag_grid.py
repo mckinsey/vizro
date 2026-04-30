@@ -67,7 +67,7 @@ class AgGrid(VizroBaseModel):
     """Wrapper for `dash_ag_grid.AgGrid` to visualize grids in dashboard.
 
     Abstract: Usage documentation
-        [How to use an AgGrid](../user-guides/table.md/#ag-grid)
+        [How to use an AgGrid](user-guides/table.md/#ag-grid)
 
     """
 

@@ -14,7 +14,7 @@ def dash_data_table(data_frame: pd.DataFrame, **kwargs: Any) -> dash_table.DataT
     """Standard `dash.dash_table.DataTable` with sensible defaults to be used in [`Table`][vizro.models.Table].
 
     Abstract: Usage documentation
-        [How to use Dash DataTable](../user-guides/table.md#dash-datatable)
+        [How to use Dash DataTable](user-guides/table.md#dash-datatable)
 
     Args:
         data_frame: DataFrame containing the data to be displayed.

@@ -434,7 +434,7 @@ class Action(_BaseAction):
     """Custom action to be inserted into `actions` of source component.
 
     Abstract: Usage documentation
-        [How to create custom actions](../user-guides/custom-actions.md)
+        [How to create custom actions](user-guides/custom-actions.md)
 
     """
 

@@ -20,7 +20,7 @@ class NavLink(VizroBaseModel):
     """Icon that serves as a navigation link to be used in a [`NavBar`][vizro.models.NavBar].
 
     Abstract: Usage documentation
-        [How to customize the NavBar icons](../user-guides/navigation.md#change-icons)
+        [How to customize the NavBar icons](user-guides/navigation.md#change-icons)
 
     """
 

@@ -16,7 +16,7 @@ class Card(VizroBaseModel):
     """Card based on Markdown syntax.
 
     Abstract: Usage documentation
-        [How to use cards](../user-guides/card.md)
+        [How to use cards](user-guides/card.md)
 
     """
 
