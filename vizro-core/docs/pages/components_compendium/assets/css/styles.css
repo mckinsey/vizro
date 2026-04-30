@@ -678,14 +678,47 @@ a {
 }
 
 .search-results {
+  align-items: center;
   color: var(--color-text-light);
+  display: none;
   font-size: 0.9375rem;
+  gap: var(--spacing-xs);
+  justify-content: center;
   margin-top: var(--spacing-md);
   text-align: center;
 }
 
 .search-results.visible {
-  display: block;
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+.search-results__clear {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text);
+  font-size: 0.8125rem;
+  padding: 2px 8px;
+  transition: all var(--transition);
+}
+
+.search-results__clear:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.search-results__clear:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+mark.search-highlight {
+  background-color: rgba(255, 224, 102, 0.55);
+  border-radius: 2px;
+  color: inherit;
+  padding: 0 1px;
 }
 
 /* Hide categories and components when searching */
@@ -703,6 +736,44 @@ a {
 
 .searching .component.search-match {
   display: grid;
+}
+
+.component_card {
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 180px 1fr 1fr;
+  overflow: hidden;
+  padding: 20px;
+  transition: all 0.2s;
+}
+
+/* Selector cards: hide unmatched cards while searching */
+.searching .component_card {
+  display: none;
+}
+
+.searching .component_card.search-match {
+  display: grid;
+}
+
+.component_selectors {
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+  padding: 16px;
+}
+
+/* Selectors parent block: only show when it matches or has matching children */
+.searching .component_selectors {
+  display: none;
+}
+
+.searching .component_selectors.has-results,
+.searching .component_selectors.search-match {
+  display: block;
 }
 
 .carousel-header {
@@ -1015,12 +1086,6 @@ a {
   gap: 16px;
 }
 
-.component_selectors {
-  border-top: 1px solid var(--border);
-  margin-top: 12px;
-  padding: 16px;
-}
-
 .component_selectors_header {
   background-color: var(--color-bg-alt);
   border-radius: var(--border-radius);
@@ -1039,19 +1104,6 @@ a {
   display: grid;
   gap: 24px;
   padding: 12px;
-}
-
-.component_card {
-  align-items: center;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  display: grid;
-  gap: 20px;
-  grid-template-columns: 180px 1fr 1fr;
-  overflow: hidden;
-  padding: 20px;
-  transition: all 0.2s;
 }
 
 .component_card_title {

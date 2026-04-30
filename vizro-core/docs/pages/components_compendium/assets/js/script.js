@@ -268,9 +268,17 @@
   });
 })();
 
-/* Search — min 3 characters before filtering; no title markup */
+/*
+ * Search — fuzzy matching over title, aliases, description and code.
+ * Backed by Fuse.js (loaded as a separate <script>); falls back to a
+ * substring search if Fuse is unavailable. Aliases come from
+ * assets/js/search-keywords.json keyed by element id.
+ */
 (function initSearch() {
-  const MIN_SEARCH_LENGTH = 3;
+  const MIN_SEARCH_LENGTH = 2;
+  const SEARCH_DEBOUNCE_MS = 80;
+  const KEYWORDS_URL = "assets/js/search-keywords.json";
+  const SUGGESTED_TERMS = ["graph", "filter", "table"];
 
   const searchInput = document.getElementById("component-search");
   const searchClear = document.getElementById("search-clear");
@@ -279,123 +287,323 @@
 
   if (!searchInput) return;
 
-  const getSearchableItems = () => {
-    const regularComponents = Array.from(
-      document.querySelectorAll(".component"),
-    );
-    const selectorCards = Array.from(
-      document.querySelectorAll(".component_card"),
-    );
+  let items = [];
+  let fuse = null;
+  let aliasesById = {};
+  let categoryStateSnapshot = null;
+  let debounceTimer = null;
 
-    return {
-      regular: regularComponents.map((el) => ({
+  const getText = (el) =>
+    el ? el.textContent.replace(/\s+/g, " ").trim() : "";
+
+  function buildIndex() {
+    const indexed = [];
+
+    document.querySelectorAll(".component").forEach((el) => {
+      const titleEl = el.querySelector(".component__name");
+      const descEl = el.querySelector(".component__description");
+      const id = el.id || "";
+      indexed.push({
+        id,
         element: el,
-        name:
-          el.querySelector(".component__name")?.textContent.toLowerCase() || "",
-      })),
-      selectors: selectorCards.map((el) => ({
-        element: el,
-        name:
-          el
-            .querySelector(".component_card_title")
-            ?.textContent.toLowerCase() || "",
-      })),
-    };
-  };
-
-  function performSearch() {
-    const searchTerm = searchInput.value.toLowerCase().trim();
-    const items = getSearchableItems();
-    const allItems = [...items.regular, ...items.selectors];
-    const hasText = searchTerm.length > 0;
-    const meetsMinLength = searchTerm.length >= MIN_SEARCH_LENGTH;
-
-    searchClear?.classList.toggle("visible", hasText);
-
-    if (!hasText) {
-      compendiumSection?.classList.remove("searching");
-      resetSearch(allItems);
-      updateSearchResults(0);
-      return;
-    }
-
-    if (!meetsMinLength) {
-      compendiumSection?.classList.remove("searching");
-      resetSearch(allItems);
-      updateSearchResults(0);
-      return;
-    }
-
-    compendiumSection?.classList.add("searching");
-    const matchCount = searchItems(allItems, searchTerm);
-    updateCategoryVisibility();
-    updateSearchResults(matchCount);
-  }
-
-  function resetSearch(items) {
-    document.querySelectorAll(".category").forEach((cat) => {
-      cat.classList.add("expanded");
+        kind: "component",
+        titleEl,
+        descEl,
+        title: getText(titleEl),
+        description: getText(descEl),
+        code: Array.from(el.querySelectorAll("code"))
+          .map((c) => c.textContent)
+          .join("\n"),
+        aliases: (aliasesById[id]?.aliases || []).join(" "),
+      });
     });
 
-    items.forEach((item) => {
-      item.element.classList.remove("search-match");
+    document.querySelectorAll(".component_card").forEach((el) => {
+      const titleEl = el.querySelector(".component_card_title");
+      const id = el.id || "";
+      indexed.push({
+        id,
+        element: el,
+        kind: "card",
+        titleEl,
+        descEl: null,
+        title: getText(titleEl),
+        description: "",
+        code: Array.from(el.querySelectorAll("code"))
+          .map((c) => c.textContent)
+          .join("\n"),
+        aliases: (aliasesById[id]?.aliases || []).join(" "),
+      });
+    });
+
+    const selectorsParent = document.querySelector(
+      ".component_selectors#selectors",
+    );
+    if (selectorsParent) {
+      const titleEl = selectorsParent.querySelector(".component__name");
+      const descEl = selectorsParent.querySelector(".component__description");
+      indexed.push({
+        id: "selectors",
+        element: selectorsParent,
+        kind: "selectors-parent",
+        titleEl,
+        descEl,
+        title: getText(titleEl),
+        description: getText(descEl),
+        code: "",
+        aliases: (aliasesById.selectors?.aliases || []).join(" "),
+      });
+    }
+
+    return indexed;
+  }
+
+  function buildFuse(indexed) {
+    if (typeof Fuse === "undefined") return null;
+    return new Fuse(indexed, {
+      keys: [
+        { name: "title", weight: 0.5 },
+        { name: "aliases", weight: 0.3 },
+        { name: "description", weight: 0.15 },
+        { name: "code", weight: 0.05 },
+      ],
+      threshold: 0.35,
+      ignoreLocation: true,
+      minMatchCharLength: 2,
     });
   }
 
-  function searchItems(items, searchTerm) {
-    let matchCount = 0;
+  /* Highlighting */
 
-    items.forEach((item) => {
-      const isMatch = item.name.includes(searchTerm);
+  function escapeRegex(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
 
-      item.element.classList.toggle("search-match", isMatch);
+  function walkTextNodes(root, fn) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const parent = node.parentElement;
+        if (!parent) return NodeFilter.FILTER_REJECT;
+        const tag = parent.tagName;
+        if (
+          tag === "CODE" ||
+          tag === "PRE" ||
+          tag === "SCRIPT" ||
+          tag === "STYLE"
+        ) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+    const collected = [];
+    while (walker.nextNode()) collected.push(walker.currentNode);
+    collected.forEach(fn);
+  }
 
-      if (isMatch) {
-        matchCount++;
+  function applyHighlight(originalHTML, regex) {
+    const tmp = document.createElement("div");
+    tmp.innerHTML = originalHTML;
+    walkTextNodes(tmp, (node) => {
+      const value = node.nodeValue;
+      regex.lastIndex = 0;
+      if (!regex.test(value)) return;
+      regex.lastIndex = 0;
+      const frag = document.createDocumentFragment();
+      let lastIndex = 0;
+      let match = regex.exec(value);
+      while (match !== null) {
+        if (match.index > lastIndex) {
+          frag.appendChild(
+            document.createTextNode(value.slice(lastIndex, match.index)),
+          );
+        }
+        const mark = document.createElement("mark");
+        mark.className = "search-highlight";
+        mark.textContent = match[0];
+        frag.appendChild(mark);
+        lastIndex = match.index + match[0].length;
+        if (match[0].length === 0) regex.lastIndex++;
+        match = regex.exec(value);
       }
+      if (lastIndex < value.length) {
+        frag.appendChild(document.createTextNode(value.slice(lastIndex)));
+      }
+      node.parentNode.replaceChild(frag, node);
     });
+    return tmp.innerHTML;
+  }
 
-    return matchCount;
+  function highlightItem(item, term) {
+    const regex = new RegExp(escapeRegex(term), "gi");
+    [item.titleEl, item.descEl].forEach((el) => {
+      if (!el) return;
+      if (el.dataset.searchOriginal === undefined) {
+        el.dataset.searchOriginal = el.innerHTML;
+      }
+      el.innerHTML = applyHighlight(el.dataset.searchOriginal, regex);
+    });
+  }
+
+  function clearHighlights() {
+    items.forEach((item) => {
+      [item.titleEl, item.descEl].forEach((el) => {
+        if (!el) return;
+        if (el.dataset.searchOriginal !== undefined) {
+          el.innerHTML = el.dataset.searchOriginal;
+          delete el.dataset.searchOriginal;
+        }
+      });
+    });
+  }
+
+  /* Category expand/collapse state */
+
+  function snapshotCategoryState() {
+    if (categoryStateSnapshot) return;
+    categoryStateSnapshot = new Map();
+    document.querySelectorAll(".category").forEach((cat) => {
+      categoryStateSnapshot.set(cat, cat.classList.contains("expanded"));
+    });
+  }
+
+  function restoreCategoryState() {
+    if (!categoryStateSnapshot) return;
+    categoryStateSnapshot.forEach((wasExpanded, cat) => {
+      cat.classList.toggle("expanded", wasExpanded);
+      cat.classList.remove("has-results");
+    });
+    categoryStateSnapshot = null;
+  }
+
+  /* Match application */
+
+  function setMatchedClasses(matchedSet) {
+    items.forEach((item) => {
+      item.element.classList.toggle("search-match", matchedSet.has(item));
+    });
+  }
+
+  function expandSelectorsParentIfChildMatches() {
+    const selectorsParent = document.querySelector(
+      ".component_selectors#selectors",
+    );
+    if (!selectorsParent) return;
+    const hasChildMatch =
+      selectorsParent.querySelectorAll(".component_card.search-match").length >
+      0;
+    selectorsParent.classList.toggle(
+      "has-results",
+      hasChildMatch || selectorsParent.classList.contains("search-match"),
+    );
   }
 
   function updateCategoryVisibility() {
     document.querySelectorAll(".category").forEach((category) => {
-      const hasRegularMatches =
-        category.querySelectorAll(".component.search-match").length > 0;
-      const hasSelectorMatches =
-        category.querySelectorAll(".component_card.search-match").length > 0;
-
-      const hasMatches = hasRegularMatches || hasSelectorMatches;
-
+      const hasMatches = category.querySelector(".search-match") !== null;
       category.classList.toggle("has-results", hasMatches);
       category.classList.toggle("expanded", hasMatches);
     });
+    expandSelectorsParentIfChildMatches();
   }
 
-  function updateSearchResults(matchCount) {
+  /* Result feedback */
+
+  function renderMessage(payload) {
     if (!searchResults) return;
-
-    const len = searchInput.value.trim().length;
-
-    if (len === 0) {
+    if (!payload) {
       searchResults.textContent = "";
       searchResults.classList.remove("visible");
       return;
     }
-
-    if (len < MIN_SEARCH_LENGTH) {
-      searchResults.textContent = "Enter at least 3 characters to search.";
+    if (typeof payload === "string") {
+      searchResults.textContent = payload;
       searchResults.classList.add("visible");
       return;
     }
-
-    if (matchCount === 0) {
-      searchResults.textContent = "No components found";
-      searchResults.classList.add("visible");
-    } else {
-      searchResults.textContent = `Found ${matchCount} component${matchCount !== 1 ? "s" : ""}`;
-      searchResults.classList.add("visible");
+    searchResults.textContent = "";
+    searchResults.classList.add("visible");
+    const text = document.createElement("span");
+    text.textContent = payload.text;
+    searchResults.appendChild(text);
+    if (payload.clearable) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "search-results__clear";
+      btn.textContent = "Clear search";
+      btn.addEventListener("click", clearSearch);
+      searchResults.appendChild(btn);
     }
+  }
+
+  function messageForCount(count, term) {
+    if (count === 0) {
+      return {
+        text: `No components match "${term}". Try: ${SUGGESTED_TERMS.join(", ")}.`,
+        clearable: true,
+      };
+    }
+    return `Found ${count} component${count !== 1 ? "s" : ""}.`;
+  }
+
+  /* Search engine */
+
+  function runFuzzySearch(term) {
+    if (!fuse) {
+      const lowered = term.toLowerCase();
+      return items.filter((it) =>
+        `${it.title} ${it.description} ${it.aliases} ${it.code}`
+          .toLowerCase()
+          .includes(lowered),
+      );
+    }
+    return fuse.search(term).map((r) => r.item);
+  }
+
+  function expandMatchesWithSelectorsChildren(matchedSet) {
+    const parent = items.find((it) => it.kind === "selectors-parent");
+    if (!parent || !matchedSet.has(parent)) return;
+    items.forEach((it) => {
+      if (it.kind === "card") matchedSet.add(it);
+    });
+  }
+
+  function performSearch() {
+    const term = searchInput.value.trim();
+    const len = term.length;
+    searchClear?.classList.toggle("visible", len > 0);
+
+    if (len === 0) {
+      compendiumSection?.classList.remove("searching");
+      clearHighlights();
+      setMatchedClasses(new Set());
+      restoreCategoryState();
+      renderMessage("");
+      return;
+    }
+
+    if (len < MIN_SEARCH_LENGTH) {
+      compendiumSection?.classList.remove("searching");
+      clearHighlights();
+      setMatchedClasses(new Set());
+      restoreCategoryState();
+      renderMessage(`Type at least ${MIN_SEARCH_LENGTH} characters to search.`);
+      return;
+    }
+
+    snapshotCategoryState();
+    compendiumSection?.classList.add("searching");
+    clearHighlights();
+
+    const matchedItems = runFuzzySearch(term);
+    const matchedSet = new Set(matchedItems);
+    expandMatchesWithSelectorsChildren(matchedSet);
+    matchedSet.forEach((m) => {
+      highlightItem(m, term);
+    });
+    setMatchedClasses(matchedSet);
+    updateCategoryVisibility();
+    renderMessage(messageForCount(matchedSet.size, term));
   }
 
   function clearSearch() {
@@ -404,7 +612,23 @@
     performSearch();
   }
 
-  searchInput.addEventListener("input", performSearch);
+  function onInput() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(performSearch, SEARCH_DEBOUNCE_MS);
+  }
+
+  /* Boot: load aliases, build index, then wire input. */
+  fetch(KEYWORDS_URL, { credentials: "same-origin" })
+    .then((res) => (res.ok ? res.json() : {}))
+    .catch(() => ({}))
+    .then((data) => {
+      aliasesById = data || {};
+      items = buildIndex();
+      fuse = buildFuse(items);
+      if (searchInput.value.trim().length > 0) performSearch();
+    });
+
+  searchInput.addEventListener("input", onInput);
   searchInput.addEventListener("keydown", (e) => {
     if (e.key === "Escape") clearSearch();
   });

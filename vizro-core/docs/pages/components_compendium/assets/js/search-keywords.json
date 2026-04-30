@@ -1,0 +1,119 @@
+{
+  "graph": {
+    "aliases": [
+      "chart",
+      "plot",
+      "plotly",
+      "figure",
+      "visualization",
+      "px",
+      "express"
+    ]
+  },
+  "card": {
+    "aliases": ["text card", "info card", "tile", "panel", "markdown"]
+  },
+  "aggrid": {
+    "aliases": [
+      "table",
+      "grid",
+      "ag grid",
+      "ag-grid",
+      "dash_ag_grid",
+      "datatable"
+    ]
+  },
+  "button": {
+    "aliases": ["click", "cta", "action button", "submit"]
+  },
+  "figure": {
+    "aliases": ["custom figure", "kpi", "indicator", "callable"]
+  },
+  "text": {
+    "aliases": ["markdown", "paragraph", "label", "rich text"]
+  },
+  "container": {
+    "aliases": ["section", "wrapper", "group", "panel"]
+  },
+  "tabs": {
+    "aliases": ["tabbed", "tab view", "navigation", "tabset"]
+  },
+  "grid": {
+    "aliases": ["css grid", "rows", "columns", "layout grid"]
+  },
+  "flex": {
+    "aliases": ["flexbox", "flexible layout", "stack", "row", "column"]
+  },
+  "filter": {
+    "aliases": ["query", "subset", "vm.Filter"]
+  },
+  "parameter": {
+    "aliases": ["param", "argument", "input", "vm.Parameter"]
+  },
+  "selectors": {
+    "aliases": ["selector", "input control", "control", "widget"]
+  },
+  "dropdown": {
+    "aliases": ["select", "menu", "picker", "vm.Dropdown"]
+  },
+  "checklist": {
+    "aliases": ["checkbox", "checkboxes", "multi select", "vm.Checklist"]
+  },
+  "radioitems": {
+    "aliases": ["radio", "radio buttons", "single choice", "vm.RadioItems"]
+  },
+  "slider": {
+    "aliases": ["range input", "single slider", "numeric", "vm.Slider"]
+  },
+  "rangeslider": {
+    "aliases": [
+      "range slider",
+      "min max",
+      "interval",
+      "two-handle",
+      "vm.RangeSlider"
+    ]
+  },
+  "datepicker": {
+    "aliases": ["date", "calendar", "single date", "vm.DatePicker"]
+  },
+  "daterangepicker": {
+    "aliases": [
+      "date range",
+      "from to",
+      "period",
+      "calendar range",
+      "vm.DateRangePicker"
+    ]
+  },
+  "switch": {
+    "aliases": ["toggle", "boolean", "on off", "checkbox switch", "vm.Switch"]
+  },
+  "export-data": {
+    "aliases": ["export", "download", "csv", "save data", "export_data"]
+  },
+  "set-control": {
+    "aliases": [
+      "cross filter",
+      "cross-filter",
+      "cross highlight",
+      "cross-highlight",
+      "interaction",
+      "drill",
+      "drill down",
+      "set_control",
+      "linked",
+      "click filter"
+    ]
+  },
+  "notifications": {
+    "aliases": [
+      "notification",
+      "toast",
+      "alert",
+      "message",
+      "show_notification",
+      "banner"
+    ]
+  }
+}
