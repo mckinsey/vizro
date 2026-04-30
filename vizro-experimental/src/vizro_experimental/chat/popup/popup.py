@@ -23,6 +23,7 @@ from collections.abc import Callable
 from typing import Any, Literal
 
 import dash
+import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import plotly
 from dash import ClientsideFunction, Input, Output, Patch, State, callback, clientside_callback, dcc, html
@@ -148,10 +149,13 @@ def _build_toggle_button(chat_id: str, color: str | None = None) -> dmc.Affix:
         icon_props["color"] = color
 
     return dmc.Affix(
-        dmc.ActionIcon(
-            DashIconify(icon="material-symbols-light:chat-outline", width=28, height=28),
-            **icon_props,
-        ),
+        [
+            dmc.ActionIcon(
+                DashIconify(icon="material-symbols-light:chat-outline", width=28, height=28),
+                **icon_props,
+            ),
+            dbc.Tooltip("Open chat assistant", target=f"{chat_id}-toggle-button", placement="left"),
+        ],
         position={"bottom": 20, "right": 20},
         zIndex=300,
         id=f"{chat_id}-affix",
@@ -176,6 +180,7 @@ def _build_chat_panel(chat_id: str, placeholder: str, title: str, streaming: boo
                 n_clicks=0,
                 radius="xl",
             ),
+            dbc.Tooltip("Close chat", target=f"{chat_id}-close-button"),
         ],
         justify="space-between",
         className="chat-popup-header",
@@ -224,15 +229,18 @@ def _build_chat_panel(chat_id: str, placeholder: str, title: str, streaming: boo
                     html.Div(
                         [
                             html.Div(
-                                dmc.ActionIcon(
-                                    DashIconify(icon="material-symbols-light:delete-outline", width=24, height=24),
-                                    id=f"{chat_id}-clear-button",
-                                    variant="subtle",
-                                    color="grey",
-                                    n_clicks=0,
-                                    radius=BORDER_RADIUS,
-                                    style={"width": ICON_BUTTON_SIZE, "height": ICON_BUTTON_SIZE},
-                                ),
+                                [
+                                    dmc.ActionIcon(
+                                        DashIconify(icon="material-symbols-light:delete-outline", width=24, height=24),
+                                        id=f"{chat_id}-clear-button",
+                                        variant="subtle",
+                                        color="grey",
+                                        n_clicks=0,
+                                        radius=BORDER_RADIUS,
+                                        style={"width": ICON_BUTTON_SIZE, "height": ICON_BUTTON_SIZE},
+                                    ),
+                                    dbc.Tooltip("Clear chat history", target=f"{chat_id}-clear-button"),
+                                ],
                                 className=CSS_LEFT_BUTTONS,
                             ),
                             dmc.ActionIcon(
@@ -249,6 +257,7 @@ def _build_chat_panel(chat_id: str, placeholder: str, title: str, streaming: boo
                                 radius=BORDER_RADIUS,
                                 style={"width": ICON_BUTTON_SIZE, "height": ICON_BUTTON_SIZE},
                             ),
+                            dbc.Tooltip("Send message", target=f"{chat_id}-send-button"),
                         ],
                         className=CSS_BUTTON_ROW,
                     ),

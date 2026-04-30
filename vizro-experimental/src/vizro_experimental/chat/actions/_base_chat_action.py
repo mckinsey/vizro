@@ -10,6 +10,7 @@ from pathlib import PurePosixPath
 from typing import Any
 
 import dash
+import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import ClientsideFunction, Input, Output, Patch, State, callback, clientside_callback, html, no_update
 from dash.exceptions import PreventUpdate
@@ -367,15 +368,20 @@ class _BaseChatAction(_AbstractAction):
             title = filename
             subtitle = _file_meta_label(filename, content)
             chip_class = CSS_FILE_CHIP
+            tooltip_target = f"{self._chat_id}-remove-file-tooltip-{index}"
             remove_button = [
-                dmc.ActionIcon(
-                    DashIconify(icon="material-symbols-light:close", width=12, height=12),
-                    id={"type": f"{self._chat_id}-remove-file", "index": index},
-                    n_clicks=0,
-                    size="xs",
-                    radius="xl",
-                    className=CSS_FILE_CHIP_REMOVE,
-                )
+                html.Span(
+                    dmc.ActionIcon(
+                        DashIconify(icon="material-symbols-light:close", width=12, height=12),
+                        id={"type": f"{self._chat_id}-remove-file", "index": index},
+                        n_clicks=0,
+                        size="xs",
+                        radius="xl",
+                        className=CSS_FILE_CHIP_REMOVE,
+                    ),
+                    id=tooltip_target,
+                ),
+                dbc.Tooltip("Remove file", target=tooltip_target),
             ]
 
         return html.Div(

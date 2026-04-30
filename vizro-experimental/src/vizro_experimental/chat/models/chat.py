@@ -6,6 +6,7 @@ import json
 from typing import Annotated, Any, Literal
 
 import dash
+import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import Input, Output, callback, dcc, html
 from dash.exceptions import PreventUpdate
@@ -119,11 +120,11 @@ class Chat(VizroBaseModel):
         """
         return [dcc.Store(id=f"{self.id}-file-store", storage_type="session")]
 
-    def _build_example_questions_menu(self) -> dmc.Menu:
-        """Build the example questions popup menu.
+    def _build_example_questions_menu(self) -> list:
+        """Build the example questions popup menu and its tooltip.
 
         Returns:
-            Dash Mantine Menu component with example questions.
+            A flat list of [Menu, Tooltip] vnodes to splat into the surrounding container.
 
         """
         menu_items = [
@@ -135,29 +136,32 @@ class Chat(VizroBaseModel):
             for i, question in enumerate(self.example_questions)
         ]
 
-        return dmc.Menu(
-            [
-                dmc.MenuTarget(
-                    dmc.ActionIcon(
-                        [
-                            DashIconify(icon="material-symbols-light:chat-outline", width=24, height=24),
-                            DashIconify(icon="material-symbols-light:keyboard-arrow-up", width=14, height=14),
-                        ],
-                        variant="subtle",
-                        color="grey",
-                        radius=BORDER_RADIUS,
-                        style={"width": "48px", "height": ICON_BUTTON_SIZE},
-                        id=f"{self.id}-example-questions-button",
-                    )
-                ),
-                dmc.MenuDropdown(
-                    menu_items,
-                    className=CSS_EXAMPLE_MENU_DROPDOWN,
-                ),
-            ],
-            position="top-start",
-            shadow="md",
-        )
+        return [
+            dmc.Menu(
+                [
+                    dmc.MenuTarget(
+                        dmc.ActionIcon(
+                            [
+                                DashIconify(icon="material-symbols-light:chat-outline", width=24, height=24),
+                                DashIconify(icon="material-symbols-light:keyboard-arrow-up", width=14, height=14),
+                            ],
+                            variant="subtle",
+                            color="grey",
+                            radius=BORDER_RADIUS,
+                            style={"width": "48px", "height": ICON_BUTTON_SIZE},
+                            id=f"{self.id}-example-questions-button",
+                        )
+                    ),
+                    dmc.MenuDropdown(
+                        menu_items,
+                        className=CSS_EXAMPLE_MENU_DROPDOWN,
+                    ),
+                ],
+                position="top-start",
+                shadow="md",
+            ),
+            dbc.Tooltip("Show example questions", target=f"{self.id}-example-questions-button"),
+        ]
 
     def _build_input_area(self) -> html.Div:
         """Build the input area with optional file upload button.
@@ -166,24 +170,25 @@ class Chat(VizroBaseModel):
             Dash HTML Div containing the input area components.
 
         """
-        # File upload button
-        upload_button = dcc.Upload(
-            id=f"{self.id}-upload",
-            children=dmc.ActionIcon(
-                DashIconify(icon="material-symbols-light:attach-file-add", width=24, height=24),
-                variant="subtle",
-                color="grey",
-                radius=BORDER_RADIUS,
-                style={"width": ICON_BUTTON_SIZE, "height": ICON_BUTTON_SIZE},
+        # Upload stays in the DOM even when file_upload=False so its callbacks resolve;
+        # display:none hides it and naturally suppresses the sibling tooltip's hover.
+        upload_button = [
+            dcc.Upload(
+                id=f"{self.id}-upload",
+                children=dmc.ActionIcon(
+                    DashIconify(icon="material-symbols-light:attach-file-add", width=24, height=24),
+                    variant="subtle",
+                    color="grey",
+                    radius=BORDER_RADIUS,
+                    style={"width": ICON_BUTTON_SIZE, "height": ICON_BUTTON_SIZE},
+                ),
+                style={"width": "fit-content", "display": "block" if self.file_upload else "none"},
+                multiple=True,
             ),
-            style={"width": "fit-content", "display": "block" if self.file_upload else "none"},
-            multiple=True,
-        )
+            dbc.Tooltip("Attach file", target=f"{self.id}-upload"),
+        ]
 
-        # Example questions menu button
-        example_questions_menu = (
-            self._build_example_questions_menu() if self.example_questions else html.Div(style={"display": "none"})
-        )
+        example_questions_menu = self._build_example_questions_menu() if self.example_questions else []
 
         # Build children list explicitly
         inner_children = []
@@ -220,7 +225,7 @@ class Chat(VizroBaseModel):
 
         # Left buttons group (file upload + example questions)
         left_buttons = html.Div(
-            [upload_button, example_questions_menu],
+            [*upload_button, *example_questions_menu],
             className=CSS_LEFT_BUTTONS,
         )
 
@@ -245,6 +250,7 @@ class Chat(VizroBaseModel):
                         radius=BORDER_RADIUS,
                         style={"width": ICON_BUTTON_SIZE, "height": ICON_BUTTON_SIZE},
                     ),
+                    dbc.Tooltip("Send message", target=f"{self.id}-send-button"),
                 ],
                 className=CSS_BUTTON_ROW,
             )

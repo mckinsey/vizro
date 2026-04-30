@@ -4,9 +4,10 @@ import base64
 import inspect
 from pathlib import Path
 
+import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import pytest
-from dash import html
+from dash import dcc, html
 from dash_iconify import DashIconify
 
 from vizro_experimental.chat._constants import (
@@ -229,3 +230,97 @@ class TestSendIconToggle:
         src = inspect.getsource(_register_send_icon_toggle_callback)
         assert "material-symbols-light:send-outline" in src
         assert "material-symbols-light:send'" in src or 'material-symbols-light:send"' in src
+
+
+def _interactive_ids(node) -> set[str]:
+    """Collect every string id attached to an interactive element (button or upload).
+
+    Pattern-matching ids (dicts) are intentionally skipped — those buttons live inside
+    string-id wrappers that carry the tooltip target.
+    """
+    ids: set[str] = set()
+    for vnode in _walk(node):
+        if not isinstance(vnode, (dmc.ActionIcon, dcc.Upload)):
+            continue
+        node_id = getattr(vnode, "id", None)
+        if isinstance(node_id, str):
+            ids.add(node_id)
+    return ids
+
+
+def _tooltip_targets(node) -> set[str]:
+    """Collect every string `target` from dbc.Tooltip nodes in the tree."""
+    return {
+        vnode.target
+        for vnode in _walk(node)
+        if isinstance(vnode, dbc.Tooltip) and isinstance(getattr(vnode, "target", None), str)
+    }
+
+
+class TestChatComponentTooltipInvariant:
+    """Every icon-only button in the Chat layout must be paired with a dbc.Tooltip.
+
+    Guards against future button additions that ship without a discoverable label.
+    """
+
+    def _build_chat_layout(self, *, file_upload: bool, example_questions: list[str]):
+        from vizro import Vizro
+
+        from vizro_experimental.chat.models.chat import Chat
+
+        Vizro._reset()
+        chat = Chat(
+            actions=[],
+            file_upload=file_upload,
+            placeholder="How can I help you?",
+            example_questions=example_questions,
+        )
+        return html.Div([*chat._build_upload_stores(), chat._build_input_area()])
+
+    @pytest.mark.parametrize(
+        "file_upload,example_questions",
+        [
+            (True, ["Q1", "Q2"]),
+            (False, []),
+            (True, []),
+            (False, ["Q1"]),
+        ],
+    )
+    def test_every_button_has_a_tooltip(self, file_upload, example_questions):
+        layout = self._build_chat_layout(file_upload=file_upload, example_questions=example_questions)
+        button_ids = _interactive_ids(layout)
+        tooltip_targets = _tooltip_targets(layout)
+        missing = button_ids - tooltip_targets
+        assert not missing, f"Chat buttons missing tooltips: {sorted(missing)}"
+
+
+class TestPopupTooltipInvariant:
+    """Every icon-only button in the chat popup surface must be paired with a dbc.Tooltip."""
+
+    def _build_popup_layout(self):
+        from vizro_experimental.chat.popup.popup import _build_chat_panel, _build_toggle_button
+
+        return html.Div(
+            [
+                _build_chat_panel(chat_id="popup", placeholder="...", title="Assistant", streaming=True),
+                _build_toggle_button(chat_id="popup"),
+            ]
+        )
+
+    def test_every_button_has_a_tooltip(self):
+        layout = self._build_popup_layout()
+        button_ids = _interactive_ids(layout)
+        tooltip_targets = _tooltip_targets(layout)
+        missing = button_ids - tooltip_targets
+        assert not missing, f"Popup buttons missing tooltips: {sorted(missing)}"
+
+    def test_file_chip_remove_button_has_tooltip(self, stub_chat):
+        # Pattern-id remove button is wrapped in a string-id html.Span; the tooltip targets that wrapper.
+        chip = stub_chat._file_chip({"filename": "x.txt", "content": ""}, index=3)
+        targets = _tooltip_targets(chip)
+        wrapper_ids = {
+            vnode.id
+            for vnode in _walk(chip)
+            if isinstance(vnode, html.Span) and isinstance(getattr(vnode, "id", None), str)
+        }
+        assert wrapper_ids & targets, "File chip remove button is not wrapped by a tooltip target"
