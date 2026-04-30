@@ -1,0 +1,83 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[project]
+authors = [
+  {name = "Vizro Team"}
+]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14"
+]
+dependencies = [
+  "vizro>=0.1.54",
+  "dash-extensions>=1.0.0",
+  "dash-iconify>=0.1.2"
+]
+description = "Experimental Vizro features in incubation, including a chat component and floating chat popup."
+dynamic = ["version"]
+license-files = {paths = ["LICENSE.txt"]}
+name = "vizro-experimental"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+# Needed to use add_chat_popup() with the default auto-agent.
+agent = [
+  "langchain>=1.2.15",
+  "langchain-openai"
+]
+# Only needed to run the demo apps under examples/.
+examples = [
+  "langchain-anthropic>=0.3.0",
+  "python-dotenv>=0.21.0",
+  "openai",
+  "anthropic>=0.18.0",
+  "vizro-ai>=0.4.0",
+  "openpyxl"
+]
+
+[tool.coverage.paths]
+vizro = ["src/vizro_experimental"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:"
+]
+fail_under = 0
+show_missing = true
+skip_covered = true
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source_pkgs = ["vizro_experimental"]
+
+[tool.hatch.build.targets.wheel]
+artifacts = ["src/vizro_experimental/static/**/*"]
+packages = ["src/vizro_experimental"]
+
+[tool.pytest.ini_options]
+addopts = [
+  "--import-mode=importlib",
+  "-m",
+  "not benchmark and not integration_browser and not integration_llm"
+]
+filterwarnings = ["error"]
+markers = [
+  "benchmark: agent perf/quality suite (on-demand)",
+  "integration_browser: Playwright browser tests; require Chromium and a self-hosted example app subprocess",
+  "integration_llm: LLM-judge tests; require OPENAI_API_KEY and self-host the example app subprocess"
+]
+pythonpath = ["src"]
+
+[tool.ruff]
+extend = "../pyproject.toml"
+src = ["src"]
