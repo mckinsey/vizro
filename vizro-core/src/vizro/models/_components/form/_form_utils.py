@@ -8,17 +8,21 @@ from pydantic import TypeAdapter, ValidationInfo
 from vizro.models.types import MultiValueType, OptionsType, SingleValueType, _OptionsDictType
 
 
-def get_dict_options_and_default(
-    options: OptionsType, multi: bool
+def get_dict_options_and_value(
+    options: OptionsType, value: SingleValueType | MultiValueType | None, multi: bool
 ) -> tuple[list[_OptionsDictType], SingleValueType | MultiValueType]:
-    """Gets list of full options and default value based on user input type of `options`."""
+    """Returns `(dict_options, value)`.
+
+    `value` if provided, else the default derived from `options`. Pass `value=None` when you want the default value
+    (e.g. in dynamic selectors or when building filter defaults).
+    """
     # Omitted string conversion for "label" to avoid unintended formatting issues (e.g., 2002 becoming '2002.0').
     dict_options = [option if isinstance(option, dict) else {"label": option, "value": option} for option in options]
 
     list_values = [dict_option["value"] for dict_option in dict_options]
     default_value = list_values if multi else list_values[0]
 
-    return dict_options, default_value  # type: ignore[return-value]
+    return dict_options, value if value is not None else default_value  # type: ignore[return-value]
 
 
 # Util for vm.Slider and vm.RangeSlider
@@ -38,7 +42,7 @@ def is_value_contained(value: SingleValueType | MultiValueType, options: Options
 # Validators for reuse
 def validate_options_dict(cls, data: Any) -> Any:
     """Reusable validator for the "options" argument of categorical selectors."""
-    if "options" not in data or not isinstance(data["options"], list):
+    if not isinstance(data, dict) or not isinstance(data.get("options"), list):
         return data
 
     for option in data["options"]:
@@ -52,11 +56,8 @@ def validate_value(value, info: ValidationInfo):
     if "options" not in info.data or not info.data["options"]:
         return value
 
-    possible_values = (
-        [entry["value"] for entry in info.data["options"]]
-        if isinstance(info.data["options"][0], dict)
-        else info.data["options"]
-    )
+    # Unwrap each option per-element so that mixed lists produce the right set of allowed values.
+    possible_values = [option["value"] if isinstance(option, dict) else option for option in info.data["options"]]
 
     if value and not is_value_contained(value, possible_values):
         raise ValueError("Please provide a valid value from `options`.")
