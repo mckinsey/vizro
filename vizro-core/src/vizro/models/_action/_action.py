@@ -184,7 +184,7 @@ class _BaseAction(VizroBaseModel):
             try:
                 return getattr(models[component_id], attribute_type)[component_property]
             except (KeyError, AttributeError):
-                # Captures these cases and returns dependency unchanged, as we want to allow the user to target
+                # Captures these cases and returns dependency unchanged, as we want to enable the user to target
                 # Dash components, that are not registered in the model_manager (e.g. theme-selector).
                 # 1. component_id is not in model_manager
                 # 2. component doesn't have _action_outputs/_action_inputs defined
@@ -359,9 +359,9 @@ class _BaseAction(VizroBaseModel):
             #   is created at the same time with data=True.
             #   2. When guard_action_chain callback is triggered, we work out whether the trigger of the callback
             #   chain is genuine or not:
-            #      - if it's due to creation of component then we do not allow action chain to execute. This mimics
+            #      - if it's due to creation of component then we do not permit the action chain to execute. This mimics
             #        what prevent_initial_call=True on action_callback would ideally do.
-            #      - if it's genuine then we allow action chain to execute
+            #      - if it's genuine then we permit the action chain to execute
             # The guard is needed only for the first action in the chain because subsequent actions can only be
             # triggered by the *_finished dcc.Store which cannot be accidentally triggered since it's created fresh
             # on every page.
@@ -399,7 +399,7 @@ class _BaseAction(VizroBaseModel):
         }
 
         # If there are no outputs then we don't want the external part of callback_outputs to exist at all.
-        # This allows the action function to return None and match correctly on to the callback_outputs dictionary
+        # This enables the action function to return None and match correctly on to the callback_outputs dictionary
         # The (probably better) alternative to this would be just to define a dummy output for all such functions
         # so that the external key always exists.
         # Note that it's still possible to explicitly return None as a value when an output is specified.
