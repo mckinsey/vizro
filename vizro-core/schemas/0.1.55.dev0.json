@@ -541,7 +541,7 @@
         },
         "show_select_all": {
           "default": true,
-          "description": "Whether to display the 'Select All' option that allows users to select or deselect all available options with a single click.",
+          "description": "Whether to display the 'Select All' option that enables users to select or deselect all available options with a single click.",
           "title": "Show Select All",
           "type": "boolean"
         },
@@ -1033,7 +1033,7 @@
         },
         "multi": {
           "default": true,
-          "description": "Whether to allow selection of multiple values",
+          "description": "Whether to enable selection of multiple values",
           "title": "Multi",
           "type": "boolean"
         },
