@@ -233,6 +233,6 @@ Examples:
 
 | Dark Theme | Light Theme |
 | --- | --- |
-| ![Qualitative Palette Dark](../../assets/user_guides/themes/palette_qualitative_dark.png) | ![Qualitative Palette Light](../../assets/user_guides/themes/palette_qualitative_light.png) |
-| ![Continuous Palettes Dark](../../assets/user_guides/themes/palettes_continuous_dark.png) | ![Continuous Palettes Light](../../assets/user_guides/themes/palettes_continuous_light.png) |
+| ![Qualitative Palette Dark](../assets/user_guides/themes/palette_qualitative_dark.png) | ![Qualitative Palette Light](../assets/user_guides/themes/palette_qualitative_light.png) |
+| ![Continuous Palettes Dark](../assets/user_guides/themes/palettes_continuous_dark.png) | ![Continuous Palettes Light](../assets/user_guides/themes/palettes_continuous_light.png) |
 """  # noqa: E501
