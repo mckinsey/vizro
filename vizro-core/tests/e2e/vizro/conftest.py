@@ -17,6 +17,7 @@ def pytest_setup_options():
         return options
 
 
+# This fixture is used in all tests by default and provides the driver from the dash library.
 @pytest.fixture(autouse=True)
 def dash_br_driver(dash_br, request):
     """Built-in driver from the dash library."""
