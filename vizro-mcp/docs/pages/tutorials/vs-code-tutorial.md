@@ -33,7 +33,7 @@ To set up your environment in VS Code, first create a Workspace. Select **File >
 Next, open the Chat view and use **Agent mode**. We used Claude Sonnet 4 when writing this tutorial.
 
 <video controls>
-<source src="../../../assets/videos/vs-code-tutorial/00-create-workspace.mp4" type="video/mp4">
+<source src="../../assets/videos/vs-code-tutorial/00-create-workspace.mp4" type="video/mp4">
 </video>
 
 ## Create a blank dashboard
@@ -48,7 +48,7 @@ Generate the code and save it to app.py in the workspace. Don’t open in PyCafe
 You can see the prompt submission and processing in the following video.
 
 <video controls>
-<source src="../../../assets/videos/vs-code-tutorial/00-prompt-submission.mp4" type="video/mp4">
+<source src="../../assets/videos/vs-code-tutorial/00-prompt-submission.mp4" type="video/mp4">
 </video>
 
 When you run the prompt, you may find it stops early in the process because it needs permission to run.
@@ -90,7 +90,7 @@ To view the dashboard in your browser, follow the dashboard URL shown in the ter
 The dashboard should look as follows. Note that you can switch between light and dark mode with the toggle switch:
 
 <video controls>
-<source src="../../../assets/videos/vs-code-tutorial/01-blank-dashboard.mp4" type="video/mp4">
+<source src="../../assets/videos/vs-code-tutorial/01-blank-dashboard.mp4" type="video/mp4">
 </video>
 
 ## Prompting tips
@@ -126,7 +126,7 @@ After some processing, Vizro-MCP updates the code in `app.py` with the chart cod
 The video shows the chart created in light mode:
 
 <video controls>
-<source src="../../../assets/videos/vs-code-tutorial/02-first-chart-first-run.mp4" type="video/mp4">
+<source src="../../assets/videos/vs-code-tutorial/02-first-chart-first-run.mp4" type="video/mp4">
 </video>
 
 #### Add a year slider
@@ -152,7 +152,7 @@ marks = ({year: str(year) for year in range(1990, 2024, 5)},)
 ```
 
 <video controls>
-<source src="../../../assets/videos/vs-code-tutorial/03-first-chart-with-slider.mp4" type="video/mp4">
+<source src="../../assets/videos/vs-code-tutorial/03-first-chart-with-slider.mp4" type="video/mp4">
 </video>
 
 #### Add animation and projection selector
@@ -168,7 +168,7 @@ so users can switch between flat and 3D globe views.
 We have our first chart and it's looking pretty good! Next, you'll add a chart to the second tab.
 
 <video controls>
-<source src="../../../assets/videos/vs-code-tutorial/04-first-chart-complete.mp4" type="video/mp4">
+<source src="../../assets/videos/vs-code-tutorial/04-first-chart-complete.mp4" type="video/mp4">
 </video>
 
 !!! tip "Any problems?"
@@ -198,7 +198,7 @@ Use Vizro's design system, features and functionality.
 The output you receive will vary, but may look something like this:
 
 <video controls>
-<source src="../../../assets/videos/vs-code-tutorial/05-second-chart-first-run.mp4" type="video/mp4">
+<source src="../../assets/videos/vs-code-tutorial/05-second-chart-first-run.mp4" type="video/mp4">
 </video>
 
 It is clear from the video that the user experience of the chart isn't wonderful. If the user wants to remove one of the countries selected, they have to scroll through the full list to find the country.
@@ -223,7 +223,7 @@ Vizro-MCP supplied the code as shown below, which makes it very easy to make the
 ```
 
 <video controls>
-<source src="../../../assets/videos/vs-code-tutorial/06-second-chart-complete.mp4" type="video/mp4">
+<source src="../../assets/videos/vs-code-tutorial/06-second-chart-complete.mp4" type="video/mp4">
 </video>
 
 ### 3. Add an animated histogram
@@ -245,7 +245,7 @@ filling missing years with interpolated data.
 You may need to iterate the chart further, for example to make it fit viewport.
 
 <video controls>
-<source src="../../../assets/videos/vs-code-tutorial/07-final-dashboard.mp4" type="video/mp4">
+<source src="../../assets/videos/vs-code-tutorial/07-final-dashboard.mp4" type="video/mp4">
 </video>
 
 We have a dashboard with three tabs and three charts. In the next step, you'll learn how to share the project with other users.
@@ -262,7 +262,7 @@ The easiest way to share your dashboard is to use [PyCafe](https://py.cafe), whi
 Use only public data for PyCafe (public site).
 
 <video controls>
-<source src="../../../assets/videos/vs-code-tutorial/08-share-with-pycafe.mp4" type="video/mp4">
+<source src="../../assets/videos/vs-code-tutorial/08-share-with-pycafe.mp4" type="video/mp4">
 </video>
 
 ## Summary
