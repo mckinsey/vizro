@@ -35,7 +35,7 @@ class Vizro:
         """Initialize a Vizro app.
 
         Abstract: Usage documentation
-            [How to run or deploy a dashboard](../user-guides/run-deploy/#advanced-dockerfile-configuration)
+            [How to run or deploy a dashboard](user-guides/run-deploy/#advanced-dockerfile-configuration)
 
         Keyword Arguments:
             **kwargs: Arbitrary keyword arguments passed through to `Dash`, for example `assets_folder`,
@@ -117,7 +117,7 @@ class Vizro:
         """Builds the `dashboard`.
 
         Abstract: Usage documentation
-            [How to create a dashboard](../user-guides/dashboard.md)
+            [How to create a dashboard](user-guides/dashboard.md)
 
         Args:
             dashboard (Dashboard): configured dashboard model.
@@ -164,7 +164,7 @@ class Vizro:
                 arguments
 
         Abstract: Usage documentation
-            [How to develop in Python script](../user-guides/run-deploy.md#develop-in-python-script)
+            [How to develop in Python script](user-guides/run-deploy.md#develop-in-python-script)
         """
         data_manager._frozen_state = True
         model_manager._frozen_state = True

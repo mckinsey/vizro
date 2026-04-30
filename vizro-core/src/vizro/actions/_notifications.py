@@ -32,7 +32,7 @@ class show_notification(_AbstractAction):
     """Shows a notification message.
 
     Abstract: Usage documentation
-        [Notifications](../user-guides/notification-actions.md)
+        [Notifications](user-guides/notification-actions.md)
 
     Example:
         ```python
@@ -116,7 +116,7 @@ class update_notification(show_notification):
     `show_notification` action.
 
     Abstract: Usage documentation
-        [Update notification](../user-guides/notification-actions.md#update-existing-notification)
+        [Update notification](user-guides/notification-actions.md#update-existing-notification)
 
     Example:
         ```python

@@ -54,7 +54,7 @@ class Page(VizroBaseModel):
     """A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.
 
     Abstract: Usage documentation
-        [How to make dashboard pages](../user-guides/pages.md)
+        [How to make dashboard pages](user-guides/pages.md)
 
     """
 

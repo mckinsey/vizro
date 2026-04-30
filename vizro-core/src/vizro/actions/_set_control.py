@@ -32,7 +32,7 @@ class set_control(_AbstractAction):
     """Sets the value of a control, which then updates its targets.
 
     Abstract: Usage documentation
-        [Graph and table interactions](../user-guides/graph-table-actions.md)
+        [Graph and table interactions](user-guides/graph-table-actions.md)
 
     The following Vizro models can be a source of `set_control`:
 

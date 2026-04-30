@@ -169,7 +169,7 @@ class Grid(VizroBaseModel):
     """Grid layout for components on a [`Page`][vizro.models.Page] or in a [`Container`][vizro.models.Container].
 
     Abstract: Usage documentation
-        [How to use the Grid layout](../user-guides/layouts.md#grid-layout)
+        [How to use the Grid layout](user-guides/layouts.md#grid-layout)
 
     """
 

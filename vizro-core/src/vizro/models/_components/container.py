@@ -34,7 +34,7 @@ class Container(VizroBaseModel):
     """Container to group together a set of components on a page.
 
     Abstract: Usage documentation
-        [How to use containers](../user-guides/container.md)
+        [How to use containers](user-guides/container.md)
 
     """
 

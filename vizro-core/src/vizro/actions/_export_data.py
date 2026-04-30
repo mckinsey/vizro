@@ -17,7 +17,7 @@ class export_data(_AbstractAction):
     """Exports data of target charts, tables and figures.
 
     Abstract: Usage documentation
-        [How to export data](../user-guides/data-actions.md#export-data)
+        [How to export data](user-guides/data-actions.md#export-data)
 
     Example:
         ```python

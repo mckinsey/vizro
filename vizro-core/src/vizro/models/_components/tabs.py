@@ -25,7 +25,7 @@ class Tabs(VizroBaseModel):
     """Tabs to group together a set of [`Containers`][vizro.models.Container].
 
     Abstract: Usage documentation
-        [How to use tabs](../user-guides/tabs.md)
+        [How to use tabs](user-guides/tabs.md)
 
     """
 

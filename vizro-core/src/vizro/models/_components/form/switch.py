@@ -17,7 +17,7 @@ class Switch(VizroBaseModel):
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
     Abstract: Usage documentation
-        [How to use boolean selectors](../user-guides/selectors.md/#boolean-selectors)
+        [How to use boolean selectors](user-guides/selectors.md/#boolean-selectors)
 
     """
 
