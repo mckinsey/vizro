@@ -41,7 +41,7 @@ DEFAULT_SELECTORS = {
 
 # This disallowed selectors for each column type map is based on the discussion at the following link:
 # See https://github.com/mckinsey/vizro/pull/319#discussion_r1524888171
-# Really numerical data should also disallow SELECTORS["boolean"], but we enable it so that a column
+# Really numerical data should also disallow SELECTORS["boolean"], but we allow it so that a column
 # of 0s and 1s can be interpreted as boolean data. We could modify the detection of data type in
 # validate_column_type to check for this case, but this would mean checking actual data values. This is
 # something we should avoid at least until we have moved to narwhals since maybe it's an unnecessary
