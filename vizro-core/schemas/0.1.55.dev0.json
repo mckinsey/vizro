@@ -2,7 +2,7 @@
   "$defs": {
     "Accordion": {
       "additionalProperties": false,
-      "description": "Accordion to be used as `nav_selector` in [`Navigation`][vizro.models.Navigation].\n\nAbstract: Usage documentation\n    [How to use an accordion](../user-guides/navigation.md/#group-pages)",
+      "description": "Accordion to be used as `nav_selector` in [`Navigation`][vizro.models.Navigation].\n\nAbstract: Usage documentation\n    [How to use an accordion](user-guides/navigation.md/#group-pages)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -33,7 +33,7 @@
     },
     "Action": {
       "additionalProperties": false,
-      "description": "Custom action to be inserted into `actions` of source component.\n\nAbstract: Usage documentation\n    [How to create custom actions](../user-guides/custom-actions.md)",
+      "description": "Custom action to be inserted into `actions` of source component.\n\nAbstract: Usage documentation\n    [How to create custom actions](user-guides/custom-actions.md)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -79,7 +79,7 @@
     },
     "AgGrid": {
       "additionalProperties": false,
-      "description": "Wrapper for `dash_ag_grid.AgGrid` to visualize grids in dashboard.\n\nAbstract: Usage documentation\n    [How to use an AgGrid](../user-guides/table.md/#ag-grid)",
+      "description": "Wrapper for `dash_ag_grid.AgGrid` to visualize grids in dashboard.\n\nAbstract: Usage documentation\n    [How to use an AgGrid](user-guides/table.md/#ag-grid)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -156,7 +156,7 @@
     },
     "Button": {
       "additionalProperties": false,
-      "description": "Button that can trigger actions or navigate.\n\nAbstract: Usage documentation\n    [How to use buttons](../user-guides/button.md)",
+      "description": "Button that can trigger actions or navigate.\n\nAbstract: Usage documentation\n    [How to use buttons](user-guides/button.md)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -240,7 +240,7 @@
     },
     "Card": {
       "additionalProperties": false,
-      "description": "Card based on Markdown syntax.\n\nAbstract: Usage documentation\n    [How to use cards](../user-guides/card.md)",
+      "description": "Card based on Markdown syntax.\n\nAbstract: Usage documentation\n    [How to use cards](user-guides/card.md)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -323,7 +323,7 @@
     },
     "Cascader": {
       "additionalProperties": false,
-      "description": "Cascader selector for [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [Hierarchical selectors](../user-guides/selectors.md#hierarchical-selectors)",
+      "description": "Cascader selector for [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [Hierarchical selectors](user-guides/selectors.md#hierarchical-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -449,7 +449,7 @@
     },
     "Checklist": {
       "additionalProperties": false,
-      "description": "Categorical multi-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)",
+      "description": "Categorical multi-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use categorical selectors](user-guides/selectors.md#categorical-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -591,7 +591,7 @@
     },
     "Container": {
       "additionalProperties": false,
-      "description": "Container to group together a set of components on a page.\n\nAbstract: Usage documentation\n    [How to use containers](../user-guides/container.md)",
+      "description": "Container to group together a set of components on a page.\n\nAbstract: Usage documentation\n    [How to use containers](user-guides/container.md)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -753,7 +753,7 @@
     },
     "ControlGroup": {
       "additionalProperties": false,
-      "description": "Container to group together a set of controls.\n\nAbstract: Usage documentation\n    [How to group controls](../user-guides/controls.md/#group-controls)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    vm.ControlGroup(\n        title=\"Control group title\",\n        controls=[vm.Filter(column=\"species\"), vm.Filter(column=\"sepal_length\")],\n    )\n    ```",
+      "description": "Container to group together a set of controls.\n\nAbstract: Usage documentation\n    [How to group controls](user-guides/controls.md/#group-controls)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    vm.ControlGroup(\n        title=\"Control group title\",\n        controls=[vm.Filter(column=\"species\"), vm.Filter(column=\"sepal_length\")],\n    )\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -814,7 +814,7 @@
     },
     "DatePicker": {
       "additionalProperties": false,
-      "description": "Temporal single/range option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use temporal selectors](../user-guides/selectors.md#temporal-selectors)",
+      "description": "Temporal single/range option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use temporal selectors](user-guides/selectors.md#temporal-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -934,7 +934,7 @@
     },
     "Dropdown": {
       "additionalProperties": false,
-      "description": "Categorical single/multi-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)",
+      "description": "Categorical single/multi-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use categorical selectors](user-guides/selectors.md#categorical-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1096,7 +1096,7 @@
     },
     "Figure": {
       "additionalProperties": false,
-      "description": "Object that is reactive to controls, for example a KPI card.\n\nAbstract: Usage documentation\n    [How to use figures](../user-guides/figure.md)",
+      "description": "Object that is reactive to controls, for example a KPI card.\n\nAbstract: Usage documentation\n    [How to use figures](user-guides/figure.md)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1143,7 +1143,7 @@
     },
     "Filter": {
       "additionalProperties": false,
-      "description": "Filter the data supplied to `targets`.\n\nAbstract: Usage documentation\n    [How to use filters](../user-guides/filters.md)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    vm.Filter(column=\"species\")\n    vm.Filter(column=[\"continent\", \"country\"])\n    ```",
+      "description": "Filter the data supplied to `targets`.\n\nAbstract: Usage documentation\n    [How to use filters](user-guides/filters.md)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    vm.Filter(column=\"species\")\n    vm.Filter(column=[\"continent\", \"country\"])\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1250,7 +1250,7 @@
     },
     "Flex": {
       "additionalProperties": false,
-      "description": "Flex layout for components on a [`Page`][vizro.models.Page] or in a [`Container`][vizro.models.Container].\n\nAbstract: Usage documentation\n    [How to use the Flex layout](../user-guides/layouts.md#flex-layout)",
+      "description": "Flex layout for components on a [`Page`][vizro.models.Page] or in a [`Container`][vizro.models.Container].\n\nAbstract: Usage documentation\n    [How to use the Flex layout](user-guides/layouts.md#flex-layout)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1289,7 +1289,7 @@
     },
     "Graph": {
       "additionalProperties": false,
-      "description": "Wrapper for `dcc.Graph` to visualize charts.\n\nAbstract: Usage documentation\n    [How to use graphs](../user-guides/graph.md)",
+      "description": "Wrapper for `dcc.Graph` to visualize charts.\n\nAbstract: Usage documentation\n    [How to use graphs](user-guides/graph.md)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1366,7 +1366,7 @@
     },
     "Grid": {
       "additionalProperties": false,
-      "description": "Grid layout for components on a [`Page`][vizro.models.Page] or in a [`Container`][vizro.models.Container].\n\nAbstract: Usage documentation\n    [How to use the Grid layout](../user-guides/layouts.md#grid-layout)",
+      "description": "Grid layout for components on a [`Page`][vizro.models.Page] or in a [`Container`][vizro.models.Container].\n\nAbstract: Usage documentation\n    [How to use the Grid layout](user-guides/layouts.md#grid-layout)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1485,7 +1485,7 @@
     },
     "NavBar": {
       "additionalProperties": false,
-      "description": "Navigation bar to be used as a `nav_selector` for `Navigation`.\n\nAbstract: Usage documentation\n    [How to use the navigation bar](../user-guides/navigation.md#use-a-navigation-bar-with-icons)",
+      "description": "Navigation bar to be used as a `nav_selector` for `Navigation`.\n\nAbstract: Usage documentation\n    [How to use the navigation bar](user-guides/navigation.md#use-a-navigation-bar-with-icons)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1531,7 +1531,7 @@
     },
     "NavLink": {
       "additionalProperties": false,
-      "description": "Icon that serves as a navigation link to be used in a [`NavBar`][vizro.models.NavBar].\n\nAbstract: Usage documentation\n    [How to customize the NavBar icons](../user-guides/navigation.md#change-icons)",
+      "description": "Icon that serves as a navigation link to be used in a [`NavBar`][vizro.models.NavBar].\n\nAbstract: Usage documentation\n    [How to customize the NavBar icons](user-guides/navigation.md#change-icons)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1577,7 +1577,7 @@
     },
     "Navigation": {
       "additionalProperties": false,
-      "description": "Navigation to arrange hierarchy of [`Pages`][vizro.models.Page].\n\nAbstract: Usage documentation\n    [How to customize the navigation](../user-guides/navigation.md)",
+      "description": "Navigation to arrange hierarchy of [`Pages`][vizro.models.Page].\n\nAbstract: Usage documentation\n    [How to customize the navigation](user-guides/navigation.md)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1638,7 +1638,7 @@
     },
     "Page": {
       "additionalProperties": false,
-      "description": "A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.\n\nAbstract: Usage documentation\n    [How to make dashboard pages](../user-guides/pages.md)",
+      "description": "A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.\n\nAbstract: Usage documentation\n    [How to make dashboard pages](user-guides/pages.md)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1807,7 +1807,7 @@
     },
     "Parameter": {
       "additionalProperties": false,
-      "description": "Alter the arguments supplied to any `targets`.\n\nAbstract: Usage documentation\n    [How to use parameters](../user-guides/parameters.md)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    vm.Parameter(targets=[\"scatter.x\"], selector=vm.Slider(min=0, max=1, default=0.8, title=\"Bubble opacity\"))\n    ```",
+      "description": "Alter the arguments supplied to any `targets`.\n\nAbstract: Usage documentation\n    [How to use parameters](user-guides/parameters.md)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    vm.Parameter(targets=[\"scatter.x\"], selector=vm.Slider(min=0, max=1, default=0.8, title=\"Bubble opacity\"))\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1890,7 +1890,7 @@
     },
     "RadioItems": {
       "additionalProperties": false,
-      "description": "Categorical single-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use categorical selectors](../user-guides/selectors.md/#categorical-selectors)",
+      "description": "Categorical single-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use categorical selectors](user-guides/selectors.md/#categorical-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2014,7 +2014,7 @@
     },
     "RangeSlider": {
       "additionalProperties": false,
-      "description": "Numeric multi-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md/#numerical-selectors)",
+      "description": "Numeric multi-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](user-guides/selectors.md/#numerical-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2151,7 +2151,7 @@
     },
     "Slider": {
       "additionalProperties": false,
-      "description": "Numeric single-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md/#numerical-selectors)",
+      "description": "Numeric single-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](user-guides/selectors.md/#numerical-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2284,7 +2284,7 @@
     },
     "Switch": {
       "additionalProperties": false,
-      "description": "Boolean single-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use boolean selectors](../user-guides/selectors.md/#boolean-selectors)",
+      "description": "Boolean single-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use boolean selectors](user-guides/selectors.md/#boolean-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2355,7 +2355,7 @@
     },
     "Table": {
       "additionalProperties": false,
-      "description": "Wrapper for `dash_table.DataTable` to visualize tables in dashboard.\n\nAbstract: Usage documentation\n    [How to use tables](../user-guides/table.md)",
+      "description": "Wrapper for `dash_table.DataTable` to visualize tables in dashboard.\n\nAbstract: Usage documentation\n    [How to use tables](user-guides/table.md)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2432,7 +2432,7 @@
     },
     "Tabs": {
       "additionalProperties": false,
-      "description": "Tabs to group together a set of [`Containers`][vizro.models.Container].\n\nAbstract: Usage documentation\n    [How to use tabs](../user-guides/tabs.md)",
+      "description": "Tabs to group together a set of [`Containers`][vizro.models.Container].\n\nAbstract: Usage documentation\n    [How to use tabs](user-guides/tabs.md)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2478,7 +2478,7 @@
     },
     "Text": {
       "additionalProperties": false,
-      "description": "Text based on Markdown syntax.\n\nAbstract: Usage documentation\n    [How to add text to your page](../user-guides/text.md)",
+      "description": "Text based on Markdown syntax.\n\nAbstract: Usage documentation\n    [How to add text to your page](user-guides/text.md)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2503,7 +2503,7 @@
     },
     "Tooltip": {
       "additionalProperties": false,
-      "description": "A tooltip that displays text when hovering over an icon.\n\nAbstract: Usage documentation\n    Read more about usage in the guides on [dashboards](../user-guides/dashboard.md#add-a-dashboard-tooltip),\n    [pages](../user-guides/pages.md#add-a-tooltip),\n    [containers](../user-guides/container.md#add-a-tooltip),\n    [graphs](../user-guides/graph.md#add-a-tooltip),\n    [tables](../user-guides/table.md#add-a-tooltip), [tabs](../user-guides/tabs.md#add-a-tooltip),\n    [selectors](../user-guides/selectors.md#add-a-tooltip) and\n    [buttons](../user-guides/button.md#add-a-tooltip).\n\nExample: `Tooltip` on a [`Checklist`][vizro.models.Checklist] selector\n    ```python\n    import vizro.models as vm\n\n    vm.Checklist(\n        title=\"Select Species\",\n        description=vm.Tooltip(text=\"Select something\", icon=\"start\"),\n    )\n    ```",
+      "description": "A tooltip that displays text when hovering over an icon.\n\nAbstract: Usage documentation\n    Read more about usage in the guides on [dashboards](user-guides/dashboard.md#add-a-dashboard-tooltip),\n    [pages](user-guides/pages.md#add-a-tooltip),\n    [containers](user-guides/container.md#add-a-tooltip),\n    [graphs](user-guides/graph.md#add-a-tooltip),\n    [tables](user-guides/table.md#add-a-tooltip), [tabs](user-guides/tabs.md#add-a-tooltip),\n    [selectors](user-guides/selectors.md#add-a-tooltip) and\n    [buttons](user-guides/button.md#add-a-tooltip).\n\nExample: `Tooltip` on a [`Checklist`][vizro.models.Checklist] selector\n    ```python\n    import vizro.models as vm\n\n    vm.Checklist(\n        title=\"Select Species\",\n        description=vm.Tooltip(text=\"Select something\", icon=\"start\"),\n    )\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2558,7 +2558,7 @@
     },
     "export_data": {
       "additionalProperties": false,
-      "description": "Exports data of target charts, tables and figures.\n\nAbstract: Usage documentation\n    [How to export data](../user-guides/data-actions.md#export-data)\n\nExample:\n    ```python\n    import vizro.actions as va\n\n    vm.Button(\n        text=\"Export data\",\n        actions=va.export_data(targets=[\"graph_id\", \"table_id\"], file_format=\"xlsx\"),\n    )\n    ```",
+      "description": "Exports data of target charts, tables and figures.\n\nAbstract: Usage documentation\n    [How to export data](user-guides/data-actions.md#export-data)\n\nExample:\n    ```python\n    import vizro.actions as va\n\n    vm.Button(\n        text=\"Export data\",\n        actions=va.export_data(targets=[\"graph_id\", \"table_id\"], file_format=\"xlsx\"),\n    )\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2622,7 +2622,7 @@
     },
     "set_control": {
       "additionalProperties": false,
-      "description": "Sets the value of a control, which then updates its targets.\n\nAbstract: Usage documentation\n    [Graph and table interactions](../user-guides/graph-table-actions.md)\n\nThe following Vizro models can be a source of `set_control`:\n\n* [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when `cellClicked` or `selectedRows` changes (for example\nafter a cell click or when the row selection changes). `value` can be:\n\n    * `\"cell\"`, `\"column\"`, or `\"row\"` to use the clicked cell's value, column id, or row id respectively.\n    * Any other string to treat as a column name, taking values from the selected row(s).\n* [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. `value` is string\nthat can be used in two ways to specify how to set `control`:\n\n    * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.\n    * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the\n    trigger data [`clickData[\"points\"][0]`](https://dash.plotly.com/interactive-graphing). This is typically\n    useful for a positional variable, for example `\"x\"`, and does not require setting `custom_data`.\n\n* [`Figure`][vizro.models.Figure]: triggers `set_control` when user clicks on the figure. `value` specifies a\nliteral value to set `control` to.\n* [`Button`][vizro.models.Button]: triggers `set_control` when user clicks on the button. `value` specifies a\nliteral value to set `control` to.\n* [`Card`][vizro.models.Card]: triggers `set_control` when user clicks on the card. `value` specifies a\nliteral value to set `control` to.\n\nExample: `AgGrid` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.AgGrid(\n        figure=dash_ag_grid(iris),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger with `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger without `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.box(iris, x=\"species\", y=\"sepal_length\"),\n        actions=va.set_control(control=\"target_control\", value=\"x\"),\n    )\n    ```\n\nExample: `Figure` as trigger\n    ```python\n    import vizro.actions as va\n    from vizro.figures import kpi_card\n\n    vm.Figure(\n        figure=kpi_card(tips, value_column=\"tip\", title=\"Click KPI to set control to A\"),\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: `Button` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Button(\n        text=\"Click to set control to A\",\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: `Card` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Card(\n        title=\"Click Card to set control to A\",\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```",
+      "description": "Sets the value of a control, which then updates its targets.\n\nAbstract: Usage documentation\n    [Graph and table interactions](user-guides/graph-table-actions.md)\n\nThe following Vizro models can be a source of `set_control`:\n\n* [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when `cellClicked` or `selectedRows` changes (for example\nafter a cell click or when the row selection changes). `value` can be:\n\n    * `\"cell\"`, `\"column\"`, or `\"row\"` to use the clicked cell's value, column id, or row id respectively.\n    * Any other string to treat as a column name, taking values from the selected row(s).\n* [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. `value` is string\nthat can be used in two ways to specify how to set `control`:\n\n    * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.\n    * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the\n    trigger data [`clickData[\"points\"][0]`](https://dash.plotly.com/interactive-graphing). This is typically\n    useful for a positional variable, for example `\"x\"`, and does not require setting `custom_data`.\n\n* [`Figure`][vizro.models.Figure]: triggers `set_control` when user clicks on the figure. `value` specifies a\nliteral value to set `control` to.\n* [`Button`][vizro.models.Button]: triggers `set_control` when user clicks on the button. `value` specifies a\nliteral value to set `control` to.\n* [`Card`][vizro.models.Card]: triggers `set_control` when user clicks on the card. `value` specifies a\nliteral value to set `control` to.\n\nExample: `AgGrid` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.AgGrid(\n        figure=dash_ag_grid(iris),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger with `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger without `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.box(iris, x=\"species\", y=\"sepal_length\"),\n        actions=va.set_control(control=\"target_control\", value=\"x\"),\n    )\n    ```\n\nExample: `Figure` as trigger\n    ```python\n    import vizro.actions as va\n    from vizro.figures import kpi_card\n\n    vm.Figure(\n        figure=kpi_card(tips, value_column=\"tip\", title=\"Click KPI to set control to A\"),\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: `Button` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Button(\n        text=\"Click to set control to A\",\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: `Card` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Card(\n        title=\"Click Card to set control to A\",\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2651,7 +2651,7 @@
     },
     "show_notification": {
       "additionalProperties": false,
-      "description": "Shows a notification message.\n\nAbstract: Usage documentation\n    [Notifications](../user-guides/notification-actions.md)\n\nExample:\n    ```python\n    import vizro.actions as va\n    import vizro.models as vm\n\n    vm.Button(\n        text=\"Save\",\n        actions=va.show_notification(\n            title=\"Useful information\",\n            text=\"This is some useful information that you should know.\",\n        ),\n    )\n    ```",
+      "description": "Shows a notification message.\n\nAbstract: Usage documentation\n    [Notifications](user-guides/notification-actions.md)\n\nExample:\n    ```python\n    import vizro.actions as va\n    import vizro.models as vm\n\n    vm.Button(\n        text=\"Save\",\n        actions=va.show_notification(\n            title=\"Useful information\",\n            text=\"This is some useful information that you should know.\",\n        ),\n    )\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2708,7 +2708,7 @@
     },
     "update_notification": {
       "additionalProperties": false,
-      "description": "Updates an existing notification message.\n\nThis action updates notifications that were previously created with\n[`show_notification`][vizro.actions.show_notification]. `notification` must match the `id` of the original\n`show_notification` action.\n\nAbstract: Usage documentation\n    [Update notification](../user-guides/notification-actions.md#update-existing-notification)\n\nExample:\n    ```python\n    import vizro.actions as va\n    import vizro.models as vm\n\n    vm.Button(\n        text=\"Save\",\n        actions=[\n            va.show_notification(id=\"save_notification\", text=\"Saving data...\", variant=\"progress\"),\n            va.export_data(),\n            va.update_notification(\n                notification=\"save_notification\", text=\"Data saved successfully!\", variant=\"success\"\n            ),\n        ],\n    )\n    ```",
+      "description": "Updates an existing notification message.\n\nThis action updates notifications that were previously created with\n[`show_notification`][vizro.actions.show_notification]. `notification` must match the `id` of the original\n`show_notification` action.\n\nAbstract: Usage documentation\n    [Update notification](user-guides/notification-actions.md#update-existing-notification)\n\nExample:\n    ```python\n    import vizro.actions as va\n    import vizro.models as vm\n\n    vm.Button(\n        text=\"Save\",\n        actions=[\n            va.show_notification(id=\"save_notification\", text=\"Saving data...\", variant=\"progress\"),\n            va.export_data(),\n            va.update_notification(\n                notification=\"save_notification\", text=\"Data saved successfully!\", variant=\"success\"\n            ),\n        ],\n    )\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2770,7 +2770,7 @@
     }
   },
   "additionalProperties": false,
-  "description": "Dashboard that is supplied to [`Vizro.build`][vizro.Vizro.build].\n\nAbstract: Usage documentation\n    [How to create a dashboard](../user-guides/dashboard.md)",
+  "description": "Dashboard that is supplied to [`Vizro.build`][vizro.Vizro.build].\n\nAbstract: Usage documentation\n    [How to create a dashboard](user-guides/dashboard.md)",
   "properties": {
     "id": {
       "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
