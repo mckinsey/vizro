@@ -5,7 +5,7 @@ from dash import dcc, html
 from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
-from vizro.actions import update_figures
+from vizro.actions import set_control, update_figures
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._controls._controls_utils import (
@@ -22,25 +22,23 @@ from vizro.models.types import ModelID, SelectorType, _IdProperty
 
 def check_dot_notation(target):
     if "." not in target:
-        raise ValueError(
-            f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>"
-        )
-    elif target.split(".")[1] == "figure":
+        return target
+
+    targeted_argument = target.split(".", 1)[1]
+
+    if targeted_argument == "figure":
         raise ValueError(
             f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>. "
             "Arguments of the CapturedCallable function can be targeted directly, and not via <.figure.>."
         )
-    return target
 
-
-def check_data_frame_as_target_argument(target):
-    targeted_argument = target.split(".", 1)[1]
     if targeted_argument.startswith("data_frame") and targeted_argument.count(".") != 1:
         raise ValueError(
             f"Invalid target {target}. 'data_frame' target must be supplied in the form "
             "<target_component>.data_frame.<dynamic_data_argument>"
         )
     # TODO: Add validation: Make sure the target data_frame is _DynamicData.
+
     return target
 
 
@@ -75,7 +73,6 @@ class Parameter(VizroBaseModel):
             Annotated[
                 str,
                 AfterValidator(check_dot_notation),
-                AfterValidator(check_data_frame_as_target_argument),
                 Field(description="Targets in the form of `<target_component>.<target_argument>`."),
             ]
         ],
@@ -131,7 +128,23 @@ class Parameter(VizroBaseModel):
         }
 
     @_log_call
-    def pre_build(self):
+    def pre_build(self):  # noqa: PLR0912
+        from vizro.models._controls import Filter
+
+        # Extract control targets from self.targets in a separate variable as they are validated differently.
+        targeted_controls = []
+        for target in self.targets.copy():
+            if target in model_manager and isinstance(model_manager[target], (Filter, Parameter)):
+                # TODO PP NOW: Add validation to ensure that the control target is on the same page
+                # TODO PP NOW: Add validation to forbid self-targeting.
+                self.targets.remove(target)
+                targeted_controls.append(target)
+            elif "." not in target:
+                raise ValueError(
+                    f"Invalid target {target}. Targets must be supplied in the form "
+                    f"<target_component>.<target_argument>"
+                )
+
         check_control_targets(control=self)
 
         if _is_numerical_temporal_selector(self.selector) and (self.selector.min is None or self.selector.max is None):
@@ -182,7 +195,15 @@ class Parameter(VizroBaseModel):
             # We do the update to ensure that `self.targets` is consistent with the target ids passed to `_parameter`.
             self.targets.extend(list(filter_targets))
             targets_ids = [target.partition(".")[0] for target in self.targets]
-            self.selector.actions = update_figures(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=targets_ids)
+
+            # Ensure set_control actions run before update_figures so the latest control value is applied.
+            self.selector.actions = [
+                *[set_control(control=control_id, value=None) for control_id in targeted_controls],
+                update_figures(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=targets_ids),
+            ]
+            # Run pre_build for each action to run validations and compute internal attributes.
+            for selector_action in self.selector.actions:
+                selector_action.pre_build()
 
     @_log_call
     def build(self):

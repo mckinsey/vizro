@@ -10,7 +10,7 @@ from pandas.api.types import is_bool_dtype, is_datetime64_any_dtype, is_numeric_
 from pydantic import Field, PrivateAttr, model_validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
-from vizro.actions import update_figures
+from vizro.actions import set_control, update_figures
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
@@ -29,7 +29,14 @@ from vizro.models._controls._controls_utils import (
     warn_missing_id_for_url_control,
 )
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
+from vizro.models.types import (
+    FigureType,
+    ModelID,
+    MultiValueType,
+    SelectorType,
+    SingleValueType,
+    _IdProperty,
+)
 
 DEFAULT_SELECTORS = {
     "numerical": RangeSlider,
@@ -246,6 +253,17 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):  # noqa: PLR0912
+        from vizro.models._controls import Parameter
+
+        # Extract control targets from self.targets in a separate variable as they are validated differently.
+        targeted_controls = []
+        for target in self.targets.copy():
+            if target in model_manager and isinstance(model_manager[target], (Filter, Parameter)):
+                # TODO PP NOW: Add validation to ensure that the control target is on the same page
+                # TODO PP NOW: Add validation to forbid self-targeting.
+                self.targets.remove(target)
+                targeted_controls.append(target)
+
         # If page filter validate that targets present on the page where the filter is defined.
         # If container filter validate that targets present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
@@ -272,7 +290,9 @@ class Filter(VizroBaseModel):
         #  Find more about the mentioned limitation at: https://github.com/mckinsey/vizro/pull/879/files#r1846609956
         # Even if the solution changes for dynamic data, static data should still use {} as the arguments here.
         multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [
-            (cast(FigureType, model_manager[target])["data_frame"], {}) for target in proposed_targets
+            (cast(FigureType, model_manager[target])["data_frame"], {})
+            for target in proposed_targets
+            if hasattr(model_manager[target], "figure")
         ]
 
         target_to_data_frame = dict(zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
@@ -346,7 +366,14 @@ class Filter(VizroBaseModel):
 
         # TODO AM-PP: If [] or None is set make that the actions are not overwritten. Could be tricky, but doable.
         if not self.selector.actions:
-            self.selector.actions = update_figures(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets)
+            # Ensure set_control actions run before update_figures so the latest control value is applied.
+            self.selector.actions = [
+                *[set_control(control=control_id, value=None) for control_id in targeted_controls],
+                update_figures(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets),
+            ]
+            # Run pre_build for each action to run validations and compute internal attributes.
+            for selector_action in self.selector.actions:
+                selector_action.pre_build()
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.

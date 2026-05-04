@@ -123,6 +123,8 @@ class set_control(_AbstractAction):
         description="Filter or Parameter component id to be affected by the trigger."
         "If the control is on a different page to the trigger then it must have `show_in_url=True`."
     )
+
+    # TODO AM-PP: How about making it optional with default=None.
     value: JsonValue = Field(
         description="Value to take from trigger and send to the `target`. Format depends on the model "
         "that triggers `set_control`."

@@ -4,7 +4,7 @@ from typing import Annotated, Any, Literal
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
@@ -95,6 +95,11 @@ underlying component may change in the future.""",
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.value"}
+
+    @staticmethod
+    def _get_value_from_trigger(value: JsonValue, trigger: int) -> JsonValue:
+        """Return the given `trigger` without modification."""
+        return trigger
 
     def __call__(self, min, max):
         # TODO: Refactor value calculation logic after the Dash persistence bug is fixed and "Select All" PR is merged.
