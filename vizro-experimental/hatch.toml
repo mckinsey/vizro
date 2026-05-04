@@ -49,10 +49,8 @@ test-integration-browser = [
   "python -m playwright install chromium",
   "pytest tests/integration/browser -m integration_browser {args}"
 ]
-test-integration-llm = [
-  "python -m playwright install chromium",
-  "pytest tests/integration/llm -m integration_llm {args}"
-]
+test-integration-vizro-chat-popup = "pytest tests/integration/llm/test_chat_popup {args}"
+test-integration-vizro-chat-component = "pytest tests/integration/llm/test_chat_component {args}"
 test-unit = "pytest tests/unit {args}"
 test-unit-coverage = [
   "coverage run -m pytest tests/unit {args}",

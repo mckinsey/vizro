@@ -17,5 +17,3 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         posix = item.path.as_posix()
         if "/integration/browser/" in posix:
             item.add_marker(pytest.mark.integration_browser)
-        elif "/integration/llm/" in posix:
-            item.add_marker(pytest.mark.integration_llm)
