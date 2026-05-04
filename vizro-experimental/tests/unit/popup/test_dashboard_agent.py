@@ -118,11 +118,100 @@ class TestInvocation:
         """Regression for the ``_safe_describe`` bug.
 
         ``query_dataframe`` exposes ``agg="mean"`` / ``n=10`` / ``ascending=True``
-        defaults that pandas ``df.describe`` rejects. The handler absorbs them via
-        ``**_`` and ``_select_handler_params`` filters them at dispatch — both layers
-        are exercised here by invoking the operation with no extra args.
+        defaults that pandas ``df.describe`` rejects. The dispatch path now keeps
+        ``describe`` inline (the wrapper is gone) and the bespoke-ops filter blocks
+        defaults from reaching pandas methods that reject them — exercised here by
+        invoking the operation with no extra args.
         """
         result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": "describe"})
         assert "Error" not in result
         for label in ("count", "mean", "std", "min", "max"):
             assert label in result, f"describe output missing '{label}': {result}"
+
+
+class TestDispatchCategories:
+    """Pin behavior for each dispatch category after the per-method wrappers were collapsed."""
+
+    @pytest.mark.parametrize("op", ["mean", "median", "sum", "min", "max", "std", "var"])
+    def test_numeric_reduction_runs_inline(self, registered_dataset, op):
+        """Numeric reductions all share `str(df.<op>(numeric_only=True))`."""
+        result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": op})
+        assert "Error" not in result
+        assert "QoE" in result  # numeric column must appear
+
+    def test_plain_method_count(self, registered_dataset):
+        result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": "count"})
+        assert "Error" not in result
+        assert "Category" in result and "QoE" in result
+
+    def test_plain_property_shape(self, registered_dataset):
+        """`shape` is a property — must NOT be invoked as a method."""
+        result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": "shape"})
+        assert "Error" not in result
+        assert "(6, 2)" in result
+
+    def test_plain_property_dtypes(self, registered_dataset):
+        """`dtypes` is a property — must NOT be invoked as a method."""
+        result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": "dtypes"})
+        assert "Error" not in result
+        assert "QoE" in result
+
+    def test_head_uses_n_default(self, registered_dataset):
+        result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": "head", "n": 2})
+        assert "Error" not in result
+        # head(2) on the 6-row fixture should include exactly the first two Sports rows.
+        assert "Sports" in result and "Kids" not in result
+
+    def test_value_counts_with_column_returns_single_series(self, registered_dataset):
+        result = query_dataframe.invoke(
+            {"dataset_name": registered_dataset, "operation": "value_counts", "column": "Category"}
+        )
+        assert "Error" not in result
+        assert "Sports" in result and "Kids" in result
+
+
+class TestWideDataFrameWarning:
+    """The new wide-DF warning replaces the old silent megabyte-string fallback."""
+
+    def _register(self, name: str, df: pd.DataFrame):
+        from vizro.managers import data_manager as dm
+
+        dm[name] = lambda: df
+
+    def teardown_method(self):
+        from vizro.managers import data_manager as dm
+
+        for name in ("wide_df", "narrow_df"):
+            dm._DataManager__data.pop(name, None)
+
+    def test_value_counts_warns_on_wide_df_without_column(self):
+        wide = pd.DataFrame({f"c{i}": [1, 2, 3] for i in range(25)})
+        self._register("wide_df", wide)
+        with pytest.warns(UserWarning, match=r"25-column DataFrame without `column`"):
+            result = query_dataframe.invoke({"dataset_name": "wide_df", "operation": "value_counts"})
+        assert "Error" not in result
+
+    def test_unique_warns_on_wide_df_without_column(self):
+        wide = pd.DataFrame({f"c{i}": [1, 2, 3] for i in range(25)})
+        self._register("wide_df", wide)
+        with pytest.warns(UserWarning, match=r"25-column DataFrame without `column`"):
+            result = query_dataframe.invoke({"dataset_name": "wide_df", "operation": "unique"})
+        assert "Error" not in result
+
+    def test_no_warning_when_column_provided(self):
+        import warnings as _warnings
+
+        wide = pd.DataFrame({f"c{i}": [1, 2, 3] for i in range(25)})
+        self._register("wide_df", wide)
+        with _warnings.catch_warnings():
+            _warnings.simplefilter("error")  # turns any warning into a test failure
+            query_dataframe.invoke({"dataset_name": "wide_df", "operation": "value_counts", "column": "c0"})
+
+    def test_no_warning_on_narrow_df(self):
+        import warnings as _warnings
+
+        narrow = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+        self._register("narrow_df", narrow)
+        with _warnings.catch_warnings():
+            _warnings.simplefilter("error")
+            query_dataframe.invoke({"dataset_name": "narrow_df", "operation": "value_counts"})

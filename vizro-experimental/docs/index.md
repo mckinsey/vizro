@@ -6,7 +6,7 @@ hide:
 
 # Vizro-Experimental
 
-Vizro-Experimental is the **incubation home** for large Vizro features that aren't ready
+Vizro-Experimental is the incubation home for Vizro features that aren't ready
 for [`vizro-core`](https://vizro.readthedocs.io) yet. APIs in this package may change
 or be removed between releases. Once a feature stabilises, it graduates to `vizro-core`.
 
