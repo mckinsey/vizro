@@ -2,9 +2,9 @@
 
 import vizro.models as vm
 
-from pages._factories import lollipop_factory
+from pages._factories import lollipop_factory, slope_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import ordered_bar, ordered_column, slope
+from pages.examples import ordered_bar, ordered_column
 
 ordered_bar_page = vm.Page(
     title="Ordered bar",
@@ -88,43 +88,6 @@ ordered_column_page = vm.Page(
 
 lollipop_page = lollipop_factory("deviation")
 
-slope_page = vm.Page(
-    title="Slope",
-    path="ranking/slope",
-    layout=vm.Grid(grid=PAGE_GRID),
-    components=[
-        vm.Card(
-            text="""
-
-            #### What is a slope chart?
-
-            A slope chart displays values for two points in time (or any two conditions), connected by straight lines
-            to show the change or ranking between them. Each line represents one category, with its slope indicating
-            whether the value increased or decreased.
-
-            &nbsp;
-
-            #### When should I use it?
-
-            Use a slope chart to compare values before and after, showing ranking changes between two periods. It's
-            particularly effective when you want to highlight which categories improved or declined the most. Avoid
-            using it when there are too many categories, as the chart can become cluttered.
-        """
-        ),
-        vm.Graph(figure=slope.fig),
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="Vizro dashboard",
-                    components=[make_code_clipboard_from_py_file("slope.py", mode="vizro")],
-                ),
-                vm.Container(
-                    title="Plotly figure",
-                    components=[make_code_clipboard_from_py_file("slope.py", mode="plotly")],
-                ),
-            ]
-        ),
-    ],
-)
+slope_page = slope_factory("ranking")
 
 pages = [ordered_bar_page, ordered_column_page, lollipop_page, slope_page]

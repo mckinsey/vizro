@@ -2,12 +2,12 @@
 
 import vizro.models as vm
 
-from pages._factories import column_and_line_factory, connected_scatter_factory
+from pages._factories import column_and_line_factory, connected_scatter_factory, slope_factory
 from pages._pages_utils import (
     PAGE_GRID,
     make_code_clipboard_from_py_file,
 )
-from pages.examples import area, gantt, heatmap, line, slope, sparkline, stepped_line, time_column
+from pages.examples import area, gantt, heatmap, line, sparkline, stepped_line, time_column
 
 line_page = vm.Page(
     title="Line",
@@ -280,45 +280,7 @@ sparkline_page = vm.Page(
         ),
     ],
 )
-slope_page = vm.Page(
-    id="time-slope",
-    title="Slope",
-    path="time/slope",
-    layout=vm.Grid(grid=PAGE_GRID),
-    components=[
-        vm.Card(
-            text="""
-
-            #### What is a slope chart?
-
-            A slope chart displays values for two points in time (or any two conditions), connected by straight lines
-            to show the change between them. Each line represents one category, with its slope indicating whether
-            the value increased or decreased.
-
-            &nbsp;
-
-            #### When should I use it?
-
-            Use a slope chart to compare values before and after, showing changes between two time periods. It's
-            particularly effective when you want to highlight which categories improved or declined the most. Avoid
-            using it when there are too many categories, as the chart can become cluttered.
-        """
-        ),
-        vm.Graph(figure=slope.fig),
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="Vizro dashboard",
-                    components=[make_code_clipboard_from_py_file("slope.py", mode="vizro")],
-                ),
-                vm.Container(
-                    title="Plotly figure",
-                    components=[make_code_clipboard_from_py_file("slope.py", mode="plotly")],
-                ),
-            ]
-        ),
-    ],
-)
+slope_page = slope_factory("time")
 
 pages = [
     line_page,
