@@ -428,6 +428,31 @@ class TestSendClearsAndEmbedsAttachments:
         self._action_clears_and_embeds(_stub_action(_Echo))
 
 
+class TestParseStoreMessagesPropagatesAttachments:
+    """``_parse_store_messages`` must surface ``attachments`` to ``generate_response``.
+
+    Without this, vision actions can only see images on the *current* turn — every
+    follow-up about an earlier image fails because the parsing layer dropped the
+    snapshotted attachments. Regression for the vision-multi-turn bug.
+    """
+
+    def test_attachments_present_when_set(self):
+        from vizro_experimental.chat.models.types import _parse_store_messages
+
+        files = [{"filename": "cat.png", "content": "data:image/png;base64,abc"}]
+        store = [
+            {"role": "user", "content_json": json.dumps("what is this?"), "attachments": files},
+            {"role": "assistant", "content_json": json.dumps("A cat.")},
+            {"role": "user", "content_json": json.dumps("what color is it?")},
+        ]
+        parsed = _parse_store_messages(store)
+        assert parsed[0].get("attachments") == files
+        # Assistant turns + user turns without attachments must NOT carry an attachments key,
+        # so callers that ignore the field aren't misled into iterating over None.
+        assert "attachments" not in parsed[1]
+        assert "attachments" not in parsed[2]
+
+
 class TestPopupHasFileStoreStubs:
     """Popup layout includes hidden file-store / data-info stubs.
 

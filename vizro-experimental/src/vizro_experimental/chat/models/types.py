@@ -5,24 +5,37 @@ from __future__ import annotations
 import json
 from typing import Any, Literal, TypeAlias, TypedDict
 
+from typing_extensions import NotRequired
+
 Role: TypeAlias = Literal["user", "assistant"]
 
 
 class Message(TypedDict):
-    """Parsed chat item passed to ``generate_response`` (decoded ``content_json``)."""
+    """Parsed chat item passed to ``generate_response`` (decoded ``content_json``).
+
+    ``attachments`` is present on user turns that included file uploads — each entry has
+    ``filename`` and ``content`` (base64 data URL). Only set when the original wire
+    message carried it; absent on plain text turns.
+    """
 
     role: Role
     content: Any
+    attachments: NotRequired[list[dict[str, str]]]
 
 
 def _parse_store_messages(messages: list[dict[str, Any]]) -> list[Message]:
     """Decode store / SSE wire messages into ``role`` + ``content`` dicts (internal).
 
-    Each wire item must include ``role`` and ``content_json`` (JSON string). The returned
-    list is a shallow copy with new dicts; the input list is not mutated.
+    Each wire item must include ``role`` and ``content_json`` (JSON string). User turns
+    may also carry an ``attachments`` list (snapshotted from the file-store at send time);
+    when present, the list is propagated **by reference** so ``generate_response`` can
+    re-attach historical files (e.g. images for vision follow-ups). Treat the list as
+    read-only — mutating it would mutate the session-store state. The returned list is
+    a shallow copy with new dicts; the input list is not mutated.
 
     Args:
-        messages: Store-shaped history (``role``, ``content_json`` per item).
+        messages: Store-shaped history (``role``, ``content_json``, optional
+            ``attachments`` per item).
 
     Returns:
         Parsed messages suitable for ``generate_response``.
@@ -45,5 +58,8 @@ def _parse_store_messages(messages: list[dict[str, Any]]) -> list[Message]:
         role = msg["role"]
         if role not in ("user", "assistant"):
             raise ValueError(f"Message {i}: role must be 'user' or 'assistant', got {role!r}")
-        parsed.append({"role": role, "content": content})
+        parsed_msg: Message = {"role": role, "content": content}
+        if "attachments" in msg:
+            parsed_msg["attachments"] = msg["attachments"]
+        parsed.append(parsed_msg)
     return parsed

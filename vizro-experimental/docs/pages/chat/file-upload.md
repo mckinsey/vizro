@@ -86,6 +86,32 @@ Vision models accept content as a list of `input_text` and `input_image` parts �
 
         ![File upload](../../assets/images/file-upload.png)
 
+## Re-attach files on follow-ups
+
+The example above only attaches images to the **current** turn — a follow-up like *"and what color is it?"* would lose the image. To support multi-turn questions about an uploaded file, re-attach files from earlier user turns too.
+
+Attachments uploaded in prior turns are preserved at `msg["attachments"]` (a list of `{filename, content}` dicts) on each user `Message`. Walk historical turns and re-emit their files alongside the text:
+
+```python
+def _user_content(text, attachments):
+    blocks = [{"type": "input_text", "text": text}]
+    for f in attachments or []:
+        if f["content"].startswith("data:image/"):
+            blocks.append({"type": "input_image", "image_url": f["content"]})
+    return blocks if len(blocks) > 1 else text
+
+
+def generate_response(self, messages, uploaded_files=None):
+    api_messages = []
+    for msg in messages[:-1]:
+        content = _user_content(msg["content"], msg.get("attachments")) if msg["role"] == "user" else msg["content"]
+        api_messages.append({"role": msg["role"], "content": content})
+    api_messages.append({"role": "user", "content": _user_content(messages[-1]["content"], uploaded_files)})
+    # ...call the model with api_messages...
+```
+
+Each repeated image is re-sent (and re-billed) on every turn — typical for image-heavy conversations. Trim `messages` if cost matters. The `openai_vision_*` actions in `examples/chat_component/actions.py` show the full pattern via the `_build_vision_api_messages` helper.
+
 ## Handle non-image files
 
 For CSVs, Excel, PDFs, or any other format, decode the base64 data URL and process the bytes:

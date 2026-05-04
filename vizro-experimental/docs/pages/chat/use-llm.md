@@ -77,6 +77,20 @@ class OpenAIChat(ChatAction):
         return response.output_text
 ```
 
+## Multi-turn behavior
+
+The `messages` argument is the **full conversation history**, not just the new user turn. The library handles storage (browser session storage), append-on-send, and restore-on-open for you; what you do with the history inside `generate_response` is your call.
+
+| If your action needs… | Pass to the LLM |
+|---|---|
+| Follow-up questions ("and what about X?") to work | `messages` (the whole list) — every example above does this |
+| Each prompt to be independent (e.g. text-to-SQL with no memory) | `messages[-1]["content"]` only |
+| Both — conditional on the user opting in | Add a Pydantic field on your action (e.g. `multi_turn: bool = True`) and branch |
+
+If your action handles uploaded files (e.g. a vision model), historical attachments need to be re-sent alongside historical text so the model can answer follow-ups about an image uploaded earlier — see [Add file upload](file-upload.md#re-attach-files-on-follow-ups).
+
+The library *does not* truncate or summarize history. Token cost grows linearly with conversation length; if that matters, slice `messages` yourself before calling the LLM.
+
 ## What's next
 
 - [Stream text responses](streaming-chat.md) — switch to `StreamingChatAction` so users see tokens in real time.
