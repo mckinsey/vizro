@@ -116,7 +116,7 @@ This is useful for long-running actions where you want to indicate that work is 
 
 ### Custom notification keys
 
-In addition to the built-in keys (`progress`, `success`, `error`), you can define your own custom notification keys. These allow you to handle more specific outcomes beyond just `success` or `error`.
+In addition to the built-in keys (`"progress"`, `"success"`, `"error"`), you can define your own custom notification keys. These allow you to handle more specific outcomes beyond just `success` or `error`.
 
 Custom notifications are only shown when the action explicitly selects them. This happens when the action function either returns a key or raises an exception with a key that matches one defined in notifications.
 
@@ -264,10 +264,10 @@ These templates make it possible to provide more informative and contextual feed
         Vizro().build(dashboard).run()
         ```
 
-        1. Propagating dynamic value `duration_result` to the `"error"` notification text that replaces the `{{results}}` template.
-        1. Propagating dynamic value `duration_result` to the `"pipeline_partial_error"` notification text that replaces the `{{results}}` template.
-        1. Propagating dynamic value `duration_result` to the `"success"` notification text that replaces the `{{results}}` template.
-        1. Propagating dynamic value `duration_result` to the `"pipeline_partial_success"` notification text that replaces the `{{results}}` template.
+        1. Propagating dynamic value `duration_result` to the `"error"` notification text that replaces the `{{result}}` template.
+        1. Propagating dynamic value `duration_result` to the `"pipeline_partial_error"` notification text that replaces the `{{result}}` template.
+        1. Propagating dynamic value `duration_result` to the `"success"` notification text that replaces the `{{result}}` template.
+        1. Propagating dynamic value `duration_result` to the `"pipeline_partial_success"` notification text that replaces the `{{result}}` template.
         1. Defining the `"success"` notification text with the `{{result}}` template.
         1. Defining the `"error"` notification text with both `{{error_msg}}` and `{{result}}` templates.
         1. Defining the `"pipeline_partial_success"` notification text with the `{{result}}` template.
