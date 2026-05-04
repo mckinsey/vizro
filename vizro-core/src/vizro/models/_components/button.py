@@ -16,7 +16,7 @@ class Button(VizroBaseModel):
     """Button that can trigger actions or navigate.
 
     Abstract: Usage documentation
-        [How to use buttons](../user-guides/button.md)
+        [How to use buttons](user-guides/button.md)
 
     """
 
