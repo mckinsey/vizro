@@ -10,6 +10,8 @@ data = pd.merge(
     on="country",
 )
 data = data[data["1952"] > 30].sort_values("2007")
+data["change"] = data["2007"] - data["1952"]
+data = data.nlargest(10, "change")
 
 data_long = data.melt(id_vars=["country"], var_name="year", value_name="life_exp")
 

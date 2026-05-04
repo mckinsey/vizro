@@ -281,7 +281,7 @@ sparkline_page = vm.Page(
     ],
 )
 slope_page = vm.Page(
-    id="ranking_slope",
+    id="time-slope",
     title="Slope",
     path="time/slope",
     layout=vm.Grid(grid=PAGE_GRID),
