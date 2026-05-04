@@ -24,7 +24,7 @@ class DatePicker(VizroBaseModel):
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
     Abstract: Usage documentation
-        [How to use temporal selectors](../user-guides/selectors.md#temporal-selectors)
+        [How to use temporal selectors](user-guides/selectors.md#temporal-selectors)
 
     """
 

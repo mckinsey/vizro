@@ -104,7 +104,7 @@ treemap_page = vm.Page(
 
                 It's helpful to use a treemap when you wish to display hierarchical part-to-whole relationships. You can
                 compare groups and single elements nested within them. Consider using them instead of Pie charts when
-                you have a higher number of categories. Treemaps are very compact and allow audiences to get a quick
+                you have a higher number of categories. Treemaps are very compact and enable audiences to get a quick
                 overview of the data.
             """
         ),
@@ -135,7 +135,7 @@ stacked_bar_page = vm.Page(
 
             A stacked bar chart displays bars divided into segments, with each segment's length proportional to the
             value it represents. One axis shows the categories being compared, while the other provides a value scale
-            starting from zero. The segments within each bar are stacked on top of each other, allowing for a cumulative
+            starting from zero. The segments within each bar are stacked on top of each other, enabling a cumulative
             comparison.
 
             &nbsp;
@@ -177,7 +177,7 @@ stacked_column_page = vm.Page(
 
             A stacked column chart displays columns divided into segments, with each segment's height proportional to
             the value it represents. One axis shows the categories being compared, while the other provides a value
-            scale starting from zero. The segments within each column are stacked on top of each other, allowing for a
+            scale starting from zero. The segments within each column are stacked on top of each other, enabling a
             cumulative comparison.
 
             &nbsp;
