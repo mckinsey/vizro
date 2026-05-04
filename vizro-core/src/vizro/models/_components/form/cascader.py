@@ -116,7 +116,7 @@ class Cascader(VizroBaseModel):
     """Cascader selector for [`Filter`][vizro.models.Filter] and [`Parameter`][vizro.models.Parameter].
 
     Abstract: Usage documentation
-        [Hierarchical selectors](../user-guides/selectors.md#hierarchical-selectors)
+        [Hierarchical selectors](user-guides/selectors.md#hierarchical-selectors)
 
     """
 

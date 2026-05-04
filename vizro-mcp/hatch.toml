@@ -48,9 +48,9 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
-  "zensical",
+  "zensical>=0.0.28",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
-  "mkdocstrings[python]",
+  "mkdocstrings[python]>=1.0.2",
   "linkchecker",
   "mkdocs-pycafe",
   "mkdocs-glightbox",

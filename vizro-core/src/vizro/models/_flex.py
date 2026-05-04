@@ -14,7 +14,7 @@ class Flex(VizroBaseModel):
     """Flex layout for components on a [`Page`][vizro.models.Page] or in a [`Container`][vizro.models.Container].
 
     Abstract: Usage documentation
-        [How to use the Flex layout](../user-guides/layouts.md#flex-layout)
+        [How to use the Flex layout](user-guides/layouts.md#flex-layout)
 
     """
 

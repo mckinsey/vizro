@@ -53,7 +53,7 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
     """Implementation of `dash_ag_grid.AgGrid` with sensible defaults to be used in [`AgGrid`][vizro.models.AgGrid].
 
     Abstract: Usage documentation
-        [How to use AG Grid](../user-guides/table.md#ag-grid)
+        [How to use AG Grid](user-guides/table.md#ag-grid)
 
     Args:
         data_frame: DataFrame containing the data to be displayed.

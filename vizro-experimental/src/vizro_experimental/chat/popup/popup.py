@@ -17,21 +17,18 @@ Example usage::
 
 from __future__ import annotations
 
-import base64
 import json
 from collections.abc import Callable
 from typing import Any, Literal
 
-import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import plotly
 from dash import ClientsideFunction, Input, Output, Patch, State, callback, clientside_callback, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_extensions import SSE
-from dash_extensions.streaming import sse_message, sse_options
+from dash_extensions.streaming import sse_options
 from dash_iconify import DashIconify
-from flask import Response, request
 
 from .._constants import (
     BORDER_RADIUS,
@@ -45,12 +42,15 @@ from .._constants import (
     ICON_BUTTON_SIZE,
 )
 from ..actions._base_chat_action import (
-    _kwargs_for_generate_response,
     _message_to_html,
     _register_loading_indicator_callback,
     _register_send_icon_toggle_callback,
 )
-from ..actions.streaming_chat_action import _StreamingRequest
+from ..actions.streaming_chat_action import (
+    _register_streaming_chunk_callback,
+    _register_streaming_endpoint,
+    _StreamingRequest,
+)
 from ..models.types import _parse_store_messages
 
 
@@ -81,25 +81,23 @@ def add_chat_popup(  # noqa: PLR0913
             *messages* is parsed history: each dict has ``role`` and ``content`` (decoded JSON).
             Return a string for non-streaming, or yield strings for streaming.
             When omitted, a built-in dashboard agent is created automatically.
-        model: A LangChain chat model instance for the built-in dashboard agent
-            (e.g. ``ChatOpenAI(model="gpt-5.4-mini-2026-03-17")``).
-            Only used when *generate_response* is not provided.
-            Defaults to ``ChatOpenAI(model="gpt-5.4-mini-2026-03-17",
-            use_responses_api=True)``. Pass a pre-configured instance if you
-            need non-default settings such as ``store=False`` for zero retention.
+        model: A PydanticAI model instance (e.g. ``OpenAIResponsesModel(...)``,
+            ``AnthropicModel(...)``) or a ``"provider:model"`` string accepted by
+            :class:`pydantic_ai.Agent`. Only used when *generate_response* is not
+            provided. Defaults to ``OpenAIResponsesModel("gpt-5.4-mini-2026-03-17")``
+            with the given *reasoning_effort* applied via
+            :class:`OpenAIResponsesModelSettings`. Pass a pre-configured instance
+            for a different provider, custom base URL, retries, or zero-retention
+            settings (e.g. ``OpenAIResponsesModel(..., openai_store=False)``).
         streaming: Set ``True`` when *generate_response* yields chunks.
         chat_id: Unique DOM ID prefix. Change if you need multiple popups.
         placeholder: Placeholder text shown in the input field.
         title: Title displayed in the popup header bar.
         color: Color for the floating toggle button (any CSS color or Mantine color).
             Defaults to Mantine's primary color if not set.
-        reasoning_effort: How hard the default gpt-5.4-mini model should reason
-            before answering. One of ``"low"`` (fastest), ``"medium"`` (default,
-            balanced), ``"high"`` (most thorough). Only used when both
-            *generate_response* and *model* are ``None`` (i.e. the built-in
-            dashboard agent is created with its default model). Pass ``"high"``
-            for complex multi-hop or causal questions; drop to ``"low"`` for
-            the snappiest interactive Q&A.
+        reasoning_effort: ``"low"`` | ``"medium"`` (default) | ``"high"``. Only used when
+            both *generate_response* and *model* are ``None``. Use ``"high"`` for complex
+            multi-hop or causal questions; ``"low"`` for the snappiest interactive Q&A.
 
     """
     if generate_response is None:
@@ -123,9 +121,16 @@ def add_chat_popup(  # noqa: PLR0913
     _register_send_icon_toggle_callback(chat_id)
 
     if streaming:
-        _setup_streaming_callbacks(chat_id)
-        _setup_streaming_endpoint(app, chat_id, generate_response)
-        _setup_streaming_action(chat_id)
+        base_pathname = app.dash.config.requests_pathname_prefix.rstrip("/")
+        _register_streaming_chunk_callback(chat_id)
+        _register_streaming_endpoint(
+            app.dash.server,
+            chat_id,
+            generate_response,
+            base_pathname=base_pathname,
+            endpoint_name=f"streaming_popup_{chat_id}",
+        )
+        _setup_streaming_action(chat_id, base_pathname)
     else:
         _setup_non_streaming_action(chat_id, generate_response)
 
@@ -188,12 +193,8 @@ def _build_chat_panel(chat_id: str, placeholder: str, title: str, streaming: boo
 
     messages_area = html.Div(
         [
-            html.Div(
-                [
-                    html.Div(id=f"{chat_id}-hidden-messages", children=[], style={"display": "none"}),
-                    html.Div(id=f"{chat_id}-rendered-messages", className=CSS_HISTORY_CONTAINER),
-                ],
-            )
+            html.Div(id=f"{chat_id}-hidden-messages", children=[], style={"display": "none"}),
+            html.Div(id=f"{chat_id}-rendered-messages", className=CSS_HISTORY_CONTAINER),
         ],
         className=CSS_HISTORY_SECTION,
     )
@@ -395,62 +396,9 @@ def _setup_non_streaming_action(chat_id: str, generate_response: Callable) -> No
         return [store, html_messages, ""]
 
 
-def _setup_streaming_callbacks(chat_id: str) -> None:
-    """Register clientside callback for SSE chunk processing."""
-    clientside_callback(
-        ClientsideFunction("vizroChatComponent", "processStreamingChunk"),
-        [
-            Output(f"{chat_id}-hidden-messages", "children", allow_duplicate=True),
-            Output(f"{chat_id}-store", "data", allow_duplicate=True),
-        ],
-        Input(f"{chat_id}-sse", "animation"),
-        [
-            State(f"{chat_id}-hidden-messages", "children"),
-            State(f"{chat_id}-store", "data"),
-        ],
-        prevent_initial_call=True,
-    )
-
-
-def _setup_streaming_endpoint(app, chat_id: str, generate_response: Callable) -> None:
-    """Register Flask SSE streaming route."""
-    CHUNK_DELIMITER = "|END|"
-    base_pathname = app.dash.config.requests_pathname_prefix.rstrip("/")
-
-    @app.dash.server.route(
-        f"{base_pathname}/streaming-{chat_id}",
-        methods=["POST"],
-        endpoint=f"streaming_popup_{chat_id}",
-    )
-    def _streaming_chat():
-        data = request.get_json()
-        # Validate the request payload through Pydantic to ensure required fields
-        # (messages, prompt) are present and correctly typed. This prevents malformed
-        # requests from reaching generate_response and mitigates mass parameter
-        # assignment — only fields that pass _StreamingRequest validation are forwarded.
-        try:
-            validated = _StreamingRequest(**data)
-        except Exception:
-            return Response("Invalid request", status=400)
-        messages = validated.messages
-        payload_extras = validated.model_extra or {}
-        gr_kw = _kwargs_for_generate_response(
-            generate_response,
-            uploaded_files=validated.uploaded_files,
-            payload_extras=payload_extras,
-        )
-
-        def event_stream():
-            for chunk in generate_response(_parse_store_messages(messages), **gr_kw):
-                encoded = base64.b64encode(chunk.encode("utf-8")).decode("utf-8")
-                yield sse_message(encoded + CHUNK_DELIMITER)
-            yield sse_message()
-
-        return Response(event_stream(), mimetype="text/event-stream")
-
-
-def _setup_streaming_action(chat_id: str) -> None:
+def _setup_streaming_action(chat_id: str, base_pathname: str) -> None:
     """Register the main action callback for streaming responses."""
+    sse_url = f"{base_pathname}/streaming-{chat_id}"
 
     @callback(
         [
@@ -479,10 +427,5 @@ def _setup_streaming_action(chat_id: str) -> None:
         # hidden-messages / chat-input are owned by the loading-indicator callback;
         # processStreamingChunk swaps the loader for the assistant bubble on first chunk.
         sse_req = _StreamingRequest(prompt=prompt, messages=messages, uploaded_files=None)
-        base_pathname = dash.get_app().config.requests_pathname_prefix.rstrip("/")
 
-        return [
-            store,
-            f"{base_pathname}/streaming-{chat_id}",
-            sse_options(sse_req),
-        ]
+        return [store, sse_url, sse_options(sse_req)]

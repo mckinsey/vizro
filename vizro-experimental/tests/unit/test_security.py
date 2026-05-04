@@ -19,7 +19,8 @@ import pytest
 from vizro_experimental.chat.actions._base_chat_action import _kwargs_for_generate_response
 from vizro_experimental.chat.actions.streaming_chat_action import _StreamingRequest
 from vizro_experimental.chat.popup.dashboard_agent import (
-    _SAFE_OPERATIONS,
+    _ALLOWED_OPERATIONS,
+    _BESPOKE_OPS,
     _safe_groupby_agg,
     _safe_nlargest,
     _safe_sort_values,
@@ -46,10 +47,10 @@ def sample_df():
 class TestSafeOperations:
     """Test handlers that have non-trivial logic (validation, allowlists)."""
 
-    def test_all_operations_are_callable(self):
-        """Every entry in the dispatch table must be a callable."""
-        for name, handler in _SAFE_OPERATIONS.items():
-            assert callable(handler), f"_SAFE_OPERATIONS['{name}'] is not callable"
+    def test_bespoke_handlers_are_callable(self):
+        """Every entry in the bespoke dispatch table must be a callable."""
+        for name, (handler, _) in _BESPOKE_OPS.items():
+            assert callable(handler), f"_BESPOKE_OPS['{name}'] handler is not callable"
 
     def test_sort_values_requires_by(self, sample_df):
         assert "Error" in _safe_sort_values(sample_df)
@@ -77,8 +78,8 @@ class TestEvalAttackVectorsPrevented:
     so chained/malicious expressions can never match a key.
     """
 
-    def test_dispatch_table_has_no_dangerous_operations(self):
-        """The dispatch table must not contain operations that write files or execute code."""
+    def test_allowlist_has_no_dangerous_operations(self):
+        """The allowlist must not contain operations that write files or execute code."""
         dangerous_names = {
             "to_csv",
             "to_json",
@@ -97,8 +98,8 @@ class TestEvalAttackVectorsPrevented:
             "exec",
             "query",
         }
-        found = dangerous_names & set(_SAFE_OPERATIONS)
-        assert not found, f"Dangerous operations in dispatch table: {found}"
+        found = dangerous_names & _ALLOWED_OPERATIONS
+        assert not found, f"Dangerous operations in allowlist: {found}"
 
     @pytest.mark.parametrize(
         "malicious_operation",
@@ -118,9 +119,9 @@ class TestEvalAttackVectorsPrevented:
         ],
     )
     def test_malicious_operations_rejected(self, malicious_operation):
-        """Malicious operation strings must not match any key in the dispatch table."""
+        """Malicious operation strings must not match any key in the allowlist."""
         cleaned = malicious_operation.strip().rstrip("()")
-        assert cleaned not in _SAFE_OPERATIONS
+        assert cleaned not in _ALLOWED_OPERATIONS
 
 
 # ---------------------------------------------------------------------------
