@@ -28,8 +28,8 @@ jobs:
         run: pip install hatch
       - name: Install Playwright and browser
         run: |
-          hatch run test:pip install playwright
-          hatch run test:playwright install --with-deps chromium
+          hatch run pip install playwright
+          hatch run playwright install --with-deps chromium
       - name: Run tests
         run: |
           hatch run example popup &
