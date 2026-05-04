@@ -350,6 +350,12 @@ legend {
   background: var(--bs-highlight-bg) !important;
 }
 
+/* Line height is fixed by QBDS, but can lead to misalignment in mobile due to zoom out in browser. */
+.btn {
+  line-height: inherit;
+}
+
+/* Mantine overrides */
 :root[data-mantine-color-scheme="dark"],
 :root[data-mantine-color-scheme="light"] {
   --mantine-color-body: var(--bs-body-color);
