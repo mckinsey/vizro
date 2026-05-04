@@ -21,13 +21,7 @@ from vizro.models.types import ModelID, SelectorType, _IdProperty
 
 
 def check_dot_notation(target):
-    # TODO NOW PP: Move this check to pre_build as control targets can be added without '.'
-    if "." not in target:
-        return target
-        # raise ValueError(
-        #     f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>"
-        # )
-    if target.split(".")[1] == "figure":
+    if "." in target and target.split(".")[1] == "figure":
         raise ValueError(
             f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>. "
             "Arguments of the CapturedCallable function can be targeted directly, and not via <.figure.>."
@@ -136,14 +130,20 @@ class Parameter(VizroBaseModel):
         }
 
     @_log_call
-    def pre_build(self):
-        # TODO NOW PP: Refactor this
-        # Extract parameter.targets that are not figure models.
+    def pre_build(self):  # noqa: PLR0912
+        from vizro.models._controls import Filter
+
+        # Extract control targets from self.targets in a separate variable as they are validated differently.
         targeted_controls = []
-        for target in list(self.targets):
-            if target in model_manager and not hasattr(model_manager[target], "figure"):
+        for target in self.targets.copy():
+            if target in model_manager and isinstance(model_manager[target], (Filter, Parameter)):
                 self.targets.remove(target)
                 targeted_controls.append(target)
+            elif "." not in target:
+                raise ValueError(
+                    f"Invalid target {target}. Targets must be supplied in the form "
+                    f"<target_component>.<target_argument>"
+                )
 
         check_control_targets(control=self)
 
@@ -195,18 +195,15 @@ class Parameter(VizroBaseModel):
             # We do the update to ensure that `self.targets` is consistent with the target ids passed to `_parameter`.
             self.targets.extend(list(filter_targets))
             targets_ids = [target.partition(".")[0] for target in self.targets]
-            # self.selector.actions = update_figures(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=targets_ids)
 
-            update_figures_action = update_figures(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=targets_ids)
-            # TODO AM-PP OQ: Currently, it's only enabled for Parameter to do the syncing. How to enable cascading?
-            set_control_actions = [set_control(control=control_id, value=None) for control_id in targeted_controls]
-
-            # Post assignment to trigger the _make_actions_chain pydantic validator.
-            self.selector.actions = [update_figures_action, *set_control_actions]
-
-            # TODO AM-PP OQ: I don't know why pre_build has to be called here, but not in the filter case.
-            for set_control_action in set_control_actions:
-                set_control_action.pre_build()
+            # Ensure set_control actions run before update_figures so the latest control value is applied.
+            self.selector.actions = [
+                *[set_control(control=control_id, value=None) for control_id in targeted_controls],
+                update_figures(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=targets_ids),
+            ]
+            # Run pre_build for each action to run validations and compute internal attributes.
+            for selector_action in self.selector.actions:
+                selector_action.pre_build()
 
     @_log_call
     def build(self):

@@ -67,10 +67,9 @@ class TestParameterInstantiation:
     def test_check_dot_notation_failed(self):
         with pytest.raises(
             ValueError,
-            match=r"Invalid target scatter_chart. "
-            "Targets must be supplied in the form <target_component>.<target_argument>",
+            match=r"Invalid target scatter_chart.*Arguments of the CapturedCallable function can be targeted directly",
         ):
-            Parameter(targets=["scatter_chart"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
+            Parameter(targets=["scatter_chart.figure"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
     @pytest.mark.parametrize("target", ["scatter_chart.data_frame", "scatter_chart.data_frame.argument.nested_arg"])
     def test_check_data_frame_as_target_argument_failed(self, target):

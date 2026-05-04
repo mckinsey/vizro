@@ -1183,9 +1183,8 @@ class TestFilterHierarchicalColumn:
         assert not f._dynamic
         assert not getattr(f.selector, "_dynamic", False)
         [default_action] = f.selector.actions
-        assert isinstance(default_action, _filter)
-        assert default_action.column == "country"
-        assert default_action.filter_function == _filter_isin
+        assert isinstance(default_action, update_figures)
+        assert default_action.targets == ["hier_graph"]
 
     def test_hierarchical_dynamic_data_without_explicit_options_raises(
         self, managers_one_page_two_graphs_with_dynamic_data, gapminder_dynamic_first_n_last_n_function

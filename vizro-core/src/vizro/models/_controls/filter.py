@@ -29,7 +29,14 @@ from vizro.models._controls._controls_utils import (
     warn_missing_id_for_url_control,
 )
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
+from vizro.models.types import (
+    FigureType,
+    ModelID,
+    MultiValueType,
+    SelectorType,
+    SingleValueType,
+    _IdProperty,
+)
 
 DEFAULT_SELECTORS = {
     "numerical": RangeSlider,
@@ -246,11 +253,12 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):  # noqa: PLR0912
-        # TODO NOW PP: Refactor this
-        # Extract filter.targets that are not figure models.
+        from vizro.models._controls import Parameter
+
+        # Extract control targets from self.targets in a separate variable as they are validated differently.
         targeted_controls = []
-        for target in list(self.targets):
-            if target in model_manager and not hasattr(model_manager[target], "figure"):
+        for target in self.targets.copy():
+            if target in model_manager and isinstance(model_manager[target], (Filter, Parameter)):
                 self.targets.remove(target)
                 targeted_controls.append(target)
 
@@ -356,15 +364,14 @@ class Filter(VizroBaseModel):
 
         # TODO AM-PP: If [] or None is set make that the actions are not overwritten. Could be tricky, but doable.
         if not self.selector.actions:
-            update_figures_action = update_figures(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets)
-            set_control_actions = []
-            for control_id in targeted_controls:
-                set_control_actions.append(set_control(control=control_id, value=None))
-
-            # Post assignment to trigger the _make_actions_chain pydantic validator.
-            self.selector.actions = [update_figures_action, *set_control_actions]
-            for set_control_action in set_control_actions:
-                set_control_action.pre_build()
+            # Ensure set_control actions run before update_figures so the latest control value is applied.
+            self.selector.actions = [
+                *[set_control(control=control_id, value=None) for control_id in targeted_controls],
+                update_figures(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets),
+            ]
+            # Run pre_build for each action to run validations and compute internal attributes.
+            for selector_action in self.selector.actions:
+                selector_action.pre_build()
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.

@@ -54,13 +54,10 @@ def _is_hierarchical_selector(x: object) -> TypeIs[Cascader]:
 
 
 def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
-    # TODO AM-PP OQ: What are new rules? Could a control target a figure/control outside its container/page?
-
     component_figures: Generator[VizroBaseModel] = model_manager._get_models(FIGURE_MODELS, root_model)
     component_figure_ids = [model.id for model in component_figures]
     for target in targets:
-        target_id = target.split(".")[0]
-        if hasattr(model_manager[target_id], "figure") and target_id not in component_figure_ids:
+        if (target_id := target.split(".")[0]) not in component_figure_ids:
             raise ValueError(f"Target {target_id} not found within the {root_model.id}.")
 
 
