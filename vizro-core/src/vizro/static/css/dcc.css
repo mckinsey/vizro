@@ -190,6 +190,7 @@
 /* SLIDER / RANGE SLIDER  ------------------------------------------------------------ */
 .dash-slider-track {
   height: 2px;
+  background: var(--fill-content-step-markers-track);
 }
 
 .dash-slider-container {

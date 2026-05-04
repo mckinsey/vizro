@@ -210,6 +210,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --Dash-Fill-Interactive-Weak: var(--bs-dark-bg-subtle);
   --input-field-bg: var(--bs-primary-bg-subtle);
   --bs-card-bg-inverted: #f5f6f6;
+  --fill-content-step-markers-track: #333640;
 }
 
 [data-bs-theme="light"] {
@@ -228,6 +229,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --hover-bg-subtle: var(--bs-gray-300);
   --input-field-bg: var(--bs-body-bg);
+  --fill-content-step-markers-track-inverted: #d3d6d9;
 }
 
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
