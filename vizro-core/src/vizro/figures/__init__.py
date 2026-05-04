@@ -1,7 +1,7 @@
 """Built-in figure functions.
 
 Abstract: Usage documentation
-    [How to use figures](../user-guides/figure.md)
+    [How to use figures](user-guides/figure.md)
 """
 
 from vizro.models.types import capture

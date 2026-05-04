@@ -26,13 +26,13 @@ class Tooltip(VizroBaseModel):
     """A tooltip that displays text when hovering over an icon.
 
     Abstract: Usage documentation
-        Read more about usage in the guides on [dashboards](../user-guides/dashboard.md#add-a-dashboard-tooltip),
-        [pages](../user-guides/pages.md#add-a-tooltip),
-        [containers](../user-guides/container.md#add-a-tooltip),
-        [graphs](../user-guides/graph.md#add-a-tooltip),
-        [tables](../user-guides/table.md#add-a-tooltip), [tabs](../user-guides/tabs.md#add-a-tooltip),
-        [selectors](../user-guides/selectors.md#add-a-tooltip) and
-        [buttons](../user-guides/button.md#add-a-tooltip).
+        Read more about usage in the guides on [dashboards](user-guides/dashboard.md#add-a-dashboard-tooltip),
+        [pages](user-guides/pages.md#add-a-tooltip),
+        [containers](user-guides/container.md#add-a-tooltip),
+        [graphs](user-guides/graph.md#add-a-tooltip),
+        [tables](user-guides/table.md#add-a-tooltip), [tabs](user-guides/tabs.md#add-a-tooltip),
+        [selectors](user-guides/selectors.md#add-a-tooltip) and
+        [buttons](user-guides/button.md#add-a-tooltip).
 
     Example: `Tooltip` on a [`Checklist`][vizro.models.Checklist] selector
         ```python

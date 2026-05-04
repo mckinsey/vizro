@@ -26,7 +26,7 @@ class Checklist(VizroBaseModel):
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
     Abstract: Usage documentation
-        [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)
+        [How to use categorical selectors](user-guides/selectors.md#categorical-selectors)
 
     """
 
@@ -38,7 +38,7 @@ class Checklist(VizroBaseModel):
     #  but this requires pydantic >= 2.9.
     show_select_all: bool = Field(
         default=True,
-        description="Whether to display the 'Select All' option that allows users to select or deselect all available "
+        description="Whether to display the 'Select All' option that enables users to select or deselect all available "
         "options with a single click.",
     )
     description: Annotated[

@@ -105,7 +105,7 @@ distribution_chart_group = ChartGroup(
 )
 
 magnitude_intro_text = """
-#### Magnitude allows you to emphasize size comparisons of **counted** items in your data set. You can show relative \
+#### Magnitude enables you to emphasize size comparisons of **counted** items in your data set. You can show relative \
 comparisons (whether something is larger or smaller) or absolute differences (where the nuances are most interesting). \
 Typically, you will use magnitude for actual numbers versus calculated rates or percentages.
 """
@@ -172,7 +172,7 @@ flow_chart_group = ChartGroup(
 )
 
 spatial_intro_text = """
-#### Spatial charts allow you to demonstrate precise locations or geographical patterns in your data.
+#### Spatial charts enable you to demonstrate precise locations or geographical patterns in your data.
 """
 spatial_chart_group = ChartGroup(
     name="Spatial",
