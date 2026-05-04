@@ -64,7 +64,7 @@ class TestParameterInstantiation:
             "__default__": "selector_id.value",
         }
 
-    def test_check_dot_notation_failed(self):
+    def test_check_figure_as_target_argument_failed(self):
         with pytest.raises(
             ValueError,
             match=r"Invalid target scatter_chart.*Arguments of the CapturedCallable function can be targeted directly",

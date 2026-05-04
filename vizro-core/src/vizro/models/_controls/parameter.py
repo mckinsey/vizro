@@ -21,25 +21,24 @@ from vizro.models.types import ModelID, SelectorType, _IdProperty
 
 
 def check_dot_notation(target):
-    if "." in target and target.split(".")[1] == "figure":
-        raise ValueError(
-            f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>. "
-            "Arguments of the CapturedCallable function can be targeted directly, and not via <.figure.>."
-        )
-    return target
-
-
-def check_data_frame_as_target_argument(target):
     if "." not in target:
         return target
 
     targeted_argument = target.split(".", 1)[1]
+
+    if targeted_argument == "figure":
+        raise ValueError(
+            f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>. "
+            "Arguments of the CapturedCallable function can be targeted directly, and not via <.figure.>."
+        )
+
     if targeted_argument.startswith("data_frame") and targeted_argument.count(".") != 1:
         raise ValueError(
             f"Invalid target {target}. 'data_frame' target must be supplied in the form "
             "<target_component>.data_frame.<dynamic_data_argument>"
         )
-    # TODO: Add validation: Make sure the target data_frame is _DynamicData. This check has to be done in pre_build.
+    # TODO: Add validation: Make sure the target data_frame is _DynamicData.
+
     return target
 
 
@@ -74,7 +73,6 @@ class Parameter(VizroBaseModel):
             Annotated[
                 str,
                 AfterValidator(check_dot_notation),
-                AfterValidator(check_data_frame_as_target_argument),
                 Field(description="Targets in the form of `<target_component>.<target_argument>`."),
             ]
         ],
@@ -137,6 +135,8 @@ class Parameter(VizroBaseModel):
         targeted_controls = []
         for target in self.targets.copy():
             if target in model_manager and isinstance(model_manager[target], (Filter, Parameter)):
+                # TODO PP NOW: Add validation to ensure that the control target is on the same page
+                # TODO PP NOW: Add validation to forbid self-targeting.
                 self.targets.remove(target)
                 targeted_controls.append(target)
             elif "." not in target:

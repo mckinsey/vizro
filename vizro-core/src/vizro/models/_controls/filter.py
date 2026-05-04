@@ -259,6 +259,8 @@ class Filter(VizroBaseModel):
         targeted_controls = []
         for target in self.targets.copy():
             if target in model_manager and isinstance(model_manager[target], (Filter, Parameter)):
+                # TODO PP NOW: Add validation to ensure that the control target is on the same page
+                # TODO PP NOW: Add validation to forbid self-targeting.
                 self.targets.remove(target)
                 targeted_controls.append(target)
 

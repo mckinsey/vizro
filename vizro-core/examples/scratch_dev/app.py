@@ -152,8 +152,6 @@ page_3_1 = vm.Page(
 )
 
 
-# TODO AM-PP OQ: One set_control triggers another set_control - infinite loop? I think that nothing unexpected can
-#  happen because the value is the same, but we need to verify that.
 page_3_2 = vm.Page(
     id="page_3_2",
     title="Sync: By targeting a filter",
@@ -259,7 +257,7 @@ page_3_4 = vm.Page(
 )
 
 
-# TODO-REVIEWER: 14https
+# TODO-REVIEWER: 16+https
 page_3_5 = vm.Page(
     id="page_3_5",
     title="Sync: Filter targets all filters x4",
@@ -373,6 +371,7 @@ dashboard = vm.Dashboard(
         page_3_1,
         page_3_2,
         page_3_3,
+        page_3_3_2,
         page_3_4,
         page_3_5,
         page_3_6,
@@ -386,6 +385,7 @@ dashboard = vm.Dashboard(
                 "page_3_1",
                 "page_3_2",
                 "page_3_3",
+                "page_3_3_2",
                 "page_3_4",
                 "page_3_5",
                 "page_3_6",
