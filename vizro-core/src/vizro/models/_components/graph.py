@@ -40,7 +40,7 @@ class Graph(VizroBaseModel):
     """Wrapper for `dcc.Graph` to visualize charts.
 
     Abstract: Usage documentation
-        [How to use graphs](../user-guides/graph.md)
+        [How to use graphs](user-guides/graph.md)
 
     """
 

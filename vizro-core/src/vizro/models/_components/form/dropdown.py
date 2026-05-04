@@ -38,7 +38,7 @@ class Dropdown(VizroBaseModel):
     [`Parameter`][vizro.models.Parameter].
 
     Abstract: Usage documentation
-        [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)
+        [How to use categorical selectors](user-guides/selectors.md#categorical-selectors)
 
     """
 

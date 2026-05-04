@@ -26,7 +26,7 @@ class Checklist(VizroBaseModel):
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
     Abstract: Usage documentation
-        [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)
+        [How to use categorical selectors](user-guides/selectors.md#categorical-selectors)
 
     """
 

@@ -35,7 +35,7 @@ class Table(VizroBaseModel):
     """Wrapper for `dash_table.DataTable` to visualize tables in dashboard.
 
     Abstract: Usage documentation
-        [How to use tables](../user-guides/table.md)
+        [How to use tables](user-guides/table.md)
 
     """
 
