@@ -617,10 +617,17 @@
     debounceTimer = setTimeout(performSearch, SEARCH_DEBOUNCE_MS);
   }
 
-  /* Boot: load aliases, build index, then wire input. */
+  /* Boot: build a base index immediately so search works before aliases load. */
+  items = buildIndex();
+  fuse = buildFuse(items);
+
+  /* Rebuild index with aliases once they arrive. */
   fetch(KEYWORDS_URL, { credentials: "same-origin" })
     .then((res) => (res.ok ? res.json() : {}))
-    .catch(() => ({}))
+    .catch((err) => {
+      console.warn("Failed to load search aliases:", err);
+      return {};
+    })
     .then((data) => {
       aliasesById = data || {};
       items = buildIndex();
