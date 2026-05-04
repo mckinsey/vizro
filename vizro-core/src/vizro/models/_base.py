@@ -215,7 +215,7 @@ class VizroBaseModel(BaseModel):
     """All Vizro models inherit from this class.
 
     Abstract: Usage documentation
-        [Custom components](../user-guides/custom-components.md)
+        [Custom components](user-guides/custom-components.md)
 
     """
 
