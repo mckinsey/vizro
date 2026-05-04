@@ -1,5 +1,6 @@
 import e2e.vizro.constants as cnst
 from e2e.vizro.checkers import (
+    check_range_date_picker_value,
     check_range_slider_value,
     check_selected_categorical_component,
     check_selected_dropdown,
@@ -97,7 +98,12 @@ def test_reset_controls_header(dash_br):
         dash_br, elem_id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, expected_min_value="4.3", expected_max_value="7.9"
     )
     # date_picker
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.RANGE_DATEPICKER_INSIDE_CONTAINERS}"]', "2024/01/01 – 2024/05/29")  # noqa: RUF001
+    check_range_date_picker_value(
+        dash_br,
+        elem_id=cnst.RANGE_DATEPICKER_INSIDE_CONTAINERS,
+        expected_min_date_value="2024/01/01",
+        expected_max_date_value="2024/05/29",
+    )
     # switch
     status = dash_br.find_element(categorical_components_value_path(elem_id=cnst.SWITCH_INSIDE_CONTAINERS, value=1))
     assert_that(status.is_selected(), equal_to(True))

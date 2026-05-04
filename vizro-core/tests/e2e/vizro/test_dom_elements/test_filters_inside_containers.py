@@ -3,6 +3,7 @@ import pytest
 from e2e.vizro.checkers import (
     check_graph_is_empty,
     check_graph_x_axis_value,
+    check_range_date_picker_value,
     check_range_slider_value,
     check_slider_value,
 )
@@ -74,5 +75,10 @@ def test_range_datepicker(dash_br):
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="10 January 2024"]', 1)
     dash_br.multiple_click('button[aria-label="26 January 2024"]', 1)
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.RANGE_DATEPICKER_INSIDE_CONTAINERS}"]', "2024/01/10 – 2024/01/26")  # noqa: RUF001
+    check_range_date_picker_value(
+        dash_br,
+        elem_id=cnst.RANGE_DATEPICKER_INSIDE_CONTAINERS,
+        expected_min_date_value="2024/01/10",
+        expected_max_date_value="2024/01/26",
+    )
     check_graph_x_axis_value(dash_br, graph_id=cnst.SCATTER_INSIDE_CONTAINER, tick_index="7", value="4.9")

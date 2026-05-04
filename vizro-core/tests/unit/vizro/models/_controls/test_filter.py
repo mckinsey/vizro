@@ -12,7 +12,7 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
-from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
+from vizro.models._controls.filter import Filter, _dataframe_path_to_cascader_options, _filter_between, _filter_isin
 
 
 @pytest.fixture
@@ -1049,6 +1049,152 @@ class TestFilterPreBuildMethod:
             "__default__": "selector_id.value",
             **{prop: f"selector_id.{prop}" for prop in filter_selector_properties},
         }
+
+
+class TestFilterHierarchicalColumn:
+    """Hierarchical filter: column is list[str] + vm.Cascader (static only)."""
+
+    def test_single_filter_column(self):
+        f = vm.Filter(column=["continent", "country", "city"])
+        assert f._single_filter_column == "city"
+        g = vm.Filter(column="species")
+        assert g._single_filter_column == "species"
+
+    def test_column_list_requires_two_names(self):
+        with pytest.raises(ValueError, match="at least two"):
+            vm.Filter(column=["only_one"])
+
+    def test_column_list_requires_cascader_selector(self, managers_hierarchical_page):
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["hier_graph"],
+            selector=vm.Dropdown(options=["x"]),
+        )
+        model_manager["test_page"].controls = [f]
+        with pytest.raises(ValueError, match="not compatible with hierarchical"):
+            f.pre_build()
+
+    def test_str_column_rejects_cascader(self):
+        with pytest.raises(TypeError, match="list of column names"):
+            vm.Filter(column="continent", selector=vm.Cascader(options={"K": ["a"]}))
+
+    def test_dataframe_path_to_cascader_options(self):
+        df = pd.DataFrame({"a": ["X", "X", "Y"], "b": ["p", "q", "p"], "c": [1, 2, 3]})
+        assert _dataframe_path_to_cascader_options(df, ["a", "b", "c"]) == {
+            "X": {"p": [1], "q": [2]},
+            "Y": {"p": [3]},
+        }
+
+    def test_dataframe_path_to_cascader_options_empty_raises(self):
+        df = pd.DataFrame({"a": [], "b": []})
+        with pytest.raises(ValueError, match="empty path data"):
+            _dataframe_path_to_cascader_options(df, ["a", "b"])
+
+    def test_dataframe_path_to_cascader_options_two_columns(self):
+        df = pd.DataFrame({"region": ["EU", "EU", "AS"], "city": ["DE", "FR", "JP"]})
+        assert _dataframe_path_to_cascader_options(df, ["region", "city"]) == {
+            "AS": ["JP"],
+            "EU": ["DE", "FR"],
+        }
+
+    def test_dataframe_path_to_cascader_options_four_columns(self):
+        df = pd.DataFrame(
+            {
+                "a": ["X", "X", "X"],
+                "b": ["Y", "Y", "Y"],
+                "c": ["Z", "Z", "W"],
+                "d": [10, 20, 5],
+            }
+        )
+        assert _dataframe_path_to_cascader_options(df, ["a", "b", "c", "d"]) == {
+            "X": {"Y": {"W": [5], "Z": [10, 20]}},
+        }
+
+    def test_dataframe_path_to_cascader_options_sorted_leaves(self):
+        df = pd.DataFrame({"a": ["X", "X", "X"], "b": ["p", "p", "p"], "c": [3, 1, 2]})
+        assert _dataframe_path_to_cascader_options(df, ["a", "b", "c"]) == {"X": {"p": [1, 2, 3]}}
+
+    def test_dataframe_path_to_cascader_options_drop_duplicates(self):
+        base = pd.DataFrame({"a": ["X"], "b": ["p"], "c": [1]})
+        dup = pd.concat([base, base], ignore_index=True)
+        expected = _dataframe_path_to_cascader_options(base, ["a", "b", "c"])
+        assert _dataframe_path_to_cascader_options(dup, ["a", "b", "c"]) == expected
+
+    def test_dataframe_path_to_cascader_options_branch_keys_stringified(self):
+        df = pd.DataFrame({"code": [1, 2], "leaf": ["a", "b"]})
+        assert _dataframe_path_to_cascader_options(df, ["code", "leaf"]) == {"1": ["a"], "2": ["b"]}
+
+    @pytest.fixture
+    def managers_hierarchical_page(self):
+        df = pd.DataFrame(
+            {
+                "continent": ["Eu", "Eu", "As"],
+                "country": ["DE", "FR", "JP"],
+                "gdp": [1.0, 2.0, 3.0],
+            }
+        )
+        vm.Page(
+            id="test_page",
+            title="Page Title",
+            components=[vm.Graph(id="hier_graph", figure=px.scatter(df, x="country", y="gdp"))],
+        )
+        Vizro._pre_build()
+
+    def test_hierarchical_pre_build_populates_options_and_action(self, managers_hierarchical_page):
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["hier_graph"],
+            selector=vm.Cascader(multi=True),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert isinstance(f.selector, vm.Cascader)
+        assert f.selector.options == {"As": ["JP"], "Eu": ["DE", "FR"]}
+        assert not f._dynamic
+        assert not getattr(f.selector, "_dynamic", False)
+        [default_action] = f.selector.actions
+        assert isinstance(default_action, _filter)
+        assert default_action.column == "country"
+        assert default_action.filter_function == _filter_isin
+
+    def test_hierarchical_dynamic_data_without_explicit_options_raises(
+        self, managers_one_page_two_graphs_with_dynamic_data, gapminder_dynamic_first_n_last_n_function
+    ):
+        data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["scatter_chart"],
+            selector=vm.Cascader(multi=False),
+        )
+        model_manager["test_page"].controls = [f]
+        with pytest.raises(ValueError, match="Hierarchical filters cannot derive Cascader options from dynamic data"):
+            f.pre_build()
+
+    def test_hierarchical_dynamic_data_with_explicit_options_pre_builds(
+        self, managers_one_page_two_graphs_with_dynamic_data, gapminder_dynamic_first_n_last_n_function
+    ):
+        data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["scatter_chart"],
+            selector=vm.Cascader(multi=False, options={"Oceania": ["NZ"], "Europe": ["DE"]}),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert not f._dynamic
+        assert not getattr(f.selector, "_dynamic", False)
+        assert isinstance(f.selector, vm.Cascader)
+        assert f.selector.options == {"Oceania": ["NZ"], "Europe": ["DE"]}
+
+    def test_hierarchical_missing_path_column_raises(self, managers_column_only_exists_in_some):
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["column_categorical_exists_1"],
+            selector=vm.Cascader(multi=False),
+        )
+        model_manager["test_page"].controls = [f]
+        with pytest.raises(ValueError, match="continent"):
+            f.pre_build()
 
 
 class TestFilterBuild:

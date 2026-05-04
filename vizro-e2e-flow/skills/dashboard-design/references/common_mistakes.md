@@ -112,22 +112,7 @@ Tertiary metric: Smaller chart or table row
 - Set appropriate `row_min_height`
 - Leave visual breathing room
 
-**Spacing Guidelines**:
-
-```python
-# Good: Charts span 3 rows (420px each)
-vm.Grid(
-    grid=[
-        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-    ],
-    row_min_height="140px",
-)
-
-# Bad: Charts only 1 row (140px - too small)
-vm.Grid(grid=[[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]], row_min_height="140px")
-```
+**Spacing rule**: Give every chart at least 3 rows in the grid (420px at `row_min_height="140px"`). A chart in a single row (~140px) will look squeezed and unreadable. See the **designing-vizro-layouts** skill for the full component sizing table.
 
 ### Inconsistent Time Ranges
 
@@ -178,12 +163,10 @@ Mistakes in chart types, colors, and visual design.
 
 **Solution**:
 
-- Limit to 3 primary colors + neutrals
-- Use color consistently (same entity = same color everywhere)
-- Let Vizro handle colors automatically for most charts
-- Reserve bright colors for highlights only
+- Let Vizro handle colors automatically unless the user asked otherwise (see **selecting-vizro-charts** and dashboard-design Step 3).
+- When the user **has** requested custom colors: limit to a small palette, use color consistently (same entity = same color everywhere), and reserve bright colors for highlights only.
 
-**Color Budget**:
+**Color budget** (only after the user asked for custom colors):
 
 ```
 Primary data: 1 color
@@ -290,6 +273,6 @@ vm.Graph(
 
 ### Custom charts as KPI cards
 
-**Problem**: Model uses custom charts as KPI cards. This often happens when the model needs to do some additional data manipulation that cannot be done with the built-in Vizro functions.
+**Problem**: Model rebuilds KPI cards as custom charts instead of using built-in functions.
 
-**Solution**: Custom charts are not KPI cards. Instead, the model should use the built-in Vizro functions (`kpi_card` or `kpi_card_reference`) and do data manipulation in the data loading/processing step. The only acceptable exception is when the KPI card is strictly not possible, for example when dynamically showing text as a KPI card.
+**Solution**: Use built-in `kpi_card` / `kpi_card_reference` only; do data manipulation in `app.py`. See **selecting-vizro-charts** skill.

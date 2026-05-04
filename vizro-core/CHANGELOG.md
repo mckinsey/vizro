@@ -11,6 +11,18 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.54'></a>
+
+# 0.1.54 — 2026-04-07
+
+## Added
+
+- Add `ControlGroup` model for grouping page level controls. See the [user guide on `ControlGroup`](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls/#group-controls). ([#1660](https://github.com/mckinsey/vizro/pull/1660))
+
+## Fixed
+
+- Fix `vm.Container` titles hidden under tabs. ([#1671](https://github.com/mckinsey/vizro/pull/1671))
+
 <a id='changelog-0.1.53'></a>
 
 # 0.1.53 — 2026-03-16

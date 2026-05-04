@@ -5,38 +5,6 @@ import React, { Component, Suspense } from "react";
 import markdown from "../utils/LazyLoader/markdown";
 import lazyLoadMathJax from "../utils/LazyLoader/mathjax";
 
-/**
- * A component that renders Markdown text as specified by the
- * GitHub Markdown spec. These component uses
- * [react-markdown](https://rexxars.github.io/react-markdown/) under the hood.
- *
- * Follows the same lazy loading pattern as dash-core-components (DCC).
- * Uses `@plotly/dash-component-plugins` `asyncDecorator` and `@plotly/webpack-dash-dynamic-import`
- * to create separate webpack chunks (async-markdown.js, async-mathjax.js) loaded on demand.
- * See DCC's Markdown.react.js for the reference implementation.
- */
-export default class DashMarkdown extends Component<DashMarkdownProps> {
-  static _loadMathjax: boolean;
-  static propTypes: Record<string, unknown>;
-  static defaultProps: Record<string, unknown>;
-
-  constructor(props: DashMarkdownProps) {
-    super(props);
-
-    if (props.mathjax) {
-      DashMarkdown._loadMathjax = true;
-    }
-  }
-
-  render() {
-    return (
-      <Suspense fallback={null}>
-        <RealDashMarkdown {...this.props} />
-      </Suspense>
-    );
-  }
-}
-
 interface DashMarkdownProps {
   /**
    * The ID of this component, used to identify dash components
@@ -44,10 +12,6 @@ interface DashMarkdownProps {
    * components in an app.
    */
   id?: string;
-  /**
-   * Dash-assigned callback that gets fired when the value changes.
-   */
-  setProps?: (props: Record<string, unknown>) => void;
   /**
    * Class name of the container element
    */
@@ -93,6 +57,43 @@ interface DashMarkdownProps {
   style?: object;
 }
 
+/** Injected by Dash at runtime; not part of the generated Python API (same as dcc). */
+type DashMarkdownRuntimeProps = DashMarkdownProps & {
+  setProps?: (props: Record<string, unknown>) => void;
+};
+
+/**
+ * A component that renders Markdown text as specified by the
+ * GitHub Markdown spec. These component uses
+ * [react-markdown](https://rexxars.github.io/react-markdown/) under the hood.
+ *
+ * Follows the same lazy loading pattern as dash-core-components (DCC).
+ * Uses `@plotly/dash-component-plugins` `asyncDecorator` and `@plotly/webpack-dash-dynamic-import`
+ * to create separate webpack chunks (async-markdown.js, async-mathjax.js) loaded on demand.
+ * See DCC's Markdown.react.js for the reference implementation.
+ */
+export default class DashMarkdown extends Component<DashMarkdownProps> {
+  static _loadMathjax: boolean;
+  static propTypes: Record<string, unknown>;
+  static defaultProps: Record<string, unknown>;
+
+  constructor(props: DashMarkdownProps) {
+    super(props);
+
+    if (props.mathjax) {
+      DashMarkdown._loadMathjax = true;
+    }
+  }
+
+  render() {
+    return (
+      <Suspense fallback={null}>
+        <RealDashMarkdown {...(this.props as DashMarkdownRuntimeProps)} />
+      </Suspense>
+    );
+  }
+}
+
 DashMarkdown.propTypes = {
   /**
    * The ID of this component, used to identify dash components
@@ -100,10 +101,6 @@ DashMarkdown.propTypes = {
    * components in an app.
    */
   id: PropTypes.string,
-  /**
-   * Dash-assigned callback that gets fired when the value changes.
-   */
-  setProps: PropTypes.func,
   /**
    * Class name of the container element
    */

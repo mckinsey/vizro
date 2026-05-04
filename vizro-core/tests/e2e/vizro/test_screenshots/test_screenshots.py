@@ -104,11 +104,13 @@ def test_tabs_parameters_page(dash_br):
     )
 
 
+@pytest.mark.chrome_screenshots
 @image_assertion
 def test_nested_tabs_filters_page(dash_br):
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
 
 
+@pytest.mark.chrome_screenshots
 @image_assertion
 def test_filters_inside_containers_page(dash_br):
     page_select(

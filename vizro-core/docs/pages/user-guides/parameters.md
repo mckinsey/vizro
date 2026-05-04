@@ -196,7 +196,7 @@ Note that in the above example, one parameter affects multiple targets.
 
 ## Dynamic data parameters
 
-If you use [dynamic data](data.md/#dynamic-data) that can be updated while the dashboard is running then you can pass parameters to the dynamic data function to alter the data loaded into your dashboard. For detailed instructions, refer to the section on [parametrized data loading](data.md/#parametrize-data-loading).
+If you use [dynamic data](./data/#dynamic-data) that can be updated while the dashboard is running then you can pass parameters to the dynamic data function to alter the data loaded into your dashboard. For detailed instructions, refer to the section on [parametrized data loading](./data/#parametrize-data-loading).
 
 ## Further customization
 

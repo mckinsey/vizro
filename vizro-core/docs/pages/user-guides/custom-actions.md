@@ -52,7 +52,7 @@ You can also execute [multiple actions with a single trigger](#multiple-actions)
 
 ## Trigger an action with a button
 
-Here is an example action that gives the current time when a [button](button.md) is clicked.
+Here is an example action that gives the current time when a [button](./button.md) is clicked.
 
 ```python
 from datetime import datetime
@@ -149,7 +149,7 @@ Before clicking the button, the text shows "Click the button". When you click th
 
 !!! tip
 
-    If you have many buttons that trigger actions then you might like to [give them icons](button.md/#add-an-icon). You can even have icon-only buttons with no text.
+    If you have many buttons that trigger actions then you might like to [give them icons](./button/#add-an-icon). You can even have icon-only buttons with no text.
 
 ## Trigger an action with a graph
 

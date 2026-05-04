@@ -280,6 +280,32 @@ class TestParameter:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
+        "ctx_parameter_y, target_scatter_parameter_y",
+        [("pop", "pop"), ("gdpPercap", "gdpPercap"), ("NONE", None)],
+        indirect=True,
+    )
+    def test_one_parameter_one_target_cascader(self, ctx_parameter_y, target_scatter_parameter_y):
+        y_parameter = vm.Parameter(
+            id="test_parameter",
+            targets=["scatter_chart.y"],
+            selector=vm.Cascader(
+                id="y_parameter",
+                options={"Metrics": ["lifeExp", "pop", "gdpPercap"]},
+                value="lifeExp",
+                multi=False,
+            ),
+        )
+        model_manager["test_page"].controls = [y_parameter]
+
+        y_parameter.pre_build()
+
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function(_controls=None)
+        expected = {"scatter_chart": target_scatter_parameter_y}
+
+        assert result == expected
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
+    @pytest.mark.parametrize(
         "ctx_parameter_hover_data, target_scatter_parameter_hover_data",
         [
             ([], []),

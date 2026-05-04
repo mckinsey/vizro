@@ -78,7 +78,7 @@ Let's create a chart to illustrate the GDP per capita trends for each continent 
 
 !!! tip "API Key Management"
 
-    For production use, it's preferable to [store your API key in an environment variable](../user-guides/install.md#set-up-access-to-openai-as-an-example-for-any-vendor). This keeps your API key secure and out of your code.
+    For production use, it's preferable to [store your API key in an environment variable](../user-guides/install/#set-up-access-to-openai-as-an-example-for-any-vendor). This keeps your API key secure and out of your code.
 
 ??? warning "Help! The LLM request was unauthorized"
 
@@ -86,7 +86,7 @@ Let's create a chart to illustrate the GDP per capita trends for each continent 
 
     `pydantic_ai.exceptions.ModelHTTPError: status_code: 401, model_name: gpt-5-mini-2025-08-07, body: {'message': 'Incorrect API key provided...}`
 
-    Make sure you have [set up access to a large language model](../user-guides/install.md/#set-up-access-to-a-large-language-model). If you are confident that you have specified your API key correctly and have sufficient credits associated with it, check your environment. Some developers export the environment explicitly to ensure the API key is available at runtime. Call the following in your terminal:
+    Make sure you have [set up access to a large language model](../user-guides/install/#set-up-access-to-a-large-language-model). If you are confident that you have specified your API key correctly and have sufficient credits associated with it, check your environment. Some developers export the environment explicitly to ensure the API key is available at runtime. Call the following in your terminal:
 
     `export OPENAI_API_KEY="sk-YOURKEY"`.
 

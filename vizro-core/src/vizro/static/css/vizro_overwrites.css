@@ -202,17 +202,21 @@ All the HEX values starting with --text-code are taken from the Github code high
   --hover-bg-subtle: var(--bs-gray-900);
   --Dash-Fill-Interactive-Weak: var(--bs-dark-bg-subtle);
   --input-field-bg: var(--bs-primary-bg-subtle);
+  --bs-card-bg-inverted: #f5f6f6;
+  --fill-content-step-markers-track: #333640;
 }
 
 [data-bs-theme="light"] {
   --left-side-bg: var(--bs-body-bg);
   --Dash-Fill-Interactive-Weak: var(--bs-light-bg-subtle);
+  --bs-card-bg-inverted: #272a35;
 
   /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white. */
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --hover-bg-subtle: var(--bs-gray-300);
   --input-field-bg: var(--bs-body-bg);
   --bs-primary-bg-subtle: #fafafb;
+  --fill-content-step-markers-track-inverted: #d3d6d9;
 }
 
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
@@ -286,7 +290,6 @@ div.form-check.form-switch {
 
 .card-nav:hover,
 .card-nav.hover {
-  background: var(--bs-secondary-bg);
   border: 1px solid var(--bs-border-color);
 }
 
@@ -334,6 +337,12 @@ legend {
   background: var(--bs-highlight-bg) !important;
 }
 
+/* Line height is fixed by QBDS, but can lead to misalignment in mobile due to zoom out in browser. */
+.btn {
+  line-height: inherit;
+}
+
+/* Mantine overrides */
 :root[data-mantine-color-scheme="dark"],
 :root[data-mantine-color-scheme="light"] {
   --mantine-color-body: var(--bs-body-color);

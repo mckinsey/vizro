@@ -19,7 +19,7 @@ from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import Filter, Parameter, Tooltip, VizroBaseModel
+from vizro.models import ControlGroup, Filter, Parameter, Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
     _all_hidden,
@@ -54,7 +54,7 @@ class Page(VizroBaseModel):
     """A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.
 
     Abstract: Usage documentation
-        [How to make dashboard pages](../user-guides/pages.md)
+        [How to make dashboard pages](user-guides/pages.md)
 
     """
 
@@ -75,7 +75,7 @@ class Page(VizroBaseModel):
             tags.""",
         ),
     ]
-    controls: list[ControlType] = []
+    controls: list[ControlType | ControlGroup] = []
     path: Annotated[str, Field(default="", description="Path to navigate to page.")]
     actions: ActionsType = []
 
@@ -123,7 +123,7 @@ class Page(VizroBaseModel):
         #  Probably it's better where it is now since it avoid navigating up the model hierarchy
         #  (action -> page -> figures) and instead just looks down (page -> figures).
         #  Should there be validation inside _on_page_load to check that targets exist and are
-        #  on the page and target-able components (i.e. are dynamic and hence have _action_outputs)?
+        #  on the page and target-able components (that is, are dynamic and hence have _action_outputs)?
         #  It's not needed urgently since we always calculate the targets ourselves so we know they are valid.
         #  Similar comments apply to filter and parameter. Note that export_data has this logic built into the action
         #  itself since the user specifies the target. In future we'll probably have a helper function like

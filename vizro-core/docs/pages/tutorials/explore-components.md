@@ -81,7 +81,7 @@ A [`Page`][vizro.models.Page] model is the foundation of any Vizro dashboard. It
 
 ### 3.1. Add a table
 
-To start, let's get an overview of the data by displaying it in a table using [`AgGrid`](../user-guides/table.md/#ag-grid). These steps create a page and add a table to it:
+To start, let's get an overview of the data by displaying it in a table using [`AgGrid`](../user-guides/table/#ag-grid). These steps create a page and add a table to it:
 
 1. Import the necessary packages and load the dataset.
 1. Create a [`Page`][vizro.models.Page] and set its `title` to `"Data"`.

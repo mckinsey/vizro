@@ -1,17 +1,21 @@
 ---
 name: dashboard-build
-description: A skill that should be invoked whenever a user wants to build a Dashboard or simple app. This skill is Phase 2 of an e2e process that covers the actual build and testing. For Phase 1 (requirements, layout design, visualization selection), use the dashboard-design skill.
+description: Use this skill to build, implement, and test Vizro dashboards (Phase 2). Activate when the user wants to create a working app, says "just build it", or has data ready for implementation. Requires spec files from the dashboard-design skill (Phase 1), or user confirmation to skip design.
 ---
 
-## CRITICAL Guidelines for Dashboard Building
+## Prerequisites
 
-- Ideally, do NOT skip Phase 1 (dashboard-design skill) as that ensures a much smoother build process. If the user just wants to build it, explain the value of a design phase first. Check if there is any existing `/spec` directory from Phase 1. If yes, use that to guide your build.
+Requires Phase 1 spec files from the **dashboard-design** skill: `spec/1_information_architecture.yaml`, `spec/2_interaction_ux.yaml`, and `spec/3_visual_design.yaml`. If these do not exist, ask the user whether to run Phase 1 first or proceed without specs.
+
+## Guidelines
+
 - Use your native tools to understand the data well, especially if you build custom charts or when you use specific selectors.
 - If the user asks for an example, simply copy the [example app](./references/example_app.py) and run it. Do not include your own data or change the example.
 - When executing any script mentioned below for the first time, it may take a while to install dependencies. Plan accordingly before taking any rash actions.
 - When iterating on the dashboard after completing all steps, do not forget key points from below, especially regarding spec compliance and updating and terminal handling: always keep all specs up to date, and always check if terminal output is clean after each iteration.
 - Execute all scripts from this skill, and the `app.py` you will create, with `uv run <script_name>.py` or `uv run app.py` - this will ensure you use the correct dependencies and versions.
 - **ABSOLUTELY NEVER** type ANY commands (including `sleep`, `echo`, or anything else) in the terminal where the dashboard app is running, even if you started it with `isBackground=true`. This WILL kill the dashboard process. The dashboard startup takes time - be patient and let it run undisturbed.
+- Step 2 (Testing) is critical — do not skip it. Use Playwright MCP if available, otherwise use any browser automation tool in your environment.
 
 ## Spec Files: Documenting Decisions
 
@@ -20,7 +24,7 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 ## Step 1: Build dashboard
 
 1. You MUST ALWAYS copy the [example app](./references/example_app.py) over, and modify it - this ensures less errors!
-1. Investigate about the Vizro model by executing the [schema fetching script](./scripts/get_model_json_schema.py). ALWAYS DO this for all models that you need - do NOT assume you know it. Execute the script like so: `uv run ./scripts/get_model_json_schema.py <model_name> <model_name2> ...` where `<model_name>` is the name of the model you want to get the schema for. You can get an overview of what is available by calling the [overview script](./scripts/get_overview_vizro_models.py) like so: `uv run ./scripts/get_overview_vizro_models.py`. This will print out all available models and their brief descriptions.
+1. Investigate about the Vizro model by executing the [schema fetching script](./scripts/get_model_json_schema.py). ALWAYS DO this for all models that you need - do NOT assume you know it. Execute the script like so: `uv run ./scripts/get_model_json_schema.py <model_name> <model_name2> ...` where `<model_name>` is the name of the model you want to get the schema for (prints the full JSON schema for each model to stdout). You can get an overview of what is available by calling the [overview script](./scripts/get_overview_vizro_models.py) like so: `uv run ./scripts/get_overview_vizro_models.py` (prints all available model names with one-line descriptions to stdout).
 1. Build the dashboard config by changing the copied [example app](./references/example_app.py). Important: Very often normal plotly express charts will not suffice as they are too simple. In that case, refer to the [custom charts guide](./references/custom_charts_guide.md) to create more complex charts. These MUST be added to the correct section in the python app. Call the custom chart function from the `Graph` model in your dashboard app.
 1. Run your dashboard app with `uv run <your_dashboard_app>.py` **CRITICAL**: After running this command, DO NOT run ANY other commands in that terminal. The dashboard takes time to start up (sometimes 10-30 seconds)
 1. You MUST read the terminal to check for any errors, but do not put commands like `sleep` in it. Fix any warnings and even more important errors you encounter. ONLY once you see the dashboard running, inform the user. NEVER run any commands in that terminal after starting the dashboard.
@@ -28,9 +32,9 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 
 ### Optimizations and common errors
 
-- **Colors**: Always respect color decisions from the design phase (`spec/3_visual_design.yaml`). Use Vizro palettes (`from vizro.themes import palettes`) instead of generic plotly colorscales. This is especially easy to get wrong in custom charts.
+- **Colors**: For Plotly charts and KPI cards, do **not** add colors in code — Vizro template defaults apply automatically. Only add chart colors if `spec/3_visual_design.yaml` defines `color_decisions`. For AG Grid cell styling (conditional formatting, heatmaps), use `from vizro.themes import palettes, colors` — never invent hex values. See **selecting-vizro-charts** skill.
 - **Data loading**: For dashboards needing data refresh (databases, APIs) or performance optimization, see the [data management guide](./references/data_management.md) for static vs dynamic data, caching, and best practices.
-- **KPI cards**: Use `kpi_card()` for simple metrics, `kpi_card_reference()` for comparisons. Use `reverse_color=True` when lower is better (costs, errors). NEVER put `kpi_card` or `kpi_card_reference` as a custom chart or re-build KPI cards as custom charts, use the built-in `kpi_card` and `kpi_card_reference` (imported from `vizro.figures`) in `Figure` model instead. Only accept exceptions for when the KPI card is strictly not possible, for example when dynamically showing text as a KPI card.
+- **KPI cards**: Use built-in `kpi_card` / `kpi_card_reference` in `Figure` model only. Never rebuild as custom charts (exception: dynamic text). See **selecting-vizro-charts** skill.
 
 ### REQUIRED OUTPUT: spec/4_implementation.yaml
 
@@ -69,23 +73,33 @@ Before proceeding to Step 2, verify against spec files:
 - [ ] You have read the terminal output of the dashboard app for errors and warnings, you have not put any commands in the terminal after starting the app
 - [ ] Any deviations are documented in `spec/4_implementation.yaml`
 
-## Step 2: Testing (optional)
+## Step 2: Testing
 
-This requires the Playwright MCP server to be running. If not available, inform the user and skip this step. Look for `mcp__*playwright__*` tools.
+This step is critical for producing bug-free dashboards. Do NOT skip it.
 
-When conducting the below tests, feel free to go back to Step 1 to fix any issues you find, then come back here.
+When conducting the below tests, go back to Step 1 to fix any issues you find, then come back here.
 
-### Basic Testing Flow
+### Automated Code Validation
 
-1. Navigate to dashboard URL
-1. Click through all pages
-1. Check console for errors
+Run these validation scripts against your app.py to catch common issues:
 
-```
-Use: playwright:browser_navigate(url="http://localhost:8050")
-Use: playwright:browser_click(element="Page Name", ref="...")
-Use: playwright:browser_console_messages()
-```
+1. **Color validation**: `uv run ./scripts/validate_colors.py .` — Checks for hardcoded colors (color_discrete_map, hex codes, plot_bgcolor) that bypass Vizro theming. Fix any FAIL. If the user explicitly asked for custom colors, add `--custom-colors-requested` to skip app.py color checks.
+1. **Aggregation validation**: `uv run ./scripts/validate_aggregation.py .` — Checks that bar/line charts use pre-aggregated data via `@capture("graph")`, not raw detail rows passed to inline `px.bar`/`px.line`. Fix any FAIL.
+
+### Browser Testing
+
+Navigate the running dashboard to catch two types of errors that code review alone cannot find: (1) console errors on launch, and (2) callback errors when navigating between pages.
+
+1. Determine which browser automation tool is available:
+
+    **Playwright MCP tools available?** → Use them directly to navigate, click pages, and check console **No Playwright MCP?** → Install the Python package: `uv pip install playwright && uv run playwright install chromium`, then write a test script
+
+1. Using your chosen tool, perform these checks:
+
+    - Navigate to dashboard URL (e.g., `http://localhost:8050`)
+    - Click through all pages
+    - Check browser console for errors
+    - Fix any errors found, then retest
 
 ### Advanced Testing flow
 
@@ -117,22 +131,23 @@ testing:
     no_errors: true/false
     errors_found: []
 
-screenshot_tests:
+  screenshot_tests:
     performed: true/false
     pages_tested: []
     discrepancies:
-        - page: [Page name]
-            issue: [Description of visual issue]
-            fixed: true/false
-            notes: [Fix details or reason not fixed]
+      - page: [Page name]
+        issue: [Description of visual issue]
+        fixed: true/false
+        notes: [Fix details or reason not fixed]
 
-requirements_met: true/false
-dashboard_ready: true/false
+  requirements_met: true/false
+  dashboard_ready: true/false
 ```
 
 ### Done When
 
-- Dashboard launches without errors, no console errors
+- Validation scripts (`validate_colors.py`, `validate_aggregation.py`) both PASS
+- Dashboard launches without errors, no console errors, no callback errors on page navigation
 - User confirms requirements are met
 - All spec files from this Phase 2 saved in `spec/` directory
 
@@ -140,8 +155,12 @@ dashboard_ready: true/false
 
 ## Reference Files
 
-| File                                                          | When to Read                                                                      |
-| ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| [data_management.md](./references/data_management.md)         | Optimizations: Data loading patterns, static vs dynamic, caching, databases, APIs |
-| [custom_charts_guide.md](./references/custom_charts_guide.md) | Step 1: Creating complex custom charts when plotly express isn't enough           |
-| [example_app.py](./references/example_app.py)                 | Step 1: Starting template for dashboard implementation                            |
+| Reference                                                     | When to Load                                            |
+| ------------------------------------------------------------- | ------------------------------------------------------- |
+| **selecting-vizro-charts** skill                              | Colors, KPI cards, custom charts, Plotly conventions    |
+| **writing-vizro-yaml** skill                                  | YAML syntax, component patterns, data_manager, pitfalls |
+| [data_management.md](./references/data_management.md)         | Static vs dynamic data, caching, databases, APIs        |
+| [custom_charts_guide.md](./references/custom_charts_guide.md) | Implementing custom `@capture("graph")` charts          |
+| [example_app.py](./references/example_app.py)                 | Starting template for dashboard implementation          |
+| [validate_colors.py](./scripts/validate_colors.py)            | Automated check for hardcoded colors in app.py          |
+| [validate_aggregation.py](./scripts/validate_aggregation.py)  | Automated check for pre-aggregation in bar/line charts  |

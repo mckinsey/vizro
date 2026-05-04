@@ -1,5 +1,10 @@
 import e2e.vizro.constants as cnst
-from e2e.vizro.checkers import check_graph_x_axis_value, check_table_rows_number
+from e2e.vizro.checkers import (
+    check_date_picker_value,
+    check_graph_x_axis_value,
+    check_range_date_picker_value,
+    check_table_rows_number,
+)
 from e2e.vizro.navigation import accordion_select, page_select
 from e2e.vizro.paths import table_cell_value_path
 
@@ -16,7 +21,7 @@ def test_single_date(dash_br):
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_SINGLE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="17 May 2016"]', 1)
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_SINGLE_ID}"]', "May 17, 2016")
+    check_date_picker_value(dash_br, elem_id=cnst.DATEPICKER_SINGLE_ID, expected_date_value="May 17, 2016")
 
     # check bar graph has bar with light blue color
     dash_br.wait_for_element(
@@ -50,7 +55,12 @@ def test_date_range(dash_br):
 
     check_graph_x_axis_value(dash_br, graph_id=cnst.BAR_POP_RANGE_ID, tick_index="5", value="12:00")
 
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_RANGE_ID}"]', "May 17, 2016 – May 18, 2016")  # noqa: RUF001
+    check_range_date_picker_value(
+        dash_br,
+        elem_id=cnst.DATEPICKER_RANGE_ID,
+        expected_min_date_value="May 17, 2016",
+        expected_max_date_value="May 18, 2016",
+    )
 
     # check that dates in the rows are within the chosen range
     # we're starting from 'row_number=2' because the first row is a header

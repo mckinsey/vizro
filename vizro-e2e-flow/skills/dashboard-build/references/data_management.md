@@ -4,15 +4,25 @@ Deep guidance for handling data in Vizro dashboards.
 
 ## Contents
 
+**Quick Start** (most dashboards need only this):
+
 - Data Source Types (static vs dynamic)
 - Choosing Your Approach (decision tree)
 - Static Data (simple loading patterns)
-- Dynamic Data (data_manager, caching, refresh)
-- Common Data Patterns (databases, APIs, multi-source)
-- Dynamic Filters (data-driven filter options)
+- Dynamic Data (basic registration, caching)
 - Best Practices
 - Comparison Summary
+
+**Advanced Patterns** (databases, APIs, parametrized loading):
+
+- Parametrized Data Loading
+- Common Data Patterns (databases, APIs, multi-source)
+- Dynamic Filters (data-driven filter options)
 - Documentation Links
+
+---
+
+# Quick Start
 
 ## Data Source Types
 
@@ -47,7 +57,7 @@ df = pd.read_csv("sales.csv")
 page = vm.Page(
     title="Sales Dashboard",
     components=[
-        vm.Graph(figure=px.bar(df, x="region", y="revenue")),
+        vm.Graph(figure=px.scatter(df, x="units", y="revenue")),
     ],
 )
 
@@ -69,7 +79,7 @@ import pandas as pd
 data_manager["sales"] = pd.read_csv("sales.csv")
 
 # Reference by name (string, not DataFrame)
-vm.Graph(figure=px.bar("sales", x="region", y="revenue"))
+vm.Graph(figure=px.scatter("sales", x="units", y="revenue"))
 ```
 
 ## Dynamic Data
@@ -93,7 +103,7 @@ data_manager["sales"] = load_sales  # Correct: function reference
 # data_manager["sales"] = load_sales()  # Wrong: this is static!
 
 # Reference by name
-vm.Graph(figure=px.bar("sales", x="region", y="revenue"))
+vm.Graph(figure=px.scatter("sales", x="units", y="revenue"))
 ```
 
 ### With Caching
@@ -165,7 +175,44 @@ data_manager["reference"] = load_reference
 data_manager["reference"].timeout = 0
 ```
 
-### Parametrized Data Loading
+## Best Practices
+
+### When to Use Static Data
+
+- Data doesn't need to refresh
+- Simple, small datasets
+
+### When to Use Dynamic Data
+
+- Data needs to refresh without restart
+- Large datasets benefiting from caching
+- Need parametrized loading
+
+### Performance Tips
+
+1. **Use appropriate dtypes** (`category` for strings)
+1. **Pre-aggregate** dynamic data in the loading function
+1. **Parametrize early** dynamic data in the loading function
+1. **Enable caching** for slow dynamic data loads
+1. **Use FileSystemCache or Redis** in production for dynamic data\`\`\`
+
+## Comparison Summary
+
+| Feature                                            | Static    | Dynamic      |
+| -------------------------------------------------- | --------- | ------------ |
+| Python type                                        | DataFrame | Function     |
+| Supply directly in `data_frame` argument of figure | Yes       | No           |
+| Reference by name after adding to data manager     | Yes       | Yes          |
+| Refresh while running                              | No        | Yes          |
+| Caching                                            | N/A       | Configurable |
+| Parametrized loading                               | No        | Yes          |
+| Production ready                                   | Yes       | Yes          |
+
+---
+
+# Advanced Patterns
+
+## Parametrized Dynamic Data Loading
 
 Add parameters to control what data is loaded:
 
@@ -199,6 +246,19 @@ page = vm.Page(
 ```
 
 **Target syntax**: `<component_id>.data_frame.<function_argument>`
+
+### Security
+
+Always validate user input in parametrized loading:
+
+```python
+from werkzeug.utils import secure_filename
+
+
+def load_file(filename):
+    safe_name = secure_filename(filename)
+    return pd.read_csv(f"data/{safe_name}.csv")
+```
 
 ## Common Data Patterns
 
@@ -290,7 +350,7 @@ data_manager["data"] = load_data
 page = vm.Page(
     title="Dynamic Filters",
     components=[
-        vm.Graph(id="chart", figure=px.bar("data", x="category", y="value")),
+        vm.Graph(id="chart", figure=px.scatter("data", x="category", y="value")),
     ],
     controls=[
         # Filter options update when data refreshes
@@ -312,53 +372,6 @@ vm.Filter(
     selector=vm.Dropdown(options=["Active", "Inactive", "Pending"]),
 )
 ```
-
-## Best Practices
-
-### When to Use Static Data
-
-- Data doesn't need to refresh
-- Simple, small datasets
-- Prototype/development phase
-
-### When to Use Dynamic Data
-
-- Data needs to refresh without restart
-- Large datasets benefiting from caching
-- Need parametrized loading
-- Production environments
-
-### Performance Tips
-
-1. **Enable caching** for slow data loads
-1. **Pre-aggregate** in the loading function
-1. **Use appropriate dtypes** (`category` for strings)
-1. **Filter early** in the loading function
-1. **Use FileSystemCache or Redis** in production
-
-### Security
-
-Always validate user input in parametrized loading:
-
-```python
-from werkzeug.utils import secure_filename
-
-
-def load_file(filename):
-    safe_name = secure_filename(filename)
-    return pd.read_csv(f"data/{safe_name}.csv")
-```
-
-## Comparison Summary
-
-| Feature                   | Static    | Dynamic      |
-| ------------------------- | --------- | ------------ |
-| Python type               | DataFrame | Function     |
-| Supply directly in figure | Yes       | No           |
-| Reference by name         | Yes       | Yes          |
-| Refresh while running     | No        | Yes          |
-| Caching                   | N/A       | Configurable |
-| Parametrized loading      | No        | Yes          |
 
 ## Documentation Links
 

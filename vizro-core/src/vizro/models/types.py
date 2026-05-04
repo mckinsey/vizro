@@ -140,8 +140,8 @@ def _validate_captured_callable(cls, value: Any, info: ValidationInfo):
     )
 
 
-# CapturedCallable now allows instantiation via string, which will instantiate an object with ._prevent_run = True.
-# This allows us to instantiate dashboard objects without needing to execute/import the function definition.
+# CapturedCallable now enables instantiation via string, which will instantiate an object with ._prevent_run = True.
+# This enables us to instantiate dashboard objects without needing to execute/import the function definition.
 # Useful in the context of untrusted code generation (e.g. by LLMs).
 class CapturedCallable:
     """Stores a captured function call to use in a dashboard.
@@ -327,7 +327,7 @@ class CapturedCallable:
 
         This uses the hydra syntax for _target_ but none of the other bits and we don't actually use hydra
         to implement it. In future, we might like to switch to using hydra's actual implementation
-        which would allow nested functions (e.g. for transformers?) and to specify the path to a _target_ that lives
+        which would enable nested functions (e.g. for transformers?) and to specify the path to a _target_ that lives
         outside of vizro.plotly_express. See https://hydra.cc/docs/advanced/instantiate_objects/overview/.
         """
         if not isinstance(captured_callable_config, dict):
@@ -446,7 +446,7 @@ def _pio_templates_default():
     This works even if users have tweaked the templates, so long as pio.templates has been updated correctly and you
     refer to template by name rather than trying to take from vizro.themes.
 
-    If pio.templates.default has already been set to vizro_dark or vizro_light then no change is made to allow a user
+    If pio.templates.default has already been set to vizro_dark or vizro_light then no change is made to enable a user
     to set these without it being overridden.
     """
     old_default = pio.templates.default
@@ -456,9 +456,9 @@ def _pio_templates_default():
         template_changed = True
         pio.templates.default = "vizro_dark"
 
-    # Revert the template. This is done in a try/finally so that if the code wrapped inside the context manager (i.e.
-    # plotting functions) raises an exception, pio.templates.default is still reverted. This is not very important
-    # but easy to achieve.
+    # Revert the template. This is done in a try/finally so that if the code wrapped inside the context manager
+    # (that is, plotting functions) raises an exception, pio.templates.default is still reverted. This is not very
+    # important but easy to achieve.
     try:
         # This will always be vizro_light or vizro_dark and corresponds to the default theme that has been set.
         yield pio.templates.default
@@ -471,10 +471,10 @@ class capture:
     """Captures a function call to create a custom [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
     Abstract: Usage documentation
-        [How to create custom actions](../user-guides/custom-actions.md),
-        [How to create custom charts](../user-guides/custom-charts.md),
-        [How to create custom tables](../user-guides/custom-tables.md),
-        [How to create figures](../user-guides/custom-figures.md).
+        [How to create custom actions](user-guides/custom-actions.md),
+        [How to create custom charts](user-guides/custom-charts.md),
+        [How to create custom tables](user-guides/custom-tables.md),
+        [How to create figures](user-guides/custom-figures.md).
 
     Args:
         mode: The mode of the captured callable.
@@ -580,7 +580,7 @@ class capture:
             # The "normal" case where we just capture the function call.
             @functools.wraps(func)
             def wrapped(*args, **kwargs) -> CapturedCallable:
-                # Note this is basically the same as partial(func, *args, **kwargs)
+                # Note this is the same as partial(func, *args, **kwargs)
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
                 captured_callable._mode = self._mode
                 captured_callable._model_example = self._model_example
@@ -640,12 +640,14 @@ class _OptionsDictType(TypedDict):
 OptionsType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date] | list[_OptionsDictType]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
-# All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
+# All the below types rely on models and so must use ForwardRef (that is, "Checklist" rather than actual
+# Checklist class).
 SelectorType = Annotated[
-    "Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch",
+    "Cascader | Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch",
     Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
-"""Discriminated union. Type of selector to be used inside a control: [`Checklist`][vizro.models.Checklist],
+"""Discriminated union. Type of selector to be used inside a control: [`Cascader`][vizro.models.Cascader],
+[`Checklist`][vizro.models.Checklist],
 [`DatePicker`][vizro.models.DatePicker], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
 [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider] or [`Switch`][vizro.models.Switch]."""
 

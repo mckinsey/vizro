@@ -1,5 +1,7 @@
 # How to create Vizro custom charts
 
+Load the **selecting-vizro-charts** skill for when to use custom charts, color rules, and KPI card rules.
+
 ## Overview
 
 Custom charts are Python code that generates a plotly go.Figure object. It must fulfill the following criteria:
@@ -54,8 +56,10 @@ def gapminder_life_expectancy_chart(data_frame: pd.DataFrame) -> go.Figure:
 
 ## Common mistakes
 
+### Using plain `plotly.express` instead of `vizro.plotly.express`
+
+Always use `import vizro.plotly.express as px` — never `import plotly.express`. This applies inside `@capture("graph")` functions too. `vizro.plotly.express` is a drop-in replacement that ensures Vizro theming works correctly. Plain `plotly.express` bypasses Vizro's color templates. `import plotly.graph_objects as go` is fine (there is no vizro wrapper for it).
+
 ### Custom charts as KPI cards
 
-**Problem**: Model uses custom charts as KPI cards. This often happens when the model needs to do some additional data manipulation that cannot be done with the built-in Vizro functions.
-
-**Solution**: Custom charts are not KPI cards. Instead, the model should use the built-in Vizro functions (`kpi_card` or `kpi_card_reference`) and do data manipulation in the data loading/processing step. The only acceptable exception is when the KPI card is strictly not possible, for example when dynamically showing text as a KPI card.
+Never use custom charts for building KPI cards. Use built-in `kpi_card` / `kpi_card_reference` and do data manipulation in `app.py`. See **selecting-vizro-charts** skill for full rules.

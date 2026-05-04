@@ -94,6 +94,71 @@ Use Vizro when you need to combine the speed and ease of low-code Python tools, 
 
 ## How to use Vizro?
 
+Explore a few live demos to see different Vizro dashboards in action:
+
+<table>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard" target="_blank" rel="noopener noreferrer">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/basic_dashboard.png" alt="Basic Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>Basic Dashboard</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard" target="_blank" rel="noopener noreferrer">Try it live</a>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary" target="_blank" rel="noopener noreferrer">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/visual_vocabulary.png" alt="Visual Vocabulary" width="100%">
+      </a>
+      <br>
+      <strong>Visual Vocabulary</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary" target="_blank" rel="noopener noreferrer">Try it live</a>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/BI-dashboard" target="_blank" rel="noopener noreferrer">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/bi_dashboard.png" alt="BI Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>BI Dashboard</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/BI-dashboard" target="_blank" rel="noopener noreferrer">Try it live</a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/call-center-dashboard" target="_blank" rel="noopener noreferrer">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/call_center_dashboard.png" alt="Call Center Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>Call Center Dashboard</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/call-center-dashboard" target="_blank" rel="noopener noreferrer">Try it live</a>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/demo-kpi" target="_blank" rel="noopener noreferrer">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/kpi_dashboard.png" alt="KPI Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>KPI Dashboard</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/demo-kpi" target="_blank" rel="noopener noreferrer">Try it live</a>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://huggingface.co/spaces/vizro/demo-features" target="_blank" rel="noopener noreferrer">
+        <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/features_dashboard.png" alt="Features Dashboard" width="100%">
+      </a>
+      <br>
+      <strong>Features Dashboard</strong>
+      <br>
+      <a href="https://huggingface.co/spaces/vizro/demo-features" target="_blank" rel="noopener noreferrer">Try it live</a>
+    </td>
+  </tr>
+</table>
+
+Browse the full [Vizro Gallery](https://huggingface.co/collections/vizro/vizro-official-gallery) for more examples.
+
 ## [Vizro framework](https://vizro.readthedocs.io/en/stable/)
 
 **Low-code framework for building dashboards.**

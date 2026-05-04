@@ -1,4 +1,26 @@
-<a id='changelog-0.1.3'></a>
+<a id='changelog-0.1.5'></a>
+
+# 0.1.5 — 2026-04-10
+
+## Added
+
+- Add eval framework (`evals/evals.json`) with 3 business-first test cases, validation scripts (`validate_colors.py`, `validate_aggregation.py`), and Playwright Python fallback for browser testing. ([#1692](https://github.com/mckinsey/vizro/pull/1692))
+
+## Changed
+
+- Make Step 2 (Testing) in dashboard-build non-optional, strengthen pre-aggregation guidance, and add `vizro.plotly.express` import warning. ([#1692](https://github.com/mckinsey/vizro/pull/1692))
+
+<a id='changelog-0.1.4'></a>
+
+# 0.1.4 — 2026-03-19
+
+## Added
+
+- Add three reusable skills (`designing-vizro-layouts`, `selecting-vizro-charts`, `writing-vizro-yaml`) extracted from duplicated logic across existing skills. ([#1661](https://github.com/mckinsey/vizro/pull/1662))
+
+## Changed
+
+- Refactor `dashboard-design` and `dashboard-build` skills to reference the new reusable skills, removing duplicated content and improving maintainability. ([#1661](https://github.com/mckinsey/vizro/pull/1662)) <a id='changelog-0.1.3'></a>
 
 # 0.1.3 — 2026-03-04
 
