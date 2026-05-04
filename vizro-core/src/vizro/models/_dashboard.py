@@ -91,7 +91,7 @@ class Dashboard(VizroBaseModel):
     """Dashboard that is supplied to [`Vizro.build`][vizro.Vizro.build].
 
     Abstract: Usage documentation
-        [How to create a dashboard](../user-guides/dashboard.md)
+        [How to create a dashboard](user-guides/dashboard.md)
 
     """
 
