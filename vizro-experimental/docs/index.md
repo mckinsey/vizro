@@ -25,7 +25,7 @@ or be removed between releases. Once a feature stabilises, it graduates to `vizr
 - :fontawesome-solid-window-restore:{ .lg .middle } __Chat popup__
 
     Drop a floating chatbot onto any dashboard with one line. Auto-discovers data
-    from `data_manager` and answers questions about it via a built-in LangChain agent.
+    from `data_manager` and answers questions about it via a built-in PydanticAI agent.
 
     [:octicons-arrow-right-24: Add a chat popup](pages/chat/chat-popup.md)
 

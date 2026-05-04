@@ -3,7 +3,7 @@
 The public surface of the [Chat popup](chat-popup.md). For the chat component, see the [Chat component API reference](api-reference.md).
 
 The user-facing import path is `from vizro_experimental.chat.popup import …`. The
-`popup` subpackage uses lazy `__getattr__` to defer LangChain imports, which
+`popup` subpackage uses lazy `__getattr__` to defer the PydanticAI import, which
 mkdocstrings cannot statically trace, so the entries below point at the
 underlying modules where each symbol is actually defined.
 

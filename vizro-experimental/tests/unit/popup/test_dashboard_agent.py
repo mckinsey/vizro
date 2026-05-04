@@ -1,13 +1,12 @@
-"""Unit tests for the ``query_dataframe`` @tool in dashboard_agent.
+"""Unit tests for ``query_dataframe`` in dashboard_agent.
 
-Regression for the ``**params: Any`` bug: when the tool used ``**params`` in its
-signature, ``langchain_core.tools.@tool`` emitted a nested ``params`` object in the
-tool schema and the function body never unpacked it, so every groupby / pivot_table /
-sort_values call failed with ``'by' parameter is required``.
-Verified against langchain_core==1.2.22.
+Pin the function signature so the auto-generated tool schema (whether produced by
+PydanticAI, OpenAI, or any other framework that introspects Python signatures)
+stays flat — one parameter per kwarg, not a nested ``params`` object. LLMs are
+much more reliable at populating flat schemas; nested-object schemas lead to
+silently-empty params (the model emits ``{}`` instead of the actual values).
 
-These tests pin the flat schema and exercise the handler path with the exact
-kwarg shape that LangChain will invoke the tool with.
+These tests pin both the schema shape and the runtime handler path.
 """
 
 import pandas as pd
@@ -36,16 +35,20 @@ def registered_dataset(scores_df):
 
 
 class TestSchema:
-    """Pin the LLM-facing tool schema to flat kwargs."""
+    """Pin the function signature so PydanticAI / OpenAI emit a flat tool schema."""
 
-    def test_schema_is_flat_not_nested(self):
-        schema_keys = set(query_dataframe.args.keys())
-        assert "params" not in schema_keys, (
-            "Regression: @tool is exposing a nested 'params' object. "
-            "The signature must use explicit kwargs, not **params."
+    def test_signature_is_flat_not_nested(self):
+        import inspect
+
+        param_names = set(inspect.signature(query_dataframe).parameters)
+        assert "params" not in param_names, (
+            "Regression: query_dataframe must expose explicit kwargs, not **params, "
+            "so the auto-generated tool schema stays flat for the LLM."
         )
 
-    def test_schema_exposes_all_expected_kwargs(self):
+    def test_signature_exposes_all_expected_kwargs(self):
+        import inspect
+
         expected = {
             "dataset_name",
             "operation",
@@ -59,15 +62,15 @@ class TestSchema:
             "ascending",
             "value",
         }
-        assert set(query_dataframe.args.keys()) == expected
+        assert set(inspect.signature(query_dataframe).parameters) == expected
 
 
 class TestInvocation:
-    """Exercise the tool with the flat-kwargs shape LangChain produces."""
+    """Exercise the tool with the flat-kwargs shape an LLM tool-call produces."""
 
     def test_groupby_with_flat_kwargs(self, registered_dataset):
-        result = query_dataframe.invoke(
-            {
+        result = query_dataframe(
+            **{
                 "dataset_name": registered_dataset,
                 "operation": "groupby",
                 "by": "Category",
@@ -81,8 +84,8 @@ class TestInvocation:
         assert "Error" not in result
 
     def test_pivot_table_with_flat_kwargs(self, registered_dataset):
-        result = query_dataframe.invoke(
-            {
+        result = query_dataframe(
+            **{
                 "dataset_name": registered_dataset,
                 "operation": "pivot_table",
                 "index": "Category",
@@ -94,8 +97,8 @@ class TestInvocation:
         assert "Error" not in result
 
     def test_sort_values_requires_by(self, registered_dataset):
-        result = query_dataframe.invoke(
-            {
+        result = query_dataframe(
+            **{
                 "dataset_name": registered_dataset,
                 "operation": "sort_values",
                 "by": "QoE",
@@ -107,11 +110,11 @@ class TestInvocation:
         assert "Sports" in result  # lowest-QoE rows land first
 
     def test_unknown_dataset_returns_error(self):
-        result = query_dataframe.invoke({"dataset_name": "does_not_exist", "operation": "describe"})
+        result = query_dataframe(**{"dataset_name": "does_not_exist", "operation": "describe"})
         assert result.startswith("Error: Dataset 'does_not_exist' not found")
 
     def test_unknown_operation_returns_error(self, registered_dataset):
-        result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": "rm_rf"})
+        result = query_dataframe(**{"dataset_name": registered_dataset, "operation": "rm_rf"})
         assert result.startswith("Error: Operation 'rm_rf' is not allowed")
 
     def test_describe_succeeds_despite_flat_schema_defaults(self, registered_dataset):
@@ -123,7 +126,7 @@ class TestInvocation:
         defaults from reaching pandas methods that reject them — exercised here by
         invoking the operation with no extra args.
         """
-        result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": "describe"})
+        result = query_dataframe(**{"dataset_name": registered_dataset, "operation": "describe"})
         assert "Error" not in result
         for label in ("count", "mean", "std", "min", "max"):
             assert label in result, f"describe output missing '{label}': {result}"
@@ -135,36 +138,36 @@ class TestDispatchCategories:
     @pytest.mark.parametrize("op", ["mean", "median", "sum", "min", "max", "std", "var"])
     def test_numeric_reduction_runs_inline(self, registered_dataset, op):
         """Numeric reductions all share `str(df.<op>(numeric_only=True))`."""
-        result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": op})
+        result = query_dataframe(**{"dataset_name": registered_dataset, "operation": op})
         assert "Error" not in result
         assert "QoE" in result  # numeric column must appear
 
     def test_plain_method_count(self, registered_dataset):
-        result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": "count"})
+        result = query_dataframe(**{"dataset_name": registered_dataset, "operation": "count"})
         assert "Error" not in result
         assert "Category" in result and "QoE" in result
 
     def test_plain_property_shape(self, registered_dataset):
         """`shape` is a property — must NOT be invoked as a method."""
-        result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": "shape"})
+        result = query_dataframe(**{"dataset_name": registered_dataset, "operation": "shape"})
         assert "Error" not in result
         assert "(6, 2)" in result
 
     def test_plain_property_dtypes(self, registered_dataset):
         """`dtypes` is a property — must NOT be invoked as a method."""
-        result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": "dtypes"})
+        result = query_dataframe(**{"dataset_name": registered_dataset, "operation": "dtypes"})
         assert "Error" not in result
         assert "QoE" in result
 
     def test_head_uses_n_default(self, registered_dataset):
-        result = query_dataframe.invoke({"dataset_name": registered_dataset, "operation": "head", "n": 2})
+        result = query_dataframe(**{"dataset_name": registered_dataset, "operation": "head", "n": 2})
         assert "Error" not in result
         # head(2) on the 6-row fixture should include exactly the first two Sports rows.
         assert "Sports" in result and "Kids" not in result
 
     def test_value_counts_with_column_returns_single_series(self, registered_dataset):
-        result = query_dataframe.invoke(
-            {"dataset_name": registered_dataset, "operation": "value_counts", "column": "Category"}
+        result = query_dataframe(
+            **{"dataset_name": registered_dataset, "operation": "value_counts", "column": "Category"}
         )
         assert "Error" not in result
         assert "Sports" in result and "Kids" in result
@@ -188,14 +191,14 @@ class TestWideDataFrameWarning:
         wide = pd.DataFrame({f"c{i}": [1, 2, 3] for i in range(25)})
         self._register("wide_df", wide)
         with pytest.warns(UserWarning, match=r"25-column DataFrame without `column`"):
-            result = query_dataframe.invoke({"dataset_name": "wide_df", "operation": "value_counts"})
+            result = query_dataframe(**{"dataset_name": "wide_df", "operation": "value_counts"})
         assert "Error" not in result
 
     def test_unique_warns_on_wide_df_without_column(self):
         wide = pd.DataFrame({f"c{i}": [1, 2, 3] for i in range(25)})
         self._register("wide_df", wide)
         with pytest.warns(UserWarning, match=r"25-column DataFrame without `column`"):
-            result = query_dataframe.invoke({"dataset_name": "wide_df", "operation": "unique"})
+            result = query_dataframe(**{"dataset_name": "wide_df", "operation": "unique"})
         assert "Error" not in result
 
     def test_no_warning_when_column_provided(self):
@@ -205,7 +208,7 @@ class TestWideDataFrameWarning:
         self._register("wide_df", wide)
         with _warnings.catch_warnings():
             _warnings.simplefilter("error")  # turns any warning into a test failure
-            query_dataframe.invoke({"dataset_name": "wide_df", "operation": "value_counts", "column": "c0"})
+            query_dataframe(**{"dataset_name": "wide_df", "operation": "value_counts", "column": "c0"})
 
     def test_no_warning_on_narrow_df(self):
         import warnings as _warnings
@@ -214,4 +217,4 @@ class TestWideDataFrameWarning:
         self._register("narrow_df", narrow)
         with _warnings.catch_warnings():
             _warnings.simplefilter("error")
-            query_dataframe.invoke({"dataset_name": "narrow_df", "operation": "value_counts"})
+            query_dataframe(**{"dataset_name": "narrow_df", "operation": "value_counts"})

@@ -1,10 +1,8 @@
 """Dashboard-aware chat agent.
 
 Provides a reusable agent that understands the Vizro dashboard's data and structure.
-Uses ``langchain.agents.create_agent`` with a configurable LLM to answer questions
-about dashboard data. The per-turn overhead of ``deepagents.create_deep_agent`` is
-avoided here because the dashboard chat only needs one tool (``query_dataframe``),
-not the filesystem / subagent / planning scaffolding.
+Uses ``pydantic_ai.Agent`` with one tool (``query_dataframe``) and an OpenAI Responses
+model by default. The loop is just: user prompt → tool call(s) → final assistant text.
 """
 
 from __future__ import annotations
@@ -17,14 +15,13 @@ from typing import TYPE_CHECKING, Any, Literal
 import dash
 import pandas as pd
 import vizro.models as vm
-from langchain_core.tools import tool
 from vizro.managers import data_manager, model_manager
 
 from ..models.types import Message
 
 if TYPE_CHECKING:
-    from langchain_core.language_models import BaseChatModel
-    from langgraph.graph.state import CompiledStateGraph
+    from pydantic_ai import Agent as _Agent
+    from pydantic_ai.models import Model
 
 
 ReasoningEffort = Literal["low", "medium", "high"]
@@ -196,8 +193,7 @@ def _run_inline_op(df: pd.DataFrame, op: str, *, n: int, ascending: bool, value:
     return _INLINE_OPS[op](df, n, ascending, value)
 
 
-@tool
-def query_dataframe(  # noqa: PLR0913 — flat kwargs required by langchain_core.tools.@tool
+def query_dataframe(  # noqa: PLR0913 — flat kwargs let the LLM tool schema stay flat (no nested params object)
     dataset_name: str,
     operation: str,
     by: str | None = None,
@@ -228,9 +224,9 @@ def query_dataframe(  # noqa: PLR0913 — flat kwargs required by langchain_core
         ascending: Sort order for sort_values, sort_index.
         value: Fill value for fillna.
     """
-    # Flat kwargs (not **params) are required: with **params, @tool emits a nested
-    # "params" object schema and the handler never sees by/column/agg, so
-    # groupby/pivot_table silently fail. Verified against langchain_core==1.2.22.
+    # Flat kwargs (not **params): keeps the JSON schema PydanticAI / OpenAI generate
+    # flat, which matches the structure the LLM is most reliable at filling. With
+    # **params we'd get a nested "params" object the LLM has to populate as a dict.
     available = _get_dataset_names()
     if dataset_name not in available:
         return f"Error: Dataset '{dataset_name}' not found. Available datasets: {available}"
@@ -381,114 +377,110 @@ def _build_system_prompt(context: dict[str, Any]) -> str:
 
 
 def create_dashboard_agent(
-    model: BaseChatModel | None = None,
+    model: Model | str | None = None,
     *,
     reasoning_effort: ReasoningEffort = "medium",
-) -> tuple[CompiledStateGraph, dict[str, Any]]:
+) -> tuple[_Agent, dict[str, Any]]:
     """Create a dashboard-aware chat agent.
 
     Must be called after ``app.build(dashboard)``.
 
-    Uses :func:`langchain.agents.create_agent` with only the ``query_dataframe``
-    tool. The full ``deepagents.create_deep_agent`` stack (filesystem, subagents,
-    todos, summarization) is not used here — for a single-tool data analyst
-    chatbot it adds a long base prompt and ~8 unused tool schemas to every turn,
-    which inflates TTFT without improving answer quality.
+    Uses :class:`pydantic_ai.Agent` with only the ``query_dataframe`` tool. The
+    multi-tool / planning scaffolds that would otherwise apply (filesystem,
+    subagents, todos, summarization) are not enabled — for a single-tool data
+    analyst they would inflate TTFT without improving answer quality.
 
     Args:
-        model: A LangChain chat model instance (e.g. ``ChatOpenAI(model="gpt-5.4-mini-2026-03-17")``).
-            When omitted, defaults to ``ChatOpenAI(model="gpt-5.4-mini-2026-03-17",
-            reasoning_effort=<reasoning_effort>, use_responses_api=True)``. We do
-            not set ``store`` — OpenAI's server-side retention default applies.
-            Pass your own ``ChatOpenAI(..., store=False, include=["reasoning.encrypted_content"])``
-            via *model* if you need zero-retention behavior.
+        model: A PydanticAI model instance (e.g. ``OpenAIResponsesModel(...)``,
+            ``AnthropicModel(...)``) or a provider:model string accepted by
+            :class:`pydantic_ai.Agent` (e.g. ``"openai-responses:gpt-5.4-mini"``).
+            When omitted, defaults to ``OpenAIResponsesModel("gpt-5.4-mini-2026-03-17")``
+            with ``reasoning_effort`` applied via :class:`OpenAIResponsesModelSettings`.
+            Pass your own configured model instance to override base URL, retries,
+            store=False for zero retention, etc.
         reasoning_effort: ``"low"`` | ``"medium"`` (default) | ``"high"``. Only
             applied when *model* is ``None``; if you pass your own model, set
             reasoning config on the model instance instead.
 
     Returns:
-        Tuple of (agent, context) where *agent* is a compiled LangGraph and
-        *context* is the gathered dashboard metadata dict.
+        Tuple of (agent, context) where *agent* is a configured PydanticAI Agent
+        and *context* is the gathered dashboard metadata dict.
     """
-    from langchain.agents import create_agent
+    from pydantic_ai import Agent
+    from pydantic_ai.models.openai import OpenAIResponsesModel, OpenAIResponsesModelSettings
 
+    settings: Any = None
     if model is None:
-        from langchain_openai import ChatOpenAI
-
-        # gpt-5.4+ require use_responses_api=True when combining reasoning_effort
-        # with function tools — chat completions returns 400 in that combination.
-        # We intentionally don't set `store`; users who need zero-retention pass
-        # their own configured ChatOpenAI via the model= argument.
-        model = ChatOpenAI(
-            model="gpt-5.4-mini-2026-03-17",
-            max_tokens=4096,
-            reasoning_effort=reasoning_effort,
-            use_responses_api=True,
-        )
+        # gpt-5.4+ reasoning models require the Responses API when combining
+        # reasoning_effort with function tools — the chat-completions endpoint
+        # returns 400 in that combination.
+        model = OpenAIResponsesModel("gpt-5.4-mini-2026-03-17")
+        settings = OpenAIResponsesModelSettings(openai_reasoning_effort=reasoning_effort)
 
     context = gather_dashboard_context()
     system_prompt = _build_system_prompt(context)
 
-    agent = create_agent(
-        model=model,
+    agent = Agent(
+        model,
         system_prompt=system_prompt,
         tools=[query_dataframe],
+        model_settings=settings,
     )
     return agent, context
 
 
-def _iter_content_text(content):
-    """Yield text strings from a chunk's content (str or list of blocks)."""
-    if isinstance(content, str):
-        yield content
-    elif isinstance(content, list):
-        for block in content:
-            if isinstance(block, dict) and block.get("type") == "text":
-                text = block.get("text", "")
-                if text:
-                    yield text
-            elif isinstance(block, str):
-                yield block
+def _to_pyd_message_history(messages: list[Message]) -> tuple[str, list[Any]]:
+    """Convert popup-format messages into (latest_user_prompt, prior_history).
+
+    PydanticAI's ``run_stream`` takes a single ``user_prompt`` plus a ``message_history``
+    list of ``ModelRequest`` / ``ModelResponse`` objects. The popup hands us the entire
+    history including the most recent user turn as the last entry, so we split it.
+    """
+    from pydantic_ai.messages import ModelRequest, ModelResponse, TextPart, UserPromptPart
+
+    if not messages:
+        return "", []
+
+    latest_text = messages[-1]["content"] if isinstance(messages[-1]["content"], str) else str(messages[-1]["content"])
+    if messages[-1]["role"] != "user":
+        # Defensive: popup always sends the new user message as the last entry,
+        # but if a future caller violates that, fall through to a no-op prompt
+        # rather than crashing the agent.
+        return "", []
+
+    history: list[Any] = []
+    for msg in messages[:-1]:
+        text = msg["content"] if isinstance(msg["content"], str) else str(msg["content"])
+        if msg["role"] == "user":
+            history.append(ModelRequest(parts=[UserPromptPart(content=text)]))
+        elif msg["role"] == "assistant":
+            history.append(ModelResponse(parts=[TextPart(content=text)]))
+    return latest_text, history
 
 
-def make_generate_response(agent: CompiledStateGraph):
+def make_generate_response(agent: _Agent):
     """Create a ``generate_response`` callable for :func:`add_chat_popup`.
 
-    The returned function converts parsed popup messages (``role`` + ``content``) to
-    LangChain messages, streams the agent's response, and yields text chunks.
+    The returned function converts parsed popup messages into PydanticAI's
+    message-history shape, runs the agent with sync streaming, and yields text
+    chunks (delta mode, so each yielded chunk is a new piece of text — matching
+    the SSE wire format the popup clientside JS expects).
 
     Args:
-        agent: A compiled deep agent (from :func:`create_dashboard_agent`).
+        agent: A configured PydanticAI agent (from :func:`create_dashboard_agent`).
 
     Returns:
         A callable ``(messages, **kwargs) -> Iterator[str]`` expecting parsed *messages*.
     """
 
     def generate_response(messages: list[Message], **kwargs: Any):
-        from langchain_core.messages import AIMessage, HumanMessage
-
-        # Convert popup message format to LangChain message objects
-        lc_messages = []
-        for msg in messages:
-            raw = msg["content"]
-            content = raw if isinstance(raw, str) else str(raw)
-            if msg["role"] == "user":
-                lc_messages.append(HumanMessage(content=content))
-            elif msg["role"] == "assistant":
-                lc_messages.append(AIMessage(content=content))
-
-        # Stream from agent using "messages" stream mode for token-level output.
-        # Skip tool chunks and only yield AI text, with a paragraph break each time
-        # we transition from a tool message back to assistant text.
-        prev_type = None
-        for chunk, _ in agent.stream({"messages": lc_messages}, stream_mode="messages"):
-            if not getattr(chunk, "content", None):
-                continue
-            chunk_type = getattr(chunk, "type", None)
-            if chunk_type != "tool":
-                if prev_type == "tool":
-                    yield "\n\n"
-                yield from _iter_content_text(chunk.content)
-            prev_type = chunk_type
+        user_prompt, history = _to_pyd_message_history(messages)
+        if not user_prompt:
+            return
+        # run_stream_sync returns a StreamedRunResultSync directly (not a context
+        # manager). stream_text(delta=True) yields successive deltas suited to the
+        # SSE pipe.
+        result = agent.run_stream_sync(user_prompt, message_history=history)
+        yield from result.stream_text(delta=True)
 
     return generate_response

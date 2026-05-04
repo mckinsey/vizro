@@ -29,12 +29,10 @@ requires-python = ">=3.10"
 [project.optional-dependencies]
 # Needed to use add_chat_popup() with the default auto-agent.
 agent = [
-  "langchain>=1.2.15",
-  "langchain-openai"
+  "pydantic-ai>=1.89.1"
 ]
 # Only needed to run the demo apps under examples/.
 examples = [
-  "langchain-anthropic>=0.3.0",
   "python-dotenv>=0.21.0",
   "openai",
   "anthropic>=0.18.0",
@@ -70,7 +68,13 @@ addopts = [
   "-m",
   "not benchmark and not integration_browser and not integration_llm"
 ]
-filterwarnings = ["error"]
+filterwarnings = [
+  "error",
+  # Python 3.13's deprecation of asyncio.get_event_loop() trips PydanticAI's
+  # sync streaming helper (it catches RuntimeError but not the DeprecationWarning).
+  # The fallback path still creates a fresh loop correctly; only the warning is noise.
+  "ignore:There is no current event loop:DeprecationWarning:pydantic_ai"
+]
 markers = [
   "benchmark: agent perf/quality suite (on-demand)",
   "integration_browser: Playwright browser tests; require Chromium and a self-hosted example app subprocess",

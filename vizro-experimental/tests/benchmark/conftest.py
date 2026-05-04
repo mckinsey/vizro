@@ -109,18 +109,16 @@ def agents_by_effort(dashboard_built):
     def _get(effort: str):
         if effort not in cache:
             if model_override:
-                from langchain_openai import ChatOpenAI
+                from pydantic_ai.models.openai import OpenAIResponsesModel, OpenAIResponsesModelSettings
 
-                # use_responses_api=True is required for gpt-5.4+ models when
-                # combining reasoning_effort with function tools — the chat
-                # completions endpoint returns 400 in that combination.
-                model = ChatOpenAI(
-                    model=model_override,
-                    max_tokens=4096,
-                    reasoning_effort=effort,
-                    use_responses_api=True,
-                )
+                # gpt-5.4+ reasoning models require the Responses API when combining
+                # reasoning_effort with function tools — chat completions returns 400.
+                model = OpenAIResponsesModel(model_override)
                 agent, _ = create_dashboard_agent(model=model)
+                # When the caller passes their own model, re-apply per-effort
+                # settings on the agent (create_dashboard_agent only sets defaults
+                # when model is None).
+                agent.model_settings = OpenAIResponsesModelSettings(openai_reasoning_effort=effort)
             else:
                 agent, _ = create_dashboard_agent(reasoning_effort=effort)  # type: ignore[arg-type]
             cache[effort] = make_generate_response(agent)

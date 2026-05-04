@@ -81,12 +81,14 @@ def add_chat_popup(  # noqa: PLR0913
             *messages* is parsed history: each dict has ``role`` and ``content`` (decoded JSON).
             Return a string for non-streaming, or yield strings for streaming.
             When omitted, a built-in dashboard agent is created automatically.
-        model: A LangChain chat model instance for the built-in dashboard agent
-            (e.g. ``ChatOpenAI(model="gpt-5.4-mini-2026-03-17")``).
-            Only used when *generate_response* is not provided.
-            Defaults to ``ChatOpenAI(model="gpt-5.4-mini-2026-03-17",
-            use_responses_api=True)``. Pass a pre-configured instance if you
-            need non-default settings such as ``store=False`` for zero retention.
+        model: A PydanticAI model instance (e.g. ``OpenAIResponsesModel(...)``,
+            ``AnthropicModel(...)``) or a ``"provider:model"`` string accepted by
+            :class:`pydantic_ai.Agent`. Only used when *generate_response* is not
+            provided. Defaults to ``OpenAIResponsesModel("gpt-5.4-mini-2026-03-17")``
+            with the given *reasoning_effort* applied via
+            :class:`OpenAIResponsesModelSettings`. Pass a pre-configured instance
+            for a different provider, custom base URL, retries, or zero-retention
+            settings (e.g. ``OpenAIResponsesModel(..., openai_store=False)``).
         streaming: Set ``True`` when *generate_response* yields chunks.
         chat_id: Unique DOM ID prefix. Change if you need multiple popups.
         placeholder: Placeholder text shown in the input field.
