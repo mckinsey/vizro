@@ -13,7 +13,7 @@ class Text(VizroBaseModel):
     """Text based on Markdown syntax.
 
     Abstract: Usage documentation
-        [How to add text to your page](../user-guides/text.md)
+        [How to add text to your page](user-guides/text.md)
 
     """
 

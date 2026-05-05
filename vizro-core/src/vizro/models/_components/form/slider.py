@@ -28,7 +28,7 @@ class Slider(VizroBaseModel):
     [`Parameter`][vizro.models.Parameter].
 
     Abstract: Usage documentation
-        [How to use numerical selectors](../user-guides/selectors.md/#numerical-selectors)
+        [How to use numerical selectors](user-guides/selectors.md/#numerical-selectors)
 
     """
 
