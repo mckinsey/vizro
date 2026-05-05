@@ -148,10 +148,11 @@ enable_creation_date = false
 
 # MkDocs-only: hooks (docs/overrides/canonical_tag.py) - not supported in Zensical
 
-# Zensical does not yet support strict/validation settings (as of 0.0.28).
-# When supported, add:
-# validation:
-#   omitted_files: warn
-#   absolute_links: warn
-#   unrecognized_links: warn
-#   anchors: warn
+# -------------------------
+# validation (supported since Zensical 0.0.36)
+# -------------------------
+# Autorefs (e.g. [vizro.models.Page]) and mkdocstrings options containing brackets
+# are currently reported as unresolved references. Disable until Zensical resolves:
+# https://zensical.org/docs/setup/validation/
+[project.validation]
+unresolved_references = false
