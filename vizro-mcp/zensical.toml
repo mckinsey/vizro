@@ -157,6 +157,8 @@ enable_creation_date = false
 
 [project.plugins.glightbox]
 manual = true
+# Required: zensical passes None if unset, which breaks glightbox's frozenset().
+skip_classes = []
 
 # Zensical does not yet support strict/validation settings (as of 0.0.28).
 # When supported, add:
