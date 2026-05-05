@@ -28,7 +28,8 @@ nav = [
   ]},
   {"Vizro projects" = [
     {"Vizro" = "https://vizro.readthedocs.io/"},
-    {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"}
+    {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"},
+    {"Vizro-Experimental" = "https://vizro.readthedocs.io/"}
   ]}
 ]
 
