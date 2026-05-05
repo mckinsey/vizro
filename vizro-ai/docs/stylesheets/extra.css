@@ -45,3 +45,48 @@ td:not([class]):not(:last-child) {
 .md-source__fact--version {
   display: none;
 }
+
+/* Tab bar: slightly larger, clearer labels (theme default is ~0.7rem). */
+.md-tabs .md-tabs__link {
+  font-size: 0.85rem;
+  opacity: 0.92;
+}
+
+.md-tabs__item--active .md-tabs__link {
+  opacity: 1;
+}
+
+/* Allow the "Vizro projects" dropdown to escape the tab bar.
+   The theme uses `overflow: auto` on both, plus `contain: content` on
+   `.md-tabs__list` (paint containment), which together clip any absolutely
+   positioned child below the row. We disable both so the menu is visible. */
+.md-tabs,
+.md-tabs__list {
+  contain: none;
+  overflow: visible;
+}
+
+/* "Vizro projects" tab dropdown (see docs/overrides/partials/tabs-item.html).
+   The <button> is given the same `.md-tabs__link` class so the theme controls
+   its size/spacing; we only neutralise the browser button defaults so that the
+   button text aligns with the sibling <a> tab labels. */
+.vizro-tabs-select > button.md-tabs__link {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  padding: 0;
+}
+
+.vizro-tabs-select .md-select__inner {
+  margin-top: 0.6rem;
+  text-align: left;
+}
+
+.vizro-tabs-select .md-select__inner::after {
+  display: none;
+}

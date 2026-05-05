@@ -26,8 +26,10 @@ nav = [
     {"Safeguard code execution" = "pages/explanation/safeguard.md"},
     {"Safety in Vizro-AI" = "pages/explanation/safety-in-vizro-ai.md"}
   ]},
-  {"Vizro" = "https://vizro.readthedocs.io"},
-  {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"}
+  {"Vizro projects" = [
+    {"Vizro" = "https://vizro.readthedocs.io/"},
+    {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"}
+  ]}
 ]
 
 # This infers the version number of the latest release of whole repo, so we're hiding it for sub-packages in extra.css
@@ -41,6 +43,7 @@ extra_css = ["stylesheets/extra.css"]
 # -------------------------
 [project.theme]
 language = "en"
+custom_dir = "docs/overrides"
 variant = "classic"
 favicon = "images/favicon/favicon.png"
 features = [

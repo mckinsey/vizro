@@ -1,0 +1,54 @@
+{#-
+  Default Zensical/Material: tab section = one <a> to the first child only.
+
+  For the single top-level section titled "Vizro projects" (all external links in
+  nav), render a Material md-select dropdown so both links appear. All other
+  sections keep stock behavior so internal tabs stay plain anchors and work with
+  navigation.instant.
+-#}
+{% macro render_content(nav_item, ref) %}
+  {% set ref = ref or nav_item %}
+  {{ ref.title }}
+{% endmacro %}
+{% macro render(nav_item, ref) %}
+  {% set ref = ref or nav_item %}
+  {% set class = "md-tabs__item" %}
+  {% if ref.active %}
+    {% set class = class ~ " md-tabs__item--active" %}
+  {% endif %}
+  {% if nav_item.children %}
+    {% set first = nav_item.children | first %}
+    {% if first.children %}
+      {{ render(first, ref) }}
+    {% elif nav_item.children | length > 1 and ref.title == "Vizro projects" %}
+      <li class="{{ class }}">
+        <div class="md-select vizro-tabs-select" data-md-component="tabs-select">
+          <button type="button" class="md-tabs__link" aria-haspopup="listbox">
+            {{ ref.title }}
+          </button>
+          <div class="md-select__inner">
+            <ul class="md-select__list">
+              {% for child in nav_item.children %}
+                <li class="md-select__item">
+                  <a href="{{ child.url | url }}" class="md-select__link">{{ child.title }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </li>
+    {% else %}
+      <li class="{{ class }}">
+        <a href="{{ first.url | url }}" class="md-tabs__link">
+          {{ render_content(first, ref) }}
+        </a>
+      </li>
+    {% endif %}
+  {% else %}
+    <li class="{{ class }}">
+      <a href="{{ nav_item.url | url }}" class="md-tabs__link">
+        {{ render_content(nav_item) }}
+      </a>
+    </li>
+  {% endif %}
+{% endmacro %}
