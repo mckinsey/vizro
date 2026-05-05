@@ -666,3 +666,4 @@ class TestParameter:
         expected = {"scatter_matrix_chart": target_scatter_matrix_parameter_dimensions}
 
         assert result == expected
+
