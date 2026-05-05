@@ -125,5 +125,5 @@ Examples:
     # gives "#0F766E"
     ```
 
-![Colors](../../assets/user_guides/themes/colors.png)
+![Colors](../assets/user_guides/themes/colors.png)
 """

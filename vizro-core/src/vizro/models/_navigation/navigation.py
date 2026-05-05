@@ -17,7 +17,7 @@ class Navigation(VizroBaseModel):
     """Navigation to arrange hierarchy of [`Pages`][vizro.models.Page].
 
     Abstract: Usage documentation
-        [How to customize the navigation](../user-guides/navigation.md)
+        [How to customize the navigation](user-guides/navigation.md)
 
     """
 
