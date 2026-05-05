@@ -19,7 +19,7 @@ Two common types of conditional notifications are:
 
     === "app.py"
 
-        ```{.python hl_lines="8-12 24-27"}
+        ```{.python pycafe-link hl_lines="8-12 24-27"}
         import random
 
         import vizro.models as vm
@@ -61,6 +61,35 @@ Two common types of conditional notifications are:
         1. A `success` notification with the "Pipeline completed." text is shown when the action returns successfully.
         1. An `error` notification with the "Pipeline failed." text is shown when the action raises an exception.
 
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to define a CapturedCallables custom action and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - type: button
+                text: Run pipeline
+                actions:
+                  - type: action
+                    function:
+                      _target_: __main__.run_pipeline
+                    outputs: pipeline_output
+                    notifications:
+                      success: Pipeline completed.
+                      error: Pipeline failed.
+              - type: text
+                id: pipeline_output
+                text: Click the button to run the pipeline.
+            layout:
+              type: flex
+            title: Success and error notifications
+        ```
+
+    === "Result"
+
+        [![SuccessErrorNotification]][successerrornotification]
+
 
 ## Progress notifications
 
@@ -72,7 +101,7 @@ This is useful for long-running actions where you want to indicate that the acti
 
     === "app.py"
 
-        ```{.python hl_lines="11 27"}
+        ```{.python pycafe-link hl_lines="11 27"}
         import random
         from time import sleep
 
@@ -116,6 +145,36 @@ This is useful for long-running actions where you want to indicate that the acti
         1. Add a `sleep` call in the action function to simulate a long-running operation.
         1. A `"progress"` notification with the "Running pipeline..." text is shown immediately when the action starts, and then replaced by either the `"success"` or `"error"` notification once the action completes.
 
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to define a CapturedCallables custom action and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - type: button
+                text: Run pipeline
+                actions:
+                  - type: action
+                    function:
+                      _target_: __main__.run_pipeline
+                    outputs: pipeline_output
+                    notifications:
+                      progress: Running pipeline...
+                      success: Pipeline completed.
+                      error: Pipeline failed.
+              - type: text
+                id: pipeline_output
+                text: Click the button to run the pipeline.
+            layout:
+              type: flex
+            title: Progress notification
+        ```
+
+    === "Result"
+
+        [![ProgressNotification]][progressnotification]
+
 
 ## Custom notification keys
 
@@ -146,7 +205,7 @@ Custom notifications use the "info" style by default unless configured otherwise
 
     === "app.py"
 
-        ```{.python hl_lines="17 21 37-38"}
+        ```{.python pycafe-link hl_lines="17 21 37-38"}
         import random
         from time import sleep
 
@@ -203,6 +262,38 @@ Custom notifications use the "info" style by default unless configured otherwise
         1. Definition of the custom notification for the `"pipeline_partial_success"` key.
         1. Definition of the custom notification for the `"pipeline_partial_error"` key.
 
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to define a CapturedCallables custom action and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - type: button
+                text: Run pipeline
+                actions:
+                  - type: action
+                    function:
+                      _target_: __main__.run_pipeline
+                    outputs: pipeline_output
+                    notifications:
+                      progress: Running pipeline...
+                      success: Pipeline completed.
+                      error: Pipeline failed.
+                      pipeline_partial_success: Pipeline partially completed.
+                      pipeline_partial_error: Pipeline partially failed.
+              - type: text
+                id: pipeline_output
+                text: Click the button to run the pipeline.
+            layout:
+              type: flex
+            title: Custom notification keys
+        ```
+
+    === "Result"
+
+        [![CustomNotificationKeys]][customnotificationkeys]
+
 
 ## Dynamic notification content
 
@@ -218,7 +309,7 @@ These templates make it possible to provide more informative and contextual feed
 
     === "app.py"
 
-        ```{.python hl_lines="17 19 21 23 37-40"}
+        ```{.python pycafe-link hl_lines="17 19 21 23 37-40"}
         import random
         from time import sleep
 
@@ -279,6 +370,38 @@ These templates make it possible to provide more informative and contextual feed
         1. Defining the `"pipeline_partial_success"` notification text with the `{{result}}` template.
         1. Defining the `"pipeline_partial_error"` notification text with both `{{error_msg}}` and `{{result}}` templates.
 
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to define a CapturedCallables custom action and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - type: button
+                text: Run pipeline
+                actions:
+                  - type: action
+                    function:
+                      _target_: __main__.run_pipeline
+                    outputs: pipeline_output
+                    notifications:
+                      progress: Running pipeline...
+                      success: "Pipeline done. {{result}}"
+                      error: "Pipeline failed: {{error_msg}} \n {{result}}"
+                      pipeline_partial_success: "Pipeline partially completed. {{result}}"
+                      pipeline_partial_error: "Pipeline partially failed: {{error_msg}} \n {{result}}"
+              - type: text
+                id: pipeline_output
+                text: Click the button to run the pipeline.
+            layout:
+              type: flex
+            title: Templated notifications
+        ```
+
+    === "Result"
+
+        [![TemplatedNotifications]][templatednotifications]
+
 
 In this example, `**{{result}}**` is filled with the additional detail returned by the action (for example, the duration of the pipeline run).
 
@@ -294,7 +417,7 @@ The progress message reflects the current inputs of the action to make it more i
 
     === "app.py"
 
-        ```{.python hl_lines="12 35 39 42"}
+        ```{.python pycafe-link hl_lines="12 35 39 42"}
         import random
         from time import sleep
 
@@ -307,7 +430,7 @@ The progress message reflects the current inputs of the action to make it more i
 
         @capture("action")
         def run_pipeline(max_retries: int = 1):  # (1)!
-            for _ in range(max_retries + 1):
+            for _ in range(max_retries):
                 duration = random.uniform(1, 2)
                 duration_result = f"Duration: {duration:.1f}s"
                 sleep(duration)
@@ -356,6 +479,47 @@ The progress message reflects the current inputs of the action to make it more i
         1. Action's input argument `max_retries` which dynamic value shows in the `"progress"` notification text.
         1. Defining the `"progress"` notification text with the `{{max_retries}}` template that gets replaced by the runtime value of the `max_retries` argument when the action runs.
 
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to define the custom action, call vm.Page.add_type("components", vm.Slider),
+        # and parse YAML configuration. See yaml_version example.
+        pages:
+          - components:
+              - type: slider
+                id: slider_id
+                min: 1
+                max: 3
+                step: 1
+                value: 1
+                title: Max retries
+              - type: button
+                text: Run pipeline
+                actions:
+                  - type: action
+                    function:
+                      _target_: __main__.run_pipeline
+                      max_retries: slider_id
+                    outputs: pipeline_output
+                    notifications:
+                      progress: "Running pipeline... (max retries: {{max_retries}})..."
+                      success: "Pipeline done. {{result}}"
+                      error: "Pipeline failed: {{error_msg}} - {{result}}"
+                      pipeline_partial_success: "Pipeline partially completed. {{result}}"
+                      pipeline_partial_error: "Pipeline partially failed: {{error_msg}} - {{result}}"
+                      pipeline_max_retries_error: "Pipeline failed after {{result}} retries."
+              - type: text
+                id: pipeline_output
+                text: Click the button to run the pipeline.
+            layout:
+              type: flex
+            title: Templated notifications
+        ```
+
+    === "Result"
+
+        [![DynamicProgressText]][dynamicprogresstext]
+
 
 ## Customizing notification appearance and behavior
 
@@ -367,7 +531,7 @@ To customize notifications when you define them, use the [show_notification][viz
 
     === "app.py"
 
-        ```{.python hl_lines="43 46-48"}
+        ```{.python pycafe-link hl_lines="43 46-48"}
         import random
         from time import sleep
 
@@ -381,7 +545,7 @@ To customize notifications when you define them, use the [show_notification][viz
 
         @capture("action")
         def run_pipeline(max_retries: int = 1):
-            for _ in range(max_retries + 1):
+            for _ in range(max_retries):
                 duration = random.uniform(1, 2)
                 duration_result = f"Duration: {duration:.1f}s"
                 sleep(duration)
@@ -432,6 +596,63 @@ To customize notifications when you define them, use the [show_notification][viz
         1. Using `va.update_notification` to update the `"progress"` notification with new text and variant when the `"pipeline_partial_error"` key is raised.
         1. Using `va.update_notification` to update the `"progress"` notification with new text and variant when the `"pipeline_max_retries_error"` key is raised.
 
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to define the custom action, call vm.Page.add_type("components", vm.Slider),
+        # and parse YAML configuration. See yaml_version example.
+        pages:
+          - components:
+              - type: slider
+                id: slider_id
+                min: 1
+                max: 3
+                step: 1
+                value: 1
+                title: Max retries
+              - type: button
+                text: Run pipeline
+                actions:
+                  - type: action
+                    function:
+                      _target_: __main__.run_pipeline
+                      max_retries: slider_id
+                    outputs: pipeline_output
+                    notifications:
+                      progress:
+                        type: show_notification
+                        id: progress_id
+                        variant: progress
+                        text: "Running pipeline... (max retries: {{max_retries}})..."
+                      success: "Pipeline done. {{result}}"
+                      error: "Pipeline failed: {{error_msg}} - {{result}}"
+                      pipeline_partial_success:
+                        type: update_notification
+                        notification: progress_id
+                        variant: success
+                        text: "Pipeline partially completed. {{result}}"
+                      pipeline_partial_error:
+                        type: update_notification
+                        notification: progress_id
+                        variant: error
+                        text: "Pipeline partially failed: {{error_msg}} - {{result}}"
+                      pipeline_max_retries_error:
+                        type: update_notification
+                        notification: progress_id
+                        variant: error
+                        text: "Pipeline failed after {{result}} retries."
+              - type: text
+                id: pipeline_output
+                text: Click the button to run the pipeline.
+            layout:
+              type: flex
+            title: Templated notifications
+        ```
+
+    === "Result"
+
+        [![CustomizedNotification]][customizednotification]
+
 
 ## Debugging and error handling
 
@@ -445,7 +666,7 @@ All exceptions, except `PreventUpdate`, are always logged to the server console,
 
     === "app.py"
 
-        ```{.python hl_lines="29 36"}
+        ```{.python pycafe-link hl_lines="28 35"}
         from time import sleep
 
         import vizro.models as vm
@@ -461,7 +682,6 @@ All exceptions, except `PreventUpdate`, are always logged to the server console,
 
         page = vm.Page(
             title="Error handling",
-            layout=vm.Flex(),
             layout=vm.Flex(direction="row"),
             components=[
                 vm.Button(
@@ -489,8 +709,47 @@ All exceptions, except `PreventUpdate`, are always logged to the server console,
         1. There's no `"error"` notification shown when the second button is clicked, and the exception is forwarded to the Dash Dev Tools debugger instead since the app is running in debug mode.
         1. Running the app in debug mode to enable forwarding unhandled exceptions to the Dash Dev Tools debugger when `"error"` notifications are disabled.
 
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to define a CapturedCallables custom action and parse YAML configuration
+        # More explanation in the docs on `Dashboard` and extensions.
+        pages:
+          - components:
+              - type: button
+                text: Run pipeline (default error)
+                actions:
+                  - type: action
+                    function:
+                      _target_: __main__.run_pipeline_always_fails
+              - type: button
+                text: Run pipeline (no error notification)
+                actions:
+                  - type: action
+                    function:
+                      _target_: __main__.run_pipeline_always_fails
+                    notifications:
+                      error: null
+            layout:
+              type: flex
+              direction: row
+            title: Error handling
+        ```
+
+    === "Result"
+
+        [![ErrorHandling]][errorhandling]
+
 
 Other important behaviors:
 
 - **`PreventUpdate`**: raising `PreventUpdate` is treated as a success (shows the `"success"` notification if defined) but **stops** the action chain from continuing to execute.
 - **`dash.no_update`**: returning `no_update` is also treated as success and the action chain **continues**.
+
+[successerrornotification]: ../../assets/user_guides/conditional_notifications_actions/success_error_notification.gif
+[progressnotification]: ../../assets/user_guides/conditional_notifications_actions/progress_notification.gif
+[customnotificationkeys]: ../../assets/user_guides/conditional_notifications_actions/custom_notification_keys.gif
+[templatednotifications]: ../../assets/user_guides/conditional_notifications_actions/templated_notifications.gif
+[dynamicprogresstext]: ../../assets/user_guides/conditional_notifications_actions/dynamic_progress_text.gif
+[customizednotification]: ../../assets/user_guides/conditional_notifications_actions/customized_notification.gif
+[errorhandling]: ../../assets/user_guides/conditional_notifications_actions/error_handling.gif
