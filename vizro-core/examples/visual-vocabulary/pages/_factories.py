@@ -7,7 +7,7 @@ each chart type used in different groups.
 import vizro.models as vm
 
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import butterfly, column_and_line, connected_scatter, lollipop, waterfall
+from pages.examples import butterfly, column_and_line, connected_scatter, lollipop, slope, waterfall
 
 
 def butterfly_factory(group: str):
@@ -219,6 +219,49 @@ def lollipop_factory(group: str):
                     vm.Container(
                         title="Plotly figure",
                         components=[make_code_clipboard_from_py_file("lollipop.py", mode="plotly")],
+                    ),
+                ]
+            ),
+        ],
+    )
+
+
+def slope_factory(group: str):
+    """Reusable function to create the page content for the slope chart with a unique ID."""
+    return vm.Page(
+        id=f"{group}-slope",
+        path=f"{group}/slope",
+        title="Slope",
+        layout=vm.Grid(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
+
+                #### What is a slope chart?
+
+                A slope chart is a line chart that connects each category between two values with a straight line.
+                The two values can represent two points in time, two ranks, or any other pair of conditions you want
+                to compare. Each line shows whether that category increased or decreased between the two points.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Use a slope chart when you wish to compare the same categories across two points, for example over
+                time or between two rankings. It helps your audience see which categories improved or declined the
+                most. Avoid using it when there are too many categories, as the chart can become cluttered.
+            """
+            ),
+            vm.Graph(figure=slope.fig),
+            vm.Tabs(
+                tabs=[
+                    vm.Container(
+                        title="Vizro dashboard",
+                        components=[make_code_clipboard_from_py_file("slope.py", mode="vizro")],
+                    ),
+                    vm.Container(
+                        title="Plotly figure",
+                        components=[make_code_clipboard_from_py_file("slope.py", mode="plotly")],
                     ),
                 ]
             ),
