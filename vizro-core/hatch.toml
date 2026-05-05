@@ -61,6 +61,9 @@ python = "3.13"
 PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/e2e/vizro/dashboards/yaml:tests/tests_utils:tests/e2e/vizro/custom_components"
 
 [envs.default.scripts]
+# Only run pre-commit hooks when schema is generated, not when it's checked. This keeps the check fast in CI.
+compendium = ["python tools/generate_compendium.py"]
+compendium-check = ["python tools/generate_compendium.py --check"]
 download-static-files = "python tools/download_static_files.py"
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
 generate-docs-images = "python tools/generate_docs_images.py"
@@ -76,7 +79,6 @@ prep-release = [
   'echo "Now raise a PR to merge into main with title: [Release] Release of vizro $(hatch version)"'
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
-# Only run pre-commit hooks when schema is generated, not when it's checked. This keeps the check fast in CI.
 schema = ["python schemas/generate.py", '- pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
 schema-check = ["python schemas/generate.py --check"]
 templates = [
