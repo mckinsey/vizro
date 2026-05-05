@@ -34,7 +34,8 @@ nav = [
   {"API reference" = "pages/API-reference/API-reference.md"},
   {"Vizro projects" = [
     {"Vizro" = "https://vizro.readthedocs.io/"},
-    {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"}
+    {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"},
+    {"Vizro-Experimental" = "https://vizro.readthedocs.io/"}
   ]}
 ]
 
