@@ -190,9 +190,10 @@ def _get_parametrized_config(
 
     for ctd in ctds_parameter:
         selector_id = ctd["id"]
+        selector_value = _validate_selector_value_none(ctd["value"])  # type: ignore[arg-type]
+
         parent_parameter = cast(Parameter, get_selector_parent_control(selector=model_manager[selector_id]))
 
-        selector_value = _validate_selector_value_none(ctd["value"])  # type: ignore[arg-type]
         for dot_separated_string in _get_target_dot_separated_strings(parent_parameter.targets, target, data_frame):
             config = _update_nested_figure_properties(
                 figure_config=config, dot_separated_string=dot_separated_string, value=selector_value

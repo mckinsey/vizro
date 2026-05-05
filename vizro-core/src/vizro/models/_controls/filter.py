@@ -245,7 +245,7 @@ class Filter(VizroBaseModel):
         return selector_call_obj
 
     @_log_call
-    def pre_build(self):  # noqa: PLR0912
+    def pre_build(self):
         # If page filter validate that targets present on the page where the filter is defined.
         # If container filter validate that targets present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
@@ -339,10 +339,9 @@ class Filter(VizroBaseModel):
         self.selector.value = get_selector_default_value(self.selector)
 
         # Set the filter function according to the selector type.
-        if isinstance(self.selector, RangeSlider) or (isinstance(self.selector, DatePicker) and self.selector.range):
-            self._filter_function = _filter_between
-        else:
-            self._filter_function = _filter_isin
+        self._filter_function = (
+            _filter_between if getattr(self.selector, "range", isinstance(self.selector, RangeSlider)) else _filter_isin
+        )
 
         if not self.selector.actions:
             self.selector.actions = [
