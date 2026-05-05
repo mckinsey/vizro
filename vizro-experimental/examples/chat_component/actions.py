@@ -12,6 +12,7 @@ import base64
 import io
 import logging
 from collections.abc import Iterator
+from typing import Any
 
 import dash_mantine_components as dmc
 import pandas as pd
@@ -43,6 +44,56 @@ from vizro_experimental.chat import ChatAction, Message, StreamingChatAction
 from vizro_experimental.chat._constants import COLOR_TEXT_SECONDARY, PLOT_HEIGHT, PLOT_WIDTH
 
 logger = logging.getLogger(__name__)
+
+# Supported by https://platform.openai.com/docs/guides/images-vision#analyze-images
+_VISION_IMAGE_EXTS = (".png", ".jpg", ".jpeg", ".gif", ".webp")
+
+
+def _is_vision_image(filename: str) -> bool:
+    return filename.lower().endswith(_VISION_IMAGE_EXTS)
+
+
+def _vision_user_content(text: str, attachments: list[dict[str, str]] | None) -> list[dict[str, Any]]:
+    """Build the OpenAI vision content blocks for one user turn.
+
+    Always returns a list (a single ``input_text`` block when no images, plus one
+    ``input_image`` block per supported image). Used for both the current turn
+    (images from the file-store) and historical turns (images snapshotted onto each
+    user message's ``attachments`` at send time).
+    """
+    return [
+        {"type": "input_text", "text": text},
+        *(
+            {"type": "input_image", "image_url": f["content"]}
+            for f in (attachments or [])
+            if _is_vision_image(f.get("filename", ""))
+        ),
+    ]
+
+
+def _build_vision_api_messages(
+    messages: list[Message],
+    current_uploaded_files: list[dict[str, str]] | None,
+) -> list[dict[str, Any]]:
+    """Reconstruct the full conversation as OpenAI vision messages.
+
+    Historical user turns re-attach their snapshotted ``attachments`` so the model
+    keeps seeing prior images on follow-ups. The current turn's images come from the
+    ``uploaded_files`` kwarg, since they haven't been snapshotted onto ``messages[-1]``
+    by the framework yet.
+    """
+    api_messages: list[dict[str, Any]] = []
+    for msg in messages[:-1]:
+        text = msg["content"] if isinstance(msg["content"], str) else str(msg["content"])
+        if msg["role"] == "user":
+            api_messages.append({"role": "user", "content": _vision_user_content(text, msg.get("attachments"))})
+        else:
+            api_messages.append({"role": msg["role"], "content": text})
+
+    last = messages[-1]
+    last_text = last["content"] if isinstance(last["content"], str) else str(last["content"])
+    api_messages.append({"role": "user", "content": _vision_user_content(last_text, current_uploaded_files)})
+    return api_messages
 
 
 class simple_echo(ChatAction):
@@ -367,44 +418,27 @@ class openai_vision_chat(ChatAction):
     ) -> str | html.P:
         """Generate response using OpenAI Vision API with images.
 
+        Historical images uploaded in earlier turns are re-sent on every follow-up
+        so the model can keep answering questions about them — matches how
+        ChatGPT / Claude / Gemini behave. Each repeated image is billed per turn,
+        so very long conversations with images attached can get expensive; trim
+        history if cost matters.
+
         Args:
-            messages: Parsed history (``role`` and ``content`` per item).
+            messages: Parsed history (``role`` and ``content`` per item; user turns may
+                carry ``attachments``).
             uploaded_files: List of uploaded file dicts with 'content' and 'filename' keys.
 
         Returns:
             Generated text response or error message component.
 
         """
-        raw_prompt = messages[-1]["content"] if messages else ""
-        prompt = raw_prompt if isinstance(raw_prompt, str) else str(raw_prompt)
-
-        content = [{"type": "input_text", "text": prompt}]
-
-        if uploaded_files:
-            for file_info in uploaded_files:
-                data = file_info["content"]
-                filename = file_info["filename"]
-
-                # supported image file types: https://platform.openai.com/docs/guides/images-vision#analyze-images
-                is_image = any(filename.lower().endswith(ext) for ext in [".png", ".jpg", ".jpeg", ".gif", ".webp"])
-
-                if is_image:
-                    # data is already base64 encoded from dcc.Upload (format: "data:image/png;base64,...")
-                    content.append(
-                        {
-                            "type": "input_image",
-                            "image_url": data,  # Pass the full data URL
-                        }
-                    )
-
-        # Build API messages (exclude the last message since we'll add it with images)
-        api_messages = [{"role": msg["role"], "content": msg["content"]} for msg in messages[:-1]]
-        api_messages.append({"role": "user", "content": content})
-
+        if not messages:
+            return ""
         try:
             response = self.client.responses.create(
                 model=self.model,
-                input=api_messages,
+                input=_build_vision_api_messages(messages, uploaded_files),
                 instructions="You are a helpful assistant that can analyze images and answer questions about them.",
                 store=False,
             )
@@ -448,42 +482,27 @@ class openai_vision_streaming_chat(StreamingChatAction):
     ) -> Iterator[str]:
         """Generate streaming response using OpenAI Vision API with images.
 
+        Historical images uploaded in earlier turns are re-sent on every follow-up
+        so the model can keep answering questions about them — matches how
+        ChatGPT / Claude / Gemini behave. Each repeated image is billed per turn,
+        so very long conversations with images attached can get expensive; trim
+        history if cost matters.
+
         Args:
-            messages: Parsed history (``role`` and ``content`` per item).
+            messages: Parsed history (``role`` and ``content`` per item; user turns may
+                carry ``attachments``).
             uploaded_files: List of uploaded file dicts with 'content' and 'filename' keys.
 
         Yields:
             Text chunks from the streaming response.
 
         """
-        raw_prompt = messages[-1]["content"] if messages else ""
-        prompt = raw_prompt if isinstance(raw_prompt, str) else str(raw_prompt)
-
-        content = [{"type": "input_text", "text": prompt}]
-
-        if uploaded_files:
-            for file_info in uploaded_files:
-                data = file_info["content"]
-                filename = file_info["filename"]
-
-                is_image = any(filename.lower().endswith(ext) for ext in [".png", ".jpg", ".jpeg", ".gif", ".webp"])
-
-                if is_image:
-                    content.append(
-                        {
-                            "type": "input_image",
-                            "image_url": data,
-                        }
-                    )
-
-        # Build API messages (exclude the last message since we'll add it with images)
-        api_messages = [{"role": msg["role"], "content": msg["content"]} for msg in messages[:-1]]
-        api_messages.append({"role": "user", "content": content})
-
+        if not messages:
+            return
         try:
             response = self.client.responses.create(
                 model=self.model,
-                input=api_messages,
+                input=_build_vision_api_messages(messages, uploaded_files),
                 instructions="You are a helpful assistant that can analyze images and answer questions about them.",
                 store=False,
                 stream=True,

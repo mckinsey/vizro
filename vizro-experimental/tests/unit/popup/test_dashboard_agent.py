@@ -13,7 +13,7 @@ import pandas as pd
 import pytest
 from vizro.managers import data_manager
 
-from vizro_experimental.chat.popup.dashboard_agent import query_dataframe
+from vizro_experimental.chat.popup.dashboard_agent import _query_dataframe as query_dataframe
 
 
 @pytest.fixture()

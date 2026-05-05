@@ -193,7 +193,7 @@ def _run_inline_op(df: pd.DataFrame, op: str, *, n: int, ascending: bool, value:
     return _INLINE_OPS[op](df, n, ascending, value)
 
 
-def query_dataframe(  # noqa: PLR0913 — flat kwargs let the LLM tool schema stay flat (no nested params object)
+def _query_dataframe(  # noqa: PLR0913 — flat kwargs let the LLM tool schema stay flat (no nested params object)
     dataset_name: str,
     operation: str,
     by: str | None = None,
@@ -256,7 +256,7 @@ def query_dataframe(  # noqa: PLR0913 — flat kwargs let the LLM tool schema st
         return f"Error executing operation: {exc}"
 
 
-def gather_dashboard_context() -> dict[str, Any]:
+def _gather_dashboard_context() -> dict[str, Any]:
     """Gather schema and component mapping from a built Vizro dashboard.
 
     Must be called after ``app.build(dashboard)``.
@@ -406,7 +406,7 @@ def create_dashboard_agent(
         Tuple of (agent, context) where *agent* is a configured PydanticAI Agent
         and *context* is the gathered dashboard metadata dict.
     """
-    from pydantic_ai import Agent
+    from pydantic_ai import Agent, Tool
     from pydantic_ai.models.openai import OpenAIResponsesModel, OpenAIResponsesModelSettings
 
     settings: Any = None
@@ -417,13 +417,16 @@ def create_dashboard_agent(
         model = OpenAIResponsesModel("gpt-5.4-mini-2026-03-17")
         settings = OpenAIResponsesModelSettings(openai_reasoning_effort=reasoning_effort)
 
-    context = gather_dashboard_context()
+    context = _gather_dashboard_context()
     system_prompt = _build_system_prompt(context)
 
     agent = Agent(
         model,
         system_prompt=system_prompt,
-        tools=[query_dataframe],
+        # name= keeps the LLM-facing tool name as `query_dataframe` even though
+        # the Python symbol is private (`_query_dataframe`); the system prompt
+        # references the LLM-facing name.
+        tools=[Tool(_query_dataframe, name="query_dataframe")],
         model_settings=settings,
     )
     return agent, context
