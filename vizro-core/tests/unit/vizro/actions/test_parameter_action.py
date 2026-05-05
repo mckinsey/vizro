@@ -695,7 +695,7 @@ class TestParameter:
                 id="x_parameter",
                 options=["continent", "country"],
                 value="continent",
-                actions=[vm.Action(function=identity_action_function())]
+                actions=[vm.Action(function=identity_action_function())],
             ),
         )
         model_manager["test_page"].controls = [y_parameter, x_parameter]

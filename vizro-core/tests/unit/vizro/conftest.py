@@ -10,10 +10,8 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import filter_interaction
 from vizro.figures import kpi_card
-from vizro.tables import dash_ag_grid, dash_data_table
-
-
 from vizro.models.types import capture
+from vizro.tables import dash_ag_grid, dash_data_table
 
 
 @pytest.fixture

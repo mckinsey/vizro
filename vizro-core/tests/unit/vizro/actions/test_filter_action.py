@@ -304,10 +304,7 @@ class TestFilter:
         pop_filter = vm.Filter(
             column="pop",
             targets=["scatter_chart"],
-            selector=vm.RangeSlider(
-                id="pop_filter",
-                actions=[vm.Action(function=identity_action_function())]
-            ),
+            selector=vm.RangeSlider(id="pop_filter", actions=[vm.Action(function=identity_action_function())]),
         )
         model_manager["test_page"].controls = [continent_filter, pop_filter]
 
