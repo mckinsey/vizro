@@ -293,7 +293,7 @@ class TestFilter:
         target_scatter_filtered_continent_and_pop,
     ):
         # Creating and adding a Filter objects to the existing Page
-        # default continent filter
+        # Filter with the default action:
         continent_filter = vm.Filter(
             column="continent",
             targets=["scatter_chart"],

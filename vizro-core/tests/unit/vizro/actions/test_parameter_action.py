@@ -667,3 +667,45 @@ class TestParameter:
 
         assert result == expected
 
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
+    @pytest.mark.parametrize(
+        "ctx_parameter_y_and_x, target_scatter_parameter_y_and_x",
+        [(["pop", "continent"], ["pop", "continent"]), (["gdpPercap", "country"], ["gdpPercap", "country"])],
+        indirect=True,
+    )
+    def test_one_default_parameter_one_parameter_with_custom_action_one_target(
+        self,
+        identity_action_function,
+        ctx_parameter_y_and_x,
+        target_scatter_parameter_y_and_x,
+    ):
+        # Creating and adding a Parameter object to the existing Page
+        # Parameter with a default action:
+        y_parameter = vm.Parameter(
+            id="test_parameter_x",
+            targets=["scatter_chart.y"],
+            selector=vm.RadioItems(id="y_parameter", options=["lifeExp", "pop", "gdpPercap"], value="lifeExp"),
+        )
+        # x_parameter has a custom action defined, and it does **not** trigger the parametrization process when changed.
+        # However, it is taken into account whenever its target is updated (e.g. when y_parameter value changes).
+        x_parameter = vm.Parameter(
+            id="test_parameter_y",
+            targets=["scatter_chart.x"],
+            selector=vm.RadioItems(
+                id="x_parameter",
+                options=["continent", "country"],
+                value="continent",
+                actions=[vm.Action(function=identity_action_function())]
+            ),
+        )
+        model_manager["test_page"].controls = [y_parameter, x_parameter]
+
+        # Adds a default _parameter Action to the "y_parameter" selector object
+        y_parameter.pre_build()
+        x_parameter.pre_build()
+
+        # Run action by picking the above added action function and executing it with ()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function(_controls=None)
+        expected = {"scatter_chart": target_scatter_parameter_y_and_x}
+
+        assert result == expected
