@@ -1,8 +1,8 @@
 import math
 
+import networkx as nx
 import pandas as pd
 import plotly.graph_objects as go
-import networkx as nx
 from vizro.models.types import capture
 
 COLORS = ["#3498db", "#e74c3c", "#2ecc71", "#9b59b6", "#f39c12", "#1abc9c", "#e67e22", "#34495e", "#95a5a6", "#d35400"]
@@ -83,8 +83,42 @@ def network(data_frame: pd.DataFrame, source: str, target: str):
     return fig
 
 
-network_data = pd.DataFrame({
-    "source": ["CEO", "CEO", "CEO", "CTO", "CTO", "CFO", "CFO", "COO", "COO", "Product", "Product", "Finance", "Finance", "HR", "HR"],
-    "target": ["CTO", "CFO", "COO", "Product", "Data", "Finance", "Legal", "HR", "Marketing", "Design", "Research", "Payroll", "Accounting", "Recruiting", "Training"],
-})
+network_data = pd.DataFrame(
+    {
+        "source": [
+            "CEO",
+            "CEO",
+            "CEO",
+            "CTO",
+            "CTO",
+            "CFO",
+            "CFO",
+            "COO",
+            "COO",
+            "Product",
+            "Product",
+            "Finance",
+            "Finance",
+            "HR",
+            "HR",
+        ],
+        "target": [
+            "CTO",
+            "CFO",
+            "COO",
+            "Product",
+            "Data",
+            "Finance",
+            "Legal",
+            "HR",
+            "Marketing",
+            "Design",
+            "Research",
+            "Payroll",
+            "Accounting",
+            "Recruiting",
+            "Training",
+        ],
+    }
+)
 fig = network(network_data, source="source", target="target")

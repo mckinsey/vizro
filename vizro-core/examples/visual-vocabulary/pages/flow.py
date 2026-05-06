@@ -4,7 +4,7 @@ import vizro.models as vm
 
 from pages._factories import waterfall_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import sankey, network
+from pages.examples import network, sankey
 
 sankey_page = vm.Page(
     title="Sankey",
@@ -59,16 +59,16 @@ network_page = vm.Page(
 
             #### What is a network chart?
 
-            A network chart visualizes relationships between entities using nodes and edges. Nodes represent 
+            A network chart visualizes relationships between entities using nodes and edges. Nodes represent
             individual entities, while edges show the connections or relationships between them.
 
             &nbsp;
 
             #### When should I use it?
 
-            Use a network chart to show relationships, connections, or interactions between multiple entities. 
-            It's particularly effective for visualizing social networks, organizational structures, 
-            transportation routes, or any system where connections matter. Avoid using with too many nodes 
+            Use a network chart to show relationships, connections, or interactions between multiple entities.
+            It's particularly effective for visualizing social networks, organizational structures,
+            transportation routes, or any system where connections matter. Avoid using with too many nodes
             as the chart can become cluttered and difficult to read.
         """
         ),
