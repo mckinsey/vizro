@@ -4,7 +4,7 @@ import vizro.models as vm
 
 from pages._factories import waterfall_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import donut, funnel, pie, stacked_bar, stacked_column, treemap, venn
+from pages.examples import donut, funnel, pie, stacked_bar, stacked_column, treemap, venn, arc
 
 pie_page = vm.Page(
     title="Pie",
@@ -288,9 +288,48 @@ venn_page = vm.Page(
 
 waterfall_page = waterfall_factory("part-to-whole")
 
+arc_page = vm.Page(
+    title="Arc",
+    path="part-to-whole/arc",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is an arc chart?
+
+            An arc chart is a circular visualization that displays proportional data as arcs extending from a 
+            central ring. It's similar to a donut chart but with more emphasis on the arc shape itself.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use an arc chart to show part-to-whole relationships with a unique visual style. It's particularly 
+            effective when you want to compare values across categories while maintaining a clean, modern look.
+            Avoid using it with too many categories as the arcs can become difficult to read.
+        """
+        ),
+        vm.Graph(figure=arc.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("arc.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("arc.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
 pages = [
     donut_page,
     pie_page,
+    arc_page,
     treemap_page,
     stacked_bar_page,
     stacked_column_page,
