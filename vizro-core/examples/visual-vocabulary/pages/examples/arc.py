@@ -103,8 +103,7 @@ def arc(data_frame: pd.DataFrame, source: str, target: str, value: str | None = 
 
     node_size = max(15, 22 - num_nodes * 0.5)
     connection_counts = {
-        node: ((data_frame[source] == node) | (data_frame[target] == node)).sum()
-        for node in unique_nodes
+        node: ((data_frame[source] == node) | (data_frame[target] == node)).sum() for node in unique_nodes
     }
     fig.add_trace(
         go.Scatter(
