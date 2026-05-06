@@ -32,7 +32,6 @@ jobs:
           hatch run playwright install --with-deps chromium
       - name: Run tests
         run: |
-          hatch run example chat_component &
           hatch run test-integration-vizro-chat-component
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
