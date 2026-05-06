@@ -1,4 +1,5 @@
-<!-- index.html -->
+<!-- This file is auto-generated. Do not edit manually.
+     Edit docs/pages/components_compendium/compendium_data.yaml and run `hatch run compendium`. -->
 <!doctype html>
 <html lang="en">
   <head>
@@ -72,7 +73,7 @@
             </p>
             <div class="version-banner">
               <div class="version-info">
-                <span class="version-badge">v0.1.55.dev0</span>
+                <span class="version-badge">v0.1.54</span>
               </div>
               <div class="version-divider"></div>
               <div class="version-links">
@@ -177,13 +178,16 @@
                       <a href="#rangeslider" class="nav-link nav-link-sub">RangeSlider</a>
                     </li>
                     <li class="nav-item">
-                      <a href="#datepicker" class="nav-link nav-link-sub">DatePicker</a>
+                      <a href="#datepicker" class="nav-link nav-link-sub">DatePicker (single date)</a>
                     </li>
                     <li class="nav-item">
-                      <a href="#daterangepicker" class="nav-link nav-link-sub">DateRangePicker</a>
+                      <a href="#daterangepicker" class="nav-link nav-link-sub">DatePicker (date range)</a>
                     </li>
                     <li class="nav-item">
                       <a href="#switch" class="nav-link nav-link-sub">Switch</a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="#cascader" class="nav-link nav-link-sub">Cascader</a>
                     </li>
                   </ul>
                 </li>
@@ -238,24 +242,6 @@
                         <div class="carousel__item">
                           <div class="carousel__item-content">
                             <div class="carousel__item-image">
-                              <img src="assets/images/notifications.gif" alt="Notifications" />
-                            </div>
-                            <div class="carousel-content">
-                              <h3 class="carousel__item-title">Notifications</h3>
-                              <p class="carousel__item-description">The <code>show_notification</code> action displays a temporary message to the user.
-<br />
-Notifications appear at the top-right of the screen and are customizable with options
-for content and styling.
-</p>
-                              <div class="view-btn">
-                                <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/notification-actions/" class="version-link">View Notifications</a>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="carousel__item">
-                          <div class="carousel__item-content">
-                            <div class="carousel__item-image">
                               <img src="assets/images/controls_in_containers.gif" alt="Controls in containers" />
                             </div>
                             <div class="carousel-content">
@@ -272,7 +258,7 @@ such as filters and parameters. Controls can only target components inside their
                         <div class="carousel__item">
                           <div class="carousel__item-content">
                             <div class="carousel__item-image">
-                              <img src="assets/images/cross_highlight.gif" alt="Set controls" />
+                              <img src="assets/images/cross_highlight.gif" alt="Set controls action" />
                             </div>
                             <div class="carousel-content">
                               <h3 class="carousel__item-title">New action set_controls</h3>
@@ -281,6 +267,24 @@ intelligence (BI) tools.
 </p>
                               <div class="view-btn">
                                 <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions/" class="version-link">View new Actions</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="carousel__item">
+                          <div class="carousel__item-content">
+                            <div class="carousel__item-image">
+                              <img src="assets/images/notifications.gif" alt="Notifications" />
+                            </div>
+                            <div class="carousel-content">
+                              <h3 class="carousel__item-title">Notifications</h3>
+                              <p class="carousel__item-description">The <code>show_notification</code> action displays a temporary message to the user.
+<br />
+Notifications appear at the top-right of the screen and are customizable with options
+for content and styling.
+</p>
+                              <div class="view-btn">
+                                <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/notification-actions/" class="version-link">View Notifications</a>
                               </div>
                             </div>
                           </div>
@@ -335,7 +339,7 @@ intelligence (BI) tools.
                   </svg>
                 </h3>
                 <div class="category__content">
-                                    <div class="component" id="graph">
+                                    <div class="component" id="graph" data-aliases="chart plot plotly figure visualization px express">
                     <div class="component_title">
                       <h4 class="component__name">Graph</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/graph/" target="_blank" class="utility-btn">
@@ -344,6 +348,12 @@ intelligence (BI) tools.
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F21Ry27EIAz8FcSJSBEfUCmXPtRrT70sOTiBJEi86pAo26r%2FXpOsut22c8F4xjaMP3gfteF3jFufIma22neMMrmY3VmaLaGZZwYzS5sKA0Z%2FCNhF%2FVouKtzUemro9prVq6CCHlhD5VJDBjlC8jZog6IqXILRELt6%2BUKRUIERss3ONIrfA7KHCajx0wY%2BOaN4fSj6SAODCXluTkemgLo8I6RJXFMFgx0XNA29oAP8xRXoof6b3Gh%2BH0O2Zcr33J84kyLF9C%2FXRxfxtsOtqLpeL2Grwu4IpESG7L6KSnaLdVrQxx5hnroIqEWxjL5djraqeM04mrfFovHFj7LJfQ2FGKwzJXNqP78Ao7x5EOgBAAA%3D" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">
@@ -385,7 +395,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                     </div>
                   </div>
 
-                                    <div class="component" id="card">
+                                    <div class="component" id="card" data-aliases="text card info card tile panel markdown">
                     <div class="component_title">
                       <h4 class="component__name">Card</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/card/" target="_blank" class="utility-btn">
@@ -394,6 +404,12 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F2VRu27DMAz8FUKTDRj%2BgAKZ2rFDpy6RB8ZiEgJ6RY8gaNF%2FL2UVCJLKg3XU8Ugev9UaDKkXUMcUHFz5KwVgF0Mq8NmA9n9oe5qdsG0GzHB12msf8USwEzB%2FyG3QHuQULpZ2Wm0C8IrJAN3QRUtaTZ2yBlH15Eve7XukHZFp7OEe2eToVkStfe8hkQOOuTowwYYEmQugozI95kgBn2ktVGoCNBw5r%2BxPQJbLBJmMpD9lENcs40m5NjCwX9mwqb5ALWDxIKWfM0pvgsDhySOg5UvFubf61NCZ0FCSMTY7OvpHOoZQ7qSOHkhjvy7aj819jFHM32wexvlQ2ZpBPHzDfD6EZmRbjzjcfss4qglUoktlMbFZ39a%2BrbU9HNlSi%2ByXn19vSrZJFQIAAA%3D%3D" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">
@@ -432,7 +448,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                     </div>
                   </div>
 
-                                    <div class="component" id="aggrid">
+                                    <div class="component" id="aggrid" data-aliases="table grid ag grid ag-grid dash_ag_grid datatable">
                     <div class="component_title">
                       <h4 class="component__name">AgGrid</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/table/" target="_blank" class="utility-btn">
@@ -441,6 +457,12 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F1VRTWvDMAz9K8YnB4p%2FwCCHQqHXnXapQ1BqOzP4a7YTuo3990lJRztdLL%2F3LD3J3%2FyatOEvjLuQU2lsdV8lyexT85%2FS3HIxtTKoLN9U%2FCcJ%2BM5v1BpUtCWFnWB31RtdngnZYPKm%2FvEa6vsI8zgXp1VUUVvWYxepoYGcIQcXtSmiIy7DbJBdg3zFTKjIMJpr3vSKn4yFxTd2woLseGZnKsgPu%2BiasFs0sdX%2BsiMUWOg4k048MArr5qWY%2FtmaID%2BjLRAQt91Df08HFTeLkDM63IYWnZwW57XANmRqSlC0oBnQBB1D1%2FED48V8LK6YQO7oB7YtEWEd7gmRy%2FDzC9D3qE%2BgAQAA" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">
@@ -478,7 +500,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                     </div>
                   </div>
 
-                                    <div class="component" id="button">
+                                    <div class="component" id="button" data-aliases="click cta action button submit">
                     <div class="component_title">
                       <h4 class="component__name">Button</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/button/" target="_blank" class="utility-btn">
@@ -487,6 +509,12 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F51TsW7CMBD9FddTIqGwI2Vpq3ZhqFSJBTMY5yAnHNu1HUJb9d97NqkQoqooXpy79%2B7dxX7%2B5Mo2wGeMb7zt2B4%2FvGXYOesjW6RAmDHKUNURWwcmA9t3wgjj5BZYTUH1Ql%2BFMIxWxKihFjwLsHUfozVB8MkR1fLd9rGmkicNh6JBDyqiNVTg7SB4OfKUpcYGTAz18phJi8rus2BxyuWecIiksEGtoRH8BP7IXVFMY2k0qXxyju%2BlR2nOKTd1cFqi%2BUN%2BxG%2FSftCodqyDuwv9BoLy6MZDfo2SrjO2wJy3CkKozgr%2B0XGBASN7tnar4aJp62FDnDZGF2bT6TAM1TYzK7rYCzaqPNscze6q0%2F9l4BXtZfKkdI4smc1XlNW6R90U9CePMrRrK31TJNOSqdK2Kks%2BYdzDW08%2B7JLb0mPIZk8A%2BQlSZrn6%2BgYMMo2sKwMAAA%3D%3D" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">
@@ -539,7 +567,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                     </div>
                   </div>
 
-                                    <div class="component" id="figure">
+                                    <div class="component" id="figure" data-aliases="custom figure kpi indicator callable">
                     <div class="component_title">
                       <h4 class="component__name">Figure</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/figure/" target="_blank" class="utility-btn">
@@ -548,6 +576,12 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F21S32uDMBD%2BV0KeFETcxhgMfNhaCmMvZYO9NCKpRhumSRajYyv933enTkvrEZJc7rtf3%2BVIM50L%2BkiorI22jhiuct4QWCZnqrC6Jp38tZqM9g9UmBq13hTWEKLqfbr63CcsZNla0fz7fhqZZtzmqRWFsEJlgimm8iIFA4khYbjmjm8sr4XHFAE5DgcKo0%2BZa3nFoNjdTRQF5Ba3hyhKgnPU2xR7At7hdn8JXHEnSm1%2FehxEZzSA1%2BfhWDGaDOATUz6WaXgpoMiuDrdwG%2Btz0lUiZvR1%2B0Kmpgj2CGEGSKaheSWUa%2BLdnB7CbHpyvPkNZWAsvmbqAoeSA1lpgWzFA4fBNabjVSvSTFdtreKZwgXklGlGn1G54LDc%2B7d0ByIzrRZ90AAu7wdtjFQlWXHrroD%2BrI5XHFw%2FBG4MzKD%2Fg54f7ltZ5R5QuebNYa%2BBLw%2BnBETjkfg%2BjJJa8dVKK2qcAP7z%2FmeioZCVwJddcvoDUzF%2F2AYDAAA%3D" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">
@@ -597,7 +631,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                     </div>
                   </div>
 
-                                    <div class="component" id="text">
+                                    <div class="component" id="text" data-aliases="markdown paragraph label rich text">
                     <div class="component_title">
                       <h4 class="component__name">Text</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/text/" target="_blank" class="utility-btn">
@@ -606,6 +640,12 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F2VRy2rEMAz8FeG9JBDyAQu59VhKD6WXdQ7eRNsa%2FIofS9rSf68UF0JY%2BWBpNBLS6EdMfkZxBqFt8DHDXX9H3wfjs%2FnqcQ0RUwKVIKzS3aK3lQD%2F7HcOpDvUWmpotpq7lU66oD4QBgr6V%2FIa6YAs62xwkOIN1yxFV8HJUx%2BHLqfhUhE2KmRWsyNbA4KofnuHBNvpBM8%2BogUdUrGP%2BRdcCgLNTJssRaelKAuYMgeP7NmbvRlTVIUg6fzIVhZzR6u4hFPGXCKoWQedJt0fyXX4bgfb6o4EtSycCoF02yRu2v5atJkbEuNJpc%2BrV3FuWFmSir%2BxbUUHItJimmZlDfmo20U4cdMGGbmMv38%2Bl5dQ8wEAAA%3D%3D" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">
@@ -645,7 +685,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                     </div>
                   </div>
 
-                                    <div class="component" id="container">
+                                    <div class="component" id="container" data-aliases="section wrapper group panel">
                     <div class="component_title">
                       <h4 class="component__name">Container</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/container/" target="_blank" class="utility-btn">
@@ -654,6 +694,12 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F9VUTU%2BEMBD9Kw2nkhCiVxNOmuzVkxcgptAuNJa2TgvLavzvTmF3ZZc1HvTiHEo7780HM52%2BR7XhIrojkeysAU8G%2BQYmtcp4tU%2FFaEE4R5gjdiz0GaVDOzVBQ1foLZhuBsiB9RQOhUYrkI5k6CDlzLM0HGkcAMsagcDQpY%2B4o4UmKF56JbIiujfaM6kFuCJKZkixvel9hvwNSE4bXLI8v0nIbVnGB05tMLoW2rssnzVB0OTkj36pr8YjO%2BlbUrH6pQHTa44ulYFTEke5HmgRcAPMtnQNBdnKpgeRYUlczbxfJbWUUK%2Fke3jE3J2wTD3vJPftKs%2Bl7E9cJXTzA3n67WBgRS0FduE6NV6rL1TlRZCBgWTao%2ButVErwsyzi5FddM8CXN%2BaPm1WZ8ZeNOtbyHzUJR05hhS%2FaNG%2BD1TTKzFqc5GnkaZxWvVScYlkfmGsrw4DTMOtY%2FPAp4zhKSATitZcgutCV8P5Mj0cA8FaIoMnLj08fyGmdngQAAA%3D%3D" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">
@@ -716,7 +762,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                     </div>
                   </div>
 
-                                    <div class="component" id="tabs">
+                                    <div class="component" id="tabs" data-aliases="tabbed tab view navigation tabset">
                     <div class="component_title">
                       <h4 class="component__name">Tabs</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/tabs/" target="_blank" class="utility-btn">
@@ -725,6 +771,12 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F9VUPU%2FDMBD9K5anRKoiITakTIAQW4eKpe7gJE5qyV%2FYbpUW8d%2B5S2kIbQrtUCRuSXzv3buz9XRvtLSVoHeESu2sj2Qtt95mTtmoNplonRchEB6Ia5mpvdU7Avlkv%2BCBmW%2B1GgRVV7PWzDDTcKelqYQnOahkFY8863NJihTHGwHoWmdT%2BEuYIRBRRiVyRme8CIxOdsnSQisjTAz5fJfBgEJkJV%2BZQwEyw0Mv01MAGgoNBO%2BtiVwaGPEYPlAnz0fC%2Bxifd6Tdk%2BdumZymYNSyWXmRwyMW3P%2FCxehfefI7d3%2Bdbg5yc%2FJCw2iBX8IzSbzgWRUbqFCyFo%2BtO4tfWmX9RV3SH%2FBT2GIkP8a91BV%2FbotQ8hjFda1xe7Y1mspNhS%2B5u4o1gtziUM7%2BNycNOXsMc90m5M7BIuzWapJmxUqqKgEbPPCwLCz3VYKrEkyDn0Wa0gmhXryupBca3YSLvNvCCNRSCczMF%2B8fH4wmK%2BcFAAA%3D" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">
@@ -802,7 +854,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                   </svg>
                 </h3>
                 <div class="category__content">
-                                    <div class="component" id="grid">
+                                    <div class="component" id="grid" data-aliases="css grid rows columns layout grid">
                     <div class="component_title">
                       <h4 class="component__name">Grid</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#grid-layout" target="_blank" class="utility-btn">
@@ -811,6 +863,12 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F4VRu27DMAz8FUKTBQhG46RLAU8N0DVTFsuDEiupAD1cWQ7aBPn3kLEAFx1qLuLxjhQfN3YMnWZvwIzrQ0xwMdcYSodBO4Aa4OKkP8XgJgKyak9Aeul7ddZQo6rcoVdID2jJJKtryT6i6cCqnzAmycTETbDGBGJzAtkZYd3MmKx5EbASsBawacUfqhJQZWpmssuz%2BBiwXa99Gn5Xxr%2FfVeyKpL8Tdkk%2BrCTj4n9JtSxZL0s2y5LXWUJTc9qz6ntc83PtBS8Po7FdgblbNXweAhWgQ%2BCU9LScMwEs6q%2FRRO1ofDrw84BEnIzVFGna%2BwPAlKHg%2FwEAAA%3D%3D" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">
@@ -852,7 +910,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                     </div>
                   </div>
 
-                                    <div class="component" id="flex">
+                                    <div class="component" id="flex" data-aliases="flexbox flexible layout stack row column">
                     <div class="component_title">
                       <h4 class="component__name">Flex</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#flex-layout" target="_blank" class="utility-btn">
@@ -861,6 +919,12 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F22SPU%2FDMBCG%2F4rlKZaqCAkmpGwIVgbEUndwE6ec5PjM2UkTEP%2Bdc5LSFrgluffxG99HPmWNjZX3QkIXkJIY4IOw7Fh0UZgohk77lrBbgFhPveZE%2BytPcJjcVNoxkI2zN4zaa58gRFFxUjYmmTKnhcogmINlMHTlM78V2guOBMnZSstHZ0fhzIR90nKzsCWt2JDpasjRANk6AXo2Eh5%2FDDkOJrB6d8PFXMpHYv2FertIakU1ckve%2BhSr7fkw3%2FjE598urszRwqEnW3FnA6AD%2Fwsv7YS4%2BStPXBKjq4pOMTJrzPQvq9Ehnfg1VudUiRZJgAAvyHge7e0Kd%2FzJefQmBJ78vMVClfseXFNwkw8mvu3RUFPk3fAI8mOnlNwISfa95zF3eTb5f5mXnkELzmZlu%2Fv6Bv7%2BAG1OAgAA" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">
@@ -917,7 +981,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                   </svg>
                 </h3>
                 <div class="category__content">
-                                    <div class="component" id="filter">
+                                    <div class="component" id="filter" data-aliases="query subset vm.Filter">
                     <div class="component_title">
                       <h4 class="component__name">Filter</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/" target="_blank" class="utility-btn">
@@ -926,6 +990,12 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F3VSy07EMAz8lSinVKr6AUi9Ibhy4rKtULZ1u5HywklLF8S%2FY7ewlF0xl8Tj8Thx8iG70IO8E9K4GDCL2bxjqKIN2Z4rWCJCSkInEZfGDxjcJhDf6mcOGv%2Bn1pGhXWtm13hKokmiJoOq11lXHKqCE1GPQInZVU%2B0U40XhGyyhbqRD8ZmwEaWG90FauHB51QfNoZBpY%2Bo40n9UozBjBNCTR1TpzPZXOUZfIzyll6odYKo7YsFP%2BbT5QB7nEkUIZPozfT%2FaLpgA7JZhM5AutEUu%2Fhn314u6zMGe33VbSSKnCfn99b7%2BnWyOkYa7Po4qqiOk7G9IoN7nU7HoLFXPHqy56UtClkKifA6GQTHI%2BbvsL4lJwZjgZlD%2B%2FkFZET5Ki0CAAA%3D" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">
@@ -970,7 +1040,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                     </div>
                   </div>
 
-                                    <div class="component" id="parameter">
+                                    <div class="component" id="parameter" data-aliases="param argument input vm.Parameter">
                     <div class="component_title">
                       <h4 class="component__name">Parameter</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/parameters/" target="_blank" class="utility-btn">
@@ -979,6 +1049,12 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F41TTW%2BDMAz9K1lOICF%2BwCQOk6btNKmnXQqqUnAhUkgyJ%2FRj0%2F77nNB2wDqpvkDs55fnJ%2BeL16YB%2Fsi47K1Bz%2FbyE01ulfHqlMPRIjjHhGP2WOodmn4EsDP6PRxKPevtiVDFnn1faiqidKwggrwRXuThmKShYEULVNj3%2BYr%2BklIzCi%2B9gqLkK4GiBw9Y8mys1IZu0aC9K9ZjJgR1v6KwXfKbCiEb4nC18MSwqTuB%2FspziZ1sB4SCdJ1xC4pIQ2Kzv%2BmLyLcTO%2Fey23eEOAYlYIXaKNCt726CTgSy4Al0kM0%2FmNoog4HMQi3BlXwOSSctl%2F%2Fq6p32aNTSuavJi9G9wBaiz3MP8zh4yauFOgcKak%2FiiPMZjW3MQd9w01gvjZ6JmMadfo7QJ7aFCIySHpZmTIefRj8oL4sXoRxk99kXV1VYS5satz1J8%2B0gVZOEWYXrtkZgk4RdpsHCp0pTnjGO8DFIhD4sbHhf8XGEwk4qCJl19f0DOei82n4DAAA%3D" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">
@@ -1051,7 +1127,7 @@ model can be entered to choose how the user should input their choices for the
 respective models.
 </p>
                       <div class="component_content_selectors">
-                                                <div class="component_card" id="dropdown">
+                                                <div class="component_card" id="dropdown" data-aliases="select menu picker vm.Dropdown">
                           <h3 class="component_card_title">Dropdown</h3>
                           <div class="component_card_content">
                             <img src="assets/images/dropdown.png" alt="Dropdown selector" />
@@ -1075,7 +1151,7 @@ respective models.
                           </div>
                         </div>
 
-                                                <div class="component_card" id="checklist">
+                                                <div class="component_card" id="checklist" data-aliases="checkbox checkboxes multi select vm.Checklist">
                           <h3 class="component_card_title">Checklist</h3>
                           <div class="component_card_content">
                             <img src="assets/images/checklist.png" alt="Checklist selector" />
@@ -1099,7 +1175,7 @@ respective models.
                           </div>
                         </div>
 
-                                                <div class="component_card" id="radioitems">
+                                                <div class="component_card" id="radioitems" data-aliases="radio radio buttons single choice vm.RadioItems">
                           <h3 class="component_card_title">RadioItems</h3>
                           <div class="component_card_content">
                             <img src="assets/images/radioitems.png" alt="RadioItems selector" />
@@ -1123,7 +1199,7 @@ respective models.
                           </div>
                         </div>
 
-                                                <div class="component_card" id="slider">
+                                                <div class="component_card" id="slider" data-aliases="range input single slider numeric vm.Slider">
                           <h3 class="component_card_title">Slider</h3>
                           <div class="component_card_content">
                             <img src="assets/images/slider.png" alt="Slider selector" />
@@ -1149,7 +1225,7 @@ respective models.
                           </div>
                         </div>
 
-                                                <div class="component_card" id="rangeslider">
+                                                <div class="component_card" id="rangeslider" data-aliases="range slider min max interval two-handle vm.RangeSlider">
                           <h3 class="component_card_title">RangeSlider</h3>
                           <div class="component_card_content">
                             <img src="assets/images/rangeslider.png" alt="RangeSlider selector" />
@@ -1175,10 +1251,10 @@ respective models.
                           </div>
                         </div>
 
-                                                <div class="component_card" id="datepicker">
-                          <h3 class="component_card_title">DatePicker</h3>
+                                                <div class="component_card" id="datepicker" data-aliases="date calendar single date vm.DatePicker">
+                          <h3 class="component_card_title">DatePicker (single date)</h3>
                           <div class="component_card_content">
-                            <img src="assets/images/datepicker.png" alt="DatePicker selector" />
+                            <img src="assets/images/datepicker.png" alt="DatePicker single date selector" />
                             <div class="code-block">
                               <button class="code-block__copy-button" aria-label="Copy code to clipboard">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1200,10 +1276,10 @@ respective models.
                           </div>
                         </div>
 
-                                                <div class="component_card" id="daterangepicker">
-                          <h3 class="component_card_title">DateRangePicker</h3>
+                                                <div class="component_card" id="daterangepicker" data-aliases="date range from to period calendar range vm.DateRangePicker">
+                          <h3 class="component_card_title">DatePicker (date range)</h3>
                           <div class="component_card_content">
-                            <img src="assets/images/daterangepicker.png" alt="DateRangePicker selector" />
+                            <img src="assets/images/daterangepicker.png" alt="DatePicker date range selector" />
                             <div class="code-block">
                               <button class="code-block__copy-button" aria-label="Copy code to clipboard">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1224,7 +1300,7 @@ respective models.
                           </div>
                         </div>
 
-                                                <div class="component_card" id="switch">
+                                                <div class="component_card" id="switch" data-aliases="toggle boolean on off checkbox switch vm.Switch">
                           <h3 class="component_card_title">Switch</h3>
                           <div class="component_card_content">
                             <img src="assets/images/switch.png" alt="Switch selector" />
@@ -1246,6 +1322,34 @@ respective models.
                           </div>
                         </div>
 
+                                                <div class="component_card" id="cascader" data-aliases="hierarchical tree nested cascading hierarchy vm.Cascader">
+                          <h3 class="component_card_title">Cascader</h3>
+                          <div class="component_card_content">
+                            <img src="assets/images/cascader.png" alt="Cascader hierarchical selector" />
+                            <div class="code-block">
+                              <button class="code-block__copy-button" aria-label="Copy code to clipboard">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+                                <span class="code-block__copy-text">Copy</span>
+                              </button>
+                              <pre><code class="language-python">controls=[
+    vm.Filter(
+        column="continent",
+        selector=vm.Cascader(
+            title="Continent",
+            options={
+                "Americas": ["Argentina", "Brazil", "Canada"],
+                "Europe": ["France", "Germany", "United Kingdom"],
+            },
+        ),
+    )
+]</code></pre>
+                            </div>
+                          </div>
+                        </div>
+
                       </div>
                     </div>
                   </div>
@@ -1260,7 +1364,7 @@ respective models.
                   </svg>
                 </h3>
                 <div class="category__content">
-                                    <div class="component" id="export-data">
+                                    <div class="component" id="export-data" data-aliases="export download csv save data export_data">
                     <div class="component_title">
                       <h4 class="component__name">Export data</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/data-actions/" target="_blank" class="utility-btn">
@@ -1269,6 +1373,12 @@ respective models.
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F21Sy07EMAz8lSinVCr5AKQeQDyunLhsVqts67aR8iJxqwLi33HahWVX%2BJLGY4%2FHk37yNnTAbxk3LoaEbDYfKchoA9p3CUtMkDPTmcVF%2BYsS3aIJfsVmfYU54rQb5JTvU3AbwE5Vr%2BWivPJdzxqilp1GLU0yWVQlHfUABMxOvtCXUJ5RoEELjeJ3p8E3jOQR26E0K15vVW2gER485ma3ZUoQ03PScRTnVIneDFOChgSMJmMYknai62u20JgMUduDBT%2FgqHh1bqzqC977CTH4K2KEBYnjcRXILgT%2BxMm%2FZtbyzx7in0H739U8pmBpMRr7ZCxCEm2wk%2FNFboTWQCalpXx1UcdIJq5ei0oeJ2M7QZ0POo%2FHoFMnis3EVo59VfGa8QRvk0ngin%2Flp1hfrQC9sVAyu%2F3XN7n3eE4zAgAA" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">
@@ -1316,7 +1426,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                     </div>
                   </div>
 
-                                    <div class="component" id="set-control">
+                                    <div class="component" id="set-control" data-aliases="cross filter cross-filter cross highlight cross-highlight interaction drill drill down set_control linked click filter">
                     <div class="component_title">
                       <h4 class="component__name">Graph & table interactions</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions/" target="_blank" class="utility-btn">
@@ -1325,6 +1435,12 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F21TTU%2BEMBD9Kw0XIVn5ASYczBq9evKyENKFLtvYL9uCqPG%2FO9OyLkXbA%2B28mXlvOsNX1umeZXck49Jo68nEP60ujdBefJRsNpY5R6gjZq5V4kI7z7UK2EQ3mIScIkKyVierZQTI4vWClzVQenoUzF3wnrpzS4d2sLyvVa08N45UoKHsqaclXvMCAUMHBsAky2c45bUisDz3glV1trfaudsTF55ZErgCC%2FGaDJaac53tYkCngVYx5V11iBZckPR%2BeAIF%2BdW2To97L3j3SrQilFj9jplHBwRn6vF%2B49JIx2Z0WRQtGnDvUr8TH0bLqvUr5FhzsfFbWlBNtHTMt51W3mqxkRsLDAiIBglt5AdWaJwYWbSCjCRszbU%2Bw6s8ofANC%2B8hDWps06fdlAQdPHPnNTjJUNKOzDGwzoq%2FhM1vg4L%2BbXseQyH%2FKUnKTPFOi1GqS9Eb0FM7sDAGSTHNStpVGRypMTB%2BYZzzojyOXPQ5CHuAzh01tX2OAwrp8NMUBTx5ZtnbyC2TOG7434X5RwD0MrQcmu8f3wSNuZYDAAA%3D" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">
@@ -1383,7 +1499,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                     </div>
                   </div>
 
-                                    <div class="component" id="notifications">
+                                    <div class="component" id="notifications" data-aliases="notification toast alert message show_notification banner">
                     <div class="component_title">
                       <h4 class="component__name">Notifications</h4>
                       <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/notification-actions/" target="_blank" class="utility-btn">
@@ -1392,6 +1508,12 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
                         Docs
+                      </a>
+                      <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F3VSTW%2BDMAz9KxmnICF%2BwCQuU7ddd9qlqSqXBIgU4iwJLd20%2Fz4H6MfazReI%2Ffz8%2FPGV1ShV9sgy3Tv0ke31p8fSGYzmWKrReRUCg8DcKOwvCNRRo51ie7iJ9cRp5lAvbOOxnwNsQb2nh7DCyoZVRF1KiFBqrwPPk9tBqyiw78s3%2BuPCMrKoo1GVyJ7HieOgY8csRt3oGpIUkRUz0MARh1hR9otRI88Xd41U3CobQ7WePckI9erBdfziStbodvCqImmdDhFbDz2XTcFGEhCUA7M1yraxE1l%2BSTxVWnifhhjR3hBHNcZLE6nvs%2B6TLZO9VnlmhbQTytymTJ4Xf0JCh4ft9Wj4PexKy4qo2EyrJAtDXdPOm8GY48OdtksVr8Gm7AX%2FL1LXaAkm8WANgvwTd9vHprgfavJNxwHO0W1MJ8TzcjdoIzlNewWh2yF4ydP10PTSZ5PnWcEyrz4G7VWflp9ufTrGFGi0Ucmz3nz%2FAPnPRHEKAwAA" target="_blank" class="utility-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+                        Try it
                       </a>
                     </div>
                     <div class="component-body">

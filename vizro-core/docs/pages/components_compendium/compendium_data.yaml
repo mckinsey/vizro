@@ -3,41 +3,26 @@
 # To add a new component or action:
 #   1. Add an entry to the relevant category below.
 #   2. Add an image to assets/images/.
-#   3. Run `hatch run compendium` to regenerate index.html.
-#   4. Commit both this file and index.html.
+#   3. Optionally add a featured: block to highlight it in the "Latest updates" carousel.
+#   4. Run `hatch run compendium` to regenerate index.html.
+#   5. Commit both this file and index.html.
+#
+# To feature a component in the "Latest updates" carousel, add a featured: block to its entry:
+#
+#   featured:
+#     title: Short headline shown in the carousel
+#     image: assets/images/my_feature.gif   # can differ from the component's own image
+#     description: |
+#       HTML description shown in the carousel card.
+#     link_text: View my feature
+#     link_url: https://vizro.readthedocs.io/...   # defaults to docs_url if omitted
 #
 # To regenerate index.html: hatch run compendium
 # To check if index.html is up to date (used in CI): hatch run compendium-check
-
-carousel_items:
-  - title: Notifications
-    image: assets/images/notifications.gif
-    image_alt: Notifications
-    description: |
-      The <code>show_notification</code> action displays a temporary message to the user.
-      <br />
-      Notifications appear at the top-right of the screen and are customizable with options
-      for content and styling.
-    link_text: View Notifications
-    link_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/notification-actions/
-
-  - title: Controls in containers
-    image: assets/images/controls_in_containers.gif
-    image_alt: Controls in containers
-    description: |
-      The Container has a controls argument where you can define container-specific controls
-      such as filters and parameters. Controls can only target components inside their own container.
-    link_text: View controls in Container
-    link_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-controls-to-container
-
-  - title: New action set_controls
-    image: assets/images/cross_highlight.gif
-    image_alt: Set controls
-    description: |
-      Configure interactions between graphs and tables, as is commonly done in business
-      intelligence (BI) tools.
-    link_text: View new Actions
-    link_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions/
+#
+# vizro_version is updated automatically by tools/update_components_compendium_version.py on release.
+# Do not edit it manually.
+vizro_version: "0.1.54"
 
 categories:
   - id: components
@@ -45,6 +30,7 @@ categories:
     items:
       - id: graph
         name: Graph
+        aliases: [chart, plot, plotly, figure, visualization, px, express]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/graph/
         image: assets/images/charts.png
         image_alt: Bar chart visualization example
@@ -74,6 +60,7 @@ categories:
 
       - id: card
         name: Card
+        aliases: [text card, info card, tile, panel, markdown]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/card/
         image: assets/images/card_component.png
         image_alt: Card component example
@@ -100,6 +87,7 @@ categories:
 
       - id: aggrid
         name: AgGrid
+        aliases: [table, grid, ag grid, ag-grid, dash_ag_grid, datatable]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/table/
         image: assets/images/aggrid.png
         image_alt: AG Grid table example
@@ -125,6 +113,7 @@ categories:
 
       - id: button
         name: Button
+        aliases: [click, cta, action button, submit]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/button/
         image: assets/images/buttons.png
         image_alt: Button variants example
@@ -165,6 +154,7 @@ categories:
 
       - id: figure
         name: Figure
+        aliases: [custom figure, kpi, indicator, callable]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/figure/
         image: assets/images/kpi_reference_card.png
         image_alt: KPI reference card example
@@ -202,6 +192,7 @@ categories:
 
       - id: text
         name: Text
+        aliases: [markdown, paragraph, label, rich text]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/text/
         image: assets/images/text.png
         image_alt: Text component example
@@ -229,10 +220,20 @@ categories:
 
       - id: container
         name: Container
+        aliases: [section, wrapper, group, panel]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/container/
         image: assets/images/container.png
         image_alt: Container component example
         highlight_lines: "11-24"
+        featured:
+          title: Controls in containers
+          image: assets/images/controls_in_containers.gif
+          image_alt: Controls in containers
+          description: |
+            The Container has a controls argument where you can define container-specific controls
+            such as filters and parameters. Controls can only target components inside their own container.
+          link_text: View controls in Container
+          link_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-controls-to-container
         code: |
           import vizro.plotly.express as px
           import vizro.models as vm
@@ -279,6 +280,7 @@ categories:
 
       - id: tabs
         name: Tabs
+        aliases: [tabbed, tab view, navigation, tabset]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/tabs/
         image: assets/images/tabs.gif
         image_alt: Tabs component example
@@ -337,6 +339,7 @@ categories:
     items:
       - id: grid
         name: Grid
+        aliases: [css grid, rows, columns, layout grid]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#grid-layout
         image: assets/images/grid_layout.png
         image_alt: Grid layout example
@@ -366,6 +369,7 @@ categories:
 
       - id: flex
         name: Flex
+        aliases: [flexbox, flexible layout, stack, row, column]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#flex-layout
         image: assets/images/flex_layout.png
         image_alt: Flex layout example
@@ -403,6 +407,7 @@ categories:
     items:
       - id: filter
         name: Filter
+        aliases: [query, subset, vm.Filter]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/
         image: assets/images/filters.gif
         image_alt: Filter control example
@@ -435,6 +440,7 @@ categories:
 
       - id: parameter
         name: Parameter
+        aliases: [param, argument, input, vm.Parameter]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/parameters/
         image: assets/images/parameter.gif
         image_alt: Parameter control example
@@ -487,6 +493,7 @@ categories:
         selectors:
           - id: dropdown
             name: Dropdown
+            aliases: [select, menu, picker, vm.Dropdown]
             image: assets/images/dropdown.png
             image_alt: Dropdown selector
             code: |
@@ -501,6 +508,7 @@ categories:
 
           - id: checklist
             name: Checklist
+            aliases: [checkbox, checkboxes, multi select, vm.Checklist]
             image: assets/images/checklist.png
             image_alt: Checklist selector
             code: |
@@ -515,6 +523,7 @@ categories:
 
           - id: radioitems
             name: RadioItems
+            aliases: [radio, radio buttons, single choice, vm.RadioItems]
             image: assets/images/radioitems.png
             image_alt: RadioItems selector
             code: |
@@ -529,6 +538,7 @@ categories:
 
           - id: slider
             name: Slider
+            aliases: [range input, single slider, numeric, vm.Slider]
             image: assets/images/slider.png
             image_alt: Slider selector
             code: |
@@ -545,6 +555,8 @@ categories:
 
           - id: rangeslider
             name: RangeSlider
+            aliases:
+              [range slider, min max, interval, two-handle, vm.RangeSlider]
             image: assets/images/rangeslider.png
             image_alt: RangeSlider selector
             code: |
@@ -560,9 +572,10 @@ categories:
               ]
 
           - id: datepicker
-            name: DatePicker
+            name: "DatePicker (single date)"
+            aliases: [date, calendar, single date, vm.DatePicker]
             image: assets/images/datepicker.png
-            image_alt: DatePicker selector
+            image_alt: DatePicker single date selector
             code: |
               controls=[
                   vm.Filter(
@@ -575,9 +588,11 @@ categories:
               ]
 
           - id: daterangepicker
-            name: DateRangePicker
+            name: "DatePicker (date range)"
+            aliases:
+              [date range, from to, period, calendar range, vm.DateRangePicker]
             image: assets/images/daterangepicker.png
-            image_alt: DateRangePicker selector
+            image_alt: DatePicker date range selector
             code: |
               controls=[
                   vm.Filter(
@@ -590,6 +605,7 @@ categories:
 
           - id: switch
             name: Switch
+            aliases: [toggle, boolean, on off, checkbox switch, vm.Switch]
             image: assets/images/switch.png
             image_alt: Switch selector
             code: |
@@ -600,11 +616,32 @@ categories:
                   )
               ]
 
+          - id: cascader
+            name: Cascader
+            aliases:
+              [hierarchical, tree, nested, cascading, hierarchy, vm.Cascader]
+            image: assets/images/cascader.png # TODO: add screenshot
+            image_alt: Cascader hierarchical selector
+            code: |
+              controls=[
+                  vm.Filter(
+                      column="continent",
+                      selector=vm.Cascader(
+                          title="Continent",
+                          options={
+                              "Americas": ["Argentina", "Brazil", "Canada"],
+                              "Europe": ["France", "Germany", "United Kingdom"],
+                          },
+                      ),
+                  )
+              ]
+
   - id: actions
     title: Actions
     items:
       - id: export-data
         name: Export data
+        aliases: [export, download, csv, save data, export_data]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/data-actions/
         image: assets/images/export_data.gif
         image_alt: Export data action example
@@ -640,10 +677,31 @@ categories:
 
       - id: set-control
         name: "Graph & table interactions"
+        aliases:
+          [
+            cross filter,
+            cross-filter,
+            cross highlight,
+            cross-highlight,
+            interaction,
+            drill,
+            drill down,
+            set_control,
+            linked,
+            click filter,
+          ]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions/
         image: assets/images/cross_filter_from_graph_1.gif
         image_alt: Graph and table interactions example
         highlight_lines: "16-18"
+        featured:
+          title: New action set_controls
+          image: assets/images/cross_highlight.gif
+          image_alt: Set controls action
+          description: |
+            Configure interactions between graphs and tables, as is commonly done in business
+            intelligence (BI) tools.
+          link_text: View new Actions
         description: |
           In Vizro, interactions between components are enabled through an explicitly defined
           intermediate control. Cross-filtering, cross-parameter updates, and cross-highlighting
@@ -686,10 +744,22 @@ categories:
 
       - id: notifications
         name: Notifications
+        aliases:
+          [notification, toast, alert, message, show_notification, banner]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/notification-actions/
         image: assets/images/notifications.gif
         image_alt: Notifications action example
         highlight_lines: "19-23"
+        featured:
+          title: Notifications
+          image: assets/images/notifications.gif
+          image_alt: Notifications
+          description: |
+            The <code>show_notification</code> action displays a temporary message to the user.
+            <br />
+            Notifications appear at the top-right of the screen and are customizable with options
+            for content and styling.
+          link_text: View Notifications
         description: |
           The <b>show_notification</b> action displays a temporary message in the top-right of
           the screen to inform users about successes, warnings, errors, information, or loading
