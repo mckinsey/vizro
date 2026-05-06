@@ -2,7 +2,7 @@ name: Browser integration tests for vizro_chat_component
 
 defaults:
   run:
-    working-directory: posts/vizro-experimental
+    working-directory: vizro-experimental
 
 permissions:
   contents: read
