@@ -4,7 +4,7 @@ import vizro.models as vm
 
 from pages._factories import waterfall_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import donut, funnel, pie, stacked_bar, stacked_column, treemap, venn, arc
+from pages.examples import arc, donut, funnel, pie, stacked_bar, stacked_column, treemap, venn
 
 pie_page = vm.Page(
     title="Pie",
@@ -298,14 +298,14 @@ arc_page = vm.Page(
 
             #### What is an arc chart?
 
-            An arc chart is a circular visualization that displays proportional data as arcs extending from a 
+            An arc chart is a circular visualization that displays proportional data as arcs extending from a
             central ring. It's similar to a donut chart but with more emphasis on the arc shape itself.
 
             &nbsp;
 
             #### When should I use it?
 
-            Use an arc chart to show part-to-whole relationships with a unique visual style. It's particularly 
+            Use an arc chart to show part-to-whole relationships with a unique visual style. It's particularly
             effective when you want to compare values across categories while maintaining a clean, modern look.
             Avoid using it with too many categories as the arcs can become difficult to read.
         """
