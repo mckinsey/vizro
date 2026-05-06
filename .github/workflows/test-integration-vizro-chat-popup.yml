@@ -9,6 +9,8 @@ permissions:
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
 
 env:
   PYTHONUNBUFFERED: 1
