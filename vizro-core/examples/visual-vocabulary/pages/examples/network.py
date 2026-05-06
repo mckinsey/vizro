@@ -1,15 +1,32 @@
 import math
+from collections import deque
 
 import networkx as nx
 import pandas as pd
 import plotly.graph_objects as go
 from vizro.models.types import capture
 
-COLORS = ["#3498db", "#e74c3c", "#2ecc71", "#9b59b6", "#f39c12", "#1abc9c", "#e67e22", "#34495e", "#95a5a6", "#d35400"]
+COLORS = [
+    "#3498db",
+    "#e74c3c",
+    "#2ecc71",
+    "#9b59b6",
+    "#f39c12",
+    "#1abc9c",
+    "#e67e22",
+    "#34495e",
+    "#95a5a6",
+    "#d35400",
+    "#8e44ad",
+    "#27ae60",
+    "#c0392b",
+    "#16a085",
+    "#f1c40f",
+]
 
 
 @capture("graph")
-def network(data_frame: pd.DataFrame, source: str, target: str):
+def network(data_frame: pd.DataFrame, source: str, target: str) -> go.Figure:
     G = nx.Graph()
     for s, t in zip(data_frame[source], data_frame[target]):
         G.add_edge(s, t)
@@ -19,9 +36,9 @@ def network(data_frame: pd.DataFrame, source: str, target: str):
     hub = max(degree, key=degree.get)
 
     levels, parent = {hub: 0}, {hub: None}
-    queue = [hub]
+    queue = deque([hub])
     while queue:
-        current = queue.pop(0)
+        current = queue.popleft()
         for n in G.neighbors(current):
             if n not in levels:
                 levels[n] = levels[current] + 1
@@ -59,16 +76,16 @@ def network(data_frame: pd.DataFrame, source: str, target: str):
     for e in G.edges():
         edge_x.extend([pos[e[0]][0], pos[e[1]][0], None])
         edge_y.extend([pos[e[0]][1], pos[e[1]][1], None])
-    fig.add_trace(go.Scatter(x=edge_x, y=edge_y, mode="lines", line=dict(width=1.5, color="gray"), hoverinfo="none"))
+    fig.add_trace(go.Scatter(x=edge_x, y=edge_y, mode="lines", line={"width": 1.5, "color": "gray"}, hoverinfo="none"))
     fig.add_trace(
         go.Scatter(
             x=node_x,
             y=node_y,
             mode="markers+text",
-            marker=dict(size=sizes, color=COLORS, line=dict(color="white", width=2)),
+            marker={"size": sizes, "color": COLORS, "line": {"color": "white", "width": 2}},
             text=nodes,
             textposition="top center",
-            textfont=dict(size=10, color="gray"),
+            textfont={"size": 10, "color": "gray"},
             hoverinfo="text",
             hovertext=[f"{n}: {degree[n]}" for n in nodes],
         )
@@ -76,9 +93,9 @@ def network(data_frame: pd.DataFrame, source: str, target: str):
     fig.update_layout(
         showlegend=False,
         plot_bgcolor="white",
-        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-        margin=dict(l=20, r=20, t=20, b=20),
+        xaxis={"showgrid": False, "zeroline": False, "showticklabels": False},
+        yaxis={"showgrid": False, "zeroline": False, "showticklabels": False},
+        margin={"l": 20, "r": 20, "t": 20, "b": 20},
     )
     return fig
 

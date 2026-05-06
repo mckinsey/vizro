@@ -68,7 +68,7 @@ network_page = vm.Page(
 
             Use a network chart to show relationships, connections, or interactions between multiple entities.
             It's particularly effective for visualizing social networks, organizational structures,
-            transportation routes, or any system where connections matter. Avoid using with too many nodes
+            transportation routes, or any system where connections matter. Avoid using it with too many nodes
             as the chart can become cluttered and difficult to read.
         """
         ),
