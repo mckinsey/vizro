@@ -861,7 +861,6 @@ a {
 }
 
 .version-link::before {
-  content: "→";
   font-size: 12px;
 }
 
