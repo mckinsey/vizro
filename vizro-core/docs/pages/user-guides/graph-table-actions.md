@@ -232,7 +232,7 @@ If you set the `set_control.value` argument to `value="cell"`, the value of the 
 
 ### Cross-filter from graph
 
-The trigger for a cross-filter from a [graph](graph.md) is clicking on data in the graph. A single click sends one value to the control. You can also use box/lasso select to select multiple data points at once; see [Cross-filter from graph with selection](#cross-filter-from-graph-with-selection) for details and examples.
+The trigger for a cross-filter from a [graph](graph.md) is clicking on data in the graph. A single click sends one value to the control. You can also use box/lasso select to select multiple data points at once; see [Cross-filter from graph - multi-select](#cross-filter-from-graph-multi-select) for details and examples.
 
 The `value` argument of the [`set_control` action][vizro.actions.set_control] can be used in two ways to specify what sets `control`:
 
