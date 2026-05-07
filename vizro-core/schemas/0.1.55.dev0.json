@@ -360,26 +360,21 @@
             },
             {
               "items": {
-                "type": "boolean"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "format": "date",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "format": "date",
+                    "type": "string"
+                  }
+                ]
               },
               "type": "array"
             },
@@ -463,66 +458,49 @@
           "type": "string"
         },
         "options": {
-          "anyOf": [
-            {
-              "items": {
+          "default": [],
+          "items": {
+            "anyOf": [
+              {
                 "type": "boolean"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "type": "number"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "format": "date",
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "$ref": "#/$defs/_OptionsDictType"
-              },
-              "type": "array"
-            }
-          ],
-          "default": [],
-          "title": "Options"
+              }
+            ]
+          },
+          "title": "Options",
+          "type": "array"
         },
         "value": {
           "anyOf": [
             {
               "items": {
-                "type": "boolean"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "format": "date",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "format": "date",
+                    "type": "string"
+                  }
+                ]
               },
               "type": "array"
             },
@@ -948,41 +926,29 @@
           "type": "string"
         },
         "options": {
-          "anyOf": [
-            {
-              "items": {
+          "default": [],
+          "items": {
+            "anyOf": [
+              {
                 "type": "boolean"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "type": "number"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "format": "date",
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "$ref": "#/$defs/_OptionsDictType"
-              },
-              "type": "array"
-            }
-          ],
-          "default": [],
-          "title": "Options"
+              }
+            ]
+          },
+          "title": "Options",
+          "type": "array"
         },
         "value": {
           "anyOf": [
@@ -1001,26 +967,21 @@
             },
             {
               "items": {
-                "type": "boolean"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "format": "date",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "format": "date",
+                    "type": "string"
+                  }
+                ]
               },
               "type": "array"
             },
@@ -1904,41 +1865,29 @@
           "type": "string"
         },
         "options": {
-          "anyOf": [
-            {
-              "items": {
+          "default": [],
+          "items": {
+            "anyOf": [
+              {
                 "type": "boolean"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "type": "number"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "format": "date",
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "$ref": "#/$defs/_OptionsDictType"
-              },
-              "type": "array"
-            }
-          ],
-          "default": [],
-          "title": "Options"
+              }
+            ]
+          },
+          "title": "Options",
+          "type": "array"
         },
         "value": {
           "anyOf": [
