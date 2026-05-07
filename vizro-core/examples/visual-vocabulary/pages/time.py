@@ -2,7 +2,7 @@
 
 import vizro.models as vm
 
-from pages._factories import column_and_line_factory, connected_scatter_factory
+from pages._factories import column_and_line_factory, connected_scatter_factory, slope_factory
 from pages._pages_utils import (
     PAGE_GRID,
     make_code_clipboard_from_py_file,
@@ -280,6 +280,8 @@ sparkline_page = vm.Page(
         ),
     ],
 )
+slope_page = slope_factory("time")
+
 pages = [
     line_page,
     column_page,
@@ -290,4 +292,5 @@ pages = [
     heatmap_page,
     gantt_page,
     sparkline_page,
+    slope_page,
 ]
