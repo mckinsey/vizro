@@ -295,19 +295,18 @@ arc_page = vm.Page(
     components=[
         vm.Card(
             text="""
+            #### What is an arc diagram?
 
-            #### What is an arc chart?
-
-            An arc chart is a circular visualization that displays proportional data as arcs extending from a
-            central ring. It's similar to a donut chart but with more emphasis on the arc shape itself.
+            An arc diagram displays relationships between nodes using curved arcs that connect them on a horizontal
+            baseline. It's effective for visualizing networks, flows, and connections between entities.
 
             &nbsp;
 
             #### When should I use it?
 
-            Use an arc chart to show part-to-whole relationships with a unique visual style. It's particularly
-            effective when you want to compare values across categories while maintaining a clean, modern look.
-            Avoid using it with too many categories as the arcs can become difficult to read.
+            Use an arc diagram to show relationships, flows, or connections between nodes. It's particularly useful
+            for comparing multiple connections across a linear arrangement. Avoid using it with too many overlapping
+            arcs as they can become difficult to read.
         """
         ),
         vm.Graph(figure=arc.fig),

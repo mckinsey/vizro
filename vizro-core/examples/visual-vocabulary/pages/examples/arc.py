@@ -42,7 +42,6 @@ def arc(data_frame: pd.DataFrame, source: str, target: str, value: str | None = 
 
     spacing = 1.2
     horizontal_padding = max(0.45, spacing * 0.5)
-    node_indices = {node: idx for idx, node in enumerate(unique_nodes)}
     node_positions = {node: i * spacing for i, node in enumerate(unique_nodes)}
 
     node_x = [node_positions[n] for n in unique_nodes]
@@ -69,18 +68,16 @@ def arc(data_frame: pd.DataFrame, source: str, target: str, value: str | None = 
         max_value = max(data_frame[value].max(), 1)
 
     edges_with_info = []
-    for idx, (_, row) in enumerate(data_frame.iterrows()):
+    for _, row in data_frame.iterrows():
         src, tgt = row[source], row[target]
         if src not in node_positions or tgt not in node_positions:
             continue
         x1, x2 = node_positions[src], node_positions[tgt]
         distance = abs(x2 - x1)
-        source_idx = node_indices[src]
-        target_idx = node_indices[tgt]
-        edges_with_info.append((idx, src, tgt, row, distance, source_idx, target_idx))
+        edges_with_info.append((src, tgt, row, distance))
 
-    edges_with_info.sort(key=lambda x: (x[4], x[5]))
-    for draw_order, (idx, src, tgt, row, distance, source_idx, target_idx) in enumerate(edges_with_info):
+    edges_with_info.sort(key=lambda x: x[3])
+    for draw_order, (src, tgt, row, distance) in enumerate(edges_with_info):
         x1, x2 = node_positions[src], node_positions[tgt]
         path_x, path_y = _create_arc_path(x1, x2, baseline_y=baseline_y)
         max_arc_height = max(max_arc_height, max(path_y, default=0))
@@ -110,7 +107,12 @@ def arc(data_frame: pd.DataFrame, source: str, target: str, value: str | None = 
             x=node_x,
             y=node_y,
             mode="markers+text",
-            marker={"size": node_size, "color": "#34495E", "line": {"color": "#34495E", "width": 0.6}, "opacity": 0.98},
+            marker={
+                "size": node_size,
+                "color": "#34495E",
+                "line": {"color": "#34495E", "width": 0.6},
+                "opacity": 0.98,
+            },
             text=unique_nodes,
             textposition="bottom center",
             textfont={"size": 12, "color": "#2C3E50"},
@@ -121,12 +123,14 @@ def arc(data_frame: pd.DataFrame, source: str, target: str, value: str | None = 
     )
 
     upper_extent = max(max_arc_height, max(node_y, default=0))
-    upper_padding = max(0.35, upper_extent * 0.12)
-    lower_padding = max(0.55, node_size * 0.05)
+    lower_padding = 0.2
+    upper_padding = max(0.25, upper_extent * 0.15)
+
     x_range = [
         min(node_x, default=0) - horizontal_padding,
         max(node_x, default=0) + horizontal_padding,
     ]
+
     fig.update_layout(
         showlegend=False,
         plot_bgcolor="white",
@@ -136,14 +140,19 @@ def arc(data_frame: pd.DataFrame, source: str, target: str, value: str | None = 
             "zeroline": False,
             "showticklabels": False,
             "range": x_range,
+            "scaleanchor": "y",
+            "scaleratio": 1,
+            "constrain": "domain",
         },
         yaxis={
             "showgrid": False,
             "zeroline": False,
             "showticklabels": False,
             "range": [-lower_padding, upper_extent + upper_padding],
+            "scaleanchor": "x",
+            "scaleratio": 1,
         },
-        margin={"l": 40, "r": 40, "t": 40, "b": 40},
+        margin={"l": 30, "r": 30, "t": 20, "b": 45},
     )
 
     return fig
