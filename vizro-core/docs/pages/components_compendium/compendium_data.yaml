@@ -606,8 +606,8 @@ categories:
                       selector=vm.Cascader(
                           title="Continent",
                           options={
-                              "Americas": ["Argentina", "Brazil", "Canada"],
-                              "Europe": ["France", "Germany", "United Kingdom"],
+                              "Asia": ["Japan", "India"],
+                              "Europe": ["West", "North"],
                           },
                       ),
                   )
