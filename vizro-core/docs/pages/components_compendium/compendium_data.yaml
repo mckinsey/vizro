@@ -1,4 +1,4 @@
-# Human-editable data for generating docs/pages/components_compendium/index.html.
+# Editable data for generating docs/pages/components_compendium/index.html.
 #
 # To add a new component or action:
 #   1. Add an entry to the relevant category below.
@@ -17,7 +17,6 @@
 #     link_text: View my feature
 #     link_url: https://vizro.readthedocs.io/...   # defaults to docs_url if omitted
 #
-# To regenerate index.html: hatch run compendium
 # To check if index.html is up to date (used in CI): hatch run compendium-check
 #
 # vizro_version is updated automatically by tools/update_components_compendium_version.py on release.
@@ -33,7 +32,6 @@ categories:
         aliases: [chart, plot, plotly, figure, visualization, px, express]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/graph/
         image: assets/images/charts.png
-        image_alt: Bar chart visualization example
         highlight_lines: "10-16"
         code: |
           import vizro.plotly.express as px
@@ -63,7 +61,6 @@ categories:
         aliases: [text card, info card, tile, panel, markdown]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/card/
         image: assets/images/card_component.png
-        image_alt: Card component example
         highlight_lines: "7-14"
         code: |
           from vizro import Vizro
@@ -90,7 +87,6 @@ categories:
         aliases: [table, grid, ag grid, ag-grid, dash_ag_grid, datatable]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/table/
         image: assets/images/aggrid.png
-        image_alt: AG Grid table example
         highlight_lines: "11-13"
         code: |
           import vizro.plotly.express as px
@@ -116,7 +112,6 @@ categories:
         aliases: [click, cta, action button, submit]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/button/
         image: assets/images/buttons.png
-        image_alt: Button variants example
         highlight_lines: "8-28"
         code: |
           from vizro import Vizro
@@ -157,7 +152,6 @@ categories:
         aliases: [custom figure, kpi, indicator, callable]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/figure/
         image: assets/images/kpi_reference_card.png
-        image_alt: KPI reference card example
         highlight_lines: "17-25"
         code: |
           import pandas as pd
@@ -195,7 +189,6 @@ categories:
         aliases: [markdown, paragraph, label, rich text]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/text/
         image: assets/images/text.png
-        image_alt: Text component example
         highlight_lines: "8-15"
         code: |
           import vizro.plotly.express as px
@@ -223,12 +216,10 @@ categories:
         aliases: [section, wrapper, group, panel]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/container/
         image: assets/images/container.png
-        image_alt: Container component example
         highlight_lines: "11-24"
         featured:
           title: Controls in containers
           image: assets/images/controls_in_containers.gif
-          image_alt: Controls in containers
           description: |
             The Container has a controls argument where you can define container-specific controls
             such as filters and parameters. Controls can only target components inside their own container.
@@ -283,7 +274,6 @@ categories:
         aliases: [tabbed, tab view, navigation, tabset]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/tabs/
         image: assets/images/tabs.gif
-        image_alt: Tabs component example
         highlight_lines: "10-43"
         code: |
           import vizro.plotly.express as px
@@ -342,7 +332,6 @@ categories:
         aliases: [css grid, rows, columns, layout grid]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#grid-layout
         image: assets/images/grid_layout.png
-        image_alt: Grid layout example
         highlight_lines: "6-11"
         code: |
           import vizro.models as vm
@@ -372,7 +361,6 @@ categories:
         aliases: [flexbox, flexible layout, stack, row, column]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#flex-layout
         image: assets/images/flex_layout.png
-        image_alt: Flex layout example
         highlight_lines: "9-13"
         code: |
           import vizro.models as vm
@@ -410,7 +398,6 @@ categories:
         aliases: [query, subset, vm.Filter]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/
         image: assets/images/filters.gif
-        image_alt: Filter control example
         highlight_lines: "20"
         code: |
           import vizro.plotly.express as px
@@ -443,7 +430,6 @@ categories:
         aliases: [param, argument, input, vm.Parameter]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/parameters/
         image: assets/images/parameter.gif
-        image_alt: Parameter control example
         highlight_lines: "22-31"
         code: |
           import vizro.plotly.express as px
@@ -495,7 +481,6 @@ categories:
             name: Dropdown
             aliases: [select, menu, picker, vm.Dropdown]
             image: assets/images/dropdown.png
-            image_alt: Dropdown selector
             code: |
               controls=[
                   vm.Filter(
@@ -510,7 +495,6 @@ categories:
             name: Checklist
             aliases: [checkbox, checkboxes, multi select, vm.Checklist]
             image: assets/images/checklist.png
-            image_alt: Checklist selector
             code: |
               controls=[
                   vm.Filter(
@@ -525,7 +509,6 @@ categories:
             name: RadioItems
             aliases: [radio, radio buttons, single choice, vm.RadioItems]
             image: assets/images/radioitems.png
-            image_alt: RadioItems selector
             code: |
               controls=[
                   vm.Filter(
@@ -540,7 +523,6 @@ categories:
             name: Slider
             aliases: [range input, single slider, numeric, vm.Slider]
             image: assets/images/slider.png
-            image_alt: Slider selector
             code: |
               controls=[
                   vm.Filter(
@@ -558,7 +540,6 @@ categories:
             aliases:
               [range slider, min max, interval, two-handle, vm.RangeSlider]
             image: assets/images/rangeslider.png
-            image_alt: RangeSlider selector
             code: |
               controls=[
                   vm.Filter(
@@ -575,7 +556,6 @@ categories:
             name: "DatePicker (single date)"
             aliases: [date, calendar, single date, vm.DatePicker]
             image: assets/images/datepicker.png
-            image_alt: DatePicker single date selector
             code: |
               controls=[
                   vm.Filter(
@@ -592,7 +572,6 @@ categories:
             aliases:
               [date range, from to, period, calendar range, vm.DateRangePicker]
             image: assets/images/daterangepicker.png
-            image_alt: DatePicker date range selector
             code: |
               controls=[
                   vm.Filter(
@@ -607,7 +586,6 @@ categories:
             name: Switch
             aliases: [toggle, boolean, on off, checkbox switch, vm.Switch]
             image: assets/images/switch.png
-            image_alt: Switch selector
             code: |
               controls=[
                   vm.Filter(
@@ -621,7 +599,6 @@ categories:
             aliases:
               [hierarchical, tree, nested, cascading, hierarchy, vm.Cascader]
             image: assets/images/cascader.png # TODO: add screenshot
-            image_alt: Cascader hierarchical selector
             code: |
               controls=[
                   vm.Filter(
@@ -644,7 +621,6 @@ categories:
         aliases: [export, download, csv, save data, export_data]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/data-actions/
         image: assets/images/export_data.gif
-        image_alt: Export data action example
         highlight_lines: "16"
         description: |
           Use the <b>export_data</b> action to download all data shown on a dashboard page,
@@ -692,12 +668,10 @@ categories:
           ]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions/
         image: assets/images/cross_filter_from_graph_1.gif
-        image_alt: Graph and table interactions example
         highlight_lines: "16-18"
         featured:
           title: New action set_controls
           image: assets/images/cross_highlight.gif
-          image_alt: Set controls action
           description: |
             Configure interactions between graphs and tables, as is commonly done in business
             intelligence (BI) tools.
@@ -748,12 +722,10 @@ categories:
           [notification, toast, alert, message, show_notification, banner]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/notification-actions/
         image: assets/images/notifications.gif
-        image_alt: Notifications action example
         highlight_lines: "19-23"
         featured:
           title: Notifications
           image: assets/images/notifications.gif
-          image_alt: Notifications
           description: |
             The <code>show_notification</code> action displays a temporary message to the user.
             <br />
@@ -800,41 +772,35 @@ demos:
   - title: Basic Dashboard
     url: https://py.cafe/vizro-official/vizro-iris-analysis
     image: assets/images/basic_dashboard.png
-    image_alt: Basic dashboard example
     platform: PyCafe
     platform_class: platform-pycafe
 
   - title: Visual Vocabulary
     url: https://huggingface.co/spaces/vizro/demo-visual-vocabulary
     image: assets/images/visual_vocabulary.png
-    image_alt: Visual vocabulary dashboard example
     platform: Hugging Face
     platform_class: platform-huggingface
 
   - title: BI Dashboard
     url: https://huggingface.co/spaces/vizro/BI-dashboard
     image: assets/images/bi_dashboard.png
-    image_alt: BI dashboard example
     platform: Hugging Face
     platform_class: platform-huggingface
 
   - title: Call Center Dashboard
     url: https://huggingface.co/spaces/vizro/call-center-dashboard
     image: assets/images/call_center_dashboard.png
-    image_alt: Call center dashboard example
     platform: Hugging Face
     platform_class: platform-huggingface
 
   - title: KPI Dashboard
     url: https://huggingface.co/spaces/vizro/demo-kpi
     image: assets/images/kpi_dashboard.png
-    image_alt: KPI dashboard example
     platform: Hugging Face
     platform_class: platform-huggingface
 
   - title: Features Dashboard
     url: https://huggingface.co/spaces/vizro/demo-features
     image: assets/images/features_dashboard.png
-    image_alt: Features dashboard example
     platform: Hugging Face
     platform_class: platform-huggingface

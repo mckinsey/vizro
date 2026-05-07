@@ -23,24 +23,26 @@
                   <div class="component" id="{{ item.id }}"{% if item.aliases is defined %} data-aliases="{{ item.aliases | join(' ') }}"{% endif %}>
                     <div class="component_title">
                       <h4 class="component__name">{{ item.name }}</h4>
-                      <a href="{{ item.docs_url }}" target="_blank" class="utility-btn">
-                        {{ docs_icon() }}
-                        Docs
-                      </a>
-                      {% set pycafe = item.code | pycafe_url %}
-                      {% if pycafe %}
-                      <a href="{{ pycafe }}" target="_blank" class="utility-btn">
-                        {{ pycafe_icon() }}
-                        Try it
-                      </a>
-                      {% endif %}
+                      <div class="component_title__actions">
+                        <a href="{{ item.docs_url }}" target="_blank" class="utility-btn">
+                          {{ docs_icon() }}
+                          Docs
+                        </a>
+                        {% set pycafe = item.code | pycafe_url %}
+                        {% if pycafe %}
+                        <a href="{{ pycafe }}" target="_blank" class="utility-btn">
+                          {{ pycafe_icon() }}
+                          Try it in PyCafe
+                        </a>
+                        {% endif %}
+                      </div>
                     </div>
                     <div class="component-body">
                       <div class="component__visual">
                         {% if item.description is defined %}
                         <p class="component__description">{{ item.description | safe }}</p>
                         {% endif %}
-                        <img src="{{ item.image }}" alt="{{ item.image_alt }}" />
+                        <img src="{{ item.image }}" alt="{{ item.image_alt if item.image_alt is defined else item.name }}" />
                       </div>
                       <div class="component__content">
                         <div class="code-block">
@@ -58,7 +60,7 @@
                         <div class="component_card" id="{{ selector.id }}"{% if selector.aliases is defined %} data-aliases="{{ selector.aliases | join(' ') }}"{% endif %}>
                           <h3 class="component_card_title">{{ selector.name }}</h3>
                           <div class="component_card_content">
-                            <img src="{{ selector.image }}" alt="{{ selector.image_alt }}" />
+                            <img src="{{ selector.image }}" alt="{{ selector.image_alt if selector.image_alt is defined else selector.name }}" />
                             <div class="code-block">
                               <button class="code-block__copy-button" aria-label="Copy code to clipboard">
                                 {{ copy_icon_small() }}
@@ -74,10 +76,12 @@
                     <div class="component_selectors_header">
                       <div class="component_title">
                         <h4 class="component__name">{{ item.name }}</h4>
-                        <a href="{{ item.docs_url }}" target="_blank" class="utility-btn">
-                          {{ docs_icon() }}
-                          Docs
-                        </a>
+                        <div class="component_title__actions">
+                          <a href="{{ item.docs_url }}" target="_blank" class="utility-btn">
+                            {{ docs_icon() }}
+                            Docs
+                          </a>
+                        </div>
                       </div>
                       <p class="component__description">{{ item.description | safe }}</p>
                       <div class="component_content_selectors">
@@ -343,7 +347,7 @@
                 {% for demo in demos %}
                 <a href="{{ demo.url }}" target="_blank" class="demo-card">
                   <div class="demo-preview">
-                    <img src="{{ demo.image }}" alt="{{ demo.image_alt }}" />
+                    <img src="{{ demo.image }}" alt="{{ demo.image_alt if demo.image_alt is defined else demo.title }}" />
                   </div>
                   <div class="demo-content">
                     <div class="demo-header">
