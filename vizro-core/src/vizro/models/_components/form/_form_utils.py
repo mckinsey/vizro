@@ -59,7 +59,7 @@ def validate_value(value, info: ValidationInfo):
     # Unwrap each option per-element so that mixed lists produce the right set of allowed values.
     possible_values = [option["value"] if isinstance(option, dict) else option for option in info.data["options"]]
 
-    if value and not is_value_contained(value, possible_values):
+    if value is not None and not is_value_contained(value, possible_values):
         raise ValueError("Please provide a valid value from `options`.")
 
     return value

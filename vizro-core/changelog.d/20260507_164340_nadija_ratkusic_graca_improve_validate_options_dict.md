@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Allow mixed-type `options` and `values` in `vm.Checklist`, `vm.Dropdown` and `vm.RadioItems` selectors. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Allow mixed-type `options` and `values` in `vm.Checklist`, `vm.Dropdown` and `vm.RadioItems` selectors. ([#1733](https://github.com/mckinsey/vizro/pull/1733))
 
 <!--
 ### Deprecated
