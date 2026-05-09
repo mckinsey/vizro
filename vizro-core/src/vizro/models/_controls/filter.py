@@ -245,16 +245,16 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):  # noqa: PLR0912
-        # If page filter validate that targets present on the page where the filter is defined.
-        # If container filter validate that targets present in the container where the filter is defined.
+        # If page filter validate that targets are present on the page where the filter is defined.
+        # If container filter validate that targets are present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
         check_control_targets(control=self)
 
         # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
         # This is the case when bool(self.targets) is False.
-        # If filter used within container and if targets aren't explicitly provided it will target all figures within
-        # that container. Possibly in future this will change (which would be breaking change).
+        # If a filter is used within a container and if targets aren't explicitly provided it will target all figures within
+        # that container. Possibly in future this will change (which would be a breaking change).
         proposed_targets = self.targets or [
             model.id
             for model in cast(
