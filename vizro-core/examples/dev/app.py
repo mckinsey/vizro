@@ -508,7 +508,7 @@ tooltip = vm.Page(
     components=[
         vm.Card(
             text="""
-                The `description` argument allows you to add helpful context to your components by displaying a small
+                The `description` argument enables you to add helpful context to your components by displaying a small
                 info icon next to the component's title.
                 When users hover over the icon, a tooltip appears showing the text you provide.
 
@@ -729,7 +729,7 @@ selectors = vm.Page(
     components=[
         vm.Card(
             text="""
-        A selector can be used within the **Parameter** or **Filter** component to allow the user to select a value.
+        A selector can be used within the **Parameter** or **Filter** component to enable the user to select a value.
 
         The following selectors are available:
         * Dropdown (**categorical** multi and single option selector)
