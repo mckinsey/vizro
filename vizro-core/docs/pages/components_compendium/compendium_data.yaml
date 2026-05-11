@@ -218,7 +218,7 @@ categories:
         image: assets/images/container.png
         highlight_lines: "11-24"
         featured:
-          title: Controls in containers
+          title: Controls in Containers
           image: assets/images/controls_in_containers.gif
           description: |
             The Container has a controls argument where you can define container-specific controls
