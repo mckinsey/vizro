@@ -21,7 +21,7 @@ from pathlib import Path
 from urllib.parse import quote, urlencode
 
 import yaml
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 import vizro.actions as va
 import vizro.models as vm
@@ -67,6 +67,16 @@ ID_OVERRIDES = {
     "set_control": "set-control",
     "show_notification": "notifications",
 }
+
+
+def _load_data() -> dict:
+    """Load and parse compendium_data.yaml with clear error messages on failure."""
+    try:
+        return yaml.safe_load(DATA_FILE.read_text())
+    except FileNotFoundError:
+        sys.exit(f"Error: {DATA_FILE} not found")
+    except yaml.YAMLError as e:
+        sys.exit(f"Error parsing {DATA_FILE}: {e}")
 
 
 def _pycafe_url_filter(code: str) -> str:
@@ -143,10 +153,10 @@ def check_coverage(data: dict) -> list[str]:
 
 def render() -> str:
     """Render index.html from compendium_data.yaml and compendium_template.html."""
-    data = yaml.safe_load(DATA_FILE.read_text())
+    data = _load_data()
     env = Environment(
         loader=FileSystemLoader(str(TOOLS_DIR)),
-        autoescape=False,  # nosec B701 # noqa: S701 - static site generator with trusted YAML input, not a web app
+        autoescape=select_autoescape(["html", "xml"]),
         keep_trailing_newline=True,
         trim_blocks=True,
         lstrip_blocks=True,
@@ -167,7 +177,7 @@ def main() -> None:
     parser.add_argument("--check", action="store_true", help="Check if index.html is up to date")
     args = parser.parse_args()
 
-    data = yaml.safe_load(DATA_FILE.read_text())
+    data = _load_data()
 
     if args.check:
         coverage_errors = check_coverage(data)

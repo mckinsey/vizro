@@ -554,7 +554,7 @@ categories:
 
           - id: datepicker
             name: "DatePicker (single date)"
-            aliases: [date, calendar, single date, vm.DatePicker]
+            aliases: [date, calendar, single date]
             image: assets/images/datepicker.png
             code: |
               controls=[
@@ -570,7 +570,7 @@ categories:
           - id: daterangepicker
             name: "DatePicker (date range)"
             aliases:
-              [date range, from to, period, calendar range, vm.DateRangePicker]
+              [date range, from to, period, calendar range, DateRangePicker]
             image: assets/images/daterangepicker.png
             code: |
               controls=[
@@ -602,7 +602,7 @@ categories:
             code: |
               controls=[
                   vm.Filter(
-                      column="continent",
+                      column=["continent", "country"],
                       selector=vm.Cascader(
                           title="Continent",
                           options={
