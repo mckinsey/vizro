@@ -11,11 +11,7 @@ from vizro.models.types import MultiValueType, OptionsType, SingleValueType, _Op
 def get_dict_options_and_value(
     options: OptionsType, value: SingleValueType | MultiValueType | None, multi: bool
 ) -> tuple[list[_OptionsDictType], SingleValueType | MultiValueType]:
-    """Returns `(dict_options, value)`.
-
-    `value` if provided, else the default derived from `options`. Pass `value=None` when you want the default value
-    (e.g. in dynamic selectors or when building filter defaults).
-    """
+    """Returns `(dict_options, value)`. If input `value` is `None`, it is derived from `options`."""
     # Omitted string conversion for "label" to avoid unintended formatting issues (e.g., 2002 becoming '2002.0').
     dict_options = [option if isinstance(option, dict) else {"label": option, "value": option} for option in options]
 

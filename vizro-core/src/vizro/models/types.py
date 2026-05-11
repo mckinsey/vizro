@@ -637,7 +637,7 @@ class _OptionsDictType(TypedDict):
     value: SingleValueType
 
 
-OptionsType: TypeAlias = list[StrictBool | float | str | date | _OptionsDictType]
+OptionsType: TypeAlias = list[SingleValueType | _OptionsDictType]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
 # All the below types rely on models and so must use ForwardRef (that is, "Checklist" rather than actual
