@@ -245,8 +245,8 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):  # noqa: PLR0912
-        # If page filter validate that targets are present on the page where the filter is defined.
-        # If container filter validate that targets are present in the container where the filter is defined.
+        # If it's a page filter, validate that targets are present on the page where the filter is defined.
+        # If it's a container filter, validate that targets are present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
         check_control_targets(control=self)
 
