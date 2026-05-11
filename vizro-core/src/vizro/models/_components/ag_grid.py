@@ -64,7 +64,7 @@ class Trigger(TypedDict):
 
 
 class AgGrid(VizroBaseModel):
-    """Wrapper for `dash_ag_grid.AgGrid` to visualize grids in dashboard.
+    """Wrapper for `dash_ag_grid.AgGrid` to visualize grids in a dashboard.
 
     Abstract: Usage documentation
         [How to use an AgGrid](user-guides/table.md/#ag-grid)
@@ -298,7 +298,7 @@ class AgGrid(VizroBaseModel):
                     # This placeholder component is quickly replaced by the actual AgGrid object, which is generated
                     # using a filtered data_frame and parameterized arguments as part of the on_page_load mechanism.
                     # To prevent pagination and persistence issues while maintaining a lightweight component initial
-                    # load, this method now returns a html.Div object instead of the previous dag.AgGrid.
+                    # load, this method now returns an html.Div object instead of the previous dag.AgGrid.
                     # The actual AgGrid is then rendered by the on_page_load mechanism.
                     # The `id=self._inner_component_id` is set to avoid the "Non-existing object" Dash exception.
                     html.Div(
