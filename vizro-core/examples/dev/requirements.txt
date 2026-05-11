@@ -102,8 +102,6 @@ requests==2.33.0
     # via dash
 retrying==1.4.2
     # via dash
-setuptools==82.0.1
-    # via dash
 six==1.17.0
     # via python-dateutil
 typing-extensions==4.15.0
@@ -116,7 +114,7 @@ typing-inspection==0.4.2
     # via pydantic
 tzdata==2025.3
     # via pandas
-urllib3==2.6.2
+urllib3==2.7.0
     # via requests
 vizro==0.1.54
     # via -r requirements.in
