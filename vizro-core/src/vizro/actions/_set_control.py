@@ -41,8 +41,8 @@ class set_control(_AbstractAction):
 
         * `"cell"`, `"column"`, or `"row"` to use the clicked cell's value, column id, or row id respectively.
         * Any other string to treat as a column name, taking values from the selected row(s).
-    * [`Graph`][vizro.models.Graph]: triggers `set_control` when the user clicks on data in the graph. `value` is a string
-    that can be used in two ways to specify how to set `control`:
+    * [`Graph`][vizro.models.Graph]: triggers `set_control` when the user clicks on data in the graph. `value` is a
+    string that can be used in two ways to specify how to set `control`:
 
         * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.
         * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the

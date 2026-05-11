@@ -253,8 +253,8 @@ class Filter(VizroBaseModel):
         # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
         # This is the case when bool(self.targets) is False.
-        # If a filter is used within a container and if targets aren't explicitly provided it will target all figures within
-        # that container. Possibly in future this will change (which would be a breaking change).
+        # If a filter is used within a container and if targets aren't explicitly provided it will target all figures
+        # within that container. Possibly in future this will change (which would be a breaking change).
         proposed_targets = self.targets or [
             model.id
             for model in cast(
