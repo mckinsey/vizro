@@ -58,7 +58,7 @@ class Parameter(VizroBaseModel):
     """Alter the arguments supplied to any `targets`.
 
     Abstract: Usage documentation
-        [How to use parameters](../user-guides/parameters.md)
+        [How to use parameters](user-guides/parameters.md)
 
     Example:
         ```python

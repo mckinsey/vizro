@@ -42,7 +42,7 @@ def _log_call(message: str):
 
 
 class _DynamicData:
-    """Wrapper for a pd_DataFrameCallable, i.e. a function that produces a pandas DataFrame.
+    """Wrapper for a pd_DataFrameCallable, that is, a function that produces a pandas DataFrame.
 
     Crucially this means that the data can be refreshed during runtime, since the loading function can be re-run.
 
@@ -63,8 +63,8 @@ class _DynamicData:
     def __init__(self, load_data: pd_DataFrameCallable):
         self.__load_data: pd_DataFrameCallable = load_data
         self.timeout: int | None = None
-        # We might also want a self.cache_arguments dictionary in future that allows user to customize more than just
-        # timeout, but no rush to do this since other arguments are unlikely to be useful.
+        # We might also want a self.cache_arguments dictionary in future that enables the user to customize more than
+        # just timeout, but no rush to do this since other arguments are unlikely to be useful.
 
     def load(self, *args, **kwargs) -> pd.DataFrame:
         """Loads data."""

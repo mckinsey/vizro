@@ -38,7 +38,7 @@ class Dropdown(VizroBaseModel):
     [`Parameter`][vizro.models.Parameter].
 
     Abstract: Usage documentation
-        [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)
+        [How to use categorical selectors](user-guides/selectors.md#categorical-selectors)
 
     """
 
@@ -52,7 +52,7 @@ class Dropdown(VizroBaseModel):
     multi: Annotated[
         bool,
         AfterValidator(validate_multi),
-        Field(default=True, description="Whether to allow selection of multiple values", validate_default=True),
+        Field(default=True, description="Whether to enable selection of multiple values", validate_default=True),
     ]
     title: str = Field(default="", description="Title to be displayed")
     variant: Literal["plain", "filled"] = Field(
