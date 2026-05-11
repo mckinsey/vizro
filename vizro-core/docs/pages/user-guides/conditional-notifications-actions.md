@@ -1,6 +1,6 @@
 # How to use conditional notifications
 
-Notifications are displayed automatically to show the outcome of an [action](action.md), for example, to indicate whether an action completed successfully or failed.
+Notifications are displayed automatically to show the outcome of an [action](actions.md), for example, to indicate whether an action completed successfully or failed.
 
 Conditional notifications represent different outcomes, such as to indicate success or errors, to display progress indicators for running actions, and to support more specific scenarios and dynamic content.
 
