@@ -54,6 +54,91 @@ def gapminder_life_expectancy_chart(data_frame: pd.DataFrame) -> go.Figure:
     return fig
 ```
 
+## Highlight-Aware Custom Charts
+
+For Pattern 3 (Comparison Spotlight) or Pattern 5 (Select & Explore) from the **wiring-vizro-actions** skill, the target chart must accept a `highlight_X=None` argument. When `None`, the chart shows all data normally. When set, the matching entity is emphasised and the rest are faded.
+
+This file covers the chart shape only. For the action wiring (Parameter + `set_control` + `visible=False`), see the **wiring-vizro-actions** skill.
+
+### Pattern A: Boolean color (bar / scatter)
+
+Use when each row in the data is a separate data point and the highlighted entity is one of many points.
+
+```python
+from vizro.models.types import capture
+import vizro.plotly.express as px
+
+
+@capture("graph")
+def scatter_with_highlight(data_frame, highlight_country=None):
+    country_is_highlighted = data_frame["country"] == highlight_country
+    fig = px.scatter(
+        data_frame,
+        x="gdpPercap",
+        y="lifeExp",
+        size="pop",
+        size_max=60,
+        opacity=0.3,
+        color=country_is_highlighted,
+        category_orders={"color": [False, True]},  # ensures highlighted trace is trace index 1
+    )
+    if highlight_country is not None:
+        fig.update_traces(selector=1, marker={"line_width": 2, "opacity": 1})
+    fig.update_layout(showlegend=False)
+    return fig
+```
+
+Steps:
+
+1. Build a boolean mask: `is_highlighted = data_frame["column"] == highlight_X`.
+2. Pass as `color=is_highlighted`.
+3. Lock color order: `category_orders={"color": [False, True]}` — guarantees the highlighted trace is index 1.
+4. Set base `opacity=0.3` on the figure.
+5. When a value is selected, override the highlighted trace with `update_traces(selector=1, ...)`.
+
+### Pattern B: Name selector (line / bump)
+
+Use when each entity is its own trace (one line per country, etc.). `selector={"name": ...}` picks the matching trace by name.
+
+```python
+@capture("graph")
+def bump_chart_with_highlight(data_frame, highlight_country=None):
+    rank = data_frame.groupby("year")["lifeExp"].rank(method="dense", ascending=False)
+    fig = px.line(data_frame, x="year", y=rank, color="country", markers=True)
+
+    fig.update_traces(opacity=0.3, line_width=2)  # fade all lines
+
+    if highlight_country is not None:
+        fig.update_traces(
+            selector={"name": highlight_country},
+            opacity=1,
+            line_width=3,
+        )
+    return fig
+```
+
+Steps:
+
+1. Color by entity: `px.line(..., color="country")` — each entity becomes a trace with `name=<value>`.
+2. Fade all: `fig.update_traces(opacity=0.3, line_width=2)`.
+3. Bold the selected trace: `fig.update_traces(selector={"name": highlight_X}, opacity=1, line_width=3)`.
+
+### Wiring at a glance
+
+```python
+vm.Parameter(
+    id="highlight_country_param",
+    targets=["bump_chart.highlight_country"],
+    selector=vm.RadioItems(options=["NONE", *country_names]),
+    visible=False,
+)
+```
+
+- Include `"NONE"` in the selector options so the chart starts in an unhighlighted state.
+- `visible=False` — the highlight effect itself is the visual feedback. The "Reset controls" button clears the highlight.
+
+Full pattern context: see the **wiring-vizro-actions** skill, Pattern 3 and Pattern 5.
+
 ## Common mistakes
 
 ### Using plain `plotly.express` instead of `vizro.plotly.express`

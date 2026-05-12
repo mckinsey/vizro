@@ -5,7 +5,7 @@ Anti-patterns to avoid, organized by dashboard development step.
 ## Contents
 
 - Step 1: Requirements Mistakes (information overload, ignoring user workflow)
-- Step 2: Layout Mistakes (poor hierarchy, cluttered layout)
+- Step 2: Layout & Interaction Mistakes (poor hierarchy, cluttered layout, over-using interactions, missing affordances, drill-through gotchas)
 - Step 3: Visualization Mistakes (wrong charts, color misuse, missing context)
 - Quick Fixes Reference
 
@@ -68,9 +68,9 @@ Mistakes in defining WHAT information to show and WHY.
 
 ---
 
-## Step 2: Layout Mistakes
+## Step 2: Layout & Interaction Mistakes
 
-Mistakes in HOW users navigate and explore data.
+Mistakes in HOW users navigate and explore data. The first group is about static layout (hierarchy, spacing, structure). The second group is about advanced interactions (cross-filter, cross-highlight, drill-through) — see the **wiring-vizro-actions** skill for the 6 named patterns those mistakes reference.
 
 ### Poor Visual Hierarchy
 
@@ -125,6 +125,66 @@ Tertiary metric: Smaller chart or table row
 **Problem**: Random order, no predictable structure
 
 **Solution**: Consistent layout users can learn and memorize
+
+### Over-using Interactions
+
+**Problem**: 3+ cross-filters on one page — users lose track of what affects what.
+
+**Solution**: Limit to 1–2 interaction patterns per page. Match each interaction to a named pattern from the **wiring-vizro-actions** skill; if you cannot name the pattern, the interaction probably isn't justified.
+
+### Feature-First Thinking
+
+**Problem**: "Let's add cross-filter because we can" without a clear user need.
+
+**Solution**: Start from user task. What decision does this interaction enable? If a standard sidebar filter covers it, don't add a click-driven cross-filter.
+
+### Cross-Filter When a Filter Suffices
+
+**Problem**: Adding cross-filter for fewer than ~5 groups, where a dropdown would be just as fast.
+
+**Solution**: Cross-filter pays off when the data has hierarchy (Pattern 1 / 2) or when click-to-explore is more natural than dropdown selection. Otherwise prefer the sidebar filter.
+
+### No Visual Affordance on Interactive Source
+
+**Problem**: User has no idea a chart or table is clickable.
+
+**Solution**: Add a short, action-oriented `header` on every Graph/AgGrid with `actions=` (e.g. `header="Click a bar to filter by region"`). Avoid verbose or vague hints.
+
+### Missing Back Button on Drill-Through Target
+
+**Problem**: User navigates to a detail page (Pattern 1) and feels trapped.
+
+**Solution**: The drill-through target page MUST include a back `vm.Button(text="← Back", href="/source-page", variant="outlined")` as the first component. The page MUST also use `layout=vm.Flex(direction="column")` so the button takes natural height — Grid would waste a 140px+ row.
+
+### Missing `show_in_url=True` for Cross-Page
+
+**Problem**: Cross-page drill-through silently fails — no error, just no filtering on the target page.
+
+**Solution**: The Filter on the target page must have `show_in_url=True`.
+
+### Cross-Filter When You Wanted to Highlight
+
+**Problem**: Click filters data out, removing comparison context — but the user just wanted to emphasise one entity.
+
+**Solution**: Use Pattern 3 (Comparison Spotlight) — Parameter targeting a custom chart's `highlight_X` argument, `visible=False`, `"NONE"` in selector options. The data stays, only the styling changes.
+
+### Self-Highlight Without Visual Contrast
+
+**Problem**: Clicked bar/point looks identical to the others — no feedback.
+
+**Solution**: The custom chart must clearly differentiate highlighted vs non-highlighted (opacity, color, line width, marker border). See the **wiring-vizro-actions** skill's Pattern 3 / 5 and `custom_charts_guide.md` ("Highlight-Aware Custom Charts").
+
+### Invisible Interactions With No Reset Path
+
+**Problem**: Highlight or filter is active but the user can't tell, and there is no obvious way back.
+
+**Solution**: Keep controls visible where possible. For `visible=False` highlight Parameters, include `"NONE"` in the selector options and rely on Vizro's built-in "Reset controls" button to clear state.
+
+### Using Deprecated `filter_interaction`
+
+**Problem**: `filter_interaction` is deprecated and produces warnings or unexpected behaviour.
+
+**Solution**: Use `va.set_control` instead.
 
 ---
 

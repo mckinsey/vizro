@@ -35,6 +35,7 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 - **Colors**: For Plotly charts and KPI cards, do **not** add colors in code — Vizro template defaults apply automatically. Only add chart colors if `spec/3_visual_design.yaml` defines `color_decisions`. For AG Grid cell styling (conditional formatting, heatmaps), use `from vizro.themes import palettes, colors` — never invent hex values. See **selecting-vizro-charts** skill.
 - **Data loading**: For dashboards needing data refresh (databases, APIs) or performance optimization, see the [data management guide](./references/data_management.md) for static vs dynamic data, caching, and best practices.
 - **KPI cards**: Use built-in `kpi_card` / `kpi_card_reference` in `Figure` model only. Never rebuild as custom charts (exception: dynamic text). See **selecting-vizro-charts** skill.
+- **Interactions / actions**: For cross-filter, cross-highlight, drill-through, or data export, load the **wiring-vizro-actions** skill. Check the `interactions:` section in `spec/2_interaction_ux.yaml` for which patterns to implement. Key gotchas: `import vizro.actions as va`; use `va.set_control` (NOT deprecated `filter_interaction`); add `custom_data` for non-positional graph cross-filter; use `visible=False` and `"NONE"` in selector options for cross-highlight Parameters; use `show_in_url=True` plus `layout=vm.Flex(direction="column")` and a back `vm.Button(href=...)` for cross-page drill-through; add a short `header` hint on any interactive Graph/AgGrid. For highlight-aware custom charts, see [custom_charts_guide.md](./references/custom_charts_guide.md).
 
 ### REQUIRED OUTPUT: spec/4_implementation.yaml
 
@@ -159,6 +160,7 @@ testing:
 | ------------------------------------------------------------- | ------------------------------------------------------- |
 | **selecting-vizro-charts** skill                              | Colors, KPI cards, custom charts, Plotly conventions    |
 | **writing-vizro-yaml** skill                                  | YAML syntax, component patterns, data_manager, pitfalls |
+| **wiring-vizro-actions** skill                                | Cross-filter, cross-highlight, drill-through, export    |
 | [data_management.md](./references/data_management.md)         | Static vs dynamic data, caching, databases, APIs        |
 | [custom_charts_guide.md](./references/custom_charts_guide.md) | Implementing custom `@capture("graph")` charts          |
 | [example_app.py](./references/example_app.py)                 | Starting template for dashboard implementation          |

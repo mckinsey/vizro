@@ -114,6 +114,28 @@ Tier 3: Component-level
 
 Load the **designing-vizro-layouts** skill for grid system, component sizing, filter placement, and selector rules. Use the [wireframe templates](references/wireframe_templates.md) when building ASCII wireframes for user approval.
 
+### Interaction Design
+
+Beyond standard sidebar filters, Vizro supports advanced interactions where clicking a chart or table affects other components. Load the **wiring-vizro-actions** skill for the 6 named interaction patterns (Hierarchical Drill-Down, Single-Page Drill-Down, Comparison Spotlight, Multi-Dimensional Slice, Select & Explore, Data Export) with wireframes, spec entries, and code.
+
+All advanced interactions follow **Source → Control → Target**: a source component (Graph, AgGrid) sets an intermediate control (Filter or Parameter, always with an explicit `id`), which updates target components.
+
+**Decision flow** — match data shape + user need to a pattern:
+
+```
+Hierarchy where detail needs its own page?    → Pattern 1 (Hierarchical Drill-Down)
+Hierarchy where detail fits in a container?   → Pattern 2 (Single-Page Drill-Down)
+Compare one entity vs many, keep context?     → Pattern 3 (Comparison Spotlight)
+2+ categorical dimensions, click one cell?    → Pattern 4 (Multi-Dimensional Slice)
+Source needs visual feedback AND must filter? → Pattern 5 (Select & Explore)
+Users need to download data?                  → Pattern 6 (Data Export)
+Otherwise → standard filters/parameters are sufficient
+```
+
+**When NOT to use advanced interactions**: view-only / executive dashboards, simple filtering needs (sidebar dropdown covers it), fewer than ~5 groups, or when you'd end up with more than 2 interaction patterns on a single page (becomes confusing).
+
+For each interaction, document: source component, source value (column or `"x"`/`"y"`), control id + type (Filter/Parameter), targets, visibility (`visible=False` for highlight patterns), and whether it crosses pages (`show_in_url=True`). See the **wiring-vizro-actions** skill for full templates.
+
 ### REQUIRED OUTPUT: spec/2_interaction_ux.yaml
 
 Save this file BEFORE proceeding to Step 3:
@@ -132,6 +154,21 @@ pages:
     filter_placement:
       page_level: [columns with selector types]
       container_level: [columns with selector types]
+
+interactions:  # omit if standard filters/parameters are sufficient
+  - type: cross-filter  # cross-filter | cross-page-drill-through | cross-highlight | cross-parameter | export_data
+    pattern: [Pattern 1-6 name from wiring-vizro-actions]
+    trigger: [user action, e.g. "click bar in 'Pipeline by Region'"]
+    source: [Component name]
+    source_value: [column name, or "x"/"y" for positional]
+    control_id: [Filter/Parameter id]
+    control_type: filter  # filter | parameter
+    control_column: [column]              # for filters only
+    targets: [list of component ids, or "all components in <container>"]
+    placement: page-level | container-level
+    visible: true/false                   # false for cross-highlight
+    show_in_url: true/false               # required true for cross-page
+
 wireframe: |
   [ASCII wireframe for ALL pages and tab views]
 decisions:
@@ -146,8 +183,10 @@ Before proceeding to Step 3:
 - [ ] Layout follows Vizro constraints
 - [ ] Filter placement is intentional and documented
 - [ ] User has been presented ASCII wireframes for every page and approved them
+- [ ] Each entry in `interactions:` maps to a named pattern from **wiring-vizro-actions** (or the absence of interactions is intentional)
+- [ ] User has confirmed the interaction flow
 
-**Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 2: Layout Mistakes"
+**Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 2: Layout & Interaction Mistakes"
 
 ---
 
@@ -206,5 +245,6 @@ Before proceeding to implementation (dashboard-build skill):
 | [information_architecture.md](references/information_architecture.md) | Step 1: Deep dive on requirements                  |
 | **designing-vizro-layouts** skill                                     | Step 2: Grid system, component sizing, filters     |
 | [wireframe_templates.md](references/wireframe_templates.md)           | Step 2: Wireframe templates and interaction labels |
+| **wiring-vizro-actions** skill                                        | Step 2: Cross-filter / cross-highlight / drill-through / export patterns |
 | **selecting-vizro-charts** skill                                      | Step 3: Chart types, anti-patterns                 |
 | [common_mistakes.md](references/common_mistakes.md)                   | All steps: Anti-patterns to avoid                  |
