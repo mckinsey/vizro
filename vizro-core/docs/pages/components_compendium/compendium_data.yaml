@@ -19,6 +19,9 @@
 #
 # To check if index.html is up to date (used in CI): hatch run compendium-check
 #
+# Models in vm.__all__ that are intentionally not visual components and don't need a
+# compendium entry need to be added to EXCLUDED_MODELS in vizro-core/tools/generate_compendium.py.
+#
 # vizro_version is updated automatically by tools/update_components_compendium_version.py on release.
 # Do not edit it manually.
 vizro_version: "0.1.54"
@@ -471,6 +474,7 @@ categories:
       - type: selectors_group
         id: selectors
         name: Selectors
+        aliases: [control, slicers, filters, parameters, variables]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/
         description: |
           The Filter or the Parameter model accept the selector argument, where a selector
