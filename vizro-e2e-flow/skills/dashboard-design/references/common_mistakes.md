@@ -146,21 +146,15 @@ Tertiary metric: Smaller chart or table row
 
 ### No Visual Affordance on Interactive Source
 
-**Problem**: User has no idea a chart or table is clickable.
+**Problem**: Users have no idea a chart or table is clickable until they happen to click it.
 
-**Solution**: Add a short, action-oriented `header` on every Graph/AgGrid with `actions=` (e.g. `header="Click a bar to filter by region"`). Avoid verbose or vague hints.
+**Solution**: Label every clickable component with a short, action-oriented hint (e.g. "Click a bar to filter by region"). Avoid verbose or vague phrasing.
 
-### Missing Back Button on Drill-Through Target
+### Missing Back Path on Drill-Through Target
 
-**Problem**: User navigates to a detail page (Pattern 1) and feels trapped.
+**Problem**: Users navigate from an overview to a detail page and feel trapped — sidebar nav alone is not enough of a back affordance.
 
-**Solution**: The drill-through target page MUST include a back `vm.Button(text="← Back", href="/source-page", variant="outlined")` as the first component. The page MUST also use `layout=vm.Flex(direction="column")` so the button takes natural height — Grid would waste a 140px+ row.
-
-### Missing `show_in_url=True` for Cross-Page
-
-**Problem**: Vizro raises `ValueError` at build time: `Model with ID '<filter_id>' used as a 'control' in 'set_control' action is on a different page from the trigger and so must have show_in_url=True.` — the app never starts.
-
-**Solution**: Set `show_in_url=True` on the target page's Filter.
+**Solution**: Place a clear, visually-secondary "Back" control at the top of the detail page so the return path is obvious from any depth.
 
 ### Cross-Filter When You Wanted to Highlight
 
@@ -170,15 +164,9 @@ Tertiary metric: Smaller chart or table row
 
 ### Invisible Interactions With No Reset Path
 
-**Problem**: Highlight or filter is active but the user can't tell, and there is no obvious way back.
+**Problem**: Hidden controls leave users with no visible state and no obvious reset.
 
-**Solution**: Keep controls visible where possible. For `visible=False` highlight Parameters, include `"NONE"` in the selector options and rely on Vizro's built-in "Reset controls" button to clear state.
-
-### Using Deprecated `filter_interaction`
-
-**Problem**: `filter_interaction` is deprecated and produces warnings or unexpected behavior.
-
-**Solution**: Use `va.set_control` instead.
+**Solution**: Keep controls visible by default; hide one only when the chart's own state communicates the selection (Pattern 3 highlight is the canonical case).
 
 ---
 

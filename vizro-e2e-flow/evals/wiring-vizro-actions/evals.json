@@ -12,7 +12,9 @@
         "Department bar chart uses `va.set_control` with the Filter's `id` as `control` and `value='y'` (horizontal bar) or `value='x'` (vertical bar) matching the orientation",
         "Bar chart is horizontal (orientation='h') — matches the project default for bar charts",
         "Filter has an explicit `id` so `set_control` can reference it",
-        "Employee section is grouped inside a `vm.Container`, and the Filter is scoped to that container (either declared as a container control, or with explicit `targets`)",
+        "Department Filter is scoped to the employee-level components only (via `Filter(targets=[...])` explicitly, by being declared as a Container control, or any other mechanism) — the department bar chart at the top must NOT be filtered by department",
+        "Department Filter is hidden (`visible=False`) — the prompt says 'I don't want a separate dropdown — clicking the bar IS the filter'",
+        "The employee table is rendered as an AG Grid (the prompt asks for a 'sortable table listing the employees')",
         "Department bar chart has a short action-oriented `header` (e.g. `header='Click a bar to filter by department'`)",
         "No `filter_interaction` (deprecated API) anywhere in app.py",
         "Spec file `spec/2_interaction_ux.yaml` includes an `interactions:` block referencing Pattern 2 / Single-Page Drill-Down, with source → control → targets documented"
@@ -30,7 +32,6 @@
         "Page 2 uses `layout=vm.Flex(direction='column')` at the page level (not a Grid) so the back button doesn't waste a full row",
         "First component on Page 2 is a back `vm.Button` with `href='/<page-1-slug>'` and `variant='outlined'` — not an action; uses navigation",
         "Page 2 includes a `vm.Button(text='Export data', actions=va.export_data())` (or similar)",
-        "Remaining Page 2 content (KPIs + charts + table) is wrapped in a `vm.Container` with its own `vm.Grid` layout for precise positioning",
         "Page 1 reps table has a short action-oriented `header` (e.g. `header='Click a row to view rep details'`)",
         "Spec file `spec/2_interaction_ux.yaml` includes an `interactions:` block referencing Pattern 1 / Hierarchical Drill-Down with `show_in_url: true` documented"
       ]
@@ -45,7 +46,6 @@
         "Bump chart is implemented as a custom `@capture('graph')` function with a `highlight_*=None` kwarg (exact name is the agent's choice — `highlight_country`, `selected_country`, etc.)",
         "Inside the custom chart, non-highlighted traces are visually de-emphasized (reduced opacity and/or thinner lines) and the matching trace is emphasized (full opacity / bolder line) when a country is set. Exact values (e.g. `opacity=0.3` vs `0.2`, `line_width=3` vs `2`) are not load-bearing — only the visual contrast is",
         "A `vm.Parameter` targets the custom chart's highlight kwarg (target string of the form `<chart_id>.<highlight_kwarg>`) and has `visible=False`",
-        "The Parameter's selector includes a 'no highlight' sentinel option (typically the string `'NONE'`) so users can reset to no highlight",
         "Bar chart uses `va.set_control` referencing the Parameter's `id` with `value='y'` (since bar is horizontal)",
         "No Filter is involved — this is cross-parameter, not cross-filter (data should NOT be removed, only styled)",
         "Bar chart has an action-oriented `header` (e.g. `header='Click a bar to highlight that country in the chart'`)",

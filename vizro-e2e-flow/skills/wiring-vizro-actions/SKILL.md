@@ -1,6 +1,6 @@
 ---
 name: wiring-vizro-actions
-description: Use this skill when adding cross-filter, cross-highlight, drill-through, or data export interactions to a Vizro dashboard — both for choosing the right interaction pattern during design and for implementing actions in code. Activate when the user wants clicks to filter or highlight other components, needs cross-page navigation with pre-set filters, or wants users to download data.
+description: Use this skill when adding cross-filter, cross-highlight, drill-through, or data export interactions to a Vizro dashboard — both for choosing the right interaction pattern during design and for implementing actions in code. Activate when the user wants clicks on a chart or table to filter or highlight other charts, tables, or figures, needs cross-page navigation with pre-set filters, or wants users to download data.
 ---
 
 # Wiring Vizro Actions
@@ -76,7 +76,7 @@ Users need to download data?
 ## Key gotchas
 
 - **`custom_data` for non-positional values**: When cross-filtering from a graph using a column that is not on a positional axis (`x`/`y`/`z`/`lat`/`lon`), add `custom_data="column"` to the figure and use `value="column"` in `set_control`. Otherwise the click does nothing.
-- **`visible=False` for cross-highlight**: When a Parameter is the highlight control, hide its selector — the highlight effect itself is the feedback.
+- **`visible=False` for cross-highlight**: When a Parameter is the highlight control, hide its selector — the highlight effect itself is the feedback. Also set `visible=False` on a cross-filter when the user explicitly requests it.
 - **`"NONE"` in highlight Parameter selector options**: Include `"NONE"` as the first option so the chart starts unhighlighted.
 - **`show_in_url=True` for cross-page**: Required on the target Filter. Without it, Vizro raises `ValueError` at build time and the app won't start.
 - **Back button + Flex layout for drill-through targets**: Pages that receive a drill-through must use `layout=vm.Flex(direction="column")` so the back button takes natural height (Grid would waste a full 140px+ row). Put remaining content in a `vm.Container` with its own `vm.Grid`.
@@ -132,7 +132,9 @@ vm.Page(
     title="Rep Detail",
     layout=vm.Flex(direction="column"),
     components=[
-        vm.Button(text="← Back", href="/team-overview", variant="outlined"),
+        # href: "/" if the source page is the first in Dashboard(pages=[...]);
+        # otherwise "/<title-lowercased-with-dashes>" (e.g. "/team-overview").
+        vm.Button(text="← Back", href="/", variant="outlined"),
         vm.Container(layout=vm.Grid(...), components=[...]),
     ],
     controls=[vm.Filter(id="rep_filter", column="rep_name", show_in_url=True)],

@@ -187,7 +187,8 @@ page_detail = vm.Page(
     title="Rep Detail",
     layout=vm.Flex(direction="column"),  # REQUIRED for back button
     components=[
-        vm.Button(text="← Back", href="/pipeline-overview", variant="outlined"),
+        # Pipeline Overview is the first page in Dashboard(pages=[...]), so its path is "/" — NOT "/pipeline-overview"
+        vm.Button(text="← Back", href="/", variant="outlined"),
         vm.Container(
             layout=vm.Grid(grid=[[0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2]]),
             components=[
@@ -209,7 +210,7 @@ page_detail = vm.Page(
 | Region filter visible | Yes | User can switch regions manually without re-clicking the chart |
 | Rep filter visible on Page 2 | Yes | User can browse other reps without going back |
 | `show_in_url=True` on `rep_filter` | Required | Cross-page drill-through; also lets users bookmark/share |
-| `href` slug format | `/{title-lowercased-with-dashes}` | Page title `"Team Overview"` → `href="/team-overview"`. Use `href` (navigation), not `actions=` |
+| `href` for the back button | Depends on which page in `Dashboard(pages=[...])` is the target | **The first page in the list has `path="/"` regardless of its title** — Vizro doesn't slugify the root. So if the source (Page 1) is the first entry, the back button is `href="/"`. For any later page, it's `/{title-lowercased-with-dashes}` (e.g. `"Team Overview"` → `/team-overview`). Use `href` (navigation), not `actions=`. |
 | Horizontal bars | Always | Prevents crowded labels; `value="y"` for cross-filter |
 | Page 2 Flex layout | Required | Back button needs natural height (Grid would waste a row) |
 | Header hint on source | Required | User must know the component is clickable |
@@ -325,7 +326,7 @@ page = vm.Page(
 | Filter scoped to container | Yes | Only the Employee Detail container is filtered; the bar chart at top stays unfiltered |
 | `targets` omitted on container-scoped Filter | OK | A Filter declared inside `vm.Container(controls=[...])` defaults to all components in that container — no need to list each one |
 | Container `variant="filled"` | Recommended | Visually groups filtered components |
-| Filter visible | Yes | User can change department from a dropdown without re-clicking |
+| Filter visible | Yes by default; `visible=False` if the user explicitly asks for no dropdown | Visible gives an alternative reset path. |
 
 ---
 
@@ -465,7 +466,7 @@ page = vm.Page(
 | --- | --- | --- |
 | Parameter (not Filter) | Required | We are changing a chart argument, not data. Data should NOT be filtered out — context matters |
 | `visible=False` | Required | The highlight effect itself is the visual feedback |
-| `"NONE"` in selector options | Required | Initial state — nothing highlighted. Also enables Vizro's "Reset controls" to clear highlight |
+| `"NONE"` in selector options | Required | First option becomes the "no highlight" target. Vizro restores it on any clear path: clicking the same bar a second time (Plotly's default `clickmode="event+select"` deselects → `set_control` sees `None` → resets to first option) or the "Reset controls" button. Without it, both paths would restore to whichever option is first alphabetically. |
 | Custom chart required | Yes | Built-in `px.bar`/`px.line` cannot express "highlight one trace" — needs `@capture("graph")` with `highlight_X` arg |
 
 ---
@@ -667,9 +668,14 @@ vm.Graph(header="This chart supports interactive cross-filtering capabilities", 
 ### Back button for cross-page drill-through
 
 ```python
-vm.Button(text="← Back", href="/source-page-slug", variant="outlined")
+# If the source page is the FIRST page in Dashboard(pages=[...]):
+vm.Button(text="← Back", href="/", variant="outlined")
+
+# If the source page is a LATER page (title "Team Overview" -> slug "team-overview"):
+vm.Button(text="← Back", href="/team-overview", variant="outlined")
 ```
 
+- **`href` depends on page order, not title.** Vizro assigns `path="/"` to the first page in `Dashboard(pages=[...])` regardless of its title; subsequent pages get `/{title-lowercased-with-dashes}`. So if the source page is `pages[0]` the back button is `href="/"`, otherwise it's `/{title-slug}`. Hardcoding `/{title-slug}` for a first page produces a broken link.
 - Place as the **first component** on the target page.
 - Use `href` (navigation), NOT `actions=`.
 - `variant="outlined"` keeps the back button visually secondary.
@@ -696,7 +702,7 @@ vm.Button(text="Export data", actions=va.export_data())
 | Forgetting `show_in_url=True` for cross-page | `ValueError` at build time (app won't start) | Add `show_in_url=True` on the target page's Filter |
 | Forgetting `"NONE"` in highlight Parameter options | Chart starts in an unexpected highlighted state | Include `"NONE"` as the first option |
 | Missing `header` hint on interactive source | User doesn't know the chart/table is clickable | Add `header="Click a bar to..."` |
-| Missing back button on drill-through target | User feels trapped on the detail page | Add `vm.Button(text="← Back", href="/source-page", variant="outlined")` as the first component |
+| Missing back button on drill-through target | User feels trapped on the detail page | Add `vm.Button(text="← Back", href=..., variant="outlined")` as the first component. **`href="/"` if the source is the first page in `Dashboard(pages=[...])`; `href="/<title-slug>"` otherwise.** |
 | Back button on a Grid-layout page | Button wastes a full 140px+ row | Use `layout=vm.Flex(direction="column")` on the page; wrap rest in a Container with Grid |
 | Custom chart missing `custom_data` in signature | `custom_data` not passed to the plotly figure | Add `custom_data` to the function parameters |
 | Wrapping built-in actions in `vm.Action` | Unexpected behavior or error | Pass built-in actions directly: `actions=va.export_data()` |
