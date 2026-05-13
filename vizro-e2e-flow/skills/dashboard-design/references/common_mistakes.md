@@ -158,9 +158,9 @@ Tertiary metric: Smaller chart or table row
 
 ### Missing `show_in_url=True` for Cross-Page
 
-**Problem**: Cross-page drill-through silently fails — no error, just no filtering on the target page.
+**Problem**: Vizro raises `ValueError` at build time: `Model with ID '<filter_id>' used as a 'control' in 'set_control' action is on a different page from the trigger and so must have show_in_url=True.` — the app never starts.
 
-**Solution**: The Filter on the target page must have `show_in_url=True`.
+**Solution**: Set `show_in_url=True` on the target page's Filter.
 
 ### Cross-Filter When You Wanted to Highlight
 

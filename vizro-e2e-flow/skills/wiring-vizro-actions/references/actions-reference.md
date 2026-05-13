@@ -858,7 +858,7 @@ vm.Page(
 )
 ```
 
-- **`show_in_url=True`**: required. Without it, the cross-page drill-through silently fails.
+- **`show_in_url=True`**: required on the target Filter. Without it, Vizro raises `ValueError` at build time (`...must have show_in_url=True.`) and the app won't start.
 - **Back button**: place as the first component on the target page. Use `href` (a navigation link), NOT an action.
 - **`href` format**: page title slugified — lowercase, dashes for spaces, prefixed with `/`. Example: `"Team Overview"` → `"/team-overview"`.
 - **Flex layout on target page**: required. In a Grid layout the back button occupies a full 140px+ row, wasting space. With Flex, the button takes natural height. Wrap the remaining content in a `vm.Container(layout=vm.Grid(...))` for precise positioning.
@@ -947,7 +947,7 @@ vm.Button(text="Export data", actions=va.export_data())
 | Forgetting `id` on Filter / Parameter | `set_control` can't reference the control | Add explicit `id="my_filter"` |
 | Forgetting `id` on target component | Filter / Parameter `targets` can't reach it | Add explicit `id="my_chart"` |
 | Using deprecated `filter_interaction` | Deprecation warning or unexpected behavior | Use `va.set_control` instead |
-| Forgetting `show_in_url=True` for cross-page | Drill-through silently fails | Add `show_in_url=True` on the target page's Filter |
+| Forgetting `show_in_url=True` for cross-page | `ValueError` at build time (app won't start) | Add `show_in_url=True` on the target page's Filter |
 | Forgetting `"NONE"` in highlight Parameter options | Chart starts in an unexpected highlighted state | Include `"NONE"` as the first option |
 | Missing `header` hint on interactive source | User doesn't know the chart/table is clickable | Add `header="Click a bar to..."` |
 | Missing back button on drill-through target | User feels trapped on the detail page | Add `vm.Button(text="← Back", href="/source-page", variant="outlined")` as the first component |
