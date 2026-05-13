@@ -49,15 +49,16 @@ All advanced interactions follow **Source → Control → Target**:
 
 ### When to use
 
-- 2–3 level hierarchy (region → rep → deals, department → employee → tasks).
-- Users start broad, narrow by group, then deep-dive into individual records.
-- The detail level has enough content to justify its own page.
+All two should be true — otherwise Pattern 2 or a sidebar `vm.Filter` is the right call.
+
+- **Per-entity detail is rich enough to deserve its own page.** Multiple charts, a table, KPIs, possibly an export — too much to cram into a container on the overview.
+- **Users complete a real workflow on the detail page.** They read multiple charts, examine a table, drill further — not just peek and bounce back.
 
 ### When NOT to use
 
-- Only 1 level (use Pattern 2 or standard filters).
-- Fewer than ~5 top-level groups (a sidebar dropdown filter is simpler).
-- Detail fits comfortably in a container — then use Pattern 2.
+- Detail fits in a container on the same page → use Pattern 2 (no nav, simpler).
+- Few top-level groups (~5 or fewer) and a flat workflow → sidebar `vm.Filter` is simpler.
+- Users only peek at the detail before returning → the page hop adds friction without payoff.
 
 ### Interaction flow
 
@@ -232,14 +233,18 @@ page_detail = vm.Page(
 
 ### When to use
 
-- 2-level hierarchy where the detail fits in a container on the same page.
-- Users want to drill in without leaving the page.
-- Simpler than Pattern 1 — no cross-page navigation, no back button.
+All three should be true — otherwise a sidebar `vm.Filter` is the right call.
+
+- **Source chart earns its own screen space.** The chart is a primary viz users want regardless (not invented just to be a filter selector).
+- **Users pick based on what they see, not from a known list.** Selection is driven by spotting something in the chart — an outlier, a peak, a spatial cluster, a ranking — rather than typing in a value the user already had in mind.
+- **Detail fits in a container on the same page.** If it doesn't, use Pattern 1.
 
 ### When NOT to use
 
-- Detail content is too large for a container (use Pattern 1).
-- Only 1 level (standard filter suffices).
+- The source chart exists only to be a control (no insight value of its own) → use a sidebar `vm.Filter`.
+- Users already know which value they want → a sidebar dropdown is faster than reading the chart to find it.
+- Few categories with no visual feature worth spotting → a sidebar dropdown is simpler.
+- Detail content is too large for a container → use Pattern 1.
 
 ### Interaction flow
 
@@ -338,15 +343,18 @@ page = vm.Page(
 
 ### When to use
 
-- Many entities shown at once; user wants to focus on one without losing the comparison context.
-- "Which one stands out? Let me click to see it against the rest."
-- The visual feedback IS the highlight — no filter, no navigation.
+All three should be true — otherwise a Filter (sidebar or cross-filter) is the right call.
+
+- **The user question is "this one vs the rest", not "just this one".** Removing the other entities would destroy the insight. The rest are comparison context, not noise.
+- **Target chart is unreadable without spotlighting.** Many overlapping entities (a bump chart of 100 countries, a line chart of 50 sales reps) — no individual entity is legible without bringing it forward.
+- **The user typically asks the question explicitly.** The chart already shows everything; the user opts in to "spotlight country X". Don't add Pattern 3 speculatively — wait for the user to ask for highlighting.
 
 ### When NOT to use
 
-- User wants to filter data out (use Pattern 1, 2, or 4).
-- Fewer than ~5 entities (highlighting adds little when everything is already legible).
-- No clear "compare one vs all" mental model.
+- User wants to see only the selected entity → use a Filter (sidebar `vm.Filter` or cross-filter, Pattern 1/2/4).
+- Few entities (~5 or fewer) all already legible → no need to fade the rest.
+- Each entity is independent (no "rest" to compare against) → highlighting adds nothing.
+- The selected entity needs a different view (detail page, summary stats) → use Pattern 1 drill-through instead.
 
 ### Interaction flow
 
@@ -441,14 +449,18 @@ page = vm.Page(
 
 ### When to use
 
-- 2+ categorical dimensions visualized together (heatmap, pivot).
-- Users want to see the underlying records for a specific intersection.
-- Clicking one cell should set ALL the dimensional filters at once.
+All three should be true — otherwise two independent sidebar `vm.Filter`s do the job.
+
+- **The chart visualizes the intersection of 2+ discrete dimensions.** Heatmap, density grid, pivot — the value at row × column is the insight, not the marginals alone.
+- **Users pick the cell based on what they see at the intersection.** They notice "Monday at 10am is the hottest cell" and click it. Without the viz, they'd guess-and-check across two dropdowns.
+- **One click should commit both dimensions atomically.** Picking row then column via separate sidebar filters is two interactions and loses the spatial context between them.
 
 ### When NOT to use
 
-- Only one dimension (use Pattern 2).
-- Dimensions are continuous (this pattern is for discrete categories).
+- Only one dimension that matters → Pattern 2 or sidebar `vm.Filter`.
+- Dimensions are independent (no insight from the intersection) → two separate sidebar `vm.Filter`s.
+- Users already know the cell coordinates ahead of time → sidebar dropdowns are faster.
+- Dimensions are continuous (this pattern is for discrete cells).
 
 ### Interaction flow
 
@@ -541,14 +553,18 @@ page = vm.Page(
 
 ### When to use
 
-- Source chart and target are on the same level (not overview → detail).
-- Users benefit from seeing their selection visually confirmed in the source.
-- Source needs immediate visual feedback (the highlight) AND must filter elsewhere.
+All three should be true — otherwise Pattern 2 (cross-filter only) or Pattern 3 (highlight only) covers it.
+
+- **Source has enough categories that "which one did I click?" isn't obvious after a click.** With ~5 categories the selection is visually self-evident; with 8+ bars or many points, users lose track without the source itself confirming the click.
+- **Users need BOTH the visual selection state AND a filtered target.** Either alone is not sufficient.
+- **The source viz remains relevant after the click.** It is a primary viz the user keeps reading, not a one-shot selector they discard.
 
 ### When NOT to use
 
-- Source is purely an overview, target is detail → use Pattern 2.
-- Source's visual feedback isn't needed (clicking a row and filtering a chart → use Pattern 2).
+- Source has few enough categories that selection is obvious without highlight → Pattern 2.
+- User only needs filtering, doesn't need source feedback → Pattern 2.
+- User only needs highlighting, doesn't need filtered targets → Pattern 3.
+- Click should navigate to a detail page → Pattern 1.
 
 ### Interaction flow
 
@@ -649,13 +665,15 @@ page = vm.Page(
 
 ### When to use
 
-- Users (typically analysts) need to download the filtered data for offline analysis.
-- "I've drilled down to exactly what I need, now let me pull it into Excel."
+All three should be true — otherwise skip the export button.
+
+- **Users have a downstream workflow outside the dashboard.** Excel modeling, sharing a slice with someone offline, feeding another tool — the dashboard isn't the final destination for the analysis.
+- **The exact filtered slice they're viewing is what they want to export.** Not "all data ever" (in which case they should hit the source system directly).
+- **The analyst persona is explicit in the requirements.** Don't add export speculatively — wait for the user to call out the offline workflow.
 
 ### When NOT to use
 
-- Executive dashboards where export is not expected.
-- Dashboards with sensitive data that shouldn't leave the platform.
+- Executive / view-only dashboards — no offline workflow expected.
 
 ### Interaction flow
 
