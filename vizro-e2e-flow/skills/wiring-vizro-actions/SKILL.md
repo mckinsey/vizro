@@ -39,8 +39,7 @@ Match data shape + user need to a pattern. Full details (when-to-use, wireframes
 | 2 | **Single-Page Drill-Down** (container) | 2-level hierarchy where detail fits in a container | cross-filter into a container |
 | 3 | **Comparison Spotlight** (cross-highlight) | Compare one entity against many without removing context | custom chart with `highlight_X` + hidden Parameter |
 | 4 | **Multi-Dimensional Slice** | 2+ categorical dimensions (e.g. day × time heatmap) | actions chain → multiple Filters |
-| 5 | **Select & Explore** | Source chart needs to confirm selection visually AND filter targets | actions chain: self-highlight + cross-filter |
-| 6 | **Data Export** | Analyst persona needs the filtered data downloaded | `vm.Button` + `va.export_data()` |
+| 5 | **Data Export** | Analyst persona needs the filtered data downloaded | `vm.Button` + `va.export_data()` |
 
 **Decision flow:**
 
@@ -58,12 +57,8 @@ Compare one entity against many without removing context?
 ├─ YES → Pattern 4
 └─ NO → continue
 
-Source chart needs visual confirmation of click AND must filter elsewhere?
-├─ YES → Pattern 5
-└─ NO → continue
-
 Users need to download data?
-├─ YES → Pattern 6
+├─ YES → Pattern 5
 └─ NO → Standard filters/parameters are sufficient
 ```
 
@@ -86,7 +81,7 @@ Users need to download data?
 
 ## Quick code recipes
 
-### Export data (Pattern 6)
+### Export data (Pattern 5)
 
 ```python
 vm.Button(text="Export data", actions=va.export_data())
@@ -147,10 +142,10 @@ Load [actions-reference.md](references/actions-reference.md) when you need:
 | Need | Search for |
 | --- | --- |
 | Full pattern template (when/why/code/wireframe/spec) | `## Pattern N` |
-| Positional vs `custom_data` for graph cross-filter | `## Cross-Filter from Graph` |
-| Highlight-aware custom chart wiring | `## Cross-Highlight` (and see `custom_charts_guide.md` for chart shape) |
-| Multi-dimensional / actions chain | `## Multi-Dimensional` or `## Actions Chains` |
-| Drill-through layout constraint (Flex/Grid/back button) | `## Cross-Filter Between Pages` |
+| Highlight-aware custom chart wiring (chart shape + Parameter wiring) | `## Pattern 3` |
+| Multi-dimensional / actions chain | `## Pattern 4` |
+| Drill-through layout constraint (Flex/Grid/back button, `href` slug format) | `## Pattern 1` |
+| Positional vs `custom_data` and the `@capture("graph")` signature gotcha | `## Common Implementation Mistakes` |
 | Full common-mistakes table | `## Common Implementation Mistakes` |
 
 ## Key imports

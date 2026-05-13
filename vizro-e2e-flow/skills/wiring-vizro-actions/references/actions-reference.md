@@ -1,6 +1,6 @@
 # Vizro Actions Reference
 
-Full reference for the **wiring-vizro-actions** skill. Each named pattern below covers both design-phase decisions (when to use, wireframe, spec entry) and build-phase implementation (full code). The cross-cutting "Action Mechanics" section near the bottom is a quick-reference for code patterns shared across patterns.
+Full reference for the **wiring-vizro-actions** skill. Each named pattern below covers both design-phase decisions (when to use, wireframe, spec entry) and build-phase implementation (full code). Cross-cutting gotchas live in the **Common Implementation Mistakes** table at the bottom.
 
 ## Contents
 
@@ -9,17 +9,7 @@ Full reference for the **wiring-vizro-actions** skill. Each named pattern below 
 - Pattern 2: Single-Page Drill-Down (container)
 - Pattern 3: Comparison Spotlight (cross-highlight)
 - Pattern 4: Multi-Dimensional Slice
-- Pattern 5: Select & Explore (self-highlight + cross-filter)
-- Pattern 6: Data Export
-- Action Mechanics Reference
-  - Export Data
-  - Cross-Filter from Table
-  - Cross-Filter from Graph (positional vs `custom_data`)
-  - Cross-Highlight wiring
-  - Cross-Filter Between Containers
-  - Cross-Filter Between Pages
-  - Multi-Dimensional Cross-Filter
-  - Actions Chains
+- Pattern 5: Data Export
 - Visual Affordances
 - Common Implementation Mistakes
 
@@ -220,6 +210,7 @@ page_detail = vm.Page(
 | Region filter visible | Yes | User can switch regions manually without re-clicking the chart |
 | Rep filter visible on Page 2 | Yes | User can browse other reps without going back |
 | `show_in_url=True` on `rep_filter` | Required | Cross-page drill-through; also lets users bookmark/share |
+| `href` slug format | `/{title-lowercased-with-dashes}` | Page title `"Team Overview"` → `href="/team-overview"`. Use `href` (navigation), not `actions=` |
 | Horizontal bars | Always | Prevents crowded labels; `value="y"` for cross-filter |
 | Page 2 Flex layout | Required | Back button needs natural height (Grid would waste a row) |
 | Header hint on source | Required | User must know the component is clickable |
@@ -332,6 +323,7 @@ page = vm.Page(
 | Decision | Choice | Reasoning |
 | --- | --- | --- |
 | Filter scoped to container | Yes | Only the Employee Detail container is filtered; the bar chart at top stays unfiltered |
+| `targets` omitted on container-scoped Filter | OK | A Filter declared inside `vm.Container(controls=[...])` defaults to all components in that container — no need to list each one |
 | Container `variant="filled"` | Recommended | Visually groups filtered components |
 | Filter visible | Yes | User can change department from a dropdown without re-clicking |
 
@@ -400,7 +392,41 @@ interactions:
 
 ### Code
 
-The target chart must be a custom chart with a `highlight_X` argument. See `dashboard-build/references/custom_charts_guide.md` ("Highlight-Aware Custom Charts") for the chart shape. The action wiring:
+The target chart must be a custom `@capture("graph")` function with a `highlight_X` kwarg defaulting to `None` (Vizro maps the selector's `"NONE"` option to Python `None`). When `highlight_X is None`, nothing is emphasized. When it is set, the matching entity is bolded; the rest stay faded.
+
+**Target chart shape — pick the variant that matches the data:**
+
+```python
+# Variant A — boolean color (bar / scatter): one row per data point, one entity to bring forward
+from vizro.models.types import capture
+import vizro.plotly.express as px
+
+@capture("graph")
+def scatter_with_highlight(data_frame, highlight_country=None):
+    is_highlighted = data_frame["country"] == highlight_country
+    fig = px.scatter(
+        data_frame, x="gdpPercap", y="lifeExp", size="pop", size_max=60,
+        opacity=0.3,
+        color=is_highlighted,
+        category_orders={"color": [False, True]},  # locks highlighted trace at index 1
+    )
+    if highlight_country is not None:
+        fig.update_traces(selector=1, marker={"line_width": 2, "opacity": 1})
+    fig.update_layout(showlegend=False)
+    return fig
+
+# Variant B — name selector (line / bump): each entity is its own trace
+@capture("graph")
+def bump_chart_with_highlight(data_frame, highlight_country=None):
+    rank = data_frame.groupby("year")["lifeExp"].rank(method="dense", ascending=False)
+    fig = px.line(data_frame, x="year", y=rank, color="country", markers=True)
+    fig.update_traces(opacity=0.3, line_width=2)  # fade all
+    if highlight_country is not None:
+        fig.update_traces(selector={"name": highlight_country}, opacity=1, line_width=3)
+    return fig
+```
+
+**Page wiring** — source bar fires `set_control` on a hidden Parameter that targets the bump chart's `highlight_country`:
 
 ```python
 import vizro.actions as va
@@ -418,7 +444,7 @@ page = vm.Page(
         ),
         vm.Graph(
             id="bump_chart",
-            figure=bump_chart_with_highlight(data_frame="gapminder"),  # custom @capture("graph")
+            figure=bump_chart_with_highlight(data_frame="gapminder"),
         ),
     ],
     controls=[
@@ -547,119 +573,7 @@ page = vm.Page(
 
 ---
 
-## Pattern 5: Select & Explore (self-highlight + cross-filter)
-
-**Domain example**: Portfolio Analysis (click sector bar → bar highlights AND holdings table filters).
-
-### When to use
-
-All three should be true — otherwise Pattern 2 (cross-filter only) or Pattern 3 (highlight only) covers it.
-
-- **Source has enough categories that "which one did I click?" isn't obvious after a click.** With ~5 categories the selection is visually self-evident; with 8+ bars or many points, users lose track without the source itself confirming the click.
-- **Users need BOTH the visual selection state AND a filtered target.** Either alone is not sufficient.
-- **The source viz remains relevant after the click.** It is a primary viz the user keeps reading, not a one-shot selector they discard.
-
-### When NOT to use
-
-- Source has few enough categories that selection is obvious without highlight → Pattern 2.
-- User only needs filtering, doesn't need source feedback → Pattern 2.
-- User only needs highlighting, doesn't need filtered targets → Pattern 3.
-- Click should navigate to a detail page → Pattern 1.
-
-### Interaction flow
-
-```
-[Bar chart click] ──actions chain──> sets highlight_param (visible=False) ──> source chart self-highlights
-                              └──> sets sector_filter ──> [target table] filters to that sector
-```
-
-### Wireframe
-
-```
-+--+----------+------------------------------------------------------------------------+
-|  |NAV       |                                                                        |
-|  |          |  +----------------------------------+  +-----------------------------+  |
-|  |Portfolio |  |  CHART: Allocation by Sector     |  |  TABLE: Holdings             |  |
-|  |----------|  |  header: "Click to select"       |  |  [← filtered by: sector]    |  |
-|  |FILTERS   |  |  [Custom bar with highlight_X]   |  |                              |  |
-|  |          |  |  [click: highlight + cross-filter]|  |                              |  |
-|  |          |  +----------------------------------+  +-----------------------------+  |
-+--+----------+------------------------------------------------------------------------+
-```
-
-### Spec entry
-
-```yaml
-interactions:
-  - type: cross-highlight
-    pattern: Select & Explore
-    trigger: click bar in "Allocation by Sector"
-    source: Allocation by Sector (Graph)
-    source_value: "y"
-    control_id: sector_highlight_param
-    control_type: parameter
-    targets: ["allocation_chart.highlight_sector"]
-    placement: page-level
-    visible: false
-  - type: cross-filter
-    pattern: Select & Explore
-    trigger: click bar in "Allocation by Sector"
-    source: Allocation by Sector (Graph)
-    source_value: "y"
-    control_id: sector_filter
-    control_type: filter
-    control_column: sector
-    targets: [holdings_table]
-    placement: page-level
-    visible: true
-```
-
-### Code
-
-```python
-import vizro.actions as va
-import vizro.models as vm
-from vizro.tables import dash_ag_grid
-# bar_with_highlight: custom @capture("graph") chart with a highlight_sector kwarg
-# (see custom_charts_guide.md "Highlight-Aware Custom Charts" for the chart shape)
-
-page = vm.Page(
-    title="Portfolio",
-    components=[
-        vm.Graph(
-            id="allocation_chart",
-            header="Click a bar to select a sector and filter the table",
-            figure=bar_with_highlight(data_frame="portfolio"),  # custom chart w/ highlight_sector
-            actions=[
-                va.set_control(control="sector_highlight_param", value="y"),
-                va.set_control(control="sector_filter", value="y"),
-            ],
-        ),
-        vm.AgGrid(id="holdings_table", figure=dash_ag_grid("holdings")),
-    ],
-    controls=[
-        vm.Parameter(
-            id="sector_highlight_param",
-            targets=["allocation_chart.highlight_sector"],
-            selector=vm.RadioItems(options=["NONE", *sectors]),
-            visible=False,
-        ),
-        vm.Filter(id="sector_filter", column="sector", targets=["holdings_table"]),
-    ],
-)
-```
-
-### Key decisions
-
-| Decision | Choice | Reasoning |
-| --- | --- | --- |
-| Custom chart required | Yes | The source self-highlights |
-| Action order: highlight first, then filter | Recommended | Visual feedback should appear immediately on click |
-| Parameter `visible=False`, Filter visible | Typical | The highlight is the parameter's feedback; the filter dropdown is useful for direct selection |
-
----
-
-## Pattern 6: Data Export
+## Pattern 5: Data Export
 
 **Domain example**: Any analyst-facing dashboard.
 
@@ -732,175 +646,6 @@ page = vm.Page(
 
 ---
 
-## Action Mechanics Reference
-
-Cross-cutting code patterns shared across the 6 named patterns.
-
-### Export Data
-
-```python
-vm.Button(text="Export data", actions=va.export_data())
-```
-
-- Exports all graphs / tables / figures on the page as CSV (one file per component).
-- Exported data reflects current Filter/Parameter state.
-- Does NOT include client-side modifications (AG Grid filters, graph zoom).
-
-### Cross-Filter from Table
-
-```python
-vm.AgGrid(
-    header="Click a row to view details",
-    figure=dash_ag_grid("reps_data"),
-    actions=va.set_control(control="rep_filter", value="rep_name"),
-)
-vm.Filter(id="rep_filter", column="rep_name")
-```
-
-- **Trigger**: click or `Space` on a row.
-- **`value`**: column name. Always taken from the clicked row's column, regardless of which cell was clicked.
-- **`control`**: the `id` of the Filter.
-
-### Cross-Filter from Graph
-
-Two approaches depending on the column you want to filter on.
-
-**Positional (simpler)** — use when the filter column is a positional axis (`x`, `y`, `z`, `lat`, `lon`):
-
-```python
-vm.Graph(
-    figure=px.bar("pipeline", x="value", y="region", orientation="h"),
-    actions=va.set_control(control="region_filter", value="y"),  # "y" = region
-)
-vm.Filter(id="region_filter", column="region")
-```
-
-**Via `custom_data`** — use when the filter column is encoded as something other than a positional axis (e.g. `color`):
-
-```python
-vm.Graph(
-    figure=px.box("tips", x="tip", y="time", color="sex", custom_data="sex"),
-    actions=va.set_control(control="sex_filter", value="sex"),
-)
-vm.Filter(id="sex_filter", column="sex")
-```
-
-For custom charts, the function signature must accept `custom_data`:
-
-```python
-@capture("graph")
-def my_custom_chart(data_frame, custom_data, **kwargs):
-    return px.scatter(data_frame, custom_data=custom_data, **kwargs)
-```
-
-### Cross-Highlight wiring
-
-Cross-highlight is **cross-parameter** under the hood — the control is a Parameter, not a Filter.
-
-```python
-vm.Graph(
-    id="source_chart",
-    figure=px.bar("data", x="value", y="country", orientation="h"),
-    actions=va.set_control(control="highlight_param", value="y"),
-)
-vm.Graph(
-    id="target_chart",
-    figure=my_chart_with_highlight(data_frame="data"),  # custom chart, highlight_country arg
-)
-vm.Parameter(
-    id="highlight_param",
-    targets=["target_chart.highlight_country"],
-    selector=vm.RadioItems(options=["NONE", *country_names]),
-    visible=False,
-)
-```
-
-The custom chart shape (`highlight_X` argument, fade non-matching traces) belongs in [custom_charts_guide.md](../../dashboard-build/references/custom_charts_guide.md) under "Highlight-Aware Custom Charts". The action wiring is here.
-
-### Cross-Filter Between Containers
-
-Source in container A, Filter in container B → all components in container B are targets.
-
-```python
-vm.Container(
-    components=[
-        vm.AgGrid(figure=dash_ag_grid("tips"), actions=va.set_control(control="sex_filter", value="sex")),
-    ],
-)
-vm.Container(
-    components=[vm.Graph(figure=px.histogram("tips", x="tip"))],
-    controls=[vm.Filter(id="sex_filter", column="sex")],  # scoped to this container
-)
-```
-
-- When `targets` is omitted on a Filter inside a Container, it defaults to all components in that container.
-- `variant="filled"` on the target container is recommended for visual clarity.
-
-### Cross-Filter Between Pages
-
-Source on Page 1, Filter on Page 2 with `show_in_url=True`.
-
-```python
-# Page 1
-vm.AgGrid(
-    actions=va.set_control(control="rep_filter", value="rep_name"),
-)
-
-# Page 2
-vm.Page(
-    title="Rep Detail",
-    layout=vm.Flex(direction="column"),  # REQUIRED — back button needs natural height
-    components=[
-        vm.Button(text="← Back", href="/team-overview", variant="outlined"),
-        vm.Container(layout=vm.Grid(...), components=[...]),
-    ],
-    controls=[vm.Filter(id="rep_filter", column="rep_name", show_in_url=True)],
-)
-```
-
-- **`show_in_url=True`**: required on the target Filter. Without it, Vizro raises `ValueError` at build time (`...must have show_in_url=True.`) and the app won't start.
-- **Back button**: place as the first component on the target page. Use `href` (a navigation link), NOT an action.
-- **`href` format**: page title slugified — lowercase, dashes for spaces, prefixed with `/`. Example: `"Team Overview"` → `"/team-overview"`.
-- **Flex layout on target page**: required. In a Grid layout the back button occupies a full 140px+ row, wasting space. With Flex, the button takes natural height. Wrap the remaining content in a `vm.Container(layout=vm.Grid(...))` for precise positioning.
-
-### Multi-Dimensional Cross-Filter
-
-Actions chain on one source, one `set_control` per dimension, one Filter per dimension.
-
-```python
-vm.Graph(
-    figure=px.density_heatmap("appointments", x="day", y="time_slot"),
-    actions=[
-        va.set_control(control="day_filter", value="x"),
-        va.set_control(control="time_filter", value="y"),
-    ],
-)
-vm.Filter(id="day_filter", column="day", targets=["appointments_table"])
-vm.Filter(id="time_filter", column="time_slot", targets=["appointments_table"])
-```
-
-- Actions execute sequentially — the second `set_control` runs after the first completes.
-
-### Actions Chains
-
-Multiple actions on one trigger, sequential execution.
-
-```python
-vm.Graph(
-    actions=[
-        action_1,
-        action_2,
-        # ...
-    ],
-)
-```
-
-- Can mix built-in (`va.*`) and custom (`vm.Action`) actions in the same list.
-- Action_2 runs only after action_1 completes — useful when one depends on the other's effect.
-- Common combinations: self-highlight + cross-filter (Pattern 5), multi-dimensional (Pattern 4).
-
----
-
 ## Visual Affordances
 
 Users need visible cues that a component is interactive.
@@ -943,7 +688,7 @@ vm.Button(text="Export data", actions=va.export_data())
 
 | Mistake | Symptom | Fix |
 | --- | --- | --- |
-| Forgetting `custom_data` on graph cross-filter | Click does nothing when filter column is not a positional axis | Add `custom_data="column"` to the figure |
+| Forgetting `custom_data` on graph cross-filter | Click does nothing when filter column is not on a positional axis (`x`/`y`/`z`/`lat`/`lon`) | Add `custom_data="column"` to the figure and use `value="column"` in `set_control`. For a custom `@capture("graph")` function the signature must also accept `custom_data` (`def my_chart(data_frame, custom_data, **kwargs)`) — otherwise the callback fires a 500 |
 | Forgetting `id` on Filter / Parameter | `set_control` can't reference the control | Add explicit `id="my_filter"` |
 | Forgetting `id` on target component | Filter / Parameter `targets` can't reach it | Add explicit `id="my_chart"` |
 | Using deprecated `filter_interaction` | Deprecation warning or unexpected behavior | Use `va.set_control` instead |

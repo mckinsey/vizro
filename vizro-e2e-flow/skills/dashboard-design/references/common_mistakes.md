@@ -168,12 +168,6 @@ Tertiary metric: Smaller chart or table row
 
 **Solution**: Use Pattern 3 (Comparison Spotlight) — Parameter targeting a custom chart's `highlight_X` argument, `visible=False`, `"NONE"` in selector options. The data stays, only the styling changes.
 
-### Self-Highlight Without Visual Contrast
-
-**Problem**: Clicked bar/point looks identical to the others — no feedback.
-
-**Solution**: The custom chart must clearly differentiate highlighted vs non-highlighted (opacity, color, line width, marker border). See the **wiring-vizro-actions** skill's Pattern 3 / 5 and `custom_charts_guide.md` ("Highlight-Aware Custom Charts").
-
 ### Invisible Interactions With No Reset Path
 
 **Problem**: Highlight or filter is active but the user can't tell, and there is no obvious way back.

@@ -55,7 +55,7 @@
     {
       "id": 4,
       "prompt": "I'm building an appointments dashboard for a clinic. We want to see appointment density across the week. The main visual is a heatmap with day-of-week on one axis and time slot on the other axis (15-minute slots from 8am to 6pm), and the cells colored by number of appointments. Below the heatmap there should be a table listing individual appointments. When the user clicks a cell in the heatmap — say Tuesday at 10:00 — the table should filter to show only Tuesday-10:00 appointments. The clinic admin also needs to be able to download whatever appointments are currently shown in the table as a CSV — so they can hand the day's schedule to a doctor or pass it to billing. Generate mock data for a couple of weeks of appointments across 5 doctors.",
-      "expected_output": "Single-page dashboard combining Pattern 4 (Multi-Dimensional Slice — heatmap click sets two filters via an actions chain) AND Pattern 6 (Data Export — button-triggered CSV download of the filtered table).",
+      "expected_output": "Single-page dashboard combining Pattern 4 (Multi-Dimensional Slice — heatmap click sets two filters via an actions chain) AND Pattern 5 (Data Export — button-triggered CSV download of the filtered table).",
       "files": [],
       "expectations": [
         "Dashboard launches without errors and has no browser console errors",
@@ -69,25 +69,7 @@
         "Export button text is clear and action-oriented (e.g. 'Export data', 'Download CSV') — not generic like 'Button' or 'Submit'",
         "Export button is placed sensibly relative to the data it exports (near the appointments table or at the bottom of the page) — not floating in an unrelated spot",
         "No `filter_interaction` or other deprecated APIs",
-        "Spec file `spec/2_interaction_ux.yaml` includes an `interactions:` block referencing BOTH Pattern 4 / Multi-Dimensional Slice (heatmap → two filters actions chain) AND Pattern 6 / Data Export (the button)"
-      ]
-    },
-    {
-      "id": 5,
-      "prompt": "I'm building a dashboard for our investment team to look at sector exposure across the portfolio. The main visual on the page is a bar chart showing total dollar exposure by sector. Next to it I want a sortable table listing every holding with its ticker, sector, position size, and today's P&L. The interaction I need is: when an analyst clicks a sector bar, two things happen on the same click — (1) the clicked bar gets visually emphasized so the analyst can see what they picked (bolder color or full opacity while the others fade), and (2) the holdings table filters down to just the holdings in that sector. Generate mock data for ~80 holdings across 8 sectors.",
-      "expected_output": "Single-page dashboard implementing Pattern 5 (Select & Explore) — one click triggers an actions chain that both self-highlights the source bar (via a Parameter targeting a custom chart's highlight argument) AND cross-filters a target table (via a Filter). This is the only pattern that combines highlight and filter on a single trigger, and it requires a custom chart with a highlight_X argument.",
-      "files": [],
-      "expectations": [
-        "Dashboard launches without errors and has no browser console errors",
-        "Source bar chart is a custom `@capture('graph')` function that accepts a `highlight_X=None` argument (e.g. `highlight_sector`) and fades non-highlighted bars when set",
-        "Source bar chart's `actions` is a LIST (actions chain) with TWO `va.set_control` calls — one for the highlight Parameter, one for the sector Filter",
-        "A `vm.Parameter` targets the source chart's `highlight_X` argument (target string `<chart_id>.highlight_X`) and has `visible=False` — the self-highlight effect IS the visual feedback for the click",
-        "The Parameter's selector options include `'NONE'` (or equivalent sentinel like `'(none)'`) so the chart starts unhighlighted and the user can reset",
-        "A separate `vm.Filter` with an explicit `id` targets the holdings table (via `targets=[...]` or by being scoped to the table's container)",
-        "Source bar chart has an action-oriented `header` (e.g. `header='Click a bar to select a sector and filter the table'`)",
-        "Bars are horizontal (`orientation='h'`) per project default; both `set_control` calls use `value='y'` (positional) for the sector",
-        "No `filter_interaction` or other deprecated APIs",
-        "Spec file `spec/2_interaction_ux.yaml` includes an `interactions:` block referencing Pattern 5 / Select & Explore with BOTH the highlight action (`visible: false`, `control_type: parameter`) AND the filter action (`control_type: filter`) documented as one chained interaction"
+        "Spec file `spec/2_interaction_ux.yaml` includes an `interactions:` block referencing BOTH Pattern 4 / Multi-Dimensional Slice (heatmap → two filters actions chain) AND Pattern 5 / Data Export (the button)"
       ]
     }
   ]

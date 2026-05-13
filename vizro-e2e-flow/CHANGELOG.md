@@ -4,7 +4,7 @@
 
 ## Added
 
-- Add `wiring-vizro-actions` skill with 6 interaction patterns (drill-down, drill-through, comparison spotlight, multi-dimensional slice, select & explore, data export) and a `custom_charts_guide.md` reference for highlight-aware custom charts. ([#1737](https://github.com/mckinsey/vizro/pull/1737))
+- Add `wiring-vizro-actions` skill with 5 interaction patterns: Hierarchical Drill-Down, Single-Page Drill-Down, Comparison Spotlight, Multi-Dimensional Slice, and Data Export. ([#1737](https://github.com/mckinsey/vizro/pull/1737))
 
 <a id='changelog-0.1.5'></a>
 

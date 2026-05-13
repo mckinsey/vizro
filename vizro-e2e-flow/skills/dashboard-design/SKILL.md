@@ -127,8 +127,7 @@ Hierarchy where detail needs its own page?    → Pattern 1 (Hierarchical Drill-
 Hierarchy where detail fits in a container?   → Pattern 2 (Single-Page Drill-Down)
 Compare one entity vs many, keep context?     → Pattern 3 (Comparison Spotlight)
 2+ categorical dimensions, click one cell?    → Pattern 4 (Multi-Dimensional Slice)
-Source needs visual feedback AND must filter? → Pattern 5 (Select & Explore)
-Users need to download data?                  → Pattern 6 (Data Export)
+Users need to download data?                  → Pattern 5 (Data Export)
 Otherwise → standard filters/parameters are sufficient
 ```
 

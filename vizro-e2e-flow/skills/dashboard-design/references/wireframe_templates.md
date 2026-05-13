@@ -42,7 +42,7 @@ For full pattern templates (cross-filter, cross-highlight, drill-through, export
 - `[click: highlight → parameter_id]` - Clicking highlights data in a target chart (Pattern 3 or 5)
 - `[← filtered by: filter_id]` - Component is filtered by a cross-filter
 - `[← highlight: parameter_id]` - Component is highlighted by a cross-parameter
-- `[export button]` - Button triggers data export (Pattern 6)
+- `[export button]` - Button triggers data export (Pattern 5)
 - `[← Back]` - Back button on a drill-through target page (required for Pattern 1)
 - `header: "Click a bar to ..."` - Action-oriented affordance hint on an interactive source
 - `[hover: tooltip]` - Hovering shows information
