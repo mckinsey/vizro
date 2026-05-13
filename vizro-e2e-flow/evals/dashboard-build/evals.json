@@ -18,7 +18,9 @@
         "Heatmap uses Vizro default color palette (no explicit color_continuous_scale like 'Blues' or 'RdYlGn')",
         "spec/2_interaction_ux.yaml either contains an `interactions:` block mapping each interaction to a named pattern from wiring-vizro-actions, or explicitly justifies why standard filters suffice",
         "If cross-filter/cross-highlight is implemented, it uses `va.set_control` (NOT the deprecated `filter_interaction` API)",
-        "Any interactive source component (Graph or AgGrid with `actions=`) has a short, action-oriented `header` hint (e.g. 'Click a bar to filter by region')"
+        "Any interactive source component (Graph or AgGrid with `actions=`) has a short, action-oriented `header` hint (e.g. 'Click a bar to filter by region')",
+        "If a custom `@capture('graph')` function is used as a cross-filter source (its `vm.Graph` has `actions=va.set_control(...)`), the function signature accepts `custom_data` as a parameter (e.g. `def my_chart(data_frame, custom_data, **kwargs)`) — hardcoding `custom_data=...` inside the function body causes a callback 500 when the action fires",
+        "Agent clicked on every interactive source (any Graph/AgGrid with `actions=`) during browser testing and confirmed no callback errors / no 500 on `_dash-update-component`"
       ]
     },
     {
@@ -37,7 +39,9 @@
         "Interactive options were presented during the design phase",
         "spec/2_interaction_ux.yaml either contains an `interactions:` block mapping each interaction to a named pattern from wiring-vizro-actions, or explicitly justifies why standard filters suffice",
         "If cross-highlight is implemented (e.g. click a feature to highlight in retention chart), the custom chart accepts a `highlight_X` argument and the Parameter has `visible=False` with `'NONE'` in selector options",
-        "If any `actions=` is used, no deprecated `filter_interaction` calls appear in app.py"
+        "If any `actions=` is used, no deprecated `filter_interaction` calls appear in app.py",
+        "If a custom `@capture('graph')` function is used as a cross-filter source (its `vm.Graph` has `actions=va.set_control(...)`), the function signature accepts `custom_data` as a parameter — hardcoding `custom_data=...` inside the function body causes a callback 500 when the action fires",
+        "Agent clicked on every interactive source (any Graph/AgGrid with `actions=`) during browser testing and confirmed no callback errors / no 500 on `_dash-update-component`"
       ]
     },
     {
@@ -58,7 +62,9 @@
         "spec/2_interaction_ux.yaml contains an `interactions:` block — drilling into raw delivery records is a natural fit for Pattern 1 (Hierarchical Drill-Down) or Pattern 2 (Single-Page Drill-Down)",
         "If cross-page drill-through is implemented: the target page Filter has `show_in_url=True`, the target page includes a back `vm.Button(href=...)` as the first component, and the target page uses `layout=vm.Flex(direction='column')`",
         "If cross-filter is implemented within a page: `va.set_control` references an explicit Filter `id`, and the source component has a `header` hint",
-        "No deprecated `filter_interaction` calls in app.py"
+        "No deprecated `filter_interaction` calls in app.py",
+        "If a custom `@capture('graph')` function is used as a cross-filter source (its `vm.Graph` has `actions=va.set_control(...)`), the function signature accepts `custom_data` as a parameter — hardcoding `custom_data=...` inside the function body causes a callback 500 when the action fires",
+        "Agent clicked on every interactive source (any Graph/AgGrid or row with `actions=`) during browser testing and confirmed no callback errors / no 500 on `_dash-update-component`"
       ]
     }
   ]

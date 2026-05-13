@@ -37,7 +37,7 @@
     },
     {
       "id": 3,
-      "prompt": "I'm analysing health & wealth across countries. I want a single page with two charts side-by-side: on the left, a horizontal bar chart of life expectancy by country (filtered to the latest year), and on the right, a bump chart that shows how each country's GDP rank has changed over the last 50 years. The bump chart will have a lot of overlapping lines — that's expected. I want to be able to click a country in the bar chart and have that country's line in the bump chart light up — bolder, brighter — while the others fade into the background. I don't want clicking to filter the data out, just to highlight. Use the gapminder dataset.",
+      "prompt": "I'm analyzing health & wealth across countries. I want a single page with two charts side-by-side: on the left, a horizontal bar chart of life expectancy by country (filtered to the latest year), and on the right, a bump chart that shows how each country's GDP rank has changed over the last 50 years. The bump chart will have a lot of overlapping lines — that's expected. I want to be able to click a country in the bar chart and have that country's line in the bump chart light up — bolder, brighter — while the others fade into the background. I don't want clicking to filter the data out, just to highlight. Use the gapminder dataset.",
       "expected_output": "Single-page dashboard implementing Pattern 3 (Comparison Spotlight) — cross-highlight from bar chart into a custom bump chart.",
       "files": [],
       "expectations": [
@@ -54,7 +54,7 @@
     },
     {
       "id": 4,
-      "prompt": "I'm building an appointments dashboard for a clinic. We want to see appointment density across the week. The main visual is a heatmap with day-of-week on one axis and time slot on the other axis (15-minute slots from 8am to 6pm), and the cells coloured by number of appointments. Below the heatmap there should be a table listing individual appointments. When the user clicks a cell in the heatmap — say Tuesday at 10:00 — the table should filter to show only Tuesday-10:00 appointments. The clinic admin also needs to be able to download whatever appointments are currently shown in the table as a CSV — so they can hand the day's schedule to a doctor or pass it to billing. Generate mock data for a couple of weeks of appointments across 5 doctors.",
+      "prompt": "I'm building an appointments dashboard for a clinic. We want to see appointment density across the week. The main visual is a heatmap with day-of-week on one axis and time slot on the other axis (15-minute slots from 8am to 6pm), and the cells colored by number of appointments. Below the heatmap there should be a table listing individual appointments. When the user clicks a cell in the heatmap — say Tuesday at 10:00 — the table should filter to show only Tuesday-10:00 appointments. The clinic admin also needs to be able to download whatever appointments are currently shown in the table as a CSV — so they can hand the day's schedule to a doctor or pass it to billing. Generate mock data for a couple of weeks of appointments across 5 doctors.",
       "expected_output": "Single-page dashboard combining Pattern 4 (Multi-Dimensional Slice — heatmap click sets two filters via an actions chain) AND Pattern 6 (Data Export — button-triggered CSV download of the filtered table).",
       "files": [],
       "expectations": [
@@ -74,7 +74,7 @@
     },
     {
       "id": 5,
-      "prompt": "I'm building a dashboard for our investment team to look at sector exposure across the portfolio. The main visual on the page is a bar chart showing total dollar exposure by sector. Next to it I want a sortable table listing every holding with its ticker, sector, position size, and today's P&L. The interaction I need is: when an analyst clicks a sector bar, two things happen on the same click — (1) the clicked bar gets visually emphasised so the analyst can see what they picked (bolder colour or full opacity while the others fade), and (2) the holdings table filters down to just the holdings in that sector. Generate mock data for ~80 holdings across 8 sectors.",
+      "prompt": "I'm building a dashboard for our investment team to look at sector exposure across the portfolio. The main visual on the page is a bar chart showing total dollar exposure by sector. Next to it I want a sortable table listing every holding with its ticker, sector, position size, and today's P&L. The interaction I need is: when an analyst clicks a sector bar, two things happen on the same click — (1) the clicked bar gets visually emphasized so the analyst can see what they picked (bolder color or full opacity while the others fade), and (2) the holdings table filters down to just the holdings in that sector. Generate mock data for ~80 holdings across 8 sectors.",
       "expected_output": "Single-page dashboard implementing Pattern 5 (Select & Explore) — one click triggers an actions chain that both self-highlights the source bar (via a Parameter targeting a custom chart's highlight argument) AND cross-filters a target table (via a Filter). This is the only pattern that combines highlight and filter on a single trigger, and it requires a custom chart with a highlight_X argument.",
       "files": [],
       "expectations": [

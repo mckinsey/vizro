@@ -56,7 +56,7 @@ def gapminder_life_expectancy_chart(data_frame: pd.DataFrame) -> go.Figure:
 
 ## Highlight-Aware Custom Charts
 
-For Pattern 3 (Comparison Spotlight) or Pattern 5 (Select & Explore) from the **wiring-vizro-actions** skill, the target chart must accept a `highlight_X=None` argument. When `None`, the chart shows all data normally. When set, the matching entity is emphasised and the rest are faded.
+For Pattern 3 (Comparison Spotlight) or Pattern 5 (Select & Explore) from the **wiring-vizro-actions** skill, the target chart must accept a `highlight_X=None` argument. When `None`, the chart shows all data normally. When set, the matching entity is emphasized and the rest are faded.
 
 This file covers the chart shape only. For the action wiring (Parameter + `set_control` + `visible=False`), see the **wiring-vizro-actions** skill.
 

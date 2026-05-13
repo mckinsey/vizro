@@ -35,7 +35,7 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 - **Colors**: For Plotly charts and KPI cards, do **not** add colors in code — Vizro template defaults apply automatically. Only add chart colors if `spec/3_visual_design.yaml` defines `color_decisions`. For AG Grid cell styling (conditional formatting, heatmaps), use `from vizro.themes import palettes, colors` — never invent hex values. See **selecting-vizro-charts** skill.
 - **Data loading**: For dashboards needing data refresh (databases, APIs) or performance optimization, see the [data management guide](./references/data_management.md) for static vs dynamic data, caching, and best practices.
 - **KPI cards**: Use built-in `kpi_card` / `kpi_card_reference` in `Figure` model only. Never rebuild as custom charts (exception: dynamic text). See **selecting-vizro-charts** skill.
-- **Interactions / actions**: For cross-filter, cross-highlight, drill-through, or data export, load the **wiring-vizro-actions** skill. Check the `interactions:` section in `spec/2_interaction_ux.yaml` for which patterns to implement. Key gotchas: `import vizro.actions as va`; use `va.set_control` (NOT deprecated `filter_interaction`); add `custom_data` for non-positional graph cross-filter; use `visible=False` and `"NONE"` in selector options for cross-highlight Parameters; use `show_in_url=True` plus `layout=vm.Flex(direction="column")` and a back `vm.Button(href=...)` for cross-page drill-through; add a short `header` hint on any interactive Graph/AgGrid. For highlight-aware custom charts, see [custom_charts_guide.md](./references/custom_charts_guide.md).
+- **Interactions / actions**: For cross-filter, cross-highlight, drill-through, or data export, load the **wiring-vizro-actions** skill. Check the `interactions:` section in `spec/2_interaction_ux.yaml` for which patterns to implement. Key gotchas: `import vizro.actions as va`; use `va.set_control` (NOT deprecated `filter_interaction`); add `custom_data` for non-positional graph cross-filter; use `visible=False` and `"NONE"` in selector options for cross-highlight Parameters; use `show_in_url=True` plus `layout=vm.Flex(direction="column")` and a back `vm.Button(href=...)` for cross-page drill-through; add a short `header` hint on any interactive Graph/AgGrid. For highlight-aware custom charts, see [custom_charts_guide.md](./references/custom_charts_guide.md). **Before declaring actions wiring done, walk through the "Common Implementation Mistakes" table at the bottom of [actions-reference.md](../wiring-vizro-actions/references/actions-reference.md) and check your code against every row** — these are silent failures (callback 500s, drill-through doing nothing) that don't surface until a user actually clicks.
 
 ### REQUIRED OUTPUT: spec/4_implementation.yaml
 
@@ -89,7 +89,7 @@ Run these validation scripts against your app.py to catch common issues:
 
 ### Browser Testing
 
-Navigate the running dashboard to catch two types of errors that code review alone cannot find: (1) console errors on launch, and (2) callback errors when navigating between pages.
+Navigate the running dashboard to catch errors that code review alone cannot find: (1) console errors on launch, (2) callback errors on page navigation, and (3) **callback 500s when actions fire** — these only surface when the user actually clicks an interactive source, never on load.
 
 1. Determine which browser automation tool is available:
 
@@ -98,8 +98,11 @@ Navigate the running dashboard to catch two types of errors that code review alo
 1. Using your chosen tool, perform these checks:
 
     - Navigate to dashboard URL (e.g., `http://localhost:8050`)
-    - Click through all pages
-    - Check browser console for errors
+    - Click through all pages and check the browser console for errors
+    - **If `app.py` contains any `actions=` (cross-filter, cross-highlight, drill-through, export), exercise each one**: grep your app for `actions=` and for every match, click the corresponding source (a point on the scatter, a bar, a row in the AgGrid, the export Button, etc.). Then check:
+        - the browser console for `Callback error updating ...` messages
+        - the network tab for any 500 response on `_dash-update-component`
+        - the action's intended effect actually happened (URL updated for `show_in_url=True`, target filter changed, highlight applied, file downloaded, etc.)
     - Fix any errors found, then retest
 
 ### Advanced Testing flow
@@ -149,6 +152,7 @@ testing:
 
 - Validation scripts (`validate_colors.py`, `validate_aggregation.py`) both PASS
 - Dashboard launches without errors, no console errors, no callback errors on page navigation
+- Every `actions=` in `app.py` has been clicked in the browser and produced its intended effect with no callback 500
 - User confirms requirements are met
 - All spec files from this Phase 2 saved in `spec/` directory
 

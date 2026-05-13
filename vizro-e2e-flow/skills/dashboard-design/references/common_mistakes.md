@@ -164,7 +164,7 @@ Tertiary metric: Smaller chart or table row
 
 ### Cross-Filter When You Wanted to Highlight
 
-**Problem**: Click filters data out, removing comparison context — but the user just wanted to emphasise one entity.
+**Problem**: Click filters data out, removing comparison context — but the user just wanted to emphasize one entity.
 
 **Solution**: Use Pattern 3 (Comparison Spotlight) — Parameter targeting a custom chart's `highlight_X` argument, `visible=False`, `"NONE"` in selector options. The data stays, only the styling changes.
 
@@ -182,7 +182,7 @@ Tertiary metric: Smaller chart or table row
 
 ### Using Deprecated `filter_interaction`
 
-**Problem**: `filter_interaction` is deprecated and produces warnings or unexpected behaviour.
+**Problem**: `filter_interaction` is deprecated and produces warnings or unexpected behavior.
 
 **Solution**: Use `va.set_control` instead.
 

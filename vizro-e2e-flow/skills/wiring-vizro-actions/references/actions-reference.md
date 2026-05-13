@@ -433,7 +433,7 @@ page = vm.Page(
 
 ### When to use
 
-- 2+ categorical dimensions visualised together (heatmap, pivot).
+- 2+ categorical dimensions visualized together (heatmap, pivot).
 - Users want to see the underlying records for a specific intersection.
 - Clicking one cell should set ALL the dimensional filters at once.
 
@@ -913,5 +913,5 @@ vm.Button(text="Export data", actions=va.export_data())
 | Missing back button on drill-through target | User feels trapped on the detail page | Add `vm.Button(text="← Back", href="/source-page", variant="outlined")` as the first component |
 | Back button on a Grid-layout page | Button wastes a full 140px+ row | Use `layout=vm.Flex(direction="column")` on the page; wrap rest in a Container with Grid |
 | Custom chart missing `custom_data` in signature | `custom_data` not passed to the plotly figure | Add `custom_data` to the function parameters |
-| Wrapping built-in actions in `vm.Action` | Unexpected behaviour or error | Pass built-in actions directly: `actions=va.export_data()` |
+| Wrapping built-in actions in `vm.Action` | Unexpected behavior or error | Pass built-in actions directly: `actions=va.export_data()` |
 | Using a Filter when you wanted to highlight (Pattern 3) | Data is removed instead of styled | Use a Parameter targeting a custom chart's `highlight_X` arg, with `visible=False` |
