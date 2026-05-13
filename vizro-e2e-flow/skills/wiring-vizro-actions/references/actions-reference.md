@@ -19,14 +19,13 @@ All advanced interactions follow **Source → Control → Target**:
 
 ```
 [Source]                [Control]                  [Target(s)]
- Graph                                              Graph
- AgGrid                  Filter (id=...)            AgGrid
- Figure    --click-->    or Parameter      ---->    Figure
- Button                  (visible=True/False)       Table
- Card     va.set_control(control=..., value=...)
+ Graph     --click-->    Filter (id=...)            Graph
+ AgGrid                  or Parameter      ---->    AgGrid
+          va.set_control(control=..., value=...)    Figure
+                          (visible=True/False)      Table
 ```
 
-- **Sources** (anything clickable in `actions=`): `Graph`, `AgGrid`, `Figure`, `Button`, `Card`. Graph/AgGrid carry click-data (column values); Figure/Button/Card pass a literal `value`.
+- **Sources** (for cross-filter / cross-highlight): `Graph` and `AgGrid` — both carry click-data (column values from the clicked point/cell). `Figure`, `Button`, and `Card` technically accept `actions=va.set_control(...)` but only with a hardcoded `value`, so they don't help with dynamic filtering.
 - **Targets** (anything a Filter/Parameter can target): `Graph`, `AgGrid`, `Figure`, `Table` — the data-bearing components.
 - The control is **always explicit** with an `id`. You never connect source to target directly.
 - The source uses `va.set_control` (a built-in action). The control then drives the target.

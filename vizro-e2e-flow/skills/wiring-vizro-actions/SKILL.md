@@ -9,7 +9,7 @@ description: Use this skill when adding cross-filter, cross-highlight, drill-thr
 
 All advanced interactions follow the same shape:
 
-1. A **source** component triggers `va.set_control` when the user clicks it. Valid sources: `vm.Graph`, `vm.AgGrid`, `vm.Figure`, `vm.Button`, `vm.Card`. Graph and AgGrid carry click-data (column values from the clicked point/cell); Figure, Button, and Card pass a literal `value`.
+1. A **source** component triggers `va.set_control` when the user clicks it. Practical sources are `vm.Graph` and `vm.AgGrid` — they carry click-data (column values from the clicked point/cell) that can drive a dynamic filter. (`vm.Figure`/`vm.Button`/`vm.Card` technically support `set_control` too, but only with a hardcoded literal `value`, so they are not useful for cross-filtering.)
 2. `set_control` writes a value into an intermediate **control** (`vm.Filter` or `vm.Parameter`) with an explicit `id`.
 3. The control updates **target** components. Filter/Parameter targets are data-bearing components: `vm.Graph`, `vm.AgGrid`, `vm.Figure`, `vm.Table`.
 
@@ -20,13 +20,17 @@ The control is always explicit — you do not connect components directly. This 
 | Action | Purpose | Trigger |
 | --- | --- | --- |
 | `va.export_data()` | Download all on-page data as CSV (respects filters) | `vm.Button` |
-| `va.set_control(control=..., value=...)` | Set the value of a Filter or Parameter | `vm.Graph`, `vm.AgGrid`, `vm.Figure`, `vm.Button`, `vm.Card` |
+| `va.set_control(control=..., value=...)` | Set the value of a Filter or Parameter | `vm.Graph` or `vm.AgGrid` |
 
-`import vizro.actions as va`. Built-in actions are passed directly into `actions=` — `vm.Action` is reserved for custom `@capture("action")` functions.
+`import vizro.actions as va`. Built-in actions are passed directly into `actions=` — wrapping them in `vm.Action` raises an error (deliberate: built-ins have their own predefined `inputs`/`outputs` and would conflict with `vm.Action`'s).
 
 ```python
+# Correct
 vm.Button(text="Export data", actions=va.export_data())
 vm.Graph(actions=va.set_control(control="region_filter", value="y"))
+
+# Wrong — raises an exception
+vm.Graph(actions=[vm.Action(function=va.set_control(...))])
 ```
 
 ## Named interaction patterns

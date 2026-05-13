@@ -118,7 +118,7 @@ Load the **designing-vizro-layouts** skill for grid system, component sizing, fi
 
 Beyond standard sidebar filters, Vizro supports advanced interactions where clicking a chart or table affects other components. Load the **wiring-vizro-actions** skill for the 6 named interaction patterns (Hierarchical Drill-Down, Single-Page Drill-Down, Comparison Spotlight, Multi-Dimensional Slice, Select & Explore, Data Export) with wireframes, spec entries, and code.
 
-All advanced interactions follow **Source → Control → Target**: a source component (Graph, AgGrid, Figure, Button, Card) sets an intermediate control (Filter or Parameter, always with an explicit `id`), which updates data-bearing target components (Graph, AgGrid, Figure, Table).
+All advanced interactions follow **Source → Control → Target**: a source component (Graph or AgGrid — the components that carry click-data) sets an intermediate control (Filter or Parameter, always with an explicit `id`), which updates data-bearing target components (Graph, AgGrid, Figure, Table).
 
 **Decision flow** — match data shape + user need to a pattern:
 
