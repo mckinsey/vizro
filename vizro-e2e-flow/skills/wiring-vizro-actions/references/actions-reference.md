@@ -29,12 +29,15 @@ All advanced interactions follow **Source → Control → Target**:
 
 ```
 [Source]                [Control]                  [Target(s)]
- Graph                   Filter (id=...)            Graph
- AgGrid    --click-->    or Parameter      ---->    AgGrid
-                         (visible=True/False)       Figure
-          va.set_control(control=..., value=...)
+ Graph                                              Graph
+ AgGrid                  Filter (id=...)            AgGrid
+ Figure    --click-->    or Parameter      ---->    Figure
+ Button                  (visible=True/False)       Table
+ Card     va.set_control(control=..., value=...)
 ```
 
+- **Sources** (anything clickable in `actions=`): `Graph`, `AgGrid`, `Figure`, `Button`, `Card`. Graph/AgGrid carry click-data (column values); Figure/Button/Card pass a literal `value`.
+- **Targets** (anything a Filter/Parameter can target): `Graph`, `AgGrid`, `Figure`, `Table` — the data-bearing components.
 - The control is **always explicit** with an `id`. You never connect source to target directly.
 - The source uses `va.set_control` (a built-in action). The control then drives the target.
 - Targets are inferred from the control: a Filter's `targets` (or its container scope), a Parameter's `targets`.

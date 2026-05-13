@@ -9,9 +9,9 @@ description: Use this skill when adding cross-filter, cross-highlight, drill-thr
 
 All advanced interactions follow the same shape:
 
-1. A **source** component (Graph, AgGrid) triggers `va.set_control` when the user clicks it.
-2. `set_control` writes a value into an intermediate **control** (Filter or Parameter) with an explicit `id`.
-3. The control updates **target** components.
+1. A **source** component triggers `va.set_control` when the user clicks it. Valid sources: `vm.Graph`, `vm.AgGrid`, `vm.Figure`, `vm.Button`, `vm.Card`. Graph and AgGrid carry click-data (column values from the clicked point/cell); Figure, Button, and Card pass a literal `value`.
+2. `set_control` writes a value into an intermediate **control** (`vm.Filter` or `vm.Parameter`) with an explicit `id`.
+3. The control updates **target** components. Filter/Parameter targets are data-bearing components: `vm.Graph`, `vm.AgGrid`, `vm.Figure`, `vm.Table`.
 
 The control is always explicit — you do not connect components directly. This makes interactions composable (you can wire multiple sources to the same control, or one source to multiple controls).
 
@@ -20,17 +20,13 @@ The control is always explicit — you do not connect components directly. This 
 | Action | Purpose | Trigger |
 | --- | --- | --- |
 | `va.export_data()` | Download all on-page data as CSV (respects filters) | `vm.Button` |
-| `va.set_control(control=..., value=...)` | Set the value of a Filter or Parameter | `vm.Graph` or `vm.AgGrid` |
+| `va.set_control(control=..., value=...)` | Set the value of a Filter or Parameter | `vm.Graph`, `vm.AgGrid`, `vm.Figure`, `vm.Button`, `vm.Card` |
 
-`import vizro.actions as va`. Built-in actions are passed directly — do **not** wrap them in `vm.Action`.
+`import vizro.actions as va`. Built-in actions are passed directly into `actions=` — `vm.Action` is reserved for custom `@capture("action")` functions.
 
 ```python
-# Correct
 vm.Button(text="Export data", actions=va.export_data())
 vm.Graph(actions=va.set_control(control="region_filter", value="y"))
-
-# Wrong — do NOT wrap built-ins
-vm.Graph(actions=[vm.Action(function=va.set_control(...))])
 ```
 
 ## Named interaction patterns
