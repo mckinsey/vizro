@@ -255,11 +255,12 @@ All three should be true — otherwise a sidebar `vm.Filter` is the right call.
 |  |HR        |  +----------------------------------------------------------------+    |
 |  |          |  |  CHART: Avg Tenure by Department                                |    |
 |  |----------|  |  header: "Click a bar to filter by department"                  |    |
-|  |FILTERS   |  |  [Horizontal Bar]                                               |    |
+|  |          |  |  [Horizontal Bar]                                               |    |
 |  |          |  |  [click: cross-filter → dept_filter]                            |    |
 |  |          |  +----------------------------------------------------------------+    |
 |  |          |                                                                        |
-|  |          |  CONTAINER: Employee Detail [filtered by dept_filter] (variant=filled) |
+|  |          |  CONTAINER: Employee Detail (variant=filled)                           |
+|  |          |  [Dept Filter v]  ← scoped inside container, filters all 3 below       |
 |  |          |  +----------------------------------+  +-----------------------------+  |
 |  |          |  |  CHART: Compensation Distribution|  |  CHART: Performance Ratings  |  |
 |  |          |  +----------------------------------+  +-----------------------------+  |
@@ -350,14 +351,15 @@ All three should be true — otherwise a Filter (sidebar or cross-filter) is the
 ### Interaction flow
 
 ```
-[Source chart with many entities] ──click entity──> sets highlight_param (visible=False)
+[Source chart with many entities] ──click entity──> sets highlight_param
+                                                    (vm.Parameter, visible=False)
                                                             │
                                                             ▼
                                               [Target chart] re-renders with that
                                               entity bolded, others faded
 ```
 
-The intermediate control is a Parameter (not a Filter) because we are changing a chart **argument**, not the data.
+The intermediate control is a **Parameter** (not a Filter) because we are changing a chart **argument**, not the data.
 
 ### Wireframe
 
