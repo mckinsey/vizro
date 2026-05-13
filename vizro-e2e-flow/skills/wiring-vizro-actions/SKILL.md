@@ -26,7 +26,7 @@ The control is always explicit — you do not connect components directly. This 
 
 ```python
 # Correct
-vm.Button(actions=va.export_data())
+vm.Button(text="Export data", actions=va.export_data())
 vm.Graph(actions=va.set_control(control="region_filter", value="y"))
 
 # Wrong — do NOT wrap built-ins
@@ -162,6 +162,7 @@ Load [actions-reference.md](references/actions-reference.md) when you need:
 ```python
 import vizro.actions as va
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro.tables import dash_ag_grid
 from vizro.models.types import capture
 ```

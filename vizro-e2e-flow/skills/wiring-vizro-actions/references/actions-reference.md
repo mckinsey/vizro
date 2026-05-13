@@ -291,6 +291,11 @@ interactions:
 ### Code
 
 ```python
+import vizro.actions as va
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro.tables import dash_ag_grid
+
 page = vm.Page(
     title="HR Overview",
     components=[
@@ -490,6 +495,11 @@ interactions:
 ### Code
 
 ```python
+import vizro.actions as va
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro.tables import dash_ag_grid
+
 page = vm.Page(
     title="Appointments",
     components=[
@@ -588,6 +598,12 @@ interactions:
 ### Code
 
 ```python
+import vizro.actions as va
+import vizro.models as vm
+from vizro.tables import dash_ag_grid
+# bar_with_highlight: custom @capture("graph") chart with a highlight_sector kwarg
+# (see custom_charts_guide.md "Highlight-Aware Custom Charts" for the chart shape)
+
 page = vm.Page(
     title="Portfolio",
     components=[
@@ -672,6 +688,9 @@ interactions:
 ### Code
 
 ```python
+import vizro.actions as va
+import vizro.models as vm
+
 page = vm.Page(
     title="Transactions",
     components=[
