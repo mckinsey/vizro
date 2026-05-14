@@ -44,15 +44,12 @@ To define your own action:
     1. When the dashboard is running, the action's `input_1` will be set to the runtime value of the Vizro model with `id="input_id_1"` and similarly for `input_2`.
     1. When the dashboard is running, the action's output "My string value..." will set the value of the Vizro model with `id="output_id_1"`.
 
-You can also execute [multiple actions with a single trigger](#multiple-actions).
+You can also execute [multiple actions with a single trigger](#multiple-actions) and [attach notifications](#notifications) to your action.
 
 !!! warning
 
     You should never assume that the values of inputs in your action function are restricted to those that show on the user's screen. A malicious user can execute your action functions with arbitrary inputs. In the tutorial, we discuss in more detail [how to write secure actions](../tutorials/custom-actions-tutorial.md#security).
 
-!!! tip "Outcome-based notifications"
-
-    **Conditional notifications** are messages that appear automatically based on the outcome of an action and can indicate whether an action was completed successfully or failed. See [How to use conditional notifications](#how-to-use-conditional-notifications) for details.
 
 ## Trigger an action with a button
 
@@ -437,20 +434,19 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
 
 ## Notifications
 
-### Built-in notification keys: progress, success and error
-
 You can display notifications to show the progress and outcome of a custom action using the built-in  `"progress"`, `"success"` and `"error"` keys in the action's `notifications` argument:
+
 * `"progress"`: shown while an action runs.
 * `"success"`: shown when an action completes successfully.
 * `"error"`: shown when an action raises an exception.
 
 These keys are all optional; you can define only the ones that are relevant for you.
 
-!!! example "Progress, success and error notification"
+!!! example "Progress, success and error notifications"
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="11 27"}
+        ```{.python pycafe-link hl_lines="12-14 26-30"}
         import random
         from time import sleep
 
@@ -490,6 +486,7 @@ These keys are all optional; you can define only the ones that are relevant for 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
         1. Define a custom action function `run_pipeline` that takes 2 seconds and randomly chooses between returning a success message or raising an exception to simulate an error.
         1. A `"progress"` notification with the "Running pipeline..." text is shown immediately when the action starts, and then replaced by either the `"success"` or `"error"` notification once the action completes.
         
@@ -526,7 +523,7 @@ These keys are all optional; you can define only the ones that are relevant for 
 
 ### Custom notification keys
 
-In addition to the built-in keys `"progress"`, `"success"`, `"error"`, you can define your own custom notification keys to handle more specific outcomes. Custom notifications are only shown when the action explicitly selects them. This happens when the action function either returns a key or raises an exception with a key that matches one defined in `notifications`.
+In addition to the built-in keys `"progress"`, `"success"`, `"error"`, you can define your own custom notification keys to handle more specific outcomes. Custom notifications are only shown when the action function explicitly selects them by returning a key or raising an exception with a key that matches one defined in `notifications`.
 
 To show a custom notification on success, return the key alongside the result:
 
@@ -540,7 +537,7 @@ To show a custom notification on error, include the key when raising an exceptio
 raise Exception("Pipeline failed.", "pipeline_partial_error")
 ```
 
-Custom notifications use the "info" style by default unless [configured otherwise](#customizing-notification-appearance-and-behavior).
+Custom notifications use the "info" style by default unless [configured otherwise](#customize-notification-appearance-and-behavior).
 
 !!! example "Custom notification keys"
 
@@ -636,13 +633,12 @@ Custom notifications use the "info" style by default unless [configured otherwis
 
 ### Dynamic notification content
 
-Notification messages can include **template variables** that are filled with values from the action at runtime. This enables you to display dynamic information, such as results or error details, directly in the notification.
+Notification messages can include _template variables_ that are filled with values from the action at runtime. This enables you to display dynamic information, such as results or error details, directly in the notification.
 
-Two templates are supported:
-  - `{{result}}`: Replaced with additional information returned by the action. This value is optional and can be included in the tuple alongside the notification key when the action completes or raises an exception. If no value is provided, it resolves to an empty string.
-  - `{{error_msg}}`: Replaced with the error message from an exception. If no error message is available, it resolves to an empty string.
+Two templates are supported to make it possible to provide more informative and contextual feedback to users without hardcoding the message content:
 
-These templates make it possible to provide more informative and contextual feedback to users without hardcoding the message content.
+  - `{{result}}`: Replaced with additional information returned by the action. This value is optional and can be included in the tuple alongside the notification key when the action completes or raises an exception.
+  - `{{error_msg}}`: Replaced with the error message from an exception.
 
 !!! example "Templating with `{{result}}` and `{{error_msg}}`"
 
@@ -742,9 +738,7 @@ These templates make it possible to provide more informative and contextual feed
         [![TemplatedNotifications]][templatednotifications]
 
 
-In this example, `**{{result}}**` is filled with the additional detail returned by the action (for example, the duration of the pipeline run).
-
-The `**{{error_msg}}**` template is filled with the error message from the exception (for example, "Random error.").
+In this example, `{{result}}` is filled with the additional detail returned by the action (for example, the duration of the pipeline run). The `{{error_msg}}` template is filled with the error message from the exception (for example, "Random error.").
 
 ### Action inputs in progress notifications
 
@@ -756,7 +750,7 @@ The progress message reflects the current inputs of the action to make it more i
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="12 18 19 40 43 47"}
+        ```{.python pycafe-link hl_lines="12 29 40 43"}
         import random
         from time import sleep
 
@@ -872,7 +866,7 @@ To customize notifications when you define them, use the [`show_notification`][v
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="19 20 44 47-49"}
+        ```{.python pycafe-link hl_lines="44 47-49"}
         import random
         from time import sleep
 
@@ -998,9 +992,9 @@ To customize notifications when you define them, use the [`show_notification`][v
 
 ### Debugging and error handling
 
-By default, every custom action shows a generic error notification ("Action failed.") if something goes wrong. You can override this with a more specific message, or disable error notifications entirely by setting `"error": None`. If error notifications are disabled and the app is running in [debug mode](run-deploy.md#automatic-reloading-and-debugging), any unhandled exceptions are shown in the [Dash Dev Tools](https://dash.plotly.com/devtools) debugger instead of a notification. All exceptions, except `PreventUpdate`, are always logged to the server console, regardless of how notifications are configured.
+By default, every custom action shows a generic error notification if something goes wrong with message "Action failed". You can override this with a more specific message, or disable error notifications entirely by setting `"error": None`. If error notifications are disabled and the app is running in [debug mode](run-deploy.md#automatic-reloading-and-debugging), any unhandled exceptions are shown in the [Dash Dev Tools](https://dash.plotly.com/devtools) debugger instead of a notification. All exceptions, except `PreventUpdate`, are always logged to the server console, regardless of how notifications are configured.
 
-`PreventUpdate` and `no_update` are handled as described in the [actions chain tutorial](../tutorials/custom-actions-tutorial.md#handle-errors-and-debug). Both are treated as a success (shows the `"success"` notification if defined) but only `PreventUpdate` will cancel the action chain.
+`PreventUpdate` and `no_update` are handled as described in the [actions chain tutorial](../tutorials/custom-actions-tutorial.md#handle-errors-and-debug). Both are treated as a success (shows the `"success"` notification if defined) but only `PreventUpdate` cancels the action chain.
 
 [progresssuccesserrornotification]: ../../assets/user_guides/conditional_notifications_actions/progress_success_error_notification.gif
 [customnotificationkeys]: ../../assets/user_guides/conditional_notifications_actions/custom_notification_keys.gif
