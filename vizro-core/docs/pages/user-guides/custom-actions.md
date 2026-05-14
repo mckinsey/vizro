@@ -489,7 +489,7 @@ These keys are all optional; you can define only the ones that are relevant for 
 
         1. Define a custom action function `run_pipeline` that takes 2 seconds and randomly chooses between returning a success message or raising an exception to simulate an error.
         1. A `"progress"` notification with the "Running pipeline..." text is shown immediately when the action starts, and then replaced by either the `"success"` or `"error"` notification once the action completes.
-        
+
 
     === "app.yaml"
 
