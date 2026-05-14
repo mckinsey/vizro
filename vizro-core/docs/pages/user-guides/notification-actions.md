@@ -4,7 +4,7 @@ This guide shows you how to display notifications and alerts in your dashboard t
 
 !!! tip "Looking for outcome-driven notifications?"
 
-    If you want notifications that fire **automatically** based on a custom action's success, failure, or progress, see the guide on [notifications for custom actions](custom-actions.md#notifications).
+    If you want notifications that fire automatically based on a custom action's success, failure, or progress, see the guide on [notifications for custom actions](custom-actions.md#notifications).
 
 ## Show a notification
 
