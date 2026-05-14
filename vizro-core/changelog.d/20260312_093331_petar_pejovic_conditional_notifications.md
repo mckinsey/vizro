@@ -6,7 +6,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Add `notifications` argument to `vm.Action` model to enable conditional progress, success, error, and custom notifications based on action outcomes with templating support. ([#1574](https://github.com/mckinsey/vizro/pull/1574))
+- Custom actions can have notifications to show their status: in progress, success, error, and custom notifications based on action outcomes. ([#1574](https://github.com/mckinsey/vizro/pull/1574))
 
 <!--
 ### Removed

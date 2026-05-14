@@ -780,8 +780,7 @@ ActionNotificationType = Annotated[
     Field(
         default_factory=dict,
         validate_default=True,
-        description="Notifications shown before or after the action "
-        "completes. Which notification will be shown after the action finished depends on the action's output.",
+        description="Notifications for when an action is in progress, completes successfully or fails",
     ),
 ]
 
