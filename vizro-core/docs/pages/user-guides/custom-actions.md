@@ -860,7 +860,7 @@ The progress message reflects the current inputs of the action to make it more i
 
 Notifications do not have to be limited to plain text. You can customize how they look and behave, for example, by adjusting the variant, adding a title or icon, or controlling whether they close automatically. See the [notifications guide](notification-actions.md) for a full list of available options.
 
-To customize notifications when you define them, use the [`show_notification`][vizro.actions.show_notification] or [`update_notification`][vizro.actions.update_notification] models instead of plain text as values in the `notications` dictionary.
+To customize notifications when you define them, use the [`show_notification`][vizro.actions.show_notification] or [`update_notification`][vizro.actions.update_notification] models instead of plain text as values in the `notifications` dictionary.
 
 ??? example "Customized notification with `show_notification`"
 
