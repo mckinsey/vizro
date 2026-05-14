@@ -539,7 +539,7 @@ raise Exception("Pipeline failed.", "pipeline_partial_error")
 
 Custom notifications use the "info" style by default unless [configured otherwise](#customize-notification-appearance-and-behavior).
 
-!!! example "Custom notification keys"
+??? example "Custom notification keys"
 
     === "app.py"
 
@@ -640,7 +640,7 @@ Two templates are supported to make it possible to provide more informative and 
   - `{{result}}`: Replaced with additional information returned by the action. This value is optional and can be included in the tuple alongside the notification key when the action completes or raises an exception.
   - `{{error_msg}}`: Replaced with the error message from an exception.
 
-!!! example "Templating with `{{result}}` and `{{error_msg}}`"
+??? example "Templating with `{{result}}` and `{{error_msg}}`"
 
     === "app.py"
 
@@ -746,7 +746,7 @@ Progress notifications can also include template variables based on the runtime 
 
 The progress message reflects the current inputs of the action to make it more informative. For example, you can display the number of retries configured while the action is running.
 
-!!! example "Dynamic progress text"
+??? example "Dynamic progress text"
 
     === "app.py"
 
@@ -860,9 +860,9 @@ The progress message reflects the current inputs of the action to make it more i
 
 Notifications do not have to be limited to plain text. You can customize how they look and behave, for example, by adjusting the variant, adding a title or icon, or controlling whether they close automatically. See the [notifications guide](notification-actions.md) for a full list of available options.
 
-To customize notifications when you define them, use the [`show_notification`][vizro.actions.show_notification] or [`update_notification`][vizro.actions.update_notification] models instead of plain text. 
+To customize notifications when you define them, use the [`show_notification`][vizro.actions.show_notification] or [`update_notification`][vizro.actions.update_notification] models instead of plain text as values in the `notications` dictionary.
 
-!!! example "Customized notification with `show_notification`"
+??? example "Customized notification with `show_notification`"
 
     === "app.py"
 
@@ -992,7 +992,7 @@ To customize notifications when you define them, use the [`show_notification`][v
 
 ### Debugging and error handling
 
-By default, every custom action shows a generic error notification if something goes wrong with message "Action failed". You can override this with a more specific message, or disable error notifications entirely by setting `"error": None`. If error notifications are disabled and the app is running in [debug mode](run-deploy.md#automatic-reloading-and-debugging), any unhandled exceptions are shown in the [Dash Dev Tools](https://dash.plotly.com/devtools) debugger instead of a notification. All exceptions, except `PreventUpdate`, are always logged to the server console, regardless of how notifications are configured.
+By default, every custom action shows a generic error notification with message "Action failed" if something goes wrong. You can override this with a more specific message, or disable error notifications entirely by setting `"error": None`. If error notifications are disabled and the app is running in [debug mode](run-deploy.md#automatic-reloading-and-debugging), any unhandled exceptions are shown in the [Dash Dev Tools](https://dash.plotly.com/devtools) debugger instead of a notification. All exceptions, except `PreventUpdate`, are always logged to the server console, regardless of how notifications are configured.
 
 `PreventUpdate` and `no_update` are handled as described in the [actions chain tutorial](../tutorials/custom-actions-tutorial.md#handle-errors-and-debug). Both are treated as a success (shows the `"success"` notification if defined) but only `PreventUpdate` cancels the action chain.
 
