@@ -16,7 +16,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Highlights ✨
 
-- Custom actions can have notifications to show their status: in progress, success, error, and custom notifications based on action outcomes. ([#1574](https://github.com/mckinsey/vizro/pull/1574))
+- Custom actions can have notifications to show their status: in progress, success, error, and custom notifications based on action outcomes. See the [user guide on custom action notifications](https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-actions/#notifications). ([#1574](https://github.com/mckinsey/vizro/pull/1574))
 
 - Hierarchical/cascading filters: set `vm.Filter(column=["continent", "country"])` to filter by groups of options. See the [user guide on hierarchical filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/#hierarchical-filters). ([#1683](https://github.com/mckinsey/vizro/pull/1683))
 
