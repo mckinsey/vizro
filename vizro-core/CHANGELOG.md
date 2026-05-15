@@ -22,7 +22,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Added
 
-- Introduce new `set_control` value options (`"cell"`, `"column"`, `"row"`) for accessing clicked cell data in AgGrid. ([#1670](https://github.com/mckinsey/vizro/pull/1670))
+- Introduce new `set_control` value options (`"cell"`, `"column"`, `"row"`) for accessing clicked cell data in AgGrid. See the [user guide on clicked cell AgGrid interactions](https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions/#cross-filter-from-table). ([#1670](https://github.com/mckinsey/vizro/pull/1670))
 
 - Add `vm.Cascader` hierarchical selector for `Filter` and `Parameter` controls. ([#1683](https://github.com/mckinsey/vizro/pull/1683))
 
