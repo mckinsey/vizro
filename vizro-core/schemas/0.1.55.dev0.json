@@ -58,6 +58,27 @@
           "default": [],
           "title": "Outputs"
         },
+        "notifications": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/show_notification"
+              },
+              {
+                "$ref": "#/$defs/update_notification"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Notifications for when an action is in progress, completes successfully or fails",
+          "title": "Notifications",
+          "type": "object"
+        },
         "type": {
           "const": "action",
           "default": "action",
