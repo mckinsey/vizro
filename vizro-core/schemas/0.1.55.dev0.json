@@ -75,7 +75,7 @@
               }
             ]
           },
-          "description": "Notifications shown before or after the action completes. Which notification will be shown after the action finished depends on the action's output.",
+          "description": "Notifications for when an action is in progress, completes successfully or fails",
           "title": "Notifications",
           "type": "object"
         },
