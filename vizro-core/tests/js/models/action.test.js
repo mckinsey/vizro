@@ -108,16 +108,14 @@ describe("replaceTemplateVariables", () => {
 
   describe("when valuesMap does not contain a referenced key", () => {
     test("should leave the template if not key in valuesMap", () => {
-      expect(replaceTemplateVariables("Hello {{key}}!", {})).toBe(
-        "Hello {{key}}!",
-      );
+      expect(replaceTemplateVariables("Hello {key}!", {})).toBe("Hello {key}!");
     });
   });
 
   describe("when keys match template placeholders", () => {
     test("should replace multiple different keys", () => {
       expect(
-        replaceTemplateVariables("A={{a}}, B={{b}}, C={{c}}", {
+        replaceTemplateVariables("A={a}, B={b}, C={c}", {
           a: 1,
           b: 2,
           c: 3,
@@ -127,31 +125,29 @@ describe("replaceTemplateVariables", () => {
 
     test("should replace multiple occurrences of the same key", () => {
       expect(
-        replaceTemplateVariables("{{key}}-{{key}}-{{key}}", { key: "value" }),
+        replaceTemplateVariables("{key}-{key}-{key}", { key: "value" }),
       ).toBe("value-value-value");
     });
 
     test("should replace adjacent placeholders correctly", () => {
-      expect(replaceTemplateVariables("{{a}}{{b}}{{a}}", { a: 1, b: 2 })).toBe(
-        "121",
-      );
+      expect(replaceTemplateVariables("{a}{b}{a}", { a: 1, b: 2 })).toBe("121");
     });
 
     test("should replace placeholders even if they are nested within other braces", () => {
       expect(
-        replaceTemplateVariables("Hello {{{name}}}!", { name: "World" }),
+        replaceTemplateVariables("Hello {{name}}!", { name: "World" }),
       ).toBe("Hello {World}!");
     });
   });
 
   describe("when values need to be stringified", () => {
     test("should stringify booleans", () => {
-      expect(replaceTemplateVariables("{{key}}", { key: false })).toBe("false");
+      expect(replaceTemplateVariables("{key}", { key: false })).toBe("false");
     });
 
     test("should stringify null and undefined", () => {
       expect(
-        replaceTemplateVariables("null={{a}} undefined={{b}}", {
+        replaceTemplateVariables("null={a} undefined={b}", {
           a: null,
           b: undefined,
         }),
@@ -159,50 +155,50 @@ describe("replaceTemplateVariables", () => {
     });
 
     test("should stringify arrays and objects via JSON.stringify(value)", () => {
-      expect(replaceTemplateVariables("arr={{arr}}", { arr: [1, 2] })).toBe(
+      expect(replaceTemplateVariables("arr={arr}", { arr: [1, 2] })).toBe(
         "arr=[1,2]",
       );
-      expect(replaceTemplateVariables("obj={{obj}}", { obj: { a: 1 } })).toBe(
+      expect(replaceTemplateVariables("obj={obj}", { obj: { a: 1 } })).toBe(
         'obj={"a":1}',
       );
     });
   });
 
-  describe("when placeholders do not match the regex \\{\\{(\\w+)\\}\\}", () => {
+  describe("when placeholders do not match the regex \\{(\\w+)\\}", () => {
     test("should not replace hyphenated keys (not matched by \\w+)", () => {
       expect(
-        replaceTemplateVariables("Value: {{key-key}}!", { "key-key": "value" }),
-      ).toBe("Value: {{key-key}}!");
+        replaceTemplateVariables("Value: {key-key}!", { "key-key": "value" }),
+      ).toBe("Value: {key-key}!");
     });
 
     test("should not replace placeholders containing spaces inside braces", () => {
       expect(
-        replaceTemplateVariables("Value: {{ key }}!", { key: "value" }),
-      ).toBe("Value: {{ key }}!");
+        replaceTemplateVariables("Value: { key }!", { key: "value" }),
+      ).toBe("Value: { key }!");
     });
 
     test("should not replace empty keys", () => {
-      expect(replaceTemplateVariables("Value: {{}}", { "": "value" })).toBe(
-        "Value: {{}}",
+      expect(replaceTemplateVariables("Value: {}", { "": "value" })).toBe(
+        "Value: {}",
       );
     });
 
     test("should not replace keys containing dots", () => {
-      expect(
-        replaceTemplateVariables("Value: {{a.b}}", { "a.b": "value" }),
-      ).toBe("Value: {{a.b}}");
+      expect(replaceTemplateVariables("Value: {a.b}", { "a.b": "value" })).toBe(
+        "Value: {a.b}",
+      );
     });
 
-    test("should leave single braces or malformed templates unchanged", () => {
-      expect(replaceTemplateVariables("Hello {name}!", { name: "World" })).toBe(
-        "Hello {name}!",
+    test("should leave malformed templates with unbalanced braces unchanged", () => {
+      expect(replaceTemplateVariables("Hello name!", { name: "World" })).toBe(
+        "Hello name!",
       );
-      expect(
-        replaceTemplateVariables("Hello {{name}!", { name: "World" }),
-      ).toBe("Hello {{name}!");
-      expect(
-        replaceTemplateVariables("Hello { {name}}!", { name: "World" }),
-      ).toBe("Hello { {name}}!");
+      expect(replaceTemplateVariables("Hello {name!", { name: "World" })).toBe(
+        "Hello {name!",
+      );
+      expect(replaceTemplateVariables("Hello name}!", { name: "World" })).toBe(
+        "Hello name}!",
+      );
     });
   });
 });
@@ -233,7 +229,7 @@ describe("show_progress_notification", () => {
     const notificationObject = [
       {
         id: "notif-1",
-        message: { props: { children: "Clicked {{n_clicks}} times" } },
+        message: { props: { children: "Clicked {n_clicks} times" } },
       },
     ];
 
@@ -271,7 +267,7 @@ describe("show_progress_notification", () => {
 
     // Original input must not be mutated
     expect(notificationObject[0].message.props.children).toBe(
-      "Clicked {{n_clicks}} times",
+      "Clicked {n_clicks} times",
     );
   });
 
@@ -279,7 +275,7 @@ describe("show_progress_notification", () => {
     const notificationObject = [
       {
         id: "notif-2",
-        message: { props: { children: "A={{a}}, B={{b}}" } },
+        message: { props: { children: "A={a}, B={b}" } },
       },
     ];
 
@@ -300,11 +296,11 @@ describe("show_progress_notification", () => {
     const notificationObject = [
       {
         id: "notif-3",
-        message: { props: { children: "This is {{unknown}}" } },
+        message: { props: { children: "This is {unknown}" } },
       },
     ];
 
-    // No action parameters => values map is empty => {{unknown}} stays {{unknown}""
+    // No action parameters => values map is empty => {unknown} stays {unknown}
     show_progress_notification(
       "trigger_value_not_used",
       notificationObject,
@@ -313,7 +309,7 @@ describe("show_progress_notification", () => {
 
     const [, props] = dash_clientside.set_props.mock.calls[0];
     expect(props.sendNotifications[0].message.props.children).toBe(
-      "This is {{unknown}}",
+      "This is {unknown}",
     );
   });
 
@@ -322,7 +318,7 @@ describe("show_progress_notification", () => {
       {
         id: "notif-4",
         message: {
-          props: { children: "{{key-key}}, {{ key }}, {{}}, {{a.b}}" },
+          props: { children: "{key-key}, { key }, {}, {a.b}" },
         },
       },
     ];
@@ -339,7 +335,7 @@ describe("show_progress_notification", () => {
 
     const [, props] = dash_clientside.set_props.mock.calls[0];
     expect(props.sendNotifications[0].message.props.children).toBe(
-      "{{key-key}}, {{ key }}, {{}}, {{a.b}}",
+      "{key-key}, { key }, {}, {a.b}",
     );
   });
 
@@ -347,7 +343,7 @@ describe("show_progress_notification", () => {
     const notificationObject = [
       {
         id: "notif-5",
-        message: { props: { children: "{{a}}, {{b}}, {{c}}" } },
+        message: { props: { children: "{a}, {b}, {c}" } },
       },
     ];
 
@@ -370,7 +366,7 @@ describe("show_progress_notification", () => {
     const notificationObject = [
       {
         id: "notif-6",
-        message: { props: { children: "arr={{arr}}, obj={{obj}}" } },
+        message: { props: { children: "arr={arr}, obj={obj}" } },
       },
     ];
 

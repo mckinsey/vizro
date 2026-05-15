@@ -182,10 +182,10 @@ page_3 = vm.Page(
 pre = "p4"
 page_4 = vm.Page(
     id="page_4",
-    title="Progress{{action function argument}} -> Action -> Success{{result}}/Error{{error_msg}}",
+    title="Progress{action function argument} -> Action -> Success{result}/Error{error_msg}",
     components=[
         vm.Container(
-            title="Progress{{switch_successfulness}} - Pipeline (1->2s) (Choose to fail) -> Success{{result}}/Error{{error_msg}}",
+            title="Progress{switch_successfulness} - Pipeline (1->2s) (Choose to fail) -> Success{result}/Error{error_msg}",
             layout=vm.Flex(),
             components=[
                 vm.Switch(id=f"{pre}_raise_exc_switch", value=False, title="Raise exception from the pipeline"),
@@ -198,17 +198,17 @@ page_4 = vm.Page(
                             notifications={
                                 "progress": va.show_notification(
                                     id=f"{pre}_progress_2",
-                                    text="Running custom pipeline.\n\nException will happen: {{switch_successfulness}}.",
+                                    text="Running custom pipeline.\n\nException will happen: {switch_successfulness}.",
                                     variant="progress",
                                 ),
                                 "success": va.update_notification(
                                     notification=f"{pre}_progress_2",
-                                    text="Custom pipeline completed!\n\n{{result}}",
+                                    text="Custom pipeline completed!\n\n{result}",
                                     variant="success",
                                 ),
                                 "error": va.update_notification(
                                     notification=f"{pre}_progress_2",
-                                    text="Custom pipeline failed! Exception:\n\n{{error_msg}}",
+                                    text="Custom pipeline failed! Exception:\n\n{error_msg}",
                                     variant="error",
                                 ),
                             },
@@ -231,10 +231,10 @@ page_4 = vm.Page(
 pre = "p5"
 page_5 = vm.Page(
     id="page_5",
-    title="Progress{{}}-> Action-> Success{1-4}/Error{1-4}",
+    title="Progress{}-> Action-> Success{1-4}/Error{1-4}",
     components=[
         vm.Container(
-            title="Progress{{switch_successfulness}}{{exit_path}} - Pipeline (1->2s) (Choose to fail) -> Success{1-4}/Error{1-4}",
+            title="Progress{switch_successfulness}{exit_path} - Pipeline (1->2s) (Choose to fail) -> Success{1-4}/Error{1-4}",
             layout=vm.Flex(),
             components=[
                 vm.Slider(
@@ -260,28 +260,28 @@ page_5 = vm.Page(
                             notifications={
                                 "progress": va.show_notification(
                                     id=f"{pre}_progress_2",
-                                    text="Running custom pipeline.\n\nException will happen: {{switch_successfulness}}.\n\nExit path: {{exit_path_slider}}",
+                                    text="Running custom pipeline.\n\nException will happen: {switch_successfulness}.\n\nExit path: {exit_path_slider}",
                                     variant="progress",
                                 ),
                                 "success": va.update_notification(
                                     notification=f"{pre}_progress_2",
-                                    text="Custom pipeline completed!\n\n{{result}}",
+                                    text="Custom pipeline completed!\n\n{result}",
                                     variant="success",
                                 ),
                                 "my_custom_success": va.update_notification(
                                     notification=f"{pre}_progress_2",
-                                    text="Pipeline completed, neither success nor failure!\n\n{{result}}",
+                                    text="Pipeline completed, neither success nor failure!\n\n{result}",
                                     variant="warning",
                                     title="My warning",
                                 ),
                                 "error": va.update_notification(
                                     notification=f"{pre}_progress_2",
-                                    text="Custom pipeline failed!\n\nException: {{error_msg}}\n\n{{result}}",
+                                    text="Custom pipeline failed!\n\nException: {error_msg}\n\n{result}",
                                     variant="error",
                                 ),
                                 "my_custom_err": va.update_notification(
                                     notification=f"{pre}_progress_2",
-                                    text="Custom pipeline failed!\n\nError Message: {{error_msg}}\n\n{{result}}",
+                                    text="Custom pipeline failed!\n\nError Message: {error_msg}\n\n{result}",
                                     variant="warning",
                                     title="My custom Warning",
                                 ),
@@ -298,10 +298,10 @@ page_5 = vm.Page(
 pre = "p6"
 page_6 = vm.Page(
     id="page_6",
-    title="(str)Progress{{}}-> Action-> (str)Success{1-4}/(str)Error{1-4}",
+    title="(str)Progress{}-> Action-> (str)Success{1-4}/(str)Error{1-4}",
     components=[
         vm.Container(
-            title="(str)Progress{{switch_successfulness}}{{exit_path}} - Pipeline (1->2s) (Choose to fail) -> (str)Success{1-4}/(str)Error{1-4}",
+            title="(str)Progress{switch_successfulness}{exit_path} - Pipeline (1->2s) (Choose to fail) -> (str)Success{1-4}/(str)Error{1-4}",
             layout=vm.Flex(),
             components=[
                 vm.Slider(
@@ -325,11 +325,11 @@ page_6 = vm.Page(
                             ),
                             outputs=f"{pre}_text",
                             notifications={
-                                "progress": "Running custom pipeline.\n\nException will happen: {{switch_successfulness}}.\n\nExit path: {{exit_path_slider}}",
-                                "success": "Custom pipeline completed!\n\n{{result}}",
-                                "my_custom_success": "Pipeline completed, neither success nor failure!\n\n{{result}}",
-                                "error": "Custom pipeline failed!\n\nException: {{error_msg}}\n\n{{result}}",
-                                "my_custom_err": "Custom pipeline failed!\n\nError Message: {{error_msg}}\n\n{{result}}",
+                                "progress": "Running custom pipeline.\n\nException will happen: {switch_successfulness}.\n\nExit path: {exit_path_slider}",
+                                "success": "Custom pipeline completed!\n\n{result}",
+                                "my_custom_success": "Pipeline completed, neither success nor failure!\n\n{result}",
+                                "error": "Custom pipeline failed!\n\nException: {error_msg}\n\n{result}",
+                                "my_custom_err": "Custom pipeline failed!\n\nError Message: {error_msg}\n\n{result}",
                             },
                         )
                     ],

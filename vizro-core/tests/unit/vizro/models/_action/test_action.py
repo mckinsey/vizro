@@ -888,7 +888,7 @@ class TestBaseActionUtilMethods:
         expected_rendered_notification,
     ):
         action = Action(
-            function=action_with_no_args(), notifications={"notification_key": "Result:{{result}} Error:{{error_msg}}"}
+            function=action_with_no_args(), notifications={"notification_key": "Result:{result} Error:{error_msg}"}
         )
 
         result = action._render_notification(

@@ -434,7 +434,7 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
 
 ## Notifications
 
-You can display notifications to show the progress and outcome of a custom action using the built-in  `"progress"`, `"success"` and `"error"` keys in the action's `notifications` argument:
+You can use notifications to show the progress and outcome of a custom action with the built-in  `"progress"`, `"success"` and `"error"` keys in the action's `notifications` argument:
 
 * `"progress"`: shown while an action runs.
 * `"success"`: shown when an action completes successfully.
@@ -635,12 +635,12 @@ Custom notifications use the "info" style by default unless [configured otherwis
 
 Notification messages can include _template variables_ that are filled with values from the action at runtime. This enables you to display dynamic information, such as results or error details, directly in the notification.
 
-Two templates are supported to make it possible to provide more informative and contextual feedback to users without hardcoding the message content:
+There are two templates to provide more informative and contextual feedback to users without hardcoding the message content:
 
-  - `{{result}}`: Replaced with additional information returned by the action. This value is optional and can be included in the tuple alongside the notification key when the action completes or raises an exception.
-  - `{{error_msg}}`: Replaced with the error message from an exception.
+  - `{result}`: Replaced with additional information returned by the action. This value is optional and can be included in the tuple alongside the notification key when the action completes or raises an exception.
+  - `{error_msg}`: Replaced with the error message from an exception.
 
-??? example "Templating with `{{result}}` and `{{error_msg}}`"
+??? example "Templating with `{result}` and `{error_msg}`"
 
     === "app.py"
 
@@ -681,10 +681,10 @@ Two templates are supported to make it possible to provide more informative and 
                         outputs="pipeline_output",
                         notifications={
                             "progress": "Running pipeline...",
-                            "success": "Pipeline done. {{result}}",  # (5)!
-                            "error": "Pipeline failed: {{error_msg}} {{result}}",  # (6)!
-                            "pipeline_partial_success": "Pipeline partially completed. {{result}}",  # (7)!
-                            "pipeline_partial_error": "Pipeline partially failed: {{error_msg}} {{result}}",  # (8)!
+                            "success": "Pipeline done. {result}",  # (5)!
+                            "error": "Pipeline failed: {error_msg} {result}",  # (6)!
+                            "pipeline_partial_success": "Pipeline partially completed. {result}",  # (7)!
+                            "pipeline_partial_error": "Pipeline partially failed: {error_msg} {result}",  # (8)!
                         },
                     ),
                 ),
@@ -696,14 +696,14 @@ Two templates are supported to make it possible to provide more informative and 
         Vizro().build(dashboard).run()
         ```
 
-        1. Propagate dynamic value `duration_result` to the `"error"` notification text that replaces the `{{result}}` template.
-        1. Propagate dynamic value `duration_result` to the `"pipeline_partial_error"` notification text that replaces the `{{result}}` template.
-        1. Propagate dynamic value `duration_result` to the `"success"` notification text that replaces the `{{result}}` template.
-        1. Propagate dynamic value `duration_result` to the `"pipeline_partial_success"` notification text that replaces the `{{result}}` template.
-        1. Define the `"success"` notification text with the `{{result}}` template.
-        1. Define the `"error"` notification text with both `{{error_msg}}` and `{{result}}` templates.
-        1. Define the `"pipeline_partial_success"` notification text with the `{{result}}` template.
-        1. Define the `"pipeline_partial_error"` notification text with both `{{error_msg}}` and `{{result}}` templates.
+        1. Propagate dynamic value `duration_result` to the `"error"` notification text that replaces the `{result}` template.
+        1. Propagate dynamic value `duration_result` to the `"pipeline_partial_error"` notification text that replaces the `{result}` template.
+        1. Propagate dynamic value `duration_result` to the `"success"` notification text that replaces the `{result}` template.
+        1. Propagate dynamic value `duration_result` to the `"pipeline_partial_success"` notification text that replaces the `{result}` template.
+        1. Define the `"success"` notification text with the `{result}` template.
+        1. Define the `"error"` notification text with both `{error_msg}` and `{result}` templates.
+        1. Define the `"pipeline_partial_success"` notification text with the `{result}` template.
+        1. Define the `"pipeline_partial_error"` notification text with both `{error_msg}` and `{result}` templates.
 
     === "app.yaml"
 
@@ -721,10 +721,10 @@ Two templates are supported to make it possible to provide more informative and 
                     outputs: pipeline_output
                     notifications:
                       progress: Running pipeline...
-                      success: "Pipeline done. {{result}}"
-                      error: "Pipeline failed: {{error_msg}} {{result}}"
-                      pipeline_partial_success: "Pipeline partially completed. {{result}}"
-                      pipeline_partial_error: "Pipeline partially failed: {{error_msg}} {{result}}"
+                      success: "Pipeline done. {result}"
+                      error: "Pipeline failed: {error_msg} {result}"
+                      pipeline_partial_success: "Pipeline partially completed. {result}"
+                      pipeline_partial_error: "Pipeline partially failed: {error_msg} {result}"
               - type: text
                 id: pipeline_output
                 text: Click the button to run the pipeline.
@@ -738,11 +738,11 @@ Two templates are supported to make it possible to provide more informative and 
         [![TemplatedNotifications]][templatednotifications]
 
 
-In this example, `{{result}}` is filled with the additional detail returned by the action (for example, the duration of the pipeline run). The `{{error_msg}}` template is filled with the error message from the exception (for example, "Random error.").
+In this example, `{result}` is filled with the additional detail returned by the action (for example, the duration of the pipeline run). The `{error_msg}` template is filled with the error message from the exception (for example, "Random error.").
 
 ### Action inputs in progress notifications
 
-Progress notifications can also include template variables based on the runtime action's input values. These variables are referenced using the parameter names, for example `{{param_name}}`.
+Progress notifications can also include template variables based on the runtime action's input values. These variables are referenced using the parameter names, for example `{param_name}`.
 
 The progress message reflects the current inputs of the action to make it more informative. For example, you can display the number of retries configured while the action is running.
 
@@ -793,12 +793,12 @@ The progress message reflects the current inputs of the action to make it more i
                         function=run_pipeline(max_retries="slider_id"),
                         outputs="pipeline_output",
                         notifications={
-                            "progress": "Running pipeline... (max retries: {{max_retries}})...",  # (3)!
-                            "success": "Pipeline done. {{result}}",
-                            "error": "Pipeline failed: {{error_msg}} - {{result}}",
-                            "pipeline_partial_success": "Pipeline partially completed. {{result}}",
-                            "pipeline_partial_error": "Pipeline partially failed: {{error_msg}} - {{result}}",
-                            "pipeline_max_retries_error": "Pipeline failed after {{result}} retries.",
+                            "progress": "Running pipeline... (max retries: {max_retries})...",  # (3)!
+                            "success": "Pipeline done. {result}",
+                            "error": "Pipeline failed: {error_msg} - {result}",
+                            "pipeline_partial_success": "Pipeline partially completed. {result}",
+                            "pipeline_partial_error": "Pipeline partially failed: {error_msg} - {result}",
+                            "pipeline_max_retries_error": "Pipeline failed after {result} retries.",
                         },
                     ),
                 ),
@@ -812,7 +812,7 @@ The progress message reflects the current inputs of the action to make it more i
 
         1. Action's input argument `max_retries` which dynamic value shows in the `"progress"` notification text.
         1. On each attempt, decide whether to run the A/B/C/D roll. If it is `False`, the loop tries again until `max_retries` is exhausted, and then the action raises an exception.
-        1. Define the `"progress"` notification text with the `{{max_retries}}` template that gets replaced by the runtime value of the `max_retries` argument when the action runs.
+        1. Define the `"progress"` notification text with the `{max_retries}` template that gets replaced by the runtime value of the `max_retries` argument when the action runs.
 
     === "app.yaml"
 
@@ -837,12 +837,12 @@ The progress message reflects the current inputs of the action to make it more i
                       max_retries: slider_id
                     outputs: pipeline_output
                     notifications:
-                      progress: "Running pipeline... (max retries: {{max_retries}})..."
-                      success: "Pipeline done. {{result}}"
-                      error: "Pipeline failed: {{error_msg}} - {{result}}"
-                      pipeline_partial_success: "Pipeline partially completed. {{result}}"
-                      pipeline_partial_error: "Pipeline partially failed: {{error_msg}} - {{result}}"
-                      pipeline_max_retries_error: "Pipeline failed after {{result}} retries."
+                      progress: "Running pipeline... (max retries: {max_retries})..."
+                      success: "Pipeline done. {result}"
+                      error: "Pipeline failed: {error_msg} - {result}"
+                      pipeline_partial_success: "Pipeline partially completed. {result}"
+                      pipeline_partial_error: "Pipeline partially failed: {error_msg} - {result}"
+                      pipeline_max_retries_error: "Pipeline failed after {result} retries."
               - type: text
                 id: pipeline_output
                 text: Click the button to run the pipeline.
@@ -910,12 +910,12 @@ To customize notifications when you define them, use the [`show_notification`][v
                         function=run_pipeline(max_retries="slider_id"),
                         outputs="pipeline_output",
                         notifications={
-                            "progress": va.show_notification(id="progress_id", variant="progress", text="Running pipeline... (max retries: {{max_retries}})..."),  # (1)!
-                            "success": "Pipeline done. {{result}}",
-                            "error": "Pipeline failed: {{error_msg}} - {{result}}",
-                            "pipeline_partial_success": va.update_notification(variant="success", notification="progress_id", text="Pipeline partially completed. {{result}}"),   # (2)!
-                            "pipeline_partial_error": va.update_notification(variant="error", notification="progress_id", text="Pipeline partially failed: {{error_msg}} - {{result}}"),  # (3)!
-                            "pipeline_max_retries_error": va.update_notification(variant="error", notification="progress_id", text="Pipeline failed after {{result}} retries."),  # (4)!
+                            "progress": va.show_notification(id="progress_id", variant="progress", text="Running pipeline... (max retries: {max_retries})..."),  # (1)!
+                            "success": "Pipeline done. {result}",
+                            "error": "Pipeline failed: {error_msg} - {result}",
+                            "pipeline_partial_success": va.update_notification(variant="success", notification="progress_id", text="Pipeline partially completed. {result}"),   # (2)!
+                            "pipeline_partial_error": va.update_notification(variant="error", notification="progress_id", text="Pipeline partially failed: {error_msg} - {result}"),  # (3)!
+                            "pipeline_max_retries_error": va.update_notification(variant="error", notification="progress_id", text="Pipeline failed after {result} retries."),  # (4)!
                         },
                     ),
                 ),
@@ -959,24 +959,24 @@ To customize notifications when you define them, use the [`show_notification`][v
                         type: show_notification
                         id: progress_id
                         variant: progress
-                        text: "Running pipeline... (max retries: {{max_retries}})..."
-                      success: "Pipeline done. {{result}}"
-                      error: "Pipeline failed: {{error_msg}} - {{result}}"
+                        text: "Running pipeline... (max retries: {max_retries})..."
+                      success: "Pipeline done. {result}"
+                      error: "Pipeline failed: {error_msg} - {result}"
                       pipeline_partial_success:
                         type: update_notification
                         notification: progress_id
                         variant: success
-                        text: "Pipeline partially completed. {{result}}"
+                        text: "Pipeline partially completed. {result}"
                       pipeline_partial_error:
                         type: update_notification
                         notification: progress_id
                         variant: error
-                        text: "Pipeline partially failed: {{error_msg}} - {{result}}"
+                        text: "Pipeline partially failed: {error_msg} - {result}"
                       pipeline_max_retries_error:
                         type: update_notification
                         notification: progress_id
                         variant: error
-                        text: "Pipeline failed after {{result}} retries."
+                        text: "Pipeline failed after {result} retries."
               - type: text
                 id: pipeline_output
                 text: Click the button to run the pipeline.

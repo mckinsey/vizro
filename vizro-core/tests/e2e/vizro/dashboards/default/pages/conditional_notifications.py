@@ -86,7 +86,7 @@ conditional_notifications_page = vm.Page(
             actions=[
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
-                    notifications={"error": "{{error_msg}}{{result}}"},
+                    notifications={"error": "{error_msg}{result}"},
                 )
             ],
         ),
@@ -96,7 +96,7 @@ conditional_notifications_page = vm.Page(
             actions=[
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
-                    notifications={"success": cnst.CONDITIONAL_NOTIFICATION_SUCCESS_MSG + "{{result}}"},
+                    notifications={"success": cnst.CONDITIONAL_NOTIFICATION_SUCCESS_MSG + "{result}"},
                 )
             ],
         ),
@@ -106,7 +106,7 @@ conditional_notifications_page = vm.Page(
             actions=[
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
-                    notifications={"progress": cnst.CONDITIONAL_NOTIFICATION_PROGRESS_MSG + "-{{exit_path_slider}}"},
+                    notifications={"progress": cnst.CONDITIONAL_NOTIFICATION_PROGRESS_MSG + "-{exit_path_slider}"},
                 )
             ],
         ),
@@ -116,7 +116,7 @@ conditional_notifications_page = vm.Page(
             actions=[
                 vm.Action(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
-                    notifications={"my_info": cnst.CONDITIONAL_NOTIFICATION_INFO_MSG + "{{result}}"},
+                    notifications={"my_info": cnst.CONDITIONAL_NOTIFICATION_INFO_MSG + "{result}"},
                 )
             ],
         ),
@@ -128,7 +128,7 @@ conditional_notifications_page = vm.Page(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
                     notifications={
                         "my_warning": show_notification(
-                            text=cnst.CONDITIONAL_NOTIFICATION_WARNING_MSG + "{{result}}", variant="warning"
+                            text=cnst.CONDITIONAL_NOTIFICATION_WARNING_MSG + "{result}", variant="warning"
                         )
                     },
                 )
@@ -154,7 +154,7 @@ conditional_notifications_page = vm.Page(
                     function=notifications_pipeline(exit_path_slider=cnst.CONDITIONAL_NOTIFICATION_SLIDER_ID),
                     notifications={
                         "success": "Custom pipeline completed!",
-                        "my_info": cnst.CONDITIONAL_NOTIFICATION_INFO_MSG + "{{result}}",
+                        "my_info": cnst.CONDITIONAL_NOTIFICATION_INFO_MSG + "{result}",
                     },
                 )
             ],

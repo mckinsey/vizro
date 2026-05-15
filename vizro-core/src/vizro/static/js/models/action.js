@@ -47,14 +47,14 @@ function guard_action_chain(trigger_value, guard_data, trigger_component_id) {
 }
 
 /**
- * Replaces template variables in the format {{key}} within the given text with corresponding values from valuesMap.
+ * Replaces template variables in the format {key} within the given text with corresponding values from valuesMap.
  *
  * @param {string} text - The text containing template variables.
  * @param {Object} valuesMap - An object mapping keys to their replacement values.
  * @returns {string} The text with template variables replaced by their corresponding values.
  */
 function replaceTemplateVariables(text, valuesMap) {
-  return text.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+  return text.replace(/\{(\w+)\}/g, (match, key) => {
     if (Object.hasOwn(valuesMap, key)) {
       const value = valuesMap[key];
 
@@ -102,7 +102,7 @@ function show_progress_notification(
   const copyNotificationObject = structuredClone(notificationObject);
 
   // Replace template in copyNotificationObject text with actual values from actionParameterToRuntimeValueMap.
-  // It looks for patterns like {{key}} (where `key` represents an action parameter name) and replaces them with
+  // It looks for patterns like {key} (where `key` represents an action parameter name) and replaces them with
   // the corresponding runtime value from actionParameterToRuntimeValueMap.
   copyNotificationObject[0].message.props.children = replaceTemplateVariables(
     copyNotificationObject[0].message.props.children,

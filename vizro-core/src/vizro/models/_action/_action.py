@@ -513,16 +513,16 @@ class _BaseAction(VizroBaseModel):
         if (notification_model := action_notifications.get(notification_key)) is None:
             return no_update
 
-        # Template {{result}} with the empty string if the `result` is not provided.
+        # Template {result} with the empty string if the `result` is not provided.
         notification_result = notification_result or ""
-        # Template {{error_msg}} with the empty string if the `error_msg` is not provided.
+        # Template {error_msg} with the empty string if the `error_msg` is not provided.
         error_msg = error_msg or ""
 
         notification = notification_model.function()
 
         msg = notification[0]["message"].children
-        msg = msg.replace("{{result}}", str(notification_result))
-        msg = msg.replace("{{error_msg}}", str(error_msg))
+        msg = msg.replace("{result}", str(notification_result))
+        msg = msg.replace("{error_msg}", str(error_msg))
         notification[0]["message"].children = msg
 
         return notification

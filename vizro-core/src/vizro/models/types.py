@@ -136,10 +136,10 @@ def _normalize_action_notifications(value: Any) -> Any:
             else:
                 notification_action = show_notification(**defaults)  # type: ignore[arg-type]
 
-            value[notif_key] = notification_action
+            notif_value = value[notif_key] = notification_action
 
-        if value[notif_key] is not None:
-            value[notif_key]._is_conditional = True
+        if notif_value is not None:
+            notif_value._is_conditional = True
 
     return value
 
