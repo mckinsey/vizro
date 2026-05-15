@@ -682,9 +682,9 @@ Two templates are supported to make it possible to provide more informative and 
                         notifications={
                             "progress": "Running pipeline...",
                             "success": "Pipeline done. {{result}}",  # (5)!
-                            "error": "Pipeline failed: {{error_msg}} \n {{result}}",  # (6)!
+                            "error": "Pipeline failed: {{error_msg}} {{result}}",  # (6)!
                             "pipeline_partial_success": "Pipeline partially completed. {{result}}",  # (7)!
-                            "pipeline_partial_error": "Pipeline partially failed: {{error_msg}} \n {{result}}",  # (8)!
+                            "pipeline_partial_error": "Pipeline partially failed: {{error_msg}} {{result}}",  # (8)!
                         },
                     ),
                 ),
@@ -722,9 +722,9 @@ Two templates are supported to make it possible to provide more informative and 
                     notifications:
                       progress: Running pipeline...
                       success: "Pipeline done. {{result}}"
-                      error: "Pipeline failed: {{error_msg}} \n {{result}}"
+                      error: "Pipeline failed: {{error_msg}} {{result}}"
                       pipeline_partial_success: "Pipeline partially completed. {{result}}"
-                      pipeline_partial_error: "Pipeline partially failed: {{error_msg}} \n {{result}}"
+                      pipeline_partial_error: "Pipeline partially failed: {{error_msg}} {{result}}"
               - type: text
                 id: pipeline_output
                 text: Click the button to run the pipeline.
