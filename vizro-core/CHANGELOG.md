@@ -11,6 +11,27 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.55'></a>
+# 0.1.55 — 2026-05-15
+
+## Highlights ✨
+
+- Custom actions can have notifications to show their status: in progress, success, error, and custom notifications based on action outcomes. ([#1574](https://github.com/mckinsey/vizro/pull/1574))
+
+- Hierarchical/cascading filters: set `vm.Filter(column=["continent", "country"])` to filter by groups of options. See the [user guide on hierarchical filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/#hierarchical-filters). ([#1683](https://github.com/mckinsey/vizro/pull/1683))
+
+## Added
+
+- Introduce new `set_control` value options (`"cell"`, `"column"`, `"row"`) for accessing clicked cell data in AgGrid. ([#1670](https://github.com/mckinsey/vizro/pull/1670))
+
+- Add `vm.Cascader` hierarchical selector for `Filter` and `Parameter` controls. ([#1683](https://github.com/mckinsey/vizro/pull/1683))
+
+- Enable use of `set_control` action with non-categorical selectors. ([#1684](https://github.com/mckinsey/vizro/pull/1684))
+
+## Changed
+
+- Align bundled Bootstrap CSS, Vizro CSS overrides, and default Plotly themes with updated design tokens. ([#1694](https://github.com/mckinsey/vizro/pull/1694))
+
 <a id='changelog-0.1.54'></a>
 
 # 0.1.54 — 2026-04-07
