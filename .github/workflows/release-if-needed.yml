@@ -115,6 +115,7 @@ jobs:
           hatch run changelog:add
           if [ "${{ needs.check-version.outputs.package_name }}" == "vizro-core" ]; then
             hatch run schema
+            hatch run compendium
           fi
           if [ "${{ needs.check-version.outputs.package_name }}" == "vizro-dash-components" ]; then
             # hatch-nodejs-version writes package.json with 4-space indent; reformat to match biome config.

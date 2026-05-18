@@ -5,23 +5,28 @@ import re
 import sys
 from pathlib import Path
 
-_INDEX_HTML = (
-    Path(__file__).resolve().parent.parent / "vizro-core" / "docs" / "pages" / "components_compendium" / "index.html"
+_DATA_FILE = (
+    Path(__file__).resolve().parent.parent
+    / "vizro-core"
+    / "docs"
+    / "pages"
+    / "components_compendium"
+    / "compendium_data.yaml"
 )
-_BADGE_PATTERN = re.compile(r'(<span class="version-badge">)([^<]*)(</span>)')
+_VERSION_PATTERN = re.compile(r'^(vizro_version:\s*")[^"]*(")', re.MULTILINE)
 
 
 def main() -> None:
-    """Update Vizro version in the components compendium."""
+    """Update vizro_version in compendium_data.yaml."""
     raw = os.environ.get("RELEASE_VERSION", "").strip()
     if not raw:
         sys.exit("RELEASE_VERSION must be set")
-    display = f"v{raw.removeprefix('v')}"
-    text = _INDEX_HTML.read_text(encoding="utf-8")
-    new_text, count = _BADGE_PATTERN.subn(rf"\g<1>{display}\g<3>", text, count=1)
+    version = raw.removeprefix("v")
+    text = _DATA_FILE.read_text(encoding="utf-8")
+    new_text, count = _VERSION_PATTERN.subn(rf"\g<1>{version}\g<2>", text, count=1)
     if count != 1:
-        sys.exit(f"Expected exactly one version-badge span, replaced {count}")
-    _INDEX_HTML.write_text(new_text, encoding="utf-8")
+        sys.exit(f"Expected exactly one vizro_version field in compendium_data.yaml, found {count}")
+    _DATA_FILE.write_text(new_text, encoding="utf-8")
 
 
 if __name__ == "__main__":
