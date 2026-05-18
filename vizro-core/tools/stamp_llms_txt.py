@@ -9,6 +9,7 @@ Intended to run from the vizro-core/ directory after `zensical build`, as part
 of the docs build step on ReadTheDocs. If READTHEDOCS_VERSION is not set (e.g.
 during a local build), the file is left unchanged.
 """
+# ruff: noqa: T201
 
 import os
 import sys
@@ -19,6 +20,7 @@ PLACEHOLDER = "https://vizro.readthedocs.io/en/stable/"
 
 
 def stamp_llms_txt() -> int:
+    """Replace the stable URL placeholder in site/llms.txt with the actual READTHEDOCS_VERSION."""
     version = os.environ.get("READTHEDOCS_VERSION")
 
     if not version:

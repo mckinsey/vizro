@@ -12,6 +12,7 @@ Mapping to local file:
     -> strip trailing slash, add .md -> pages/user-guides/install.md
     -> prepend docs/ -> docs/pages/user-guides/install.md
 """
+# ruff: noqa: T201
 
 import re
 import sys
@@ -30,7 +31,7 @@ def url_to_local_path(url: str) -> Path | None:
     if not url.startswith(DOCS_BASE_URL):
         return None
 
-    relative = url[len(DOCS_BASE_URL):]
+    relative = url[len(DOCS_BASE_URL) :]
     return DOCS_DIR / (relative.rstrip("/") + ".md")
 
 
