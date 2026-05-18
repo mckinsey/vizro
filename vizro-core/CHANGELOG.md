@@ -11,6 +11,13 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.56'></a>
+# 0.1.56 — 2026-05-18
+
+## Highlights ✨
+
+- The components compendium showcases all Vizro components and features in a single page, with graphics, GIFs and code to copy. See the [components compendium](https://vizro.readthedocs.io/en/stable/pages/components_compendium/). ([#1734](https://github.com/mckinsey/vizro/pull/1734))
+
 <a id='changelog-0.1.55'></a>
 # 0.1.55 — 2026-05-15
 
