@@ -56,8 +56,7 @@ def check_llms_txt() -> int:
         local_path = url_to_local_path(url)
         if local_path is None:
             skipped.append(url)
-            continue
-        if not local_path.exists():
+        elif not local_path.exists():
             broken.append((url, local_path))
 
     if skipped:
