@@ -24,7 +24,7 @@
 #
 # vizro_version is updated automatically by tools/update_components_compendium_version.py on release.
 # Do not edit it manually.
-vizro_version: "0.1.54"
+vizro_version: "0.1.55"
 
 categories:
   - id: components
