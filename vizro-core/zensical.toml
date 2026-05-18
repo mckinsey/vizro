@@ -174,7 +174,7 @@ format = "pymdownx.superfences.fence_code_format"
 name = "python"
 class = "highlight"
 validator = "mkdocs_pycafe.validator"
-format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.55"}}
+format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.56"}}
 
 [project.markdown_extensions.pymdownx.tabbed]
 alternate_style = true
