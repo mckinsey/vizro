@@ -43,6 +43,9 @@ jobs:
       - name: Show dependency tree
         run: hatch run pip tree
 
+      - name: Check components compendium is up to date
+        run: hatch run compendium-check
+
       - name: Check schema is up to date
         run: hatch run schema-check
 

@@ -1,0 +1,100 @@
+# Vizro
+
+Vizro is an open-source Python-based toolkit to build data visualization apps.
+Every Vizro app is defined by a simple configuration, using the high-level categories:
+- Components (charts, tables, cards, KPI indicators, forms and more)
+- Controls (filters and parameters, using a range of selectors such as drop-down menus and sliders)
+- Actions (interactions between components, drill-throughs, export functionality and more)
+- Layouts (grid layouts or flexible containers, with a range of pre-set styles)
+- Navigation (a range of app layout and navigation settings, including nested page hierarchies)
+
+Configuration can be written in multiple formats including Pydantic models, JSON, YAML or Python dictionaries for added flexibility of implementation.
+Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
+
+All documentation pages return clean markdown when fetched with the `Accept: text/markdown` request header.
+
+## TUTORIALS
+
+- [Quickstart tutorial](https://vizro.readthedocs.io/en/stable/pages/tutorials/quickstart-tutorial/): A quickstart dashboard tutorial
+- [Explore Vizro](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/): An in-depth tutorial to introduce Vizro's key features
+- [Write your own actions](https://vizro.readthedocs.io/en/stable/pages/tutorials/custom-actions-tutorial/): A tutorial for writing custom actions
+
+## FUNDAMENTALS
+
+- [Install Vizro](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/): Guide on how to install Vizro
+- [Dashboard](https://vizro.readthedocs.io/en/stable/pages/user-guides/dashboard/): Dashboard basics
+- [Page](https://vizro.readthedocs.io/en/stable/pages/user-guides/pages/): Pages
+- [Run or deploy dashboards](https://vizro.readthedocs.io/en/stable/pages/user-guides/run-deploy/): How to run or deploy dashboards
+
+## COMPONENTS
+
+- [Overview](https://vizro.readthedocs.io/en/stable/pages/user-guides/components/): Components overview
+- [Graph](https://vizro.readthedocs.io/en/stable/pages/user-guides/graph/): Graphs
+- [Table](https://vizro.readthedocs.io/en/stable/pages/user-guides/table/): Tables
+- [Figure](https://vizro.readthedocs.io/en/stable/pages/user-guides/figure/): Figures
+- [Card](https://vizro.readthedocs.io/en/stable/pages/user-guides/card/): Cards
+- [Text](https://vizro.readthedocs.io/en/stable/pages/user-guides/text/): Text
+- [Button](https://vizro.readthedocs.io/en/stable/pages/user-guides/button/): Buttons
+- [Container](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/): Containers
+- [Tab](https://vizro.readthedocs.io/en/stable/pages/user-guides/tabs/): Tabs
+
+## CONTROLS
+
+- [Overview](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls/): Controls overview
+- [Filter](https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/): Filters
+- [Parameter](https://vizro.readthedocs.io/en/stable/pages/user-guides/parameters/): Parameters
+- [Selector](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/): Selectors
+
+## NAVIGATION
+
+- [Navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/): Navigation
+
+## ACTIONS
+
+- [Overview](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/): Actions overview
+- [Handle data](https://vizro.readthedocs.io/en/stable/pages/user-guides/data-actions/): Data actions
+- [Graph and table interactions](https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions/): Graph and table interaction actions
+- [Notifications](https://vizro.readthedocs.io/en/stable/pages/user-guides/notification-actions/): Notification actions
+
+## VISUAL FORMATTING
+
+- [Overview](https://vizro.readthedocs.io/en/stable/pages/user-guides/visual-formatting/): Visual formatting overview
+- [Layout](https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/): Layouts
+- [Themes and colors](https://vizro.readthedocs.io/en/stable/pages/user-guides/themes/): Themes
+- [Assets](https://vizro.readthedocs.io/en/stable/pages/user-guides/assets/): Assets
+- [Custom CSS](https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-css/): Custom CSS
+
+## DATA
+
+- [Overview](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/): Data overview
+- [Kedro Data Catalog](https://vizro.readthedocs.io/en/stable/pages/user-guides/kedro-data-catalog/): Kedro Data Catalog integration
+
+## EXTENSIONS
+
+- [Overview](https://vizro.readthedocs.io/en/stable/pages/user-guides/extensions/): Extensions overview
+- [Custom actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-actions/): Custom actions
+- [Custom charts](https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-charts/): Custom charts
+- [Custom tables](https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-tables/): Custom tables
+- [Custom figures](https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-figures/): Custom figures
+- [Custom components](https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-components/): Custom components
+
+## API REFERENCE
+
+- [Vizro](https://vizro.readthedocs.io/en/stable/pages/API-reference/vizro/): Vizro API reference
+- [Models](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/): Models API reference
+- [Actions](https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/): Actions API reference
+- [Themes](https://vizro.readthedocs.io/en/stable/pages/API-reference/themes/): Themes API reference
+- [Table functions](https://vizro.readthedocs.io/en/stable/pages/API-reference/table-callables/): Table callable functions API reference
+- [Figure functions](https://vizro.readthedocs.io/en/stable/pages/API-reference/figure-callables/): Figure callable functions API reference
+- [Kedro integration](https://vizro.readthedocs.io/en/stable/pages/API-reference/kedro-integration/): Kedro integration API reference
+- [Deprecations](https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/): Deprecations
+
+## EXPLANATION AND REFERENCE
+
+- [Vizro schema](https://vizro.readthedocs.io/en/stable/pages/explanation/schema/): The Vizro schema
+- [Actions explanation](https://vizro.readthedocs.io/en/stable/pages/explanation/actions-explanation/): In-depth explanation of the actions framework
+- [FAQs](https://vizro.readthedocs.io/en/stable/pages/explanation/faq/): Frequently asked questions
+- [User examples](https://vizro.readthedocs.io/en/stable/pages/explanation/your-examples/): Examples created by the Vizro community
+- [Contribute to Vizro](https://vizro.readthedocs.io/en/stable/pages/explanation/contributing/): How to contribute to Vizro's open source project
+- [Documentation style](https://vizro.readthedocs.io/en/stable/pages/explanation/documentation-style-guide/): Documentation style guide
+- [Authors](https://vizro.readthedocs.io/en/stable/pages/explanation/authors/): Vizro contributor listing

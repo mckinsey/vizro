@@ -87,7 +87,7 @@ pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
 serve = "zensical serve --open {args}"
 
 [envs.lower-bounds]
-extra-dependencies = ["pydantic-ai-slim==1.39.0"]
+extra-dependencies = ["pydantic-ai-slim==1.56.0"]
 python = "3.10"
 
 [version]
