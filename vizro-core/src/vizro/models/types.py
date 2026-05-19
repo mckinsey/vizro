@@ -670,7 +670,7 @@ _IdOrIdProperty: TypeAlias = ModelID | _IdProperty
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
 SingleValueType: TypeAlias = StrictBool | float | str | date
 """Permissible value types for single-value selectors. Values are displayed as default."""
-MultiValueType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date]
+MultiValueType: TypeAlias = list[SingleValueType]
 """Permissible value types for multi-value selectors. Values are displayed as default."""
 
 
@@ -681,7 +681,7 @@ class _OptionsDictType(TypedDict):
     value: SingleValueType
 
 
-OptionsType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date] | list[_OptionsDictType]
+OptionsType: TypeAlias = list[SingleValueType | _OptionsDictType]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
 # All the below types rely on models and so must use ForwardRef (that is, "Checklist" rather than actual

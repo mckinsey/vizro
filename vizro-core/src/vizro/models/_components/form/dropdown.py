@@ -7,7 +7,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components.form._form_utils import (
-    get_dict_options_and_default,
+    get_dict_options_and_value,
     validate_options_dict,
     validate_value,
 )
@@ -116,9 +116,8 @@ underlying component may change in the future.""",
 
     def __call__(self, options):
         variants = {"filled": "", "plain": "dropdown-plain"}
-        dict_options, default_value = get_dict_options_and_default(options=options, multi=self.multi)
+        dict_options, value = get_dict_options_and_value(options=options, value=self.value, multi=self.multi)
 
-        value = self.value if self.value is not None else default_value
         if self.multi and not isinstance(value, list):
             value = cast(MultiValueType, [value])
 
@@ -152,7 +151,7 @@ underlying component may change in the future.""",
         # guarantees that. We can call Filter.selector.pre_build() from the Filter.pre_build() method if we decide that.
         # TODO: move this to pre_build once we have better control of the ordering.
         if self.value is None:
-            _, default_value = get_dict_options_and_default(options=self.options, multi=self.multi)
+            _, default_value = get_dict_options_and_value(options=self.options, value=None, multi=self.multi)
             self.value = default_value
 
         # The rest of the method is added instead of calling and returning the content from the __call__ method
