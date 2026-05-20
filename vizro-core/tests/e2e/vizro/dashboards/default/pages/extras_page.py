@@ -49,13 +49,7 @@ extras_page = vm.Page(
                     text="Export data",
                     description=vm.Tooltip(text=cnst.BUTTON_TOOLTIP_TEXT, icon=cnst.BUTTON_TOOLTIP_ICON),
                     extra={"color": "success", "outline": True},
-                    actions=[
-                        vm.Action(
-                            function=export_data(
-                                file_format="csv",
-                            )
-                        ),
-                    ],
+                    actions=export_data(file_format="csv"),
                 ),
             ],
         ),

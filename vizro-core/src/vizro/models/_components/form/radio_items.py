@@ -7,7 +7,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components.form._form_utils import (
-    get_dict_options_and_default,
+    get_dict_options_and_value,
     validate_options_dict,
     validate_value,
 )
@@ -85,13 +85,13 @@ underlying component may change in the future.""",
         return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options):
-        dict_options, default_value = get_dict_options_and_default(options=options, multi=False)
+        dict_options, value = get_dict_options_and_value(options=options, value=self.value, multi=False)
         description = self.description.build().children if self.description else [None]
 
         defaults = {
             "id": self.id,
             "options": dict_options,
-            "value": self.value if self.value is not None else default_value,
+            "value": value,
             "inline": self._in_container,
             "persistence": True,
             "persistence_type": "session",
@@ -111,7 +111,7 @@ underlying component may change in the future.""",
 
     def _build_dynamic_placeholder(self):
         if self.value is None:
-            _, default_value = get_dict_options_and_default(options=self.options, multi=False)
+            _, default_value = get_dict_options_and_value(options=self.options, value=None, multi=False)
             self.value = default_value  # type: ignore[assignment]
 
         return self.__call__(self.options)

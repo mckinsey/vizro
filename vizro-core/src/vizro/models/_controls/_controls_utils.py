@@ -20,7 +20,7 @@ from vizro.models import (
     Switch,
     VizroBaseModel,
 )
-from vizro.models._components.form._form_utils import get_dict_options_and_default
+from vizro.models._components.form._form_utils import get_dict_options_and_value
 from vizro.models._components.form.cascader import get_cascader_default_value
 from vizro.models.types import ControlType, SelectorType
 
@@ -116,7 +116,7 @@ def get_selector_default_value(selector: SelectorType) -> Any:
         return [selector.min, selector.max] if is_range else selector.min
     elif _is_categorical_selector(selector):
         is_multi = isinstance(selector, Checklist) or getattr(selector, "multi", False)
-        _, default_value = get_dict_options_and_default(options=selector.options, multi=is_multi)
+        _, default_value = get_dict_options_and_value(options=selector.options, value=None, multi=is_multi)
         return default_value
     elif _is_hierarchical_selector(selector):
         is_multi = getattr(selector, "multi", False)
