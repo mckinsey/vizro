@@ -45,7 +45,7 @@ Match data shape + user need to a pattern. Full details (when-to-use, wireframes
 | 4 | **Multi-Dimensional Slice** | 2+ categorical dimensions (e.g. day × time heatmap) | actions chain → multiple Filters |
 | 5 | **Data Export** | Analyst persona needs the filtered data downloaded | `vm.Button` + `va.export_data()` |
 
-**Decision flow:**
+**Decision flow** (pick at most one of Patterns 1–4 as the primary interaction, then independently add Pattern 5 if export is needed):
 
 ```
 Does the data have a natural hierarchy (group → individual → detail)?
@@ -59,14 +59,16 @@ Compare one entity against many without removing context?
 
 2+ categorical dimensions, click to drill into one cell?
 ├─ YES → Pattern 4
-└─ NO → continue
+└─ NO → A standard sidebar vm.Filter is sufficient — no advanced pattern needed.
 
-Users need to download data?
-├─ YES → Pattern 5
-└─ NO → Standard filters/parameters are sufficient
+Then independently: does the user need to download data?
+├─ YES → add Pattern 5 (Data Export button) on top of whichever pattern you chose above (or on its own)
+└─ NO → done
 ```
 
 ## When NOT to use advanced interactions
+
+Use a chart or table as a Filter/Parameter source only when the user explicitly asks for it, or when a pattern's "When to use" clause clearly matches. The bullets below are common cases where the sidebar wins.
 
 - View-only dashboards (executive summary — users glance, not explore)
 - Simple filtering needs (a sidebar dropdown covers it)
@@ -102,7 +104,7 @@ vm.Graph(
 vm.Filter(id="region_filter", column="region")
 ```
 
-### Actions chain — one click sets multiple controls (Pattern 4 or 5)
+### Actions chain — one click sets multiple controls (Pattern 4)
 
 ```python
 vm.Graph(

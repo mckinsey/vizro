@@ -166,7 +166,7 @@ Tertiary metric: Smaller chart or table row
 
 **Problem**: Hidden controls leave users with no visible state and no obvious reset.
 
-**Solution**: Keep controls visible by default; hide one only when the chart's own state communicates the selection (Pattern 3 highlight is the canonical case).
+**Solution**: Keep controls visible by default; hide one only when the chart's own state communicates the selection (Pattern 3 highlight is the canonical case). If you do hide a control where the chart itself is the only selector, add an explicit reset button so users have a visible way back to the default state.
 
 ---
 
