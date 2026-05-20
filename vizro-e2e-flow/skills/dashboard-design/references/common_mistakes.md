@@ -5,7 +5,7 @@ Anti-patterns to avoid, organized by dashboard development step.
 ## Contents
 
 - Step 1: Requirements Mistakes (information overload, ignoring user workflow)
-- Step 2: Layout Mistakes (poor hierarchy, cluttered layout)
+- Step 2: Layout & Interaction Mistakes (poor hierarchy, cluttered layout, over-using interactions, missing affordances, drill-through gotchas)
 - Step 3: Visualization Mistakes (wrong charts, color misuse, missing context)
 - Quick Fixes Reference
 
@@ -68,9 +68,9 @@ Mistakes in defining WHAT information to show and WHY.
 
 ---
 
-## Step 2: Layout Mistakes
+## Step 2: Layout & Interaction Mistakes
 
-Mistakes in HOW users navigate and explore data.
+Mistakes in HOW users navigate and explore data. The first group is about static layout (hierarchy, spacing, structure). The second group is about advanced interactions (cross-filter, cross-highlight, drill-through) — see the **wiring-vizro-actions** skill for the 6 named patterns those mistakes reference.
 
 ### Poor Visual Hierarchy
 
@@ -125,6 +125,48 @@ Tertiary metric: Smaller chart or table row
 **Problem**: Random order, no predictable structure
 
 **Solution**: Consistent layout users can learn and memorize
+
+### Over-using Interactions
+
+**Problem**: 3+ cross-filters on one page — users lose track of what affects what.
+
+**Solution**: Limit to 1–2 interaction patterns per page. Match each interaction to a named pattern from the **wiring-vizro-actions** skill; if you cannot name the pattern, the interaction probably isn't justified.
+
+### Feature-First Thinking
+
+**Problem**: "Let's add cross-filter because we can" without a clear user need.
+
+**Solution**: Start from user task. What decision does this interaction enable? If a standard sidebar filter covers it, don't add a click-driven cross-filter.
+
+### Cross-Filter When a Filter Suffices
+
+**Problem**: Adding cross-filter for fewer than ~5 groups, where a dropdown would be just as fast.
+
+**Solution**: Cross-filter pays off when the data has hierarchy (Pattern 1 / 2) or when click-to-explore is more natural than dropdown selection. Otherwise prefer the sidebar filter.
+
+### No Visual Affordance on Interactive Source
+
+**Problem**: Users have no idea a chart or table is clickable until they happen to click it.
+
+**Solution**: Label every clickable component with a short, action-oriented hint (e.g. "Click a bar to filter by region"). Avoid verbose or vague phrasing.
+
+### Missing Back Path on Drill-Through Target
+
+**Problem**: Users navigate from an overview to a detail page and feel trapped — sidebar nav alone is not enough of a back affordance.
+
+**Solution**: Place a clear, visually-secondary "Back" control at the top of the detail page so the return path is obvious from any depth.
+
+### Cross-Filter When You Wanted to Highlight
+
+**Problem**: Click filters data out, removing comparison context — but the user just wanted to emphasize one entity.
+
+**Solution**: Use Pattern 3 (Comparison Spotlight) — Parameter targeting a custom chart's `highlight_X` argument, `visible=False`, `"NONE"` in selector options. The data stays, only the styling changes.
+
+### Invisible Interactions With No Reset Path
+
+**Problem**: Hidden controls leave users with no visible state and no obvious reset.
+
+**Solution**: Keep controls visible by default; hide one only when the chart's own state communicates the selection (Pattern 3 highlight is the canonical case). If you do hide a control where the chart itself is the only selector, add an explicit reset button so users have a visible way back to the default state.
 
 ---
 

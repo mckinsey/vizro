@@ -1,6 +1,6 @@
 # Vizro e2e flow plugin
 
-Vizro e2e Flow is a [Claude Code plugin](https://code.claude.com/docs/en/plugins) for end-to-end Vizro dashboard development. It consists of 5 skills organized into a 2-phase workflow with supporting reference skills.
+Vizro e2e Flow is a [Claude Code plugin](https://code.claude.com/docs/en/plugins) for end-to-end Vizro dashboard development. It consists of 6 skills organized into a 2-phase workflow with supporting reference skills.
 
 ### Workflow skills
 
@@ -14,6 +14,7 @@ These are loaded on demand by the workflow skills when specialized guidance is n
 - **designing-vizro-layouts** - Grid configuration, component sizing, filter/parameter placement, selector types, and container patterns.
 - **selecting-vizro-charts** - Chart type selection, Plotly Express conventions, color configuration, and KPI card patterns.
 - **writing-vizro-yaml** - YAML configuration syntax, component patterns, data_manager registration, and common pitfalls.
+- **wiring-vizro-actions** - Cross-filter, cross-highlight, drill-through, and data-export interaction patterns; loaded when a dashboard needs clicks on a chart or table to drive other components.
 
 The plugin includes a [Playwright MCP server](https://executeautomation.github.io/mcp-playwright/) delivering browser automation for functional testing.
 
@@ -54,7 +55,7 @@ The GIF below shows how Cursor works through the task, shortened for brevity.
 
 ![](cursor-import-skills.gif)
 
-Open a second chat window to ask which skills are available and confirm all five skills are present: `dashboard-design`, `dashboard-build`, `designing-vizro-layouts`, `selecting-vizro-charts`, and `writing-vizro-yaml`.
+Open a second chat window to ask which skills are available and confirm all six skills are present: `dashboard-design`, `dashboard-build`, `designing-vizro-layouts`, `selecting-vizro-charts`, `writing-vizro-yaml`, and `wiring-vizro-actions`.
 
 For more details, see [Cursor Skills documentation](https://cursor.com/docs/context/skills#installing-skills-from-github).
 
@@ -99,7 +100,7 @@ Validate the installation by running:
 /plugins
 ```
 
-You should see `vizro-e2e-flow` listed with its skills (`dashboard-design`, `dashboard-build`, `designing-vizro-layouts`, `selecting-vizro-charts`, `writing-vizro-yaml`) and the Playwright MCP connected:
+You should see `vizro-e2e-flow` listed with its skills (`dashboard-design`, `dashboard-build`, `designing-vizro-layouts`, `selecting-vizro-charts`, `writing-vizro-yaml`, `wiring-vizro-actions`) and the Playwright MCP connected:
 
 ```
 playwright MCP · ✔ connected
@@ -142,7 +143,7 @@ This invokes the **dashboard-build** skill, which:
 - **dashboard-design**: No technical dependencies - pure design guidance
 - **dashboard-build (build)**: Python environment with [uv](https://docs.astral.sh/uv/) installed
 - **dashboard-build (test)**: [Node.js](https://nodejs.org/) is required for the Playwright MCP
-- **designing-vizro-layouts**, **selecting-vizro-charts**, **writing-vizro-yaml**: No technical dependencies - reference guidance loaded automatically by the workflow skills
+- **designing-vizro-layouts**, **selecting-vizro-charts**, **writing-vizro-yaml**, **wiring-vizro-actions**: No technical dependencies - reference guidance loaded automatically by the workflow skills
 
 ## Compatibility
 
