@@ -56,25 +56,26 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 - **Persona-based**: Different users may need different views
 - **Decision-focused**: Every metric should inform a decision
 
-### REQUIRED OUTPUT: spec/1_information_architecture.yaml
+### REQUIRED OUTPUT: spec/1_information_architecture.md
 
 Save this file BEFORE proceeding to Step 2:
 
-```yaml
-# spec/1_information_architecture.yaml
-dashboard:
-  name: [Name]
-  purpose: [One sentence goal]
-pages:
-  - name: [Page Name]
-    purpose: [What question does this answer?]
-    kpis: [List of 3-5 key metrics]
-data_sources:
-  - name: [Source Name]
-    type: [csv/database/api]
-decisions:
-  - decision: [What was decided]
-    reasoning: [Why this choice was made]
+```markdown
+# Information Architecture
+
+## Dashboard
+- **Name:** [Name]
+- **Purpose:** [One sentence goal]
+
+## Pages
+- **[Page Name]** — [What question does this answer?]
+  - KPIs: [list of 3-5 key metrics]
+
+## Data sources
+- **[Source Name]** — [csv / database / api]
+
+## Decisions
+- **[What was decided]** — [Why this choice was made]
 ```
 
 ### Validation Checklist
@@ -135,45 +136,57 @@ Otherwise → standard filters/parameters are sufficient
 
 For each interaction, document: source component, source value (column or `"x"`/`"y"`), control id + type (Filter/Parameter), targets, visibility (`visible=False` for highlight patterns), and whether it crosses pages (`show_in_url=True`). See the **wiring-vizro-actions** skill for full templates.
 
-### REQUIRED OUTPUT: spec/2_interaction_ux.yaml
+### REQUIRED OUTPUT: spec/2_interaction_ux.md
 
-Save this file BEFORE proceeding to Step 3:
+Save this file BEFORE proceeding to Step 3.
 
-```yaml
-# spec/2_interaction_ux.yaml
-pages:
-  - name: [Must match Step 1]
-    layout_type: grid  # or flex
-    grid_columns: 12
-    grid_pattern: [[0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3]] # Component placement
+````markdown
+# Interaction & UX
 
-    containers:
-      - name: [Container Name]
-        has_own_filters: true/false
-    filter_placement:
-      page_level: [columns with selector types]
-      container_level: [columns with selector types]
+## Pages
 
-interactions:  # omit if standard filters/parameters are sufficient
-  - type: cross-filter  # cross-filter | cross-page-drill-through | cross-highlight | cross-parameter | export_data
-    pattern: [Pattern 1-6 name from wiring-vizro-actions]
-    trigger: [user action, e.g. "click bar in 'Pipeline by Region'"]
-    source: [Component name]
-    source_value: [column name, or "x"/"y" for positional]
-    control_id: [Filter/Parameter id]
-    control_type: filter  # filter | parameter
-    control_column: [column]              # for filters only
-    targets: [list of component ids, or "all components in <container>"]
-    placement: page-level | container-level
-    visible: true/false                   # false for cross-highlight
-    show_in_url: true/false               # required true for cross-page
+### [Must match Step 1]
+- Layout type: grid (or flex)
+- Grid columns: 12
+- Grid pattern:
+  ```
+  [[0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3]]
+  ```
+- Containers:
+  - **[Container Name]** — has own filters: true / false
+- Filter placement:
+  - Page-level: [columns with selector types]
+  - Container-level: [columns with selector types]
 
-wireframe: |
-  [ASCII wireframe for ALL pages and tab views]
-decisions:
-  - decision: [What was decided]
-    reasoning: [Why this choice was made]
+## Interactions
+
+> Omit this section if standard filters/parameters are sufficient.
+
+### [Short name for the interaction]
+- Type: cross-filter | cross-page-drill-through | cross-highlight | cross-parameter | export_data
+- Pattern: [Pattern 1–6 name from wiring-vizro-actions]
+- Trigger: [user action, e.g. "click bar in 'Pipeline by Region'"]
+- Source: [Component name]
+- Source value: [column name, or "x" / "y" for positional]
+- Control id: [Filter/Parameter id]
+- Control type: filter | parameter
+- Control column: [column] (filters only)
+- Targets: [list of component ids, or "all components in <container>"]
+- Placement: page-level | container-level
+- Visible: true / false (false for cross-highlight)
+- Show in URL: true / false (required true for cross-page)
+
+## Wireframes
+
+### [Page name]
+
 ```
+[ASCII wireframe for this page — one block per page and per tab view]
+```
+
+## Decisions
+- **[What was decided]** — [Why this choice was made]
+````
 
 ### Validation Checklist
 
@@ -198,33 +211,33 @@ Before proceeding to Step 3:
 Load the **selecting-vizro-charts** skill for chart selection, color strategy, anti-patterns, and KPI card rules. Key design decisions:
 
 - Match chart type to data question (bar for comparison, line for trends, pie only for 2–5 slices)
-- **Colors**: Do NOT include `color_decisions` in the spec. Vizro assigns palettes automatically. Only include if the user explicitly requested custom colors in their message.
+- **Colors**: Do NOT include a `## Colors` section in the spec. Vizro assigns palettes automatically. Only include if the user explicitly requested custom colors in their message.
 - Use built-in `kpi_card` / `kpi_card_reference`; never rebuild as custom charts
 
-### REQUIRED OUTPUT: spec/3_visual_design.yaml
+### REQUIRED OUTPUT: spec/3_visual_design.md
 
 Save this file BEFORE proceeding to implementation (dashboard-build skill).
 
-```yaml
-# spec/3_visual_design.yaml
-visualizations:
-  - name: [Chart Name]
-    type: [bar/line/scatter/etc]
-    needs_custom_implementation: true/false
-    reason: [if custom: has_reference_line/needs_data_processing/etc]
+```markdown
+# Visual Design
 
-# DO NOT include color_decisions unless the user explicitly asked for custom colors in their message.
+## Visualizations
+- **[Chart Name]**
+  - Type: [bar / line / scatter / etc]
+  - Needs custom implementation: true / false
+  - Reason (if custom): [has_reference_line / needs_data_processing / etc]
 
-kpi_cards:
-  - name: [KPI Name]
-    value_column: [column]
-    format: [e.g., '${value:,.0f}']
-    has_reference: true/false
+## KPI cards
+- **[KPI Name]**
+  - Value column: [column]
+  - Format: [e.g., '${value:,.0f}']
+  - Has reference: true / false
 
-decisions:
-  - decision: [What was decided]
-    reasoning: [Why this choice was made]
+## Decisions
+- **[What was decided]** — [Why this choice was made]
 ```
+
+> Do **not** add a `## Colors` section unless the user explicitly asked for custom colors. Vizro assigns palettes automatically.
 
 ### Validation Checklist
 
@@ -233,7 +246,7 @@ Before proceeding to implementation (dashboard-build skill):
 - [ ] Chart types match data types (no pie charts for time series)
 - [ ] No anti-patterns used
 - [ ] Custom chart needs are identified
-- [ ] `color_decisions` is **absent** unless the user explicitly requested custom colors
+- [ ] A `## Colors` section is **absent** unless the user explicitly requested custom colors
 
 **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 3: Visualization Mistakes"
 

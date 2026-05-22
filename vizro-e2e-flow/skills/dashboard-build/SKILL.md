@@ -5,7 +5,7 @@ description: Use this skill to build, implement, and test Vizro dashboards (Phas
 
 ## Prerequisites
 
-Requires Phase 1 spec files from the **dashboard-design** skill: `spec/1_information_architecture.yaml`, `spec/2_interaction_ux.yaml`, and `spec/3_visual_design.yaml`. If these do not exist, ask the user whether to run Phase 1 first or proceed without specs.
+Requires Phase 1 spec files from the **dashboard-design** skill: `spec/1_information_architecture.md`, `spec/2_interaction_ux.md`, and `spec/3_visual_design.md`. If these do not exist, ask the user whether to run Phase 1 first or proceed without specs.
 
 ## Guidelines
 
@@ -32,48 +32,53 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 
 ### Optimizations and common errors
 
-- **Colors**: For Plotly charts and KPI cards, do **not** add colors in code — Vizro template defaults apply automatically. Only add chart colors if `spec/3_visual_design.yaml` defines `color_decisions`. For AG Grid cell styling (conditional formatting, heatmaps), use `from vizro.themes import palettes, colors` — never invent hex values. See **selecting-vizro-charts** skill.
+- **Colors**: For Plotly charts and KPI cards, do **not** add colors in code — Vizro template defaults apply automatically. Only add chart colors if `spec/3_visual_design.md` has an explicit `## Colors` section. For AG Grid cell styling (conditional formatting, heatmaps), use `from vizro.themes import palettes, colors` — never invent hex values. See **selecting-vizro-charts** skill.
 - **Data loading**: For dashboards needing data refresh (databases, APIs) or performance optimization, see the [data management guide](./references/data_management.md) for static vs dynamic data, caching, and best practices.
 - **KPI cards**: Use built-in `kpi_card` / `kpi_card_reference` in `Figure` model only. Never rebuild as custom charts (exception: dynamic text). See **selecting-vizro-charts** skill.
 - **Tables**: Use `vm.AgGrid` with `figure=dash_ag_grid(...)` only. Never `vm.Table` / Dash DataTable, never fake-table with Plotly. See [example_ag_grid.py](./references/examples/example_ag_grid.py) for the two canonical patterns and the Dash-AG-Grid / JS-AG-Grid knowledge mapping.
-- **Interactions / actions**: For cross-filter, cross-highlight, drill-through, or data export, load the **wiring-vizro-actions** skill and follow the `interactions:` block in `spec/2_interaction_ux.yaml`.
+- **Interactions / actions**: For cross-filter, cross-highlight, drill-through, or data export, load the **wiring-vizro-actions** skill and follow the `## Interactions` section in `spec/2_interaction_ux.md`.
 
-### REQUIRED OUTPUT: spec/4_implementation.yaml
+### REQUIRED OUTPUT: spec/4_implementation.md
 
-Save this file BEFORE proceeding to Step 2:
+Save this file BEFORE proceeding to Step 2.
 
-```yaml
-# spec/4_implementation.yaml
-implementation:
-  app_file: <name>.py
-  data_files:
-    - [list of data files used]
-  data_type: static/dynamic  # static for DataFrames, dynamic for data_manager functions
-  data_sources:
-    - name: [data source name]
-      type: csv/database/api/function
-      caching: true/false
-      refresh_strategy: [if dynamic: cache timeout or refresh trigger]
+```markdown
+# Implementation
 
-spec_compliance:
-  followed_specs: true/false
-  deviations:
-    - spec_item: [What was specified]
-      actual: [What was implemented]
-      reason: [Why the deviation was necessary]
+## Overview
 
-custom_charts:
-  - name: [Function name]
-    purpose: [What it does]
+| Field | Value |
+|-------|-------|
+| App file | `<name>.py` |
+| Data files | [list] |
+| Data type | static (DataFrames) / dynamic (`data_manager` functions) |
+
+## Data Sources
+
+- **[source name]** — type: csv / database / api / function; caching: true / false; refresh: [cache timeout or refresh trigger]
+
+## Spec Compliance
+
+| Field | Value |
+|-------|-------|
+| Followed specs | true / false |
+
+### Deviations
+
+- **[What was specified]** — actually implemented: [what]. Reason: [why].
+
+## Custom Charts
+
+- **[Function name]** — purpose: [what it does]
 ```
 
 ### Validation Checklist
 
 Before proceeding to Step 2, verify against spec files:
 
-- [ ] All specs from `spec/1_information_architecture.yaml`, `spec/2_interaction_ux.yaml` and `spec/3_visual_design.yaml` are implemented if specs exist
+- [ ] All specs from `spec/1_information_architecture.md`, `spec/2_interaction_ux.md` and `spec/3_visual_design.md` are implemented if specs exist
 - [ ] You have read the terminal output of the dashboard app for errors and warnings, you have not put any commands in the terminal after starting the app
-- [ ] Any deviations are documented in `spec/4_implementation.yaml`
+- [ ] Any deviations are documented in `spec/4_implementation.md`
 
 ## Step 2: Testing
 
@@ -116,37 +121,52 @@ Important things to check:
 - Line charts are readable, and not a mess due to lack of aggregation
 - Graphs are legible and not squashed due to Layout
 
-### REQUIRED OUTPUT: spec/5_test_report.yaml
+### REQUIRED OUTPUT: spec/5_test_report.md
 
-Save this file to complete the project:
+Save this file to complete the project.
 
-```yaml
-# spec/5_test_report.yaml
-testing:
-  launch:
-    successful: true/false
-    url: http://localhost:8050
-    errors: []
+```markdown
+# Test Report
 
-  navigation:
-    all_pages_work: true/false
-    issues: []
+## Launch
 
-  console:
-    no_errors: true/false
-    errors_found: []
+| Field | Value |
+|-------|-------|
+| Successful | true / false |
+| URL | http://localhost:8050 |
+| Errors | [list] |
 
-  screenshot_tests:
-    performed: true/false
-    pages_tested: []
-    discrepancies:
-      - page: [Page name]
-        issue: [Description of visual issue]
-        fixed: true/false
-        notes: [Fix details or reason not fixed]
+## Navigation
 
-  requirements_met: true/false
-  dashboard_ready: true/false
+| Field | Value |
+|-------|-------|
+| All pages work | true / false |
+| Issues | [list] |
+
+## Console
+
+| Field | Value |
+|-------|-------|
+| No errors | true / false |
+| Errors found | [list] |
+
+## Screenshot Tests
+
+| Field | Value |
+|-------|-------|
+| Performed | true / false |
+| Pages tested | [list] |
+
+### Discrepancies
+
+- **[Page name]** — issue: [description]. Fixed: true / false. Notes: [fix details or reason not fixed].
+
+## Outcome
+
+| Field | Value |
+|-------|-------|
+| Requirements met | true / false |
+| Dashboard ready | true / false |
 ```
 
 ### Done When

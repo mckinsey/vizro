@@ -290,48 +290,61 @@ def check_app_py(project_dir: Path) -> list[dict]:
 
 
 def check_spec3(project_dir: Path, custom_colors_requested: bool) -> list[dict]:
-    """Check spec/3 for unexpected color_decisions when custom colors were not requested."""
-    checks = []
-    spec3_path = project_dir / "spec" / "3_visual_design.yaml"
-    if not spec3_path.exists():
+    """Check spec/3 for an unexpected colors section when custom colors were not requested.
+
+    The visual-design spec is written as markdown (`spec/3_visual_design.md`);
+    a legacy YAML form (`spec/3_visual_design.yaml`) is still recognised for
+    back-compat with older runs.
+    """
+    checks: list[dict] = []
+    spec3_md = project_dir / "spec" / "3_visual_design.md"
+    spec3_yaml = project_dir / "spec" / "3_visual_design.yaml"
+
+    if spec3_md.exists():
+        text = spec3_md.read_text().lower()
+        # Match a markdown `## Colors` (or `### Colors`) heading, or the
+        # legacy YAML-style `color_decisions` key the user may have copy-pasted.
+        has_color_decisions = bool(
+            re.search(r"^#{1,6}\s+colors\b", text, re.MULTILINE)
+        ) or "color_decisions" in text
+    elif spec3_yaml.exists():
+        try:
+            data = yaml.safe_load(spec3_yaml.read_text())
+        except yaml.YAMLError as e:
+            checks.append({"check": "spec/3 valid YAML", "status": "FAIL", "detail": str(e)})
+            return checks
+        if not isinstance(data, dict):
+            checks.append({"check": "spec/3 is a mapping", "status": "FAIL", "detail": "Root is not a dict"})
+            return checks
+        has_color_decisions = "color_decisions" in data
+    else:
         checks.append(
             {
-                "check": "spec/3 color_decisions absent",
+                "check": "spec/3 colors section absent",
                 "status": "FAIL",
-                "detail": "spec/3_visual_design.yaml not found",
+                "detail": "spec/3_visual_design.md not found (also no legacy spec/3_visual_design.yaml)",
             }
         )
         return checks
 
-    try:
-        data = yaml.safe_load(spec3_path.read_text())
-    except yaml.YAMLError as e:
-        checks.append({"check": "spec/3 valid YAML", "status": "FAIL", "detail": str(e)})
-        return checks
-
-    if not isinstance(data, dict):
-        checks.append({"check": "spec/3 is a mapping", "status": "FAIL", "detail": "Root is not a dict"})
-        return checks
-
-    has_color_decisions = "color_decisions" in data
     if custom_colors_requested:
         checks.append(
             {
-                "check": "spec/3 color_decisions (custom requested)",
+                "check": "spec/3 colors section (custom requested)",
                 "status": "PASS",
-                "detail": "Custom colors were requested; color_decisions is acceptable",
+                "detail": "Custom colors were requested; a colors section is acceptable",
             }
         )
     elif has_color_decisions:
         checks.append(
             {
-                "check": "spec/3 has no color_decisions",
+                "check": "spec/3 has no colors section",
                 "status": "FAIL",
-                "detail": "color_decisions found but custom colors were not requested",
+                "detail": "Colors section found in spec/3 but custom colors were not requested",
             }
         )
     else:
-        checks.append({"check": "spec/3 has no color_decisions", "status": "PASS", "detail": ""})
+        checks.append({"check": "spec/3 has no colors section", "status": "PASS", "detail": ""})
 
     return checks
 
