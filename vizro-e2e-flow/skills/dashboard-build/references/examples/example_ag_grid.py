@@ -37,7 +37,7 @@ When to choose AG Grid vs simpler alternatives
 ----------------------------------------------
   - Sortable / filterable / paginated detail tables with cell-level
     formatting or conditional styling → AG Grid.
-  - 1–10 row scoreboards → KPI cards (no table needed).
+  - 1-10 row scoreboards → KPI cards (no table needed).
   - "Top N" rankings → horizontal bar chart.
 
 Two patterns for adding an AG Grid

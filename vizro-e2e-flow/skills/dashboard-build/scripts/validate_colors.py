@@ -304,9 +304,7 @@ def check_spec3(project_dir: Path, custom_colors_requested: bool) -> list[dict]:
         )
         return checks
 
-    has_colors_section = bool(
-        re.search(r"^#{1,6}\s+colors\b", spec3.read_text(), re.MULTILINE | re.IGNORECASE)
-    )
+    has_colors_section = bool(re.search(r"^#{1,6}\s+colors\b", spec3.read_text(), re.MULTILINE | re.IGNORECASE))
 
     if custom_colors_requested:
         checks.append(
