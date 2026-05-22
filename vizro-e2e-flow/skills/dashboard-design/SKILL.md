@@ -58,25 +58,7 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 
 ### REQUIRED OUTPUT: spec/1_information_architecture.md
 
-Save this file BEFORE proceeding to Step 2:
-
-```markdown
-# Information Architecture
-
-## Dashboard
-- **Name:** [Name]
-- **Purpose:** [One sentence goal]
-
-## Pages
-- **[Page Name]** — [What question does this answer?]
-  - KPIs: [list of 3-5 key metrics]
-
-## Data sources
-- **[Source Name]** — [csv / database / api]
-
-## Decisions
-- **[What was decided]** — [Why this choice was made]
-```
+Copy the template from [assets/1_information_architecture.md](assets/1_information_architecture.md) to `spec/1_information_architecture.md` at the project root, fill in the placeholders, and save it BEFORE proceeding to Step 2.
 
 ### Validation Checklist
 
@@ -138,55 +120,7 @@ For each interaction, document: source component, source value (column or `"x"`/
 
 ### REQUIRED OUTPUT: spec/2_interaction_ux.md
 
-Save this file BEFORE proceeding to Step 3.
-
-````markdown
-# Interaction & UX
-
-## Pages
-
-### [Must match Step 1]
-- Layout type: grid (or flex)
-- Grid columns: 12
-- Grid pattern:
-  ```
-  [[0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3]]
-  ```
-- Containers:
-  - **[Container Name]** — has own filters: true / false
-- Filter placement:
-  - Page-level: [columns with selector types]
-  - Container-level: [columns with selector types]
-
-## Interactions
-
-> Omit this section if standard filters/parameters are sufficient.
-
-### [Short name for the interaction]
-- Type: cross-filter | cross-page-drill-through | cross-highlight | cross-parameter | export_data
-- Pattern: [Pattern 1–6 name from wiring-vizro-actions]
-- Trigger: [user action, e.g. "click bar in 'Pipeline by Region'"]
-- Source: [Component name]
-- Source value: [column name, or "x" / "y" for positional]
-- Control id: [Filter/Parameter id]
-- Control type: filter | parameter
-- Control column: [column] (filters only)
-- Targets: [list of component ids, or "all components in <container>"]
-- Placement: page-level | container-level
-- Visible: true / false (false for cross-highlight)
-- Show in URL: true / false (required true for cross-page)
-
-## Wireframes
-
-### [Page name]
-
-```
-[ASCII wireframe for this page — one block per page and per tab view]
-```
-
-## Decisions
-- **[What was decided]** — [Why this choice was made]
-````
+Copy the template from [assets/2_interaction_ux.md](assets/2_interaction_ux.md) to `spec/2_interaction_ux.md` at the project root, fill in the placeholders (including one ASCII wireframe per page), and save it BEFORE proceeding to Step 3. Delete the entire `## Interactions` section if standard filters/parameters suffice.
 
 ### Validation Checklist
 
@@ -216,28 +150,7 @@ Load the **selecting-vizro-charts** skill for chart selection, color strategy, a
 
 ### REQUIRED OUTPUT: spec/3_visual_design.md
 
-Save this file BEFORE proceeding to implementation (dashboard-build skill).
-
-```markdown
-# Visual Design
-
-## Visualizations
-- **[Chart Name]**
-  - Type: [bar / line / scatter / etc]
-  - Needs custom implementation: true / false
-  - Reason (if custom): [has_reference_line / needs_data_processing / etc]
-
-## KPI cards
-- **[KPI Name]**
-  - Value column: [column]
-  - Format: [e.g., '${value:,.0f}']
-  - Has reference: true / false
-
-## Decisions
-- **[What was decided]** — [Why this choice was made]
-```
-
-> Do **not** add a `## Colors` section unless the user explicitly asked for custom colors. Vizro assigns palettes automatically.
+Copy the template from [assets/3_visual_design.md](assets/3_visual_design.md) to `spec/3_visual_design.md` at the project root, fill in the placeholders, and save it BEFORE proceeding to implementation (dashboard-build skill). Do **not** add a `## Colors` section unless the user explicitly asked for custom colors — Vizro assigns palettes automatically.
 
 ### Validation Checklist
 

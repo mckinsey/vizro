@@ -40,37 +40,7 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 
 ### REQUIRED OUTPUT: spec/4_implementation.md
 
-Save this file BEFORE proceeding to Step 2.
-
-```markdown
-# Implementation
-
-## Overview
-
-| Field | Value |
-|-------|-------|
-| App file | `<name>.py` |
-| Data files | [list] |
-| Data type | static (DataFrames) / dynamic (`data_manager` functions) |
-
-## Data Sources
-
-- **[source name]** — type: csv / database / api / function; caching: true / false; refresh: [cache timeout or refresh trigger]
-
-## Spec Compliance
-
-| Field | Value |
-|-------|-------|
-| Followed specs | true / false |
-
-### Deviations
-
-- **[What was specified]** — actually implemented: [what]. Reason: [why].
-
-## Custom Charts
-
-- **[Function name]** — purpose: [what it does]
-```
+Copy the template from [assets/4_implementation.md](assets/4_implementation.md) to `spec/4_implementation.md` at the project root, fill in the placeholders, and save it BEFORE proceeding to Step 2.
 
 ### Validation Checklist
 
@@ -123,51 +93,7 @@ Important things to check:
 
 ### REQUIRED OUTPUT: spec/5_test_report.md
 
-Save this file to complete the project.
-
-```markdown
-# Test Report
-
-## Launch
-
-| Field | Value |
-|-------|-------|
-| Successful | true / false |
-| URL | http://localhost:8050 |
-| Errors | [list] |
-
-## Navigation
-
-| Field | Value |
-|-------|-------|
-| All pages work | true / false |
-| Issues | [list] |
-
-## Console
-
-| Field | Value |
-|-------|-------|
-| No errors | true / false |
-| Errors found | [list] |
-
-## Screenshot Tests
-
-| Field | Value |
-|-------|-------|
-| Performed | true / false |
-| Pages tested | [list] |
-
-### Discrepancies
-
-- **[Page name]** — issue: [description]. Fixed: true / false. Notes: [fix details or reason not fixed].
-
-## Outcome
-
-| Field | Value |
-|-------|-------|
-| Requirements met | true / false |
-| Dashboard ready | true / false |
-```
+Copy the template from [assets/5_test_report.md](assets/5_test_report.md) to `spec/5_test_report.md` at the project root, fill in the placeholders, and save it to complete the project.
 
 ### Done When
 
