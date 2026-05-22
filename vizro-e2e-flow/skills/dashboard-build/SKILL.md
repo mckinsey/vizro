@@ -69,17 +69,20 @@ Navigate the running dashboard to catch errors that code review alone cannot fin
 
 1. Determine which browser automation tool is available:
 
-    **Playwright MCP tools available?** → Use them directly to navigate, click pages, and check console **No Playwright MCP?** → Install the Python package: `uv pip install playwright && uv run playwright install chromium`, then write a test script
+    **Playwright MCP tools available?** → Use them directly to navigate, click pages, and check console. **No Playwright MCP?** → Install the Python package, then write a test script. Use `uv pip install playwright && uv run playwright install --with-deps chromium` — the `--with-deps` flag installs OS libraries Chromium needs and is required on slim Linux base images (Docker, CI runners, devcontainers) where the plain install will fail at launch with missing-shared-library errors. It is safe on macOS/Windows too. Skip the install if Chromium is already on disk — it is a ~170 MB download.
 
-1. Using your chosen tool, perform these checks:
+1. **Approach — batch errors, don't loop one-at-a-time.** Walk every page and exercise every action in **one** pass, collecting all errors (console, network 500s, callback failures, server tracebacks in the dashboard process output) into a single list. Then fix all of them in one batch of edits, restart the dashboard **once**, and re-walk. The trap to avoid: find-one-error → fix → restart → find-next-error → fix → restart. Each restart costs ~30–60 s and you will hit your time budget long before the dashboard is clean.
 
-    - Navigate to dashboard URL (e.g., `http://localhost:8050`)
-    - Click through all pages and check the browser console for errors
-    - **If `app.py` contains any `actions=` (cross-filter, cross-highlight, drill-through, export), exercise each one**: grep your app for `actions=` and for every match, click the corresponding source (a point on the scatter, a bar, a row in the AgGrid, the export Button, etc.). Then check:
-        - the browser console for `Callback error updating ...` messages
-        - the network tab for any 500 response on `_dash-update-component`
-        - the action's intended effect actually happened (URL updated for `show_in_url=True`, target filter changed, highlight applied, file downloaded, etc.)
-    - Fix any errors found, then retest
+1. Using your chosen tool, perform these checks in a single walk:
+
+    - Navigate to the dashboard URL (e.g., `http://localhost:8050`).
+    - Visit every page and read the browser console for errors. Do not stop on the first error — record it and keep going.
+    - **If `app.py` contains any `actions=` (cross-filter, cross-highlight, drill-through, export), exercise each one in the same walk**: grep your app for `actions=` and for every match, click the corresponding source (a point on the scatter, a bar, a row in the AgGrid, the export Button, etc.). For each, record:
+        - any browser console `Callback error updating ...` messages,
+        - any network 500 response on `_dash-update-component`,
+        - whether the action's intended effect actually happened (URL updated for `show_in_url=True`, target filter changed, highlight applied, file downloaded, etc.).
+    - Also check the **dashboard process output** (the terminal you started `app.py` in) for server-side tracebacks — these surface the root cause when the browser only shows a generic callback error.
+    - Group the collected failures, apply all fixes in one batch, restart, and re-run this walk. Repeat only if **new** errors appear.
 
 ### Advanced Testing flow
 
