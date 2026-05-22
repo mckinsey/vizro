@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>vizro-e2e-flow 0.1.5 → orbit-app-factory diff findings</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 980px; margin: 2rem auto; padding: 0 1.5rem; color: #1f2328; line-height: 1.55; }
+  h1 { border-bottom: 2px solid #d0d7de; padding-bottom: .4rem; }
+  h2 { margin-top: 2.2rem; border-bottom: 1px solid #d8dee4; padding-bottom: .3rem; }
+  h3 { margin-top: 1.6rem; }
+  code, pre { font-family: "SF Mono", Menlo, Consolas, monospace; }
+  code { background: #f6f8fa; padding: 1px 5px; border-radius: 4px; font-size: 0.92em; }
+  pre { background: #f6f8fa; padding: 12px 16px; border-radius: 6px; overflow-x: auto; }
+  table { border-collapse: collapse; margin: 0.8rem 0; }
+  th, td { border: 1px solid #d0d7de; padding: 6px 11px; text-align: left; vertical-align: top; }
+  th { background: #f6f8fa; }
+  .pill { display: inline-block; padding: 1px 9px; border-radius: 10px; font-size: 0.78em; font-weight: 600; }
+  .pill-up { background: #dafbe1; color: #116329; }
+  .pill-skip { background: #ffebe9; color: #82071e; }
+  .pill-decide { background: #fff8c5; color: #633c01; }
+  .callout { border-left: 4px solid #0969da; background: #ddf4ff; padding: 10px 16px; border-radius: 4px; margin: 1rem 0; }
+  ul { padding-left: 1.4rem; }
+  li { margin: 0.25rem 0; }
+</style>
+</head>
+<body>
+
+<h1>vizro-e2e-flow 0.1.5 → orbit-app-factory: diff findings</h1>
+
+<p>
+  <strong>Baseline:</strong> <code>vizro-e2e-flow</code> v0.1.5 (commit <code>ee2e4f67</code>, PR <a href="https://github.com/mckinsey/vizro/pull/1692">#1692</a>).<br />
+  <strong>Compared against:</strong> <code>/Users/Lingyi_Zhang/2026/orbit/orbit-app-factory/skills/</code> as of 2026-05-21.<br />
+  <strong>Goal:</strong> identify changes orbit-app-factory made on top of v0.1.5 to decide what should land upstream in v0.1.7. v0.1.6 has already landed (PR <a href="https://github.com/mckinsey/vizro/pull/1737">#1737</a> — added <code>wiring-vizro-actions</code> skill only).
+</p>
+
+<h2>Skill inventory</h2>
+
+<table>
+  <tr>
+    <th>Skill</th>
+    <th>v0.1.5</th>
+    <th>orbit-app-factory</th>
+    <th>v0.1.6 (upstream now)</th>
+  </tr>
+  <tr><td>dashboard-build / vizro-dashboard-build</td><td>✓</td><td>✓ (renamed + edited)</td><td>✓</td></tr>
+  <tr><td>dashboard-design / vizro-dashboard-design</td><td>✓</td><td>✓ (renamed + edited)</td><td>✓</td></tr>
+  <tr><td>designing-vizro-layouts</td><td>✓</td><td>✓ (minor edits)</td><td>✓</td></tr>
+  <tr><td>selecting-vizro-charts</td><td>✓</td><td>✓ (minor edits)</td><td>✓</td></tr>
+  <tr><td>writing-vizro-yaml</td><td>✓</td><td>— (dropped)</td><td>✓</td></tr>
+  <tr><td>wiring-vizro-actions</td><td>—</td><td>—</td><td>✓ (new in 0.1.6)</td></tr>
+  <tr><td>epic-specification-drafting</td><td>—</td><td>✓ (orbit-only)</td><td>—</td></tr>
+  <tr><td>epic-story-breakdown</td><td>—</td><td>✓ (orbit-only)</td><td>—</td></tr>
+  <tr><td>orbit-app-factory-guide</td><td>—</td><td>✓ (orbit-only)</td><td>—</td></tr>
+  <tr><td>playwright-screenshots</td><td>—</td><td>✓ (orbit-only)</td><td>—</td></tr>
+</table>
+
+<h2>A. Mechanical / orbit-specific <span class="pill pill-skip">SKIP for upstream</span></h2>
+<ul>
+  <li><code>dashboard-build</code> → <code>vizro-dashboard-build</code> (rename + all cross-refs updated).</li>
+  <li><code>dashboard-design</code> → <code>vizro-dashboard-design</code> (rename + all cross-refs updated).</li>
+  <li><code>writing-vizro-yaml</code> dropped — orbit doesn't ship it.</li>
+  <li>4 new orbit-only skills (factory PDLC, GH Actions sessions): <code>epic-specification-drafting</code>, <code>epic-story-breakdown</code>, <code>orbit-app-factory-guide</code>, <code>playwright-screenshots</code>.</li>
+</ul>
+
+<h2>B. Structural shift: YAML specs → Markdown specs + inline context <span class="pill pill-decide">DECIDE</span></h2>
+
+<p>Across <code>vizro-dashboard-design</code> and <code>vizro-dashboard-build</code>:</p>
+
+<table>
+  <tr><th>v0.1.5</th><th>orbit</th><th>Notes</th></tr>
+  <tr><td><code>spec/1_information_architecture.yaml</code></td><td>markdown section, inline</td><td>Returned as <code>information_architecture</code> field of a JSON envelope. Not written to disk.</td></tr>
+  <tr><td><code>spec/2_interaction_ux.yaml</code></td><td>markdown section, inline</td><td>Returned as <code>interaction_ux</code> field.</td></tr>
+  <tr><td><code>spec/3_visual_design.yaml</code></td><td>markdown section, inline</td><td>Returned as <code>visual_design</code> field. Color decisions now a markdown subsection.</td></tr>
+  <tr><td><code>spec/4_implementation.yaml</code></td><td><code>spec/4_implementation.md</code></td><td>Markdown tables instead of YAML; still written to disk.</td></tr>
+  <tr><td><code>spec/5_test_report.yaml</code></td><td><code>spec/5_test_report.md</code></td><td>Markdown tables instead of YAML.</td></tr>
+</table>
+
+<p>Companion changes:</p>
+<ul>
+  <li><code>validate_colors.py</code> updated to read <code>3_visual_design.md</code> (with YAML fallback).</li>
+  <li>Design Step 2 now mandates <code>Read</code>-ing <code>wireframe_templates.md</code> before drafting (forcing function).</li>
+  <li><code>information_architecture.md</code> reference's example block re-written YAML → markdown to match new format.</li>
+</ul>
+
+<div class="callout">
+  <strong>Open question for 0.1.7:</strong> Is the YAML→markdown migration a Vizro improvement, or is it an orbit-workflow artifact? Markdown tables are easier for an agent to write/read; YAML's only advantage was structured validation, which the skill never enforces programmatically. <em>Recommendation:</em> migrate <code>spec/4</code> and <code>spec/5</code> to markdown upstream (low risk), but keep <code>spec/1–3</code> as files on disk for the standalone skill (don't inherit orbit's "inline JSON envelope" pattern).
+</div>
+
+<h2>C. Substantive content additions <span class="pill pill-up">BRING UPSTREAM</span></h2>
+
+<h3>C1. New AG Grid reference (<code>references/examples/example_ag_grid.py</code>, 165 lines)</h3>
+<p>Canonical patterns:</p>
+<ul>
+  <li>Drop-in via <code>dash_ag_grid</code> factory — column defs, cell styling, sizing, pagination.</li>
+  <li>Custom via <code>@capture("ag_grid")</code> when you need full control.</li>
+  <li>Gotchas list: date formatting, pagination defaults, sticky-header limits, when client-side callbacks fail.</li>
+  <li>Explicit guidance: if AG Grid fails Playwright twice in a row, substitute a simpler chart.</li>
+</ul>
+
+<h3>C2. New Playwright smoke-test reference (<code>references/examples/example_playwright_check.py</code>, 140 lines)</h3>
+<p>Collects <strong>all</strong> <code>pageerror</code>, <code>console.error</code>, and HTTP &ge; 500 events across every page in a single walk, deduplicates by fingerprint, prints one combined report. Includes per-page filter-action map so filter callbacks fire too.</p>
+
+<h3>C3. <code>vizro-dashboard-build</code> Step 2 (Testing) rewrite</h3>
+<p>Massively expanded from "click through, check console" to a concrete batch-error workflow:</p>
+<ul>
+  <li><code>playwright install --with-deps chromium</code> with skip-if-cached guard. Cold install needs <code>--with-deps</code> on slim images (libnss3, libatk-bridge, libxkbcommon) or Chromium fails to launch.</li>
+  <li><strong>"Discover ALL callback errors in one walk, fix in one batch"</strong> — explicit framing that each restart cycle is ~50 s, so 5 fix-restart loops waste ~4 min.</li>
+  <li>Toggle every filter once (DatePicker, multi-select, dropdown) so filter callbacks fire — initial-render walks miss filter-callback bugs.</li>
+  <li><code>grep -A 30 "Exception on /_dash-update-component" /tmp/dash.log</code> for server-side tracebacks. Playwright sees the symptom, dash.log has the cause.</li>
+  <li>Group failures by exception class + responsible chart, plan one fix per group, batch the edits with <code>MultiEdit</code>, restart once, re-run.</li>
+  <li><strong>Escape hatch:</strong> if the same component fails twice in a row even after distinct fix attempts, stop iterating on it. Substitute the next-simplest visual (table → bar chart; AG Grid → KPI cards row; complex multi-series → faceted small-multiples). Design spec is authoritative for <em>what</em>, not <em>how</em>.</li>
+</ul>
+
+<h3>C4. References reorganized into <code>references/examples/</code> subdirectory</h3>
+<ul>
+  <li><code>references/example_app.py</code> → <code>references/examples/example_app.py</code> (identical content)</li>
+  <li>Joined by <code>example_ag_grid.py</code> and <code>example_playwright_check.py</code></li>
+</ul>
+
+<h2>D. Minor wording polish <span class="pill pill-up">SAFE TO UPSTREAM</span></h2>
+<ul>
+  <li><code>selecting-vizro-charts/SKILL.md</code> — Color Rules and KPI Cards reworded for clarity (semantically identical).</li>
+  <li><code>designing-vizro-layouts/SKILL.md</code> — Core Rules reworded for clarity.</li>
+  <li><code>common_mistakes.md</code> — one reference name updated (would not apply upstream as-is since names didn't change).</li>
+</ul>
+
+<h2>E. Identical between orbit and v0.1.5 (no work needed)</h2>
+<ul>
+  <li><code>custom_charts_guide.md</code>, <code>data_management.md</code></li>
+  <li><code>example_app.py</code> contents (only moved)</li>
+  <li><code>get_model_json_schema.py</code>, <code>get_overview_vizro_models.py</code>, <code>validate_aggregation.py</code></li>
+  <li><code>wireframe_templates.md</code>, <code>layout-guidelines.md</code>, <code>chart-best-practices.md</code></li>
+</ul>
+
+<h2>Recommendation for 0.1.7</h2>
+
+<table>
+  <tr><th>Change</th><th>Recommendation</th><th>Effort</th></tr>
+  <tr><td>Add <code>example_ag_grid.py</code></td><td><span class="pill pill-up">Upstream</span> — canonical reference for a fragile component</td><td>Low — drop-in file</td></tr>
+  <tr><td>Add <code>example_playwright_check.py</code></td><td><span class="pill pill-up">Upstream</span> — directly aligns with Step 2 testing</td><td>Low — drop-in file</td></tr>
+  <tr><td>Step 2 (Testing) rewrite in <code>dashboard-build</code></td><td><span class="pill pill-up">Upstream</span> — batch-error workflow + escape hatch</td><td>Medium — rewrite section</td></tr>
+  <tr><td>Move <code>example_app.py</code> into <code>references/examples/</code></td><td><span class="pill pill-up">Upstream</span> — consistency with new examples</td><td>Trivial</td></tr>
+  <tr><td>Wording polish in selecting-vizro-charts &amp; designing-vizro-layouts</td><td><span class="pill pill-up">Upstream</span> — strict improvements</td><td>Trivial</td></tr>
+  <tr><td>"Read wireframe_templates.md first" forcing function (design Step 2)</td><td><span class="pill pill-up">Upstream</span> — improves output quality</td><td>Trivial</td></tr>
+  <tr><td>YAML → markdown for <code>spec/4_implementation</code> &amp; <code>spec/5_test_report</code></td><td><span class="pill pill-decide">Discuss</span> — tables are easier to read but breaks anyone parsing YAML</td><td>Medium — update SKILL.md + <code>validate_colors.py</code></td></tr>
+  <tr><td>YAML → markdown for <code>spec/1–3</code> as inline context (no files)</td><td><span class="pill pill-skip">Skip</span> — orbit-workflow artifact, breaks standalone skill UX</td><td>—</td></tr>
+  <tr><td>Renames <code>dashboard-*</code> → <code>vizro-dashboard-*</code></td><td><span class="pill pill-skip">Skip</span> — namespace already provided by plugin scope</td><td>—</td></tr>
+  <tr><td>4 orbit-only new skills</td><td><span class="pill pill-skip">Skip</span> — Factory/PDLC-specific</td><td>—</td></tr>
+</table>
+
+<h2>Reproducing the diff</h2>
+<pre>
+# baseline (v0.1.5)
+git archive ee2e4f67 vizro-e2e-flow/skills | tar -x -C /tmp/vizro-015-baseline
+
+# diff against orbit
+diff -urq /tmp/vizro-015-baseline/vizro-e2e-flow/skills \
+          /Users/Lingyi_Zhang/2026/orbit/orbit-app-factory/skills
+</pre>
+
+</body>
+</html>
