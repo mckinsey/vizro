@@ -147,10 +147,9 @@ class ColorVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_Call(self, node: ast.Call):
-        """Check function calls for forbidden color and layout kwargs."""
+        """Check function calls for forbidden color/layout kwargs and embedded hex colors."""
         func_name = self._get_func_name(node)
 
-        # Check for forbidden keyword arguments in any function call
         for kw in node.keywords:
             if kw.arg in FORBIDDEN_COLOR_KWARGS:
                 self.violations.append(
@@ -170,9 +169,6 @@ class ColorVisitor(ast.NodeVisitor):
                         "line": node.lineno,
                     }
                 )
-
-        # Check string literal arguments for hex colors
-        for kw in node.keywords:
             self._check_hex_in_node(kw.value, func_name, kw.arg, node.lineno)
 
         self.generic_visit(node)
@@ -200,13 +196,21 @@ class ColorVisitor(ast.NodeVisitor):
                     self._check_hex_in_node(v, func_name, kwarg, line)
 
     def _get_func_name(self, node: ast.Call) -> str:
-        if isinstance(node.func, ast.Attribute):
-            if isinstance(node.func.value, ast.Name):
-                return f"{node.func.value.id}.{node.func.attr}"
-            return node.func.attr
-        elif isinstance(node.func, ast.Name):
-            return node.func.id
-        return "<unknown>"
+        """Return the dotted call name, walking arbitrary-depth attribute chains."""
+        func = node.func
+        if isinstance(func, ast.Name):
+            return func.id
+        if not isinstance(func, ast.Attribute):
+            return "<unknown>"
+        parts: list[str] = []
+        cur: ast.AST = func
+        while isinstance(cur, ast.Attribute):
+            parts.append(cur.attr)
+            cur = cur.value
+        if isinstance(cur, ast.Name):
+            parts.append(cur.id)
+            return ".".join(reversed(parts))
+        return func.attr
 
 
 def check_app_py(project_dir: Path) -> list[dict]:

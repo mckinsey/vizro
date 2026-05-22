@@ -38,7 +38,7 @@ All advanced interactions follow **Source → Control → Target**:
 
 ### When to use
 
-All two should be true — otherwise Pattern 2 or a sidebar `vm.Filter` is the right call.
+Both should be true — otherwise Pattern 2 or a sidebar `vm.Filter` is the right call.
 
 - **Per-entity detail is rich enough to deserve its own page.** Multiple charts, a table, KPIs, possibly an export — too much to cram into a container on the overview.
 - **Users complete a real workflow on the detail page.** They read multiple charts, examine a table, drill further — not just peek and bounce back.
