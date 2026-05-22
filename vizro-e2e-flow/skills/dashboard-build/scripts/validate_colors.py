@@ -1,10 +1,8 @@
-"""Validate Vizro color consistency: no hardcoded colors in app.py, no color_decisions in spec/3."""
+"""Validate Vizro color consistency: no hardcoded colors in app.py, no Colors section in spec/3."""
 
 # /// script
 # requires-python = ">=3.10"
-# dependencies = [
-#     "pyyaml",
-# ]
+# dependencies = []
 # ///
 
 import ast
@@ -12,8 +10,6 @@ import json
 import re
 import sys
 from pathlib import Path
-
-import yaml
 
 # All valid Vizro hex colors — keep in sync with vizro-core/src/vizro/themes/_colors.py
 # These are whitelisted — using them explicitly (e.g. for AG Grid styling) is acceptable.
@@ -290,42 +286,27 @@ def check_app_py(project_dir: Path) -> list[dict]:
 
 
 def check_spec3(project_dir: Path, custom_colors_requested: bool) -> list[dict]:
-    """Check spec/3 for an unexpected colors section when custom colors were not requested.
+    """Check spec/3_visual_design.md for an unexpected Colors section.
 
-    The visual-design spec is written as markdown (`spec/3_visual_design.md`);
-    a legacy YAML form (`spec/3_visual_design.yaml`) is still recognised for
-    back-compat with older runs.
+    The visual-design spec is a markdown file. A `## Colors` heading is
+    expected only when the user explicitly asked for custom colors.
     """
     checks: list[dict] = []
-    spec3_md = project_dir / "spec" / "3_visual_design.md"
-    spec3_yaml = project_dir / "spec" / "3_visual_design.yaml"
+    spec3 = project_dir / "spec" / "3_visual_design.md"
 
-    if spec3_md.exists():
-        text = spec3_md.read_text().lower()
-        # Match a markdown `## Colors` (or `### Colors`) heading, or the
-        # legacy YAML-style `color_decisions` key the user may have copy-pasted.
-        has_color_decisions = bool(
-            re.search(r"^#{1,6}\s+colors\b", text, re.MULTILINE)
-        ) or "color_decisions" in text
-    elif spec3_yaml.exists():
-        try:
-            data = yaml.safe_load(spec3_yaml.read_text())
-        except yaml.YAMLError as e:
-            checks.append({"check": "spec/3 valid YAML", "status": "FAIL", "detail": str(e)})
-            return checks
-        if not isinstance(data, dict):
-            checks.append({"check": "spec/3 is a mapping", "status": "FAIL", "detail": "Root is not a dict"})
-            return checks
-        has_color_decisions = "color_decisions" in data
-    else:
+    if not spec3.exists():
         checks.append(
             {
                 "check": "spec/3 colors section absent",
                 "status": "FAIL",
-                "detail": "spec/3_visual_design.md not found (also no legacy spec/3_visual_design.yaml)",
+                "detail": "spec/3_visual_design.md not found",
             }
         )
         return checks
+
+    has_colors_section = bool(
+        re.search(r"^#{1,6}\s+colors\b", spec3.read_text(), re.MULTILINE | re.IGNORECASE)
+    )
 
     if custom_colors_requested:
         checks.append(
@@ -335,7 +316,7 @@ def check_spec3(project_dir: Path, custom_colors_requested: bool) -> list[dict]:
                 "detail": "Custom colors were requested; a colors section is acceptable",
             }
         )
-    elif has_color_decisions:
+    elif has_colors_section:
         checks.append(
             {
                 "check": "spec/3 has no colors section",
