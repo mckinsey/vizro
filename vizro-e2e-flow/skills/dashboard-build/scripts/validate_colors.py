@@ -304,9 +304,7 @@ def check_spec3(project_dir: Path, custom_colors_requested: bool) -> list[dict]:
         text = spec3_md.read_text().lower()
         # Match a markdown `## Colors` (or `### Colors`) heading, or the
         # legacy YAML-style `color_decisions` key the user may have copy-pasted.
-        has_color_decisions = bool(
-            re.search(r"^#{1,6}\s+colors\b", text, re.MULTILINE)
-        ) or "color_decisions" in text
+        has_color_decisions = bool(re.search(r"^#{1,6}\s+colors\b", text, re.MULTILINE)) or "color_decisions" in text
     elif spec3_yaml.exists():
         try:
             data = yaml.safe_load(spec3_yaml.read_text())
