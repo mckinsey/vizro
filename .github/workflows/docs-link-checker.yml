@@ -28,8 +28,13 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
 
+      - name: Check vizro-core llms.txt references
+        working-directory: ./vizro-core
+        run: python tools/check_llms_txt.py
+
       - name: Check vizro-core docs links
         working-directory: ./vizro-core
+        if: always()
         run: |
           hatch run docs:pip tree
           hatch run docs:build

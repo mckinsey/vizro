@@ -1,3 +1,11 @@
+
+<a id='changelog-0.1.6'></a>
+# 0.1.6 — 2026-05-20
+
+## Added
+
+- Add `wiring-vizro-actions` skill with 5 interaction patterns: Hierarchical Drill-Down, Single-Page Drill-Down, Comparison Spotlight, Multi-Dimensional Slice, and Data Export. ([#1737](https://github.com/mckinsey/vizro/pull/1737))
+
 <a id='changelog-0.1.5'></a>
 
 # 0.1.5 — 2026-04-10

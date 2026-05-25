@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from contextlib import suppress
 from typing import Any, Literal, cast
 
@@ -338,6 +338,7 @@ class Filter(VizroBaseModel):
         self.selector.value = get_selector_default_value(self.selector)
 
         if not self.selector.actions:
+            filter_function: Callable[[pd.Series, Any], pd.Series]
             if isinstance(self.selector, RangeSlider) or (
                 isinstance(self.selector, DatePicker) and self.selector.range
             ):
