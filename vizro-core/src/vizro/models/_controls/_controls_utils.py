@@ -18,6 +18,7 @@ from vizro.models import (
     RangeSlider,
     Slider,
     Switch,
+    TimePicker,
     VizroBaseModel,
 )
 from vizro.models._components.form._form_utils import get_dict_options_and_value
@@ -30,15 +31,15 @@ if TYPE_CHECKING:
 SELECTORS: dict[str, tuple[type, ...]] = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Checklist, Dropdown, RadioItems),
-    "temporal": (DatePicker,),
+    "temporal": (DatePicker, TimePicker),
     "boolean": (Switch,),
     "hierarchical": (Cascader,),
 }
 
 
 # Type-narrowing functions to avoid needing to cast every time we do isinstance for a selector.
-def _is_numerical_temporal_selector(x: object) -> TypeIs[RangeSlider | Slider | DatePicker]:
-    return isinstance(x, SELECTORS["numerical"] + SELECTORS["temporal"])
+def _is_numerical_or_date_selector(x: object) -> TypeIs[RangeSlider | Slider | DatePicker]:
+    return isinstance(x, SELECTORS["numerical"] + (DatePicker,))
 
 
 def _is_categorical_selector(x: object) -> TypeIs[Checklist | Dropdown | RadioItems]:
@@ -51,6 +52,10 @@ def _is_boolean_selector(x: object) -> TypeIs[Switch]:
 
 def _is_hierarchical_selector(x: object) -> TypeIs[Cascader]:
     return isinstance(x, SELECTORS["hierarchical"])
+
+
+def _is_time_selector(x: object) -> TypeIs[TimePicker]:
+    return isinstance(x, TimePicker)
 
 
 def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
@@ -111,7 +116,7 @@ def get_selector_default_value(selector: SelectorType) -> Any:
     if selector.value is not None:
         return selector.value
 
-    if _is_numerical_temporal_selector(selector):
+    if _is_numerical_or_date_selector(selector):
         is_range = isinstance(selector, RangeSlider) or getattr(selector, "range", False)
         return [selector.min, selector.max] if is_range else selector.min
     elif _is_categorical_selector(selector):

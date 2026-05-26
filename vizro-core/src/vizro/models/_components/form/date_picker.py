@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
@@ -18,6 +18,13 @@ from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionsType, _IdProperty
 
 
+def _coerce_to_date(value: Any) -> Any:
+    """Coerce datetime to date object."""
+    if isinstance(value, datetime):
+        return value.date()
+    return value
+
+
 class DatePicker(VizroBaseModel):
     """Temporal single/range option selector.
 
@@ -29,9 +36,11 @@ class DatePicker(VizroBaseModel):
     """
 
     type: Literal["date_picker"] = "date_picker"
-    min: date | None = Field(default=None, description="Start date for date picker.")
+    min: Annotated[date | None, BeforeValidator(_coerce_to_date)] = Field(
+        default=None, description="Start date for date picker."
+    )
     max: Annotated[
-        date | None, AfterValidator(validate_max), Field(default=None, description="End date for date picker.")
+        date | None, BeforeValidator(_coerce_to_date), AfterValidator(validate_max), Field(default=None, description="End date for date picker.")
     ]
     value: Annotated[
         list[date] | date | None,

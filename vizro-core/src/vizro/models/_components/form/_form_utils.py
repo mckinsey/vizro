@@ -1,6 +1,6 @@
 """Helper functions for models inside form folder."""
 
-from datetime import date
+from datetime import date, time
 from typing import Any
 
 from pydantic import TypeAdapter, ValidationInfo
@@ -118,5 +118,19 @@ def validate_date_picker_range(range, info: ValidationInfo):
 
     if not range and isinstance(info.data.get("value"), list):
         raise ValueError("Please set range=True if providing list of date values.")
+
+    return range
+
+
+def validate_time_picker_range(range, info: ValidationInfo):
+    if (
+        range
+        and info.data.get("value")
+        and (isinstance(info.data["value"], (time, str)) or len(info.data["value"]) == 1)
+    ):
+        raise ValueError("Please set range=False if providing single time value.")
+
+    if not range and isinstance(info.data.get("value"), list):
+        raise ValueError("Please set range=True if providing list of time values.")
 
     return range

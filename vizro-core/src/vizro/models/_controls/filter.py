@@ -15,14 +15,15 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
-from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch
+from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch, TimePicker
 from vizro.models._components.form.cascader import Cascader
 from vizro.models._controls._controls_utils import (
     SELECTORS,
     _is_boolean_selector,
     _is_categorical_selector,
     _is_hierarchical_selector,
-    _is_numerical_temporal_selector,
+    _is_numerical_or_date_selector,
+    _is_time_selector,
     check_control_targets,
     get_control_parent,
     get_selector_default_value,
@@ -64,6 +65,31 @@ def _filter_between(series: pd.Series, value: list[float] | list[str]) -> pd.Ser
     return series.between(value[0], value[1], inclusive="both")
 
 
+def _filter_time_between(series: pd.Series, value: list[str | None]) -> pd.Series:
+    # value is ["HH:MM:SS", "HH:MM:SS"] from the dcc.Store updated by two dmc.TimePicker inputs.
+    # Zero-padded 24h strings are lexicographically sortable, so string comparison is correct.
+    # When either bound is None (picker not yet set), show all rows.
+    if value is None or any(v is None for v in value):
+        return pd.Series(True, index=series.index)
+    series_time_str = pd.to_datetime(series, utc=True).dt.strftime("%H:%M:%S")
+    return series_time_str.between(value[0], value[1], inclusive="both")
+
+
+def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
+    """Filter using .isin() - works with boolean/categorical data.
+
+    Switch selectors work with 0/1 columns due to pandas automatic type conversion:
+    >>> pd.Series([0, 1]).isin([False])  # [True, False]
+    >>> pd.Series([False, True]).isin([1])  # [False, True]
+    """
+    if is_datetime64_any_dtype(series):
+        # Value will always have time 00:00:00. In order for the filter to include all times during
+        # the end date value we need to remove the time part of every value in series so that it's 00:00:00.
+        value = pd.to_datetime(value)
+        series = pd.to_datetime(series.dt.date)
+    return series.isin(value)
+
+
 def _dataframe_path_to_cascader_options(df: pd.DataFrame, path_columns: list[str]) -> dict[str, Any]:
     """Build nested Cascader options from unique rows via groupby then nested dict (str keys, list leaves).
 
@@ -92,21 +118,6 @@ def _dataframe_path_to_cascader_options(df: pd.DataFrame, path_columns: list[str
     for branch_key, leaves in leaves_by_branch.items():
         _assign_nested(out, branch_key, leaves)
     return out
-
-
-def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
-    """Filter using .isin() - works with boolean/categorical data.
-
-    Switch selectors work with 0/1 columns due to pandas automatic type conversion:
-    >>> pd.Series([0, 1]).isin([False])  # [True, False]
-    >>> pd.Series([False, True]).isin([1])  # [False, True]
-    """
-    if is_datetime64_any_dtype(series):
-        # Value will always have time 00:00:00. In order for the filter to include all times during
-        # the end date value we need to remove the time part of every value in series so that it's 00:00:00.
-        value = pd.to_datetime(value)
-        series = pd.to_datetime(series.dt.date)
-    return series.isin(value)
 
 
 class Filter(VizroBaseModel):
@@ -226,11 +237,11 @@ class Filter(VizroBaseModel):
 
         if _is_categorical_selector(selector):
             selector_call_obj = selector(options=self._get_options(targeted_data, current_value))
-        elif _is_numerical_temporal_selector(selector):
+        elif _is_numerical_or_date_selector(selector):
             _min, _max = self._get_min_max(targeted_data, current_value)
             selector_call_obj = selector(min=_min, max=_max)
         else:
-            # Hierarchical filters cannot yet be dynamic.
+            # Hierarchical and time filters cannot be dynamic.
             selector_call_obj = selector.build()
 
         # The filter is dynamic, so a guard component (data=True) needs to be added to prevent unexpected action firing.
@@ -296,13 +307,14 @@ class Filter(VizroBaseModel):
             )
 
         # Check if the filter is dynamic. Dynamic filter means that the filter is updated when the page is refreshed
-        # which causes "options" for categorical or "min" and "max" for numerical/temporal selectors to be updated.
+        # which causes "options" for categorical or "min" and "max" for numerical/date selectors to be updated.
         # The filter is dynamic if mentioned attributes ("options"/"min"/"max") are not explicitly provided and
         # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
         # but should still count as manually set. Hierarchical and boolean filters are always static.
         if (
             not _is_hierarchical_selector(self.selector)
             and not _is_boolean_selector(self.selector)
+            and not _is_time_selector(self.selector)
             and not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None
@@ -314,7 +326,7 @@ class Filter(VizroBaseModel):
                     self.selector._dynamic = True
                     break
 
-        if _is_numerical_temporal_selector(self.selector):
+        if _is_numerical_or_date_selector(self.selector):
             _min, _max = self._get_min_max(targeted_data)
             # Note that manually set self.selector.min/max = 0 are Falsey and should not be overwritten.
             if self.selector.min is None:
@@ -339,7 +351,10 @@ class Filter(VizroBaseModel):
 
         if not self.selector.actions:
             filter_function: Callable[[pd.Series, Any], pd.Series]
-            if isinstance(self.selector, RangeSlider) or (
+            if isinstance(self.selector, TimePicker) and self.selector.range:
+                filter_function = _filter_time_between
+                # filter_function = _filter_between
+            elif isinstance(self.selector, RangeSlider) or (
                 isinstance(self.selector, DatePicker) and self.selector.range
             ):
                 filter_function = _filter_between
