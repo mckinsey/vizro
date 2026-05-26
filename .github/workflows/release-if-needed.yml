@@ -107,6 +107,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
         run: pip install hatch
+
       # if you want to change this step please contact tech lead
       - name: Push bumped version to main
         run: |
