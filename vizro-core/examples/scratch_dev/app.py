@@ -30,14 +30,6 @@ dff["time_hh_mm_ss"] = pd.to_datetime(
 dff.pop("petal_width")
 dff.pop("petal_length")
 
-# TODO NOW PP: Here's what's added in the Cascader PR.
-#  tests, docs, fulfil changelog, unit: parameter-action, set-control, test-filter, test-time-picker, test-container,
-# TODO NOW PP: Fix existing tests and write unit tests
-# TODO NOW PP: Fix UI (add clock, remove seconds, if range move the end picker to the float right)
-# TODO NOW PP: Configure selectors with "extra" field to cover CODA use case
-# TODO NOW PP: Call Li/Steph about the UI.
-# TODO NOW PP: Docs
-# TODO NOW PP: e2e - call with Alexey
 
 page_0 = vm.Page(
     title="Range Time Picker",
@@ -94,12 +86,65 @@ page_3 = vm.Page(
     ]
 )
 
+
+from vizro.models.types import capture
+
+vm.Page.add_type("controls", vm.RadioItems)
+
+
+@capture("action")
+def update_time_pickers(radio_items_value: str):
+    if radio_items_value == "Both shifts":
+        return "", ""
+    elif radio_items_value == "First shift":
+        return "08:00", "20:00"
+    elif radio_items_value == "Second shift":
+        return "20:00", "08:00"
+
+
+page_4 = vm.Page(
+    title="Coda example",
+    components=[
+        vm.AgGrid(figure=dash_ag_grid(data_frame=dff)),
+    ],
+    controls=[
+        vm.Filter(column="datetime_utc"),
+        vm.RadioItems(
+            id="radio_items_id",
+            options=["Both shifts", "First shift", "Second shift"],
+            value="Both shifts",
+            actions=vm.Action(
+                function=update_time_pickers("radio_items_id"),
+                outputs=["time_picker_id-start.value", "time_picker_id-end.value"],
+            )
+        ),
+        vm.Filter(
+            visible=False,
+            column="datetime_utc",
+            selector=vm.TimePicker(
+                id="time_picker_id",
+                range=True,
+                extra=dict(
+                    withDropdown=True,
+                    presets=[
+                        {"label": '08am -> 08pm (first shift)', "values": ['08:00:00']},
+                        {"label": '08pm -> 08am (second shift)', "values": ['20:00:00']},
+                    ],
+                )
+            ),
+        ),
+
+    ]
+
+)
+
 dashboard = vm.Dashboard(
     pages=[
         page_0,
         page_1,
         page_2,
         page_3,
+        page_4,
     ],
 )
 

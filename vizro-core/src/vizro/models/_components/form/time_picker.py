@@ -112,7 +112,7 @@ any defaults chosen by the Vizro team.""",
             else None
         )
 
-        defaults = {"withSeconds": True, "debounce": True}
+        defaults = {"debounce": True}
         if self.range:
             if not self._callback_registered:
                 clientside_callback(
