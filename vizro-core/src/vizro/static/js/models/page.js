@@ -175,6 +175,9 @@ Received input: ${JSON.stringify(values_ids)}`,
         data: true,
       });
       dash_clientside.set_props(selectorId, { value: selectorValue });
+      // Update data property too for the range TimePicker case where dcc.Store
+      // is used as a proxy to update both start and end values of the TimePicker.
+      dash_clientside.set_props(selectorId, { data: selectorValue });
     }
   });
   return triggerOPL;

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from collections.abc import Callable, Iterable
 from contextlib import suppress
 from typing import Any, Literal, cast
@@ -55,25 +56,7 @@ DISALLOWED_SELECTORS = {
     "hierarchical": SELECTORS["numerical"] + SELECTORS["categorical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
 }
 
-
-def _filter_between(series: pd.Series, value: list[float] | list[str]) -> pd.Series:
-    if is_datetime64_any_dtype(series):
-        # Each value will always have time 00:00:00. In order for the filter to include all times during
-        # the end date value[1] we need to remove the time part of every value in series so that it's 00:00:00.
-        value = pd.to_datetime(value)
-        series = pd.to_datetime(series.dt.date)
-    return series.between(value[0], value[1], inclusive="both")
-
-
-def _filter_time_between(series: pd.Series, value: list[str | None]) -> pd.Series:
-    # value is ["HH:MM:SS", "HH:MM:SS"] from the dcc.Store updated by two dmc.TimePicker inputs.
-    # Zero-padded 24h strings are lexicographically sortable, so string comparison is correct.
-    # When either bound is None (picker not yet set), show all rows.
-    if value is None or any(v is None for v in value):
-        return pd.Series(True, index=series.index)
-    series_time_str = pd.to_datetime(series, utc=True).dt.strftime("%H:%M:%S")
-    return series_time_str.between(value[0], value[1], inclusive="both")
-
+_TIME_REGEX = r"^\d{2}:\d{2}:\d{2}$"
 
 def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     """Filter using .isin() - works with boolean/categorical data.
@@ -82,13 +65,41 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     >>> pd.Series([0, 1]).isin([False])  # [True, False]
     >>> pd.Series([False, True]).isin([1])  # [False, True]
     """
-    if is_datetime64_any_dtype(series):
-        # Value will always have time 00:00:00. In order for the filter to include all times during
-        # the end date value we need to remove the time part of every value in series so that it's 00:00:00.
+    # Skip filtering if any range value is None or "".
+    if any(v in [None, ""] for v in value):
+        return pd.Series(True, index=series.index)
+
+    # Time temporal selector
+    if bool(re.compile(_TIME_REGEX).match(value[0])):
+        value = pd.to_datetime(value).time
+        with suppress(AttributeError):
+            series = series.dt.time
+    # Date temporal selector
+    elif is_datetime64_any_dtype(series):
         value = pd.to_datetime(value)
         series = pd.to_datetime(series.dt.date)
+
     return series.isin(value)
 
+
+def _filter_between(series: pd.Series, value: list[float] | list[str | None]) -> pd.Series:
+    # Skip filtering if any range value is None or "".
+    if any(v in [None, ""] for v in value):
+        return pd.Series(True, index=series.index)
+
+    # Temporal values are in the string format
+    if isinstance(value[0], str):
+        # Time temporal selector
+        if bool(re.compile(_TIME_REGEX).match(value[0])):
+            value = pd.to_datetime(value).time
+            with suppress(AttributeError):
+                series = series.dt.time
+        # Date temporal selector
+        else:
+            value = pd.to_datetime(value)
+            series = pd.to_datetime(series.dt.date)
+
+    return series.between(value[0], value[1], inclusive="both")
 
 def _dataframe_path_to_cascader_options(df: pd.DataFrame, path_columns: list[str]) -> dict[str, Any]:
     """Build nested Cascader options from unique rows via groupby then nested dict (str keys, list leaves).
@@ -297,7 +308,13 @@ class Filter(VizroBaseModel):
         selector_kind: Literal["hierarchical", "numerical", "categorical", "temporal", "boolean"] = (
             "hierarchical" if is_hierarchical_column else self._column_type
         )
-        self.selector = self.selector or DEFAULT_SELECTORS[selector_kind]()
+        if self.selector is None:
+            if selector_kind == "temporal" and pd.api.types.infer_dtype(
+                targeted_data.iloc[:, 0], skipna=True
+            ) == "time":
+                self.selector = TimePicker()
+            else:
+                self.selector = DEFAULT_SELECTORS[selector_kind]()
         self.selector.title = self.selector.title or self._single_filter_column.title()
 
         if isinstance(self.selector, DISALLOWED_SELECTORS[selector_kind]):
@@ -351,11 +368,8 @@ class Filter(VizroBaseModel):
 
         if not self.selector.actions:
             filter_function: Callable[[pd.Series, Any], pd.Series]
-            if isinstance(self.selector, TimePicker) and self.selector.range:
-                filter_function = _filter_time_between
-                # filter_function = _filter_between
-            elif isinstance(self.selector, RangeSlider) or (
-                isinstance(self.selector, DatePicker) and self.selector.range
+            if isinstance(self.selector, RangeSlider) or (
+                isinstance(self.selector, (DatePicker, TimePicker)) and self.selector.range
             ):
                 filter_function = _filter_between
             else:
@@ -451,7 +465,9 @@ class Filter(VizroBaseModel):
     ) -> Literal["numerical", "categorical", "temporal", "boolean"]:
         is_boolean = targeted_data.apply(is_bool_dtype)
         is_numerical = targeted_data.apply(is_numeric_dtype)
-        is_temporal = targeted_data.apply(is_datetime64_any_dtype)
+        is_temporal = targeted_data.apply(
+            lambda x: is_datetime64_any_dtype(x) or pd.api.types.infer_dtype(x, skipna=True) == "time"
+        )
         is_categorical = ~(is_boolean | is_numerical | is_temporal)
 
         if is_boolean.all():

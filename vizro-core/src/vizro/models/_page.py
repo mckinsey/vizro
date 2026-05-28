@@ -19,7 +19,7 @@ from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import ControlGroup, Filter, Parameter, Tooltip, VizroBaseModel
+from vizro.models import ControlGroup, Filter, Parameter, Tooltip, VizroBaseModel, TimePicker
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
     _all_hidden,
@@ -149,7 +149,12 @@ class Page(VizroBaseModel):
         if controls:
             # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.
             # Selector values as outputs to be reset.
-            selector_outputs = [Output(control.selector.id, "value", allow_duplicate=True) for control in controls]
+            selector_outputs = [
+                Output(control.selector.id, "data", allow_duplicate=True)
+                if isinstance(control.selector, TimePicker) and control.selector.range is True
+                else Output(control.selector.id, "value", allow_duplicate=True)
+                for control in controls
+            ]
 
             # Selector guard is set to True when selector value is reset to prevent actions chain from running.
             selector_guard_outputs = [
@@ -173,7 +178,12 @@ class Page(VizroBaseModel):
         url_controls = [control for control in controls if control.show_in_url]
 
         if url_controls:
-            selector_values_inputs = [Input(control.selector.id, "value") for control in url_controls]
+            selector_values_inputs = [
+                Input(control.selector.id, "data")
+                if isinstance(control.selector, TimePicker) and control.selector.range is True
+                else Input(control.selector.id, "value")
+                for control in url_controls
+            ]
             # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
             # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True.
             control_ids_states = [State(control.id, "id") for control in url_controls]

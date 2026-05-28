@@ -3,7 +3,7 @@ from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-from dash import Input, Output, clientside_callback, dcc, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
@@ -96,7 +96,8 @@ any defaults chosen by the Vizro team.""",
         prop = "data" if self.range else "value"
         return {"__default__": f"{self.id}.{prop}"}
 
-    def __call__(self):
+    @_log_call
+    def build(self):
         value_start = _time_to_str(self.value[0]) if isinstance(self.value, list) else None
         value_end = _time_to_str(self.value[1]) if isinstance(self.value, list) else None
         value_single = _time_to_str(self.value) if isinstance(self.value, time) else None
@@ -111,22 +112,28 @@ any defaults chosen by the Vizro team.""",
             else None
         )
 
+        defaults = {"withSeconds": True, "debounce": True}
         if self.range:
             if not self._callback_registered:
                 clientside_callback(
-                    """function(start_val, end_val) {
-                        if (start_val === null || start_val === undefined || start_val === "") return window.dash_clientside.no_update;
-                        if (end_val === null || end_val === undefined || end_val === "") return window.dash_clientside.no_update;
-                        return [start_val, end_val];
-                    }""",
-                    Output(self.id, "data"),
-                    Input(f"{self.id}-start", "value"),
-                    Input(f"{self.id}-end", "value"),
+                    ClientsideFunction(namespace="time_picker", function_name="update_time_picker_store"),
+                    output=[
+                        Output(self.id, "data"),
+                        Output(f"{self.id}-start", "value"),
+                        Output(f"{self.id}-end", "value"),
+                    ],
+                    inputs=[
+                        Input(self.id, "data"),
+                        Input(f"{self.id}-start", "value"),
+                        Input(f"{self.id}-end", "value"),
+                        State(self.id, "id"),
+                    ],
+                    hidden=True,
                 )
                 self._callback_registered = True
 
-            start_defaults = {"id": f"{self.id}-start", "value": value_start, "withSeconds": True}
-            end_defaults = {"id": f"{self.id}-end", "value": value_end, "withSeconds": True}
+            start_defaults = {"id": f"{self.id}-start", "value": value_start, **defaults}
+            end_defaults = {"id": f"{self.id}-end", "value":value_end, **defaults}
             return html.Div(
                 children=[
                     label,
@@ -141,14 +148,10 @@ any defaults chosen by the Vizro team.""",
                 ]
             )
         else:
-            defaults = {"id": self.id, "value": value_single, "withSeconds": True}
+            defaults = {"id": self.id, "value": value_single, **defaults}
             return html.Div(
                 children=[
                     label,
                     dmc.TimePicker(**(defaults | self.extra)),
                 ]
             )
-
-    @_log_call
-    def build(self):
-        return self.__call__()
