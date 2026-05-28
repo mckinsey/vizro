@@ -9,4 +9,15 @@ from vizro.models._components.form.slider import Slider
 from vizro.models._components.form.switch import Switch
 from vizro.models._components.form.time_picker import TimePicker
 
-__all__ = ["Button", "Cascader", "Checklist", "DatePicker", "Dropdown", "RadioItems", "RangeSlider", "Slider", "Switch", "TimePicker"]
+__all__ = [
+    "Button",
+    "Cascader",
+    "Checklist",
+    "DatePicker",
+    "Dropdown",
+    "RadioItems",
+    "RangeSlider",
+    "Slider",
+    "Switch",
+    "TimePicker",
+]

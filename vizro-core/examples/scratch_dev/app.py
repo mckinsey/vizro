@@ -22,10 +22,7 @@ dff["datetime_utc"] = pd.to_datetime(
 
 dff["time_iso"] = dff["datetime_utc"].dt.time
 
-dff["time_hh_mm_ss"] = pd.to_datetime(
-    np.random.randint(0, 24 * 60 * 60, size=len(dff)),
-    unit="s"
-).time
+dff["time_hh_mm_ss"] = pd.to_datetime(np.random.randint(0, 24 * 60 * 60, size=len(dff)), unit="s").time
 
 dff.pop("petal_width")
 dff.pop("petal_length")
@@ -33,9 +30,7 @@ dff.pop("petal_length")
 
 page_0 = vm.Page(
     title="Range Time Picker",
-    components=[
-        vm.AgGrid(figure=dash_ag_grid(data_frame=dff))
-    ],
+    components=[vm.AgGrid(figure=dash_ag_grid(data_frame=dff))],
     controls=[
         vm.Filter(column="datetime_utc"),
         vm.Filter(column="datetime_utc", selector=vm.TimePicker()),
@@ -46,9 +41,7 @@ page_0 = vm.Page(
 
 page_1 = vm.Page(
     title="Single Time Picker",
-    components=[
-        vm.AgGrid(figure=dash_ag_grid(data_frame=dff))
-    ],
+    components=[vm.AgGrid(figure=dash_ag_grid(data_frame=dff))],
     controls=[
         vm.Filter(column="datetime_utc", selector=vm.DatePicker(range=False)),
         vm.Filter(column="datetime_utc", selector=vm.TimePicker(range=False)),
@@ -64,10 +57,17 @@ page_2 = vm.Page(
         vm.AgGrid(figure=dash_ag_grid(data_frame=dff)),
     ],
     controls=[
-        vm.Filter(column="datetime_utc", id="filter_1", selector=vm.TimePicker(id="filter_selector_1"), show_in_url=True),
+        vm.Filter(
+            column="datetime_utc", id="filter_1", selector=vm.TimePicker(id="filter_selector_1"), show_in_url=True
+        ),
         vm.Filter(column="time_iso", id="filter_2", selector=vm.TimePicker(id="filter_selector_2"), show_in_url=True),
-        vm.Filter(column="time_hh_mm_ss", id="filter_3", selector=vm.TimePicker(id="filter_selector_3", range=False), show_in_url=True),
-    ]
+        vm.Filter(
+            column="time_hh_mm_ss",
+            id="filter_3",
+            selector=vm.TimePicker(id="filter_selector_3", range=False),
+            show_in_url=True,
+        ),
+    ],
 )
 
 page_3 = vm.Page(
@@ -75,7 +75,9 @@ page_3 = vm.Page(
     components=[
         vm.Graph(
             id="scatter_chart",
-            figure=px.scatter(px.data.iris(), title="My scatter chart", x="sepal_length", y="petal_width", color="species"),
+            figure=px.scatter(
+                px.data.iris(), title="My scatter chart", x="sepal_length", y="petal_width", color="species"
+            ),
         ),
     ],
     controls=[
@@ -83,7 +85,7 @@ page_3 = vm.Page(
             targets=["scatter_chart.title"],
             selector=vm.TimePicker(range=False),
         ),
-    ]
+    ],
 )
 
 
@@ -116,7 +118,7 @@ page_4 = vm.Page(
             actions=vm.Action(
                 function=update_time_pickers("radio_items_id"),
                 outputs=["time_picker_id-start.value", "time_picker_id-end.value"],
-            )
+            ),
         ),
         vm.Filter(
             visible=False,
@@ -127,15 +129,13 @@ page_4 = vm.Page(
                 extra=dict(
                     withDropdown=True,
                     presets=[
-                        {"label": '08am -> 08pm (first shift)', "values": ['08:00:00']},
-                        {"label": '08pm -> 08am (second shift)', "values": ['20:00:00']},
+                        {"label": "08am -> 08pm (first shift)", "values": ["08:00:00"]},
+                        {"label": "08pm -> 08am (second shift)", "values": ["20:00:00"]},
                     ],
-                )
+                ),
             ),
         ),
-
-    ]
-
+    ],
 )
 
 dashboard = vm.Dashboard(

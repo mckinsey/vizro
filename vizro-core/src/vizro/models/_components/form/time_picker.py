@@ -112,7 +112,7 @@ any defaults chosen by the Vizro team.""",
             else None
         )
 
-        defaults = {"debounce": True}
+        defaults: dict[str, Any] = {"debounce": True}
         if self.range:
             if not self._callback_registered:
                 clientside_callback(
@@ -133,7 +133,7 @@ any defaults chosen by the Vizro team.""",
                 self._callback_registered = True
 
             start_defaults = {"id": f"{self.id}-start", "value": value_start, **defaults}
-            end_defaults = {"id": f"{self.id}-end", "value":value_end, **defaults}
+            end_defaults = {"id": f"{self.id}-end", "value": value_end, **defaults}
             return html.Div(
                 children=[
                     label,

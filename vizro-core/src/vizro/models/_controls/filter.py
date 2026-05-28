@@ -60,11 +60,13 @@ DISALLOWED_SELECTORS = {
 _TIME_REGEX = re.compile(r"^\d{2}:\d{2}(:\d{2})?$")
 
 
-def _coerce_temporal(series: pd.Series, value: list, strip_seconds_and_milliseconds: bool = False) -> tuple[pd.Series, list]:
+def _coerce_temporal(
+    series: pd.Series, value: list[Any], strip_seconds_and_milliseconds: bool = False
+) -> tuple[pd.Series, list[Any]]:
     """If needed, coerce series and value to comparable time or date objects based on value format.
 
     Returns a boolean Series (all True) when temporal values contain None or "",
-    signalling callers to pass all rows through without filtering.
+    signaling callers to pass all rows through without filtering.
     """
     _is_time = value and bool(_TIME_REGEX.match(str(value[0])))
     _is_date = not _is_time and is_datetime64_any_dtype(series)
@@ -72,7 +74,7 @@ def _coerce_temporal(series: pd.Series, value: list, strip_seconds_and_milliseco
     if _is_time:
         # If `value` doesn't have seconds defined, strip seconds from the input series as well to ensure comparability.
         _strip_seconds = False
-        if len(value[0].split(":")) == 2:
+        if len(value[0].split(":")) == 2:  # noqa: PLR2004
             _strip_seconds = True
 
         # Time temporal selector: convert "HH:MM:SS" strings to datetime.time objects.
@@ -80,7 +82,7 @@ def _coerce_temporal(series: pd.Series, value: list, strip_seconds_and_milliseco
         # Handle time ranges that cross midnight, e.g. [21:00, 06:00].
         # Split them into two inclusive ranges: [21:00, 23:59:59.999999, 00:00, 06:00]
         # A 4-item value tells `_filter_between` to apply both ranges and combine them with OR.
-        if len(value) == 2 and value[0] > value[1]:
+        if len(value) == 2 and value[0] > value[1]:  # noqa: PLR2004
             value = [value[0], pd.to_datetime("23:59:59.999999").time(), pd.to_datetime("00:00:00").time(), value[1]]
 
         if is_datetime64_any_dtype(series):
@@ -99,6 +101,7 @@ def _coerce_temporal(series: pd.Series, value: list, strip_seconds_and_milliseco
         series = series.dt.date
 
     return series, value
+
 
 def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     """Filter using .isin() - works with boolean/categorical data.
@@ -121,9 +124,12 @@ def _filter_between(series: pd.Series, value: list[float] | list[str | None]) ->
         return pd.Series(True, index=series.index)
     # If needed, coerce series and value to comparable time or date objects based on value format.
     series, value = _coerce_temporal(series=series, value=value, strip_seconds_and_milliseconds=False)
-    # This is a sign to apply two ranges and combine them with OR, to handle time ranges that cross midnight, e.g. [21:00, 06:00] -> [21:00, 23:59:59.999999, 00:00, 06:00].
-    if len(value) == 4:
-        return series.between(value[0], value[1], inclusive="both") | series.between(value[2], value[3], inclusive="both")
+    # This is a sign to apply two ranges and combine them with OR, to handle time ranges that cross midnight,
+    # e.g. [21:00, 06:00] -> [21:00, 23:59:59.999999, 00:00, 06:00].
+    if len(value) == 4:  # noqa: PLR2004
+        return series.between(value[0], value[1], inclusive="both") | series.between(
+            value[2], value[3], inclusive="both"
+        )
     return series.between(value[0], value[1], inclusive="both")
 
 
@@ -335,9 +341,10 @@ class Filter(VizroBaseModel):
             "hierarchical" if is_hierarchical_column else self._column_type
         )
         if self.selector is None:
-            if selector_kind == "temporal" and pd.api.types.infer_dtype(
-                targeted_data.iloc[:, 0], skipna=True
-            ) == "time":
+            if (
+                selector_kind == "temporal"
+                and pd.api.types.infer_dtype(targeted_data.iloc[:, 0], skipna=True) == "time"
+            ):
                 self.selector = TimePicker()
             else:
                 self.selector = DEFAULT_SELECTORS[selector_kind]()

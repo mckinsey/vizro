@@ -40,7 +40,10 @@ class DatePicker(VizroBaseModel):
         default=None, description="Start date for date picker."
     )
     max: Annotated[
-        date | None, BeforeValidator(_coerce_to_date), AfterValidator(validate_max), Field(default=None, description="End date for date picker.")
+        date | None,
+        BeforeValidator(_coerce_to_date),
+        AfterValidator(validate_max),
+        Field(default=None, description="End date for date picker."),
     ]
     value: Annotated[
         list[date] | date | None,

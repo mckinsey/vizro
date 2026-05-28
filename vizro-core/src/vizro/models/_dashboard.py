@@ -34,7 +34,7 @@ from typing_extensions import TypedDict
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro.managers import model_manager
-from vizro.models import NavBar, Navigation, Tooltip, VizroBaseModel, TimePicker
+from vizro.models import NavBar, Navigation, TimePicker, Tooltip, VizroBaseModel
 from vizro.models._action._action import _BaseAction
 from vizro.models._controls import Filter, Parameter
 from vizro.models._models_utils import _all_hidden, _log_call, warn_description_without_title
@@ -199,7 +199,9 @@ class Dashboard(VizroBaseModel):
                         control.id: {
                             "originalValue": (
                                 ""
-                                if isinstance(control.selector, TimePicker) and control.selector.range is False and control.selector.value is None
+                                if isinstance(control.selector, TimePicker)
+                                and control.selector.range is False
+                                and control.selector.value is None
                                 else control.selector.value
                             ),
                             "pageId": page.id,

@@ -19,7 +19,7 @@ from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import ControlGroup, Filter, Parameter, Tooltip, VizroBaseModel, TimePicker
+from vizro.models import ControlGroup, Filter, Parameter, TimePicker, Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
     _all_hidden,

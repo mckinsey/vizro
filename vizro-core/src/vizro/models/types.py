@@ -691,7 +691,7 @@ SelectorType = Annotated[
     Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Cascader`][vizro.models.Cascader],
-[`Checklist`][vizro.models.Checklist], [`DatePicker`][vizro.models.DatePicker], [`Dropdown`][vizro.models.Dropdown], 
+[`Checklist`][vizro.models.Checklist], [`DatePicker`][vizro.models.DatePicker], [`Dropdown`][vizro.models.Dropdown],
 [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider],
 [`Switch`][vizro.models.Switch] or [`TimePicker`][vizro.models.TimePicker]."""
 
