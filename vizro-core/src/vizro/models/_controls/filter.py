@@ -56,7 +56,36 @@ DISALLOWED_SELECTORS = {
     "hierarchical": SELECTORS["numerical"] + SELECTORS["categorical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
 }
 
-_TIME_REGEX = r"^\d{2}:\d{2}:\d{2}$"
+
+_TIME_REGEX = re.compile(r"^\d{2}:\d{2}:\d{2}$")
+
+
+def _coerce_temporal(series: pd.Series, value: list, strip_microseconds: bool = False) -> tuple[pd.Series, list]:
+    """If needed, coerce series and value to comparable time or date objects based on value format.
+
+    Returns a boolean Series (all True) when temporal values contain None or "",
+    signalling callers to pass all rows through without filtering.
+    """
+    _is_time = bool(_TIME_REGEX.match(str(value[0])))
+    _is_date = not _is_time and is_datetime64_any_dtype(series)
+
+    if _is_time:
+        # Time temporal selector: convert "HH:MM:SS" strings to datetime.time objects.
+        value = pd.to_datetime(value, format="%H:%M:%S").time
+        if is_datetime64_any_dtype(series):
+            # Converting Timestamp to datetime.time
+            series = series.dt.time
+
+        if strip_microseconds:
+            series = series.map(lambda v: v.replace(microsecond=0))
+
+    elif _is_date:
+        # Date temporal selector: convert date strings to datetime.date objects.
+        value = pd.to_datetime(value).date
+        # Converting Timestamp to datetime.date
+        series = series.dt.date
+
+    return series, value
 
 def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     """Filter using .isin() - works with boolean/categorical data.
@@ -65,52 +94,22 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     >>> pd.Series([0, 1]).isin([False])  # [True, False]
     >>> pd.Series([False, True]).isin([1])  # [False, True]
     """
-    # Skip filtering if any range value is None or "".
+    # Skip filtering if any value is missing — both pickers must be set for a range filter.
     if any(v in [None, ""] for v in value):
         return pd.Series(True, index=series.index)
-
-    # Time temporal selector
-    if bool(re.compile(_TIME_REGEX).match(value[0])):
-        # Converting string representation of time to datetime.time
-        value = pd.to_datetime(value, format="%H:%M:%S").time
-        if is_datetime64_any_dtype(series):
-            # Converting Timestamp to datetime.time
-            series = series.dt.time
-        # Remove microseconds for the `isin` comparison to work
-        series = series.map(lambda v: v.replace(microsecond=0))
-    # Date temporal selector
-    elif is_datetime64_any_dtype(series):
-        # Converting string representation of date to datetime.date
-        value = pd.to_datetime(value).date
-        # Converting Timestamp to datetime.date
-        series = series.dt.date
-
+    # If needed, coerce series and value to comparable time or date objects based on value format.
+    series, value = _coerce_temporal(series=series, value=value, strip_microseconds=True)
     return series.isin(value)
 
 
 def _filter_between(series: pd.Series, value: list[float] | list[str | None]) -> pd.Series:
-    # Skip filtering if any range value is None or "".
+    # Skip filtering if any value is missing — both pickers must be set for a range filter.
     if any(v in [None, ""] for v in value):
         return pd.Series(True, index=series.index)
-
-    # Temporal values are in the string format
-    if isinstance(value[0], str):
-        # Time temporal selector
-        if bool(re.compile(_TIME_REGEX).match(value[0])):
-            # Converting string representation of time to datetime.time
-            value = pd.to_datetime(value, format="%H:%M:%S").time
-            if is_datetime64_any_dtype(series):
-                # Converting Timestamp to datetime.time
-                series = series.dt.time
-        # Date temporal selector
-        else:
-            # Converting string representation of date to datetime.date
-            value = pd.to_datetime(value).date
-            if is_datetime64_any_dtype(series):
-                # Converting Timestamp to datetime.date
-                series = series.dt.date
-
+    # If needed, coerce series and value to comparable time or date objects based on value format.
+    series, value = _coerce_temporal(series=series, value=value, strip_microseconds=False)
     return series.between(value[0], value[1], inclusive="both")
+
 
 def _dataframe_path_to_cascader_options(df: pd.DataFrame, path_columns: list[str]) -> dict[str, Any]:
     """Build nested Cascader options from unique rows via groupby then nested dict (str keys, list leaves).

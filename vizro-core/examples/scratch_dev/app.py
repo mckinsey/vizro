@@ -30,7 +30,6 @@ dff["time_hh_mm_ss"] = pd.to_datetime(
 dff.pop("petal_width")
 dff.pop("petal_length")
 
-# TODO NOW PP: TimePicker Single doesn't work with ISO seconds due to difference in the milliseconds.
 # TODO NOW PP: Check what's all added in the Cascader PR.
 # TODO NOW PP: Fix existing tests and write unit tests
 # TODO NOW PP OQ: Should we revert this to `"rowData": data_frame.to_dict("records")`?
