@@ -30,11 +30,11 @@ dff["time_hh_mm_ss"] = pd.to_datetime(
 dff.pop("petal_width")
 dff.pop("petal_length")
 
-# TODO NOW PP: Check what's all added in the Cascader PR.
+# TODO NOW PP: Here's what's added in the Cascader PR.
+#  tests, docs, fulfil changelog, unit: parameter-action, set-control, test-filter, test-time-picker, test-container,
 # TODO NOW PP: Fix existing tests and write unit tests
-# TODO NOW PP OQ: Should we revert this to `"rowData": data_frame.to_dict("records")`?
-# TODO NOW PP: Configure selectors with extra to cover CODA use case
 # TODO NOW PP: Fix UI (add clock, remove seconds, if range move the end picker to the float right)
+# TODO NOW PP: Configure selectors with "extra" field to cover CODA use case
 # TODO NOW PP: Call Li/Steph about the UI.
 # TODO NOW PP: Docs
 # TODO NOW PP: e2e - call with Alexey

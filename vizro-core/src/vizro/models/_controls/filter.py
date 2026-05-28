@@ -66,7 +66,7 @@ def _coerce_temporal(series: pd.Series, value: list, strip_microseconds: bool = 
     Returns a boolean Series (all True) when temporal values contain None or "",
     signalling callers to pass all rows through without filtering.
     """
-    _is_time = bool(_TIME_REGEX.match(str(value[0])))
+    _is_time = value and bool(_TIME_REGEX.match(str(value[0])))
     _is_date = not _is_time and is_datetime64_any_dtype(series)
 
     if _is_time:
