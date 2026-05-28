@@ -30,10 +30,7 @@ dff["time_hh_mm_ss"] = pd.to_datetime(
 dff.pop("petal_width")
 dff.pop("petal_length")
 
-# TODO NOW PP: Test if categorical selectors work with date-time, date, time formats.
-# TODO NOW PP: See -> User warning: "Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format."
 # TODO NOW PP: TimePicker Single doesn't work with ISO seconds due to difference in the milliseconds.
-# TODO NOW PP: Test Parameter
 # TODO NOW PP: Check what's all added in the Cascader PR.
 # TODO NOW PP: Fix existing tests and write unit tests
 # TODO NOW PP OQ: Should we revert this to `"rowData": data_frame.to_dict("records")`?
@@ -69,19 +66,8 @@ page_1 = vm.Page(
     ],
 )
 
-# page_2 = vm.Page(
-#     title="Categorical selectors for time columns",
-#     components=[
-#         vm.AgGrid(figure=dash_ag_grid(data_frame=dff)),
-#     ],
-#     controls=[
-#         vm.Filter(column="datetime_utc", selector=vm.Dropdown()),
-#         vm.Filter(column="time_iso", selector=vm.Dropdown()),
-#         vm.Filter(column="time_hh_mm_ss", selector=vm.Dropdown()),
-#     ]
-# )
 
-page_3 = vm.Page(
+page_2 = vm.Page(
     title="Time in URL (test reset)",
     components=[
         vm.AgGrid(figure=dash_ag_grid(data_frame=dff)),
@@ -93,7 +79,7 @@ page_3 = vm.Page(
     ]
 )
 
-page_4 = vm.Page(
+page_3 = vm.Page(
     title="Time as Parameter",
     components=[
         vm.Graph(
@@ -104,7 +90,7 @@ page_4 = vm.Page(
     controls=[
         vm.Parameter(
             targets=["scatter_chart.title"],
-            selector=vm.TimePicker(),
+            selector=vm.TimePicker(range=False),
         ),
     ]
 )
@@ -113,9 +99,8 @@ dashboard = vm.Dashboard(
     pages=[
         page_0,
         page_1,
-        # page_2,
+        page_2,
         page_3,
-        page_4
     ],
 )
 

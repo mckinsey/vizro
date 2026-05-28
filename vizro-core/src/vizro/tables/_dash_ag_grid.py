@@ -75,15 +75,13 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
     defaults = {
         "className": "ag-theme-vizro",
         "columnDefs": [{"field": col} for col in data_frame.columns],
-        # TODO PP NOW OQ: Should we revert this to `"rowData": data_frame.to_dict("records")`?
-        "rowData": data_frame.to_dict(orient="records"),
-        # "rowData": data_frame.apply(
-        #     lambda x: (
-        #         x.dt.strftime("%Y-%m-%d")  # set date columns to `dateString` for AG Grid filtering to function
-        #         if pd.api.types.is_datetime64_any_dtype(x)
-        #         else x
-        #     )
-        # ).to_dict("records"),
+        "rowData": data_frame.apply(
+            lambda x: (
+                x.dt.strftime("%Y-%m-%d")  # set date columns to `dateString` for AG Grid filtering to function
+                if pd.api.types.is_datetime64_any_dtype(x)
+                else x
+            )
+        ).to_dict("records"),
         "defaultColDef": {
             "resizable": True,
             "sortable": True,

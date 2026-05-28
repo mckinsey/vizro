@@ -71,13 +71,19 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
 
     # Time temporal selector
     if bool(re.compile(_TIME_REGEX).match(value[0])):
-        value = pd.to_datetime(value).time
-        with suppress(AttributeError):
+        # Converting string representation of time to datetime.time
+        value = pd.to_datetime(value, format="%H:%M:%S").time
+        if is_datetime64_any_dtype(series):
+            # Converting Timestamp to datetime.time
             series = series.dt.time
+        # Remove microseconds for the `isin` comparison to work
+        series = series.map(lambda v: v.replace(microsecond=0))
     # Date temporal selector
     elif is_datetime64_any_dtype(series):
-        value = pd.to_datetime(value)
-        series = pd.to_datetime(series.dt.date)
+        # Converting string representation of date to datetime.date
+        value = pd.to_datetime(value).date
+        # Converting Timestamp to datetime.date
+        series = series.dt.date
 
     return series.isin(value)
 
@@ -91,13 +97,18 @@ def _filter_between(series: pd.Series, value: list[float] | list[str | None]) ->
     if isinstance(value[0], str):
         # Time temporal selector
         if bool(re.compile(_TIME_REGEX).match(value[0])):
-            value = pd.to_datetime(value).time
-            with suppress(AttributeError):
+            # Converting string representation of time to datetime.time
+            value = pd.to_datetime(value, format="%H:%M:%S").time
+            if is_datetime64_any_dtype(series):
+                # Converting Timestamp to datetime.time
                 series = series.dt.time
         # Date temporal selector
         else:
-            value = pd.to_datetime(value)
-            series = pd.to_datetime(series.dt.date)
+            # Converting string representation of date to datetime.date
+            value = pd.to_datetime(value).date
+            if is_datetime64_any_dtype(series):
+                # Converting Timestamp to datetime.date
+                series = series.dt.date
 
     return series.between(value[0], value[1], inclusive="both")
 
