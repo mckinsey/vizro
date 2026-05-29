@@ -1,7 +1,7 @@
 /* Dropdown field showing selection */
 .mantine-DatePickerInput-input {
-  background-color: var(--bs-primary-bg-subtle);
-  border: none;
+  background: var(--input-field-bg);
+  border: 1px solid transparent;
   box-shadow: var(--bs-box-shadow-sm);
   color: var(--bs-body-color);
 }
@@ -13,7 +13,7 @@
 /* Calendar view with selected range */
 .mantine-DatePickerInput-dropdown,
 .mantine-Popover-dropdown {
-  background: var(--bs-primary-bg-subtle);
+  background: var(--input-field-bg);
   border: inherit;
   box-shadow: var(--bs-box-shadow);
   padding: 0.5rem;
@@ -61,4 +61,19 @@
 
 .mantine-DatePickerInput-weekday {
   text-align: center;
+}
+
+.mantine-TimePicker-root {
+  width: 100%;
+}
+
+.mantine-TimePicker-field {
+  border-radius: 0;
+  color: var(--bs-secondary);
+}
+
+.mantine-TimePicker-field:focus {
+  background: none;
+  border-radius: 0;
+  color: var(--bs-primary);
 }
