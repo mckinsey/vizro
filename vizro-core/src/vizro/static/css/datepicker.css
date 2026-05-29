@@ -73,7 +73,11 @@
 }
 
 .mantine-TimePicker-field:focus {
-  background: none;
+  background-color: var(--bs-primary);
   border-radius: 0;
-  color: var(--bs-primary);
+  color: var(--text-primary-inverted);
+}
+
+.mantine-TimePicker-field:focus::placeholder {
+  color: var(--text-primary-inverted);
 }
