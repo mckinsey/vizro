@@ -23,6 +23,7 @@ from urllib.parse import quote, urlencode
 import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+import vizro
 import vizro.actions as va
 import vizro.models as vm
 
@@ -164,7 +165,7 @@ def render() -> str:
     env.filters["pycafe_url"] = _pycafe_url_filter
     template = env.get_template(TEMPLATE_FILE.name)
     return template.render(
-        vizro_version=data["vizro_version"],
+        vizro_version=vizro.__version__,
         carousel_items=collect_carousel_items(data),
         categories=data["categories"],
         demos=data["demos"],
