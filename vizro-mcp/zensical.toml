@@ -113,7 +113,7 @@ format = "pymdownx.superfences.fence_code_format"
 name = "python"
 class = "highlight"
 validator = "mkdocs_pycafe.validator"
-format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.53"}}
+format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.56"}}
 
 [project.markdown_extensions.pymdownx.tabbed]
 alternate_style = true
@@ -160,10 +160,11 @@ manual = true
 # Required: zensical passes None if unset, which breaks glightbox's frozenset().
 skip_classes = []
 
-# Zensical does not yet support strict/validation settings (as of 0.0.28).
-# When supported, add:
-# validation:
-#   omitted_files: warn
-#   absolute_links: warn
-#   unrecognized_links: warn
-#   anchors: warn
+# -------------------------
+# validation (supported since Zensical 0.0.36)
+# -------------------------
+# Autorefs (e.g. [vizro.models.Page]) and mkdocstrings options containing brackets
+# are currently reported as unresolved references. Disable until Zensical resolves:
+# https://zensical.org/docs/setup/validation/
+[project.validation]
+unresolved_references = false

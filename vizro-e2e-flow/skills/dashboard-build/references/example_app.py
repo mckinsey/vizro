@@ -6,6 +6,7 @@
 # ]
 # ///
 
+import vizro.actions as va
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
@@ -31,6 +32,10 @@ page = vm.Page(
             id="histogram",
             figure=px.histogram("iris", x="sepal_width", color="species", marginal="box"),
         ),
+        #### ACTIONS SETUP ####
+        # Simplest built-in action: export all on-page data as CSV (respects filters).
+        # For cross-filter / cross-highlight / drill-through, load the wiring-vizro-actions skill.
+        vm.Button(text="Export data", actions=va.export_data()),
     ],
     controls=[
         vm.Filter(column="species"),

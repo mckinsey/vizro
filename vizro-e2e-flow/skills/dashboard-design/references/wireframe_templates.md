@@ -34,7 +34,17 @@ Design-phase reference for creating dashboard wireframes. For grid system, compo
 
 ## Interaction Annotations
 
+For full pattern templates (cross-filter, cross-highlight, drill-through, export), load the **wiring-vizro-actions** skill. Use these annotations in wireframes to make interaction flow explicit.
+
 - `[click: drill-down]` - Clicking navigates to detail
+- `[click: cross-filter → filter_id]` - Clicking sets a Filter (Pattern 1, 2, 4, or 5)
+- `[click: drill-through → filter_id → Page Name]` - Clicking navigates to another page with a filter pre-set (Pattern 1)
+- `[click: highlight → parameter_id]` - Clicking highlights data in a target chart (Pattern 3 or 5)
+- `[← filtered by: filter_id]` - Component is filtered by a cross-filter
+- `[← highlight: parameter_id]` - Component is highlighted by a cross-parameter
+- `[export button]` - Button triggers data export (Pattern 5)
+- `[← Back]` - Back button on a drill-through target page (required for Pattern 1)
+- `header: "Click a bar to ..."` - Action-oriented affordance hint on an interactive source
 - `[hover: tooltip]` - Hovering shows information
 - `[click: toggle series]` - Clicking toggles chart elements
 - `[sortable columns]` - Interactive table sorting

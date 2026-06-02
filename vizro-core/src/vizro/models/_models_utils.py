@@ -64,7 +64,7 @@ REPLACEMENT_STRINGS = {
 
 
 def _build_inner_layout(layout, components):
-    """Builds inner layout and adds components to grid or flex. Used inside `Page`, `Container` and `Form`."""
+    """Builds an inner layout and adds components to a grid or flex. Used inside `Page`, `Container` and `Form`."""
     from vizro.models import Grid
 
     components_container = layout.build()
@@ -118,7 +118,7 @@ def make_deprecated_field_warning(message: str, /):
 
 
 def make_actions_chain(self):
-    """Creates actions chain from a list of actions.
+    """Creates an actions chain from a list of actions.
 
     Ideally this would have been implemented as an AfterValidator for the actions field, but we need access to
     action_triggers property, which needs the parent model instance. Hence, it must be done as a model validator.

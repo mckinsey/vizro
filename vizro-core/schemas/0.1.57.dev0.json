@@ -58,6 +58,27 @@
           "default": [],
           "title": "Outputs"
         },
+        "notifications": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/show_notification"
+              },
+              {
+                "$ref": "#/$defs/update_notification"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Notifications for when an action is in progress, completes successfully or fails",
+          "title": "Notifications",
+          "type": "object"
+        },
         "type": {
           "const": "action",
           "default": "action",
@@ -79,7 +100,7 @@
     },
     "AgGrid": {
       "additionalProperties": false,
-      "description": "Wrapper for `dash_ag_grid.AgGrid` to visualize grids in dashboard.\n\nAbstract: Usage documentation\n    [How to use an AgGrid](user-guides/table.md/#ag-grid)",
+      "description": "Wrapper for `dash_ag_grid.AgGrid` to visualize grids in a dashboard.\n\nAbstract: Usage documentation\n    [How to use an AgGrid](user-guides/table.md/#ag-grid)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -360,26 +381,21 @@
             },
             {
               "items": {
-                "type": "boolean"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "format": "date",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "format": "date",
+                    "type": "string"
+                  }
+                ]
               },
               "type": "array"
             },
@@ -463,66 +479,49 @@
           "type": "string"
         },
         "options": {
-          "anyOf": [
-            {
-              "items": {
+          "default": [],
+          "items": {
+            "anyOf": [
+              {
                 "type": "boolean"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "type": "number"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "format": "date",
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "$ref": "#/$defs/_OptionsDictType"
-              },
-              "type": "array"
-            }
-          ],
-          "default": [],
-          "title": "Options"
+              }
+            ]
+          },
+          "title": "Options",
+          "type": "array"
         },
         "value": {
           "anyOf": [
             {
               "items": {
-                "type": "boolean"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "format": "date",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "format": "date",
+                    "type": "string"
+                  }
+                ]
               },
               "type": "array"
             },
@@ -708,7 +707,7 @@
             }
           ],
           "default": null,
-          "description": "Predefined styles to choose from. Options are `plain`, `filled` or `outlined`.Defaults to `plain` (or `outlined` for collapsible container). ",
+          "description": "Predefined styles to choose from. Options are `plain`, `filled` or `outlined`. Defaults to `plain` (or `outlined` for collapsible container). ",
           "title": "Variant"
         },
         "description": {
@@ -948,41 +947,29 @@
           "type": "string"
         },
         "options": {
-          "anyOf": [
-            {
-              "items": {
+          "default": [],
+          "items": {
+            "anyOf": [
+              {
                 "type": "boolean"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "type": "number"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "format": "date",
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "$ref": "#/$defs/_OptionsDictType"
-              },
-              "type": "array"
-            }
-          ],
-          "default": [],
-          "title": "Options"
+              }
+            ]
+          },
+          "title": "Options",
+          "type": "array"
         },
         "value": {
           "anyOf": [
@@ -1001,26 +988,21 @@
             },
             {
               "items": {
-                "type": "boolean"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "type": "number"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "items": {
-                "format": "date",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "format": "date",
+                    "type": "string"
+                  }
+                ]
               },
               "type": "array"
             },
@@ -1904,41 +1886,29 @@
           "type": "string"
         },
         "options": {
-          "anyOf": [
-            {
-              "items": {
+          "default": [],
+          "items": {
+            "anyOf": [
+              {
                 "type": "boolean"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "type": "number"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "format": "date",
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "items": {
+              {
                 "$ref": "#/$defs/_OptionsDictType"
-              },
-              "type": "array"
-            }
-          ],
-          "default": [],
-          "title": "Options"
+              }
+            ]
+          },
+          "title": "Options",
+          "type": "array"
         },
         "value": {
           "anyOf": [
@@ -2622,7 +2592,7 @@
     },
     "set_control": {
       "additionalProperties": false,
-      "description": "Sets the value of a control, which then updates its targets.\n\nAbstract: Usage documentation\n    [Graph and table interactions](user-guides/graph-table-actions.md)\n\nThe following Vizro models can be a source of `set_control`:\n\n* [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when `cellClicked` or `selectedRows` changes (for example\nafter a cell click or when the row selection changes). `value` can be:\n\n    * `\"cell\"`, `\"column\"`, or `\"row\"` to use the clicked cell's value, column id, or row id respectively.\n    * Any other string to treat as a column name, taking values from the selected row(s).\n* [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. `value` is string\nthat can be used in two ways to specify how to set `control`:\n\n    * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.\n    * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the\n    trigger data [`clickData[\"points\"][0]`](https://dash.plotly.com/interactive-graphing). This is typically\n    useful for a positional variable, for example `\"x\"`, and does not require setting `custom_data`.\n\n* [`Figure`][vizro.models.Figure]: triggers `set_control` when user clicks on the figure. `value` specifies a\nliteral value to set `control` to.\n* [`Button`][vizro.models.Button]: triggers `set_control` when user clicks on the button. `value` specifies a\nliteral value to set `control` to.\n* [`Card`][vizro.models.Card]: triggers `set_control` when user clicks on the card. `value` specifies a\nliteral value to set `control` to.\n\nExample: `AgGrid` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.AgGrid(\n        figure=dash_ag_grid(iris),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger with `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger without `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.box(iris, x=\"species\", y=\"sepal_length\"),\n        actions=va.set_control(control=\"target_control\", value=\"x\"),\n    )\n    ```\n\nExample: `Figure` as trigger\n    ```python\n    import vizro.actions as va\n    from vizro.figures import kpi_card\n\n    vm.Figure(\n        figure=kpi_card(tips, value_column=\"tip\", title=\"Click KPI to set control to A\"),\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: `Button` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Button(\n        text=\"Click to set control to A\",\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: `Card` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Card(\n        title=\"Click Card to set control to A\",\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```",
+      "description": "Sets the value of a control, which then updates its targets.\n\nAbstract: Usage documentation\n    [Graph and table interactions](user-guides/graph-table-actions.md)\n\nThe following Vizro models can be a source of `set_control`:\n\n* [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when `cellClicked` or `selectedRows` changes (for example\nafter a cell click or when the row selection changes). `value` can be:\n\n    * `\"cell\"`, `\"column\"`, or `\"row\"` to use the clicked cell's value, column id, or row id respectively.\n    * Any other string to treat as a column name, taking values from the selected row(s).\n* [`Graph`][vizro.models.Graph]: triggers `set_control` when the user clicks on data in the graph. `value` is a\nstring that can be used in two ways to specify how to set `control`:\n\n    * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.\n    * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the\n    trigger data [`clickData[\"points\"][0]`](https://dash.plotly.com/interactive-graphing). This is typically\n    useful for a positional variable, for example `\"x\"`, and does not require setting `custom_data`.\n\n* [`Figure`][vizro.models.Figure]: triggers `set_control` when the user clicks on the figure. `value` specifies a\nliteral value to set `control` to.\n* [`Button`][vizro.models.Button]: triggers `set_control` when the user clicks on the button. `value` specifies a\nliteral value to set `control` to.\n* [`Card`][vizro.models.Card]: triggers `set_control` when the user clicks on the card. `value` specifies a\nliteral value to set `control` to.\n\nExample: `AgGrid` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.AgGrid(\n        figure=dash_ag_grid(iris),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger with `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger without `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.box(iris, x=\"species\", y=\"sepal_length\"),\n        actions=va.set_control(control=\"target_control\", value=\"x\"),\n    )\n    ```\n\nExample: `Figure` as trigger\n    ```python\n    import vizro.actions as va\n    from vizro.figures import kpi_card\n\n    vm.Figure(\n        figure=kpi_card(tips, value_column=\"tip\", title=\"Click KPI to set control to A\"),\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: `Button` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Button(\n        text=\"Click to set control to A\",\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: `Card` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Card(\n        title=\"Click Card to set control to A\",\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2636,7 +2606,7 @@
           "type": "string"
         },
         "control": {
-          "description": "Filter or Parameter component id to be affected by the trigger.If the control is on a different page to the trigger then it must have `show_in_url=True`.",
+          "description": "Filter or Parameter component id to be affected by the trigger. If the control is on a different page to the trigger, then it must have `show_in_url=True`.",
           "title": "Control",
           "type": "string"
         },

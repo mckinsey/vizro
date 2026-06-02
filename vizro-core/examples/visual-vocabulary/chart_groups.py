@@ -78,7 +78,6 @@ ranking_chart_group = ChartGroup(
     pages=pages.ranking.pages,
     incomplete_pages=[
         IncompletePage("Ordered bubble"),
-        IncompletePage("Slope"),
         IncompletePage("Bump"),
     ],
     icon="Stacked Bar Chart",
@@ -131,7 +130,6 @@ time_chart_group = ChartGroup(
     name="Time",
     pages=pages.time.pages,
     incomplete_pages=[
-        IncompletePage("Slope"),
         IncompletePage("Fan"),
         IncompletePage("Bubble timeline"),
     ],
