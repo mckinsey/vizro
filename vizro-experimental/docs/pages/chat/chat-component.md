@@ -6,7 +6,7 @@ The `Chat` component renders a message history, a textarea, and a send button. I
 
 ## Add a chat to a page
 
-To add a `Chat`, register it as an allowed page component with `vm.Page.add_type` and pass an action. The simplest possible action just echoes the user's last message.
+To add a `Chat`, drop it into a page's `components` list and pass an action. The simplest possible action just echoes the user's last message.
 
 !!! example "Echo chat"
 
@@ -25,11 +25,9 @@ To add a `Chat`, register it as an allowed page component with `vm.Page.add_type
                 return f"You said: {messages[-1]['content']}"
 
 
-        vm.Page.add_type("components", Chat)
-
         page = vm.Page(
             title="Echo chat",
-            components=[Chat(actions=[EchoAction()])],
+            components=[Chat(actions=EchoAction())],
         )
 
         Vizro().build(vm.Dashboard(pages=[page])).run()
@@ -46,7 +44,7 @@ The `messages` argument is the parsed conversation history. Each entry has a `ro
 Use the `placeholder` argument to replace the default hint text shown in the input.
 
 ```python
-Chat(actions=[EchoAction()], placeholder="Ask me anything…")
+Chat(actions=EchoAction(), placeholder="Ask me anything…")
 ```
 
 ## What's next

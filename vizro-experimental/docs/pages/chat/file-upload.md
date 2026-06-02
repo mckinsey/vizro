@@ -9,7 +9,7 @@ We use OpenAI's vision API as the example below to analyze attached images. The 
 ## Enable upload on the Chat
 
 ```python
-Chat(actions=[my_action], file_upload=True)
+Chat(actions=my_action, file_upload=True)
 ```
 
 The action only receives the `uploaded_files` kwarg when its signature explicitly lists it:
@@ -66,13 +66,11 @@ Vision models accept content as a list of `input_text` and `input_image` parts â
                         yield event.delta
 
 
-        vm.Page.add_type("components", Chat)
-
         page = vm.Page(
             title="Vision chat",
             components=[
                 Chat(
-                    actions=[OpenAIVisionChat()],
+                    actions=OpenAIVisionChat(),
                     placeholder="Upload images and ask questions about themâ€¦",
                     file_upload=True,
                 )

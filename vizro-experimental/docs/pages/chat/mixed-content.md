@@ -113,11 +113,9 @@ A [`ChatAction`][vizro_experimental.chat.ChatAction]'s `generate_response` can r
                 )
 
 
-        vm.Page.add_type("components", Chat)
-
         page = vm.Page(
             title="Mixed content chat",
-            components=[Chat(actions=[mixed_content()])],
+            components=[Chat(actions=mixed_content())],
         )
 
         Vizro().build(vm.Dashboard(pages=[page])).run()

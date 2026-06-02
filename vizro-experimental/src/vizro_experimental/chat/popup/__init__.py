@@ -11,11 +11,16 @@ Example usage::
     app = Vizro()
     app.build(dashboard)
 
-    add_chat_popup(app, title="Analytics Assistant")
+    add_chat_popup(title="Analytics Assistant")
     app.run()
 """
 
 
+# Lazy submodule access keeps the optional-dependency boundary at the package level:
+# users of `add_chat_popup` who bring their own `generate_response` never trigger an
+# import of `dashboard_agent`, so they don't need pydantic-ai (the `[agent]` extra)
+# installed. If `dashboard_agent` ever promotes a pydantic-ai import to module scope,
+# BYO users stay safe because we only load it on explicit attribute access.
 def __getattr__(name):
     if name == "add_chat_popup":
         from vizro_experimental.chat.popup.popup import add_chat_popup

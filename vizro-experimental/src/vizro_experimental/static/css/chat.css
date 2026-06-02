@@ -30,7 +30,7 @@
 
 /* User message styling */
 .chat-user-message {
-  background-color: var(--surfaces-bg-card);
+  background-color: var(--bs-tertiary-bg);
   margin-left: 0;
   margin-right: auto;
   padding-left: 15px;
@@ -150,7 +150,7 @@
 
 .chat-file-chip {
   align-items: center;
-  background-color: var(--surfaces-bg-card);
+  background-color: var(--bs-tertiary-bg);
   border: 1px solid var(--border-subtler);
   border-radius: 8px;
   display: flex;
@@ -304,7 +304,7 @@
 }
 
 .chat-example-menu-dropdown {
-  background-color: var(--surfaces-bg-card);
+  background-color: var(--bs-tertiary-bg);
   border: 1px solid var(--border-subtler);
   max-width: var(--chat-max-width);
   min-width: 400px;

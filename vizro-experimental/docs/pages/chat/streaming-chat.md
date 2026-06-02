@@ -49,11 +49,9 @@ Subclass [`StreamingChatAction`][vizro_experimental.chat.StreamingChatAction] an
                         yield event.delta
 
 
-        vm.Page.add_type("components", Chat)
-
         page = vm.Page(
             title="Streaming chat",
-            components=[Chat(actions=[OpenAIStreamingChat()])],
+            components=[Chat(actions=OpenAIStreamingChat())],
         )
 
         Vizro().build(vm.Dashboard(pages=[page])).run()

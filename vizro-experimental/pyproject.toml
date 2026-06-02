@@ -15,7 +15,7 @@ classifiers = [
   "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
-  "vizro>=0.1.54",
+  "vizro>=0.1.56",
   "dash-extensions>=1.0.0",
   "dash-iconify>=0.1.2"
 ]

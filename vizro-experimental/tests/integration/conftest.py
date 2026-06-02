@@ -67,7 +67,7 @@ _POPUP_APP_SCRIPT = dedent(
     from vizro_experimental.chat.popup import add_chat_popup
     vizro = Vizro()
     vizro.build(popup_module.dashboard)
-    add_chat_popup(vizro, title="Chat Assistant", placeholder="Ask me anything about the data...")
+    add_chat_popup(title="Chat Assistant", placeholder="Ask me anything about the data...")
     vizro.dash.server.run(host="127.0.0.1", port={port}, debug=False, use_reloader=False)
     """
 ).strip()

@@ -25,13 +25,11 @@ class EchoAction(ChatAction):
         return f"You said: {messages[-1]['content']}"
 
 
-vm.Page.add_type("components", Chat)
-
 dashboard = vm.Dashboard(
     pages=[
         vm.Page(
             title="Scratch chat",
-            components=[Chat(actions=[EchoAction()])],
+            components=[Chat(actions=EchoAction())],
         ),
     ]
 )

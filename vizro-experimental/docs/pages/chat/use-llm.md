@@ -43,11 +43,9 @@ Add a Pydantic field for the model name so it's configurable per `Chat` instance
                 return response.content[0].text
 
 
-        vm.Page.add_type("components", Chat)
-
         page = vm.Page(
             title="LLM chat",
-            components=[Chat(actions=[ClaudeChat()])],
+            components=[Chat(actions=ClaudeChat())],
         )
 
         Vizro().build(vm.Dashboard(pages=[page])).run()

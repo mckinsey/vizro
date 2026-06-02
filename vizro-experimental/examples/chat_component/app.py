@@ -21,9 +21,6 @@ from vizro_experimental.chat import Chat
 
 load_dotenv()
 
-# Register the Chat component with Vizro Page
-vm.Page.add_type("components", Chat)
-
 # Page 1: Simple Echo (no API key required)
 page_echo = vm.Page(
     title="Simple Echo (No API Key)",

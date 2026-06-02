@@ -61,7 +61,6 @@ if __name__ == "__main__":
     app.build(dashboard)
 
     add_chat_popup(
-        app,
         title="Chat Assistant",
         placeholder="Ask me anything about the data...",
     )

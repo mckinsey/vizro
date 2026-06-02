@@ -64,13 +64,11 @@ The action below decodes the first uploaded file into a `pandas.DataFrame`, pass
                 return dcc.Graph(figure=chart.figure)
 
 
-        vm.Page.add_type("components", Chat)
-
         page = vm.Page(
             title="Combined features",
             components=[
                 Chat(
-                    actions=[VizroAIChat()],
+                    actions=VizroAIChat(),
                     placeholder="Upload a file and describe the chart you want…",
                     file_upload=True,
                     example_questions=[

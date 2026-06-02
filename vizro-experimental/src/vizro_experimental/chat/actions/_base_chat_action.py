@@ -302,16 +302,15 @@ class _BaseChatAction(_AbstractAction):
             prevent_initial_call=True,
         )
 
-        # Horrible hack to restore chat history when you change page and return.
+        # Restore chat history and file preview when you change page and return.
         page = model_manager._get_model_page(self)
 
+        # `initial_duplicate` (instead of plain `True`) is required because both outputs
+        # carry `allow_duplicate=True` (also written by the streaming action and the file
+        # upload callback) but the page-load trigger must still fire on the first render.
         @callback(
             [
                 Output(f"{self._chat_id}-hidden-messages", "children", allow_duplicate=True),
-                Output(
-                    "vizro_version", "children", allow_duplicate=True
-                ),  # Extremely horrible hack we should change, just done here to make
-                # sure callback triggers (must have prevent_initial_call=True).
                 Output(f"{self._chat_id}-data-info", "children", allow_duplicate=True),
             ],
             Input(*page._action_triggers["__default__"].split(".")),
@@ -319,12 +318,12 @@ class _BaseChatAction(_AbstractAction):
                 State(f"{self._chat_id}-store", "data"),
                 State(f"{self._chat_id}-file-store", "data"),
             ],
-            prevent_initial_call=True,
+            prevent_initial_call="initial_duplicate",
         )
         def on_page_load(_, store, files):
             html_messages = [self.message_to_html(message) for message in store]
             file_preview = self._create_file_preview(files) if files else ""
-            return html_messages, dash.no_update, file_preview
+            return html_messages, file_preview
 
     def _setup_file_upload_callbacks(self):
         @callback(

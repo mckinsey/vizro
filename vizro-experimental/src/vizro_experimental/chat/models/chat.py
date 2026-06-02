@@ -13,7 +13,7 @@ from dash.exceptions import PreventUpdate
 from dash_extensions import SSE
 from dash_iconify import DashIconify
 from pydantic import BeforeValidator, Field, model_validator
-from vizro.models import VizroBaseModel
+from vizro.models import Page, VizroBaseModel
 from vizro.models._models_utils import _log_call, make_actions_chain
 
 from .._constants import (
@@ -35,8 +35,6 @@ from ..actions._base_chat_action import _BaseChatAction
 
 def _coerce_chat_actions(value: Any) -> Any:
     """Wrap a single action in a list to match Vizro's action-chain field shape."""
-    if value is None:
-        return []
     return value if isinstance(value, list) else [value]
 
 
@@ -56,14 +54,12 @@ class Chat(VizroBaseModel):
 
     type: Literal["chat"] = "chat"
     actions: Annotated[list[_BaseChatAction], BeforeValidator(_coerce_chat_actions)] = Field(
-        default_factory=list,
+        default=[],
         description="Chat action that handles responses. Pass an action instance.",
     )
     placeholder: str = Field(default="How can I help you?", description="Placeholder text for the input field.")
     file_upload: bool = Field(default=False, description="Enable file upload functionality.")
-    example_questions: list[str] = Field(
-        default_factory=list, description="List of example questions to show in a popup menu."
-    )
+    example_questions: list[str] = Field(default=[], description="List of example questions to show in a popup menu.")
 
     _make_actions_chain = model_validator(mode="after")(make_actions_chain)
 
@@ -299,3 +295,8 @@ class Chat(VizroBaseModel):
             ],
             className=CSS_ROOT,
         )
+
+
+# Self-register so users can drop a Chat into vm.Page.components without calling
+# vm.Page.add_type themselves. Importing Chat is the user's opt-in signal.
+Page.add_type("components", Chat)

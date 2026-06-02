@@ -41,7 +41,7 @@ Call [`add_chat_popup`][vizro_experimental.chat.popup.popup.add_chat_popup] afte
         )
 
         app = Vizro().build(dashboard)
-        add_chat_popup(app)
+        add_chat_popup()
         app.run()
         ```
 
@@ -59,7 +59,7 @@ The auto-agent defaults to OpenAI, but PydanticAI is provider-agnostic — pass 
 from pydantic_ai.models.anthropic import AnthropicModel
 from vizro_experimental.chat.popup import add_chat_popup
 
-add_chat_popup(app, model=AnthropicModel("claude-sonnet-4-6"))
+add_chat_popup(model=AnthropicModel("claude-sonnet-4-6"))
 ```
 
 Set `ANTHROPIC_API_KEY` (or whichever provider's env var matches your model). When you supply your own model, the `reasoning_effort=` argument is ignored — configure reasoning / temperature / etc. on the model instance itself.
@@ -78,5 +78,5 @@ def my_generate(messages: list[Message]) -> Iterator[str]:
     yield from f"Echo: {last}"
 
 
-add_chat_popup(app, generate_response=my_generate, streaming=True)
+add_chat_popup(generate_response=my_generate, streaming=True)
 ```

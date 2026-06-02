@@ -10,7 +10,7 @@ Example usage::
     app = Vizro()
     app.build(dashboard)
 
-    add_chat_popup(app, title="Analytics Assistant")
+    add_chat_popup(title="Analytics Assistant")
     app.run()
 
 """
@@ -21,6 +21,7 @@ import json
 from collections.abc import Callable
 from typing import Any, Literal
 
+import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import plotly
@@ -55,7 +56,6 @@ from ..models.types import _parse_store_messages
 
 
 def add_chat_popup(  # noqa: PLR0913
-    app,
     generate_response: Callable | None = None,
     model=None,
     streaming: bool = True,
@@ -76,7 +76,6 @@ def add_chat_popup(  # noqa: PLR0913
     questions using an LLM.
 
     Args:
-        app: The Vizro app instance (after calling ``app.build(dashboard)``).
         generate_response: Optional function ``(messages, **kwargs) -> str | Iterator[str]``.
             *messages* is parsed history: each dict has ``role`` and ``content`` (decoded JSON).
             Return a string for non-streaming, or yield strings for streaming.
@@ -109,9 +108,10 @@ def add_chat_popup(  # noqa: PLR0913
     chat_panel = _build_chat_panel(chat_id, placeholder, title, streaming)
     toggle_button = _build_toggle_button(chat_id, color=color)
 
+    dash_app = dash.get_app()
     # Append to the MantineProvider's first child (dashboard-container)
-    app.dash.layout.children[0].children.append(chat_panel)
-    app.dash.layout.children[0].children.append(toggle_button)
+    dash_app.layout.children[0].children.append(chat_panel)
+    dash_app.layout.children[0].children.append(toggle_button)
 
     _setup_toggle_callback(chat_id)
     _setup_restore_callback(chat_id)
@@ -121,10 +121,10 @@ def add_chat_popup(  # noqa: PLR0913
     _register_send_icon_toggle_callback(chat_id)
 
     if streaming:
-        base_pathname = app.dash.config.requests_pathname_prefix.rstrip("/")
+        base_pathname = dash_app.config.requests_pathname_prefix.rstrip("/")
         _register_streaming_chunk_callback(chat_id)
         _register_streaming_endpoint(
-            app.dash.server,
+            dash_app.server,
             chat_id,
             generate_response,
             base_pathname=base_pathname,

@@ -21,13 +21,11 @@ The `example_questions` argument on [`Chat`][vizro_experimental.chat.Chat] takes
                 return f"You said: {messages[-1]['content']}"
 
 
-        vm.Page.add_type("components", Chat)
-
         page = vm.Page(
             title="Chat with examples",
             components=[
                 Chat(
-                    actions=[EchoAction()],
+                    actions=EchoAction(),
                     placeholder="Ask me anything or pick an example…",
                     example_questions=[
                         "What is the capital of France?",
