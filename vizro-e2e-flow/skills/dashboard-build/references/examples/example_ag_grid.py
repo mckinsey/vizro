@@ -71,31 +71,36 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.tables import dash_ag_grid
+from vizro.themes import colors
 
 df = px.data.gapminder()
 
 # Column definitions are OPTIONAL — without them Vizro auto-infers
 # columns from the DataFrame. Provide ``columnDefs`` only when you need
-# cell-data-type formatting or column-level overrides.
+# cell-data-type formatting or column-level overrides. Cell styling
+# (``cellStyle.styleConditions``) is wired *inside* the relevant columnDef
+# so it travels with the column rather than living as a free-floating
+# dict. Colors come from ``vizro.themes.colors`` — never hardcode hex.
 column_defs = [
     {"field": "country"},
     {"field": "year"},
     {"field": "lifeExp", "cellDataType": "numeric"},
     {"field": "pop", "cellDataType": "numeric"},
-    {"field": "gdpPercap", "cellDataType": "dollar"},
+    {
+        "field": "gdpPercap",
+        "cellDataType": "dollar",
+        # Highlight low-income rows (World Bank threshold ~$1,045/yr).
+        "cellStyle": {
+            "styleConditions": [
+                {
+                    "condition": "params.value < 1045",
+                    "style": {"backgroundColor": colors.warning_500},
+                }
+            ]
+        },
+    },
 ]
-# Valid cellDataType values: "dollar", "euro", "percent", "numeric"
-
-# Conditional cell styling — applied to all cells per column unless
-# narrowed via ``styleConditions``.
-cell_style = {
-    "styleConditions": [
-        {
-            "condition": "params.value < 1045",
-            "style": {"backgroundColor": "#ff9222"},
-        }
-    ]
-}
+# Valid cellDataType values: "dollar", "euro", "percent", "numeric".
 
 drop_in_page = vm.Page(
     title="Sales table",
