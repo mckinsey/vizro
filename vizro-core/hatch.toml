@@ -51,7 +51,7 @@ dependencies = [
   # we want to be testing the latest.
   "seaborn",
   "scikit-learn",
-  "dash==4.1.0"  # pinning to avoid this issue in our tests: https://github.com/mckinsey/vizro/issues/1750
+  "dash<=4.1.0"  # pinning to avoid this issue in our tests: https://github.com/mckinsey/vizro/issues/1750
 ]
 features = ["kedro"]
 installer = "uv"
