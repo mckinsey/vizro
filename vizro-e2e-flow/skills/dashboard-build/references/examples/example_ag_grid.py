@@ -3,69 +3,37 @@
 Source: https://vizro.readthedocs.io/en/stable/pages/user-guides/table/
         https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-tables/
 
-What this is
-------------
 Vizro AG Grid = ``vm.AgGrid`` model + the ``dash_ag_grid`` factory from
-``vizro.tables``. Under the hood it wraps Dash AG Grid
-(https://dash.plotly.com/dash-ag-grid), which itself wraps JS AG Grid.
+``vizro.tables``. It wraps Dash AG Grid (https://dash.plotly.com/dash-ag-grid),
+so treat those docs as authoritative for kwargs (``columnDefs``,
+``defaultColDef``, ``dashGridOptions``, ``columnSize``, ``cellStyle``,
+``rowData``, etc.). Colors come from ``vizro.themes.colors`` — never hardcode
+hex.
 
-What to ignore (do NOT use)
----------------------------
-  - ``vm.Table`` / Dash DataTable. AG Grid is the only table component
-    you should write — never reach for DataTable, even for small tables.
-  - Plotly-as-table hacks: heatmap-with-text, scatter-with-text,
-    ``px.imshow`` annotated as a table. Use AG Grid; the only acceptable
-    lighter alternatives are KPI cards or a bar chart (see below).
-  - JS-only AG Grid features: event-handler functions like
-    ``onCellClicked``, server-side row models, JS ``cellRenderer``
-    components registered via ``window.dashAgGridComponentFunctions``
-    require an assets-folder ``.js`` file and rarely earn their keep —
-    prefer ``cellStyle`` / ``valueFormatter`` config instead.
+Do NOT use:
+  - ``vm.Table`` / Dash DataTable — AG Grid is the only table component.
+  - Plotly-as-table (``px.imshow`` annotated, heatmap-with-text, etc.). The
+    only lighter alternatives are KPI cards or a bar chart.
+  - JS-only AG Grid features (event handlers like ``onCellClicked``, server-
+    side row models, JS ``cellRenderer``s registered via the assets folder)
+    — prefer ``cellStyle`` / ``valueFormatter`` config instead.
 
-Knowledge mapping (Vizro vs Dash vs JS)
----------------------------------------
-  - Dash AG Grid kwargs flow through to ``dash_ag_grid(...)``:
-    ``columnDefs``, ``defaultColDef``, ``dashGridOptions``,
-    ``columnSize``, ``cellStyle``, ``rowData``, ``getRowStyle``, etc.
-    If the Dash AG Grid docs list it as a component prop, Vizro accepts
-    it. Treat the Dash AG Grid docs as authoritative for the kwarg set.
-  - JS-only AG Grid features (events, callbacks, server-side row model
-    from ag-grid-community / ag-grid-enterprise JS docs) do NOT pass
-    through. Ignore your prior knowledge of those.
+Two patterns:
+  1. **Drop-in ``dash_ag_grid`` factory** — static config evaluated once at
+     build time. Covers ~all real-world customization.
+  2. **``@capture("ag_grid")`` custom function** — only when something must
+     be recomputed at *render* time: a ``vm.Parameter`` drives the grid
+     (Pattern 2 below), or ``columnDefs`` derive from the actual data shape
+     (see ``writing-vizro-yaml/references/yaml-reference.md`` ``heatmap_grid``).
 
-When to choose AG Grid vs simpler alternatives
-----------------------------------------------
-  - Sortable / filterable / paginated detail tables with cell-level
-    formatting or conditional styling → AG Grid.
-  - 1-10 row scoreboards → KPI cards (no table needed).
-  - "Top N" rankings → horizontal bar chart.
-
-Two patterns for adding an AG Grid
-----------------------------------
-  1. Drop-in via the ``dash_ag_grid`` factory (preferred). Vizro
-     handles config + theming automatically.
-  2. Custom via ``@capture("ag_grid")`` when you need columnDefs
-     derived from the data, or features the factory doesn't expose.
-
-Both patterns wire the returned object into ``vm.AgGrid(figure=...)``.
-
-Custom @capture("ag_grid") rules
---------------------------------
-  - The decorated function MUST accept the DataFrame argument under the
-    exact name ``data_frame`` (not ``df``, not ``data``). Vizro injects
-    the DataFrame by that keyword.
-  - The function can return either: (a) a raw
-    ``dash_ag_grid.AgGrid(...)`` instance, as Pattern 2 below shows, or
-    (b) a call to Vizro's ``dash_ag_grid(...)`` factory. If returning
-    Vizro's factory inside a captured callable triggers a
-    ``CapturedCallable`` serialization error, call
-    ``dash_ag_grid.__wrapped__(data_frame=..., columnDefs=...)`` instead
-    to bypass the wrapper.
+When you go custom, return a raw ``dash_ag_grid.AgGrid(...)`` and pass
+``dashGridOptions={...}`` plus ``className="ag-theme-vizro"`` explicitly.
+The built-in factory sets those up; a raw ``AgGrid`` doesn't, and
+``vm.AgGrid.__call__`` runs ``figure.dashGridOptions.setdefault(...)`` on
+every code path — without the kwarg the attribute doesn't exist and the
+page-load callback crashes with
+``AttributeError: 'AgGrid' object has no attribute 'dashGridOptions'``.
 """
-
-# ---------------------------------------------------------------------------
-# Pattern 1 — Drop-in
-# ---------------------------------------------------------------------------
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -75,32 +43,39 @@ from vizro.themes import colors
 
 df = px.data.gapminder()
 
-# Column definitions are OPTIONAL — without them Vizro auto-infers
-# columns from the DataFrame. Provide ``columnDefs`` only when you need
-# cell-data-type formatting or column-level overrides. Cell styling
-# (``cellStyle.styleConditions``) is wired *inside* the relevant columnDef
-# so it travels with the column rather than living as a free-floating
-# dict. Colors come from ``vizro.themes.colors`` — never hardcode hex.
+
+# ---------------------------------------------------------------------------
+# Pattern 1 — Drop-in ``dash_ag_grid`` factory
+# ---------------------------------------------------------------------------
+
+# Cell styling lives *inside* the relevant columnDef so it travels with the
+# column. Colors picked from ``vizro.themes.colors`` to respect the theme.
 column_defs = [
     {"field": "country"},
+    {"field": "continent"},
     {"field": "year"},
     {"field": "lifeExp", "cellDataType": "numeric"},
     {"field": "pop", "cellDataType": "numeric"},
     {
         "field": "gdpPercap",
-        "cellDataType": "dollar",
-        # Highlight low-income rows (World Bank threshold ~$1,045/yr).
+        "cellDataType": "dollar",  # "dollar" | "euro" | "percent" | "numeric"
+        # World-Bank income brackets, rendered as a heatmap.
         "cellStyle": {
             "styleConditions": [
+                {"condition": "params.value < 1045", "style": {"backgroundColor": colors.warning_500}},
                 {
-                    "condition": "params.value < 1045",
-                    "style": {"backgroundColor": colors.warning_500},
-                }
+                    "condition": "params.value >= 1045 && params.value <= 4095",
+                    "style": {"backgroundColor": colors.yellow_500},
+                },
+                {
+                    "condition": "params.value > 4095 && params.value <= 12695",
+                    "style": {"backgroundColor": colors.blue_500},
+                },
+                {"condition": "params.value > 12695", "style": {"backgroundColor": colors.green_500}},
             ]
         },
     },
 ]
-# Valid cellDataType values: "dollar", "euro", "percent", "numeric".
 
 drop_in_page = vm.Page(
     title="Sales table",
@@ -111,17 +86,9 @@ drop_in_page = vm.Page(
             figure=dash_ag_grid(
                 data_frame=df,
                 columnDefs=column_defs,
-                # Per-column defaults — applied to every column unless
-                # the ``columnDefs`` entry overrides.
-                defaultColDef={
-                    "resizable": True,
-                    "filter": True,
-                    "sortable": True,
-                },
-                # Pagination is ON by default — disable for short tables.
-                dashGridOptions={"pagination": False},
-                # Sizing: "autoSize", "sizeToFit", "responsiveSizeToFit", or None.
-                columnSize="responsiveSizeToFit",
+                defaultColDef={"resizable": True, "filter": True, "sortable": True},
+                dashGridOptions={"pagination": False},  # ON by default; disable for short tables.
+                columnSize="responsiveSizeToFit",  # "autoSize" | "sizeToFit" | "responsiveSizeToFit" | None
             ),
         )
     ],
@@ -129,7 +96,7 @@ drop_in_page = vm.Page(
 
 
 # ---------------------------------------------------------------------------
-# Pattern 2 — Custom @capture("ag_grid")
+# Pattern 2 — Custom ``@capture("ag_grid")`` driven by a ``vm.Parameter``
 # ---------------------------------------------------------------------------
 
 from dash_ag_grid import AgGrid
@@ -137,73 +104,43 @@ from vizro.models.types import capture
 
 
 @capture("ag_grid")
-def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
-    """Return a ``dash_ag_grid.AgGrid`` object.
-
-    Vizro will wrap the returned grid into the page layout. The
-    ``data_frame`` keyword is supplied by Vizro at render time; any
-    other kwargs (``chosen_columns`` here) become parameters that can
-    be wired to ``vm.Parameter`` or filters.
-    """
-    defaults = {
-        "className": "ag-theme-vizro",
-        "defaultColDef": {
-            "resizable": True,
-            "sortable": True,
-            "filter": True,
-            "filterParams": {
-                "buttons": ["apply", "reset"],
-                "closeOnApply": True,
-            },
-            "flex": 1,
-            "minWidth": 70,
-        },
-    }
+def column_picker_grid(chosen_columns: list[str], data_frame=None):
+    """Show only the user-picked columns; Vizro re-runs this whenever the Dropdown below changes."""
     return AgGrid(
+        className="ag-theme-vizro",
         columnDefs=[{"field": col} for col in chosen_columns],
         rowData=data_frame.to_dict("records"),
-        **defaults,
+        dashGridOptions={"domLayout": "autoHeight", "pagination": True, "paginationPageSize": 20},
+        defaultColDef={"resizable": True, "sortable": True, "filter": True, "flex": 1, "minWidth": 70},
     )
 
 
 custom_page = vm.Page(
-    title="Sales table — custom",
+    title="Sales table — column picker",
     components=[
         vm.AgGrid(
             id="custom_ag_grid",
-            title="Custom Dash AgGrid",
-            figure=my_custom_aggrid(
+            title="Pick columns to display",
+            figure=column_picker_grid(
                 data_frame=df,
                 chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"],
             ),
         )
     ],
+    controls=[
+        # ``<component_id>.<kwarg>`` — Vizro re-invokes ``column_picker_grid``
+        # with the new list whenever this Dropdown changes.
+        vm.Parameter(
+            targets=["custom_ag_grid.chosen_columns"],
+            selector=vm.Dropdown(
+                title="Columns",
+                options=["country", "continent", "year", "lifeExp", "pop", "gdpPercap"],
+                value=["country", "continent", "lifeExp", "pop", "gdpPercap"],
+                multi=True,
+            ),
+        ),
+    ],
 )
-
-
-# ---------------------------------------------------------------------------
-# Gotchas (from the Vizro docs)
-# ---------------------------------------------------------------------------
-#
-# - Date columns: dates must be ``yyyy-mm-dd`` strings OR pandas
-#   datetime objects. Vizro auto-converts datetime columns to the
-#   required string format on render — but if you do datetime
-#   arithmetic in a custom loader, return ``.dt.strftime("%Y-%m-%d")``
-#   so AG Grid renders them as dates rather than ints.
-# - Pagination on by default — explicit ``dashGridOptions={"pagination": False}``
-#   when the user wants the whole table at once.
-# - Sticky headers only work reliably when the page is non-scrollable.
-#   On long pages the header scrolls with the rest of the content.
-# - Some AG Grid features (e.g. row grouping, master/detail) require
-#   client-side callbacks that Vizro does not register by default. If
-#   a column-level config "just doesn't work", switch to Pattern 2 and
-#   inline the full ``dash_ag_grid.AgGrid`` you need.
-# - If repeated Playwright walks reveal AG Grid integration bugs in
-#   your Vizro version, **drop the AG Grid for that page and replace
-#   it with the next-simplest visual** (KPI cards row, horizontal bar
-#   chart, line chart). The design spec is authoritative, but Vizro
-#   table integration is the most fragile component — substituting a
-#   chart that conveys the same insight is the right call.
 
 
 if __name__ == "__main__":
