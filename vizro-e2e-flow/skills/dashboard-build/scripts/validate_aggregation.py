@@ -17,12 +17,24 @@ AGGREGATION_REQUIRED_CHARTS = {"bar", "line", "area", "funnel"}
 class AggregationVisitor(ast.NodeVisitor):
     """Check that inline px.bar/px.line calls use pre-aggregated data."""
 
-    def __init__(self, source_lines: list[str]):
-        """Initialize with source lines for segment extraction."""
-        self.source_lines = source_lines
+    def __init__(self, source: str):
+        """Initialize with the full source string for AST segment extraction."""
+        self.source = source
         self.violations: list[dict] = []
         self.registered_datasets: dict[str, str] = {}  # name -> "raw" | "aggregated" | "unknown"
-        self.capture_functions: set[str] = set()  # functions decorated with @capture
+        # local_name -> original method name (e.g. {"my_bar": "bar"}) for
+        # `from (vizro.)plotly.express import bar [as my_bar]` style imports.
+        # Without this, a bare ``bar(...)`` call slips past the aggregation check.
+        self.imported_chart_funcs: dict[str, str] = {}
+
+    def visit_ImportFrom(self, node: ast.ImportFrom):
+        """Track aggregation-required chart names imported from (vizro.)plotly.express."""
+        if node.module in ("plotly.express", "vizro.plotly.express"):
+            for alias in node.names:
+                if alias.name in AGGREGATION_REQUIRED_CHARTS:
+                    local = alias.asname or alias.name
+                    self.imported_chart_funcs[local] = alias.name
+        self.generic_visit(node)
 
     def visit_Assign(self, node: ast.Assign):
         """Track data_manager registrations to identify raw vs aggregated datasets."""
@@ -33,8 +45,7 @@ class AggregationVisitor(ast.NodeVisitor):
         if not key:
             self.generic_visit(node)
             return
-        # Get source text of the value expression to detect patterns
-        value_src = ast.get_source_segment("\n".join(self.source_lines), node.value) or ""
+        value_src = ast.get_source_segment(self.source, node.value) or ""
         if "groupby" in value_src or "agg(" in value_src or ".sum()" in value_src or ".mean()" in value_src:
             self.registered_datasets[key] = "aggregated"
         elif "read_csv" in value_src or "read_excel" in value_src or "read_parquet" in value_src:
@@ -43,78 +54,87 @@ class AggregationVisitor(ast.NodeVisitor):
             self.registered_datasets[key] = "unknown"
         self.generic_visit(node)
 
-    def visit_FunctionDef(self, node: ast.FunctionDef):
-        """Track @capture("graph") decorated functions — these handle their own aggregation."""
-        for dec in node.decorator_list:
-            if isinstance(dec, ast.Call):
-                func_name = ""
-                if isinstance(dec.func, ast.Name):
-                    func_name = dec.func.id
-                elif isinstance(dec.func, ast.Attribute):
-                    func_name = dec.func.attr
-                if func_name == "capture":
-                    self.capture_functions.add(node.name)
-        self.generic_visit(node)
-
     def visit_Call(self, node: ast.Call):
-        """Check inline px.bar/px.line calls for aggregation."""
+        """Check inline px.bar/px.line (and equivalent bare-name) calls for aggregation."""
         func_name = self._get_func_name(node)
+        method: str | None = None
 
-        # Only check px.bar, px.line, etc. (not custom @capture functions)
         if "." in func_name:
-            module, method = func_name.rsplit(".", 1)
-            if module in ("px", "plotly.express", "vizro.plotly.express") and method in AGGREGATION_REQUIRED_CHARTS:
-                # Check what data_frame is being passed
-                data_ref = self._get_data_frame_arg(node)
-                if data_ref:
-                    dataset_type = self.registered_datasets.get(data_ref, "unknown")
-                    if dataset_type == "raw":
-                        self.violations.append(
-                            {
-                                "type": "raw_data_in_chart",
-                                "chart_type": method,
-                                "data_frame": data_ref,
-                                "line": node.lineno,
-                                "detail": (
-                                    f"Line {node.lineno}: px.{method}(data_frame='{data_ref}') uses raw "
-                                    f"detail-level data without aggregation. This will stack individual rows "
-                                    f"as separate rectangles instead of summing them. "
-                                    f"FIX: Move this chart into a @capture('graph') custom function that "
-                                    f"aggregates with .groupby().sum()/.mean() before calling px.{method}(). "
-                                    f"Example: agg = data_frame.groupby('x_col', as_index=False)['y_col'].sum(); "
-                                    f"fig = px.{method}(agg, x='x_col', y='y_col')"
-                                ),
-                            }
-                        )
-                    elif dataset_type == "unknown":
-                        # Can't determine — flag as warning
-                        self.violations.append(
-                            {
-                                "type": "possibly_raw_data",
-                                "chart_type": method,
-                                "data_frame": data_ref,
-                                "line": node.lineno,
-                                "detail": (
-                                    f"Line {node.lineno}: px.{method}(data_frame='{data_ref}') — cannot confirm "
-                                    f"if data is pre-aggregated. If '{data_ref}' has multiple rows per x-axis "
-                                    f"category, bars/lines will stack instead of summing. FIX: Move "
-                                    f"this chart into a @capture('graph') function that aggregates inside."
-                                ),
-                            }
-                        )
+            module, last = func_name.rsplit(".", 1)
+            if module in ("px", "plotly.express", "vizro.plotly.express") and last in AGGREGATION_REQUIRED_CHARTS:
+                method = last
+        elif func_name in self.imported_chart_funcs:
+            # Bare ``bar(...)`` from ``from (vizro.)plotly.express import bar [as ...]``.
+            method = self.imported_chart_funcs[func_name]
+
+        if method is not None:
+            self._check_aggregation(node, method)
 
         self.generic_visit(node)
+
+    def _check_aggregation(self, node: ast.Call, method: str) -> None:
+        """Record a violation if the chart call uses raw or unknown data."""
+        data_ref = self._get_data_frame_arg(node)
+        if not data_ref:
+            return
+        dataset_type = self.registered_datasets.get(data_ref, "unknown")
+        if dataset_type == "raw":
+            self._record(
+                "raw_data_in_chart",
+                node,
+                method,
+                data_ref,
+                (
+                    f"Line {node.lineno}: px.{method}(data_frame='{data_ref}') uses raw "
+                    f"detail-level data without aggregation. This will stack individual rows "
+                    f"as separate rectangles instead of summing them. "
+                    f"FIX: Move this chart into a @capture('graph') custom function that "
+                    f"aggregates with .groupby().sum()/.mean() before calling px.{method}(). "
+                    f"Example: agg = data_frame.groupby('x_col', as_index=False)['y_col'].sum(); "
+                    f"fig = px.{method}(agg, x='x_col', y='y_col')"
+                ),
+            )
+        elif dataset_type == "unknown":
+            self._record(
+                "possibly_raw_data",
+                node,
+                method,
+                data_ref,
+                (
+                    f"Line {node.lineno}: px.{method}(data_frame='{data_ref}') — cannot confirm "
+                    f"if data is pre-aggregated. If '{data_ref}' has multiple rows per x-axis "
+                    f"category, bars/lines will stack instead of summing. FIX: Move "
+                    f"this chart into a @capture('graph') function that aggregates inside."
+                ),
+            )
+
+    def _record(self, vtype: str, node: ast.Call, method: str, data_ref: str, detail: str) -> None:
+        self.violations.append(
+            {
+                "type": vtype,
+                "chart_type": method,
+                "data_frame": data_ref,
+                "line": node.lineno,
+                "detail": detail,
+            }
+        )
 
     def _get_func_name(self, node: ast.Call) -> str:
-        if isinstance(node.func, ast.Attribute):
-            if isinstance(node.func.value, ast.Name):
-                return f"{node.func.value.id}.{node.func.attr}"
-            elif isinstance(node.func.value, ast.Attribute) and isinstance(node.func.value.value, ast.Name):
-                return f"{node.func.value.value.id}.{node.func.value.attr}.{node.func.attr}"
-            return node.func.attr
-        elif isinstance(node.func, ast.Name):
-            return node.func.id
-        return ""
+        """Return the dotted call name, walking arbitrary-depth attribute chains."""
+        func = node.func
+        if isinstance(func, ast.Name):
+            return func.id
+        if not isinstance(func, ast.Attribute):
+            return ""
+        parts: list[str] = []
+        cur: ast.AST = func
+        while isinstance(cur, ast.Attribute):
+            parts.append(cur.attr)
+            cur = cur.value
+        if isinstance(cur, ast.Name):
+            parts.append(cur.id)
+            return ".".join(reversed(parts))
+        return func.attr
 
     def _get_data_frame_arg(self, node: ast.Call) -> str | None:
         """Extract the data_frame argument (first positional or keyword)."""
@@ -162,7 +182,7 @@ def validate(project_dir: str) -> dict:
             "checks": [{"check": "app.py parses", "status": "FAIL", "detail": str(e)}],
         }
 
-    visitor = AggregationVisitor(source.splitlines())
+    visitor = AggregationVisitor(source)
     visitor.visit(tree)
 
     if not visitor.violations:
