@@ -88,6 +88,7 @@ class Chat(VizroBaseModel):
             Output(f"{self.id}-chat-input", "value", allow_duplicate=True),
             Input({"type": f"{self.id}-example-question", "index": dash.ALL}, "n_clicks"),
             prevent_initial_call=True,
+            hidden=True,
         )
         def fill_example_question(n_clicks):
             """Fill chat input with the clicked example question."""

@@ -97,4 +97,4 @@ A non-streaming `ChatAction` is used so the response can be a full `dcc.Graph` r
 
 ## What's next
 
-- [Add a chat popup](chat-popup.md) — for dashboards where chat should live across pages rather than on a dedicated builder page.
+- [Add a chat popup](chat-popup.md): for dashboards where chat should live across pages rather than on a dedicated builder page.

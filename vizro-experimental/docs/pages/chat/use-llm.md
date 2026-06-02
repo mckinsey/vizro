@@ -2,7 +2,7 @@
 
 This guide shows you how to wire a real LLM as the backend for a chat.
 
-The pattern is the same regardless of provider: subclass [`ChatAction`][vizro_experimental.chat.ChatAction], call the model inside `generate_response`, and return the assistant message. We use Anthropic Claude as the example below — replace the SDK call with any other backend like OpenAI.
+The pattern is the same regardless of provider: subclass [`ChatAction`][vizro_experimental.chat.ChatAction], call the model inside `generate_response`, and return the assistant message. We use Anthropic Claude as the example below. Replace the SDK call with any other backend like OpenAI.
 
 ## Install a provider SDK
 
@@ -59,7 +59,7 @@ The action returns the full assistant message in one shot. To stream tokens as t
 
 ## Use the same pattern for other providers
 
-The shape is identical — only the SDK changes. For OpenAI:
+The shape is identical; only the SDK changes. For OpenAI:
 
 ```python
 from openai import OpenAI
@@ -81,15 +81,15 @@ The `messages` argument is the **full conversation history**, not just the new u
 
 | If your action needs… | Pass to the LLM |
 |---|---|
-| Follow-up questions ("and what about X?") to work | `messages` (the whole list) — every example above does this |
+| Follow-up questions ("and what about X?") to work | `messages` (the whole list); every example above does this |
 | Each prompt to be independent (e.g. text-to-SQL with no memory) | `messages[-1]["content"]` only |
-| Both — conditional on the user opting in | Add a Pydantic field on your action (e.g. `multi_turn: bool = True`) and branch |
+| Both, conditional on the user opting in | Add a Pydantic field on your action (e.g. `multi_turn: bool = True`) and branch |
 
-If your action handles uploaded files (e.g. a vision model), historical attachments need to be re-sent alongside historical text so the model can answer follow-ups about an image uploaded earlier — see [Add file upload](file-upload.md#re-attach-files-on-follow-ups).
+If your action handles uploaded files (e.g. a vision model), historical attachments need to be re-sent alongside historical text so the model can answer follow-ups about an image uploaded earlier. See [Add file upload](file-upload.md#re-attach-files-on-follow-ups).
 
 The library *does not* truncate or summarize history. Token cost grows linearly with conversation length; if that matters, slice `messages` yourself before calling the LLM.
 
 ## What's next
 
-- [Stream text responses](streaming-chat.md) — switch to `StreamingChatAction` so users see tokens in real time.
-- [Render Dash components](mixed-content.md) — return charts, tables, or rich layouts from an action.
+- [Stream text responses](streaming-chat.md): switch to `StreamingChatAction` so users see tokens in real time.
+- [Render Dash components](mixed-content.md): return charts, tables, or rich layouts from an action.

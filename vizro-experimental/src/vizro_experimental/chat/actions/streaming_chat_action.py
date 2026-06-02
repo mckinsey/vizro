@@ -63,6 +63,7 @@ def _register_streaming_chunk_callback(chat_id: str) -> None:
         Input(f"{chat_id}-sse", "animation"),
         [State(f"{chat_id}-hidden-messages", "children"), State(f"{chat_id}-store", "data")],
         prevent_initial_call=True,
+        hidden=True,
     )
 
 

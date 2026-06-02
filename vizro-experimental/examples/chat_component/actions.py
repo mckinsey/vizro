@@ -53,6 +53,20 @@ def _is_vision_image(filename: str) -> bool:
     return filename.lower().endswith(_VISION_IMAGE_EXTS)
 
 
+def _most_recent_user_attachments(messages: list[Message]) -> list[dict[str, str]]:
+    """Walk history newest-first and return the most recent user turn's attachments.
+
+    Use this when the upload is a *singleton parameter* (e.g. the CSV for a chart
+    agent that takes one ``deps=df``): latest upload wins, earlier uploads are
+    intentionally ignored. For *cumulative context* (e.g. vision conversations that
+    reference earlier images), use :func:`_build_vision_api_messages` instead.
+    """
+    for msg in reversed(messages[:-1]):
+        if msg["role"] == "user" and msg.get("attachments"):
+            return msg["attachments"]
+    return []
+
+
 def _vision_user_content(text: str, attachments: list[dict[str, str]] | None) -> list[dict[str, Any]]:
     """Build the OpenAI vision content blocks for one user turn.
 
@@ -77,10 +91,13 @@ def _build_vision_api_messages(
 ) -> list[dict[str, Any]]:
     """Reconstruct the full conversation as OpenAI vision messages.
 
-    Historical user turns re-attach their snapshotted ``attachments`` so the model
-    keeps seeing prior images on follow-ups. The current turn's images come from the
-    ``uploaded_files`` kwarg, since they haven't been snapshotted onto ``messages[-1]``
-    by the framework yet.
+    Treats uploads as *cumulative context*: every historical user turn re-emits its
+    own snapshotted ``attachments`` alongside its original text, so a follow-up like
+    "compare the two earlier images" still sees both. The current turn's images come
+    from the ``uploaded_files`` kwarg, since they haven't been snapshotted onto
+    ``messages[-1]`` by the framework yet. For *singleton-parameter* uploads (e.g.
+    a chart agent that only uses the latest CSV), use
+    :func:`_most_recent_user_attachments` instead.
     """
     api_messages: list[dict[str, Any]] = []
     for msg in messages[:-1]:
@@ -140,17 +157,20 @@ class openai_streaming_chat(StreamingChatAction):
 
         """
         api_messages = [{"role": msg["role"], "content": msg["content"]} for msg in messages]
-        response = self.client.responses.create(
-            model=self.model,
-            input=api_messages,
-            instructions="Be polite and creative.",
-            store=False,
-            stream=True,
-        )
-
-        for event in response:
-            if event.type == "response.output_text.delta":
-                yield event.delta
+        try:
+            response = self.client.responses.create(
+                model=self.model,
+                input=api_messages,
+                instructions="Be polite and creative.",
+                store=False,
+                stream=True,
+            )
+            for event in response:
+                if event.type == "response.output_text.delta":
+                    yield event.delta
+        except Exception:
+            logger.exception("Error calling OpenAI API")
+            yield "Error processing your request. Please try again."
 
 
 class anthropic_non_streaming_chat(ChatAction):
@@ -170,19 +190,25 @@ class anthropic_non_streaming_chat(ChatAction):
             messages: Parsed history (``role`` and ``content`` per item).
 
         Returns:
-            Generated text response.
+            Generated text response, or a plain-text error message on failure
+            (renders in the normal assistant bubble; matches how ChatGPT / Claude
+            surface backend errors in-chat).
 
         """
         if Anthropic is None:
             raise ImportError("Anthropic package not installed. Install with: pip install anthropic")
         client = Anthropic()
         api_messages = [{"role": msg["role"], "content": msg["content"]} for msg in messages]
-        response = client.messages.create(
-            model=self.model,
-            max_tokens=1024,
-            messages=api_messages,
-        )
-        return "".join(block.text for block in response.content if getattr(block, "type", None) == "text")
+        try:
+            response = client.messages.create(
+                model=self.model,
+                max_tokens=1024,
+                messages=api_messages,
+            )
+            return "".join(block.text for block in response.content if getattr(block, "type", None) == "text")
+        except Exception:
+            logger.exception("Error calling Anthropic API")
+            return "Error processing your request. Please try again."
 
 
 class mixed_content(ChatAction):
@@ -309,7 +335,7 @@ class vizro_ai_chat(ChatAction):
         self,
         messages: list[Message],
         uploaded_files: list[dict[str, str]] | None = None,
-    ) -> html.Div | html.P:
+    ) -> html.Div | str:
         """Generate data visualization using VizroAI.
 
         Args:
@@ -317,23 +343,24 @@ class vizro_ai_chat(ChatAction):
             uploaded_files: List of uploaded file dicts with 'content' and 'filename' keys.
 
         Returns:
-            Dash component containing the generated visualization or error message.
+            Dash component containing the generated visualization, or a plain-text
+            message that renders in the normal assistant bubble for error / info paths.
 
         """
         if chart_agent is None:
-            return html.P(
-                "vizro-ai not installed. Install with: pip install vizro-ai",
-                style={"color": "red"},
-            )
+            return "vizro-ai not installed. Install with: pip install vizro-ai"
 
         prompt = messages[-1]["content"] if messages else ""
 
-        if not uploaded_files:
-            return html.P("Please upload a data file first!", style={"color": "#1890ff"})
+        # Reuse the most recent prior-turn upload on follow-ups so users can ask
+        # several chart questions about the same CSV without re-uploading each time
+        # (see docs/pages/chat/file-upload.md "Re-attach files on follow-ups").
+        files = uploaded_files or _most_recent_user_attachments(messages)
+        if not files:
+            return "Please upload a data file first!"
 
-        # Get the first uploaded file
-        uploaded_data = uploaded_files[0]["content"]
-        uploaded_filename = uploaded_files[0]["filename"]
+        uploaded_data = files[0]["content"]
+        uploaded_filename = files[0]["filename"]
 
         # Parse the raw file contents (base64 encoded from dcc.Upload)
         try:
@@ -345,13 +372,10 @@ class vizro_ai_chat(ChatAction):
             elif uploaded_filename and uploaded_filename.endswith((".xls", ".xlsx")):
                 df = pd.read_excel(io.BytesIO(decoded))
             else:
-                return html.P(
-                    f"Unsupported file type: {uploaded_filename}. Please upload CSV or Excel files.",
-                    style={"color": "red"},
-                )
+                return f"Unsupported file type: {uploaded_filename}. Please upload CSV or Excel files."
         except Exception:
             logger.exception("Error parsing uploaded file")
-            return html.P("Error parsing file. Please check the file format and try again.", style={"color": "red"})
+            return "Error parsing file. Please check the file format and try again."
 
         # Generate plot with VizroAI chart_agent
         try:
@@ -382,7 +406,7 @@ class vizro_ai_chat(ChatAction):
 
         except Exception:
             logger.exception("Error generating visualization")
-            return html.P("Error generating visualization. Please try a different prompt.", style={"color": "red"})
+            return "Error generating visualization. Please try a different prompt."
 
 
 class openai_vision_chat(ChatAction):
@@ -415,11 +439,11 @@ class openai_vision_chat(ChatAction):
         self,
         messages: list[Message],
         uploaded_files: list[dict[str, str]] | None = None,
-    ) -> str | html.P:
+    ) -> str:
         """Generate response using OpenAI Vision API with images.
 
         Historical images uploaded in earlier turns are re-sent on every follow-up
-        so the model can keep answering questions about them — matches how
+        so the model can keep answering questions about them. This matches how
         ChatGPT / Claude / Gemini behave. Each repeated image is billed per turn,
         so very long conversations with images attached can get expensive; trim
         history if cost matters.
@@ -430,7 +454,7 @@ class openai_vision_chat(ChatAction):
             uploaded_files: List of uploaded file dicts with 'content' and 'filename' keys.
 
         Returns:
-            Generated text response or error message component.
+            Generated text response, or a plain-text error message on failure.
 
         """
         if not messages:
@@ -443,10 +467,9 @@ class openai_vision_chat(ChatAction):
                 store=False,
             )
             return response.output_text
-
         except Exception:
             logger.exception("Error calling OpenAI Vision API")
-            return html.P("Error processing your request. Please try again.", style={"color": "red"})
+            return "Error processing your request. Please try again."
 
 
 class openai_vision_streaming_chat(StreamingChatAction):
@@ -483,7 +506,7 @@ class openai_vision_streaming_chat(StreamingChatAction):
         """Generate streaming response using OpenAI Vision API with images.
 
         Historical images uploaded in earlier turns are re-sent on every follow-up
-        so the model can keep answering questions about them — matches how
+        so the model can keep answering questions about them. This matches how
         ChatGPT / Claude / Gemini behave. Each repeated image is billed per turn,
         so very long conversations with images attached can get expensive; trim
         history if cost matters.
@@ -507,11 +530,9 @@ class openai_vision_streaming_chat(StreamingChatAction):
                 store=False,
                 stream=True,
             )
-
             for event in response:
                 if event.type == "response.output_text.delta":
                     yield event.delta
-
         except Exception:
             logger.exception("Error calling OpenAI Vision API (streaming)")
             yield "Error processing your request. Please try again."

@@ -68,9 +68,9 @@ For a non-streaming version of the same pattern (full reply in one shot), see [U
 Reach for `StreamingChatAction` when the model can stream and the response is text-only. Use the synchronous [`ChatAction`][vizro_experimental.chat.ChatAction] when:
 
 - The backend returns the full reply in one call (no streaming API).
-- You need to return a Dash component instead of text — see [Render Dash components](mixed-content.md). Streaming only supports text chunks.
+- You need to return a Dash component instead of text. See [Render Dash components](mixed-content.md). Streaming only supports text chunks.
 
 ## What's next
 
-- [Render Dash components](mixed-content.md) — return charts and rich layouts from a `ChatAction`.
-- [Add example questions](example-questions.md) — surface predefined prompts next to the input.
+- [Render Dash components](mixed-content.md): return charts and rich layouts from a `ChatAction`.
+- [Add example questions](example-questions.md): surface predefined prompts next to the input.

@@ -44,9 +44,9 @@ The `example_questions` argument on [`Chat`][vizro_experimental.chat.Chat] takes
 
         ![Example questions](../../assets/images/example-questions.png)
 
-The chat icon next to the textarea opens a dropdown listing the four prompts above. Combining example questions with a real LLM action — see [Use a real LLM](use-llm.md) or [Stream text responses](streaming-chat.md) — gives users a guided entry point without locking them out of free-form questions.
+The chat icon next to the textarea opens a dropdown listing the four prompts above. Combining example questions with a real LLM action (see [Use a real LLM](use-llm.md) or [Stream text responses](streaming-chat.md)) gives users a guided entry point without locking them out of free-form questions.
 
 ## What's next
 
-- [Add file upload](file-upload.md) — let users attach files for the action to process.
-- [Combine features](combine-features.md) — pair example questions with file upload and a generative backend.
+- [Add file upload](file-upload.md): let users attach files for the action to process.
+- [Combine features](combine-features.md): pair example questions with file upload and a generative backend.

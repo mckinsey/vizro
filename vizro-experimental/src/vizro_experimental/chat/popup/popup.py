@@ -302,12 +302,14 @@ def _setup_toggle_callback(chat_id: str) -> None:
         Input(f"{chat_id}-toggle-button", "n_clicks"),
         State(f"{chat_id}-panel", "className"),
         prevent_initial_call=True,
+        hidden=True,
     )
     clientside_callback(
         ClientsideFunction("vizroChatComponent", "closePanel"),
         Output(f"{chat_id}-panel", "className", allow_duplicate=True),
         Input(f"{chat_id}-close-button", "n_clicks"),
         prevent_initial_call=True,
+        hidden=True,
     )
 
 
@@ -319,6 +321,7 @@ def _setup_restore_callback(chat_id: str) -> None:
         Input(f"{chat_id}-panel", "className"),
         State(f"{chat_id}-store", "data"),
         prevent_initial_call=True,
+        hidden=True,
     )
     def _restore_on_open(class_name, messages):
         if "chat-popup-panel-open" not in (class_name or ""):
@@ -338,6 +341,7 @@ def _setup_clear_callback(chat_id: str) -> None:
         ],
         Input(f"{chat_id}-clear-button", "n_clicks"),
         prevent_initial_call=True,
+        hidden=True,
     )
 
 
@@ -348,6 +352,7 @@ def _setup_chat_ui_callbacks(chat_id: str) -> None:
         Output(f"{chat_id}-rendered-messages", "children"),
         Input(f"{chat_id}-hidden-messages", "children"),
         prevent_initial_call=True,
+        hidden=True,
     )
 
     clientside_callback(
@@ -356,6 +361,7 @@ def _setup_chat_ui_callbacks(chat_id: str) -> None:
         Input(f"{chat_id}-chat-input", "value"),
         State(f"{chat_id}-chat-input", "id"),
         prevent_initial_call=True,
+        hidden=True,
     )
 
 
@@ -374,6 +380,7 @@ def _setup_non_streaming_action(chat_id: str, generate_response: Callable) -> No
             State(f"{chat_id}-store", "data"),
         ],
         prevent_initial_call=True,
+        hidden=True,
     )
     def _handle_send(n_clicks, prompt, messages):
         if not prompt or not prompt.strip():
@@ -412,6 +419,7 @@ def _setup_streaming_action(chat_id: str, base_pathname: str) -> None:
             State(f"{chat_id}-store", "data"),
         ],
         prevent_initial_call=True,
+        hidden=True,
     )
     def _handle_send_streaming(n_clicks, prompt, messages):
         if not prompt or not prompt.strip():

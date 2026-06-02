@@ -2,7 +2,7 @@
 
 This guide shows you how to add a floating chat popup to any Vizro dashboard.
 
-The popup is **not** a Vizro page component. It mounts at the dashboard root, appears as a floating button in the bottom-right corner, and persists across page navigation. By default it spins up a data-aware [PydanticAI](https://ai.pydantic.dev/) agent that introspects the datasets registered with `data_manager` and answers questions about them — no `Chat` model, no `ChatAction` subclass, no backend code.
+The popup is **not** a Vizro page component. It mounts at the dashboard root, appears as a floating button in the bottom-right corner, and persists across page navigation. By default it spins up a data-aware [PydanticAI](https://ai.pydantic.dev/) agent that introspects the datasets registered with `data_manager` and answers questions about them. No `Chat` model, no `ChatAction` subclass, no backend code.
 
 ## Install the popup extra
 
@@ -53,7 +53,7 @@ The popup auto-discovers `iris` from `data_manager` and includes its schema and 
 
 ## Bring your own model
 
-The auto-agent defaults to OpenAI, but PydanticAI is provider-agnostic — pass any [PydanticAI model](https://ai.pydantic.dev/models/overview/) instance via the `model=` argument and the rest of the popup wiring is unchanged. Useful when you want a different provider (Anthropic, Google, Bedrock, Ollama, …), a different model size, or a model client with a custom base URL / retries / zero-retention settings.
+The auto-agent defaults to OpenAI, but PydanticAI is provider-agnostic. Pass any [PydanticAI model](https://ai.pydantic.dev/models/overview/) instance via the `model=` argument and the rest of the popup wiring is unchanged. Useful when you want a different provider (Anthropic, Google, Bedrock, Ollama, …), a different model size, or a model client with a custom base URL / retries / zero-retention settings.
 
 ```python
 from pydantic_ai.models.anthropic import AnthropicModel
@@ -62,7 +62,7 @@ from vizro_experimental.chat.popup import add_chat_popup
 add_chat_popup(model=AnthropicModel("claude-sonnet-4-6"))
 ```
 
-Set `ANTHROPIC_API_KEY` (or whichever provider's env var matches your model). When you supply your own model, the `reasoning_effort=` argument is ignored — configure reasoning / temperature / etc. on the model instance itself.
+Set `ANTHROPIC_API_KEY` (or whichever provider's env var matches your model). When you supply your own model, the `reasoning_effort=` argument is ignored. Configure reasoning / temperature / etc. on the model instance itself.
 
 ## Bring your own backend
 

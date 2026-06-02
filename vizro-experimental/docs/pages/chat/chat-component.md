@@ -2,7 +2,7 @@
 
 This guide shows you how to add a [`Chat`][vizro_experimental.chat.Chat] component to your dashboard.
 
-The `Chat` component renders a message history, a textarea, and a send button. It is decoupled from any specific LLM — you bring the backend by subclassing [`ChatAction`][vizro_experimental.chat.ChatAction] and overriding `generate_response`.
+The `Chat` component renders a message history, a textarea, and a send button. It is decoupled from any specific LLM. You bring the backend by subclassing [`ChatAction`][vizro_experimental.chat.ChatAction] and overriding `generate_response`.
 
 ## Add a chat to a page
 
@@ -49,6 +49,6 @@ Chat(actions=EchoAction(), placeholder="Ask me anything…")
 
 ## What's next
 
-- [Use a real LLM](use-llm.md) — wire a LLM provider's SDK into a `ChatAction`.
-- [Stream text responses](streaming-chat.md) — show tokens as they arrive.
-- [API reference](api-reference.md) — the full public surface.
+- [Use a real LLM](use-llm.md): wire a LLM provider's SDK into a `ChatAction`.
+- [Stream text responses](streaming-chat.md): show tokens as they arrive.
+- [API reference](api-reference.md): the full public surface.

@@ -1,6 +1,6 @@
 # How to render Dash components in responses
 
-This guide shows you how to return rich content — Markdown, alerts, tables, accordions, charts, code blocks, images — from a chat action instead of plain text.
+This guide shows you how to return rich content (Markdown, alerts, tables, accordions, charts, code blocks, images) from a chat action instead of plain text.
 
 A [`ChatAction`][vizro_experimental.chat.ChatAction]'s `generate_response` can return any Dash component (or any object Plotly's JSON encoder can serialize). The component is rendered directly inside the assistant bubble. The example below combines several Dash and Mantine components in a single reply to showcase what's possible.
 
@@ -125,9 +125,9 @@ A [`ChatAction`][vizro_experimental.chat.ChatAction]'s `generate_response` can r
 
         ![Component showcase](../../assets/images/mixed-content.png)
 
-The highlighted blocks are the response body: Markdown intro, an Alert, a Table, an Accordion (containing a Plotly chart, a syntax-highlighted code block, and an image), and a Blockquote — all returned as a single `html.Div`.
+The highlighted blocks are the response body: Markdown intro, an Alert, a Table, an Accordion (containing a Plotly chart, a syntax-highlighted code block, and an image), and a Blockquote, all returned as a single `html.Div`.
 
 ## What's next
 
-- [Add example questions](example-questions.md) — guide users with predefined prompts.
-- [Combine features](combine-features.md) — pair rich responses with file upload and example questions.
+- [Add example questions](example-questions.md): guide users with predefined prompts.
+- [Combine features](combine-features.md): pair rich responses with file upload and example questions.

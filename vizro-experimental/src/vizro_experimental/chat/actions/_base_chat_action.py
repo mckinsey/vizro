@@ -205,6 +205,7 @@ def _register_send_icon_toggle_callback(chat_id: str) -> None:
         """,
         Output(f"{chat_id}-send-icon", "icon"),
         Input(f"{chat_id}-chat-input", "value"),
+        hidden=True,
     )
 
 
@@ -227,6 +228,7 @@ def _register_loading_indicator_callback(
         State(f"{chat_id}-chat-input", "value"),
         State(f"{chat_id}-file-store", "data"),
         prevent_initial_call=True,
+        hidden=True,
     )
     def _update_with_user_input(_, prompt, files):
         if not prompt or not prompt.strip():
@@ -291,6 +293,7 @@ class _BaseChatAction(_AbstractAction):
             Output(f"{self._chat_id}-rendered-messages", "children"),
             Input(f"{self._chat_id}-hidden-messages", "children"),
             prevent_initial_call=True,
+            hidden=True,
         )
 
         # Handle Enter key for submission (allow Shift+Enter for new lines)
@@ -300,6 +303,7 @@ class _BaseChatAction(_AbstractAction):
             Input(f"{self._chat_id}-chat-input", "value"),
             State(f"{self._chat_id}-chat-input", "id"),
             prevent_initial_call=True,
+            hidden=True,
         )
 
         # Restore chat history and file preview when you change page and return.
@@ -319,6 +323,7 @@ class _BaseChatAction(_AbstractAction):
                 State(f"{self._chat_id}-file-store", "data"),
             ],
             prevent_initial_call="initial_duplicate",
+            hidden=True,
         )
         def on_page_load(_, store, files):
             html_messages = [self.message_to_html(message) for message in store]
@@ -333,6 +338,7 @@ class _BaseChatAction(_AbstractAction):
             State(f"{self._chat_id}-upload", "filename"),
             State(f"{self._chat_id}-file-store", "data"),
             prevent_initial_call=True,
+            hidden=True,
         )
         def process_upload(new_contents, new_filenames, existing_files):
             """Store uploaded files."""
@@ -355,6 +361,7 @@ class _BaseChatAction(_AbstractAction):
             Input({"type": f"{self._chat_id}-remove-file", "index": dash.ALL}, "n_clicks"),
             State(f"{self._chat_id}-file-store", "data"),
             prevent_initial_call=True,
+            hidden=True,
         )
         def remove_file(n_clicks, files):
             """Remove a specific uploaded file by index."""
