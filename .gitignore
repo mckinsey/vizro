@@ -91,6 +91,7 @@ instance/
 vizro-core/site
 vizro-ai/site
 Vizro-mcp/site
+vizro-experimental/site
 
 # PyBuilder
 .pybuilder/
