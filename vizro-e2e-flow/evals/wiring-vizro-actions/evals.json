@@ -17,7 +17,7 @@
         "The employee table is rendered as an AG Grid (the prompt asks for a 'sortable table listing the employees')",
         "Department bar chart has a short action-oriented `header` (e.g. `header='Click a bar to filter by department'`)",
         "No `filter_interaction` (deprecated API) anywhere in app.py",
-        "Spec file `spec/2_interaction_ux.yaml` includes an `interactions:` block referencing Pattern 2 / Single-Page Drill-Down, with source → control → targets documented"
+        "Spec file `spec/2_interaction_ux.md` includes an `## Interactions` section referencing Pattern 2 / Single-Page Drill-Down, with source → control → targets documented"
       ]
     },
     {
@@ -33,7 +33,7 @@
         "First component on Page 2 is a back `vm.Button` with `href='/<page-1-slug>'` and `variant='outlined'` — not an action; uses navigation",
         "Page 2 includes a `vm.Button(text='Export data', actions=va.export_data())` (or similar)",
         "Page 1 reps table has a short action-oriented `header` (e.g. `header='Click a row to view rep details'`)",
-        "Spec file `spec/2_interaction_ux.yaml` includes an `interactions:` block referencing Pattern 1 / Hierarchical Drill-Down with `show_in_url: true` documented"
+        "Spec file `spec/2_interaction_ux.md` includes an `## Interactions` section referencing Pattern 1 / Hierarchical Drill-Down with `Show in URL: true` documented"
       ]
     },
     {
@@ -49,7 +49,7 @@
         "Bar chart uses `va.set_control` referencing the Parameter's `id` with `value='y'` (since bar is horizontal)",
         "No Filter is involved — this is cross-parameter, not cross-filter (data should NOT be removed, only styled)",
         "Bar chart has an action-oriented `header` (e.g. `header='Click a bar to highlight that country in the chart'`)",
-        "Spec file `spec/2_interaction_ux.yaml` includes an `interactions:` block referencing Pattern 3 / Comparison Spotlight with `visible: false` documented"
+        "Spec file `spec/2_interaction_ux.md` includes an `## Interactions` section referencing Pattern 3 / Comparison Spotlight with `Visible: false` documented"
       ]
     },
     {
@@ -69,7 +69,7 @@
         "Export button text is clear and action-oriented (e.g. 'Export data', 'Download CSV') — not generic like 'Button' or 'Submit'",
         "Export button is placed sensibly relative to the data it exports (near the appointments table or at the bottom of the page) — not floating in an unrelated spot",
         "No `filter_interaction` or other deprecated APIs",
-        "Spec file `spec/2_interaction_ux.yaml` includes an `interactions:` block referencing BOTH Pattern 4 / Multi-Dimensional Slice (heatmap → two filters actions chain) AND Pattern 5 / Data Export (the button)"
+        "Spec file `spec/2_interaction_ux.md` includes an `## Interactions` section referencing BOTH Pattern 4 / Multi-Dimensional Slice (heatmap → two filters actions chain) AND Pattern 5 / Data Export (the button)"
       ]
     }
   ]
