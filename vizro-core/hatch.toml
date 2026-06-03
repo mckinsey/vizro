@@ -50,8 +50,7 @@ dependencies = [
   # We don't use kedro-datasets since it can lower our versions of important dependencies like plotly where
   # we want to be testing the latest.
   "seaborn",
-  "scikit-learn",
-  "dash<=4.1.0"  # pinning to avoid this issue in our tests: https://github.com/mckinsey/vizro/issues/1750
+  "scikit-learn"
 ]
 features = ["kedro"]
 installer = "uv"
