@@ -62,7 +62,7 @@ class Tabs(VizroBaseModel):
         )
 
         # We set active_tab explicitly to fix https://github.com/mckinsey/vizro/issues/1750.
-        # "tab-0" matches what dbc sets by default for the first tab since in Vizro we don't currenty allow 
+        # "tab-0" matches what dbc sets by default for the first tab since in Vizro we don't currenty allow
         # setting custom tab_id in dbc.Tab.
         tabs = dbc.Tabs(
             id=self.id,
