@@ -63,6 +63,7 @@ class Tabs(VizroBaseModel):
 
         tabs = dbc.Tabs(
             id=self.id,
+            active_tab="tab-0",
             children=[dbc.Tab(tab.build(), label=tab.title) for tab in self.tabs],
             persistence=True,
             persistence_type="session",

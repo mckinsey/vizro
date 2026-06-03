@@ -76,7 +76,7 @@ class TestTabsBuildMethod:
             result.children,
             [
                 html.H3(className="inner-tabs-title"),
-                dbc.Tabs(id="tabs-id", persistence=True, persistence_type="session"),
+                dbc.Tabs(id="tabs-id", active_tab="tab-0", persistence=True, persistence_type="session"),
             ],
             keys_to_strip={"children"},
         )
@@ -113,7 +113,7 @@ class TestTabsBuildMethod:
             result.children,
             [
                 html.H3(className="inner-tabs-title"),
-                dbc.Tabs(id="tabs-id", persistence=True, persistence_type="session"),
+                dbc.Tabs(id="tabs-id", active_tab="tab-0", persistence=True, persistence_type="session"),
             ],
             keys_to_strip={"children"},
         )
