@@ -1,4 +1,4 @@
-"""Scratch demo app"""
+"""Simple Vizro dashboard with a graph inside a container."""
 
 import vizro.plotly.express as px
 import vizro.models as vm
