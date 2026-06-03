@@ -38,7 +38,7 @@ All advanced interactions follow **Source → Control → Target**:
 
 ### When to use
 
-All two should be true — otherwise Pattern 2 or a sidebar `vm.Filter` is the right call.
+Both should be true — otherwise Pattern 2 or a sidebar `vm.Filter` is the right call.
 
 - **Per-entity detail is rich enough to deserve its own page.** Multiple charts, a table, KPIs, possibly an export — too much to cram into a container on the overview.
 - **Users complete a real workflow on the detail page.** They read multiple charts, examine a table, drill further — not just peek and bounce back.
@@ -113,38 +113,43 @@ Page 1 (Overview) ──click rep row──> sets rep_filter (show_in_url=True)
 
 ### Spec entry
 
-```yaml
-# spec/2_interaction_ux.yaml — interactions section
-interactions:
-  - type: cross-filter
-    pattern: Hierarchical Drill-Down
-    trigger: click bar in "Pipeline by Region"
-    source: Pipeline by Region (Graph)
-    source_value: "y"              # region on y-axis (horizontal bar)
-    control_id: region_filter
-    control_type: filter
-    control_column: region
-    targets: all components in "Rep Breakdown" container
-    placement: container-level
-    visible: true
+```markdown
+<!-- spec/2_interaction_ux.md — Interactions section excerpt -->
 
-  - type: cross-page-drill-through
-    pattern: Hierarchical Drill-Down
-    trigger: click row in "Sales Reps" table
-    source: Sales Reps (AgGrid)
-    source_value: "rep_name"
-    control_id: rep_filter
-    control_type: filter
-    control_column: rep_name
-    targets: all components on "Rep Detail" page
-    placement: page-level (Rep Detail)
-    visible: true
-    show_in_url: true
+## Interactions
 
-  - type: export_data
-    pattern: Hierarchical Drill-Down
-    trigger: click "Export data" button
-    page: Rep Detail
+### Region drill-down
+- Type: cross-filter
+- Pattern: Hierarchical Drill-Down
+- Trigger: click bar in "Pipeline by Region"
+- Source: Pipeline by Region (Graph)
+- Source value: "y" (region on y-axis — horizontal bar)
+- Control id: region_filter
+- Control type: filter
+- Control column: region
+- Targets: all components in "Rep Breakdown" container
+- Placement: container-level
+- Visible: true
+
+### Rep drill-through
+- Type: cross-page-drill-through
+- Pattern: Hierarchical Drill-Down
+- Trigger: click row in "Sales Reps" table
+- Source: Sales Reps (AgGrid)
+- Source value: "rep_name"
+- Control id: rep_filter
+- Control type: filter
+- Control column: rep_name
+- Targets: all components on "Rep Detail" page
+- Placement: page-level (Rep Detail)
+- Visible: true
+- Show in URL: true
+
+### Export rep data
+- Type: export_data
+- Pattern: Hierarchical Drill-Down
+- Trigger: click "Export data" button
+- Page: Rep Detail
 ```
 
 ### Code (cross-page drill-through with back button)
@@ -274,19 +279,21 @@ All three should be true — otherwise a sidebar `vm.Filter` is the right call.
 
 ### Spec entry
 
-```yaml
-interactions:
-  - type: cross-filter
-    pattern: Single-Page Drill-Down
-    trigger: click bar in "Avg Tenure by Department"
-    source: Avg Tenure by Department (Graph)
-    source_value: "y"
-    control_id: dept_filter
-    control_type: filter
-    control_column: department
-    targets: all components in "Employee Detail" container
-    placement: container-level
-    visible: true
+```markdown
+## Interactions
+
+### Department drill-down
+- Type: cross-filter
+- Pattern: Single-Page Drill-Down
+- Trigger: click bar in "Avg Tenure by Department"
+- Source: Avg Tenure by Department (Graph)
+- Source value: "y"
+- Control id: dept_filter
+- Control type: filter
+- Control column: department
+- Targets: all components in "Employee Detail" container
+- Placement: container-level
+- Visible: true
 ```
 
 ### Code
@@ -379,18 +386,20 @@ The intermediate control is a **Parameter** (not a Filter) because we are changi
 
 ### Spec entry
 
-```yaml
-interactions:
-  - type: cross-highlight
-    pattern: Comparison Spotlight
-    trigger: click bar in "Life Exp by Country"
-    source: Life Exp by Country (Graph)
-    source_value: "y"              # country on y-axis (horizontal bar)
-    control_id: highlight_country_param
-    control_type: parameter
-    targets: ["bump_chart.highlight_country"]
-    placement: page-level
-    visible: false                 # highlighting itself is the feedback
+```markdown
+## Interactions
+
+### Country highlight
+- Type: cross-highlight
+- Pattern: Comparison Spotlight
+- Trigger: click bar in "Life Exp by Country"
+- Source: Life Exp by Country (Graph)
+- Source value: "y" (country on y-axis — horizontal bar)
+- Control id: highlight_country_param
+- Control type: parameter
+- Targets: `bump_chart.highlight_country`
+- Placement: page-level
+- Visible: false (highlighting itself is the feedback)
 ```
 
 ### Code
@@ -521,19 +530,21 @@ All three should be true — otherwise two independent sidebar `vm.Filter`s do t
 
 ### Spec entry
 
-```yaml
-interactions:
-  - type: cross-filter
-    pattern: Multi-Dimensional Slice
-    trigger: click cell in "Appointment Density" heatmap
-    source: Appointment Density (Graph)
-    source_value: ["x", "y"]           # actions chain — one per dimension
-    control_id: [day_filter, time_filter]
-    control_type: filter
-    control_column: [day, time_slot]
-    targets: [appointments_table]
-    placement: page-level
-    visible: true
+```markdown
+## Interactions
+
+### Day + time slice
+- Type: cross-filter
+- Pattern: Multi-Dimensional Slice
+- Trigger: click cell in "Appointment Density" heatmap
+- Source: Appointment Density (Graph)
+- Source value: `["x", "y"]` (actions chain — one per dimension)
+- Control id: `[day_filter, time_filter]`
+- Control type: filter
+- Control column: `[day, time_slot]`
+- Targets: `[appointments_table]`
+- Placement: page-level
+- Visible: true
 ```
 
 ### Code
@@ -615,12 +626,14 @@ All three should be true — otherwise skip the export button.
 
 ### Spec entry
 
-```yaml
-interactions:
-  - type: export_data
-    pattern: Data Export
-    trigger: click "Export data" button
-    page: [Page Name]
+```markdown
+## Interactions
+
+### Page data export
+- Type: export_data
+- Pattern: Data Export
+- Trigger: click "Export data" button
+- Page: [Page Name]
 ```
 
 ### Code

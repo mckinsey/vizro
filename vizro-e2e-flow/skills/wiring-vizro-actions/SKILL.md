@@ -41,7 +41,7 @@ Match data shape + user need to a pattern. Full details (when-to-use, wireframes
 | --- | --- | --- | --- |
 | 1 | **Hierarchical Drill-Down** (cross-page) | 2–3 level hierarchy where detail needs a dedicated page | cross-filter + `show_in_url=True` + back button + export |
 | 2 | **Single-Page Drill-Down** (container) | 2-level hierarchy where detail fits in a container | cross-filter into a container |
-| 3 | **Comparison Spotlight** (cross-highlight) | Compare one entity against many without removing context | custom chart with `highlight_X` + hidden Parameter |
+| 3 | **Comparison Spotlight** (cross-highlight) | Compare one entity against many without removing context | custom chart with `highlight_X` + invisible Parameter |
 | 4 | **Multi-Dimensional Slice** | 2+ categorical dimensions (e.g. day × time heatmap) | actions chain → multiple Filters |
 | 5 | **Data Export** | Analyst persona needs the filtered data downloaded | `vm.Button` + `va.export_data()` |
 

@@ -1,0 +1,82 @@
+# How to add a chat popup
+
+This guide shows you how to add a floating chat popup to any Vizro dashboard.
+
+The popup is **not** a Vizro page component. It mounts at the dashboard root, appears as a floating button in the bottom-right corner, and persists across page navigation. By default it spins up a data-aware [PydanticAI](https://ai.pydantic.dev/) agent that introspects the datasets registered with `data_manager` and answers questions about them. No `Chat` model, no `ChatAction` subclass, no backend code.
+
+## Install the popup extra
+
+```bash
+pip install "vizro-experimental[agent]"
+```
+
+Set `OPENAI_API_KEY` for the default model (`gpt-5.4-mini-2026-03-17`).
+
+## Add the popup with the auto-agent
+
+Call [`add_chat_popup`][vizro_experimental.chat.popup.popup.add_chat_popup] after `app.build(dashboard)` and before `app.run()`.
+
+!!! example "Popup with the auto-agent"
+
+    === "app.py"
+
+        ```python hl_lines="21"
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.managers import data_manager
+        from vizro_experimental.chat.popup import add_chat_popup
+
+        data_manager["iris"] = px.data.iris()
+
+        dashboard = vm.Dashboard(
+            pages=[
+                vm.Page(
+                    title="Iris",
+                    components=[
+                        vm.Graph(figure=px.scatter("iris", x="sepal_width", y="sepal_length"))
+                    ],
+                )
+            ]
+        )
+
+        app = Vizro().build(dashboard)
+        add_chat_popup()
+        app.run()
+        ```
+
+    === "Result"
+
+        ![Chat popup](../../assets/images/chat-popup.png)
+
+The popup auto-discovers `iris` from `data_manager` and includes its schema and a sample of rows in the agent's system prompt. Questions like *"how many rows does the iris dataset have?"* or *"what columns are available?"* now work out of the box.
+
+## Bring your own model
+
+The auto-agent defaults to OpenAI, but PydanticAI is provider-agnostic. Pass any [PydanticAI model](https://ai.pydantic.dev/models/overview/) instance via the `model=` argument and the rest of the popup wiring is unchanged. Useful when you want a different provider (Anthropic, Google, Bedrock, Ollama, …), a different model size, or a model client with a custom base URL / retries / zero-retention settings.
+
+```python
+from pydantic_ai.models.anthropic import AnthropicModel
+from vizro_experimental.chat.popup import add_chat_popup
+
+add_chat_popup(model=AnthropicModel("claude-sonnet-4-6"))
+```
+
+Set `ANTHROPIC_API_KEY` (or whichever provider's env var matches your model). When you supply your own model, the `reasoning_effort=` argument is ignored. Configure reasoning / temperature / etc. on the model instance itself.
+
+## Bring your own backend
+
+To skip the auto-agent and use a custom backend, pass a `generate_response` callable. It receives parsed messages and either returns a string (non-streaming) or yields chunks (streaming).
+
+```python
+from collections.abc import Iterator
+from vizro_experimental.chat import Message
+
+
+def my_generate(messages: list[Message]) -> Iterator[str]:
+    last = messages[-1]["content"]
+    yield from f"Echo: {last}"
+
+
+add_chat_popup(generate_response=my_generate, streaming=True)
+```

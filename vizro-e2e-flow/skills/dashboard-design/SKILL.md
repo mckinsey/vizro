@@ -56,26 +56,9 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 - **Persona-based**: Different users may need different views
 - **Decision-focused**: Every metric should inform a decision
 
-### REQUIRED OUTPUT: spec/1_information_architecture.yaml
+### REQUIRED OUTPUT: spec/1_information_architecture.md
 
-Save this file BEFORE proceeding to Step 2:
-
-```yaml
-# spec/1_information_architecture.yaml
-dashboard:
-  name: [Name]
-  purpose: [One sentence goal]
-pages:
-  - name: [Page Name]
-    purpose: [What question does this answer?]
-    kpis: [List of 3-5 key metrics]
-data_sources:
-  - name: [Source Name]
-    type: [csv/database/api]
-decisions:
-  - decision: [What was decided]
-    reasoning: [Why this choice was made]
-```
+Copy the template from [assets/1_information_architecture.md](assets/1_information_architecture.md) to `spec/1_information_architecture.md` at the project root, fill in the placeholders, and save it BEFORE proceeding to Step 2.
 
 ### Validation Checklist
 
@@ -135,45 +118,9 @@ Otherwise → standard filters/parameters are sufficient
 
 For each interaction, document: source component, source value (column or `"x"`/`"y"`), control id + type (Filter/Parameter), targets, visibility (`visible=False` for highlight patterns), and whether it crosses pages (`show_in_url=True`). See the **wiring-vizro-actions** skill for full templates.
 
-### REQUIRED OUTPUT: spec/2_interaction_ux.yaml
+### REQUIRED OUTPUT: spec/2_interaction_ux.md
 
-Save this file BEFORE proceeding to Step 3:
-
-```yaml
-# spec/2_interaction_ux.yaml
-pages:
-  - name: [Must match Step 1]
-    layout_type: grid  # or flex
-    grid_columns: 12
-    grid_pattern: [[0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3]] # Component placement
-
-    containers:
-      - name: [Container Name]
-        has_own_filters: true/false
-    filter_placement:
-      page_level: [columns with selector types]
-      container_level: [columns with selector types]
-
-interactions:  # omit if standard filters/parameters are sufficient
-  - type: cross-filter  # cross-filter | cross-page-drill-through | cross-highlight | cross-parameter | export_data
-    pattern: [Pattern 1-6 name from wiring-vizro-actions]
-    trigger: [user action, e.g. "click bar in 'Pipeline by Region'"]
-    source: [Component name]
-    source_value: [column name, or "x"/"y" for positional]
-    control_id: [Filter/Parameter id]
-    control_type: filter  # filter | parameter
-    control_column: [column]              # for filters only
-    targets: [list of component ids, or "all components in <container>"]
-    placement: page-level | container-level
-    visible: true/false                   # false for cross-highlight
-    show_in_url: true/false               # required true for cross-page
-
-wireframe: |
-  [ASCII wireframe for ALL pages and tab views]
-decisions:
-  - decision: [What was decided]
-    reasoning: [Why this choice was made]
-```
+Copy the template from [assets/2_interaction_ux.md](assets/2_interaction_ux.md) to `spec/2_interaction_ux.md` at the project root, fill in the placeholders (including one ASCII wireframe per page), and save it BEFORE proceeding to Step 3. Delete the entire `## Interactions` section if standard filters/parameters suffice.
 
 ### Validation Checklist
 
@@ -198,33 +145,12 @@ Before proceeding to Step 3:
 Load the **selecting-vizro-charts** skill for chart selection, color strategy, anti-patterns, and KPI card rules. Key design decisions:
 
 - Match chart type to data question (bar for comparison, line for trends, pie only for 2–5 slices)
-- **Colors**: Do NOT include `color_decisions` in the spec. Vizro assigns palettes automatically. Only include if the user explicitly requested custom colors in their message.
+- **Colors**: Do NOT include a `## Colors` section in the spec. Vizro assigns palettes automatically. Only include if the user explicitly requested custom colors in their message.
 - Use built-in `kpi_card` / `kpi_card_reference`; never rebuild as custom charts
 
-### REQUIRED OUTPUT: spec/3_visual_design.yaml
+### REQUIRED OUTPUT: spec/3_visual_design.md
 
-Save this file BEFORE proceeding to implementation (dashboard-build skill).
-
-```yaml
-# spec/3_visual_design.yaml
-visualizations:
-  - name: [Chart Name]
-    type: [bar/line/scatter/etc]
-    needs_custom_implementation: true/false
-    reason: [if custom: has_reference_line/needs_data_processing/etc]
-
-# DO NOT include color_decisions unless the user explicitly asked for custom colors in their message.
-
-kpi_cards:
-  - name: [KPI Name]
-    value_column: [column]
-    format: [e.g., '${value:,.0f}']
-    has_reference: true/false
-
-decisions:
-  - decision: [What was decided]
-    reasoning: [Why this choice was made]
-```
+Copy the template from [assets/3_visual_design.md](assets/3_visual_design.md) to `spec/3_visual_design.md` at the project root, fill in the placeholders, and save it BEFORE proceeding to implementation (dashboard-build skill). Do **not** add a `## Colors` section unless the user explicitly asked for custom colors — Vizro assigns palettes automatically.
 
 ### Validation Checklist
 
@@ -233,7 +159,7 @@ Before proceeding to implementation (dashboard-build skill):
 - [ ] Chart types match data types (no pie charts for time series)
 - [ ] No anti-patterns used
 - [ ] Custom chart needs are identified
-- [ ] `color_decisions` is **absent** unless the user explicitly requested custom colors
+- [ ] A `## Colors` section is **absent** unless the user explicitly requested custom colors
 
 **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 3: Visualization Mistakes"
 
