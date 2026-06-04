@@ -140,3 +140,104 @@
   background-color: rgb(3, 3, 3);
   mask-image: var(--md-admonition-icon--details);
 }
+
+/* -------------------------------------------------------------------------- */
+/* Top-nav "Other projects" dropdown                                          */
+/*                                                                            */
+/* Rendered by docs/overrides/partials/tabs-item.html when a top-level nav    */
+/* section is named "Other projects". Uses a native <details>/<summary> for   */
+/* reliable click-to-toggle (Safari/Firefox don't focus <span> on click), and */
+/* layers :hover on top so desktop users get hover-open behaviour too.        */
+/* -------------------------------------------------------------------------- */
+
+/* The tab bar uses overflow:auto + contain:content for horizontal scrolling, */
+/* both of which clip absolutely-positioned children. Lift the clipping at    */
+/* the viewport size where tabs actually render (below ~76.25em the tab bar  */
+/* is hidden in favour of the drawer, so nothing to do there).                */
+@media screen and (min-width: 76.25em) {
+  .md-tabs,
+  .md-tabs__list {
+    contain: none;
+    overflow: visible;
+  }
+}
+
+.md-tabs__item--dropdown {
+  position: relative;
+}
+
+.md-tabs__details {
+  display: inline;
+}
+
+.md-tabs__link--dropdown {
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.md-tabs__link--dropdown::-webkit-details-marker {
+  display: none;
+}
+
+.md-tabs__link--dropdown::after {
+  content: "";
+  display: inline-block;
+  margin-left: 0.4em;
+  vertical-align: 0.1em;
+  border-left: 0.3em solid transparent;
+  border-right: 0.3em solid transparent;
+  border-top: 0.35em solid currentColor;
+  transition: transform 200ms;
+}
+
+.md-tabs__details[open] .md-tabs__link--dropdown::after,
+.md-tabs__item--dropdown:hover .md-tabs__link--dropdown::after {
+  transform: rotate(180deg);
+}
+
+.md-tabs__dropdown {
+  position: absolute;
+  top: 2.4rem;
+  right: 0;
+  z-index: 4;
+  min-width: 12rem;
+  margin: 0;
+  padding: 0.4rem 0;
+  list-style: none;
+  background-color: var(--md-primary-fg-color);
+  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-0.25rem);
+  transition: opacity 150ms, transform 150ms, visibility 150ms;
+}
+
+.md-tabs__details[open] > .md-tabs__dropdown,
+.md-tabs__item--dropdown:hover .md-tabs__dropdown,
+.md-tabs__item--dropdown:focus-within .md-tabs__dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.md-tabs__dropdown-item {
+  margin: 0;
+  padding: 0;
+}
+
+.md-tabs__dropdown-link {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: var(--md-primary-bg-color);
+  font-size: 0.7rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.md-tabs__dropdown-link:hover,
+.md-tabs__dropdown-link:focus {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: var(--md-primary-bg-color);
+  outline: none;
+}

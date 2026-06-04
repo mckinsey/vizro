@@ -88,11 +88,11 @@ nav = [
       {"Authors" = "pages/explanation/authors.md"}
     ]}
   ]},
-  {"Vizro-MCP" = [
-    {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"}
-  ]},
-  {"Vizro-AI" = [
-    {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"}
+  {"Other projects" = [
+    {"Vizro" = "https://vizro.readthedocs.io/"},
+    {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"},
+    {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"},
+    {"Vizro-Experimental" = "https://vizro.readthedocs.io/projects/vizro-experimental/"}
   ]}
 ]
 
