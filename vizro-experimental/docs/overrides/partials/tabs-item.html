@@ -1,11 +1,14 @@
 {#-
   Override of zensical/templates/partials/tabs-item.html.
 
-  Adds a third rendering mode: when a top-level nav section is named exactly
-  "Other projects" and its children are leaves with absolute URLs (cross-links
-  to sibling docsets), it renders as a hover/focus dropdown menu instead of
-  redirecting to the first child's URL. Other nav items fall back to the
+  Adds a third rendering mode: when a top-level nav section's title is exactly
+  "Other projects", it renders as a click/hover dropdown menu listing each
+  child as a link to a sibling docset, instead of the upstream behaviour of
+  redirecting to the first child's URL. All other nav items fall back to the
   upstream behaviour byte-for-byte.
+
+  Styling lives in docs/stylesheets/extra.css under the section marked
+  "Top-nav 'Other projects' dropdown".
 
   When this template is updated upstream in Zensical, re-sync the non-dropdown
   branches; the `Other projects` branch is the only Vizro-specific addition.
@@ -26,12 +29,22 @@
         <summary class="md-tabs__link md-tabs__link--dropdown">
           {{ nav_item.title }}
         </summary>
-        <ul class="md-tabs__dropdown" role="menu">
+        <ul class="md-tabs__dropdown">
           {%- for child in nav_item.children -%}
-            <li class="md-tabs__dropdown-item" role="none">
-              <a class="md-tabs__dropdown-link" role="menuitem" href="{{ child.url }}">
-                {{ child.title }}
-              </a>
+            <li class="md-tabs__dropdown-item">
+              {#- A child whose title matches this docset's site_name is the
+                  current docset; render as non-clickable text marked
+                  aria-current="page" so screen readers announce it as the
+                  current page. -#}
+              {%- if child.title == config.site_name -%}
+                <span class="md-tabs__dropdown-link md-tabs__dropdown-link--current" aria-current="page">
+                  {{ child.title }}
+                </span>
+              {%- else -%}
+                <a class="md-tabs__dropdown-link" href="{{ child.url }}">
+                  {{ child.title }}
+                </a>
+              {%- endif -%}
             </li>
           {%- endfor -%}
         </ul>

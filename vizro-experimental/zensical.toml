@@ -29,6 +29,9 @@ nav = [
       {"API reference" = "pages/chat/popup-api-reference.md"}
     ]}
   ]},
+  # "Other projects" is the trigger title for the cross-docset dropdown
+  # rendered by docs/overrides/partials/tabs-item.html. Don't rename without
+  # updating the override's title check.
   {"Other projects" = [
     {"Vizro" = "https://vizro.readthedocs.io/"},
     {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"},

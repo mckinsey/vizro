@@ -85,20 +85,17 @@ td:not([class]):not(:last-child) {
   display: none;
 }
 
-.md-tabs__link--dropdown::after {
-  content: "";
-  display: inline-block;
-  margin-left: 0.4em;
-  vertical-align: 0.1em;
-  border-left: 0.3em solid transparent;
-  border-right: 0.3em solid transparent;
-  border-top: 0.35em solid currentColor;
-  transition: transform 200ms;
+/* Keep the dropdown trigger bright while it's open, even after hover ends. */
+.md-tabs__details[open] .md-tabs__link--dropdown {
+  opacity: 1;
 }
 
-.md-tabs__details[open] .md-tabs__link--dropdown::after,
-.md-tabs__item--dropdown:hover .md-tabs__link--dropdown::after {
-  transform: rotate(180deg);
+/* While the dropdown is open, dim whichever top tab Zensical has marked as
+   active so the open dropdown reads as the current selection (mirrors how
+   Material's own tab bar shows only one active tab at a time). Requires
+   :has(); supported in all evergreen browsers since 2022/2023.            */
+.md-tabs__list:has(.md-tabs__details[open]) .md-tabs__item--active .md-tabs__link {
+  opacity: 0.7;
 }
 
 .md-tabs__dropdown {
@@ -138,11 +135,23 @@ td:not([class]):not(:last-child) {
   font-size: 0.7rem;
   text-decoration: none;
   white-space: nowrap;
+  opacity: 0.7;
+  transition: opacity 250ms;
 }
 
 .md-tabs__dropdown-link:hover,
 .md-tabs__dropdown-link:focus {
   background-color: rgba(255, 255, 255, 0.12);
   color: var(--md-primary-bg-color);
+  opacity: 1;
   outline: none;
+}
+
+.md-tabs__dropdown-link--current,
+.md-tabs__dropdown-link--current:hover,
+.md-tabs__dropdown-link--current:focus {
+  background-color: transparent;
+  color: var(--md-primary-bg-color);
+  cursor: default;
+  opacity: 1;
 }
