@@ -142,19 +142,29 @@
 }
 
 /* -------------------------------------------------------------------------- */
+
 /* Top-nav "Other projects" dropdown                                          */
+
 /*                                                                            */
+
 /* Rendered by docs/overrides/partials/tabs-item.html when a top-level nav    */
+
 /* section is named "Other projects". Uses a native <details>/<summary> for   */
+
 /* reliable click-to-toggle (Safari/Firefox don't focus <span> on click), and */
+
 /* layers :hover on top so desktop users get hover-open behaviour too.        */
+
 /* -------------------------------------------------------------------------- */
 
 /* The tab bar uses overflow:auto + contain:content for horizontal scrolling, */
+
 /* both of which clip absolutely-positioned children. Lift the clipping at    */
+
 /* the viewport size where tabs actually render (below ~76.25em the tab bar  */
+
 /* is hidden in favour of the drawer, so nothing to do there).                */
-@media screen and (min-width: 76.25em) {
+@media screen and (width >= 76.25em) {
   .md-tabs,
   .md-tabs__list {
     contain: none;
@@ -189,33 +199,37 @@
    active so the open dropdown reads as the current selection (mirrors how
    Material's own tab bar shows only one active tab at a time). Requires
    :has(); supported in all evergreen browsers since 2022/2023.            */
-.md-tabs__list:has(.md-tabs__details[open]) .md-tabs__item--active .md-tabs__link {
+.md-tabs__list:has(.md-tabs__details[open]) .md-tabs__item--active
+  .md-tabs__link {
   opacity: 0.7;
 }
 
 .md-tabs__dropdown {
-  position: absolute;
-  top: 2.4rem;
-  right: 0;
-  z-index: 4;
-  min-width: 12rem;
-  margin: 0;
-  padding: 0.4rem 0;
-  list-style: none;
   background-color: var(--md-primary-fg-color);
   box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
+  list-style: none;
+  margin: 0;
+  min-width: 12rem;
   opacity: 0;
-  visibility: hidden;
+  padding: 0.4rem 0;
+  position: absolute;
+  right: 0;
+  top: 2.4rem;
   transform: translateY(-0.25rem);
-  transition: opacity 150ms, transform 150ms, visibility 150ms;
+  transition:
+    opacity 150ms,
+    transform 150ms,
+    visibility 150ms;
+  visibility: hidden;
+  z-index: 4;
 }
 
 .md-tabs__details[open] > .md-tabs__dropdown,
 .md-tabs__item--dropdown:hover .md-tabs__dropdown,
 .md-tabs__item--dropdown:focus-within .md-tabs__dropdown {
   opacity: 1;
-  visibility: visible;
   transform: translateY(0);
+  visibility: visible;
 }
 
 .md-tabs__dropdown-item {
@@ -224,14 +238,14 @@
 }
 
 .md-tabs__dropdown-link {
-  display: block;
-  padding: 0.5rem 1rem;
   color: var(--md-primary-bg-color);
+  display: block;
   font-size: 0.7rem;
-  text-decoration: none;
-  white-space: nowrap;
   opacity: 0.7;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
   transition: opacity 250ms;
+  white-space: nowrap;
 }
 
 .md-tabs__dropdown-link:hover,
