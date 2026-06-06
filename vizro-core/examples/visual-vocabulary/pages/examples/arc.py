@@ -3,6 +3,8 @@ import math
 import pandas as pd
 import plotly.graph_objects as go
 from vizro.models.types import capture
+from vizro.themes._colors import colors
+from vizro.themes._palettes import qualitative
 
 
 def _create_arc_path(
@@ -10,7 +12,7 @@ def _create_arc_path(
     x2: float,
     baseline_y: float = 0.0,
     num_points: int = 80,
-) -> tuple:
+) -> tuple[list[float], list[float]]:
     """Create a classic upper semicircle between two baseline points."""
     left_x = min(x1, x2)
     right_x = max(x1, x2)
@@ -48,18 +50,6 @@ def arc(data_frame: pd.DataFrame, source: str, target: str, value: str | None = 
     baseline_y = 0.0
     node_y = [baseline_y] * num_nodes
 
-    colors = [
-        "rgba(93, 156, 236, 0.75)",
-        "rgba(172, 146, 236, 0.75)",
-        "rgba(72, 207, 173, 0.75)",
-        "rgba(236, 135, 192, 0.75)",
-        "rgba(252, 110, 81, 0.75)",
-        "rgba(255, 206, 84, 0.75)",
-        "rgba(160, 212, 104, 0.75)",
-        "rgba(79, 193, 233, 0.75)",
-    ]
-    edge_colors = colors * 3
-
     fig = go.Figure()
     max_arc_height = 0
 
@@ -77,7 +67,7 @@ def arc(data_frame: pd.DataFrame, source: str, target: str, value: str | None = 
         edges_with_info.append((src, tgt, row, distance))
 
     edges_with_info.sort(key=lambda x: x[3])
-    for draw_order, (src, tgt, row, distance) in enumerate(edges_with_info):
+    for draw_order, (src, tgt, row, _distance) in enumerate(edges_with_info):
         x1, x2 = node_positions[src], node_positions[tgt]
         path_x, path_y = _create_arc_path(x1, x2, baseline_y=baseline_y)
         max_arc_height = max(max_arc_height, max(path_y, default=0))
@@ -85,13 +75,12 @@ def arc(data_frame: pd.DataFrame, source: str, target: str, value: str | None = 
         weight = row[value] if value and value in row and pd.notna(row[value]) else 1
         line_width = 1.5 + (weight / max_value) * 1.8
 
-        color = edge_colors[draw_order % len(edge_colors)]
         fig.add_trace(
             go.Scatter(
                 x=path_x,
                 y=path_y,
                 mode="lines",
-                line={"color": color, "width": line_width},
+                line={"color": qualitative[draw_order % len(qualitative)], "width": line_width},
                 hoverinfo="text",
                 hovertext=f"{src} → {tgt}<br>Weight: {weight}",
                 showlegend=False,
@@ -107,15 +96,10 @@ def arc(data_frame: pd.DataFrame, source: str, target: str, value: str | None = 
             x=node_x,
             y=node_y,
             mode="markers+text",
-            marker={
-                "size": node_size,
-                "color": "#34495E",
-                "line": {"color": "#34495E", "width": 0.6},
-                "opacity": 0.98,
-            },
+            marker={"size": node_size, "color": colors.gray_700},
             text=unique_nodes,
             textposition="bottom center",
-            textfont={"size": 12, "color": "#2C3E50"},
+            textfont={"size": 12},
             texttemplate="<b>%{text}</b>",
             hoverinfo="text",
             hovertext=[f"<b>{n}</b><br>Connections: {connection_counts[n]}" for n in unique_nodes],
@@ -133,15 +117,11 @@ def arc(data_frame: pd.DataFrame, source: str, target: str, value: str | None = 
 
     fig.update_layout(
         showlegend=False,
-        plot_bgcolor="white",
-        autosize=True,
         xaxis={
             "showgrid": False,
             "zeroline": False,
             "showticklabels": False,
             "range": x_range,
-            "scaleanchor": "y",
-            "scaleratio": 1,
             "constrain": "domain",
         },
         yaxis={
