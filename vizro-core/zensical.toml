@@ -7,7 +7,16 @@ docs_dir = "docs"
 use_directory_urls = true
 
 nav = [
-  {"Vizro" = "index.md"},
+  # The first nav entry is the brand tab and acts as the cross-docset project
+  # switcher. Its title must equal `site_name`; that's the trigger condition
+  # in docs/overrides/partials/tabs-item.html. The first child must be the
+  # docset's own index.md so the brand link still works inside the dropdown.
+  {"Vizro" = [
+    {"Vizro" = "index.md"},
+    {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"},
+    {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"},
+    {"Vizro-Experimental" = "https://vizro.readthedocs.io/projects/vizro-experimental/"}
+  ]},
   {"Tutorials" = [
     {"Quickstart tutorial" = "pages/tutorials/quickstart-tutorial.md"},
     {"Explore Vizro" = "pages/tutorials/explore-components.md"},
@@ -88,15 +97,6 @@ nav = [
       {"Authors" = "pages/explanation/authors.md"}
     ]}
   ]},
-  # "Other projects" is the trigger title for the cross-docset dropdown
-  # rendered by docs/overrides/partials/tabs-item.html. Don't rename without
-  # updating the override's title check.
-  {"Other projects" = [
-    {"Vizro" = "https://vizro.readthedocs.io/"},
-    {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"},
-    {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"},
-    {"Vizro-Experimental" = "https://vizro.readthedocs.io/projects/vizro-experimental/"}
-  ]}
 ]
 
 repo_url = "https://github.com/mckinsey/vizro"

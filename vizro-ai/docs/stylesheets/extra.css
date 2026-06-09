@@ -48,30 +48,34 @@ td:not([class]):not(:last-child) {
 
 /* -------------------------------------------------------------------------- */
 
-/* Top-nav "Other projects" dropdown                                          */
-
-/*                                                                            */
+/* Top-nav project-switcher dropdown                                          */
 
 /* Rendered by docs/overrides/partials/tabs-item.html when a top-level nav    */
 
-/* section is named "Other projects". Uses a native <details>/<summary> for   */
+/* section's title matches this docset's site_name (e.g. "Vizro" in          */
 
-/* reliable click-to-toggle (Safari/Firefox don't focus <span> on click), and */
+/* vizro-core). The brand tab itself opens a dropdown listing the four       */
 
-/* layers :hover on top so desktop users get hover-open behaviour too.        */
+/* sibling docsets. Uses a native <details>/<summary> for reliable           */
+
+/* click-to-toggle (Safari/Firefox don't focus <span> on click), and layers  */
+
+/* :hover on top so desktop users get hover-open behavior too.              */
 
 /* -------------------------------------------------------------------------- */
 
 /* The tab bar uses overflow:auto + contain:content for horizontal scrolling, */
 
-/* both of which clip absolutely-positioned children. Lift the clipping at    */
+/* both of which clip absolutely-positioned children. Lift the clipping only  */
 
-/* the viewport size where tabs actually render (below ~76.25em the tab bar  */
+/* on tab bars that actually contain a project-switcher dropdown, and only at */
 
-/* is hidden in favour of the drawer, so nothing to do there).                */
+/* the viewport size where tabs render (below ~76.25em the tab bar is hidden  */
+
+/* in favor of the drawer, so nothing to do there).                          */
 @media screen and (width >= 76.25em) {
-  .md-tabs,
-  .md-tabs__list {
+  .md-tabs:has(.md-tabs__item--dropdown),
+  .md-tabs__list:has(.md-tabs__item--dropdown) {
     contain: none;
     overflow: visible;
   }
@@ -112,13 +116,16 @@ td:not([class]):not(:last-child) {
 .md-tabs__dropdown {
   background-color: var(--md-primary-fg-color);
   box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
+
+  /* Anchor on the left edge of the brand tab so the dropdown grows rightward
+     into the page; the brand tab sits at the far-left of the tab bar. */
+  left: 0;
   list-style: none;
   margin: 0;
   min-width: 12rem;
   opacity: 0;
   padding: 0.4rem 0;
   position: absolute;
-  right: 0;
   top: 2.4rem;
   transform: translateY(-0.25rem);
   transition:
@@ -126,6 +133,12 @@ td:not([class]):not(:last-child) {
     transform 150ms,
     visibility 150ms;
   visibility: hidden;
+
+  /* Sit above sibling tabs (default stacking) but below the header (which   */
+
+  /* the Material theme places at z-index 5+) and modal/dialog overlays.    */
+
+  /* If z-indices in the theme change, also revisit this value.             */
   z-index: 4;
 }
 
@@ -161,11 +174,12 @@ td:not([class]):not(:last-child) {
   outline: none;
 }
 
-.md-tabs__dropdown-link--current,
-.md-tabs__dropdown-link--current:hover,
-.md-tabs__dropdown-link--current:focus {
-  background-color: transparent;
-  color: var(--md-primary-bg-color);
-  cursor: default;
+/* The "you are here" item is a real link to its own index.md (so users can */
+
+/* always click home from any cross-project dropdown), but visually marked  */
+
+/* with full opacity and a heavier weight so the current docset stands out. */
+.md-tabs__dropdown-link--current {
+  font-weight: 700;
   opacity: 1;
 }
