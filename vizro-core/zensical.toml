@@ -242,7 +242,10 @@ enable_creation_date = false
 # validation (supported since Zensical 0.0.36)
 # -------------------------
 # Autorefs (e.g. [vizro.models.Page]) and mkdocstrings options containing brackets
-# are currently reported as unresolved references. Disable until Zensical resolves:
-# https://zensical.org/docs/setup/validation/
+# are currently reported as unresolved references. We also keep a number of
+# reference-style image definitions (e.g. ``[dashboard]: ...``) at the bottom of
+# tutorial pages that aren't always referenced from the prose; silence those
+# too. See https://zensical.org/docs/setup/validation/ for the full set of keys.
 [project.validation]
 unresolved_references = false
+unused_definitions = false
