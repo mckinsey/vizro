@@ -11,6 +11,17 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.57'></a>
+# 0.1.57 — 2026-06-05
+
+## Changed
+
+- Allow mixed-type `options` and `value` in `vm.Checklist`, `vm.Dropdown` and `vm.RadioItems` selectors. ([#1733](https://github.com/mckinsey/vizro/pull/1733))
+
+## Fixed
+
+- Fix tab content not rendering on first load. ([#1752](https://github.com/mckinsey/vizro/pull/1752))
+
 <a id='changelog-0.1.56'></a>
 # 0.1.56 — 2026-05-18
 
