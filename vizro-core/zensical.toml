@@ -242,10 +242,21 @@ enable_creation_date = false
 # validation (supported since Zensical 0.0.36)
 # -------------------------
 # Autorefs (e.g. [vizro.models.Page]) and mkdocstrings options containing brackets
-# are currently reported as unresolved references. We also keep a number of
-# reference-style image definitions (e.g. ``[dashboard]: ...``) at the bottom of
-# tutorial pages that aren't always referenced from the prose; silence those
-# too. See https://zensical.org/docs/setup/validation/ for the full set of keys.
+# are currently reported as unresolved references.
+#
+# unused_definitions is disabled to work around a regression introduced in
+# Zensical 0.0.44: reference-style links used inside indented blocks (e.g.
+# inside content tabs or admonitions) are not registered as usages, so their
+# definitions are reported as unused even though the rendered output is
+# correct. Affects pages such as ``pages/explanation/schema.md``,
+# ``pages/tutorials/explore-components.md`` and
+# ``pages/tutorials/custom-actions-tutorial.md`` where we use the
+# ``[![Alt]][label]`` pattern inside ``=== "..."`` tabs. The fix has landed on
+# Zensical's main branch (https://github.com/zensical/zensical/pull/736); this
+# line can be removed once a release > 0.0.44 ships. Tracked upstream at
+# https://github.com/zensical/zensical/issues/735.
+#
+# See https://zensical.org/docs/setup/validation/ for the full set of keys.
 [project.validation]
 unresolved_references = false
 unused_definitions = false
