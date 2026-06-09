@@ -31,7 +31,9 @@ if TYPE_CHECKING:
 SELECTORS: dict[str, tuple[type, ...]] = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Checklist, Dropdown, RadioItems),
-    "temporal": (DatePicker, TimePicker),
+    "date": (DatePicker,),
+    "datetime": (DatePicker, TimePicker),
+    "time": (TimePicker,),
     "boolean": (Switch,),
     "hierarchical": (Cascader,),
 }
@@ -39,7 +41,7 @@ SELECTORS: dict[str, tuple[type, ...]] = {
 
 # Type-narrowing functions to avoid needing to cast every time we do isinstance for a selector.
 def _is_numerical_or_date_selector(x: object) -> TypeIs[RangeSlider | Slider | DatePicker]:
-    return isinstance(x, SELECTORS["numerical"] + (DatePicker,))
+    return isinstance(x, SELECTORS["numerical"] + SELECTORS["date"])
 
 
 def _is_categorical_selector(x: object) -> TypeIs[Checklist | Dropdown | RadioItems]:
@@ -52,10 +54,6 @@ def _is_boolean_selector(x: object) -> TypeIs[Switch]:
 
 def _is_hierarchical_selector(x: object) -> TypeIs[Cascader]:
     return isinstance(x, SELECTORS["hierarchical"])
-
-
-def _is_time_selector(x: object) -> TypeIs[TimePicker]:
-    return isinstance(x, TimePicker)
 
 
 def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:

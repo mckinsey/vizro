@@ -700,7 +700,7 @@ class TestFilterPreBuildMethod:
 
     @pytest.mark.parametrize(
         "filtered_column, expected_column_type",
-        [("country", "categorical"), ("year", "temporal"), ("lifeExp", "numerical"), ("is_europe", "boolean")],
+        [("country", "categorical"), ("year", "date"), ("lifeExp", "numerical"), ("is_europe", "boolean")],
     )
     def test_column_type(self, filtered_column, expected_column_type, managers_one_page_two_graphs):
         filter = vm.Filter(column=filtered_column)
@@ -764,12 +764,12 @@ class TestFilterPreBuildMethod:
             ("country", vm.RangeSlider, "RangeSlider", "categorical"),
             ("country", vm.DatePicker, "DatePicker", "categorical"),
             ("lifeExp", vm.DatePicker, "DatePicker", "numerical"),
-            ("year", vm.Slider, "Slider", "temporal"),
-            ("year", vm.RangeSlider, "RangeSlider", "temporal"),
+            ("year", vm.Slider, "Slider", "date"),
+            ("year", vm.RangeSlider, "RangeSlider", "date"),
             ("is_europe", vm.Slider, "Slider", "boolean"),
             ("is_europe", vm.RangeSlider, "RangeSlider", "boolean"),
             ("is_europe", vm.DatePicker, "DatePicker", "boolean"),
-            ("year", vm.Switch, "Switch", "temporal"),
+            ("year", vm.Switch, "Switch", "date"),
             # Also disallowed for categorical binary columns such as Off/On etc.
             ("country", vm.Switch, "Switch", "categorical"),
         ],
