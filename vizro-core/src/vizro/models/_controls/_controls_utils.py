@@ -116,6 +116,7 @@ def get_selector_default_value(selector: SelectorType) -> Any:
     if selector.value is not None:
         return selector.value
 
+    # Boolean selectors and TimePicker always have a default value specified so no need to handle them here.
     if _is_numerical_or_date_selector(selector):
         is_range = isinstance(selector, RangeSlider) or getattr(selector, "range", False)
         return [selector.min, selector.max] if is_range else selector.min
@@ -126,4 +127,3 @@ def get_selector_default_value(selector: SelectorType) -> Any:
     elif _is_hierarchical_selector(selector):
         is_multi = getattr(selector, "multi", False)
         return get_cascader_default_value(selector.options, multi=is_multi)
-    # Boolean selectors always have a default value specified so no need to handle them here.

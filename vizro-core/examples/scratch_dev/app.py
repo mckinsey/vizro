@@ -22,7 +22,10 @@ dff["datetime_utc"] = pd.to_datetime(
 
 dff["time_iso"] = dff["datetime_utc"].dt.time
 
-dff["time_hh_mm_ss"] = pd.to_datetime(np.random.randint(0, 24 * 60 * 60, size=len(dff)), unit="s").time
+dff["time_hh_mm_ss"] = pd.to_datetime(
+    np.random.default_rng(42).integers(0, 24 * 60 * 60, size=len(dff)),
+    unit="s",
+).time
 
 dff.pop("petal_width")
 dff.pop("petal_length")
@@ -44,9 +47,9 @@ page_1 = vm.Page(
     components=[vm.AgGrid(figure=dash_ag_grid(data_frame=dff))],
     controls=[
         vm.Filter(column="datetime_utc", selector=vm.DatePicker(range=False)),
-        vm.Filter(column="datetime_utc", selector=vm.TimePicker(range=False)),
+        vm.Filter(column="datetime_utc", selector=vm.TimePicker(range=False, value="16:29")),
         vm.Filter(column="time_iso", selector=vm.TimePicker(range=False)),
-        vm.Filter(column="time_hh_mm_ss", selector=vm.TimePicker(range=False)),
+        vm.Filter(column="time_hh_mm_ss", selector=vm.TimePicker(range=False, value="04:40")),
     ],
 )
 

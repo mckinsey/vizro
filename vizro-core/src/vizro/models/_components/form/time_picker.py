@@ -18,17 +18,11 @@ from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionsType, _IdProperty
 
 
-def _coerce_to_time(v: Any) -> Any:
-    # pd.Timestamp is a subclass of datetime, so this handles both
-    if isinstance(v, datetime):
-        return v.time()
-    return v
-
-
-def _time_to_str(t: time | None) -> str | None:
-    if t is None:
-        return None
-    return t.strftime("%H:%M:%S")
+def _coerce_to_time(value: Any) -> Any:
+    """Coerce datetime to time object."""
+    if isinstance(value, datetime):
+        return value.time()
+    return value
 
 
 class TimePicker(VizroBaseModel):
@@ -39,7 +33,9 @@ class TimePicker(VizroBaseModel):
 
     type: Literal["time_picker"] = "time_picker"
     value: Annotated[
-        list[time] | time | None,
+        # Accept strings as-is so preset times can stay in "HH:MM" format. Using only `datetime.time` would coerce them
+        # to "HH:MM:SS", which breaks initial-load filtering because the filter does not strip seconds.
+        list[time | str] | time | str | None,
         Field(default=None, description="Default time/times for time picker."),
     ]
     title: str = Field(default="", description="Title to be displayed.")
@@ -72,7 +68,6 @@ any defaults chosen by the Vizro team.""",
 
     _dynamic: bool = PrivateAttr(False)
     _inner_component_properties: list[str] = PrivateAttr(dmc.TimePicker().available_properties)
-    _callback_registered: bool = PrivateAttr(False)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
@@ -84,24 +79,18 @@ any defaults chosen by the Vizro team.""",
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        prop = "data" if self.range else "value"
         return {
-            "__default__": f"{self.id}.{prop}",
+            "__default__": f"{self.id}.{"data" if self.range else "value"}",
             **({"title": f"{self.id}_title.children"} if self.title else {}),
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
-        prop = "data" if self.range else "value"
-        return {"__default__": f"{self.id}.{prop}"}
+        return {"__default__": f"{self.id}.{"data" if self.range else "value"}"}
 
     @_log_call
     def build(self):
-        value_start = _time_to_str(self.value[0]) if isinstance(self.value, list) else None
-        value_end = _time_to_str(self.value[1]) if isinstance(self.value, list) else None
-        value_single = _time_to_str(self.value) if isinstance(self.value, time) else None
-
         description = self.description.build().children if self.description else [None]
         label = (
             dbc.Label(
@@ -114,26 +103,13 @@ any defaults chosen by the Vizro team.""",
 
         defaults: dict[str, Any] = {"debounce": True}
         if self.range:
-            if not self._callback_registered:
-                clientside_callback(
-                    ClientsideFunction(namespace="time_picker", function_name="update_time_picker_store"),
-                    output=[
-                        Output(self.id, "data"),
-                        Output(f"{self.id}-start", "value"),
-                        Output(f"{self.id}-end", "value"),
-                    ],
-                    inputs=[
-                        Input(self.id, "data"),
-                        Input(f"{self.id}-start", "value"),
-                        Input(f"{self.id}-end", "value"),
-                        State(self.id, "id"),
-                    ],
-                    hidden=True,
-                )
-                self._callback_registered = True
+            # Add the clientside callback only for range TimePicker
+            self._update_range_time_picker_store()
 
-            start_defaults = {"id": f"{self.id}-start", "value": value_start, **defaults}
-            end_defaults = {"id": f"{self.id}-end", "value": value_end, **defaults}
+            _value = [None, None] if self.value is None else self.value
+            start_defaults = {"id": f"{self.id}-start", "value": _value[0], **defaults}
+            end_defaults = {"id": f"{self.id}-end", "value": _value[1], **defaults}
+
             return html.Div(
                 children=[
                     label,
@@ -144,14 +120,32 @@ any defaults chosen by the Vizro team.""",
                         ],
                         style={"display": "flex", "gap": "8px"},
                     ),
-                    dcc.Store(id=self.id, data=[value_start, value_end], storage_type="session"),
+                    dcc.Store(id=self.id, data=_value, storage_type="session"),
                 ]
             )
         else:
-            defaults = {"id": self.id, "value": value_single, **defaults}
+            defaults = {"id": self.id, "value": self.value, **defaults}
             return html.Div(
                 children=[
                     label,
                     dmc.TimePicker(**(defaults | self.extra)),
                 ]
             )
+
+    def _update_range_time_picker_store(self):
+        """Define the clientside callback responsible for syncing the range time picker store."""
+        clientside_callback(
+            ClientsideFunction(namespace="time_picker", function_name="update_time_picker_store"),
+            output=[
+                Output(self.id, "data"),
+                Output(f"{self.id}-start", "value"),
+                Output(f"{self.id}-end", "value"),
+            ],
+            inputs=[
+                Input(self.id, "data"),
+                Input(f"{self.id}-start", "value"),
+                Input(f"{self.id}-end", "value"),
+                State(self.id, "id"),
+            ],
+            hidden=True,
+        )

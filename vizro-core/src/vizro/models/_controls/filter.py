@@ -77,11 +77,12 @@ def _coerce_temporal(
         if len(value[0].split(":")) == 2:  # noqa: PLR2004
             _strip_seconds = True
 
-        # Time temporal selector: convert "HH:MM:SS" strings to datetime.time objects.
-        value = pd.to_datetime(value).time
-        # Handle time ranges that cross midnight, e.g. [21:00, 06:00].
-        # Split them into two inclusive ranges: [21:00, 23:59:59.999999, 00:00, 06:00]
-        # A 4-item value tells `_filter_between` to apply both ranges and combine them with OR.
+        # Time temporal selector: convert "HH:MM" or "HH:MM:SS" input value strings to datetime.time objects.
+        value = pd.to_datetime(value, format="mixed").time
+
+        # Handle time ranges that cross midnight:
+        # For example split the [21:00, 06:00] range into two inclusive ranges: [21:00, 23:59:59.999999, 00:00, 06:00].
+        # A 4-item value tells the `_filter_between` to apply both ranges and combine them with `OR` logical operator.
         if len(value) == 2 and value[0] > value[1]:  # noqa: PLR2004
             value = [value[0], pd.to_datetime("23:59:59.999999").time(), pd.to_datetime("00:00:00").time(), value[1]]
 
@@ -284,7 +285,7 @@ class Filter(VizroBaseModel):
             _min, _max = self._get_min_max(targeted_data, current_value)
             selector_call_obj = selector(min=_min, max=_max)
         else:
-            # Hierarchical and time filters cannot be dynamic.
+            # Hierarchical and time filters cannot yet be dynamic.
             selector_call_obj = selector.build()
 
         # The filter is dynamic, so a guard component (data=True) needs to be added to prevent unexpected action firing.
@@ -376,6 +377,7 @@ class Filter(VizroBaseModel):
                     self.selector._dynamic = True
                     break
 
+        # TimePicker always has a default min/max specified so no need to handle it here.
         if _is_numerical_or_date_selector(self.selector):
             _min, _max = self._get_min_max(targeted_data)
             # Note that manually set self.selector.min/max = 0 are Falsey and should not be overwritten.
