@@ -45,6 +45,7 @@ repo_url = "https://github.com/mckinsey/vizro/tree/main/vizro-experimental"
 repo_name = "mckinsey/vizro-experimental"
 
 extra_css = ["stylesheets/extra.css"]
+extra_javascript = ["javascripts/cross-project-links.js"]
 
 # -------------------------
 # theme

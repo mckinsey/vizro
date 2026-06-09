@@ -16,12 +16,16 @@
   become a dropdown -- not a realistic collision.
 
   Styling lives in docs/stylesheets/extra.css under the section marked
-  "Top-nav project-switcher dropdown".
+  "Top-nav project-switcher dropdown". The cross-docset hrefs are rewritten
+  client-side at page load by docs/javascripts/cross-project-links.js so
+  they preserve the current page's host and version segment.
 
   Maintenance: this file is duplicated byte-for-byte across all four docsets
-  (vizro-core, vizro-ai, vizro-mcp, vizro-experimental). When this template
-  is updated upstream in Zensical, re-sync the non-dropdown branches in all
-  four copies; the dropdown branch is the only Vizro-specific addition.
+  (vizro-core, vizro-ai, vizro-mcp, vizro-experimental), as are the matching
+  CSS block in extra.css and the cross-project-links.js helper. When this
+  template is updated upstream in Zensical, re-sync the non-dropdown
+  branches in all four copies; the dropdown branch is the only
+  Vizro-specific addition.
 -#}
 {% macro render_content(nav_item, ref) %}
   {% set ref = ref or nav_item %}
