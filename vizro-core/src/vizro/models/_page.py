@@ -19,7 +19,7 @@ from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import ControlGroup, Filter, Parameter, TimePicker, Tooltip, VizroBaseModel
+from vizro.models import ControlGroup, Filter, Parameter, Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import (
     _all_hidden,
@@ -150,9 +150,7 @@ class Page(VizroBaseModel):
             # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.
             # Selector values as outputs to be reset.
             selector_outputs = [
-                Output(control.selector.id, "data", allow_duplicate=True)
-                if isinstance(control.selector, TimePicker) and control.selector.range is True
-                else Output(control.selector.id, "value", allow_duplicate=True)
+                Output(*control.selector._action_outputs["__default__"].split("."), allow_duplicate=True)
                 for control in controls
             ]
 
@@ -179,9 +177,7 @@ class Page(VizroBaseModel):
 
         if url_controls:
             selector_values_inputs = [
-                Input(control.selector.id, "data")
-                if isinstance(control.selector, TimePicker) and control.selector.range is True
-                else Input(control.selector.id, "value")
+                Input(*control.selector._action_triggers["__default__"].split("."))
                 for control in url_controls
             ]
             # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
