@@ -1,5 +1,5 @@
 from datetime import datetime, time
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
@@ -106,7 +106,7 @@ any defaults chosen by the Vizro team.""",
             # Add the clientside callback only for range TimePicker
             self._update_range_time_picker_store()
 
-            _value = [None, None] if self.value is None else self.value
+            _value = cast(list[time | str | None], [None, None] if self.value is None else self.value)
             start_defaults = {"id": f"{self.id}-start", "value": _value[0], **defaults}
             end_defaults = {"id": f"{self.id}-end", "value": _value[1], **defaults}
 
