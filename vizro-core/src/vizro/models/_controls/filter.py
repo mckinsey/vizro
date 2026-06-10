@@ -135,7 +135,7 @@ def _filter_between(series: pd.Series, value: list[float] | list[str | None]) ->
     series, value = _coerce_temporal(series=series, value=value, normalize_precision=False)
 
     # Handle time ranges that cross midnight: e.g. [21:00, 06:00] means time >= 21:00 OR time <= 06:00.
-    if value[0] > value[1]:
+    if value[0] > value[1]:  # type: ignore[operator]
         return (series >= value[0]) | (series <= value[1])
     return series.between(value[0], value[1], inclusive="both")
 
