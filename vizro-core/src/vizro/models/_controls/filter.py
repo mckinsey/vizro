@@ -61,9 +61,14 @@ DISALLOWED_SELECTORS = {
 # Accepts "HH:MM" and "HH:MM:SS" formats. These are the only that the underlying dmc.TimePicker selector can produce.
 _TIME_REGEX = re.compile(r"^\d{2}:\d{2}(:\d{2})?$")
 
+# Column types whose filter options/bounds can update when the underlying data source is dynamic.
+# "time", "boolean", and "hierarchical" are always static.
+# TimePicker on a "datetime" column is also always static (no min/max concept to derive dynamically).
+_DYNAMIC_COLUMN_TYPES = {"numerical", "categorical", "date", "datetime"}
+
 
 def _coerce_temporal(
-    series: pd.Series, value: list[Any], strip_seconds_and_milliseconds: bool = False
+    series: pd.Series, value: list[Any], normalize_precision: bool = False
 ) -> tuple[pd.Series, list[Any]]:
     """If needed, coerce series and value to comparable time or date objects based on value format.
 
@@ -92,7 +97,7 @@ def _coerce_temporal(
             # Converting Timestamp to datetime.time
             series = series.dt.time
 
-        if strip_seconds_and_milliseconds:
+        if normalize_precision:
             series = series.map(lambda v: v.replace(microsecond=0))
             if _strip_seconds:
                 series = series.map(lambda v: v.replace(second=0))
@@ -117,7 +122,7 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     if any(v in [None, ""] for v in value):
         return pd.Series(True, index=series.index)
     # If needed, coerce series and value to comparable time or date objects based on value format.
-    series, value = _coerce_temporal(series=series, value=value, strip_seconds_and_milliseconds=True)
+    series, value = _coerce_temporal(series=series, value=value, normalize_precision=True)
     return series.isin(value)
 
 
@@ -126,7 +131,7 @@ def _filter_between(series: pd.Series, value: list[float] | list[str | None]) ->
     if any(v in [None, ""] for v in value):
         return pd.Series(True, index=series.index)
     # If needed, coerce series and value to comparable time or date objects based on value format.
-    series, value = _coerce_temporal(series=series, value=value, strip_seconds_and_milliseconds=False)
+    series, value = _coerce_temporal(series=series, value=value, normalize_precision=False)
     # This is a sign to apply two ranges and combine them with OR, to handle time ranges that cross midnight,
     # e.g. [21:00, 06:00] -> [21:00, 23:59:59.999999, 00:00, 06:00].
     if len(value) == 4:  # noqa: PLR2004
@@ -349,14 +354,10 @@ class Filter(VizroBaseModel):
                 f"'{self._single_filter_column}'."
             )
 
-        # Check if the filter is dynamic. Dynamic filter means that the filter is updated when the page is refreshed
-        # which causes "options" for categorical or "min" and "max" for numerical/date selectors to be updated.
-        # The filter is dynamic if mentioned attributes ("options"/"min"/"max") are not explicitly provided and
-        # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
-        # but should still count as manually set. Hierarchical, boolean and time filters are always static.
-        # TimePicker is also always static even when used on a date column (no min/max concept to derive dynamically).
+        # A filter is dynamic if its options/bounds are not manually set and at least one target uses dynamic data.
+        # Note: min or max = 0 are falsey but must not be treated as "not set".
         if (
-            self._column_type not in ("hierarchical", "boolean", "time")
+            self._column_type in _DYNAMIC_COLUMN_TYPES
             and not isinstance(self.selector, TimePicker)
             and not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None

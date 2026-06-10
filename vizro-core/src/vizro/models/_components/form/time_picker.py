@@ -80,14 +80,14 @@ any defaults chosen by the Vizro team.""",
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
         return {
-            "__default__": f"{self.id}.{"data" if self.range else "value"}",
+            "__default__": f"{self.id}.{'data' if self.range else 'value'}",
             **({"title": f"{self.id}_title.children"} if self.title else {}),
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}.{"data" if self.range else "value"}"}
+        return {"__default__": f"{self.id}.{'data' if self.range else 'value'}"}
 
     @_log_call
     def build(self):
