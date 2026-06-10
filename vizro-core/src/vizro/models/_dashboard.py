@@ -196,10 +196,7 @@ class Dashboard(VizroBaseModel):
                 dcc.Store(
                     id="vizro_controls_store",
                     data={
-                        control.id: {
-                            "originalValue": control.selector.value,
-                            "pageId": page.id,
-                        }
+                        control.id: {"originalValue": control.selector.value, "pageId": page.id}
                         for page in self.pages
                         for control in cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter), page))
                     },

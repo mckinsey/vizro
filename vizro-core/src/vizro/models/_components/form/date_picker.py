@@ -8,7 +8,11 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._components.form._form_utils import validate_max, validate_range_picker, validate_range_value
+from vizro.models._components.form._form_utils import (
+    validate_date_time_range_picker,
+    validate_max,
+    validate_range_value,
+)
 from vizro.models._models_utils import (
     _log_call,
     make_actions_chain,
@@ -19,7 +23,7 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 def _coerce_to_date(value: Any) -> Any:
-    """Coerce datetime to date object."""
+    """Coerce datetime to date object. It's useful if datetime is in the ISO format including the time part as well."""
     if isinstance(value, datetime):
         return value.date()
     return value
@@ -55,7 +59,7 @@ class DatePicker(VizroBaseModel):
     title: str = Field(default="", description="Title to be displayed.")
     range: Annotated[
         bool,
-        AfterValidator(validate_range_picker),
+        AfterValidator(validate_date_time_range_picker),
         Field(default=True, description="Boolean flag for displaying range picker.", validate_default=True),
     ]
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,

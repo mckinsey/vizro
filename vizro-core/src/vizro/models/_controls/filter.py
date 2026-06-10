@@ -64,6 +64,7 @@ DISALLOWED_SELECTORS = {
 
 # Accepts "HH:MM" and "HH:MM:SS" formats. These are the only that the underlying dmc.TimePicker selector can produce.
 _TIME_REGEX = re.compile(r"^\d{2}:\d{2}(:\d{2})?$")
+_TIME_PARTS_HH_MM = 2  # "HH:MM".split(":") → 2 parts, i.e. no seconds in format
 
 # Column types whose filter options/bounds can update when the underlying data source is dynamic.
 # "time", "boolean", and "hierarchical" are always static.
@@ -85,17 +86,11 @@ def _coerce_temporal(
     if _is_time:
         # If `value` doesn't have seconds defined, strip seconds from the input series as well to ensure comparability.
         _strip_seconds = False
-        if len(value[0].split(":")) == 2:  # noqa: PLR2004
+        if len(value[0].split(":")) == _TIME_PARTS_HH_MM:
             _strip_seconds = True
 
         # Time temporal selector: convert "HH:MM" or "HH:MM:SS" input value strings to datetime.time objects.
         value = pd.to_datetime(value, format="mixed").time
-
-        # Handle time ranges that cross midnight:
-        # For example split the [21:00, 06:00] range into two inclusive ranges: [21:00, 23:59:59.999999, 00:00, 06:00].
-        # A 4-item value tells the `_filter_between` to apply both ranges and combine them with `OR` logical operator.
-        if len(value) == 2 and value[0] > value[1]:  # noqa: PLR2004
-            value = [value[0], pd.to_datetime("23:59:59.999999").time(), pd.to_datetime("00:00:00").time(), value[1]]
 
         if is_datetime64_any_dtype(series):
             # Converting Timestamp to datetime.time
@@ -125,6 +120,7 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     # Skip filtering if any value is missing — both pickers must be set for a range filter.
     if any(v in [None, ""] for v in value):
         return pd.Series(True, index=series.index)
+
     # If needed, coerce series and value to comparable time or date objects based on value format.
     series, value = _coerce_temporal(series=series, value=value, normalize_precision=True)
     return series.isin(value)
@@ -134,14 +130,13 @@ def _filter_between(series: pd.Series, value: list[float] | list[str | None]) ->
     # Skip filtering if any value is missing — both pickers must be set for a range filter.
     if any(v in [None, ""] for v in value):
         return pd.Series(True, index=series.index)
+
     # If needed, coerce series and value to comparable time or date objects based on value format.
     series, value = _coerce_temporal(series=series, value=value, normalize_precision=False)
-    # This is a sign to apply two ranges and combine them with OR, to handle time ranges that cross midnight,
-    # e.g. [21:00, 06:00] -> [21:00, 23:59:59.999999, 00:00, 06:00].
-    if len(value) == 4:  # noqa: PLR2004
-        return series.between(value[0], value[1], inclusive="both") | series.between(
-            value[2], value[3], inclusive="both"
-        )
+
+    # Handle time ranges that cross midnight: e.g. [21:00, 06:00] means time >= 21:00 OR time <= 06:00.
+    if value[0] > value[1]:
+        return (series >= value[0]) | (series <= value[1])
     return series.between(value[0], value[1], inclusive="both")
 
 
@@ -350,8 +345,7 @@ class Filter(VizroBaseModel):
 
         # Set default selector according to column type and whether it's a hierarchical filter.
         self._column_type = self._validate_column_type(targeted_data)
-        if self.selector is None:
-            self.selector = DEFAULT_SELECTORS[self._column_type]()
+        self.selector = self.selector or DEFAULT_SELECTORS[self._column_type]()
         self.selector.title = self.selector.title or self._single_filter_column.title()
 
         if isinstance(self.selector, DISALLOWED_SELECTORS[self._column_type]):

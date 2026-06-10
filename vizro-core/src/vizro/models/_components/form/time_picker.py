@@ -8,7 +8,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._components.form._form_utils import validate_range_picker
+from vizro.models._components.form._form_utils import validate_date_time_range_picker
 from vizro.models._models_utils import (
     _log_call,
     make_actions_chain,
@@ -41,7 +41,7 @@ class TimePicker(VizroBaseModel):
     title: str = Field(default="", description="Title to be displayed.")
     range: Annotated[
         bool,
-        AfterValidator(validate_range_picker),
+        AfterValidator(validate_date_time_range_picker),
         Field(default=True, description="Boolean flag for displaying range picker.", validate_default=True),
     ]
     description: Annotated[

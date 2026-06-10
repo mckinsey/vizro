@@ -148,7 +148,7 @@ class Page(VizroBaseModel):
 
         if controls:
             # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.
-            # Selector values as outputs to be reset.
+            # Selector values as outputs to be reset. Use "__default__" as the key to get the main selector output prop.
             selector_outputs = [
                 Output(*control.selector._action_outputs["__default__"].split("."), allow_duplicate=True)
                 for control in controls
@@ -176,6 +176,7 @@ class Page(VizroBaseModel):
         url_controls = [control for control in controls if control.show_in_url]
 
         if url_controls:
+            # Selector values as inputs. Use "__default__" as the key to get the main selector input prop.
             selector_values_inputs = [
                 Input(*control.selector._action_triggers["__default__"].split(".")) for control in url_controls
             ]

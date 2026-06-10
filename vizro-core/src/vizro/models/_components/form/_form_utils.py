@@ -108,7 +108,7 @@ def validate_step(step, info: ValidationInfo):
     return step
 
 
-def validate_range_picker(range, info: ValidationInfo):
+def validate_date_time_range_picker(range, info: ValidationInfo):
     if (
         range
         and info.data.get("value")
