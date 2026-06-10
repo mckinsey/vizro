@@ -196,11 +196,7 @@ describe("update_range_time_picker_store", () => {
         "tp-1",
       );
 
-      expect(result).toEqual([
-        dash_clientside.no_update,
-        "09:00",
-        "17:00",
-      ]);
+      expect(result).toEqual([dash_clientside.no_update, "09:00", "17:00"]);
       expect(dash_clientside.set_props).toHaveBeenCalledTimes(1);
       expect(dash_clientside.set_props).toHaveBeenCalledWith(
         "tp-1_guard_actions_chain",
@@ -216,11 +212,7 @@ describe("update_range_time_picker_store", () => {
         "tp-1",
       );
 
-      expect(result).toEqual([
-        dash_clientside.no_update,
-        null,
-        null,
-      ]);
+      expect(result).toEqual([dash_clientside.no_update, null, null]);
       expect(dash_clientside.set_props).toHaveBeenCalledWith(
         "tp-1_guard_actions_chain",
         { data: true },
@@ -235,11 +227,7 @@ describe("update_range_time_picker_store", () => {
         "tp-1",
       );
 
-      expect(result).toEqual([
-        dash_clientside.no_update,
-        null,
-        "17:00",
-      ]);
+      expect(result).toEqual([dash_clientside.no_update, null, "17:00"]);
     });
   });
 });
