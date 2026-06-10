@@ -177,8 +177,7 @@ class Page(VizroBaseModel):
 
         if url_controls:
             selector_values_inputs = [
-                Input(*control.selector._action_triggers["__default__"].split("."))
-                for control in url_controls
+                Input(*control.selector._action_triggers["__default__"].split(".")) for control in url_controls
             ]
             # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
             # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True.

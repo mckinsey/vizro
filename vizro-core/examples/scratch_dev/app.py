@@ -26,15 +26,17 @@ _datetime_utc = pd.Series(
 _rand_time_base = pd.Series(pd.to_datetime(_rng.integers(0, 24 * 60 * 60, size=_n), unit="s"))
 _date_range_2026 = pd.date_range("2026-01-01", "2026-12-31", freq="D")
 
-dff = pd.DataFrame({
-    "datetime_utc": _datetime_utc,
-    # Pure-date columns (all midnight — "date" type, DatePicker only)
-    "date_yyyy_mm_dd": pd.Series(_date_range_2026[_rng.integers(0, len(_date_range_2026), size=_n)]),
-    # Time-of-day columns ("time" type, TimePicker only)
-    "time_iso": _datetime_utc.dt.time,                  # hh:mm:ss.xxxxxx (microsecond precision)
-    "time_hh_mm_ss": _rand_time_base.dt.time,           # hh:mm:ss
-    "time_hh_mm": _rand_time_base.dt.floor("min").dt.time,  # hh:mm (second=0)
-})
+dff = pd.DataFrame(
+    {
+        "datetime_utc": _datetime_utc,
+        # Pure-date columns (all midnight — "date" type, DatePicker only)
+        "date_yyyy_mm_dd": pd.Series(_date_range_2026[_rng.integers(0, len(_date_range_2026), size=_n)]),
+        # Time-of-day columns ("time" type, TimePicker only)
+        "time_iso": _datetime_utc.dt.time,  # hh:mm:ss.xxxxxx (microsecond precision)
+        "time_hh_mm_ss": _rand_time_base.dt.time,  # hh:mm:ss
+        "time_hh_mm": _rand_time_base.dt.floor("min").dt.time,  # hh:mm (second=0)
+    }
+)
 
 
 page_0 = vm.Page(
@@ -43,15 +45,26 @@ page_0 = vm.Page(
     controls=[
         # datetime_utc — "datetime" type: tested as date (DatePicker) and time-of-day (TimePicker)
         vm.Filter(column="datetime_utc"),
-        vm.Filter(column="datetime_utc", selector=vm.DatePicker(title="datetime_utc date + value", value=["2026-01-03", "2026-12-29"])),
+        vm.Filter(
+            column="datetime_utc",
+            selector=vm.DatePicker(title="datetime_utc date + value", value=["2026-01-03", "2026-12-29"]),
+        ),
         vm.Filter(column="datetime_utc", selector=vm.TimePicker(title="datetime_utc time")),
-        vm.Filter(column="datetime_utc", selector=vm.TimePicker(title="datetime_utc time + value", value=["00:00", "23:59"])),
+        vm.Filter(
+            column="datetime_utc", selector=vm.TimePicker(title="datetime_utc time + value", value=["00:00", "23:59"])
+        ),
         # date columns — DatePicker only
         vm.Filter(column="date_yyyy_mm_dd"),
-        vm.Filter(column="date_yyyy_mm_dd", selector=vm.DatePicker(title="date_yyyy_mm_dd date + value", value=["2026-01-01", "2026-12-31"])),
+        vm.Filter(
+            column="date_yyyy_mm_dd",
+            selector=vm.DatePicker(title="date_yyyy_mm_dd date + value", value=["2026-01-01", "2026-12-31"]),
+        ),
         # time columns — TimePicker only
         vm.Filter(column="time_iso"),
-        vm.Filter(column="time_hh_mm_ss", selector=vm.TimePicker(title="time_hh_mm_ss time+ + value", value=["00:00", "23:59"])),
+        vm.Filter(
+            column="time_hh_mm_ss",
+            selector=vm.TimePicker(title="time_hh_mm_ss time+ + value", value=["00:00", "23:59"]),
+        ),
         vm.Filter(column="time_hh_mm"),
     ],
 )
@@ -62,15 +75,25 @@ page_1 = vm.Page(
     controls=[
         # datetime_utc — tested as date (DatePicker) and time-of-day (TimePicker)
         vm.Filter(column="datetime_utc", selector=vm.DatePicker(title="datetime_utc date", range=False)),
-        vm.Filter(column="datetime_utc", selector=vm.DatePicker(title="datetime_utc date + value", range=False, value="2026-03-01")),
+        vm.Filter(
+            column="datetime_utc",
+            selector=vm.DatePicker(title="datetime_utc date + value", range=False, value="2026-03-01"),
+        ),
         vm.Filter(column="datetime_utc", selector=vm.TimePicker(title="datetime_utc time", range=False)),
-        vm.Filter(column="datetime_utc", selector=vm.TimePicker(title="datetime_utc time + value", range=False, value="00:00")),
+        vm.Filter(
+            column="datetime_utc", selector=vm.TimePicker(title="datetime_utc time + value", range=False, value="00:00")
+        ),
         # date columns
         vm.Filter(column="date_yyyy_mm_dd", selector=vm.DatePicker(title="date_yyyy_mm_dd", range=False)),
-        vm.Filter(column="date_yyyy_mm_dd", selector=vm.DatePicker(title="date_yyyy_mm_dd + value", range=False, value="2026-03-01")),
+        vm.Filter(
+            column="date_yyyy_mm_dd",
+            selector=vm.DatePicker(title="date_yyyy_mm_dd + value", range=False, value="2026-03-01"),
+        ),
         # time columns
         vm.Filter(column="time_iso", selector=vm.TimePicker(title="time_iso", range=False)),
-        vm.Filter(column="time_hh_mm_ss", selector=vm.TimePicker(title="time_hh_mm_ss + value", range=False, value="00:00")),
+        vm.Filter(
+            column="time_hh_mm_ss", selector=vm.TimePicker(title="time_hh_mm_ss + value", range=False, value="00:00")
+        ),
         vm.Filter(column="time_hh_mm", selector=vm.TimePicker(title="time_hh_mm", range=False)),
     ],
 )
@@ -108,7 +131,9 @@ page_2 = vm.Page(
         vm.Filter(
             column="date_yyyy_mm_dd",
             id="filter_date_yyyy_single",
-            selector=vm.DatePicker(id="dp_date_yyyy", title="date_yyyy_mm_dd single + value", range=False, value="2026-03-01"),
+            selector=vm.DatePicker(
+                id="dp_date_yyyy", title="date_yyyy_mm_dd single + value", range=False, value="2026-03-01"
+            ),
             show_in_url=True,
         ),
         vm.Filter(

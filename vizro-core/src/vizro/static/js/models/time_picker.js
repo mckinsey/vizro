@@ -1,7 +1,11 @@
-function update_range_time_picker_store(store_data, start_val, end_val, selectorId) {
+function update_range_time_picker_store(
+  store_data,
+  start_val,
+  end_val,
+  selectorId,
+) {
   const triggered = dash_clientside.callback_context.triggered[0];
-  if (!triggered)
-    return window.dash_clientside.no_update;
+  if (!triggered) return window.dash_clientside.no_update;
 
   console.debug("update_time_picker_store", triggered);
 

@@ -55,7 +55,11 @@ DISALLOWED_SELECTORS = {
     "time": SELECTORS["numerical"] + SELECTORS["boolean"] + SELECTORS["date"],
     "categorical": SELECTORS["numerical"] + SELECTORS["date"] + SELECTORS["time"] + SELECTORS["boolean"],
     "boolean": SELECTORS["numerical"] + SELECTORS["date"] + SELECTORS["time"],
-    "hierarchical": SELECTORS["numerical"] + SELECTORS["categorical"] + SELECTORS["date"] + SELECTORS["time"] + SELECTORS["boolean"],
+    "hierarchical": SELECTORS["numerical"]
+    + SELECTORS["categorical"]
+    + SELECTORS["date"]
+    + SELECTORS["time"]
+    + SELECTORS["boolean"],
 }
 
 # Accepts "HH:MM" and "HH:MM:SS" formats. These are the only that the underlying dmc.TimePicker selector can produce.
@@ -210,7 +214,9 @@ class Filter(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
     _selector_properties: set[str] = PrivateAttr(set())
-    _column_type: Literal["hierarchical", "numerical", "categorical", "date", "datetime", "time", "boolean"] = PrivateAttr()
+    _column_type: Literal["hierarchical", "numerical", "categorical", "date", "datetime", "time", "boolean"] = (
+        PrivateAttr()
+    )
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
