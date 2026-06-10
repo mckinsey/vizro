@@ -161,22 +161,24 @@ page_4 = vm.Page(
     ],
     controls=[
         vm.Filter(column="datetime_utc"),
-        vm.RadioItems(
-            id="radio_items_id",
-            options=["Both shifts", "First shift", "Second shift"],
-            value="Both shifts",
-            actions=vm.Action(
-                function=update_time_pickers("radio_items_id"),
-                outputs=["time_picker_id-start.value", "time_picker_id-end.value"],
-            ),
-        ),
+        # vm.RadioItems(
+        #     id="radio_items_id",
+        #     options=["Both shifts", "First shift", "Second shift"],
+        #     value="Both shifts",
+        #     actions=vm.Action(
+        #         function=update_time_pickers("radio_items_id"),
+        #         outputs=["time_picker_id-start.value", "time_picker_id-end.value"],
+        #     ),
+        # ),
         vm.Filter(
-            visible=False,
-            column="datetime_utc",
+            # visible=False,
+            column="time_hh_mm_ss",
             selector=vm.TimePicker(
+                title='Filter "time_hh_mm_ss" column:',
+                description="Input start and end time to filter results by time_hh_mm_ss column.",
                 id="time_picker_id",
-                range=True,
                 extra=dict(
+                    withSeconds=True,
                     withDropdown=True,
                     presets=[
                         {"label": "08am -> 08pm (first shift)", "values": ["08:00:00"]},

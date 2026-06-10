@@ -33,7 +33,7 @@ class TimePicker(VizroBaseModel):
 
     type: Literal["time_picker"] = "time_picker"
     value: Annotated[
-        # Accept strings as-is so preset times can stay in "HH:MM" format. Using only `datetime.time` would coerce them
+        # Accept strings as-is so input value can stay in "HH:MM" format. Using only `datetime.time` would coerce them
         # to "HH:MM:SS", which breaks initial-load filtering because the filter does not strip seconds.
         list[time | str] | time | str | None,
         Field(default=None, description="Default time/times for time picker."),
@@ -135,7 +135,7 @@ any defaults chosen by the Vizro team.""",
     def _update_range_time_picker_store(self):
         """Define the clientside callback responsible for syncing the range time picker store."""
         clientside_callback(
-            ClientsideFunction(namespace="time_picker", function_name="update_time_picker_store"),
+            ClientsideFunction(namespace="time_picker", function_name="update_range_time_picker_store"),
             output=[
                 Output(self.id, "data"),
                 Output(f"{self.id}-start", "value"),
