@@ -194,6 +194,21 @@
   display: none;
 }
 
+/* Static down chevron after the brand label so users see this is a dropdown.
+   Doesn't rotate when [open] -- the panel sliding in is the open-state cue.
+   translateY puts the flat top at the visual bottom of "Vizro"; tuned by eye
+   because vertical-align is anchored to the line-box baseline, not the visible
+   glyph baseline, when line-height differs from font-size (it does here). */
+.md-tabs__link--dropdown::after {
+  border-left: 0.25rem solid transparent;
+  border-right: 0.25rem solid transparent;
+  border-top: 0.25rem solid currentcolor;
+  content: "";
+  display: inline-block;
+  margin-left: 0.35rem;
+  transform: translateY(0.45rem);
+}
+
 /* Keep the dropdown trigger bright while it's open, even after hover ends. */
 .md-tabs__details[open] .md-tabs__link--dropdown {
   opacity: 1;
