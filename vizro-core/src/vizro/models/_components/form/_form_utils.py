@@ -108,29 +108,15 @@ def validate_step(step, info: ValidationInfo):
     return step
 
 
-def validate_date_picker_range(range, info: ValidationInfo):
+def validate_range_picker(range, info: ValidationInfo):
     if (
         range
         and info.data.get("value")
-        and (isinstance(info.data["value"], (date, str)) or len(info.data["value"]) == 1)
+        and (isinstance(info.data["value"], (date, time, str)) or len(info.data["value"]) == 1)
     ):
-        raise ValueError("Please set range=False if providing single date value.")
+        raise ValueError("Please set range=False if providing a single value.")
 
     if not range and isinstance(info.data.get("value"), list):
-        raise ValueError("Please set range=True if providing list of date values.")
-
-    return range
-
-
-def validate_time_picker_range(range, info: ValidationInfo):
-    if (
-        range
-        and info.data.get("value")
-        and (isinstance(info.data["value"], (time, str)) or len(info.data["value"]) == 1)
-    ):
-        raise ValueError("Please set range=False if providing single time value.")
-
-    if not range and isinstance(info.data.get("value"), list):
-        raise ValueError("Please set range=True if providing list of time values.")
+        raise ValueError("Please set range=True if providing a list of values.")
 
     return range
