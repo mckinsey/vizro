@@ -197,7 +197,7 @@ class AgGrid(VizroBaseModel):
         all_selected_rows_actions = all_set_control and all(a.value not in CELL_CLICKED_MAPPING for a in self.actions)
 
         # Set dashGridOptions if not already set.
-        figure.dashGridOptions = getattr(figure, "dashGridOptions", {})
+        # figure.dashGridOptions = getattr(figure, "dashGridOptions", {})
 
         # No actions - Disable cell focus and row hover effects
         if not self.actions:
