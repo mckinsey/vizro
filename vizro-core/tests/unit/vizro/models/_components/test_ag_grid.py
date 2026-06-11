@@ -18,6 +18,7 @@ from vizro.managers import data_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models._action._action import Action
 from vizro.models._components.ag_grid import DAG_AG_GRID_PROPERTIES
+from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
 
@@ -230,6 +231,38 @@ class TestDunderMethodsAgGrid:
     def test_call_underlying_id_is_auto_generated(self, standard_ag_grid):
         ag_grid = vm.AgGrid(id="ag_grid_id", figure=standard_ag_grid)
         ag_grid.pre_build()
+        # ag_grid() is the same as ag_grid.__call__()
+        result_ag_grid = ag_grid()
+
+        # Assert that the AgGrid.__call__() is the html.Div
+        assert_component_equal(result_ag_grid, html.Div(), keys_to_strip=STRIP_ALL)
+
+        # Assert that html.Div children contains the underlying AgGrid component and guard actions chain store component
+        [result_ag_grid_table, result_ag_grid_guard_store] = result_ag_grid.children
+
+        assert result_ag_grid_table.id == "__input_ag_grid_id"
+        assert_component_equal(
+            result_ag_grid_table,
+            dag.AgGrid(),
+            keys_to_strip=STRIP_ALL,
+        )
+        assert_component_equal(
+            result_ag_grid_guard_store,
+            dcc.Store(id="__input_ag_grid_id_guard_actions_chain", data=True),
+        )
+
+    def test_call_underlying_id_is_auto_generated_for_custom_ag_grid(self, standard_ag_grid):
+        @capture("ag_grid")
+        def custom_dash_ag_grid(data_frame):
+            return dag.AgGrid(
+                # Keep configuration concise: AgGrid model code must not depend on assumed config input.
+                columnDefs=[{"field": col} for col in data_frame.columns],
+                rowData=data_frame.to_dict("records"),
+            )
+
+        ag_grid = vm.AgGrid(id="ag_grid_id", figure=custom_dash_ag_grid(data_frame=px.data.gapminder()))
+        ag_grid.pre_build()
+
         # ag_grid() is the same as ag_grid.__call__()
         result_ag_grid = ag_grid()
 
