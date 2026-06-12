@@ -199,6 +199,9 @@ class AgGrid(VizroBaseModel):
         # Set dashGridOptions if not already set.
         figure.dashGridOptions = getattr(figure, "dashGridOptions", {})
 
+        # Set default dashGridOptions.theme so custom charts use Vizro theming by default.
+        figure.dashGridOptions.setdefault("theme", {"function": "vizroTheme(themeQuartz, agGrid)"})
+
         # No actions - Disable cell focus and row hover effects
         if not self.actions:
             figure.dashGridOptions.setdefault("suppressCellFocus", True)
