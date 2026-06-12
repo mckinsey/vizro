@@ -46,6 +46,7 @@ dependencies = [
   "pixelmatch",
   "playwright",
   "kaleido",
+  "dash-mantine-components<=2.7.0",
   # seaborn and scikit-learn are needed for tests of kedro integration on real project.
   # We don't use kedro-datasets since it can lower our versions of important dependencies like plotly where
   # we want to be testing the latest.
