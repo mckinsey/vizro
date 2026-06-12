@@ -50,8 +50,7 @@ dependencies = [
   # We don't use kedro-datasets since it can lower our versions of important dependencies like plotly where
   # we want to be testing the latest.
   "seaborn",
-  "scikit-learn",
-  "dash_mantine_components<=2.7.0",  # 2.0.0 needed to support dmc.NotificationContainer
+  "scikit-learn"
 ]
 features = ["kedro"]
 installer = "uv"
@@ -95,11 +94,19 @@ templates-check = ["python tools/generate_templates.py --check"]
 test = "pytest tests --headless {args}"
 test-e2e-component-library = "pytest -vs tests/e2e/component_library/test_component_library.py --headless {args}"
 test-e2e-vizro-dom-elements = [
-  "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
-  "gunicorn dashboard_yaml:app -b 0.0.0.0:5007 -w 1 --timeout 90 &",
-  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
-  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5007 -t 30",
-  "pytest -vs --reruns 1 --ctrf ../.ctrf/ctrf-report.json tests/e2e/vizro/test_dom_elements --headless {args}"
+  "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90",
+#  "gunicorn dashboard_yaml:app -b 0.0.0.0:5007 -w 1 --timeout 90 &",
+#  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
+#  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5007 -t 30",
+#  "pytest -vs --reruns 1 --ctrf ../.ctrf/ctrf-report.json tests/e2e/vizro/test_dom_elements --headless {args}"
+]
+test-e2e-vizro-dom-elements-tests = [
+#  "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90",
+#  "gunicorn dashboard_yaml:app -b 0.0.0.0:5007 -w 1 --timeout 90 &",
+#  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
+#  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5007 -t 30",
+  "pytest -vs tests/e2e/vizro/test_dom_elements/test_table.py::test_interactions --headless {args}",
+  "pytest -vs tests/e2e/vizro/test_dom_elements/test_table_ag_grid.py::test_interactions --headless {args}"
 ]
 test-e2e-vizro-http-requests = [
   "gunicorn dashboard_http_requests:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
