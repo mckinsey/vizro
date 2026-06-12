@@ -51,7 +51,7 @@ dependencies = [
   # we want to be testing the latest.
   "seaborn",
   "scikit-learn",
-  "selenium>=4.2.0",
+  "selenium>=4.2.0"
 ]
 features = ["kedro"]
 installer = "uv"
