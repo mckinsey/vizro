@@ -107,8 +107,8 @@ any defaults chosen by the Vizro team.""",
             self._update_range_time_picker_store()
 
             _value = cast(list[time | str | None], [None, None] if self.value is None else self.value)
-            start_defaults = {"id": f"{self.id}-start", "value": _value[0], **defaults}
-            end_defaults = {"id": f"{self.id}-end", "value": _value[1], **defaults}
+            start_defaults = {"id": f"{self.id}-start", "value": _value[0], "label": "From:", **defaults}
+            end_defaults = {"id": f"{self.id}-end", "value": _value[1], "label": "To:", **defaults}
 
             return html.Div(
                 children=[

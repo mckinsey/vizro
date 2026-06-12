@@ -22,7 +22,7 @@ from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionsType, _IdProperty
 
 
-def _coerce_to_date(value: Any) -> Any:
+def _coerce_datetime_to_date(value: Any) -> Any:
     """Coerce datetime to date object. It's useful if datetime is in the ISO format including the time part as well."""
     if isinstance(value, datetime):
         return value.date()
@@ -40,12 +40,12 @@ class DatePicker(VizroBaseModel):
     """
 
     type: Literal["date_picker"] = "date_picker"
-    min: Annotated[date | None, BeforeValidator(_coerce_to_date)] = Field(
+    min: Annotated[date | None, BeforeValidator(_coerce_datetime_to_date)] = Field(
         default=None, description="Start date for date picker."
     )
     max: Annotated[
         date | None,
-        BeforeValidator(_coerce_to_date),
+        BeforeValidator(_coerce_datetime_to_date),
         AfterValidator(validate_max),
         Field(default=None, description="End date for date picker."),
     ]
