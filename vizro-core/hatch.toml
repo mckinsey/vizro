@@ -47,6 +47,14 @@ dependencies = [
   "playwright",
   "kaleido",
   "dash-mantine-components<=2.7.0",
+  "ipykernel<=7.2.0",
+  "jupyter-client<=8.9.0",
+  "tornado<=6.5.6",
+  "nest-asyncio<=1.6.0",
+  "omegaconf<=2.3.0",
+  "virtualenv<=21.4.2",
+  "pytest-json-ctrf<=0.5.0",
+  "matplotlib<=3.10.9",
   # seaborn and scikit-learn are needed for tests of kedro integration on real project.
   # We don't use kedro-datasets since it can lower our versions of important dependencies like plotly where
   # we want to be testing the latest.

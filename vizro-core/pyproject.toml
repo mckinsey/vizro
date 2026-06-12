@@ -19,6 +19,14 @@ dependencies = [
   "dash_bootstrap_components>=2",  # 2.0.0 needed to support dash>=3.0.0
   "dash-ag-grid==33.3.3",  # to leverage new theme API
   "dash_mantine_components<=2.7.0",  # 2.0.0 needed to support dmc.NotificationContainer,
+  "ipykernel<=7.2.0",
+  "jupyter-client<=8.9.0",
+  "tornado<=6.5.6",
+  "nest-asyncio<=1.6.0",
+  "omegaconf<=2.3.0",
+  "virtualenv<=21.4.2",
+  "pytest-json-ctrf<=0.5.0",
+  "matplotlib<=3.10.9",
   "vizro-dash-components>=0.1.1",
   "pandas>=2",
   "plotly>=5.24.0",
