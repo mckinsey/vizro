@@ -50,7 +50,8 @@ dependencies = [
   # We don't use kedro-datasets since it can lower our versions of important dependencies like plotly where
   # we want to be testing the latest.
   "seaborn",
-  "scikit-learn"
+  "scikit-learn",
+  "selenium>=4.2.0",
 ]
 features = ["kedro"]
 installer = "uv"
