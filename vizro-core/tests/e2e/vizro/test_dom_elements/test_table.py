@@ -61,5 +61,5 @@ def test_interactions(dash_br):
     dash_br.multiple_click(
         f"div[id='{cnst.TABLE_INTERACTIONS_ID}'] tr:nth-of-type(5) div[class='unfocused selectable dash-cell-value']", 1
     )
-    check_graph_y_axis_value(dash_br, graph_id=cnst.LINE_INTERACTIONS_ID, tick_index="7", value="7000")
+    check_graph_y_axis_value(dash_br, graph_id=cnst.LINE_INTERACTIONS_ID, tick_index="3", value="6000")
     check_table_rows_number(dash_br, table_id=cnst.TABLE_INTERACTIONS_ID, expected_rows_num=31)
