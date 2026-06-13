@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, time
 from typing import Literal
 
 import dash_bootstrap_components as dbc
@@ -12,7 +12,13 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
-from vizro.models._controls.filter import Filter, _dataframe_path_to_cascader_options, _filter_between, _filter_isin
+from vizro.models._controls.filter import (
+    Filter,
+    _coerce_temporal,
+    _dataframe_path_to_cascader_options,
+    _filter_between,
+    _filter_isin,
+)
 
 
 @pytest.fixture
@@ -132,6 +138,7 @@ class TestFilterFunctions:
     @pytest.mark.parametrize(
         "data, value, expected",
         [
+            # Standard test
             (
                 [
                     datetime(2024, 1, 1),
@@ -142,7 +149,8 @@ class TestFilterFunctions:
                 ],
                 ["2024-02-01", "2024-03-01"],
                 [False, True, True, False, False],
-            ),  # Standard test
+            ),
+            # Test with dates for inclusive both ends
             (
                 [
                     datetime(2024, 1, 1),
@@ -153,7 +161,8 @@ class TestFilterFunctions:
                 ],
                 ["2024-01-01", "2024-05-01"],
                 [True, True, True, True, True],
-            ),  # Test with dates for inclusive both ends
+            ),
+            # Test with no result
             (
                 [
                     datetime(2024, 1, 1),
@@ -164,7 +173,8 @@ class TestFilterFunctions:
                 ],
                 ["2024-06-01", "2024-07-01"],
                 [False, False, False, False, False],
-            ),  # Test with no result
+            ),
+            # Test for inverted values
             (
                 [
                     datetime(2024, 1, 1),
@@ -175,8 +185,10 @@ class TestFilterFunctions:
                 ],
                 ["2024-03-01", "2024-02-01"],
                 [False, False, False, False, False],
-            ),  # Test for inverted values
+            ),
+            # Test with no result
             ([], ["2024-02-01", "2024-03-01"], pd.Series([], dtype=bool)),  # Test for empty series
+            # Test with time part in the date
             (
                 [
                     datetime(2024, 1, 1, 20, 20, 20),
@@ -187,10 +199,61 @@ class TestFilterFunctions:
                 ],
                 ["2024-02-01", "2024-03-01"],
                 [False, True, True, False, False],
-            ),  # Test with time part in the date
+            ),
         ],
     )
     def test_filter_between_date(self, data, value, expected):
+        series = pd.Series(data)
+        expected = pd.Series(expected)
+        result = _filter_between(series, value)
+        pd.testing.assert_series_equal(result, expected)
+
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
+            # Standard test
+            (
+                [time(8, 0), time(10, 0), time(12, 0)],
+                ["09:00", "11:00"],
+                [False, True, False],
+            ),
+            # Test for inclusive both ends
+            (
+                [time(9, 0), time(11, 0), time(17, 0)],
+                ["09:00", "17:00"],
+                [True, True, True],
+            ),
+            # Midnight-crossing range: >= 21:00 OR <= 03:00
+            (
+                [time(22, 0), time(2, 0), time(12, 0), time(21, 0), time(6, 0)],
+                ["21:00", "03:00"],
+                [True, True, False, True, False],
+            ),
+            # Midnight-crossing range edge case
+            (
+                [time(0, 0), time(12, 0), time(23, 59)],
+                ["23:00", "01:00"],
+                [True, False, True],
+            ),
+            # Datetime series filtered by time range
+            (
+                [
+                    datetime(2024, 1, 1, 8, 0),
+                    datetime(2024, 1, 2, 10, 0),
+                    datetime(2024, 1, 3, 20, 0),
+                ],
+                ["09:00", "12:00"],
+                [False, True, False],
+            ),
+            # Equal bounds (single value)
+            (
+                [time(9, 0), time(10, 0)],
+                ["10:00", "10:00"],
+                [False, True],
+            ),
+        ],
+    )
+    def test_filter_between_time(self, data, value, expected):
         series = pd.Series(data)
         expected = pd.Series(expected)
         result = _filter_between(series, value)
@@ -227,6 +290,7 @@ class TestFilterFunctions:
     @pytest.mark.parametrize(
         "data, value, expected",
         [
+            # Standard test
             (
                 [
                     datetime(2024, 1, 1),
@@ -237,7 +301,8 @@ class TestFilterFunctions:
                 ],
                 ["2024-02-01"],
                 [False, True, False, False, False],
-            ),  # Standard test
+            ),
+            # Multiple values
             (
                 [
                     datetime(2024, 1, 1),
@@ -248,7 +313,8 @@ class TestFilterFunctions:
                 ],
                 ["2024-02-01"],
                 [False, True, False, True, True],
-            ),  # Multiple values
+            ),
+            # Test with no result
             (
                 [
                     datetime(2024, 1, 1),
@@ -259,7 +325,8 @@ class TestFilterFunctions:
                 ],
                 ["2024-06-01"],
                 [False, False, False, False, False],
-            ),  # Test with no result
+            ),
+            # Test for empty value list
             (
                 [
                     datetime(2024, 1, 1),
@@ -270,7 +337,8 @@ class TestFilterFunctions:
                 ],
                 [],
                 [False, False, False, False, False],
-            ),  # Test for empty value list
+            ),
+            # Test with time part in the date
             (
                 [
                     datetime(2024, 1, 1, 20, 20, 20),
@@ -281,7 +349,7 @@ class TestFilterFunctions:
                 ],
                 ["2024-02-01"],
                 [False, True, False, False, False],
-            ),  # Test with time part in the date
+            ),
         ],
     )
     def test_filter_isin_date(self, data, value, expected):
@@ -289,6 +357,120 @@ class TestFilterFunctions:
         expected = pd.Series(expected)
         result = _filter_isin(series, value)
         pd.testing.assert_series_equal(result, expected)
+
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
+            # Time series filtered by HH:MM:SS value
+            (
+                [time(9, 0, 0), time(10, 0, 0), time(11, 0, 0)],
+                ["10:00:00"],
+                [False, True, False],
+            ),
+            # Duplicate matches
+            (
+                [time(9, 0, 0), time(10, 0, 0), time(10, 0, 0), time(11, 0, 0)],
+                ["10:00:00"],
+                [False, True, True, False],
+            ),
+            # Microseconds are stripped (HH:MM:SS format keeps seconds, drops microseconds)
+            (
+                [time(10, 30, 0, 123456), time(10, 30, 0, 999), time(10, 30, 1, 0)],
+                ["10:30:00"],
+                [True, True, False],
+            ),
+            # HH:MM input strips both seconds and microseconds from series
+            (
+                [time(10, 30, 15), time(10, 30, 45), time(11, 0, 0)],
+                ["10:30"],
+                [True, True, False],
+            ),
+            # Datetime series filtered by time value
+            (
+                [
+                    datetime(2024, 1, 1, 10, 0, 0),
+                    datetime(2024, 1, 2, 11, 0, 0),
+                    datetime(2024, 1, 3, 10, 0, 0),
+                ],
+                ["10:00:00"],
+                [True, False, True],
+            ),
+        ],
+    )
+    def test_filter_isin_time(self, data, value, expected):
+        series = pd.Series(data)
+        expected = pd.Series(expected)
+        result = _filter_isin(series, value)
+        pd.testing.assert_series_equal(result, expected)
+
+    @pytest.mark.parametrize(
+        "data, value, normalize_precision, expected_series, expected_value",
+        [
+            # Time value + datetime series: both coerced to datetime.time objects.
+            (
+                [datetime(2024, 1, 1, 10, 0), datetime(2024, 1, 2, 11, 30)],
+                ["10:00", "11:30"],
+                False,
+                [time(10, 0), time(11, 30)],
+                [time(10, 0), time(11, 30)],
+            ),
+            # Time value + time series + normalize_precision=True with HH:MM input:
+            # strips microseconds AND seconds from the series.
+            (
+                [time(10, 30, 15, 123), time(11, 0, 45)],
+                ["10:30"],
+                True,
+                [time(10, 30), time(11, 0)],
+                [time(10, 30)],
+            ),
+            # Time value + time series + normalize_precision=True with HH:MM:SS input:
+            # strips microseconds ONLY from the series.
+            (
+                [time(10, 30, 15, 123456), time(11, 0, 45, 999)],
+                ["10:30:15"],
+                True,
+                [time(10, 30, 15), time(11, 0, 45)],
+                [time(10, 30, 15)],
+            ),
+            # Time value + time series + normalize_precision=False: series passes through unchanged.
+            (
+                [time(10, 30, 15, 123), time(11, 0, 45)],
+                ["10:30"],
+                False,
+                [time(10, 30, 15, 123), time(11, 0, 45)],
+                [time(10, 30)],
+            ),
+            # Date string value + datetime series: both coerced to datetime.date objects.
+            (
+                [datetime(2024, 1, 1, 12, 0), datetime(2024, 2, 1, 0, 0)],
+                ["2024-01-01", "2024-02-01"],
+                False,
+                [date(2024, 1, 1), date(2024, 2, 1)],
+                [date(2024, 1, 1), date(2024, 2, 1)],
+            ),
+            # Non-temporal value + numerical series: unchanged.
+            (
+                [1, 2, 3],
+                [1, 3],
+                False,
+                [1, 2, 3],
+                [1, 3],
+            ),
+            # Non-temporal value + categorical series: unchanged.
+            (
+                ["a", "b", "c"],
+                ["a", "c"],
+                False,
+                ["a", "b", "c"],
+                ["a", "c"],
+            ),
+        ],
+    )
+    def test_coerce_temporal(self, data, value, normalize_precision, expected_series, expected_value):
+        series = pd.Series(data)
+        result_series, result_value = _coerce_temporal(series, value, normalize_precision=normalize_precision)
+        assert list(result_series) == expected_series
+        assert list(result_value) == expected_value
 
 
 class TestFilterStaticMethods:
@@ -300,8 +482,8 @@ class TestFilterStaticMethods:
             ([[]], []),
             ([["A", "B", "A"]], ["A", "B"]),
             ([[1, 2, 1]], [1, 2]),
-            ([[1990, 2025, 1990]], [1990, 2025]),
             ([[1.1, 2.2, 1.1]], [1.1, 2.2]),
+            ([[1990, 2025, 1990]], [1990, 2025]),
             (
                 [
                     [
@@ -313,6 +495,32 @@ class TestFilterStaticMethods:
                 [
                     datetime(2024, 1, 1),
                     datetime(2024, 1, 2),
+                ],
+            ),
+            (
+                [
+                    [
+                        datetime(2024, 1, 1, 10, 0),
+                        datetime(2024, 1, 1, 11, 0),
+                        datetime(2024, 1, 1, 10, 0)
+                    ]
+                ],
+                [
+                    datetime(2024, 1, 1, 10, 0),
+                    datetime(2024, 1, 1, 11, 0),
+                ]
+            ),
+            (
+                [
+                    [
+                        time(10, 10, 10),
+                        time(20, 20, 20),
+                        time(10, 10, 10),
+                    ],
+                ],
+                [
+                    time(10, 10, 10),
+                    time(20, 20, 20),
                 ],
             ),
             ([[], []], []),
@@ -373,6 +581,34 @@ class TestFilterStaticMethods:
                     datetime(2024, 1, 3),
                 ],
             ),
+            (
+                [
+                    [
+                        datetime(2024, 1, 1, 10, 0),
+                    ]
+                ],
+                "2024-01-02",
+                [
+                    datetime(2024, 1, 1, 10, 0),
+                    datetime(2024, 1, 2),
+                ],
+            ),
+            (
+                [
+                    [
+                        datetime(2024, 1, 1, 10, 0),
+                    ]
+                ],
+                [
+                    "2024-01-02",
+                    "2024-01-03",
+                ],
+                [
+                    datetime(2024, 1, 1, 10, 0),
+                    datetime(2024, 1, 2),
+                    datetime(2024, 1, 3),
+                ],
+            ),
         ],
     )
     def test_get_options_with_current_value(self, data_columns, current_value, expected):
@@ -402,6 +638,32 @@ class TestFilterStaticMethods:
                     datetime(2024, 1, 1),
                     datetime(2024, 1, 2),
                 ),
+            ),
+            (
+                [
+                    [
+                        datetime(2024, 1, 1, 10, 0),
+                        datetime(2024, 1, 1, 11, 0),
+                        datetime(2024, 1, 1, 10, 0),
+                    ]
+                ],
+                (
+                    datetime(2024, 1,1,10,0, 0),
+                    datetime(2024, 1,1,11,0, 0),
+                ),
+            ),
+            (
+                [
+                    [
+                        time(10, 10, 10),
+                        time(20, 20, 20),
+                        time(10, 10, 10),
+                    ]
+                ],
+                (
+                    time(10, 10, 10),
+                    time(20, 20, 20),
+                )
             ),
             ([[1], []], (1, 1)),
             ([[1, 2], []], (1, 2)),
@@ -449,6 +711,33 @@ class TestFilterStaticMethods:
                 (
                     datetime(2024, 1, 1),
                     datetime(2024, 1, 4),
+                ),
+            ),
+            (
+                [
+                    [
+                        datetime(2024, 1, 1, 10, 0),
+                    ]
+                ],
+                "2024-01-02",
+                (
+                    datetime(2024, 1, 1, 10, 0),
+                    datetime(2024, 1, 2),
+                ),
+            ),
+            (
+                [
+                    [
+                        datetime(2024, 1, 1, 10, 0),
+                    ]
+                ],
+                [
+                    "2024-01-02",
+                    "2024-01-03",
+                ],
+                (
+                    datetime(2024, 1, 1, 10, 0),
+                    datetime(2024, 1, 3),
                 ),
             ),
             ([[1], []], 2, (1, 2)),

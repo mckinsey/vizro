@@ -522,6 +522,7 @@ class Filter(VizroBaseModel):
             "This column must have the same type for all targets."
         )
 
+    # TODO PP NOW: See whether _coerce_to_temporal can be used in the following two static functions
     @staticmethod
     def _get_min_max(
         targeted_data: pd.DataFrame,
