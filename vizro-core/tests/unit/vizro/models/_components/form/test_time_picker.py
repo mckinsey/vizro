@@ -144,8 +144,12 @@ class TestBuildMethod:
                 dbc.Label([html.Span("Title", id="timepicker_id_title"), None], html_for="timepicker_id"),
                 html.Div(
                     children=[
-                        dmc.TimePicker(id="timepicker_id-start", value=expected_store_data[0], debounce=True),
-                        dmc.TimePicker(id="timepicker_id-end", value=expected_store_data[1], debounce=True),
+                        dmc.TimePicker(
+                            id="timepicker_id-start", value=expected_store_data[0], label="From:", debounce=True
+                        ),
+                        dmc.TimePicker(
+                            id="timepicker_id-end", value=expected_store_data[1], label="To:", debounce=True
+                        ),
                     ],
                     style={"display": "flex", "gap": "8px"},
                 ),
@@ -178,7 +182,7 @@ class TestBuildMethod:
         )
         assert_component_equal(time_picker, expected_timepicker)
 
-    def test_timepicker_build_with_extra_range(self):
+    def test_range_timepicker_build_with_extra(self):
         """Extra keyword arguments override defaults for both pickers in range mode."""
         time_picker = vm.TimePicker(
             id="timepicker_id",
@@ -196,6 +200,7 @@ class TestBuildMethod:
                         dmc.TimePicker(
                             id="timepicker_id-start",
                             value="09:00",
+                            label="From:",
                             debounce=True,
                             withDropdown=True,
                             clearable=True,
@@ -203,6 +208,7 @@ class TestBuildMethod:
                         dmc.TimePicker(
                             id="timepicker_id-end",
                             value="17:00",
+                            label="To:",
                             debounce=True,
                             withDropdown=True,
                             clearable=True,
@@ -215,7 +221,7 @@ class TestBuildMethod:
         )
         assert_component_equal(time_picker, expected_timepicker)
 
-    def test_timepicker_build_with_extra_single(self):
+    def test_single_timepicker_build_with_extra(self):
         """Extra keyword arguments override defaults in single mode."""
         time_picker = vm.TimePicker(
             id="timepicker_id",
