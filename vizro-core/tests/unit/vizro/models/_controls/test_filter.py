@@ -75,9 +75,7 @@ def managers_column_only_exists_in_some():
             vm.Graph(
                 id="column_datetime_exists_2",
                 figure=px.scatter(
-                    pd.DataFrame(
-                        {"column_datetime": [datetime(2024, 1, 1, 10, 0), datetime(2024, 1, 2, 11, 0)]}
-                    )
+                    pd.DataFrame({"column_datetime": [datetime(2024, 1, 1, 10, 0), datetime(2024, 1, 2, 11, 0)]})
                 ),
             ),
             vm.Graph(
@@ -88,12 +86,8 @@ def managers_column_only_exists_in_some():
                 id="column_time_exists_2",
                 figure=px.scatter(pd.DataFrame({"column_time": [time(10, 0), time(11, 0)]})),
             ),
-            vm.Graph(
-                id="column_boolean_exists_1", figure=px.scatter(pd.DataFrame({"column_boolean": [True, False]}))
-            ),
-            vm.Graph(
-                id="column_boolean_exists_2", figure=px.scatter(pd.DataFrame({"column_boolean": [True, False]}))
-            ),
+            vm.Graph(id="column_boolean_exists_1", figure=px.scatter(pd.DataFrame({"column_boolean": [True, False]}))),
+            vm.Graph(id="column_boolean_exists_2", figure=px.scatter(pd.DataFrame({"column_boolean": [True, False]}))),
         ],
     )
     Vizro._pre_build()
@@ -546,17 +540,11 @@ class TestFilterStaticMethods:
                 ],
             ),
             (
-                [
-                    [
-                        datetime(2024, 1, 1, 10, 0),
-                        datetime(2024, 1, 1, 11, 0),
-                        datetime(2024, 1, 1, 10, 0)
-                    ]
-                ],
+                [[datetime(2024, 1, 1, 10, 0), datetime(2024, 1, 1, 11, 0), datetime(2024, 1, 1, 10, 0)]],
                 [
                     datetime(2024, 1, 1, 10, 0),
                     datetime(2024, 1, 1, 11, 0),
-                ]
+                ],
             ),
             (
                 [
@@ -696,8 +684,8 @@ class TestFilterStaticMethods:
                     ]
                 ],
                 (
-                    datetime(2024, 1,1,10,0, 0),
-                    datetime(2024, 1,1,11,0, 0),
+                    datetime(2024, 1, 1, 10, 0, 0),
+                    datetime(2024, 1, 1, 11, 0, 0),
                 ),
             ),
             (
@@ -711,7 +699,7 @@ class TestFilterStaticMethods:
                 (
                     time(10, 10, 10),
                     time(20, 20, 20),
-                )
+                ),
             ),
             ([[1], []], (1, 1)),
             ([[1, 2], []], (1, 2)),
@@ -1078,9 +1066,7 @@ class TestFilterPreBuildMethod:
             ("column_time", vm.TimePicker),
         ],
     )
-    def test_selector_default_selector(
-        self, filtered_column, expected_selector, managers_column_only_exists_in_some
-    ):
+    def test_selector_default_selector(self, filtered_column, expected_selector, managers_column_only_exists_in_some):
         filter = vm.Filter(column=filtered_column)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -1129,9 +1115,7 @@ class TestFilterPreBuildMethod:
             ("column_time", vm.TimePicker),
         ],
     )
-    def test_allowed_selectors_per_column_type(
-        self, filtered_column, selector, managers_column_only_exists_in_some
-    ):
+    def test_allowed_selectors_per_column_type(self, filtered_column, selector, managers_column_only_exists_in_some):
         filter = vm.Filter(column=filtered_column, selector=selector())
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
