@@ -25,7 +25,9 @@ from vizro.models._controls.filter import (
 def managers_column_different_type():
     """Instantiates the managers with a page and two graphs sharing the same column but of different data types."""
     df_numerical = pd.DataFrame({"shared_column": [1]})
-    df_temporal = pd.DataFrame({"shared_column": [datetime(2024, 1, 1)]})
+    df_date = pd.DataFrame({"shared_column": [datetime(2024, 1, 1)]})
+    df_datetime = pd.DataFrame({"shared_column": [datetime(2024, 1, 1, 10, 0)]})
+    df_time = pd.DataFrame({"shared_column": [time(10, 0)]})
     df_categorical = pd.DataFrame({"shared_column": ["a"]})
     df_boolean = pd.DataFrame({"shared_column": [False]})
 
@@ -34,7 +36,9 @@ def managers_column_different_type():
         title="Page Title",
         components=[
             vm.Graph(id="column_numerical", figure=px.scatter(df_numerical)),
-            vm.Graph(id="column_temporal", figure=px.scatter(df_temporal)),
+            vm.Graph(id="column_date", figure=px.scatter(df_date)),
+            vm.Graph(id="column_datetime", figure=px.scatter(df_datetime)),
+            vm.Graph(id="column_time", figure=px.scatter(df_time)),
             vm.Graph(id="column_categorical", figure=px.scatter(df_categorical)),
             vm.Graph(id="column_boolean", figure=px.scatter(df_boolean)),
         ],
@@ -57,15 +61,39 @@ def managers_column_only_exists_in_some():
                 id="column_categorical_exists_2", figure=px.scatter(pd.DataFrame({"column_categorical": ["a", "b"]}))
             ),
             vm.Graph(
-                id="column_temporal_exists_1",
-                figure=px.scatter(pd.DataFrame({"column_temporal": [datetime(2024, 1, 1)]})),
+                id="column_date_exists_1",
+                figure=px.scatter(pd.DataFrame({"column_date": [datetime(2024, 1, 1)]})),
             ),
             vm.Graph(
-                id="column_temporal_exists_2",
-                figure=px.scatter(pd.DataFrame({"column_temporal": [datetime(2024, 1, 1), datetime(2024, 1, 2)]})),
+                id="column_date_exists_2",
+                figure=px.scatter(pd.DataFrame({"column_date": [datetime(2024, 1, 1), datetime(2024, 1, 2)]})),
             ),
-            vm.Graph(id="column_boolean_exists_1", figure=px.scatter(pd.DataFrame({"column_boolean": [True]}))),
-            vm.Graph(id="column_boolean_exists_2", figure=px.scatter(pd.DataFrame({"column_boolean": [True, False]}))),
+            vm.Graph(
+                id="column_datetime_exists_1",
+                figure=px.scatter(pd.DataFrame({"column_datetime": [datetime(2024, 1, 1, 10, 0)]})),
+            ),
+            vm.Graph(
+                id="column_datetime_exists_2",
+                figure=px.scatter(
+                    pd.DataFrame(
+                        {"column_datetime": [datetime(2024, 1, 1, 10, 0), datetime(2024, 1, 2, 11, 0)]}
+                    )
+                ),
+            ),
+            vm.Graph(
+                id="column_time_exists_1",
+                figure=px.scatter(pd.DataFrame({"column_time": [time(10, 0)]})),
+            ),
+            vm.Graph(
+                id="column_time_exists_2",
+                figure=px.scatter(pd.DataFrame({"column_time": [time(10, 0), time(11, 0)]})),
+            ),
+            vm.Graph(
+                id="column_boolean_exists_1", figure=px.scatter(pd.DataFrame({"column_boolean": [True, False]}))
+            ),
+            vm.Graph(
+                id="column_boolean_exists_2", figure=px.scatter(pd.DataFrame({"column_boolean": [True, False]}))
+            ),
         ],
     )
     Vizro._pre_build()
@@ -94,14 +122,34 @@ def target_to_data_frame():
                 "column_categorical": ["b", "c"],
             }
         ),
-        "column_temporal_exists_1": pd.DataFrame(
+        "column_date_exists_1": pd.DataFrame(
             {
-                "column_temporal": [datetime(2024, 1, 1), datetime(2024, 1, 2)],
+                "column_date": [datetime(2024, 1, 1), datetime(2024, 1, 2)],
             }
         ),
-        "column_temporal_exists_2": pd.DataFrame(
+        "column_date_exists_2": pd.DataFrame(
             {
-                "column_temporal": [datetime(2024, 1, 2), datetime(2024, 1, 3)],
+                "column_date": [datetime(2024, 1, 2), datetime(2024, 1, 3)],
+            }
+        ),
+        "column_datetime_exists_1": pd.DataFrame(
+            {
+                "column_datetime": [datetime(2024, 1, 1, 10, 0), datetime(2024, 1, 2, 11, 0)],
+            }
+        ),
+        "column_datetime_exists_2": pd.DataFrame(
+            {
+                "column_datetime": [datetime(2024, 1, 2, 10, 0), datetime(2024, 1, 3, 11, 0)],
+            }
+        ),
+        "column_time_exists_1": pd.DataFrame(
+            {
+                "column_time": [time(10, 0), time(11, 0)],
+            }
+        ),
+        "column_time_exists_2": pd.DataFrame(
+            {
+                "column_time": [time(11, 0), time(12, 0)],
             }
         ),
         "column_boolean_exists_1": pd.DataFrame(
@@ -837,10 +885,10 @@ class TestFilterCall:
         assert selector_build.min == 1
         assert selector_build.max == 4
 
-    def test_filter_call_temporal_selector_valid(self, target_to_data_frame):
+    def test_filter_call_date_selector_valid(self, target_to_data_frame):
         filter = vm.Filter(
-            column="column_temporal",
-            targets=["column_temporal_exists_1", "column_temporal_exists_2"],
+            column="column_date",
+            targets=["column_date_exists_1", "column_date_exists_2"],
             selector=vm.DatePicker(id="test_selector_id"),
         )
         model_manager["test_page"].controls = [filter]
@@ -850,6 +898,21 @@ class TestFilterCall:
             "test_selector_id"
         ]
         assert selector_build.minDate == datetime(2024, 1, 1)
+        assert selector_build.maxDate == datetime(2024, 1, 4)
+
+    def test_filter_call_datetime_selector_valid(self, target_to_data_frame):
+        filter = vm.Filter(
+            column="column_datetime",
+            targets=["column_datetime_exists_1", "column_datetime_exists_2"],
+            selector=vm.DatePicker(id="test_selector_id"),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["2024-01-03", "2024-01-04"])[
+            "test_selector_id"
+        ]
+        assert selector_build.minDate == datetime(2024, 1, 1, 10, 0)
         assert selector_build.maxDate == datetime(2024, 1, 4)
 
     def test_dynamic_filter_call_guard_component_is_true(self, target_to_data_frame):
@@ -989,9 +1052,16 @@ class TestFilterPreBuildMethod:
 
     @pytest.mark.parametrize(
         "filtered_column, expected_column_type",
-        [("country", "categorical"), ("year", "date"), ("lifeExp", "numerical"), ("is_europe", "boolean")],
+        [
+            ("column_numerical", "numerical"),
+            ("column_categorical", "categorical"),
+            ("column_boolean", "boolean"),
+            ("column_date", "date"),
+            ("column_datetime", "datetime"),
+            ("column_time", "time"),
+        ],
     )
-    def test_column_type(self, filtered_column, expected_column_type, managers_one_page_two_graphs):
+    def test_column_type(self, filtered_column, expected_column_type, managers_column_only_exists_in_some):
         filter = vm.Filter(column=filtered_column)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -999,9 +1069,18 @@ class TestFilterPreBuildMethod:
 
     @pytest.mark.parametrize(
         "filtered_column, expected_selector",
-        [("country", vm.Dropdown), ("year", vm.DatePicker), ("lifeExp", vm.RangeSlider), ("is_europe", vm.Switch)],
+        [
+            ("column_numerical", vm.RangeSlider),
+            ("column_categorical", vm.Dropdown),
+            ("column_boolean", vm.Switch),
+            ("column_date", vm.DatePicker),
+            ("column_datetime", vm.DatePicker),
+            ("column_time", vm.TimePicker),
+        ],
     )
-    def test_selector_default_selector(self, filtered_column, expected_selector, managers_one_page_two_graphs):
+    def test_selector_default_selector(
+        self, filtered_column, expected_selector, managers_column_only_exists_in_some
+    ):
         filter = vm.Filter(column=filtered_column)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -1019,28 +1098,40 @@ class TestFilterPreBuildMethod:
     @pytest.mark.parametrize(
         "filtered_column, selector",
         [
-            ("country", vm.Dropdown),
-            ("country", vm.RadioItems),
-            ("country", vm.Checklist),
-            ("lifeExp", vm.Slider),
-            ("lifeExp", vm.RangeSlider),
-            ("lifeExp", vm.Dropdown),
-            ("lifeExp", vm.RadioItems),
-            ("lifeExp", vm.Checklist),
-            ("year", vm.Dropdown),
-            ("year", vm.RadioItems),
-            ("year", vm.Checklist),
-            ("year", vm.DatePicker),
-            ("is_europe", vm.Switch),
-            ("is_europe", vm.Dropdown),
-            ("is_europe", vm.RadioItems),
-            ("is_europe", vm.Checklist),
+            # categorical column - categorical selectors
+            ("column_categorical", vm.Dropdown),
+            ("column_categorical", vm.RadioItems),
+            ("column_categorical", vm.Checklist),
+            # numerical column - numerical + categorical selectors
+            ("column_numerical", vm.Slider),
+            ("column_numerical", vm.RangeSlider),
+            ("column_numerical", vm.Dropdown),
+            ("column_numerical", vm.RadioItems),
+            ("column_numerical", vm.Checklist),
             # Covers numerical columns with 0/1 data. See detailed comment in filter.py
             # on disallowing boolean selectors for numerical columns.
-            ("lifeExp", vm.Switch),
+            ("column_numerical", vm.Switch),
+            # boolean column - boolean + categorical selectors
+            ("column_boolean", vm.Switch),
+            ("column_boolean", vm.Dropdown),
+            ("column_boolean", vm.RadioItems),
+            ("column_boolean", vm.Checklist),
+            # date column - date + categorical selectors
+            ("column_date", vm.DatePicker),
+            ("column_date", vm.Dropdown),
+            ("column_date", vm.RadioItems),
+            ("column_date", vm.Checklist),
+            # datetime column - date + time selectors only (categorical selectors fail because
+            # non-midnight Timestamps and time objects are not accepted as Dropdown options).
+            ("column_datetime", vm.DatePicker),
+            ("column_datetime", vm.TimePicker),
+            # time column - time selectors only (same reason as datetime).
+            ("column_time", vm.TimePicker),
         ],
     )
-    def test_allowed_selectors_per_column_type(self, filtered_column, selector, managers_one_page_two_graphs):
+    def test_allowed_selectors_per_column_type(
+        self, filtered_column, selector, managers_column_only_exists_in_some
+    ):
         filter = vm.Filter(column=filtered_column, selector=selector())
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -1049,22 +1140,39 @@ class TestFilterPreBuildMethod:
     @pytest.mark.parametrize(
         "filtered_column, selector, selector_name, column_type",
         [
-            ("country", vm.Slider, "Slider", "categorical"),
-            ("country", vm.RangeSlider, "RangeSlider", "categorical"),
-            ("country", vm.DatePicker, "DatePicker", "categorical"),
-            ("lifeExp", vm.DatePicker, "DatePicker", "numerical"),
-            ("year", vm.Slider, "Slider", "date"),
-            ("year", vm.RangeSlider, "RangeSlider", "date"),
-            ("is_europe", vm.Slider, "Slider", "boolean"),
-            ("is_europe", vm.RangeSlider, "RangeSlider", "boolean"),
-            ("is_europe", vm.DatePicker, "DatePicker", "boolean"),
-            ("year", vm.Switch, "Switch", "date"),
+            # categorical column
+            ("column_categorical", vm.Slider, "Slider", "categorical"),
+            ("column_categorical", vm.RangeSlider, "RangeSlider", "categorical"),
+            ("column_categorical", vm.DatePicker, "DatePicker", "categorical"),
+            ("column_categorical", vm.TimePicker, "TimePicker", "categorical"),
             # Also disallowed for categorical binary columns such as Off/On etc.
-            ("country", vm.Switch, "Switch", "categorical"),
+            ("column_categorical", vm.Switch, "Switch", "categorical"),
+            # numerical column
+            ("column_numerical", vm.DatePicker, "DatePicker", "numerical"),
+            ("column_numerical", vm.TimePicker, "TimePicker", "numerical"),
+            # boolean column
+            ("column_boolean", vm.Slider, "Slider", "boolean"),
+            ("column_boolean", vm.RangeSlider, "RangeSlider", "boolean"),
+            ("column_boolean", vm.DatePicker, "DatePicker", "boolean"),
+            ("column_boolean", vm.TimePicker, "TimePicker", "boolean"),
+            # date column
+            ("column_date", vm.Slider, "Slider", "date"),
+            ("column_date", vm.RangeSlider, "RangeSlider", "date"),
+            ("column_date", vm.Switch, "Switch", "date"),
+            ("column_date", vm.TimePicker, "TimePicker", "date"),
+            # datetime column
+            ("column_datetime", vm.Slider, "Slider", "datetime"),
+            ("column_datetime", vm.RangeSlider, "RangeSlider", "datetime"),
+            ("column_datetime", vm.Switch, "Switch", "datetime"),
+            # time column
+            ("column_time", vm.Slider, "Slider", "time"),
+            ("column_time", vm.RangeSlider, "RangeSlider", "time"),
+            ("column_time", vm.Switch, "Switch", "time"),
+            ("column_time", vm.DatePicker, "DatePicker", "time"),
         ],
     )
     def test_disallowed_selectors_per_column_type(
-        self, filtered_column, selector, selector_name, column_type, managers_one_page_two_graphs
+        self, filtered_column, selector, selector_name, column_type, managers_column_only_exists_in_some
     ):
         filter = vm.Filter(column=filtered_column, selector=selector())
         model_manager["test_page"].controls = [filter]
@@ -1077,11 +1185,19 @@ class TestFilterPreBuildMethod:
     @pytest.mark.parametrize(
         "targets",
         [
-            ["column_numerical", "column_temporal"],
+            ["column_numerical", "column_date"],
+            ["column_numerical", "column_datetime"],
+            ["column_numerical", "column_time"],
             ["column_numerical", "column_categorical"],
-            ["column_temporal", "column_categorical"],
-            ["column_boolean", "column_temporal"],
+            ["column_date", "column_categorical"],
+            ["column_datetime", "column_categorical"],
+            ["column_time", "column_categorical"],
+            ["column_boolean", "column_date"],
+            ["column_boolean", "column_datetime"],
+            ["column_boolean", "column_time"],
             ["column_boolean", "column_categorical"],
+            ["column_date", "column_time"],
+            ["column_datetime", "column_time"],
         ],
     )
     def test_validate_column_type(self, targets, managers_column_different_type):
@@ -1184,7 +1300,7 @@ class TestFilterPreBuildMethod:
         assert filter.selector.min == min
         assert filter.selector.max == max
 
-    def test_temporal_min_max_specific(self, managers_one_page_two_graphs):
+    def test_date_min_max_specific(self, managers_one_page_two_graphs):
         filter = vm.Filter(column="year", selector=vm.DatePicker(min="1952-01-01", max="2007-01-01"))
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -1212,16 +1328,49 @@ class TestFilterPreBuildMethod:
         assert filter.selector.options == ["Africa", "Europe"]
 
     @pytest.mark.parametrize(
-        "filtered_column, selector, filter_function",
+        "filtered_column, selector, filter_function, expected_targets",
         [
-            ("lifeExp", None, _filter_between),
-            ("country", None, _filter_isin),
-            ("year", None, _filter_between),
-            ("year", vm.DatePicker(range=False), _filter_isin),
-            ("is_europe", None, _filter_isin),
+            (
+                "column_numerical",
+                None,
+                _filter_between,
+                ["column_numerical_exists_1", "column_numerical_exists_2", "column_numerical_exists_empty"],
+            ),
+            ("column_categorical", None, _filter_isin, ["column_categorical_exists_1", "column_categorical_exists_2"]),
+            ("column_boolean", None, _filter_isin, ["column_boolean_exists_1", "column_boolean_exists_2"]),
+            ("column_date", None, _filter_between, ["column_date_exists_1", "column_date_exists_2"]),
+            ("column_date", vm.DatePicker(), _filter_between, ["column_date_exists_1", "column_date_exists_2"]),
+            ("column_date", vm.DatePicker(range=False), _filter_isin, ["column_date_exists_1", "column_date_exists_2"]),
+            (
+                "column_datetime",
+                vm.DatePicker(),
+                _filter_between,
+                ["column_datetime_exists_1", "column_datetime_exists_2"],
+            ),
+            (
+                "column_datetime",
+                vm.TimePicker(),
+                _filter_between,
+                ["column_datetime_exists_1", "column_datetime_exists_2"],
+            ),
+            (
+                "column_datetime",
+                vm.TimePicker(range=False),
+                _filter_isin,
+                ["column_datetime_exists_1", "column_datetime_exists_2"],
+            ),
+            ("column_time", vm.TimePicker(), _filter_between, ["column_time_exists_1", "column_time_exists_2"]),
+            (
+                "column_time",
+                vm.TimePicker(range=False),
+                _filter_isin,
+                ["column_time_exists_1", "column_time_exists_2"],
+            ),
         ],
     )
-    def test_set_actions(self, filtered_column, selector, filter_function, managers_one_page_two_graphs):
+    def test_set_actions(
+        self, filtered_column, selector, filter_function, expected_targets, managers_column_only_exists_in_some
+    ):
         filter = vm.Filter(column=filtered_column, selector=selector)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -1232,7 +1381,7 @@ class TestFilterPreBuildMethod:
         assert default_action.id == f"__filter_action_{filter.id}"
         assert default_action.filter_function == filter_function
         assert default_action.column == filtered_column
-        assert default_action.targets == ["scatter_chart", "bar_chart"]
+        assert default_action.targets == expected_targets
 
     # TODO: Add tests for custom temporal and categorical selectors too. Probably inside the conftest file and reused in
     #       all other tests. Also add tests for the custom selector that is an entirely new component and adjust docs.
@@ -1489,20 +1638,25 @@ class TestFilterHierarchicalColumn:
 class TestFilterBuild:
     """Tests filter build method."""
 
-    @pytest.mark.usefixtures("managers_one_page_two_graphs")
+    @pytest.mark.usefixtures("managers_column_only_exists_in_some")
     @pytest.mark.parametrize(
         "test_column ,test_selector",
         [
-            ("continent", vm.Checklist()),
-            ("continent", vm.Dropdown()),
-            ("continent", vm.Dropdown(multi=False)),
-            ("continent", vm.RadioItems()),
-            ("pop", vm.Slider()),
-            ("pop", vm.RangeSlider()),
-            ("year", vm.DatePicker()),
-            ("year", vm.DatePicker(range=False)),
-            ("is_europe", vm.Switch()),
-            ("is_europe", vm.Switch(value=True)),
+            ("column_categorical", vm.Checklist()),
+            ("column_categorical", vm.Dropdown()),
+            ("column_categorical", vm.Dropdown(multi=False)),
+            ("column_categorical", vm.RadioItems()),
+            ("column_numerical", vm.Slider()),
+            ("column_numerical", vm.RangeSlider()),
+            ("column_boolean", vm.Switch()),
+            ("column_boolean", vm.Switch(value=True)),
+            ("column_date", vm.DatePicker()),
+            ("column_date", vm.DatePicker(range=False)),
+            ("column_datetime", vm.DatePicker()),
+            ("column_datetime", vm.TimePicker()),
+            ("column_datetime", vm.TimePicker(range=False)),
+            ("column_time", vm.TimePicker()),
+            ("column_time", vm.TimePicker(range=False)),
         ],
     )
     def test_filter_build(self, test_column, test_selector):

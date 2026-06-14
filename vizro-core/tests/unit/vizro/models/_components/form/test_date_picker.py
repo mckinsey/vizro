@@ -77,7 +77,7 @@ class TestDatePickerInstantiation:
             (None, "2024-01-01", None, date(2024, 1, 1)),
             ("2024-01-01", "2024-02-01", date(2024, 1, 1), date(2024, 2, 1)),
             # `datetime` objects with a time component are coerced to pure dates by `_coerce_to_date`.
-            (datetime(2024, 1, 1, 12, 34, 56), datetime(2024, 2, 1, 23, 59, 59), date(2024, 1, 1), date(2024, 2, 1)),
+            (datetime(2024, 1, 1, 10, 10, 10), datetime(2024, 2, 1, 20), date(2024, 1, 1), date(2024, 2, 1)),
             (datetime(2024, 1, 1, 0, 0, 0, 123456), datetime(2024, 2, 1), date(2024, 1, 1), date(2024, 2, 1)),
         ],
     )
