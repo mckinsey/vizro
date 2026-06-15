@@ -82,9 +82,6 @@
   color: var(--text-primary-inverted);
 }
 
-/* Active preset in the dropdown (matches current value). Without this override, Mantine paints
-   it with --mantine-primary-color-filled + --mantine-color-white, which in dark mode is white
-   on near-white. */
 .mantine-TimePicker-presetControl[data-active] {
   background-color: var(--bs-primary);
   color: var(--text-primary-inverted);
@@ -96,7 +93,6 @@
   opacity: 0.9;
 }
 
-/* Make the From: / To: labels for range TimePicker visually subdued. */
 .mantine-TimePicker-label {
   color: var(--text-secondary);
   font-size: 0.75rem;
