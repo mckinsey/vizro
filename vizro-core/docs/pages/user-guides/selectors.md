@@ -116,6 +116,13 @@ Use [`DatePicker`][vizro.models.DatePicker] for `date` columns and [`TimePicker`
 
     When configuring the [`TimePicker`][vizro.models.TimePicker] make sure to provide your times for the `value` argument in `"HH:MM"` or `"HH:MM:SS"` format or as a `datetime.time` type (for example, `datetime.time(10, 30)`).
 
+!!! note
+
+    If your data frame column is not already typed as `date`/`datetime` or `time`, convert it with [pandas.to_datetime](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html) before passing it to a filter:
+
+    - For [`DatePicker`][vizro.models.DatePicker] targets: `df["date"] = pd.to_datetime(df["date"])` to get a `datetime64` column.
+    - For [`TimePicker`][vizro.models.TimePicker] targets: `df["time"] = pd.to_datetime(df["time"]).time` to get a column of `datetime.time` objects.
+
 ## Boolean selectors
 
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:

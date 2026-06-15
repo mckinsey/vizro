@@ -582,6 +582,36 @@ categories:
                   ),
               ]
 
+          - id: timepicker
+            name: "TimePicker (single time)"
+            aliases: [time, single time]
+            image: assets/images/timepicker.png
+            code: |
+              controls=[
+                  vm.Filter(
+                      column="time",
+                      selector=vm.TimePicker(
+                          title="Time Picker (Stocks - date)",
+                          range=False,
+                      )
+                  ),
+              ]
+
+          - id: timerangepicker
+            name: "TimePicker (time range)"
+            aliases:
+              [time range, from to, period, TimeRangePicker]
+            image: assets/images/timerangepicker.png
+            code: |
+              controls=[
+                  vm.Filter(
+                      column="time",
+                      selector=vm.timePicker(
+                          title="Date Picker (Stocks - date)",
+                      )
+                  ),
+              ]
+
           - id: switch
             name: Switch
             aliases: [toggle, boolean, on off, checkbox switch, vm.Switch]

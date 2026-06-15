@@ -215,6 +215,43 @@ page_4 = vm.Page(
     ],
 )
 
+
+# Build a clock_time per row inside the Lunch/Dinner window of the original "time" (Lunch/Dinner) column.
+tips = px.data.tips()
+# Assign random clock_time to match Lunch and Dinner "time" column
+windows = {"Lunch": (12 * 3600, 17 * 3600), "Dinner": (17 * 3600, 24 * 3600)}
+starts = tips["time"].map(lambda x: windows[x][0])
+ends = tips["time"].map(lambda x: windows[x][1])
+clock = pd.to_datetime(_rng.integers(starts, ends), unit="s")
+
+# "hour" column is integer
+tips["hour"] = clock.hour
+# "clock_time" is in format HH:MM:SS
+tips["clock_time"] = clock.time
+tips = tips.sort_values("clock_time").reset_index(drop=True)
+
+page_5 = vm.Page(
+    title="Time Pickers",
+    components=[
+        vm.Graph(
+            figure=px.histogram(
+                tips,
+                x="hour",
+                y="tip",
+                color="time",
+                histfunc="sum",
+                title="Summarised tip by hour of day",
+                labels={"hour": "Hour of day", "tip": "Summarised tip ($)", "time": "Meal"},
+            ),
+        ),
+        vm.AgGrid(title="Row Data", figure=dash_ag_grid(data_frame=tips)),
+    ],
+    controls=[
+        vm.Filter(column="clock_time", selector=vm.TimePicker(title="Lunch/Dinner - time range")),
+        vm.Filter(column="clock_time", selector=vm.TimePicker(title="Lunch/Dinner - time", range=False)),
+    ],
+)
+
 dashboard = vm.Dashboard(
     pages=[
         page_0,
@@ -222,6 +259,7 @@ dashboard = vm.Dashboard(
         page_2,
         page_3,
         page_4,
+        page_5,
     ],
 )
 

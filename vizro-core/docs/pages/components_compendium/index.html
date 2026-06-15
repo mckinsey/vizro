@@ -184,6 +184,12 @@
                       <a href="#daterangepicker" class="nav-link nav-link-sub">DatePicker (date range)</a>
                     </li>
                     <li class="nav-item">
+                      <a href="#timepicker" class="nav-link nav-link-sub">TimePicker (single time)</a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="#timerangepicker" class="nav-link nav-link-sub">TimePicker (time range)</a>
+                    </li>
+                    <li class="nav-item">
                       <a href="#switch" class="nav-link nav-link-sub">Switch</a>
                     </li>
                     <li class="nav-item">
@@ -1318,6 +1324,55 @@ respective models.
     vm.Filter(
         column=&#34;date&#34;,
         selector=vm.DatePicker(
+            title=&#34;Date Picker (Stocks - date)&#34;,
+        )
+    ),
+]</code></pre>
+                            </div>
+                          </div>
+                        </div>
+
+                                                <div class="component_card" id="timepicker" data-aliases="time single time">
+                          <h3 class="component_card_title">TimePicker (single time)</h3>
+                          <div class="component_card_content">
+                            <img src="assets/images/timepicker.png" alt="TimePicker (single time)" />
+                            <div class="code-block">
+                              <button class="code-block__copy-button" aria-label="Copy code to clipboard">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+                                <span class="code-block__copy-text">Copy</span>
+                              </button>
+                              <pre><code class="language-python">controls=[
+    vm.Filter(
+        column=&#34;time&#34;,
+        selector=vm.TimePicker(
+            title=&#34;Time Picker (Stocks - date)&#34;,
+            range=False,
+        )
+    ),
+]</code></pre>
+                            </div>
+                          </div>
+                        </div>
+
+                                                <div class="component_card" id="timerangepicker" data-aliases="time range from to period TimeRangePicker">
+                          <h3 class="component_card_title">TimePicker (time range)</h3>
+                          <div class="component_card_content">
+                            <img src="assets/images/timerangepicker.png" alt="TimePicker (time range)" />
+                            <div class="code-block">
+                              <button class="code-block__copy-button" aria-label="Copy code to clipboard">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+                                <span class="code-block__copy-text">Copy</span>
+                              </button>
+                              <pre><code class="language-python">controls=[
+    vm.Filter(
+        column=&#34;time&#34;,
+        selector=vm.timePicker(
             title=&#34;Date Picker (Stocks - date)&#34;,
         )
     ),
