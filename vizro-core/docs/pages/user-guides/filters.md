@@ -77,7 +77,8 @@ The selector is configured automatically based on the target column type data as
 
 - Categorical data uses [`vm.Dropdown(multi=True)`][vizro.models.Dropdown] where `options` is the set of unique values found in `column` across all the data sources of components in `targets`.
 - [Numerical data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_numeric_dtype.html) uses [`vm.RangeSlider`][vizro.models.RangeSlider] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`.
-- [Temporal data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_datetime64_any_dtype.html) uses [`vm.DatePicker(range=True)`][vizro.models.DatePicker] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`. A column can be converted to this type with [pandas.to_datetime](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html).
+- [Temporal data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_datetime64_any_dtype.html) (`date` or `datetime` columns) uses [`vm.DatePicker(range=True)`][vizro.models.DatePicker] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`. A column can be converted to this type with [pandas.to_datetime](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html).  For `datetime` columns [`vm.DatePicker`][vizro.models.DatePicker] is the default, but [`vm.TimePicker`][vizro.models.TimePicker] can also be used to filter on the time-of-day component instead.
+- Time-of-day data (`time` columns containing `datetime.time` objects) uses [`vm.TimePicker(range=True)`][vizro.models.TimePicker].
 - [Boolean data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_bool_dtype.html) uses [`vm.Switch`][vizro.models.Switch] which provides a toggle interface for True/False values. The Switch also works with binary numerical columns containing 0/1 values.
 
 The following example demonstrates these default selector types.
@@ -223,7 +224,7 @@ To add a hierarchical filter to your page:
 
 ## Change selector
 
-Use a different `selector` argument for the [`Filter`][vizro.models.Filter] model for a different selector model. For a **single** `column` string, available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker] and [`Switch`][vizro.models.Switch]. For a **hierarchical** filter (`column` as a list), use [`Cascader`][vizro.models.Cascader] as in the [section above](#hierarchical-filters).
+Use a different `selector` argument for the [`Filter`][vizro.models.Filter] model for a different selector model. For a **single** `column` string, available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker], [`TimePicker`][vizro.models.TimePicker] and [`Switch`][vizro.models.Switch]. For a **hierarchical** filter (`column` as a list), use [`Cascader`][vizro.models.Cascader] as in the [section above](#hierarchical-filters).
 
 You can explore and test all available selectors interactively on our [feature demo dashboard](https://vizro-demo-features.hf.space/selectors).
 

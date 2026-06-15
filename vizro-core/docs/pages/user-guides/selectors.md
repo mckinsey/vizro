@@ -104,10 +104,17 @@ For more information, refer to the API reference of the selector, or the documen
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
 - [`DatePicker`][vizro.models.DatePicker] based on [`dmc.DatePickerInput`](https://www.dash-mantine-components.com/components/datepickerinput)
+- [`TimePicker`][vizro.models.TimePicker] based on [`dmc.TimePicker`](https://www.dash-mantine-components.com/components/timepicker)
+
+Use [`DatePicker`][vizro.models.DatePicker] for `date` columns and [`TimePicker`][vizro.models.TimePicker] for `time` (time-of-day) columns. For `datetime` columns either selector can be used while [`DatePicker`][vizro.models.DatePicker] is set as the default filter's selector.
 
 !!! note
 
     When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type (for example, `datetime.datetime(2024, 01, 01)`).
+
+!!! note
+
+    When configuring the [`TimePicker`][vizro.models.TimePicker] make sure to provide your times for the `value` argument in `"HH:MM"` or `"HH:MM:SS"` format or as a `datetime.time` type (for example, `datetime.time(10, 30)`).
 
 ## Boolean selectors
 
