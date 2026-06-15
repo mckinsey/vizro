@@ -599,8 +599,7 @@ categories:
 
           - id: timerangepicker
             name: "TimePicker (time range)"
-            aliases:
-              [time range, from to, period, TimeRangePicker]
+            aliases: [time range, from to, period, TimeRangePicker]
             image: assets/images/timerangepicker.png
             code: |
               controls=[
