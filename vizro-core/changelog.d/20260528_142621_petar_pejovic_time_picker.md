@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Add `vm.TimePicker` model as a new time-of-day selector for `Filter` and `Parameter`. It is the default selector for `time` columns, and can also be used on `datetime` columns to filter on the time-of-day component. See the [user guide on selectors](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/) for more details. ([#1746](https://github.com/mckinsey/vizro/pull/1746))
+- Introduce `TimePicker` as a new selector for `Filter` and `Parameter`. See the [user guide on selectors](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/) for more details. ([#1746](https://github.com/mckinsey/vizro/pull/1746))
 
 <!--
 ### Changed
