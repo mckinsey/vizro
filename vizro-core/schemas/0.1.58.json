@@ -1175,8 +1175,7 @@
                   "radio_items": "#/$defs/RadioItems",
                   "range_slider": "#/$defs/RangeSlider",
                   "slider": "#/$defs/Slider",
-                  "switch": "#/$defs/Switch",
-                  "time_picker": "#/$defs/TimePicker"
+                  "switch": "#/$defs/Switch"
                 },
                 "propertyName": "type"
               },
@@ -1204,9 +1203,6 @@
                 },
                 {
                   "$ref": "#/$defs/Switch"
-                },
-                {
-                  "$ref": "#/$defs/TimePicker"
                 }
               ]
             },
@@ -1825,8 +1821,7 @@
               "radio_items": "#/$defs/RadioItems",
               "range_slider": "#/$defs/RangeSlider",
               "slider": "#/$defs/Slider",
-              "switch": "#/$defs/Switch",
-              "time_picker": "#/$defs/TimePicker"
+              "switch": "#/$defs/Switch"
             },
             "propertyName": "type"
           },
@@ -1854,9 +1849,6 @@
             },
             {
               "$ref": "#/$defs/Switch"
-            },
-            {
-              "$ref": "#/$defs/TimePicker"
             }
           ],
           "title": "Selector"
@@ -2477,98 +2469,6 @@
       },
       "required": ["text"],
       "title": "Text",
-      "type": "object"
-    },
-    "TimePicker": {
-      "additionalProperties": false,
-      "description": "Temporal time-of-day single/range option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].",
-      "properties": {
-        "id": {
-          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
-          "title": "Id",
-          "type": "string"
-        },
-        "type": {
-          "const": "time_picker",
-          "default": "time_picker",
-          "title": "Type",
-          "type": "string"
-        },
-        "value": {
-          "anyOf": [
-            {
-              "items": {
-                "format": "time",
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "format": "time",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Default time/times for time picker.",
-          "title": "Value"
-        },
-        "title": {
-          "default": "",
-          "description": "Title to be displayed.",
-          "title": "Title",
-          "type": "string"
-        },
-        "range": {
-          "default": true,
-          "description": "Boolean flag for displaying range picker.",
-          "title": "Range",
-          "type": "boolean"
-        },
-        "description": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/Tooltip"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
-        },
-        "actions": {
-          "default": [],
-          "items": {
-            "description": "Action.",
-            "oneOf": [
-              {
-                "$ref": "#/$defs/Action"
-              },
-              {
-                "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
-              },
-              {
-                "$ref": "#/$defs/update_notification"
-              }
-            ]
-          },
-          "title": "Actions",
-          "type": "array"
-        }
-      },
-      "title": "TimePicker",
       "type": "object"
     },
     "Tooltip": {
