@@ -69,7 +69,7 @@ _TIME_PARTS_HH_MM = 2  # "HH:MM".split(":") → 2 parts, i.e. no seconds in form
 
 # Column types whose filter options/bounds can update when the underlying data source is dynamic.
 # "time", "boolean", and "hierarchical" are always static.
-# TimePicker on a "datetime" column is also always static (no min/max concept to derive dynamically).
+# The TimePicker on a "datetime" column is also always static (no min/max concept to derive dynamically).
 _DYNAMIC_COLUMN_TYPES = {"numerical", "categorical", "date", "datetime"}
 
 
@@ -93,7 +93,7 @@ def _coerce_temporal(
         if len(value[0].split(":")) == _TIME_PARTS_HH_MM:
             _strip_seconds = True
 
-        # Time temporal selector: convert "HH:MM" or "HH:MM:SS" input value strings to datetime.time objects.
+        # Time selector: convert "HH:MM" or "HH:MM:SS" input value strings to datetime.time objects.
         value = pd.to_datetime(value, format="mixed").time
 
         if is_datetime64_any_dtype(series):
@@ -106,7 +106,7 @@ def _coerce_temporal(
                 series = series.map(lambda v: v.replace(second=0))
 
     elif _is_date:
-        # Date temporal selector: convert date strings to datetime.date objects.
+        # Date selector: convert date strings to datetime.date objects.
         value = pd.to_datetime(value).date
         # Converting Timestamp to datetime.date
         series = series.dt.date
@@ -131,6 +131,12 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
 
 
 def _filter_between(series: pd.Series, value: list[float] | list[str | None]) -> pd.Series:
+    """Filter using .between() - works with numerical/date/time range data.
+
+    Time-of-day ranges that cross midnight are handled with an OR condition:
+    >>> _filter_between(pd.Series([dt_time(23, 0)]), [dt_time(21, 0), dt_time(6, 0)])  # [True]
+    >>> _filter_between(pd.Series([dt_time(12, 0)]), [dt_time(21, 0), dt_time(6, 0)])  # [False]
+    """
     # Skip filtering if any value is missing — both pickers must be set for a range filter.
     if any(v in [None, ""] for v in value):
         return pd.Series(True, index=series.index)

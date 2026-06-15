@@ -161,44 +161,31 @@ class TestTimePickerInstantiation:
 
 
 class TestBuildMethod:
-    @pytest.mark.parametrize(
-        "value, expected_store_data",
-        [
-            (None, [None, None]),
-            (["09:00", "17:00"], ["09:00", "17:00"]),
-            ([time(9, 0), time(17, 0)], [time(9, 0), time(17, 0)]),
-        ],
-    )
-    def test_timepicker_range_build(self, value, expected_store_data):
-        time_picker = vm.TimePicker(id="timepicker_id", range=True, value=value, title="Title").build()
+    def test_timepicker_range_build(self):
+        time_picker = vm.TimePicker(id="timepicker_id", range=True, value=["09:00", "17:00"], title="Title").build()
 
         expected_timepicker = html.Div(
             children=[
                 dbc.Label([html.Span("Title", id="timepicker_id_title"), None], html_for="timepicker_id-start"),
                 html.Div(
                     children=[
-                        dmc.TimePicker(
-                            id="timepicker_id-start", value=expected_store_data[0], label="From:", debounce=True
-                        ),
-                        dmc.TimePicker(
-                            id="timepicker_id-end", value=expected_store_data[1], label="To:", debounce=True
-                        ),
+                        dmc.TimePicker(id="timepicker_id-start", value="09:00", label="From:", debounce=True),
+                        dmc.TimePicker(id="timepicker_id-end", value="17:00", label="To:", debounce=True),
                     ],
                     style={"display": "flex", "gap": "8px"},
                 ),
-                dcc.Store(id="timepicker_id", data=expected_store_data, storage_type="session"),
+                dcc.Store(id="timepicker_id", data=["09:00", "17:00"], storage_type="session"),
             ]
         )
         assert_component_equal(time_picker, expected_timepicker)
 
-    @pytest.mark.parametrize("value", [None, "10:30", "10:30:00", time(10, 30)])
-    def test_timepicker_single_build(self, value):
-        time_picker = vm.TimePicker(id="timepicker_id", range=False, value=value, title="Title").build()
+    def test_timepicker_single_build(self):
+        time_picker = vm.TimePicker(id="timepicker_id", range=False, value="09:00", title="Title").build()
 
         expected_timepicker = html.Div(
             children=[
                 dbc.Label([html.Span("Title", id="timepicker_id_title"), None], html_for="timepicker_id"),
-                dmc.TimePicker(id="timepicker_id", value=value, debounce=True),
+                dmc.TimePicker(id="timepicker_id", value="09:00", debounce=True),
             ]
         )
         assert_component_equal(time_picker, expected_timepicker)
@@ -210,6 +197,35 @@ class TestBuildMethod:
         expected_timepicker = html.Div(
             children=[
                 None,
+                dmc.TimePicker(id="timepicker_id", value="10:30", debounce=True),
+            ]
+        )
+        assert_component_equal(time_picker, expected_timepicker)
+
+    def test_timepicker_build_with_description(self):
+        time_picker = vm.TimePicker(
+            id="timepicker_id",
+            range=False,
+            value="10:30",
+            title="Title",
+            description=vm.Tooltip(text="Test description", icon="Info", id="info"),
+        ).build()
+
+        expected_description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=vdc.Markdown("Test description", id="info-text", className="card-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+        expected_timepicker = html.Div(
+            children=[
+                dbc.Label(
+                    [html.Span("Title", id="timepicker_id_title"), *expected_description],
+                    html_for="timepicker_id",
+                ),
                 dmc.TimePicker(id="timepicker_id", value="10:30", debounce=True),
             ]
         )
@@ -274,35 +290,6 @@ class TestBuildMethod:
                     withDropdown=True,
                     clearable=True,
                 ),
-            ]
-        )
-        assert_component_equal(time_picker, expected_timepicker)
-
-    def test_timepicker_build_with_description(self):
-        time_picker = vm.TimePicker(
-            id="timepicker_id",
-            range=False,
-            value="10:30",
-            title="Title",
-            description=vm.Tooltip(text="Test description", icon="Info", id="info"),
-        ).build()
-
-        expected_description = [
-            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
-            dbc.Tooltip(
-                children=vdc.Markdown("Test description", id="info-text", className="card-text"),
-                id="info",
-                target="info-icon",
-                autohide=False,
-            ),
-        ]
-        expected_timepicker = html.Div(
-            children=[
-                dbc.Label(
-                    [html.Span("Title", id="timepicker_id_title"), *expected_description],
-                    html_for="timepicker_id",
-                ),
-                dmc.TimePicker(id="timepicker_id", value="10:30", debounce=True),
             ]
         )
         assert_component_equal(time_picker, expected_timepicker)

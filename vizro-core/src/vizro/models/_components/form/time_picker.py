@@ -41,6 +41,9 @@ class TimePicker(VizroBaseModel):
     """Temporal time-of-day single/range option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
+
+    Abstract: Usage documentation
+        [How to use temporal selectors](user-guides/selectors.md#temporal-selectors)
     """
 
     type: Literal["time_picker"] = "time_picker"
@@ -146,7 +149,7 @@ any defaults chosen by the Vizro team.""",
             )
 
     def _update_range_time_picker_store(self):
-        """Define the clientside callback responsible for syncing the range time picker store."""
+        """Define the clientside callback responsible for syncing the range time picker value with its store."""
         clientside_callback(
             ClientsideFunction(namespace="time_picker", function_name="update_range_time_picker_store"),
             output=[
