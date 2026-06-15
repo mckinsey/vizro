@@ -18,11 +18,23 @@ from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionsType, _IdProperty
 
 
-def _coerce_to_time(value: Any) -> Any:
-    """Coerce datetime to time object."""
-    if isinstance(value, datetime):
-        return value.time()
-    return value
+def _validate_time_string_format(value: Any) -> Any:
+    """Validate string values parse as `HH:MM` or `HH:MM:SS` without coercing them to `datetime.time`."""
+
+    def _validate(v: Any) -> Any:
+        if v and isinstance(v, str):
+            for fmt in ("%H:%M:%S", "%H:%M"):
+                try:
+                    datetime.strptime(v, fmt)
+                except ValueError:
+                    continue
+                return v
+            raise ValueError(f"Invalid time string {v!r}. Expected format 'HH:MM' or 'HH:MM:SS'.")
+        return v
+
+    if isinstance(value, list):
+        return [_validate(v) for v in value]
+    return _validate(value)
 
 
 class TimePicker(VizroBaseModel):
@@ -36,6 +48,7 @@ class TimePicker(VizroBaseModel):
         # Accept strings as-is so input value can stay in "HH:MM" format. Using only `datetime.time` would coerce them
         # to "HH:MM:SS", which breaks initial-load filtering because the filter does not strip seconds.
         list[time | str] | time | str | None,
+        AfterValidator(_validate_time_string_format),
         Field(default=None, description="Default time/times for time picker."),
     ]
     title: str = Field(default="", description="Title to be displayed.")
@@ -95,7 +108,7 @@ any defaults chosen by the Vizro team.""",
         label = (
             dbc.Label(
                 children=[html.Span(id=f"{self.id}_title", children=self.title), *description],
-                html_for=self.id,
+                html_for=f"{self.id}-start" if self.range else self.id,
             )
             if self.title
             else None

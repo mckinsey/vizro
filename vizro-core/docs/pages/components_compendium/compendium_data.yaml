@@ -606,7 +606,7 @@ categories:
                   vm.Filter(
                       column="time",
                       selector=vm.timePicker(
-                          title="Date Picker (Stocks - date)",
+                          title="Time Picker (Stocks - date)",
                       )
                   ),
               ]

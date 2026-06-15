@@ -76,10 +76,13 @@ _DYNAMIC_COLUMN_TYPES = {"numerical", "categorical", "date", "datetime"}
 def _coerce_temporal(
     series: pd.Series, value: list[Any], normalize_precision: bool = False
 ) -> tuple[pd.Series, list[Any]]:
-    """If needed, coerce series and value to comparable time or date objects based on value format.
+    """If needed, coerce `series` and `value` to comparable `datetime.time` or `datetime.date` objects.
 
-    Returns a boolean Series (all True) when temporal values contain None or "",
-    signaling callers to pass all rows through without filtering.
+    `normalize_precision=True` strips microseconds (and optionally seconds) from time values in the series to make
+     comparisons consistent with the user-provided string format.
+
+    Returns the coerced series and value to `datetime.time` or `datetime.date` objects if possible. Otherwise,
+    returns unchanged series and value.
     """
     _is_time = value and bool(_TIME_REGEX.match(str(value[0])))
     _is_date = not _is_time and is_datetime64_any_dtype(series)
@@ -522,7 +525,6 @@ class Filter(VizroBaseModel):
             "This column must have the same type for all targets."
         )
 
-    # TODO PP NOW: See whether _coerce_to_temporal can be used in the following two static functions
     @staticmethod
     def _get_min_max(
         targeted_data: pd.DataFrame,

@@ -34,7 +34,8 @@ class TestTimePickerInstantiation:
     def test_create_timepicker_mandatory_and_optional(self):
         time_picker = vm.TimePicker(
             id="time-picker-id",
-            value=["09:00", "17:00"],
+            # Mix HH:MM and HH:MM:SS string formats to confirm both are accepted and preserved as-is.
+            value=["09:00", "17:00:30"],
             title="Title",
             description=vm.Tooltip(id="tooltip-id", text="Test description", icon="info"),
             range=True,
@@ -42,7 +43,8 @@ class TestTimePickerInstantiation:
 
         assert time_picker.id == "time-picker-id"
         assert time_picker.type == "time_picker"
-        assert time_picker.value == ["09:00", "17:00"]
+        assert time_picker.value == ["09:00", "17:00:30"]
+        assert all(isinstance(v, str) for v in time_picker.value)
         assert time_picker.title == "Title"
         assert time_picker.actions == []
         assert time_picker.range is True
@@ -126,6 +128,37 @@ class TestTimePickerInstantiation:
         with pytest.raises(ValidationError):
             vm.TimePicker(range=range, value=value)
 
+    @pytest.mark.parametrize(
+        "range, value",
+        [
+            # Single-mode invalid strings.
+            (False, "10"),
+            (False, "10:60"),
+            (False, "10:30:60"),
+            (False, "9:30 AM"),
+            (False, "not-a-time"),
+            (False, "25:00"),
+            # Range-mode invalid strings (one bad value is enough).
+            (True, ["09:00", "25:00"]),
+            (True, ["bad", "17:00"]),
+            (True, ["09:00:99", "17:00"]),
+        ],
+    )
+    def test_validate_timepicker_value_invalid_format(self, range, value):
+        """String values must parse as HH:MM or HH:MM:SS."""
+        with pytest.raises(ValidationError, match="Invalid time string"):
+            vm.TimePicker(range=range, value=value)
+
+    def test_timepicker_value_string_not_coerced_to_time(self):
+        """String values stay as strings — they must not be coerced to `datetime.time`."""
+        time_picker = vm.TimePicker(range=True, value=["09:00", "17:00:30"])
+        assert time_picker.value == ["09:00", "17:00:30"]
+        assert all(isinstance(v, str) for v in time_picker.value)
+
+        time_picker = vm.TimePicker(range=False, value="09:00")
+        assert time_picker.value == "09:00"
+        assert isinstance(time_picker.value, str)
+
 
 class TestBuildMethod:
     @pytest.mark.parametrize(
@@ -141,7 +174,7 @@ class TestBuildMethod:
 
         expected_timepicker = html.Div(
             children=[
-                dbc.Label([html.Span("Title", id="timepicker_id_title"), None], html_for="timepicker_id"),
+                dbc.Label([html.Span("Title", id="timepicker_id_title"), None], html_for="timepicker_id-start"),
                 html.Div(
                     children=[
                         dmc.TimePicker(
@@ -194,7 +227,7 @@ class TestBuildMethod:
 
         expected_timepicker = html.Div(
             children=[
-                dbc.Label([html.Span("Title", id="timepicker_id_title"), None], html_for="timepicker_id"),
+                dbc.Label([html.Span("Title", id="timepicker_id_title"), None], html_for="timepicker_id-start"),
                 html.Div(
                     children=[
                         dmc.TimePicker(
