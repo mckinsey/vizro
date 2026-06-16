@@ -101,6 +101,6 @@ All documentation pages return clean markdown when fetched with the `Accept: tex
 
 ## RELATED PROJECTS
 
-- [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/): MCP server for AI-assisted Vizro dashboard creation; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-mcp/llms.txt)
-- [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/): Generative-AI chart creation; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-ai/llms.txt)
-- [Vizro-Experimental](https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/): Incubation home for in-development Vizro features; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-experimental/llms.txt)
+- [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/): MCP server for AI-assisted Vizro dashboard creation; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/llms.txt)
+- [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/): Generative-AI chart creation; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/llms.txt)
+- [Vizro-Experimental](https://vizro.readthedocs.io/projects/vizro-experimental/): Incubation home for in-development Vizro features; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/llms.txt)

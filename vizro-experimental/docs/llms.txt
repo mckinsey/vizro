@@ -32,6 +32,6 @@ All documentation pages return clean markdown when fetched with the `Accept: tex
 
 ## RELATED PROJECTS
 
-- [Vizro](https://vizro.readthedocs.io/en/stable/): The core Vizro dashboarding framework
-- [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/): Generative-AI chart creation
-- [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/): MCP server for AI-assisted Vizro dashboard creation
+- [Vizro](https://vizro.readthedocs.io/en/stable/): The core Vizro dashboarding framework; see its [llms.txt](https://vizro.readthedocs.io/en/stable/llms.txt)
+- [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/): Generative-AI chart creation; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/llms.txt)
+- [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/): MCP server for AI-assisted Vizro dashboard creation; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/llms.txt)

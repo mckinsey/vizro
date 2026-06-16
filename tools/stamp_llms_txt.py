@@ -1,4 +1,4 @@
-"""Stamps a built ``site/llms.txt`` with the correct ReadTheDocs version slug.
+r"""Stamps a built ``site/llms.txt`` with the correct ReadTheDocs version slug.
 
 Each Vizro docset's source ``docs/llms.txt`` uses a fixed placeholder URL for
 all of its own page links (e.g. ``https://vizro.readthedocs.io/en/stable/`` for
@@ -18,8 +18,8 @@ is also left unchanged.
 
 Usage::
 
-    python ../tools/stamp_llms_txt.py \\
-        --placeholder=https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/ \\
+    python ../tools/stamp_llms_txt.py \
+        --placeholder=https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/ \
         --site-dir=site
 """
 # ruff: noqa: T201
@@ -77,6 +77,7 @@ def stamp_llms_txt(placeholder: str, site_dir: Path) -> int:
 
 
 def main() -> int:
+    """Parse CLI arguments and invoke :func:`stamp_llms_txt`."""
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument(
         "--placeholder",
