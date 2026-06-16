@@ -2481,7 +2481,7 @@
     },
     "TimePicker": {
       "additionalProperties": false,
-      "description": "Temporal time-of-day single/range option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].",
+      "description": "Temporal time-of-day single/range option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use temporal selectors](user-guides/selectors.md#temporal-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
