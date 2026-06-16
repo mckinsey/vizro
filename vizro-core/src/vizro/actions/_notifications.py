@@ -3,7 +3,8 @@ from typing import Annotated, Literal
 
 import vizro_dash_components as vdc
 from dash import html
-from pydantic import AfterValidator, Field, model_validator
+from dash.development.base_component import Component
+from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
@@ -32,7 +33,7 @@ class show_notification(_AbstractAction):
     """Shows a notification message.
 
     Abstract: Usage documentation
-        [Notifications](../user-guides/notification-actions.md)
+        [Notifications](user-guides/notification-actions.md)
 
     Example:
         ```python
@@ -80,6 +81,8 @@ class show_notification(_AbstractAction):
         "info/success/warning/error, `False` for progress.",
     )
 
+    _is_conditional: bool = PrivateAttr(False)
+
     # This should ideally be replaced with default_factory once we bump to pydantic>=2.10.0.
     @model_validator(mode="after")
     def set_variant_defaults(self):
@@ -107,6 +110,22 @@ class show_notification(_AbstractAction):
         }
         return [notification]
 
+    @property
+    def _dash_components(self) -> list[Component]:
+        # Skip adding util dash components for conditional notifications, as they are not part of the actions chain.
+        # They are handled separately within the same HTTP request as the associated action.
+        # This avoids multiple requests. For example, an action with "progress" (pre) and "success" (post)
+        # notifications would otherwise require three HTTP calls instead of a single callback.
+        return [] if self._is_conditional else super()._dash_components
+
+    def _define_callback(self):
+        # Skip defining util callbacks for conditional notifications, as they are not part of the actions chain.
+        # They are handled separately within the same HTTP request as the associated action.
+        # This avoids multiple requests. For example, an action with "progress" (pre) and "success" (post)
+        # notifications would otherwise require three HTTP calls instead of a single callback.
+        if not self._is_conditional:
+            super()._define_callback()
+
 
 class update_notification(show_notification):
     """Updates an existing notification message.
@@ -116,7 +135,7 @@ class update_notification(show_notification):
     `show_notification` action.
 
     Abstract: Usage documentation
-        [Update notification](../user-guides/notification-actions.md#update-existing-notification)
+        [Update notification](user-guides/notification-actions.md#update-existing-notification)
 
     Example:
         ```python

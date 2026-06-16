@@ -42,7 +42,7 @@ nav = [
       {"Overview" = "pages/user-guides/actions.md"},
       {"Handle data" = "pages/user-guides/data-actions.md"},
       {"Graph and table interactions" = "pages/user-guides/graph-table-actions.md"},
-      {"Notifications" = "pages/user-guides/notification-actions.md"}
+      {"Notifications" = "pages/user-guides/notification-actions.md"},
     ]},
     {"Visual formatting" = [
       {"Overview" = "pages/user-guides/visual-formatting.md"},
@@ -174,7 +174,7 @@ format = "pymdownx.superfences.fence_code_format"
 name = "python"
 class = "highlight"
 validator = "mkdocs_pycafe.validator"
-format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.52"}}
+format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.58"}}
 
 [project.markdown_extensions.pymdownx.tabbed]
 alternate_style = true
@@ -238,11 +238,11 @@ returns_named_value = false
 [project.plugins.git-revision-date-localized]
 enable_creation_date = false
 
-# Zensical does not yet support strict/validation settings (as of 0.0.28).
-# See https://zensical.org/docs/setup/basics/#unsupported-settings
-# When supported, add:
-# validation:
-#   omitted_files: warn
-#   absolute_links: warn
-#   unrecognized_links: warn
-#   anchors: warn
+# -------------------------
+# validation (supported since Zensical 0.0.36)
+# -------------------------
+# Autorefs (e.g. [vizro.models.Page]) and mkdocstrings options containing brackets
+# are currently reported as unresolved references. Disable until Zensical resolves:
+# https://zensical.org/docs/setup/validation/
+[project.validation]
+unresolved_references = false

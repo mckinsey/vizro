@@ -64,10 +64,10 @@ class Trigger(TypedDict):
 
 
 class AgGrid(VizroBaseModel):
-    """Wrapper for `dash_ag_grid.AgGrid` to visualize grids in dashboard.
+    """Wrapper for `dash_ag_grid.AgGrid` to visualize grids in a dashboard.
 
     Abstract: Usage documentation
-        [How to use an AgGrid](../user-guides/table.md/#ag-grid)
+        [How to use an AgGrid](user-guides/table.md/#ag-grid)
 
     """
 
@@ -196,6 +196,12 @@ class AgGrid(VizroBaseModel):
         all_cell_clicked_actions = all_set_control and all(a.value in CELL_CLICKED_MAPPING for a in self.actions)
         all_selected_rows_actions = all_set_control and all(a.value not in CELL_CLICKED_MAPPING for a in self.actions)
 
+        # Set dashGridOptions if not already set.
+        figure.dashGridOptions = getattr(figure, "dashGridOptions", {})
+
+        # Set default dashGridOptions.theme so custom charts use Vizro theming by default.
+        figure.dashGridOptions.setdefault("theme", {"function": "vizroTheme(themeQuartz, agGrid)"})
+
         # No actions - Disable cell focus and row hover effects
         if not self.actions:
             figure.dashGridOptions.setdefault("suppressCellFocus", True)
@@ -234,7 +240,8 @@ class AgGrid(VizroBaseModel):
         self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: dict[str, CallbackTriggerDict]
     ) -> pd.DataFrame:
         """Function to be carried out for `filter_interaction`."""
-        # data_frame is the DF of the target, ie the data to be filtered, hence we cannot get the DF from this model
+        # data_frame is the DF of the target, that is, the data to be filtered, hence we cannot get the DF from
+        # this model
         ctd_cellClicked = ctd_filter_interaction["cellClicked"]
         if not ctd_cellClicked["value"]:
             return data_frame
@@ -297,7 +304,7 @@ class AgGrid(VizroBaseModel):
                     # This placeholder component is quickly replaced by the actual AgGrid object, which is generated
                     # using a filtered data_frame and parameterized arguments as part of the on_page_load mechanism.
                     # To prevent pagination and persistence issues while maintaining a lightweight component initial
-                    # load, this method now returns a html.Div object instead of the previous dag.AgGrid.
+                    # load, this method now returns an html.Div object instead of the previous dag.AgGrid.
                     # The actual AgGrid is then rendered by the on_page_load mechanism.
                     # The `id=self._inner_component_id` is set to avoid the "Non-existing object" Dash exception.
                     html.Div(

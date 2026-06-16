@@ -189,6 +189,7 @@
 
 /* SLIDER / RANGE SLIDER  ------------------------------------------------------------ */
 .dash-slider-track {
+  background: var(--fill-content-step-markers-track);
   height: 2px;
 }
 

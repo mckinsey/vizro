@@ -25,7 +25,7 @@ class Tabs(VizroBaseModel):
     """Tabs to group together a set of [`Containers`][vizro.models.Container].
 
     Abstract: Usage documentation
-        [How to use tabs](../user-guides/tabs.md)
+        [How to use tabs](user-guides/tabs.md)
 
     """
 
@@ -61,8 +61,12 @@ class Tabs(VizroBaseModel):
             else None
         )
 
+        # We set active_tab explicitly to fix https://github.com/mckinsey/vizro/issues/1750.
+        # "tab-0" matches what dbc sets by default for the first tab since in Vizro we don't currently allow
+        # setting custom tab_id in dbc.Tab.
         tabs = dbc.Tabs(
             id=self.id,
+            active_tab="tab-0",
             children=[dbc.Tab(tab.build(), label=tab.title) for tab in self.tabs],
             persistence=True,
             persistence_type="session",

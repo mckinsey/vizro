@@ -1,3 +1,25 @@
+
+<a id='changelog-0.1.7'></a>
+# 0.1.7 — 2026-06-02
+
+## Added
+
+- Add `example_ag_grid.py` reference to `dashboard-build` with canonical Vizro AG Grid patterns (drop-in `dash_ag_grid` factory and custom `@capture("ag_grid")`), plus explicit guidance on what to ignore: `vm.Table` / Dash DataTable, Plotly-as-table hacks, and JS-only AG Grid features. ([#1744](https://github.com/mckinsey/vizro/pull/1744))
+- Add a `## Tables` section to `selecting-vizro-charts` so table-related guidance lives next to chart and KPI guidance. ([#1744](https://github.com/mckinsey/vizro/pull/1744))
+- Add `assets/` folder to `dashboard-design` and `dashboard-build` skills, holding the 5 spec templates (`1_information_architecture.md`, `2_interaction_ux.md`, `3_visual_design.md`, `4_implementation.md`, `5_test_report.md`) per the Anthropic skill convention. ([#1744](https://github.com/mckinsey/vizro/pull/1744))
+
+## Changed
+
+- Migrate all 5 spec outputs from YAML to markdown. Templates ship in `assets/` and are copied into the project's `spec/` directory. The SKILL.md "REQUIRED OUTPUT" sections now point to the template files instead of embedding them inline. ([#1744](https://github.com/mckinsey/vizro/pull/1744))
+- Strengthen Step 2 (Browser Testing) in `dashboard-build`: (1) Playwright install now uses `--with-deps chromium` so it works on slim Linux base images (Docker, CI runners, devcontainers) where the plain install fails at launch; (2) the testing flow is reframed as "batch errors, don't loop one-at-a-time" — collect all errors in a single walk, batch the fixes, restart the dashboard once, and re-walk. ([#1744](https://github.com/mckinsey/vizro/pull/1744))
+
+<a id='changelog-0.1.6'></a>
+# 0.1.6 — 2026-05-20
+
+## Added
+
+- Add `wiring-vizro-actions` skill with 5 interaction patterns: Hierarchical Drill-Down, Single-Page Drill-Down, Comparison Spotlight, Multi-Dimensional Slice, and Data Export. ([#1737](https://github.com/mckinsey/vizro/pull/1737))
+
 <a id='changelog-0.1.5'></a>
 
 # 0.1.5 — 2026-04-10

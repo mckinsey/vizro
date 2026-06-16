@@ -7,6 +7,7 @@ from pages.actions_properties_shortcut_page import (
 from pages.ag_grid_interactions_page import ag_grid_interactions_page
 from pages.ag_grid_page import ag_grid_page
 from pages.collapsible_containers_pages import collapsible_containers_flex, collapsible_containers_grid
+from pages.conditional_notifications import conditional_notifications_page
 from pages.container_pages import container_variants_page
 from pages.custom_components_page import custom_components_page
 from pages.datepicker_page import datepicker_page
@@ -36,6 +37,7 @@ from pages.layout_pages import (
 from pages.notifications_page import static_notifications_page
 from pages.parameters_multi_page import parameters_multi_page
 from pages.parameters_page import parameters_page
+from pages.set_control_ag_grid_cellclicked import set_control_ag_grid_cellclicked
 from pages.set_control_cross_filter_page import (
     cross_filter_ag_grid_page,
     cross_filter_card_graph_page,
@@ -55,6 +57,10 @@ from pages.set_control_multi_select_pages import (
     cross_filter_multi_select_page,
     filtered_graph_aggrid_trigger_set_control,
     self_filter_set_control_page,
+)
+from pages.set_control_non_categorical_controls_page import (
+    set_control_non_categorical_ag_grid,
+    set_control_non_categorical_graph,
 )
 from pages.switch_control_page import switch_control_page
 from pages.table_interactions_page import table_interactions_page
@@ -114,10 +120,14 @@ dashboard = vm.Dashboard(
         action_ag_grid_underlying_id_shortcut_page,
         action_control_shortcut_page,
         static_notifications_page,
+        conditional_notifications_page,
         cross_filter_multi_select_page,
         button_card_trigger_set_control,
         filtered_graph_aggrid_trigger_set_control,
         self_filter_set_control_page,
+        set_control_ag_grid_cellclicked,
+        set_control_non_categorical_graph,
+        set_control_non_categorical_ag_grid,
     ],
     navigation=vm.Navigation(
         pages={
@@ -179,10 +189,14 @@ dashboard = vm.Dashboard(
                 cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
                 cnst.ACTION_CONTROL_SHORTCUT_PAGE,
                 cnst.STATIC_NOTIFICATIONS_PAGE,
+                cnst.CONDITIONAL_NOTIFICATIONS_PAGE,
                 cnst.SET_CONTROL_MULTI_SELECT_PAGE,
                 cnst.SET_CONTROL_BUTTON_CARD_PAGE,
                 cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE,
                 cnst.SELF_FILTER_SET_CONTROL_PAGE,
+                cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_PAGE,
+                cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_PAGE_TITLE,
+                cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_PAGE_TITLE,
             ],
         }
     ),

@@ -77,6 +77,11 @@ jobs:
           cd vizro-dash-components
           npm ci --legacy-peer-deps
           hatch run generate-components
+      - name: Generate components compendium for vizro-core
+        if: needs.check-version.outputs.package_name == 'vizro-core'
+        run: |
+          cd vizro-core
+          hatch run compendium
       - name: Build package
         run: |
           cd "${{ needs.check-version.outputs.package_name }}"
@@ -102,11 +107,6 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
         run: pip install hatch
-      - name: Update components compendium version badge
-        if: needs.check-version.outputs.package_name == 'vizro-core'
-        env:
-          RELEASE_VERSION: ${{ needs.check-version.outputs.package_version }}
-        run: python tools/update_components_compendium_version.py
       # if you want to change this step please contact tech lead
       - name: Push bumped version to main
         run: |
@@ -115,6 +115,7 @@ jobs:
           hatch run changelog:add
           if [ "${{ needs.check-version.outputs.package_name }}" == "vizro-core" ]; then
             hatch run schema
+            hatch run compendium
           fi
           if [ "${{ needs.check-version.outputs.package_name }}" == "vizro-dash-components" ]; then
             # hatch-nodejs-version writes package.json with 4-space indent; reformat to match biome config.

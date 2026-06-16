@@ -6,9 +6,11 @@ import yaml
 from e2e.asserts import assert_image_not_equal, assert_pixelmatch
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
+    check_date_picker_value,
     check_graph_is_empty,
     check_graph_x_axis_value,
     check_graph_y_axis_value,
+    check_range_date_picker_value,
     check_range_slider_value,
     check_selected_categorical_component,
     check_selected_dropdown,
@@ -635,7 +637,12 @@ def test_datepicker_range_filters(dash_br):
     check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, tick_index="7", value="6")
 
     # check current date values
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "Mar 5, 2024 – Mar 10, 2024")  # noqa: RUF001
+    check_range_date_picker_value(
+        dash_br,
+        elem_id=cnst.DATEPICKER_DYNAMIC_RANGE_ID,
+        expected_min_date_value="Mar 5, 2024",
+        expected_max_date_value="Mar 10, 2024",
+    )
 
     # Set "date_max" option to "2024-03-09" for the dynamic data and simulate refreshing the page
     page_select(
@@ -647,7 +654,12 @@ def test_datepicker_range_filters(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "Mar 5, 2024 – Mar 10, 2024")  # noqa: RUF001
+    check_range_date_picker_value(
+        dash_br,
+        elem_id=cnst.DATEPICKER_DYNAMIC_RANGE_ID,
+        expected_min_date_value="Mar 5, 2024",
+        expected_max_date_value="Mar 10, 2024",
+    )
 
     check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, tick_index="6", value="5")
 
@@ -668,7 +680,12 @@ def test_datepicker_range_filters(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "Mar 6, 2024 – Mar 10, 2024")  # noqa: RUF001
+    check_range_date_picker_value(
+        dash_br,
+        elem_id=cnst.DATEPICKER_DYNAMIC_RANGE_ID,
+        expected_min_date_value="Mar 6, 2024",
+        expected_max_date_value="Mar 10, 2024",
+    )
 
     # open the calendar and check if '5 March' is disabled
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', 1)
@@ -686,7 +703,7 @@ def test_datepicker_single_filters(dash_br):
     )
 
     # check current date value
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 5, 2024")
+    check_date_picker_value(dash_br, elem_id=cnst.DATEPICKER_DYNAMIC_SINGLE_ID, expected_date_value="Mar 5, 2024")
 
     check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, tick_index="1", value="0")
     check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, tick_index="6", value="1")
@@ -701,7 +718,7 @@ def test_datepicker_single_filters(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 5, 2024")
+    check_date_picker_value(dash_br, elem_id=cnst.DATEPICKER_DYNAMIC_SINGLE_ID, expected_date_value="Mar 5, 2024")
 
     # Check y axis min value is '-1' (empty chart)
     check_graph_is_empty(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID)
@@ -711,7 +728,7 @@ def test_datepicker_single_filters(dash_br):
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 6, 2024")
+    check_date_picker_value(dash_br, elem_id=cnst.DATEPICKER_DYNAMIC_SINGLE_ID, expected_date_value="Mar 6, 2024")
 
     check_graph_y_axis_value(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, tick_index="6", value="1")
 
@@ -724,7 +741,7 @@ def test_datepicker_single_filters(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
     )
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "Mar 6, 2024")
+    check_date_picker_value(dash_br, elem_id=cnst.DATEPICKER_DYNAMIC_SINGLE_ID, expected_date_value="Mar 6, 2024")
 
     # open the calendar and check if '5 March' is disabled
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)

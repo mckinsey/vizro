@@ -15,6 +15,7 @@ from typing import Annotated, Any, Literal, Protocol, TypeAlias, cast, runtime_c
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import (
+    AfterValidator,
     BeforeValidator,
     Discriminator,
     Field,
@@ -100,6 +101,49 @@ def _coerce_to_list(value: Any) -> Any:
     return [value]
 
 
+def _normalize_action_notifications(value: Any) -> Any:
+    """Normalize action notifications dict.
+
+    Input value: dict[str, str | show_notification | update_notification | None]
+    Return value: dict[str, show_notification | update_notification | None] with the following transformations:
+
+    - If "error" missing, default to "Action failed." (show vs update depends on presence of a "progress" notification).
+    - Convert existing string dict values to show_notification or update_notification:
+        * "progress" string key -> show_notification(variant="progress")
+        * other string keys -> update_notification(...) if progress exists, else show_notification(...)
+    - Mark all non-None notifications as conditional.
+    """
+    from vizro.actions import show_notification, update_notification
+
+    # Default "error" to string first. It will be converted to notification action below.
+    value.setdefault("error", "Action failed.")
+
+    # If present, ensure that the "progress" is a notification action and not a string to extract its ID.
+    if isinstance(progress := value.get("progress"), str):
+        progress = value["progress"] = show_notification(text=progress, variant="progress")
+
+    # Convert all string notifications to actions and set _is_conditional=True.
+    for notif_key, notif_value in value.items():
+        if isinstance(notif_value, str):
+            defaults = {
+                "text": notif_value,
+                "variant": notif_key if notif_key in {"progress", "success", "error"} else "info",
+            }
+
+            notification_action: show_notification | update_notification = (
+                update_notification(**defaults, notification=progress.id)  # type: ignore[arg-type]
+                if notif_key != "progress" and progress is not None
+                else show_notification(**defaults)  # type: ignore[arg-type]
+            )
+
+            value[notif_key] = notification_action
+
+        if value[notif_key] is not None:
+            value[notif_key]._is_conditional = True
+
+    return value
+
+
 # Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
 # _DashboardReadyFigure explicitly.
 @runtime_checkable
@@ -140,8 +184,8 @@ def _validate_captured_callable(cls, value: Any, info: ValidationInfo):
     )
 
 
-# CapturedCallable now allows instantiation via string, which will instantiate an object with ._prevent_run = True.
-# This allows us to instantiate dashboard objects without needing to execute/import the function definition.
+# CapturedCallable now enables instantiation via string, which will instantiate an object with ._prevent_run = True.
+# This enables us to instantiate dashboard objects without needing to execute/import the function definition.
 # Useful in the context of untrusted code generation (e.g. by LLMs).
 class CapturedCallable:
     """Stores a captured function call to use in a dashboard.
@@ -327,7 +371,7 @@ class CapturedCallable:
 
         This uses the hydra syntax for _target_ but none of the other bits and we don't actually use hydra
         to implement it. In future, we might like to switch to using hydra's actual implementation
-        which would allow nested functions (e.g. for transformers?) and to specify the path to a _target_ that lives
+        which would enable nested functions (e.g. for transformers?) and to specify the path to a _target_ that lives
         outside of vizro.plotly_express. See https://hydra.cc/docs/advanced/instantiate_objects/overview/.
         """
         if not isinstance(captured_callable_config, dict):
@@ -446,7 +490,7 @@ def _pio_templates_default():
     This works even if users have tweaked the templates, so long as pio.templates has been updated correctly and you
     refer to template by name rather than trying to take from vizro.themes.
 
-    If pio.templates.default has already been set to vizro_dark or vizro_light then no change is made to allow a user
+    If pio.templates.default has already been set to vizro_dark or vizro_light then no change is made to enable a user
     to set these without it being overridden.
     """
     old_default = pio.templates.default
@@ -456,9 +500,9 @@ def _pio_templates_default():
         template_changed = True
         pio.templates.default = "vizro_dark"
 
-    # Revert the template. This is done in a try/finally so that if the code wrapped inside the context manager (i.e.
-    # plotting functions) raises an exception, pio.templates.default is still reverted. This is not very important
-    # but easy to achieve.
+    # Revert the template. This is done in a try/finally so that if the code wrapped inside the context manager
+    # (that is, plotting functions) raises an exception, pio.templates.default is still reverted. This is not very
+    # important but easy to achieve.
     try:
         # This will always be vizro_light or vizro_dark and corresponds to the default theme that has been set.
         yield pio.templates.default
@@ -471,10 +515,10 @@ class capture:
     """Captures a function call to create a custom [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
     Abstract: Usage documentation
-        [How to create custom actions](../user-guides/custom-actions.md),
-        [How to create custom charts](../user-guides/custom-charts.md),
-        [How to create custom tables](../user-guides/custom-tables.md),
-        [How to create figures](../user-guides/custom-figures.md).
+        [How to create custom actions](user-guides/custom-actions.md),
+        [How to create custom charts](user-guides/custom-charts.md),
+        [How to create custom tables](user-guides/custom-tables.md),
+        [How to create figures](user-guides/custom-figures.md).
 
     Args:
         mode: The mode of the captured callable.
@@ -580,7 +624,7 @@ class capture:
             # The "normal" case where we just capture the function call.
             @functools.wraps(func)
             def wrapped(*args, **kwargs) -> CapturedCallable:
-                # Note this is basically the same as partial(func, *args, **kwargs)
+                # Note this is the same as partial(func, *args, **kwargs)
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
                 captured_callable._mode = self._mode
                 captured_callable._model_example = self._model_example
@@ -626,7 +670,7 @@ _IdOrIdProperty: TypeAlias = ModelID | _IdProperty
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
 SingleValueType: TypeAlias = StrictBool | float | str | date
 """Permissible value types for single-value selectors. Values are displayed as default."""
-MultiValueType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date]
+MultiValueType: TypeAlias = list[SingleValueType]
 """Permissible value types for multi-value selectors. Values are displayed as default."""
 
 
@@ -637,10 +681,11 @@ class _OptionsDictType(TypedDict):
     value: SingleValueType
 
 
-OptionsType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date] | list[_OptionsDictType]
+OptionsType: TypeAlias = list[SingleValueType | _OptionsDictType]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
-# All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
+# All the below types rely on models and so must use ForwardRef (that is, "Checklist" rather than actual
+# Checklist class).
 SelectorType = Annotated[
     "Cascader | Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch",
     Field(discriminator="type", description="Selectors to be used inside a control."),
@@ -727,6 +772,18 @@ OutputsType = Annotated[list[str] | dict[str, str], BeforeValidator(_coerce_to_l
 """List or dictionary of outputs modified by the action function. Accepts either a single string,
 a list of strings, or a dictionary mapping strings to strings. Each output can be specified as
 `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`."""
+
+
+ActionNotificationType = Annotated[
+    "dict[str, str | show_notification | update_notification | None]",
+    AfterValidator(_normalize_action_notifications),
+    Field(
+        default_factory=dict,
+        validate_default=True,
+        description="Notifications for when an action is in progress, completes successfully or fails",
+    ),
+]
+
 
 # Extra type groups used only for static type checking, not at runtime.
 FigureWithFilterInteractionType: TypeAlias = "Graph | Table | AgGrid"

@@ -163,7 +163,7 @@ You can create a custom figure for any [Dash component](https://dash.plotly.com/
 
         @capture("figure")  # (1)!
         def dynamic_html_header(data_frame: pd.DataFrame, column: str) -> html.H2:  # (2)!
-            """Creates a HTML header that dynamically updates based on controls."""
+            """Creates an HTML header that dynamically updates based on controls."""
             return html.H2(f"Good morning, {data_frame[column].iloc[0]}! ☕ ⛅")  # (3)!
 
 

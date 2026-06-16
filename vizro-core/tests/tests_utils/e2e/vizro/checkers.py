@@ -94,6 +94,17 @@ def check_range_slider_value(driver, elem_id, expected_min_value=None, expected_
         driver.wait_for_element(f"div[id='{elem_id}'] span[aria-valuenow='{expected_max_value}'][aria-label='Maximum']")
 
 
+def check_date_picker_value(driver, elem_id, expected_date_value):
+    driver.wait_for_text_to_equal(f'button[id="{elem_id}"]', expected_date_value)
+
+
+def check_range_date_picker_value(driver, elem_id, expected_min_date_value=None, expected_max_date_value=None):
+    driver.wait_for_text_to_equal(
+        f'button[id="{elem_id}"]',
+        f"{expected_min_date_value} – {expected_max_date_value}",  # noqa: RUF001
+    )
+
+
 def check_accordion_active(driver, accordion_name):
     driver.wait_for_text_to_equal("button[class='accordion-button']", accordion_name)
 

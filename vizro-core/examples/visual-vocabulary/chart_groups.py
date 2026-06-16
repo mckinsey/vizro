@@ -57,7 +57,7 @@ deviation_chart_group = ChartGroup(
 
 correlation_intro_text = """
 #### Correlation helps you show the relationship between two or more variables. It is important that you make it clear\
- to your audience whether or not the relationship is causal, i.e., whether one causes the other.
+ to your audience whether or not the relationship is causal, that is, whether one causes the other.
 """
 correlation_chart_group = ChartGroup(
     name="Correlation",
@@ -78,7 +78,6 @@ ranking_chart_group = ChartGroup(
     pages=pages.ranking.pages,
     incomplete_pages=[
         IncompletePage("Ordered bubble"),
-        IncompletePage("Slope"),
         IncompletePage("Bump"),
     ],
     icon="Stacked Bar Chart",
@@ -105,7 +104,7 @@ distribution_chart_group = ChartGroup(
 )
 
 magnitude_intro_text = """
-#### Magnitude allows you to emphasize size comparisons of **counted** items in your data set. You can show relative \
+#### Magnitude enables you to emphasize size comparisons of **counted** items in your data set. You can show relative \
 comparisons (whether something is larger or smaller) or absolute differences (where the nuances are most interesting). \
 Typically, you will use magnitude for actual numbers versus calculated rates or percentages.
 """
@@ -131,7 +130,6 @@ time_chart_group = ChartGroup(
     name="Time",
     pages=pages.time.pages,
     incomplete_pages=[
-        IncompletePage("Slope"),
         IncompletePage("Fan"),
         IncompletePage("Bubble timeline"),
     ],
@@ -172,7 +170,7 @@ flow_chart_group = ChartGroup(
 )
 
 spatial_intro_text = """
-#### Spatial charts allow you to demonstrate precise locations or geographical patterns in your data.
+#### Spatial charts enable you to demonstrate precise locations or geographical patterns in your data.
 """
 spatial_chart_group = ChartGroup(
     name="Spatial",

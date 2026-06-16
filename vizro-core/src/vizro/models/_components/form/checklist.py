@@ -7,7 +7,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components.form._form_utils import (
-    get_dict_options_and_default,
+    get_dict_options_and_value,
     validate_options_dict,
     validate_value,
 )
@@ -26,7 +26,7 @@ class Checklist(VizroBaseModel):
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
     Abstract: Usage documentation
-        [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)
+        [How to use categorical selectors](user-guides/selectors.md#categorical-selectors)
 
     """
 
@@ -38,7 +38,7 @@ class Checklist(VizroBaseModel):
     #  but this requires pydantic >= 2.9.
     show_select_all: bool = Field(
         default=True,
-        description="Whether to display the 'Select All' option that allows users to select or deselect all available "
+        description="Whether to display the 'Select All' option that enables users to select or deselect all available "
         "options with a single click.",
     )
     description: Annotated[
@@ -94,8 +94,7 @@ underlying component may change in the future.""",
         return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options):
-        dict_options, default_value = get_dict_options_and_default(options=options, multi=True)
-        value = self.value if self.value is not None else default_value
+        dict_options, value = get_dict_options_and_value(options=options, value=self.value, multi=True)
         description = self.description.build().children if self.description else [None]
 
         if self.show_select_all:
@@ -140,7 +139,7 @@ underlying component may change in the future.""",
 
     def _build_dynamic_placeholder(self):
         if self.value is None:
-            _, default_value = get_dict_options_and_default(options=self.options, multi=True)
+            _, default_value = get_dict_options_and_value(options=self.options, value=None, multi=True)
             self.value = default_value  # type: ignore[assignment]
 
         return self.__call__(self.options)
