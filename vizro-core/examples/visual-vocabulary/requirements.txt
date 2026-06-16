@@ -66,6 +66,8 @@ narwhals==2.13.0
     # via plotly
 nest-asyncio==1.6.0
     # via dash
+networkx==3.6.1
+    # via -r requirements.in
 numpy==2.3.5
     # via
     #   -r requirements.in
