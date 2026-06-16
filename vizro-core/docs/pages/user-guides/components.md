@@ -2,7 +2,7 @@
 
 Components are the visual building blocks of a Vizro dashboard page. You add them to the `components` argument of a [`Page`][vizro.models.Page] (or [`Container`][vizro.models.Container]) to display charts and tables, present text, group related content into sections, or expose interactive elements such as buttons.
 
-Vizro ships with [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] / [`AgGrid`][vizro.models.AgGrid], [`Figure`][vizro.models.Figure], [`Card`][vizro.models.Card], [`Text`][vizro.models.Text], [`Button`][vizro.models.Button], [`Container`][vizro.models.Container] and [`Tabs`][vizro.models.Tabs] components. You can also [extend Vizro with your own components](extensions.md).
+Vizro ships with [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`AgGrid`][vizro.models.AgGrid], [`Figure`][vizro.models.Figure], [`Card`][vizro.models.Card], [`Text`][vizro.models.Text], [`Button`][vizro.models.Button], [`Container`][vizro.models.Container], and [`Tabs`][vizro.models.Tabs] components. You can also [extend Vizro with your own components](extensions.md).
 
 <div class="grid cards" markdown>
 
