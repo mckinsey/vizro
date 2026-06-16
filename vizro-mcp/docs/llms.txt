@@ -1,0 +1,46 @@
+# Vizro-MCP
+
+Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that works alongside an LLM to help you create [Vizro](https://vizro.readthedocs.io) dashboards and charts.
+It gives the model a consistent framework, validated configuration output, a live preview of the resulting dashboard, and the ability to use local or remote datasets via a path or URL.
+
+Vizro-MCP can be used with any MCP host, with first-class setup guides for Claude Desktop, Cursor, and VS Code.
+For agent-driven design and build workflows, Vizro also ships [Agent skills](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow) that pair with Vizro-MCP.
+
+All documentation pages return clean markdown when fetched with the `Accept: text/markdown` request header.
+
+## GET STARTED
+
+- [First dashboard tutorial](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/first-dashboard-tutorial/): Build your first Vizro dashboard end-to-end with Vizro-MCP
+- [Use Claude Desktop](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/set-up-vizro-mcp-with-claude/): Configure Vizro-MCP inside Claude Desktop
+- [Use Cursor](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/set-up-vizro-mcp-with-cursor/): Configure Vizro-MCP inside Cursor
+- [Use VS Code](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/set-up-vizro-mcp-with-vscode/): Configure Vizro-MCP inside VS Code
+- [Use any MCP host](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/set-up-vizro-mcp-basics/): Generic setup for any MCP-compatible host
+
+## TUTORIALS
+
+- [Claude Desktop and Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/claude-desktop-tutorial/): Walk-through tutorial using Claude Desktop as the MCP host
+- [Cursor and Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/cursor-tutorial/): Walk-through tutorial using Cursor as the MCP host
+- [VS Code and Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/tutorials/vs-code-tutorial/): Walk-through tutorial using VS Code as the MCP host
+
+## HOW-TO GUIDES
+
+- [Use prompt templates](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/use-prompt-templates/): Use the prompt templates Vizro-MCP exposes to drive dashboard creation
+- [Create only charts](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/create-charts-only/): Use Vizro-MCP for chart generation without building a full dashboard
+- [Use local or remote data](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/use-data/): Point Vizro-MCP at local files or remote URLs as a data source
+- [Get a live preview](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/guides/get-live-preview/): Preview the generated dashboard while iterating with the LLM
+
+## EXPLANATION
+
+- [FAQs](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/explanation/faqs/): Frequently asked questions about Vizro-MCP
+- [Contribute](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/explanation/contribute/): How to contribute to Vizro-MCP
+- [Disclaimers](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/explanation/disclaimers/): Disclaimers for using Vizro-MCP with LLMs
+
+## API REFERENCE
+
+- [Vizro-MCP API reference](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/pages/API-reference/API-reference/): Vizro-MCP tools, prompt templates, and reference
+
+## RELATED PROJECTS
+
+- [Vizro](https://vizro.readthedocs.io/en/stable/): The core Vizro dashboarding framework that Vizro-MCP generates configurations for
+- [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/): Generative-AI chart creation that complements Vizro
+- [Vizro-Experimental](https://vizro.readthedocs.io/projects/vizro-experimental/): Incubation home for in-development Vizro features
