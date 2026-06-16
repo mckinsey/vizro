@@ -6,7 +6,9 @@ hide:
 
 # Vizro
 
-Vizro is an open-source Python-based toolkit. You can use it to build data visualization apps quickly and easily, without needing advanced engineering or design expertise.
+Vizro is an open-source Python-based toolkit for building data visualization apps quickly and easily, without needing advanced engineering or design expertise. 
+
+These docs include tutorials, how-to guides for [components](pages/user-guides/components.md), [controls](pages/user-guides/controls.md), [actions](pages/user-guides/actions.md), [data](pages/user-guides/data.md), [visual formatting](pages/user-guides/visual-formatting.md) & [extensions](pages/user-guides/extensions.md), a full API reference, and additional explanation, such as [FAQs](pages/explanation/faq.md) and a guide to help you [contribute to Vizro](pages/explanation/contributing.md).
 
 <div class="grid cards" markdown>
 
