@@ -41,6 +41,7 @@ extra_css = ["stylesheets/extra.css"]
 # -------------------------
 [project.theme]
 language = "en"
+custom_dir = "docs/overrides"
 variant = "classic"
 favicon = "images/favicon/favicon.png"
 features = [
