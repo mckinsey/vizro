@@ -35,6 +35,6 @@ All documentation pages return clean markdown when fetched with the `Accept: tex
 
 ## RELATED PROJECTS
 
-- [Vizro](https://vizro.readthedocs.io/en/stable/): The core Vizro dashboarding framework; see its [llms.txt](https://vizro.readthedocs.io/en/stable/llms.txt)
-- [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/): MCP server for AI-assisted Vizro dashboard creation; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/llms.txt)
-- [Vizro-Experimental](https://vizro.readthedocs.io/projects/vizro-experimental/): Incubation home for in-development Vizro features; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/llms.txt)
+- [Vizro](https://vizro.readthedocs.io/en/stable/): The core Vizro dashboarding framework; see its [llms.txt](https://vizro.readthedocs.io/llms.txt)
+- [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/): MCP server for AI-assisted Vizro dashboard creation; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-mcp/llms.txt)
+- [Vizro-Experimental](https://vizro.readthedocs.io/projects/vizro-experimental/): Incubation home for in-development Vizro features; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-experimental/llms.txt)
