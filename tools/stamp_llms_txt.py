@@ -33,6 +33,17 @@ from pathlib import Path
 def compute_versioned_url(placeholder: str, version: str) -> str:
     """Swap the placeholder's trailing version segment with ``version``.
 
+    Assumes the placeholder is a ReadTheDocs-shaped URL whose last
+    path segment is the version slug, e.g.:
+
+    * ``https://vizro.readthedocs.io/en/stable/`` (segments: ``en``, ``stable``)
+    * ``https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/``
+      (segments: ``projects``, ``vizro-mcp``, ``en``, ``latest``)
+
+    The trailing slash is normalized away, the last segment is dropped,
+    ``version`` is appended, and a trailing slash is added back so the
+    result is directly substitutable for the placeholder in the file.
+
     Example::
 
         compute_versioned_url(
