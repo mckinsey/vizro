@@ -70,6 +70,9 @@ build = [
 # Ignoring urls for installing config to cursor and vscode using regular expressions.
 # Ignoring https://claude.ai/download page because it hase self signed ssl certificate, but linkcheker doesn't have an
 # option to ignore ssl for specific website.
+# --ignore-url=overrides/ skips the raw Jinja template overrides (e.g.
+# main.html) that Zensical copies into site/. Linkchecker would otherwise
+# try to resolve their {{ ... }} expressions as relative URLs.
 link-check = '''
 linkchecker site \
   --check-extern \
@@ -77,6 +80,7 @@ linkchecker site \
   --ignore=404.html \
   --ignore-url=http://localhost:8050 \
   --ignore-url=127.0.0.1 \
+  --ignore-url=overrides/ \
   --ignore-url=https://vizro.readthedocs.io/ \
   --ignore-url="^https://cursor\.com/install-mcp\?name=vizro-mcp&config=(.+)$" \
   --ignore-url="^https://insiders\.vscode\.dev/redirect/mcp/install\?name=vizro-mcp&config=(.+)$" \
