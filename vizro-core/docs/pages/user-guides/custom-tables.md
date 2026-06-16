@@ -142,6 +142,9 @@ The following examples show a possible version of a custom table. In this case t
                     "flex": 1,
                     "minWidth": 70,
                 },
+                "dashGridOptions": {
+                    "theme": {"function": "vizroTheme(themeQuartz, agGrid)"},
+                },
             }
             return AgGrid(
                 columnDefs=[{"field": col} for col in chosen_columns], rowData=data_frame.to_dict("records"), **defaults
