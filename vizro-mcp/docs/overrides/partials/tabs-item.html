@@ -50,7 +50,7 @@
                   {{ child.title }}
                 </a>
               {%- else -%}
-                <a class="md-tabs__dropdown-link" href="{{ child.url }}">
+                <a class="md-tabs__dropdown-link" href="{{ child.url | url }}">
                   {{ child.title }}
                 </a>
               {%- endif -%}
