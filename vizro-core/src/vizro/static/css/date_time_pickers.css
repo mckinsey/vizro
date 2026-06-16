@@ -90,11 +90,9 @@
 .mantine-TimePicker-presetControl[data-active]:hover {
   background-color: var(--bs-primary);
   color: var(--text-primary-inverted);
-  opacity: 0.9;
 }
 
 .mantine-TimePicker-label {
   color: var(--text-secondary);
-  font-size: 0.75rem;
-  font-weight: 400;
+  font-size: 12px;
 }

@@ -60,6 +60,8 @@ class TimePicker(VizroBaseModel):
         AfterValidator(validate_date_time_range_picker),
         Field(default=True, description="Boolean flag for displaying range picker.", validate_default=True),
     ]
+    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
     description: Annotated[
         Tooltip | None,
         BeforeValidator(coerce_str_to_tooltip),
@@ -76,8 +78,11 @@ class TimePicker(VizroBaseModel):
             dict[str, Any],
             Field(
                 default={},
-                description="""Extra keyword arguments passed to `dmc.TimePicker` and overwrite
-any defaults chosen by the Vizro team.""",
+                description="""Extra keyword arguments that are passed to `dmc.TimePicker` and overwrite
+any defaults chosen by the Vizro team. This may have unexpected behavior.
+Visit the [dmc documentation](https://www.dash-mantine-components.com/components/timepicker)
+to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+underlying component may change in the future.""",
             ),
         ]
     ]
@@ -123,8 +128,8 @@ any defaults chosen by the Vizro team.""",
             self._update_range_time_picker_store()
 
             _value = cast(list[time | str | None], [None, None] if self.value is None else self.value)
-            start_defaults = {"id": f"{self.id}-start", "value": _value[0], "label": "From:", **defaults}
-            end_defaults = {"id": f"{self.id}-end", "value": _value[1], "label": "To:", **defaults}
+            start_defaults = {"id": f"{self.id}-start", "value": _value[0], "label": "From", **defaults}
+            end_defaults = {"id": f"{self.id}-end", "value": _value[1], "label": "To", **defaults}
 
             return html.Div(
                 children=[
