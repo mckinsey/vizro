@@ -32,6 +32,15 @@ categories:
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/graph/
         image: assets/images/charts.png
         highlight_lines: "10-16"
+        featured:
+          title: Filter by Time-of-day
+          image: assets/images/timepicker_highlight.gif
+          description: |
+            The new <b>TimePicker</b> selector lets users filter by time-of-day, either as a
+            single time or as a time range. Use it together with the DatePicker to slice your
+            data by both date and time.
+          link_text: View TimePicker
+          link_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#timepicker
         code: |
           import vizro.plotly.express as px
           from vizro import Vizro
