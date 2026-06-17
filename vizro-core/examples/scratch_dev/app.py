@@ -54,18 +54,18 @@ page_0 = vm.Page(
         #     column="datetime_utc", selector=vm.TimePicker(title="datetime_utc time + value", value=["00:00", "23:59"])
         # ),
         # date columns — DatePicker only
-        vm.Filter(column="date_yyyy_mm_dd"),
-        vm.Filter(
-            column="date_yyyy_mm_dd",
-            selector=vm.DatePicker(title="date_yyyy_mm_dd date + value", value=["2026-01-03", "2026-12-29"]),
-        ),
-        # time columns — TimePicker only
-        vm.Filter(column="time_iso"),
-        vm.Filter(
-            column="time_hh_mm_ss",
-            selector=vm.TimePicker(title="time_hh_mm_ss time+ + value", value=["00:00", "23:59"]),
-        ),
-        vm.Filter(column="time_hh_mm"),
+        # vm.Filter(column="date_yyyy_mm_dd"),
+        # vm.Filter(
+        #     column="date_yyyy_mm_dd",
+        #     selector=vm.DatePicker(title="date_yyyy_mm_dd date + value", value=["2026-01-03", "2026-12-29"]),
+        # ),
+        # # time columns — TimePicker only
+        # vm.Filter(column="time_iso"),
+        # vm.Filter(
+        #     column="time_hh_mm_ss",
+        #     selector=vm.TimePicker(title="time_hh_mm_ss time+ + value", value=["00:00", "23:59"]),
+        # ),
+        # vm.Filter(column="time_hh_mm"),
     ],
 )
 
