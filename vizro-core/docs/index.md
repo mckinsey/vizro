@@ -21,13 +21,11 @@ They also include a full API reference and additional explanation, such as [FAQs
 
     [Explore Vizro tutorial](pages/tutorials/explore-components.md)
 
-    [Write your own actions tutorial](pages/tutorials/custom-actions-tutorial.md)
+    [Fundamentals](pages/user-guides/dashboard.md)
 
 - :fontawesome-solid-chart-column:{ .lg .middle } __Vizro features__
 
     ---
-
-    [Fundamentals](pages/user-guides/dashboard.md)
 
     [Components overview](pages/user-guides/components.md)
 
@@ -35,25 +33,23 @@ They also include a full API reference and additional explanation, such as [FAQs
 
     [Extend and customize Vizro](pages/user-guides/extensions.md)
 
-- :fontawesome-solid-wand-magic-sparkles:{ .lg .middle } __Gen AI assistance__
+- :fontawesome-solid-book-open:{ .lg .middle } __Other Vizro projects__
 
     ---
 
-    [:new: Agent skills (design & build)](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow)
+    [:test_tube: Vizro-Experimental](https://vizro.readthedocs.io/projects/vizro-experimental/)
 
-    [:fontawesome-solid-star: Vizro-MCP :fontawesome-solid-star:](https://vizro.readthedocs.io/projects/vizro-mcp/)
+    [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/)
 
     [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
 
-- :fontawesome-solid-book-open:{ .lg .middle } __Find out more__
+- :fontawesome-solid-wand-magic-sparkles:{ .lg .middle } __New!__
 
     ---
 
-    [FAQs](pages/explanation/faq.md)
+    [Vizro cheatsheet](pages/cheatsheet/cheatsheet.html)
 
-    [:sparkles: Cheatsheet :sparkles:](pages/cheatsheet/cheatsheet.html)
-
-    [:sparkles:Components Compendium:sparkles:](pages/components_compendium/index.html)
+    [Vizro components compendium](pages/components_compendium/index.html)
 
 - :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Get involved__
 

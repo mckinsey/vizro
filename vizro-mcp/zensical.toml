@@ -7,7 +7,16 @@ docs_dir = "docs"
 use_directory_urls = true
 
 nav = [
-  {"Vizro-MCP" = "index.md"},
+  # The first nav entry is the brand tab and acts as the cross-docset project
+  # switcher. Its title must equal `site_name`; that's the trigger condition
+  # in docs/overrides/partials/tabs-item.html. The first child must be the
+  # docset's own index.md so the brand link still works inside the dropdown.
+  {"Vizro-MCP" = [
+    {"Vizro-MCP" = "index.md"},
+    {"Vizro" = "https://vizro.readthedocs.io/"},
+    {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"},
+    {"Vizro-Experimental" = "https://vizro.readthedocs.io/projects/vizro-experimental/"}
+  ]},
   {"Get started" = [
     {"First dashboard tutorial" = "pages/tutorials/first-dashboard-tutorial.md"},
     {"Use Claude Desktop" = "pages/guides/set-up-vizro-mcp-with-claude.md"},
@@ -32,8 +41,6 @@ nav = [
     {"Disclaimers" = "pages/explanation/disclaimers.md"}
   ]},
   {"API reference" = "pages/API-reference/API-reference.md"},
-  {"Vizro" = "https://vizro.readthedocs.io"},
-  {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"}
 ]
 
 # This infers the version number of the latest release of whole repo, so we're hiding it for sub-packages in extra.css
@@ -47,6 +54,7 @@ extra_css = ["stylesheets/extra.css"]
 # -------------------------
 [project.theme]
 language = "en"
+custom_dir = "docs/overrides"
 variant = "classic"
 favicon = "images/favicon/favicon.png"
 features = [

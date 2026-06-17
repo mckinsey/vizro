@@ -56,3 +56,11 @@ jobs:
           hatch run docs:pip tree
           hatch run docs:build
           hatch run docs:link-check
+
+      - name: Check vizro-experimental docs links
+        working-directory: ./vizro-experimental
+        if: always()
+        run: |
+          hatch run docs:pip tree
+          hatch run docs:build
+          hatch run docs:link-check

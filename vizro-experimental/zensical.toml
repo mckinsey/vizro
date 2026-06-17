@@ -10,7 +10,16 @@ use_directory_urls = true
 # group at the top level (e.g. an "App layout" section beside "Chat") plus their own
 # pages/<feature>/ folder and pages/API-reference/<feature>.md page.
 nav = [
-  {"Vizro-Experimental" = "index.md"},
+  # The first nav entry is the brand tab and acts as the cross-docset project
+  # switcher. Its title must equal `site_name`; that's the trigger condition
+  # in docs/overrides/partials/tabs-item.html. The first child must be the
+  # docset's own index.md so the brand link still works inside the dropdown.
+  {"Vizro-Experimental" = [
+    {"Vizro-Experimental" = "index.md"},
+    {"Vizro" = "https://vizro.readthedocs.io/"},
+    {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"},
+    {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"}
+  ]},
   {"Chat" = [
     {"Chat component" = [
       {"How-to guides" = [
@@ -29,9 +38,6 @@ nav = [
       {"API reference" = "pages/chat/popup-api-reference.md"}
     ]}
   ]},
-  {"Vizro" = "https://vizro.readthedocs.io"},
-  {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"},
-  {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"}
 ]
 
 # This infers the version number of the latest release of whole repo, so we're hiding it for sub-packages in extra.css
@@ -45,6 +51,7 @@ extra_css = ["stylesheets/extra.css"]
 # -------------------------
 [project.theme]
 language = "en"
+custom_dir = "docs/overrides"
 variant = "classic"
 favicon = "images/favicon/favicon.png"
 features = [
@@ -152,10 +159,11 @@ warn_unknown_params = false
 [project.plugins.git-revision-date-localized]
 enable_creation_date = false
 
-# Zensical does not yet support strict/validation settings (as of 0.0.28).
-# When supported, add:
-# validation:
-#   omitted_files: warn
-#   absolute_links: warn
-#   unrecognized_links: warn
-#   anchors: warn
+# -------------------------
+# validation (supported since Zensical 0.0.36)
+# -------------------------
+# Autorefs (e.g. [vizro.models.Page]) and mkdocstrings options containing brackets
+# are currently reported as unresolved references. Disable until Zensical resolves:
+# https://zensical.org/docs/setup/validation/
+[project.validation]
+unresolved_references = false

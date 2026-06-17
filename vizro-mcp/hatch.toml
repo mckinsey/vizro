@@ -48,7 +48,7 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
-  "zensical>=0.0.28",
+  "zensical>=0.0.36",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]>=1.0.2",
   "linkchecker",
@@ -67,6 +67,9 @@ build = "zensical build --clean"
 # Ignoring urls for installing config to cursor and vscode using regular expressions.
 # Ignoring https://claude.ai/download page because it hase self signed ssl certificate, but linkcheker doesn't have an
 # option to ignore ssl for specific website.
+# --ignore-url=overrides/partials/ skips the raw Jinja template overrides
+# (e.g. tabs-item.html) that zensical copies into site/. Linkchecker would
+# otherwise try to resolve their {{ ... }} expressions as relative URLs.
 link-check = '''
 linkchecker site \
   --check-extern \
@@ -74,6 +77,7 @@ linkchecker site \
   --ignore=404.html \
   --ignore-url=http://localhost:8050 \
   --ignore-url=127.0.0.1 \
+  --ignore-url=overrides/partials/ \
   --ignore-url=https://vizro.readthedocs.io/ \
   --ignore-url="^https://cursor\.com/install-mcp\?name=vizro-mcp&config=(.+)$" \
   --ignore-url="^https://insiders\.vscode\.dev/redirect/mcp/install\?name=vizro-mcp&config=(.+)$" \
