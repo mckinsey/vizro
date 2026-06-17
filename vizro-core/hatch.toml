@@ -154,7 +154,7 @@ build = [
 # main.html, partials/tabs-item.html) that zensical copies into site/.
 # Linkchecker would otherwise try to resolve their {{ ... }} expressions
 # as relative URLs.
-link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=overrides/ --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.ploomber.io/register --ignore-url=https://huggingface.co/join --ignore-url=https://www.ag-grid.com/ --ignore-url=https://cursor.com/ --ignore-url=https://docs.streamlit.io/get-started/fundamentals/main-concepts --ignore-url=https://medium.com/"
+link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=overrides/ --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.ploomber.io/register --ignore-url=https://huggingface.co/join --ignore-url=https://www.ag-grid.com/ --ignore-url=https://cursor.com/ --ignore-url=https://docs.streamlit.io/get-started/fundamentals/main-concepts --ignore-url=https://medium.com/ --ignore-url=https://datavizcatalogue.com/blog/chart-snapshot-bump-charts/"
 llms-txt-check = "python tools/check_llms_txt.py"
 # Check if link to QB logo is not deleted from the docs.
 logo-check = "grep -q 'logo_watermark_extended.svg' docs/pages/user-guides/install.md"
