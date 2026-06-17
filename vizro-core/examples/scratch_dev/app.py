@@ -57,7 +57,7 @@ page_0 = vm.Page(
         vm.Filter(column="date_yyyy_mm_dd"),
         vm.Filter(
             column="date_yyyy_mm_dd",
-            selector=vm.DatePicker(title="date_yyyy_mm_dd date + value", value=["2026-01-01", "2026-12-31"]),
+            selector=vm.DatePicker(title="date_yyyy_mm_dd date + value", value=["2026-01-03", "2026-12-29"]),
         ),
         # time columns — TimePicker only
         vm.Filter(column="time_iso"),
