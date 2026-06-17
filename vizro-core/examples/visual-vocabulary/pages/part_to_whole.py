@@ -4,7 +4,7 @@ import vizro.models as vm
 
 from pages._factories import waterfall_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import donut, funnel, pie, stacked_bar, stacked_column, treemap, venn
+from pages.examples import arc, donut, funnel, pie, stacked_bar, stacked_column, treemap, venn
 
 pie_page = vm.Page(
     title="Pie",
@@ -288,9 +288,47 @@ venn_page = vm.Page(
 
 waterfall_page = waterfall_factory("part-to-whole")
 
+arc_page = vm.Page(
+    title="Arc",
+    path="part-to-whole/arc",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+            #### What is an arc diagram?
+
+            An arc diagram displays relationships between nodes using curved arcs that connect them on a horizontal
+            baseline. It's effective for visualizing networks, flows, and connections between entities.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use an arc diagram to show relationships, flows, or connections between nodes. It's particularly useful
+            for comparing multiple connections across a linear arrangement. Avoid using it with too many overlapping
+            arcs as they can become difficult to read.
+        """
+        ),
+        vm.Graph(figure=arc.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("arc.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("arc.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
 pages = [
     donut_page,
     pie_page,
+    arc_page,
     treemap_page,
     stacked_bar_page,
     stacked_column_page,
