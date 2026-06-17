@@ -40,36 +40,6 @@ dff = pd.DataFrame(
 
 
 page_0 = vm.Page(
-    title="Range Pickers",
-    components=[vm.AgGrid(figure=dash_ag_grid(data_frame=dff))],
-    controls=[
-        # datetime_utc — "datetime" type: tested as date (DatePicker) and time-of-day (TimePicker)
-        # vm.Filter(column="datetime_utc"),
-        # vm.Filter(
-        #     column="datetime_utc",
-        #     selector=vm.DatePicker(title="datetime_utc date + value", value=["2026-01-03", "2026-12-29"]),
-        # ),
-        # vm.Filter(column="datetime_utc", selector=vm.TimePicker(title="datetime_utc time")),
-        # vm.Filter(
-        #     column="datetime_utc", selector=vm.TimePicker(title="datetime_utc time + value", value=["00:00", "23:59"])
-        # ),
-        # date columns — DatePicker only
-        # vm.Filter(column="date_yyyy_mm_dd"),
-        # vm.Filter(
-        #     column="date_yyyy_mm_dd",
-        #     selector=vm.DatePicker(title="date_yyyy_mm_dd date + value", value=["2026-01-03", "2026-12-29"]),
-        # ),
-        # # time columns — TimePicker only
-        # vm.Filter(column="time_iso"),
-        # vm.Filter(
-        #     column="time_hh_mm_ss",
-        #     selector=vm.TimePicker(title="time_hh_mm_ss time+ + value", value=["00:00", "23:59"]),
-        # ),
-        # vm.Filter(column="time_hh_mm"),
-    ],
-)
-
-page_1 = vm.Page(
     title="Single Pickers",
     components=[vm.AgGrid(figure=dash_ag_grid(data_frame=dff))],
     controls=[
@@ -95,6 +65,36 @@ page_1 = vm.Page(
             column="time_hh_mm_ss", selector=vm.TimePicker(title="time_hh_mm_ss + value", range=False, value="00:00")
         ),
         vm.Filter(column="time_hh_mm", selector=vm.TimePicker(title="time_hh_mm", range=False)),
+    ],
+)
+
+page_1 = vm.Page(
+    title="Range Pickers",
+    components=[vm.AgGrid(figure=dash_ag_grid(data_frame=dff))],
+    controls=[
+        # datetime_utc — "datetime" type: tested as date (DatePicker) and time-of-day (TimePicker)
+        vm.Filter(column="datetime_utc"),
+        vm.Filter(
+            column="datetime_utc",
+            selector=vm.DatePicker(title="datetime_utc date + value", value=["2026-01-03", "2026-12-29"]),
+        ),
+        vm.Filter(column="datetime_utc", selector=vm.TimePicker(title="datetime_utc time")),
+        vm.Filter(
+            column="datetime_utc", selector=vm.TimePicker(title="datetime_utc time + value", value=["00:00", "23:59"])
+        ),
+        # date columns — DatePicker only
+        vm.Filter(column="date_yyyy_mm_dd"),
+        vm.Filter(
+            column="date_yyyy_mm_dd",
+            selector=vm.DatePicker(title="date_yyyy_mm_dd date + value", value=["2026-01-03", "2026-12-29"]),
+        ),
+        # time columns — TimePicker only
+        vm.Filter(column="time_iso"),
+        vm.Filter(
+            column="time_hh_mm_ss",
+            selector=vm.TimePicker(title="time_hh_mm_ss time+ + value", value=["00:00", "23:59"]),
+        ),
+        vm.Filter(column="time_hh_mm"),
     ],
 )
 
@@ -255,11 +255,11 @@ page_5 = vm.Page(
 dashboard = vm.Dashboard(
     pages=[
         page_0,
-        # page_1,
-        # page_2,
-        # page_3,
-        # page_4,
-        # page_5,
+        page_1,
+        page_2,
+        page_3,
+        page_4,
+        page_5,
     ],
 )
 
