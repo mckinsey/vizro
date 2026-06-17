@@ -120,12 +120,16 @@ def collect_carousel_items(data: dict) -> list[dict]:
     for category in data.get("categories", []):
         for item in category.get("items", []):
             if "featured" in item:
-                carousel_items.append(_build_carousel_entry(item["featured"], item))
-            for selector in item.get("selectors", []):
-                if "featured" in selector:
-                    carousel_items.append(
-                        _build_carousel_entry(selector["featured"], selector, item.get("docs_url", ""))
-                    )
+                carousel_items.append(_build_carousel_entry(featured=item["featured"], owner=item))
+            carousel_items.extend(
+                _build_carousel_entry(
+                    featured=selector["featured"],
+                    owner=selector,
+                    fallback_docs_url=item.get("docs_url", ""),
+                )
+                for selector in item.get("selectors", [])
+                if "featured" in selector
+            )
     return carousel_items
 
 
