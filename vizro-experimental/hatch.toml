@@ -57,7 +57,7 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
-  "zensical",
+  "zensical>=0.0.36",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
@@ -78,8 +78,9 @@ build = [
 # The github.com/.../vizro-experimental ignores are temporary: the URLs 404 until this branch merges to main, after
 # which they resolve. Once the package is on main, the two ignore-url entries can be removed.
 # --ignore-url=overrides/ skips the raw Jinja template overrides (e.g.
-# main.html) that Zensical copies into site/. Linkchecker would otherwise
-# try to resolve their {{ ... }} expressions as relative URLs.
+# main.html, partials/tabs-item.html) that zensical copies into site/.
+# Linkchecker would otherwise try to resolve their {{ ... }} expressions
+# as relative URLs.
 link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=overrides/ --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://github.com/mckinsey/vizro/tree/main/vizro-experimental --ignore-url=https://github.com/mckinsey/vizro/blob/main/vizro-experimental"
 pip = '"{env:HATCH_UV}" pip {args}'
 serve = "zensical serve --open {args}"

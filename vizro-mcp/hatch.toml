@@ -48,7 +48,7 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
-  "zensical>=0.0.28",
+  "zensical>=0.0.36",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]>=1.0.2",
   "linkchecker",
@@ -68,11 +68,12 @@ build = [
 # more advanced settings using a linkcheckerrc config file. openai.com doesn't seem to work well with linkchecking,
 # throwing 403 errors, but these are not real errors.
 # Ignoring urls for installing config to cursor and vscode using regular expressions.
-# Ignoring https://claude.ai/download page because it hase self signed ssl certificate, but linkcheker doesn't have an
+# Ignoring https://claude.ai/download page because it has self signed ssl certificate, but linkchecker doesn't have an
 # option to ignore ssl for specific website.
 # --ignore-url=overrides/ skips the raw Jinja template overrides (e.g.
-# main.html) that Zensical copies into site/. Linkchecker would otherwise
-# try to resolve their {{ ... }} expressions as relative URLs.
+# main.html, partials/tabs-item.html) that zensical copies into site/.
+# Linkchecker would otherwise try to resolve their {{ ... }} expressions
+# as relative URLs.
 link-check = '''
 linkchecker site \
   --check-extern \
