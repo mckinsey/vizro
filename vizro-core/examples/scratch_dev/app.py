@@ -254,11 +254,11 @@ page_5 = vm.Page(
 
 dashboard = vm.Dashboard(
     pages=[
-        page_0,
-        page_1,
-        page_2,
-        page_3,
-        page_4,
+        # page_0,
+        # page_1,
+        # page_2,
+        # page_3,
+        # page_4,
         page_5,
     ],
 )
