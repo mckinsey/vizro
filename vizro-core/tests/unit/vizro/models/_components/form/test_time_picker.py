@@ -169,8 +169,8 @@ class TestBuildMethod:
                 dbc.Label([html.Span("Title", id="timepicker_id_title"), None], html_for="timepicker_id-start"),
                 html.Div(
                     children=[
-                        dmc.TimePicker(id="timepicker_id-start", value="09:00", label="From:", debounce=True),
-                        dmc.TimePicker(id="timepicker_id-end", value="17:00", label="To:", debounce=True),
+                        dmc.TimePicker(id="timepicker_id-start", value="09:00", label="From", debounce=True),
+                        dmc.TimePicker(id="timepicker_id-end", value="17:00", label="To", debounce=True),
                     ],
                     style={"display": "flex", "gap": "8px"},
                 ),
@@ -249,7 +249,7 @@ class TestBuildMethod:
                         dmc.TimePicker(
                             id="timepicker_id-start",
                             value="09:00",
-                            label="From:",
+                            label="From",
                             debounce=True,
                             withDropdown=True,
                             clearable=True,
@@ -257,7 +257,7 @@ class TestBuildMethod:
                         dmc.TimePicker(
                             id="timepicker_id-end",
                             value="17:00",
-                            label="To:",
+                            label="To",
                             debounce=True,
                             withDropdown=True,
                             clearable=True,
