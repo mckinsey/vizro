@@ -1,5 +1,6 @@
 """Unit tests for vizro.models.Action."""
 
+import dash
 import pytest
 from asserts import assert_component_equal
 from dash import Output, State, dcc, no_update
@@ -1102,3 +1103,25 @@ class TestBaseActionCallbackFunction:
             match=r"Keys of action's returned value .+ do not match the action's defined outputs {'output'}.",
         ):
             action._action_callback_function(inputs={}, outputs={"output": Output("component", "property")})
+
+
+class TestDefineCallback:
+    """Tests for _define_callback: verifies action_log writes to vizro_logs_store."""
+
+    def _make_action(self):
+        action = Action(id="action-id", function=action_with_no_args())
+        action._first_in_chain_trigger = "first_trigger.property"
+        action._trigger = "trigger.property"
+        return action
+
+    def test_action_callback_not_optional(self, vizro_app):
+        action = self._make_action()
+        action._define_callback()
+        registered_callback = dash._callback.GLOBAL_CALLBACK_LIST[-1]
+        assert not registered_callback.get("optional")
+
+    def test_action_callback_output_includes_vizro_logs_store(self, vizro_app):
+        action = self._make_action()
+        action._define_callback()
+        registered_callback = dash._callback.GLOBAL_CALLBACK_LIST[-1]
+        assert "vizro_logs_store.data" in registered_callback["output"]

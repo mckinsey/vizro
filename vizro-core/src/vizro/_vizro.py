@@ -209,15 +209,13 @@ Provide a valid import path for these in your dashboard configuration."""
         """
         offcanvas = dbc.Offcanvas(
             id="vizro_logs_offcanvas",
-            title="Vizro action logs",
             placement="bottom",
             scrollable=True,
             backdrop=False,
             is_open=False,
-            style={"height": "40vh"},
             children=[
                 dbc.Button("Clear logs", id="vizro_logs_clear", size="sm", color="secondary", class_name="mb-2"),
-                html.Pre(id="vizro_logs", children=[], style={"fontSize": "0.75rem"}),
+                html.Pre(id="vizro_logs", children=[]),
             ],
         )
         button = html.Button(
@@ -241,9 +239,19 @@ Provide a valid import path for these in your dashboard configuration."""
             State("vizro_logs_offcanvas", "is_open"),
             optional=True,
         )
+        # Sync store and panel: vizro_logs_store lives in the main layout so Patch() on the store is safe.
+        # vizro_logs is in the DevTools overlay (optional=True) so this no-ops when not in debug mode.
+        # A plain list assignment avoids the Redux-store lookup that Patch() would require for a DevTools component.
+        clientside_callback(
+            "function(data) { return data || []; }",
+            Output("vizro_logs", "children"),
+            Input("vizro_logs_store", "data"),
+            optional=True,
+        )
+        # Clear: reset the store; the sync callback above will propagate the clear to the panel.
         clientside_callback(
             "function(_) { return []; }",
-            Output("vizro_logs", "children", allow_duplicate=True),
+            Output("vizro_logs_store", "data", allow_duplicate=True),
             Input("vizro_logs_clear", "n_clicks"),
             optional=True,
             prevent_initial_call=True,
