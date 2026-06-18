@@ -6,7 +6,7 @@ to vizro-core.
 
 from dash.development.base_component import ComponentRegistry
 
-__version__ = "0.0.1.dev0"
+__version__ = "0.1.0.dev0"
 
 _PACKAGE = "vizro_experimental"
 
