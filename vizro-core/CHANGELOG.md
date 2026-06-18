@@ -11,6 +11,13 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.59'></a>
+# 0.1.59 — 2026-06-18
+
+## Highlights ✨
+
+- Introduce `TimePicker` as a new selector for `Filter` and `Parameter`. See the [user guide on selectors](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/) for more details. ([#1746](https://github.com/mckinsey/vizro/pull/1746))
+
 <a id='changelog-0.1.58'></a>
 # 0.1.58 — 2026-06-12
 
