@@ -20,6 +20,10 @@ jobs:
   build-publish-test:
     runs-on: ubuntu-latest
     environment: pypi-test
+    
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - uses: actions/checkout@v6
