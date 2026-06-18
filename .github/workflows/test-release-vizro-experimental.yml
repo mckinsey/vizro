@@ -8,6 +8,9 @@ defaults:
     working-directory: vizro-experimental
 
 on:
+  push:
+    branches:
+      - ci/vizro-experimental-release
   workflow_dispatch:
 
 env:
