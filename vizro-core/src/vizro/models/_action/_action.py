@@ -11,7 +11,7 @@ from pprint import pformat
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 
-from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
+from dash import ClientsideFunction, Input, Output, Patch, State, callback, clientside_callback, dcc, html, no_update
 from dash.development.base_component import Component
 from dash.exceptions import PreventUpdate
 from pydantic import (
@@ -604,6 +604,9 @@ class _BaseAction(VizroBaseModel):
                 "action_progress_indicator": Output(
                     "action-progress-indicator-placeholder", "children", allow_duplicate=True
                 ),
+                # vizro_logs only exists when debug=True; the callback uses optional=True to silently
+                # no-op when the component is absent (i.e. when running without debug mode).
+                "action_log": Output("vizro_logs", "children", allow_duplicate=True),
             },
         }
 
@@ -630,7 +633,7 @@ class _BaseAction(VizroBaseModel):
             logger.debug("Callback inputs:\n%s", pformat(callback_inputs["external"], width=200))
             logger.debug("Callback outputs:\n%s", pformat(callback_outputs.get("external"), width=200))
 
-        @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
+        @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True, optional=True)
         def action_callback(external: list[Any] | dict[str, Any], internal: dict[str, Any]) -> dict[str, Any]:
             external_outputs_spec = callback_outputs.get("external")
 
@@ -670,7 +673,22 @@ class _BaseAction(VizroBaseModel):
                 )
                 notification_key, notification_result = notification_payload.key, notification_payload.result
 
-            return_value = {"internal": {"action_finished": action_finished, "action_progress_indicator": no_update}}
+            if error_msg is None:
+                log_text = f"===== Running action with id {self.id}, function {self._action_name} ====="
+            else:
+                log_text = (
+                    f"===== FAILED action with id {self.id!r}, function={self._action_name!r}  error={error_msg!r}"
+                )
+            action_log = Patch()
+            action_log.append(html.Pre(log_text))
+
+            return_value = {
+                "internal": {
+                    "action_finished": action_finished,
+                    "action_progress_indicator": no_update,
+                    "action_log": action_log,
+                }
+            }
             if "external" in callback_outputs:
                 return_value["external"] = external_return
 

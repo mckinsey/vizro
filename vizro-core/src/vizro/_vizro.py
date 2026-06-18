@@ -8,7 +8,9 @@ from pathlib import Path, PurePosixPath
 from typing import TYPE_CHECKING, Any, TypedDict, cast
 
 import dash
+import dash_bootstrap_components as dbc
 import plotly.io as pio
+from dash import Input, Output, State, clientside_callback, hooks, html
 from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
 from packaging.version import parse
@@ -153,6 +155,8 @@ class Vizro:
         # Note Dash.index uses self.dash.title instead of self.dash.config.title for backwards compatibility.
         if dashboard.title:
             self.dash.title = dashboard.title
+
+        self._register_action_log_devtool()
         return self
 
     def run(self, **kwargs: Any):
@@ -194,6 +198,56 @@ Provide a valid import path for these in your dashboard configuration."""
             )
 
         self.dash.run(**kwargs)
+
+    @staticmethod
+    def _register_action_log_devtool():
+        """Registers action log components into the Dash DevTools debug panel.
+
+        When the app is run with ``debug=True``, a "Vizro logs" button appears in the Dash debug menu.
+        When ``debug=False`` the components are not rendered and all callbacks targeting them silently no-op via
+         ``optional=True``.
+        """
+        offcanvas = dbc.Offcanvas(
+            id="vizro_logs_offcanvas",
+            title="Vizro action logs",
+            placement="bottom",
+            scrollable=True,
+            backdrop=False,
+            is_open=False,
+            style={"height": "40vh"},
+            children=[
+                dbc.Button("Clear logs", id="vizro_logs_clear", size="sm", color="secondary", class_name="mb-2"),
+                html.Pre(id="vizro_logs", children=[], style={"fontSize": "0.75rem"}),
+            ],
+        )
+        button = html.Button(
+            "Vizro logs",
+            className="dash-debug-menu__button",
+            id="open_vizro_logs",
+        )
+
+        for component in [button, offcanvas]:
+            c = component.to_plotly_json()
+            hooks.devtool(
+                namespace=c["namespace"],
+                component_type=c["type"],
+                props=c["props"],
+            )
+
+        clientside_callback(
+            "function(_, is_open) { return !is_open; }",
+            Output("vizro_logs_offcanvas", "is_open"),
+            Input("open_vizro_logs", "n_clicks"),
+            State("vizro_logs_offcanvas", "is_open"),
+            optional=True,
+        )
+        clientside_callback(
+            "function(_) { return []; }",
+            Output("vizro_logs", "children", allow_duplicate=True),
+            Input("vizro_logs_clear", "n_clicks"),
+            optional=True,
+            prevent_initial_call=True,
+        )
 
     @staticmethod
     def _pre_build():
