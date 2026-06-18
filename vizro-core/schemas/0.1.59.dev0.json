@@ -813,7 +813,7 @@
     },
     "DatePicker": {
       "additionalProperties": false,
-      "description": "Temporal single/range option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use temporal selectors](user-guides/selectors.md#temporal-selectors)",
+      "description": "Temporal single/range option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use temporal selectors](user-guides/selectors.md#temporal-selectors)\n\nExample:\n    ```python\n    import pandas as pd\n    import vizro.models as vm\n\n    # Convert a string column to datetime64 so DatePicker can filter it:\n    df = pd.DataFrame({\"date_column\": [\"2026-01-01\", \"2026-06-15\", \"2026-12-31\"]})\n    df[\"date_column\"] = pd.to_datetime(df[\"date_column\"])\n\n    vm.Filter(column=\"date_column\", selector=vm.DatePicker())\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2481,7 +2481,7 @@
     },
     "TimePicker": {
       "additionalProperties": false,
-      "description": "Temporal time-of-day single/range option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use temporal selectors](user-guides/selectors.md#temporal-selectors)",
+      "description": "Temporal time-of-day single/range option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use temporal selectors](user-guides/selectors.md#temporal-selectors)\n\nExample:\n    ```python\n    import pandas as pd\n    import vizro.models as vm\n\n    # Convert a string column to datetime.time objects so TimePicker can filter it:\n    df = pd.DataFrame({\"time_column\": [\"09:00\", \"12:30\", \"19:30:30\"]})\n    df[\"time_column\"] = pd.to_datetime(df[\"time_column\"]).dt.time\n\n    vm.Filter(column=\"time_column\", selector=vm.TimePicker())\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
