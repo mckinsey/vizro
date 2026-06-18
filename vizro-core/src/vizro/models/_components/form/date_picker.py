@@ -37,6 +37,18 @@ class DatePicker(VizroBaseModel):
     Abstract: Usage documentation
         [How to use temporal selectors](user-guides/selectors.md#temporal-selectors)
 
+    Example:
+        ```python
+        import pandas as pd
+        import vizro.models as vm
+
+        # Convert a string column to datetime64 so DatePicker can filter it:
+        df = pd.DataFrame({"date_column": ["2026-01-01", "2026-06-15", "2026-12-31"]})
+        df["date_column"] = pd.to_datetime(df["date_column"])
+
+        vm.Filter(column="date_column", selector=vm.DatePicker())
+        ```
+
     """
 
     type: Literal["date_picker"] = "date_picker"

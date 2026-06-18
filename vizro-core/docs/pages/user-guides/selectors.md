@@ -106,7 +106,7 @@ For more information, refer to the API reference of the selector, or the documen
 - [`DatePicker`][vizro.models.DatePicker] based on [`dmc.DatePickerInput`](https://www.dash-mantine-components.com/components/datepickerinput)
 - [`TimePicker`][vizro.models.TimePicker] based on [`dmc.TimePicker`](https://www.dash-mantine-components.com/components/timepicker)
 
-Use [`DatePicker`][vizro.models.DatePicker] for `date` columns and [`TimePicker`][vizro.models.TimePicker] for `time` (time-of-day) columns. For `datetime` columns either selector can be used while [`DatePicker`][vizro.models.DatePicker] is set as the default filter's selector.
+Use [`DatePicker`][vizro.models.DatePicker] for `date` columns and [`TimePicker`][vizro.models.TimePicker] for `time` columns. For `datetime` columns either selector can be used while [`DatePicker`][vizro.models.DatePicker] is set as the default filter's selector.
 
 !!! note
 

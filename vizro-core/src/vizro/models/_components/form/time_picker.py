@@ -1,3 +1,4 @@
+from contextlib import suppress
 from datetime import datetime, time
 from typing import Annotated, Any, Literal, cast
 
@@ -22,15 +23,15 @@ def _validate_time_string_format(value: Any) -> Any:
     """Validate string values parse as `HH:MM` or `HH:MM:SS` without coercing them to `datetime.time`."""
 
     def _validate(v: Any) -> Any:
-        if v and isinstance(v, str):
-            for fmt in ("%H:%M:%S", "%H:%M"):
-                try:
-                    datetime.strptime(v, fmt)
-                except ValueError:
-                    continue
+        if not (v and isinstance(v, str)):
+            return v
+
+        for fmt in ("%H:%M:%S", "%H:%M"):
+            with suppress(ValueError):
+                datetime.strptime(v, fmt)
                 return v
-            raise ValueError(f"Invalid time string {v!r}. Expected format 'HH:MM' or 'HH:MM:SS'.")
-        return v
+
+        raise ValueError(f"Invalid time string {v!r}. Expected format 'HH:MM' or 'HH:MM:SS'.")
 
     if isinstance(value, list):
         return [_validate(v) for v in value]
@@ -44,6 +45,18 @@ class TimePicker(VizroBaseModel):
 
     Abstract: Usage documentation
         [How to use temporal selectors](user-guides/selectors.md#temporal-selectors)
+
+    Example:
+        ```python
+        import pandas as pd
+        import vizro.models as vm
+
+        # Convert a string column to datetime.time objects so TimePicker can filter it:
+        df = pd.DataFrame({"time_column": ["09:00", "12:30", "19:30:30"]})
+        df["time_column"] = pd.to_datetime(df["time_column"]).dt.time
+
+        vm.Filter(column="time_column", selector=vm.TimePicker())
+        ```
     """
 
     type: Literal["time_picker"] = "time_picker"

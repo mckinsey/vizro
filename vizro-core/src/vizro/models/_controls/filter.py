@@ -84,26 +84,22 @@ def _coerce_temporal(
     Returns the coerced series and value to `datetime.time` or `datetime.date` objects if possible. Otherwise,
     returns unchanged series and value.
     """
-    _is_time = value and bool(_TIME_REGEX.match(str(value[0])))
+    _is_time = value and all(_TIME_REGEX.match(str(v)) for v in value)
     _is_date = not _is_time and is_datetime64_any_dtype(series)
 
     if _is_time:
-        # If `value` doesn't have seconds defined, strip seconds from the input series as well to ensure comparability.
-        _strip_seconds = False
-        if len(value[0].split(":")) == _TIME_PARTS_HH_MM:
-            _strip_seconds = True
-
-        # Time selector: convert "HH:MM" or "HH:MM:SS" input value strings to datetime.time objects.
-        value = pd.to_datetime(value, format="mixed").time
-
         if is_datetime64_any_dtype(series):
             # Converting Timestamp to datetime.time
             series = series.dt.time
 
         if normalize_precision:
             series = series.map(lambda v: v.replace(microsecond=0))
-            if _strip_seconds:
+            # If no `value` has seconds defined, strip seconds from the input series as well to ensure comparability.
+            if all(len(str(v).split(":")) == _TIME_PARTS_HH_MM for v in value):
                 series = series.map(lambda v: v.replace(second=0))
+
+        # Time selector: convert "HH:MM" or "HH:MM:SS" input value strings to datetime.time objects.
+        value = pd.to_datetime(value, format="mixed").time
 
     elif _is_date:
         # Date selector: convert date strings to datetime.date objects.
@@ -514,12 +510,8 @@ class Filter(VizroBaseModel):
         if is_numerical.all():
             return "numerical"
         if is_date.all():
-            # Distinguish pure-date columns (all midnight) from datetime columns that carry time-of-day information.
-            # Any non-midnight value in any target column means TimePicker is meaningful for this column.
-            # dropna() is required: NaT != NaT is True in pandas, so NaT values would falsely signal a time component.
-            has_time_component = targeted_data.apply(
-                lambda col: bool((col.dropna().dt.normalize() != col.dropna()).any())
-            ).any()
+            # Pure-date columns are all at midnight while datetime columns have at least one non-midnight time-of-day.
+            has_time_component = targeted_data.apply(lambda col: (col.dropna().dt.time != dt_time.min).any()).any()
             return "datetime" if has_time_component else "date"
         if is_time.all():
             return "time"
