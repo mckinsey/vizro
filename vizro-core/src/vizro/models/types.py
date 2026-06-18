@@ -687,13 +687,13 @@ OptionsType: TypeAlias = list[SingleValueType | _OptionsDictType]
 # All the below types rely on models and so must use ForwardRef (that is, "Checklist" rather than actual
 # Checklist class).
 SelectorType = Annotated[
-    "Cascader | Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch",
+    "Cascader | Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch | TimePicker",
     Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Cascader`][vizro.models.Cascader],
-[`Checklist`][vizro.models.Checklist],
-[`DatePicker`][vizro.models.DatePicker], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
-[`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider] or [`Switch`][vizro.models.Switch]."""
+[`Checklist`][vizro.models.Checklist], [`DatePicker`][vizro.models.DatePicker], [`Dropdown`][vizro.models.Dropdown],
+[`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider],
+[`Switch`][vizro.models.Switch] or [`TimePicker`][vizro.models.TimePicker]."""
 
 _FormComponentType = Annotated[
     "SelectorType | Button | UserInput",

@@ -97,27 +97,39 @@ def _pycafe_url_filter(code: str) -> str:
     return f"{PYCAFE_BASE_URL}/snippet/vizro/v1?{query}"
 
 
+def _build_carousel_entry(featured: dict, owner: dict, fallback_docs_url: str = "") -> dict:
+    """Build a carousel entry from a featured: block, using owner for fallback values."""
+    return {
+        "title": featured["title"],
+        "image": featured.get("image", owner.get("image", "")),
+        "image_alt": featured.get("image_alt", featured["title"]),
+        "description": featured["description"],
+        "link_text": featured.get("link_text", f"View {owner['name']}"),
+        "link_url": featured.get("link_url", owner.get("docs_url", fallback_docs_url)),
+    }
+
+
 def collect_carousel_items(data: dict) -> list[dict]:
     """Collect carousel items from component entries marked with featured: in the YAML.
 
-    Items appear in carousel order as they appear in the categories list.
-    This keeps carousel maintenance co-located with the relevant component entry.
+    Items appear in carousel order as they appear in the categories list. featured: blocks
+    are picked up on top-level items and on nested selectors (inside selectors_group entries),
+    so carousel maintenance stays co-located with the relevant component entry.
     """
     carousel_items = []
     for category in data.get("categories", []):
         for item in category.get("items", []):
             if "featured" in item:
-                featured = item["featured"]
-                carousel_items.append(
-                    {
-                        "title": featured["title"],
-                        "image": featured.get("image", item.get("image", "")),
-                        "image_alt": featured.get("image_alt", featured["title"]),
-                        "description": featured["description"],
-                        "link_text": featured.get("link_text", f"View {item['name']}"),
-                        "link_url": featured.get("link_url", item.get("docs_url", "")),
-                    }
+                carousel_items.append(_build_carousel_entry(featured=item["featured"], owner=item))
+            carousel_items.extend(
+                _build_carousel_entry(
+                    featured=selector["featured"],
+                    owner=selector,
+                    fallback_docs_url=item.get("docs_url", ""),
                 )
+                for selector in item.get("selectors", [])
+                if "featured" in selector
+            )
     return carousel_items
 
 
