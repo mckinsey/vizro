@@ -7,7 +7,16 @@ docs_dir = "docs"
 use_directory_urls = true
 
 nav = [
-  {"Vizro" = "index.md"},
+  # The first nav entry is the brand tab and acts as the cross-docset project
+  # switcher. Its title must equal `site_name`; that's the trigger condition
+  # in docs/overrides/partials/tabs-item.html. The first child must be the
+  # docset's own index.md so the brand link still works inside the dropdown.
+  {"Vizro" = [
+    {"Vizro" = "index.md"},
+    {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"},
+    {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"},
+    {"Vizro-Experimental" = "https://vizro.readthedocs.io/projects/vizro-experimental/"}
+  ]},
   {"Tutorials" = [
     {"Quickstart tutorial" = "pages/tutorials/quickstart-tutorial.md"},
     {"Explore Vizro" = "pages/tutorials/explore-components.md"},
@@ -42,7 +51,7 @@ nav = [
       {"Overview" = "pages/user-guides/actions.md"},
       {"Handle data" = "pages/user-guides/data-actions.md"},
       {"Graph and table interactions" = "pages/user-guides/graph-table-actions.md"},
-      {"Notifications" = "pages/user-guides/notification-actions.md"}
+      {"Notifications" = "pages/user-guides/notification-actions.md"},
     ]},
     {"Visual formatting" = [
       {"Overview" = "pages/user-guides/visual-formatting.md"},
@@ -88,12 +97,6 @@ nav = [
       {"Authors" = "pages/explanation/authors.md"}
     ]}
   ]},
-  {"Vizro-MCP" = [
-    {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"}
-  ]},
-  {"Vizro-AI" = [
-    {"Vizro-AI" = "https://vizro.readthedocs.io/projects/vizro-ai/"}
-  ]}
 ]
 
 repo_url = "https://github.com/mckinsey/vizro"
@@ -174,7 +177,7 @@ format = "pymdownx.superfences.fence_code_format"
 name = "python"
 class = "highlight"
 validator = "mkdocs_pycafe.validator"
-format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.52"}}
+format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.59"}}
 
 [project.markdown_extensions.pymdownx.tabbed]
 alternate_style = true
@@ -242,7 +245,21 @@ enable_creation_date = false
 # validation (supported since Zensical 0.0.36)
 # -------------------------
 # Autorefs (e.g. [vizro.models.Page]) and mkdocstrings options containing brackets
-# are currently reported as unresolved references. Disable until Zensical resolves:
-# https://zensical.org/docs/setup/validation/
+# are currently reported as unresolved references.
+#
+# unused_definitions is disabled to work around a regression introduced in
+# Zensical 0.0.44: reference-style links used inside indented blocks (e.g.
+# inside content tabs or admonitions) are not registered as usages, so their
+# definitions are reported as unused even though the rendered output is
+# correct. Affects pages such as ``pages/explanation/schema.md``,
+# ``pages/tutorials/explore-components.md`` and
+# ``pages/tutorials/custom-actions-tutorial.md`` where we use the
+# ``[![Alt]][label]`` pattern inside ``=== "..."`` tabs. The fix has landed on
+# Zensical's main branch (https://github.com/zensical/zensical/pull/736); this
+# line can be removed once a release > 0.0.44 ships. Tracked upstream at
+# https://github.com/zensical/zensical/issues/735.
+#
+# See https://zensical.org/docs/setup/validation/ for the full set of keys.
 [project.validation]
 unresolved_references = false
+unused_definitions = false

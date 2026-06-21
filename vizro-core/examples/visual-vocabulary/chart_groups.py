@@ -146,7 +146,6 @@ part_to_whole_chart_group = ChartGroup(
     pages=pages.part_to_whole.pages,
     incomplete_pages=[
         IncompletePage("Marimekko"),
-        IncompletePage("Arc"),
         IncompletePage("Gridplot"),
     ],
     icon="Donut Small",
@@ -162,7 +161,6 @@ flow_chart_group = ChartGroup(
     pages=pages.flow.pages,
     incomplete_pages=[
         IncompletePage("Chord"),
-        IncompletePage("Network"),
     ],
     icon="Air",
     intro_text=flow_intro_text,

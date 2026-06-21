@@ -120,7 +120,7 @@ class Page(VizroBaseModel):
     @_log_call
     def pre_build(self):
         # TODO-AV2 A 4: work out the best place to put this logic. It could feasibly go in _on_page_load instead.
-        #  Probably it's better where it is now since it avoid navigating up the model hierarchy
+        #  Probably it's better where it is now since it avoids navigating up the model hierarchy
         #  (action -> page -> figures) and instead just looks down (page -> figures).
         #  Should there be validation inside _on_page_load to check that targets exist and are
         #  on the page and target-able components (that is, are dynamic and hence have _action_outputs)?
@@ -148,8 +148,11 @@ class Page(VizroBaseModel):
 
         if controls:
             # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.
-            # Selector values as outputs to be reset.
-            selector_outputs = [Output(control.selector.id, "value", allow_duplicate=True) for control in controls]
+            # Selector values as outputs to be reset. Use "__default__" as the key to get the main selector output prop.
+            selector_outputs = [
+                Output(*control.selector._action_outputs["__default__"].split("."), allow_duplicate=True)
+                for control in controls
+            ]
 
             # Selector guard is set to True when selector value is reset to prevent actions chain from running.
             selector_guard_outputs = [
@@ -173,7 +176,10 @@ class Page(VizroBaseModel):
         url_controls = [control for control in controls if control.show_in_url]
 
         if url_controls:
-            selector_values_inputs = [Input(control.selector.id, "value") for control in url_controls]
+            # Selector values as inputs. Use "__default__" as the key to get the main selector input prop.
+            selector_values_inputs = [
+                Input(*control.selector._action_triggers["__default__"].split(".")) for control in url_controls
+            ]
             # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
             # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True.
             control_ids_states = [State(control.id, "id") for control in url_controls]

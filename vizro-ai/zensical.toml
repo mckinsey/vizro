@@ -5,7 +5,16 @@ site_dir = "site"
 docs_dir = "docs"
 
 nav = [
-  {"Vizro-AI" = "index.md"},
+  # The first nav entry is the brand tab and acts as the cross-docset project
+  # switcher. Its title must equal `site_name`; that's the trigger condition
+  # in docs/overrides/partials/tabs-item.html. The first child must be the
+  # docset's own index.md so the brand link still works inside the dropdown.
+  {"Vizro-AI" = [
+    {"Vizro-AI" = "index.md"},
+    {"Vizro" = "https://vizro.readthedocs.io/"},
+    {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"},
+    {"Vizro-Experimental" = "https://vizro.readthedocs.io/projects/vizro-experimental/"}
+  ]},
   {"Tutorials" = [
     {"Chart generation" = "pages/tutorials/quickstart.md"}
   ]},
@@ -26,8 +35,6 @@ nav = [
     {"Safeguard code execution" = "pages/explanation/safeguard.md"},
     {"Safety in Vizro-AI" = "pages/explanation/safety-in-vizro-ai.md"}
   ]},
-  {"Vizro" = "https://vizro.readthedocs.io"},
-  {"Vizro-MCP" = "https://vizro.readthedocs.io/projects/vizro-mcp/"}
 ]
 
 # This infers the version number of the latest release of whole repo, so we're hiding it for sub-packages in extra.css
@@ -41,6 +48,7 @@ extra_css = ["stylesheets/extra.css"]
 # -------------------------
 [project.theme]
 language = "en"
+custom_dir = "docs/overrides"
 variant = "classic"
 favicon = "images/favicon/favicon.png"
 features = [
@@ -104,7 +112,7 @@ format = "pymdownx.superfences.fence_code_format"
 name = "python"
 class = "highlight"
 validator = "mkdocs_pycafe.validator"
-format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.53"}}
+format = {object = "mkdocs_pycafe.formatter", kwds = {type = "vizro", requirements = "vizro==0.1.59"}}
 
 [project.markdown_extensions.pymdownx.tabbed]
 alternate_style = true

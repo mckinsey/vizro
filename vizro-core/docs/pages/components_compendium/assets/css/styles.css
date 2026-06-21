@@ -861,7 +861,6 @@ a {
 }
 
 .version-link::before {
-  content: "→";
   font-size: 12px;
 }
 
@@ -981,8 +980,8 @@ a {
 }
 
 .platform-pycafe {
-  background: rgba(255, 193, 7, 0.15);
-  color: #f57c00;
+  background: #895af7;
+  color: #ffffff;
 }
 
 .platform-huggingface {
@@ -1125,7 +1124,6 @@ a {
 
 .component_card .code-block pre {
   background: #1e1e1e;
-  font-family: var(--font-sans);
   margin: 0;
   overflow: auto;
   padding: 14px;
@@ -1133,7 +1131,6 @@ a {
 }
 
 .component_card .code-block code {
-  font-family: var(--font-sans);
   font-size: 11px;
   line-height: 1.5;
 }
@@ -1548,6 +1545,12 @@ html {
   margin-bottom: 0;
   padding: 14px 16px;
   padding-right: 16px;
+}
+
+.component_title__actions {
+  align-items: center;
+  display: flex;
+  gap: 8px;
 }
 
 .components-section {

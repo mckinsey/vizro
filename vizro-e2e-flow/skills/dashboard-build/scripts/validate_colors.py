@@ -1,10 +1,8 @@
-"""Validate Vizro color consistency: no hardcoded colors in app.py, no color_decisions in spec/3."""
+"""Validate Vizro color consistency: no hardcoded colors in app.py, no Colors section in spec/3."""
 
 # /// script
 # requires-python = ">=3.10"
-# dependencies = [
-#     "pyyaml",
-# ]
+# dependencies = []
 # ///
 
 import ast
@@ -12,8 +10,6 @@ import json
 import re
 import sys
 from pathlib import Path
-
-import yaml
 
 # All valid Vizro hex colors — keep in sync with vizro-core/src/vizro/themes/_colors.py
 # These are whitelisted — using them explicitly (e.g. for AG Grid styling) is acceptable.
@@ -151,10 +147,9 @@ class ColorVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_Call(self, node: ast.Call):
-        """Check function calls for forbidden color and layout kwargs."""
+        """Check function calls for forbidden color/layout kwargs and embedded hex colors."""
         func_name = self._get_func_name(node)
 
-        # Check for forbidden keyword arguments in any function call
         for kw in node.keywords:
             if kw.arg in FORBIDDEN_COLOR_KWARGS:
                 self.violations.append(
@@ -174,9 +169,6 @@ class ColorVisitor(ast.NodeVisitor):
                         "line": node.lineno,
                     }
                 )
-
-        # Check string literal arguments for hex colors
-        for kw in node.keywords:
             self._check_hex_in_node(kw.value, func_name, kw.arg, node.lineno)
 
         self.generic_visit(node)
@@ -204,13 +196,21 @@ class ColorVisitor(ast.NodeVisitor):
                     self._check_hex_in_node(v, func_name, kwarg, line)
 
     def _get_func_name(self, node: ast.Call) -> str:
-        if isinstance(node.func, ast.Attribute):
-            if isinstance(node.func.value, ast.Name):
-                return f"{node.func.value.id}.{node.func.attr}"
-            return node.func.attr
-        elif isinstance(node.func, ast.Name):
-            return node.func.id
-        return "<unknown>"
+        """Return the dotted call name, walking arbitrary-depth attribute chains."""
+        func = node.func
+        if isinstance(func, ast.Name):
+            return func.id
+        if not isinstance(func, ast.Attribute):
+            return "<unknown>"
+        parts: list[str] = []
+        cur: ast.AST = func
+        while isinstance(cur, ast.Attribute):
+            parts.append(cur.attr)
+            cur = cur.value
+        if isinstance(cur, ast.Name):
+            parts.append(cur.id)
+            return ".".join(reversed(parts))
+        return func.attr
 
 
 def check_app_py(project_dir: Path) -> list[dict]:
@@ -290,48 +290,44 @@ def check_app_py(project_dir: Path) -> list[dict]:
 
 
 def check_spec3(project_dir: Path, custom_colors_requested: bool) -> list[dict]:
-    """Check spec/3 for unexpected color_decisions when custom colors were not requested."""
-    checks = []
-    spec3_path = project_dir / "spec" / "3_visual_design.yaml"
-    if not spec3_path.exists():
+    """Check spec/3_visual_design.md for an unexpected Colors section.
+
+    The visual-design spec is a markdown file. A `## Colors` heading is
+    expected only when the user explicitly asked for custom colors.
+    """
+    checks: list[dict] = []
+    spec3 = project_dir / "spec" / "3_visual_design.md"
+
+    if not spec3.exists():
         checks.append(
             {
-                "check": "spec/3 color_decisions absent",
+                "check": "spec/3 colors section absent",
                 "status": "FAIL",
-                "detail": "spec/3_visual_design.yaml not found",
+                "detail": "spec/3_visual_design.md not found",
             }
         )
         return checks
 
-    try:
-        data = yaml.safe_load(spec3_path.read_text())
-    except yaml.YAMLError as e:
-        checks.append({"check": "spec/3 valid YAML", "status": "FAIL", "detail": str(e)})
-        return checks
+    has_colors_section = bool(re.search(r"^#{1,6}\s+colors\b", spec3.read_text(), re.MULTILINE | re.IGNORECASE))
 
-    if not isinstance(data, dict):
-        checks.append({"check": "spec/3 is a mapping", "status": "FAIL", "detail": "Root is not a dict"})
-        return checks
-
-    has_color_decisions = "color_decisions" in data
     if custom_colors_requested:
         checks.append(
             {
-                "check": "spec/3 color_decisions (custom requested)",
+                "check": "spec/3 colors section (custom requested)",
                 "status": "PASS",
-                "detail": "Custom colors were requested; color_decisions is acceptable",
+                "detail": "Custom colors were requested; a colors section is acceptable",
             }
         )
-    elif has_color_decisions:
+    elif has_colors_section:
         checks.append(
             {
-                "check": "spec/3 has no color_decisions",
+                "check": "spec/3 has no colors section",
                 "status": "FAIL",
-                "detail": "color_decisions found but custom colors were not requested",
+                "detail": "Colors section found in spec/3 but custom colors were not requested",
             }
         )
     else:
-        checks.append({"check": "spec/3 has no color_decisions", "status": "PASS", "detail": ""})
+        checks.append({"check": "spec/3 has no colors section", "status": "PASS", "detail": ""})
 
     return checks
 

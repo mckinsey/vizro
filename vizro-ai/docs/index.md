@@ -14,44 +14,6 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif" alt="Gif to demonstrate vizro-ai">
 
-<div class="grid cards" markdown>
-
-- :fontawesome-regular-map:{ .lg .middle } __New to Vizro-AI?__
-
-    ---
-
-    [:octicons-arrow-right-24: Quickstart chart generation](pages/tutorials/quickstart.md)
-
-    [:octicons-arrow-right-24: Vizro-AI installation](pages/user-guides/install.md)
-
-- :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
-
-    ---
-
-    [:octicons-arrow-right-24: Vizro-AI advanced usage and options](pages/user-guides/advanced-options.md)
-
-    [:octicons-arrow-right-24: Add charts to a Vizro dashboard](pages/user-guides/add-generated-chart-usecase.md)
-
-- :fontawesome-solid-book-open-reader:{ .lg .middle } __Find out more__
-
-    ---
-
-    [:octicons-arrow-right-24: FAQs and migration guide](pages/explanation/faq.md)
-
-    [:octicons-arrow-right-24: Model usage](pages/user-guides/customize-vizro-ai.md)
-
-- :fontawesome-solid-wand-magic-sparkles:{ .lg .middle } __More from Vizro__
-
-    ---
-
-    [:new: Agent skills (design & build)](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow)
-
-    [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md)
-
-    [:octicons-arrow-right-24: Vizro documentation](https://vizro.readthedocs.io/)
-
-</div>
-
 !!! notice "Notice"
 
     Review the [disclaimer](pages/explanation/disclaimer.md) before using the `vizro-ai` package.

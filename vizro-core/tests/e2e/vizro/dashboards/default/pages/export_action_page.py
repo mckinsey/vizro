@@ -24,15 +24,11 @@ export_action_page = vm.Page(
             id=cnst.EXPORT_PAGE_BUTTON,
             text="Export data",
             actions=[
-                vm.Action(
-                    function=export_data(
-                        file_format="csv",
-                    )
+                export_data(
+                    file_format="csv",
                 ),
-                vm.Action(
-                    function=export_data(
-                        file_format="xlsx",
-                    )
+                export_data(
+                    file_format="xlsx",
                 ),
             ],
         ),

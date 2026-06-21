@@ -538,8 +538,8 @@ def test_ag_grid_underlying_id_shortcuts(dash_br):
     # check value in Card
     dash_br.wait_for_text_to_equal(
         f"#{cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_CARD_ID} a",
-        "{'sepal_length': 4.9, 'sepal_width': 3, 'petal_length': 1.4, 'petal_width': 0.2, "
-        "'species': 'setosa', 'species_id': 1, 'date_column': '2024-01-02', 'number_column': 1, 'is_setosa': True}",
+        "{'sepal_length': 4.9, 'sepal_width': 3, 'petal_length': 1.4, 'petal_width': 0.2, 'species': 'setosa', "
+        "'species_id': 1, 'date_column': '2024-01-02T00:00:00', 'number_column': 1, 'is_setosa': True}",
     )
 
 
