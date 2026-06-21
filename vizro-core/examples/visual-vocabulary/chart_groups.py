@@ -113,7 +113,6 @@ magnitude_chart_group = ChartGroup(
     pages=pages.magnitude.pages,
     incomplete_pages=[
         IncompletePage("Marimekko"),
-        IncompletePage("Pictogram"),
         IncompletePage("Bullet"),
     ],
     icon="Bar Chart",

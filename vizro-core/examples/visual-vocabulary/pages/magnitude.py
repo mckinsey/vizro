@@ -4,7 +4,16 @@ import vizro.models as vm
 
 from pages._factories import lollipop_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import bar, magnitude_column, paired_bar, paired_column, parallel_coordinates, radar, radial
+from pages.examples import (
+    bar,
+    magnitude_column,
+    paired_bar,
+    paired_column,
+    parallel_coordinates,
+    pictogram,
+    radar,
+    radial,
+)
 
 bar_page = vm.Page(
     title="Bar",
@@ -275,6 +284,46 @@ radial_page = vm.Page(
     ],
 )
 
+pictogram_page = vm.Page(
+    path="magnitude/pictogram",
+    title="Pictogram",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+                #### What is a pictogram chart?
+
+                A pictogram uses repeated icons to represent data values. Each icon represents a specific quantity,
+                and the total number of icons shows the magnitude for each category. In this example, each
+                circle represents 100 million people.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Use a pictogram to make data more engaging and accessible, especially for a non-technical audience.
+                It is most effective for showing countable items where each icon intuitively represents one unit,
+                helping viewers grasp relative sizes at a glance. Avoid using it when precise comparisons are
+                needed, as continuous bars are easier to read accurately.
+        """
+        ),
+        vm.Graph(figure=pictogram.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("pictogram.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("pictogram.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
+
 lollipop_page = lollipop_factory("magnitude")
 pages = [
     bar_page,
@@ -284,5 +333,6 @@ pages = [
     parallel_coordinates_page,
     radar_page,
     radial_page,
+    pictogram_page,
     lollipop_page,
 ]
