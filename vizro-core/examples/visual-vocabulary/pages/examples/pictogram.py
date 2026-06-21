@@ -13,7 +13,7 @@ def pictogram(data_frame: pd.DataFrame, category_col: str, value_col: str) -> go
 
     for i in range(num_categories):
         cat = categories[i]
-        val = values[i]
+        val = int(values[i])
         if val > 0:
             fig.add_trace(
                 go.Scatter(
@@ -33,7 +33,7 @@ def pictogram(data_frame: pd.DataFrame, category_col: str, value_col: str) -> go
 
     fig.update_yaxes(tickvals=list(range(num_categories)), ticktext=categories[::-1], title="")
     fig.update_xaxes(visible=False, range=[-0.5, max(values) + 0.5])
-    fig.update_layout(height=400, plot_bgcolor="white", margin={"l": 0, "r": 0, "t": 0, "b": 0})
+    fig.update_layout(height=400, margin={"l": 0, "r": 0, "t": 0, "b": 0})
 
     return fig
 
