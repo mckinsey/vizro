@@ -4,7 +4,7 @@ import vizro.models as vm
 
 from pages._factories import lollipop_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import bar, magnitude_column, paired_bar, paired_column, parallel_coordinates, radar
+from pages.examples import bar, magnitude_column, paired_bar, paired_column, parallel_coordinates, radar, radial
 
 bar_page = vm.Page(
     title="Bar",
@@ -239,6 +239,42 @@ radar_page = vm.Page(
     ],
 )
 
+radial_page = vm.Page(
+    path="magnitude/radial",
+    title="Radial",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+                #### What is a radial chart?
+
+                A radial chart displays values as bars arranged around a circular axis. Each bar's length represents
+                the magnitude of a value, while its angle or segment identifies the category.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Use a radial chart to compare magnitudes across cyclic categories, such as compass directions, hours,
+                days, or seasons. It works best when the circular structure is meaningful to the data. For categories
+                without a natural cycle, use a standard bar or column chart for easier comparison.
+        """
+        ),
+        vm.Graph(figure=radial.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("radial.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("radial.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
 lollipop_page = lollipop_factory("magnitude")
 pages = [
     bar_page,
@@ -247,5 +283,6 @@ pages = [
     paired_column_page,
     parallel_coordinates_page,
     radar_page,
+    radial_page,
     lollipop_page,
 ]

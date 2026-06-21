@@ -115,7 +115,6 @@ magnitude_chart_group = ChartGroup(
         IncompletePage("Marimekko"),
         IncompletePage("Pictogram"),
         IncompletePage("Bullet"),
-        IncompletePage("Radial"),
     ],
     icon="Bar Chart",
     intro_text=magnitude_intro_text,
