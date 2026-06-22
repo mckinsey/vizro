@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import re
 from collections.abc import Callable, Iterable
 from contextlib import suppress
+from datetime import time as dt_time
 from typing import Any, Literal, cast
 
 import pandas as pd
@@ -15,14 +17,13 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
-from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch
+from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch, TimePicker
 from vizro.models._components.form.cascader import Cascader
 from vizro.models._controls._controls_utils import (
     SELECTORS,
-    _is_boolean_selector,
     _is_categorical_selector,
     _is_hierarchical_selector,
-    _is_numerical_temporal_selector,
+    _is_numerical_or_date_selector,
     check_control_targets,
     get_control_parent,
     get_selector_default_value,
@@ -34,7 +35,9 @@ from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType
 DEFAULT_SELECTORS = {
     "numerical": RangeSlider,
     "categorical": Dropdown,
-    "temporal": DatePicker,
+    "date": DatePicker,
+    "datetime": DatePicker,
+    "time": TimePicker,
     "boolean": Switch,
     "hierarchical": Cascader,
 }
@@ -47,20 +50,99 @@ DEFAULT_SELECTORS = {
 # something we should avoid at least until we have moved to narwhals since maybe it's an unnecessary
 # performance hit.
 DISALLOWED_SELECTORS = {
-    "numerical": SELECTORS["temporal"],
-    "temporal": SELECTORS["numerical"] + SELECTORS["boolean"],
-    "categorical": SELECTORS["numerical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
-    "boolean": SELECTORS["numerical"] + SELECTORS["temporal"],
-    "hierarchical": SELECTORS["numerical"] + SELECTORS["categorical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
+    "numerical": SELECTORS["date"] + SELECTORS["time"],
+    "date": SELECTORS["numerical"] + SELECTORS["boolean"] + SELECTORS["time"],
+    "datetime": SELECTORS["numerical"] + SELECTORS["boolean"],
+    "time": SELECTORS["numerical"] + SELECTORS["boolean"] + SELECTORS["date"],
+    "categorical": SELECTORS["numerical"] + SELECTORS["date"] + SELECTORS["time"] + SELECTORS["boolean"],
+    "boolean": SELECTORS["numerical"] + SELECTORS["date"] + SELECTORS["time"],
+    "hierarchical": SELECTORS["numerical"]
+    + SELECTORS["categorical"]
+    + SELECTORS["date"]
+    + SELECTORS["time"]
+    + SELECTORS["boolean"],
 }
 
+# Accepts "HH:MM" and "HH:MM:SS" formats. These are the only that the underlying dmc.TimePicker selector can produce.
+_TIME_REGEX = re.compile(r"^\d{2}:\d{2}(:\d{2})?$")
+_TIME_PARTS_HH_MM = 2  # "HH:MM".split(":") → 2 parts, i.e. no seconds in format
 
-def _filter_between(series: pd.Series, value: list[float] | list[str]) -> pd.Series:
-    if is_datetime64_any_dtype(series):
-        # Each value will always have time 00:00:00. In order for the filter to include all times during
-        # the end date value[1] we need to remove the time part of every value in series so that it's 00:00:00.
-        value = pd.to_datetime(value)
-        series = pd.to_datetime(series.dt.date)
+# Column types whose filter options/bounds can update when the underlying data source is dynamic.
+# "time", "boolean", and "hierarchical" are always static.
+# The TimePicker on a "datetime" column is also always static (no min/max concept to derive dynamically).
+_DYNAMIC_COLUMN_TYPES = {"numerical", "categorical", "date", "datetime"}
+
+
+def _coerce_temporal(
+    series: pd.Series, value: list[Any], normalize_precision: bool = False
+) -> tuple[pd.Series, list[Any]]:
+    """If needed, coerce `series` and `value` to comparable `datetime.time` or `datetime.date` objects.
+
+    `normalize_precision=True` strips microseconds (and optionally seconds) from time values in the series to make
+     comparisons consistent with the user-provided string format.
+
+    Returns the coerced series and value to `datetime.time` or `datetime.date` objects if possible. Otherwise,
+    returns unchanged series and value.
+    """
+    _is_time = value and all(_TIME_REGEX.match(str(v)) for v in value)
+    _is_date = not _is_time and is_datetime64_any_dtype(series)
+
+    if _is_time:
+        if is_datetime64_any_dtype(series):
+            # Converting Timestamp to datetime.time
+            series = series.dt.time
+
+        if normalize_precision:
+            series = series.map(lambda v: v.replace(microsecond=0))
+            # If no `value` has seconds defined, strip seconds from the input series as well to ensure comparability.
+            if all(len(str(v).split(":")) == _TIME_PARTS_HH_MM for v in value):
+                series = series.map(lambda v: v.replace(second=0))
+
+        # Time selector: convert "HH:MM" or "HH:MM:SS" input value strings to datetime.time objects.
+        value = pd.to_datetime(value, format="mixed").time
+
+    elif _is_date:
+        # Date selector: convert date strings to datetime.date objects.
+        value = pd.to_datetime(value).date
+        # Converting Timestamp to datetime.date
+        series = series.dt.date
+
+    return series, value
+
+
+def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
+    """Filter using .isin() - works with boolean/categorical data.
+
+    Switch selectors work with 0/1 columns due to pandas automatic type conversion:
+    >>> pd.Series([0, 1]).isin([False])  # [True, False]
+    >>> pd.Series([False, True]).isin([1])  # [False, True]
+    """
+    # Skip filtering if any value is missing — both pickers must be set for a range filter.
+    if any(v in [None, ""] for v in value):
+        return pd.Series(True, index=series.index)
+
+    # If needed, coerce series and value to comparable time or date objects based on value format.
+    series, value = _coerce_temporal(series=series, value=value, normalize_precision=True)
+    return series.isin(value)
+
+
+def _filter_between(series: pd.Series, value: list[float] | list[str | None]) -> pd.Series:
+    """Filter using .between() - works with numerical/date/time range data.
+
+    Time-of-day ranges that cross midnight are handled with an OR condition:
+    >>> _filter_between(pd.Series([dt_time(23, 0)]), [dt_time(21, 0), dt_time(6, 0)])  # [True]
+    >>> _filter_between(pd.Series([dt_time(12, 0)]), [dt_time(21, 0), dt_time(6, 0)])  # [False]
+    """
+    # Skip filtering if any value is missing — both pickers must be set for a range filter.
+    if any(v in [None, ""] for v in value):
+        return pd.Series(True, index=series.index)
+
+    # If needed, coerce series and value to comparable time or date objects based on value format.
+    series, value = _coerce_temporal(series=series, value=value, normalize_precision=False)
+
+    # Handle time-of-day ranges that cross midnight: e.g. [21:00, 06:00] means time >= 21:00 OR time <= 06:00.
+    if isinstance(value[0], dt_time) and value[0] > value[1]:
+        return (series >= value[0]) | (series <= value[1])
     return series.between(value[0], value[1], inclusive="both")
 
 
@@ -92,21 +174,6 @@ def _dataframe_path_to_cascader_options(df: pd.DataFrame, path_columns: list[str
     for branch_key, leaves in leaves_by_branch.items():
         _assign_nested(out, branch_key, leaves)
     return out
-
-
-def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
-    """Filter using .isin() - works with boolean/categorical data.
-
-    Switch selectors work with 0/1 columns due to pandas automatic type conversion:
-    >>> pd.Series([0, 1]).isin([False])  # [True, False]
-    >>> pd.Series([False, True]).isin([1])  # [False, True]
-    """
-    if is_datetime64_any_dtype(series):
-        # Value will always have time 00:00:00. In order for the filter to include all times during
-        # the end date value we need to remove the time part of every value in series so that it's 00:00:00.
-        value = pd.to_datetime(value)
-        series = pd.to_datetime(series.dt.date)
-    return series.isin(value)
 
 
 class Filter(VizroBaseModel):
@@ -148,7 +215,9 @@ class Filter(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
     _selector_properties: set[str] = PrivateAttr(set())
-    _column_type: Literal["numerical", "categorical", "temporal", "boolean"] = PrivateAttr()
+    _column_type: Literal["hierarchical", "numerical", "categorical", "date", "datetime", "time", "boolean"] = (
+        PrivateAttr()
+    )
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
@@ -226,11 +295,11 @@ class Filter(VizroBaseModel):
 
         if _is_categorical_selector(selector):
             selector_call_obj = selector(options=self._get_options(targeted_data, current_value))
-        elif _is_numerical_temporal_selector(selector):
+        elif _is_numerical_or_date_selector(selector):
             _min, _max = self._get_min_max(targeted_data, current_value)
             selector_call_obj = selector(min=_min, max=_max)
         else:
-            # Hierarchical filters cannot yet be dynamic.
+            # Hierarchical and time filters cannot yet be dynamic.
             selector_call_obj = selector.build()
 
         # The filter is dynamic, so a guard component (data=True) needs to be added to prevent unexpected action firing.
@@ -282,27 +351,20 @@ class Filter(VizroBaseModel):
 
         # Set default selector according to column type and whether it's a hierarchical filter.
         self._column_type = self._validate_column_type(targeted_data)
-        is_hierarchical_column = isinstance(self.column, list)
-        selector_kind: Literal["hierarchical", "numerical", "categorical", "temporal", "boolean"] = (
-            "hierarchical" if is_hierarchical_column else self._column_type
-        )
-        self.selector = self.selector or DEFAULT_SELECTORS[selector_kind]()
+        self.selector = self.selector or DEFAULT_SELECTORS[self._column_type]()
         self.selector.title = self.selector.title or self._single_filter_column.title()
 
-        if isinstance(self.selector, DISALLOWED_SELECTORS[selector_kind]):
+        if isinstance(self.selector, DISALLOWED_SELECTORS[self._column_type]):
             raise ValueError(
-                f"Chosen selector {type(self.selector).__name__} is not compatible with {selector_kind} column "
+                f"Chosen selector {type(self.selector).__name__} is not compatible with {self._column_type} column "
                 f"'{self._single_filter_column}'."
             )
 
-        # Check if the filter is dynamic. Dynamic filter means that the filter is updated when the page is refreshed
-        # which causes "options" for categorical or "min" and "max" for numerical/temporal selectors to be updated.
-        # The filter is dynamic if mentioned attributes ("options"/"min"/"max") are not explicitly provided and
-        # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
-        # but should still count as manually set. Hierarchical and boolean filters are always static.
+        # A filter is dynamic if its options/bounds are not manually set and at least one target uses dynamic data.
+        # Note: min or max = 0 are falsey but must not be treated as "not set".
         if (
-            not _is_hierarchical_selector(self.selector)
-            and not _is_boolean_selector(self.selector)
+            self._column_type in _DYNAMIC_COLUMN_TYPES
+            and not isinstance(self.selector, TimePicker)
             and not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None
@@ -314,7 +376,8 @@ class Filter(VizroBaseModel):
                     self.selector._dynamic = True
                     break
 
-        if _is_numerical_temporal_selector(self.selector):
+        # TimePicker always has a default min/max specified so no need to handle it here.
+        if _is_numerical_or_date_selector(self.selector):
             _min, _max = self._get_min_max(targeted_data)
             # Note that manually set self.selector.min/max = 0 are Falsey and should not be overwritten.
             if self.selector.min is None:
@@ -340,7 +403,7 @@ class Filter(VizroBaseModel):
         if not self.selector.actions:
             filter_function: Callable[[pd.Series, Any], pd.Series]
             if isinstance(self.selector, RangeSlider) or (
-                isinstance(self.selector, DatePicker) and self.selector.range
+                isinstance(self.selector, (DatePicker, TimePicker)) and self.selector.range
             ):
                 filter_function = _filter_between
             else:
@@ -433,25 +496,32 @@ class Filter(VizroBaseModel):
 
     def _validate_column_type(
         self, targeted_data: pd.DataFrame
-    ) -> Literal["numerical", "categorical", "temporal", "boolean"]:
+    ) -> Literal["hierarchical", "numerical", "categorical", "date", "datetime", "time", "boolean"]:
         is_boolean = targeted_data.apply(is_bool_dtype)
         is_numerical = targeted_data.apply(is_numeric_dtype)
-        is_temporal = targeted_data.apply(is_datetime64_any_dtype)
-        is_categorical = ~(is_boolean | is_numerical | is_temporal)
+        is_date = targeted_data.apply(is_datetime64_any_dtype)
+        is_time = targeted_data.apply(lambda x: pd.api.types.infer_dtype(x, skipna=True) == "time")
+        is_categorical = ~(is_boolean | is_numerical | is_date | is_time)
 
+        if isinstance(self.column, list):
+            return "hierarchical"
         if is_boolean.all():
             return "boolean"
-        elif is_numerical.all():
+        if is_numerical.all():
             return "numerical"
-        elif is_temporal.all():
-            return "temporal"
-        elif is_categorical.all():
+        if is_date.all():
+            # Pure-date columns are all at midnight while datetime columns have at least one non-midnight time-of-day.
+            has_time_component = targeted_data.apply(lambda col: (col.dropna().dt.time != dt_time.min).any()).any()
+            return "datetime" if has_time_component else "date"
+        if is_time.all():
+            return "time"
+        if is_categorical.all():
             return "categorical"
-        else:
-            raise ValueError(
-                f"Inconsistent types detected in column {self._single_filter_column}. "
-                "This column must have the same type for all targets."
-            )
+
+        raise ValueError(
+            f"Inconsistent types detected in column {self._single_filter_column}. "
+            "This column must have the same type for all targets."
+        )
 
     @staticmethod
     def _get_min_max(

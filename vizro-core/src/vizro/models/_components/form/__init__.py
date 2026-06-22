@@ -7,5 +7,17 @@ from vizro.models._components.form.radio_items import RadioItems
 from vizro.models._components.form.range_slider import RangeSlider
 from vizro.models._components.form.slider import Slider
 from vizro.models._components.form.switch import Switch
+from vizro.models._components.form.time_picker import TimePicker
 
-__all__ = ["Button", "Cascader", "Checklist", "DatePicker", "Dropdown", "RadioItems", "RangeSlider", "Slider", "Switch"]
+__all__ = [
+    "Button",
+    "Cascader",
+    "Checklist",
+    "DatePicker",
+    "Dropdown",
+    "RadioItems",
+    "RangeSlider",
+    "Slider",
+    "Switch",
+    "TimePicker",
+]

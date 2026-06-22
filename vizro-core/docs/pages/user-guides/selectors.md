@@ -104,10 +104,18 @@ For more information, refer to the API reference of the selector, or the documen
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
 - [`DatePicker`][vizro.models.DatePicker] based on [`dmc.DatePickerInput`](https://www.dash-mantine-components.com/components/datepickerinput)
+- [`TimePicker`][vizro.models.TimePicker] based on [`dmc.TimePicker`](https://www.dash-mantine-components.com/components/timepicker)
+
+Use [`DatePicker`][vizro.models.DatePicker] for `date` columns and [`TimePicker`][vizro.models.TimePicker] for `time` columns. For `datetime` columns either selector can be used while [`DatePicker`][vizro.models.DatePicker] is set as the default filter's selector.
 
 !!! note
 
-    When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type (for example, `datetime.datetime(2024, 01, 01)`).
+    - [`DatePicker`][vizro.models.DatePicker]: provide `min`, `max` and `value` as `"yyyy-mm-dd"` strings or `datetime` objects (for example, `datetime.datetime(2024, 1, 1)`). For target columns, use `df["date"] = pd.to_datetime(df["date"])` to get a `datetime64` column.
+    - [`TimePicker`][vizro.models.TimePicker]: provide `value` as `"HH:MM"` or `"HH:MM:SS"` strings or `datetime.time` objects (for example, `datetime.time(10, 30)`). For target columns, use `df["time"] = pd.to_datetime(df["time"]).time` to get a column of `datetime.time` objects.
+
+!!! note "Time ranges that cross midnight"
+
+    When the [`TimePicker`][vizro.models.TimePicker] start time is later than the end time (for example, `["21:00", "06:00"]`), the range is interpreted as wrapping around midnight. Rows are included if their time falls within `["21:00", "23:59:59.999999"]` **or** `["00:00", "06:00"]`.
 
 ## Boolean selectors
 
