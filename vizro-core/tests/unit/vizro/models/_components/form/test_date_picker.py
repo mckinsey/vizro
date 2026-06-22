@@ -70,12 +70,22 @@ class TestDatePickerInstantiation:
         [action] = date_picker.actions
         assert action._trigger == "date-picker-id.value"
 
-    @pytest.mark.parametrize("min, max", [("2024-01-01", None), (None, "2024-01-01"), ("2024-01-01", "2024-02-01")])
-    def test_valid_min_max(self, min, max):
+    @pytest.mark.parametrize(
+        "min, max, expected_min, expected_max",
+        [
+            ("2024-01-01", None, date(2024, 1, 1), None),
+            (None, "2024-01-01", None, date(2024, 1, 1)),
+            ("2024-01-01", "2024-02-01", date(2024, 1, 1), date(2024, 2, 1)),
+            # `datetime` objects with a time component are coerced to pure dates by `_coerce_to_date`.
+            (datetime(2024, 1, 1, 10, 10, 10), datetime(2024, 2, 1, 20), date(2024, 1, 1), date(2024, 2, 1)),
+            (datetime(2024, 1, 1, 0, 0, 0, 123456), datetime(2024, 2, 1), date(2024, 1, 1), date(2024, 2, 1)),
+        ],
+    )
+    def test_valid_min_max(self, min, max, expected_min, expected_max):
         date_picker = vm.DatePicker(min=min, max=max)
 
-        assert date_picker.min == (datetime.strptime(min, "%Y-%m-%d").date() if min else None)
-        assert date_picker.max == (datetime.strptime(max, "%Y-%m-%d").date() if max else None)
+        assert date_picker.min == expected_min
+        assert date_picker.max == expected_max
 
     def test_validate_max_invalid_min_greater_than_max(self):
         with pytest.raises(

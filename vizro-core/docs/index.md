@@ -6,7 +6,10 @@ hide:
 
 # Vizro
 
-Vizro is an open-source Python-based toolkit. You can use it to build data visualization apps quickly and easily, without needing advanced engineering or design expertise.
+Vizro is an open-source Python-based toolkit for building data visualization apps quickly and easily, without needing advanced engineering or design expertise.
+
+These docs include tutorials and how-to guides for [components](pages/user-guides/components.md), [controls](pages/user-guides/controls.md), [actions](pages/user-guides/actions.md), [data](pages/user-guides/data.md), [visual formatting](pages/user-guides/visual-formatting.md), and [extensions](pages/user-guides/extensions.md).
+They also include a full API reference and additional explanation, such as [FAQs](pages/explanation/faq.md) and a guide to help you [contribute to Vizro](pages/explanation/contributing.md).
 
 <div class="grid cards" markdown>
 
@@ -18,13 +21,11 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     [Explore Vizro tutorial](pages/tutorials/explore-components.md)
 
-    [Write your own actions tutorial](pages/tutorials/custom-actions-tutorial.md)
+    [Fundamentals](pages/user-guides/dashboard.md)
 
 - :fontawesome-solid-chart-column:{ .lg .middle } __Vizro features__
 
     ---
-
-    [Fundamentals](pages/user-guides/dashboard.md)
 
     [Components overview](pages/user-guides/components.md)
 
@@ -32,25 +33,23 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     [Extend and customize Vizro](pages/user-guides/extensions.md)
 
-- :fontawesome-solid-wand-magic-sparkles:{ .lg .middle } __Gen AI assistance__
+- :fontawesome-solid-book-open:{ .lg .middle } __Other Vizro projects__
 
     ---
 
-    [:new: Agent skills (design & build)](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow)
+    [:test_tube: Vizro-Experimental](https://vizro.readthedocs.io/projects/vizro-experimental/)
 
-    [:fontawesome-solid-star: Vizro-MCP :fontawesome-solid-star:](https://vizro.readthedocs.io/projects/vizro-mcp/)
+    [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/)
 
     [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
 
-- :fontawesome-solid-book-open:{ .lg .middle } __Find out more__
+- :fontawesome-solid-wand-magic-sparkles:{ .lg .middle } __New!__
 
     ---
 
-    [FAQs](pages/explanation/faq.md)
+    [Vizro cheatsheet](pages/cheatsheet/cheatsheet.html)
 
-    [:sparkles: Cheatsheet :sparkles:](pages/cheatsheet/cheatsheet.html)
-
-    [:sparkles:Components Compendium:sparkles:](pages/components_compendium/index.html)
+    [Vizro components compendium](pages/components_compendium/index.html)
 
 - :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Get involved__
 
