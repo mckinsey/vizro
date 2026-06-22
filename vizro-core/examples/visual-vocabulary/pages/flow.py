@@ -4,7 +4,7 @@ import vizro.models as vm
 
 from pages._factories import waterfall_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import sankey
+from pages.examples import chord, sankey
 
 sankey_page = vm.Page(
     title="Sankey",
@@ -49,4 +49,44 @@ sankey_page = vm.Page(
 
 waterfall_page = waterfall_factory("flow")
 
-pages = [sankey_page, waterfall_page]
+chord_page = vm.Page(
+    title="Chord",
+    path="flow/chord",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+            #### What is a chord diagram?
+
+            A chord diagram visualizes flows or relationships between multiple entities. Categories are arranged
+            around a circle, and ribbons connect them to show the magnitude and direction of interactions. The
+            arc length of each category is proportional to its total flow, making it easy to identify the most
+            connected entities at a glance.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a chord diagram to show complex networks of relationships or flows, such as trade between
+            countries, migration patterns, communication flows, or energy transfers. It is particularly
+            effective when you want to highlight both the global structure of connections and the specific
+            relationships between individual pairs. Be mindful that chord diagrams can become cluttered with
+            too many categories — they work best with fewer than ten entities.
+        """
+        ),
+        vm.Graph(figure=chord.fig, extra=dict(config={"displayModeBar": False})),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("chord.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("chord.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
+pages = [sankey_page, chord_page, waterfall_page]
