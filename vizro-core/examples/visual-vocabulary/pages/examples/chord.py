@@ -8,7 +8,6 @@ from vizro.models.types import capture
 
 COLORS = ["#497DEF", "#6F39E3", "#05D0E0", "#0F766E", "#E77EC2"]
 NODES = ["USA", "China", "EU", "Japan", "India"]
-N = len(NODES)
 R = 1.4
 ARC_WIDTH = 0.06
 INNER_R = R - ARC_WIDTH
@@ -73,6 +72,8 @@ def _ribbon_polygon(rad_src_start, rad_src_end, rad_tgt_start, rad_tgt_end, n=20
 
 @capture("graph")
 def chord_diagram(data_frame, node_labels):
+    if len(node_labels) > len(COLORS):
+        raise ValueError(f"Only {len(COLORS)} colors defined but {len(node_labels)} nodes provided")
     matrix = Matrix(data_frame)
 
     circos = Circos(matrix.to_sectors(), space=GAP_DEG)
