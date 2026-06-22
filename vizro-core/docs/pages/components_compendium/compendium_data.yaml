@@ -32,6 +32,15 @@ categories:
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/graph/
         image: assets/images/charts.png
         highlight_lines: "10-16"
+        featured:
+          title: Filter by Time-of-day
+          image: assets/images/timepicker_highlight.gif
+          description: |
+            The new <b>TimePicker</b> selector lets users filter by time-of-day, either as a
+            single time or as a time range. Use it together with the DatePicker to slice your
+            data by both date and time.
+          link_text: View TimePicker
+          link_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#timepicker
         code: |
           import vizro.plotly.express as px
           from vizro import Vizro
@@ -578,6 +587,44 @@ categories:
                       column="date",
                       selector=vm.DatePicker(
                           title="Date Picker (Stocks - date)",
+                      )
+                  ),
+              ]
+
+          - id: timepicker
+            name: "TimePicker (single time)"
+            aliases: [time, single time]
+            image: assets/images/timepicker.png
+            code: |
+              controls=[
+                  vm.Filter(
+                      column="time",
+                      selector=vm.TimePicker(
+                          title="Time Picker (Stocks - date)",
+                          range=False,
+                      )
+                  ),
+              ]
+
+          - id: timerangepicker
+            name: "TimePicker (time range)"
+            aliases: [time range, from to, period, TimeRangePicker]
+            image: assets/images/timerangepicker.png
+            featured:
+              title: Filter by Time-of-day
+              image: assets/images/timepicker_highlight.gif
+              description: |
+                The new <b>TimePicker</b> selector lets users filter by time-of-day, either as a
+                single time or as a time range. Use it together with the DatePicker to slice your
+                data by both date and time.
+              link_text: View TimePicker
+              link_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#timepicker
+            code: |
+              controls=[
+                  vm.Filter(
+                      column="time",
+                      selector=vm.timePicker(
+                          title="Time Picker (Stocks - date)",
                       )
                   ),
               ]
