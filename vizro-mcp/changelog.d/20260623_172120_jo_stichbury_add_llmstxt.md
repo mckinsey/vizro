@@ -16,11 +16,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
+<!--
 ### Added
 
-- Advertised the existing `llms.txt` to AI agents via a visible link on the docs home page and a machine-readable `<link rel="alternate" type="text/markdown">` in every page's `<head>`, and added a cross-project index pointing to Vizro-MCP, Vizro-AI, and Vizro-Experimental. ([#1762](https://github.com/mckinsey/vizro/pull/1762))
+- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Changed
 
