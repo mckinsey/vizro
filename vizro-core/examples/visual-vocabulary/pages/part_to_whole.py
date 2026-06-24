@@ -2,7 +2,7 @@
 
 import vizro.models as vm
 
-from pages._factories import waterfall_factory
+from pages._factories import marimekko_factory, waterfall_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
 from pages.examples import arc, donut, funnel, pie, stacked_bar, stacked_column, treemap, venn
 
@@ -325,6 +325,8 @@ arc_page = vm.Page(
     ],
 )
 
+marimekko_page = marimekko_factory("part-to-whole")
+
 pages = [
     donut_page,
     pie_page,
@@ -335,4 +337,5 @@ pages = [
     funnel_page,
     venn_page,
     waterfall_page,
+    marimekko_page,
 ]

@@ -112,7 +112,6 @@ magnitude_chart_group = ChartGroup(
     name="Magnitude",
     pages=pages.magnitude.pages,
     incomplete_pages=[
-        IncompletePage("Marimekko"),
         IncompletePage("Pictogram"),
         IncompletePage("Bullet"),
         IncompletePage("Radial"),
@@ -146,7 +145,6 @@ part_to_whole_chart_group = ChartGroup(
     name="Part-to-whole",
     pages=pages.part_to_whole.pages,
     incomplete_pages=[
-        IncompletePage("Marimekko"),
         IncompletePage("Gridplot"),
     ],
     icon="Donut Small",
