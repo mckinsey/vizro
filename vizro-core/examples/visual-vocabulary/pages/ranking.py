@@ -4,7 +4,7 @@ import vizro.models as vm
 
 from pages._factories import lollipop_factory, slope_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import ordered_bar, ordered_column
+from pages.examples import ordered_bar, ordered_bubble, ordered_column
 
 ordered_bar_page = vm.Page(
     title="Ordered bar",
@@ -86,8 +86,47 @@ ordered_column_page = vm.Page(
 )
 
 
+ordered_bubble_page = vm.Page(
+    title="Ordered bubble",
+    path="ranking/ordered-bubble",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is an ordered bubble chart?
+
+            An ordered bubble chart arranges data points along an axis with the size of each bubble representing
+            a quantitative value. The bubbles are ordered from smallest to largest, making it easy to compare
+            both the rank and the magnitude of each data point.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use an ordered bubble chart when you want to show the rank order of categories while also using
+            bubble size to convey additional magnitude information. It works well for comparing populations,
+            market sizes, or other quantities where both the order and relative size matter.
+        """
+        ),
+        vm.Graph(figure=ordered_bubble.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("ordered_bubble.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("ordered_bubble.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
 lollipop_page = lollipop_factory("deviation")
 
 slope_page = slope_factory("ranking")
 
-pages = [ordered_bar_page, ordered_column_page, lollipop_page, slope_page]
+pages = [ordered_bar_page, ordered_column_page, ordered_bubble_page, lollipop_page, slope_page]
