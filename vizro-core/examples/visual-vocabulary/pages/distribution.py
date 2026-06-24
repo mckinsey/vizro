@@ -4,7 +4,7 @@ import vizro.models as vm
 
 from pages._factories import butterfly_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import boxplot, dumbbell, histogram, violin
+from pages.examples import boxplot, cumulative_curve, dumbbell, histogram, violin
 
 violin_page = vm.Page(
     title="Violin",
@@ -159,4 +159,45 @@ dumbbell_page = vm.Page(
 )
 
 
-pages = [violin_page, boxplot_page, butterfly_page, dumbbell_page, histogram_page]
+cumulative_curve_page = vm.Page(
+    title="Cumulative curve",
+    path="distribution/cumulative-curve",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a cumulative curve?
+
+            A cumulative curve (also known as an empirical cumulative distribution function or ECDF plot) shows
+            the percentage of observations less than or equal to a given value. The curve starts at 0% and rises
+            to 100%, making it easy to read percentiles directly. For example, at x = $20, the curve reaches
+            roughly 60%, meaning about 60% of the bills are $20 or less.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a cumulative curve when you want to understand percentiles, medians, and the overall distribution
+            of your data without relying on bins. The x-value where the curve crosses 50% is the median. Unlike a
+            histogram, a cumulative curve preserves all information in the dataset and makes it easy to compare
+            distributions across different groups.
+        """
+        ),
+        vm.Graph(figure=cumulative_curve.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("cumulative_curve.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("cumulative_curve.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
+pages = [violin_page, boxplot_page, butterfly_page, cumulative_curve_page, dumbbell_page, histogram_page]
