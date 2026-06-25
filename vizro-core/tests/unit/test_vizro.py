@@ -182,10 +182,10 @@ class TestActionLogDevtool:
         outputs = [cb["output"] for cb in clientside_callbacks]
         assert any("vizro_logs.children" in output for output in outputs)
 
-    def test_vizro_logs_store_in_dashboard_layout(self, simple_dashboard):
-        app = Vizro().build(simple_dashboard)
-        layout_str = str(app.dash.layout)
-        assert "vizro_logs_store" in layout_str
+    def test_vizro_logs_store_in_page_layout(self, simple_dashboard):
+        Vizro().build(simple_dashboard)
+        page_layout = dash.page_registry[simple_dashboard.pages[0].id]["layout"]()
+        assert "vizro_logs_store" in str(page_layout)
 
 
 class TestRun:

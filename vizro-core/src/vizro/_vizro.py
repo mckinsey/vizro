@@ -239,7 +239,7 @@ Provide a valid import path for these in your dashboard configuration."""
             State("vizro_logs_offcanvas", "is_open"),
             optional=True,
         )
-        # Sync store and panel: vizro_logs_store lives in the main layout so Patch() on the store is safe.
+        # Sync store and panel: vizro_logs_store lives in the page layout so Patch() on the store is safe.
         # vizro_logs is in the DevTools overlay (optional=True) so this no-ops when not in debug mode.
         # A plain list assignment avoids the Redux-store lookup that Patch() would require for a DevTools component.
         clientside_callback(

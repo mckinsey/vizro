@@ -369,7 +369,6 @@ class TestDashboardBuild:
                             id="vizro_controls_store",
                             data={},
                         ),
-                        dcc.Store(id="vizro_logs_store", data=[]),
                         dash.page_container,
                     ],
                 ),

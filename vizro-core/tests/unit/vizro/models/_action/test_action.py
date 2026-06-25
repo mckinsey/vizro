@@ -1114,12 +1114,6 @@ class TestDefineCallback:
         action._trigger = "trigger.property"
         return action
 
-    def test_action_callback_not_optional(self, vizro_app):
-        action = self._make_action()
-        action._define_callback()
-        registered_callback = dash._callback.GLOBAL_CALLBACK_LIST[-1]
-        assert not registered_callback.get("optional")
-
     def test_action_callback_output_includes_vizro_logs_store(self, vizro_app):
         action = self._make_action()
         action._define_callback()

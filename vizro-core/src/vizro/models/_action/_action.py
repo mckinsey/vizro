@@ -7,6 +7,7 @@ import time
 import warnings
 from collections import ChainMap
 from collections.abc import Callable, Collection, Iterable, Mapping
+from datetime import datetime, timezone
 from pprint import pformat
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
@@ -528,7 +529,7 @@ class _BaseAction(VizroBaseModel):
         return notification
 
     @_log_call
-    def _define_callback(self):
+    def _define_callback(self):  # noqa: PLR0915
         """Defines a callback for the Action model."""
         external_callback_inputs = self._transformed_inputs
         external_callback_outputs = self._transformed_outputs
@@ -673,11 +674,13 @@ class _BaseAction(VizroBaseModel):
                 )
                 notification_key, notification_result = notification_payload.key, notification_payload.result
 
+            timestamp = datetime.now(tz=timezone.utc).strftime("%H:%M:%S.%f")[:-3]
             if error_msg is None:
-                log_text = f"===== Running action with id {self.id}, function {self._action_name} ====="
+                log_text = f"[{timestamp}] ===== Running action with id {self.id}, function {self._action_name} ====="
             else:
                 log_text = (
-                    f"===== FAILED action with id {self.id!r}, function={self._action_name!r}  error={error_msg!r}"
+                    f"[{timestamp}] ===== FAILED action with id {self.id!r}, "
+                    f"function={self._action_name!r}  error={error_msg!r}"
                 )
             action_log = Patch()
             action_log.append(log_text + "\n")

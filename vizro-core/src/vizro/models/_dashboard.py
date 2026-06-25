@@ -201,7 +201,6 @@ class Dashboard(VizroBaseModel):
                         for control in cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter), page))
                     },
                 ),
-                dcc.Store(id="vizro_logs_store", data=[]),
                 dash.page_container,
             ],
         )
