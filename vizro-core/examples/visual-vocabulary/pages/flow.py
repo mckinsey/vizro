@@ -74,7 +74,7 @@ chord_page = vm.Page(
             too many categories — they work best with fewer than ten entities.
         """
         ),
-        vm.Graph(figure=chord.fig, extra=dict(config={"displayModeBar": False})),
+        vm.Graph(figure=chord.fig, extra={"config": {"displayModeBar": False}}),
         vm.Tabs(
             tabs=[
                 vm.Container(

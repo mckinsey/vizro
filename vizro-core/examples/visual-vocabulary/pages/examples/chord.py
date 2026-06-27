@@ -111,7 +111,7 @@ def chord_diagram(data_frame, node_labels):
                 y=ys,
                 fill="toself",
                 mode="lines",
-                line=dict(width=0),
+                line={"width": 0},
                 fillcolor=COLORS[src_idx],
                 opacity=0.35,
                 showlegend=False,
@@ -127,7 +127,7 @@ def chord_diagram(data_frame, node_labels):
                 x=hx,
                 y=hy,
                 mode="markers",
-                marker=dict(size=10, opacity=0.01, color=COLORS[src_idx]),
+                marker={"size": 10, "opacity": 0.01, "color": COLORS[src_idx]},
                 showlegend=False,
                 hovertemplate=f"{name1} -&gt; {name2}<br>Flow: {val}<extra></extra>",
             )
@@ -141,7 +141,7 @@ def chord_diagram(data_frame, node_labels):
                 y=ry,
                 fill="toself",
                 mode="lines",
-                line=dict(width=0),
+                line={"width": 0},
                 fillcolor=COLORS[i],
                 showlegend=False,
                 hoverinfo="none",
@@ -154,7 +154,7 @@ def chord_diagram(data_frame, node_labels):
             x=circle_x,
             y=circle_y,
             mode="lines",
-            line=dict(color="rgba(128,128,128,0.3)", width=1),
+            line={"color": "rgba(128,128,128,0.3)", "width": 1},
             showlegend=False,
             hoverinfo="none",
         )
@@ -170,17 +170,17 @@ def chord_diagram(data_frame, node_labels):
             y=label_y,
             mode="text",
             text=sector_names,
-            textfont=dict(size=14),
+            textfont={"size": 14},
             showlegend=False,
             hoverinfo="none",
         )
     )
 
     fig.update_layout(
-        xaxis=dict(visible=False, range=[-1.85, 1.85]),
-        yaxis=dict(visible=False, range=[-1.85, 1.85], scaleanchor="x"),
+        xaxis={"visible": False, "range": [-1.85, 1.85]},
+        yaxis={"visible": False, "range": [-1.85, 1.85], "scaleanchor": "x"},
         showlegend=False,
-        margin=dict(t=10, b=10, l=10, r=10),
+        margin={"t": 10, "b": 10, "l": 10, "r": 10},
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
         hovermode="closest",
