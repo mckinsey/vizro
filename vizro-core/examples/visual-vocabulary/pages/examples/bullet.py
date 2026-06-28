@@ -14,14 +14,28 @@ TARGET_MARKER_LINE_WIDTH = 5
 
 @capture("graph")
 def bullet(data_frame: pd.DataFrame, category: str, actual: str, target: str) -> go.Figure:
-    """Creates a bullet chart comparing actual performance against targets over qualitative ranges."""
+    """Creates a bullet chart comparing actual performance against targets over qualitative ranges.
+
+    Args:
+        data_frame: DataFrame containing the data to plot. Expected columns are
+            ``category`` (labels), ``actual`` (performance values), ``target`` (goal values).
+        category: Column name for category labels displayed on the y-axis.
+        actual: Column name for the actual performance values.
+        target: Column name for the target values.
+
+    Returns:
+        Plotly figure configured as a bullet chart.
+    """
     fig = go.Figure()
 
     categories = data_frame[category].tolist()
     actual_values = data_frame[actual].tolist()
     target_values = data_frame[target].tolist()
 
-    max_val = max(max(actual_values), max(target_values), 0.0)
+    if not categories or len(categories) == 0:
+        return fig
+
+    max_val = max(actual_values + target_values + [0.0])
     max_scale = max(max_val * SCALE_HEADROOM, 1.0)
     colorway = fig.layout.template.layout.colorway
 
@@ -35,12 +49,12 @@ def bullet(data_frame: pd.DataFrame, category: str, actual: str, target: str) ->
                 x=[width] * len(categories),
                 base=[prev] * len(categories),
                 orientation="h",
-                marker={"color": qualitative[i + 1], "opacity": range_opacities[i]},
+                marker={"color": qualitative[(i + 1) % len(qualitative)], "opacity": range_opacities[i]},
                 name=RANGE_LABELS[i],
                 legendrank=i + 3,
                 hoverinfo="text",
                 hovertext=[
-                    f"<b>{c}</b><br>{RANGE_LABELS[i]}: {prev:.1f}–{boundary * max_scale:.1f}" for c in categories
+                    f"<b>{c}</b><br>{RANGE_LABELS[i]}: {prev:.1f}-{boundary * max_scale:.1f}" for c in categories
                 ],
             )
         )
@@ -79,9 +93,9 @@ def bullet(data_frame: pd.DataFrame, category: str, actual: str, target: str) ->
 
     fig.update_layout(
         barmode="overlay",
-        xaxis=dict(range=[0, max_scale * 1.08], showgrid=True, zeroline=False),
-        yaxis=dict(showgrid=False),
-        margin=dict(b=50),
+        xaxis={"range": [0, max_scale * 1.08], "showgrid": True, "zeroline": False},
+        yaxis={"showgrid": False},
+        margin={"b": 50},
     )
 
     return fig
