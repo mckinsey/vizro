@@ -4,7 +4,7 @@ import vizro.models as vm
 
 from pages._factories import lollipop_factory, slope_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import ordered_bar, ordered_column
+from pages.examples import bump, ordered_bar, ordered_column
 
 ordered_bar_page = vm.Page(
     title="Ordered bar",
@@ -86,8 +86,48 @@ ordered_column_page = vm.Page(
 )
 
 
+bump_page = vm.Page(
+    title="Bump",
+    path="ranking/bump",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a bump chart?
+
+            A bump chart (also known as a ranking chart) is a line chart that shows how the rank of several items
+            changes over time. Each line connects an item's rank across consecutive periods, with rank one at the
+            top, making it easy to see which items moved up or down and where they overtook one another.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a bump chart when you wish to emphasize relative position over time rather than absolute values, for
+            example league tables, standings, or competitive positioning. It helps your audience see who rose and who
+            fell at a glance. Avoid using it when there are too many categories, as the lines become cluttered, or
+            when the exact values matter more than the ranking.
+        """
+        ),
+        vm.Graph(figure=bump.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("bump.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("bump.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
 lollipop_page = lollipop_factory("deviation")
 
 slope_page = slope_factory("ranking")
 
-pages = [ordered_bar_page, ordered_column_page, lollipop_page, slope_page]
+pages = [ordered_bar_page, ordered_column_page, bump_page, lollipop_page, slope_page]
