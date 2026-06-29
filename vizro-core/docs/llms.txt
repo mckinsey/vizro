@@ -98,3 +98,9 @@ All documentation pages return clean markdown when fetched with the `Accept: tex
 - [Contribute to Vizro](https://vizro.readthedocs.io/en/stable/pages/explanation/contributing/): How to contribute to Vizro's open source project
 - [Documentation style](https://vizro.readthedocs.io/en/stable/pages/explanation/documentation-style-guide/): Documentation style guide
 - [Authors](https://vizro.readthedocs.io/en/stable/pages/explanation/authors/): Vizro contributor listing
+
+## RELATED PROJECTS
+
+- [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/): MCP server for AI-assisted Vizro dashboard creation; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-mcp/llms.txt)
+- [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/): Generative-AI chart creation; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-ai/llms.txt)
+- [Vizro-Experimental](https://vizro.readthedocs.io/projects/vizro-experimental/): Incubation home for in-development Vizro features; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-experimental/llms.txt)

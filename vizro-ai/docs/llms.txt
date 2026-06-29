@@ -1,0 +1,40 @@
+# Vizro-AI
+
+Vizro-AI uses generative AI to extend [Vizro](https://vizro.readthedocs.io) so you can use English (or other languages) to create interactive Plotly charts.
+It is built on [Pydantic AI](https://ai.pydantic.dev/) and exposes a flexible `chart_agent` that supports async runs, streaming, dependency injection, and integration with [the A2A protocol](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/).
+
+Note: from version `0.4.0` Vizro-AI supports only chart generation. Dashboard generation has been superseded by [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/).
+Users must connect their own LLM; review the [disclaimer](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/disclaimer/), [safety guidelines](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safety-in-vizro-ai/), and [code-execution safeguarding](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safeguard/) before use.
+
+All documentation pages return clean markdown when fetched with the `Accept: text/markdown` request header.
+
+## TUTORIALS
+
+- [Chart generation quickstart](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/tutorials/quickstart/): A quickstart tutorial for generating a chart with Vizro-AI
+
+## FUNDAMENTALS
+
+- [Install Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/user-guides/install/): Install Vizro-AI and its dependencies
+- [Model setup](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/user-guides/customize-vizro-ai/): Configure the LLM that powers the `chart_agent`
+
+## CHART AGENT
+
+- [Usage and advanced options](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/user-guides/advanced-options/): Customize and extend the `chart_agent`, including streaming and async runs
+- [Add Vizro-AI charts to a Vizro dashboard](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/user-guides/add-generated-chart-usecase/): Embed a generated chart inside a Vizro dashboard
+
+## API REFERENCE
+
+- [Vizro-AI API reference](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/API-reference/vizro-ai/): Vizro-AI public API reference
+
+## EXPLANATION
+
+- [FAQs](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/faq/): Frequently asked questions and the migration guide for dashboard generation users
+- [Disclaimer](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/disclaimer/): Disclaimer for using Vizro-AI with third-party LLMs
+- [Safeguard code execution](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safeguard/): How to safeguard the dynamic code Vizro-AI evaluates
+- [Safety in Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safety-in-vizro-ai/): Vizro-AI safety guidelines for using LLMs
+
+## RELATED PROJECTS
+
+- [Vizro](https://vizro.readthedocs.io/en/stable/): The core Vizro dashboarding framework; see its [llms.txt](https://vizro.readthedocs.io/llms.txt)
+- [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/): MCP server for AI-assisted Vizro dashboard creation; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-mcp/llms.txt)
+- [Vizro-Experimental](https://vizro.readthedocs.io/projects/vizro-experimental/): Incubation home for in-development Vizro features; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-experimental/llms.txt)
