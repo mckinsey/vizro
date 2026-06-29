@@ -1,5 +1,3 @@
-"""Bullet chart for displaying actual values against targets with qualitative ranges."""
-
 import pandas as pd
 import plotly.graph_objects as go
 from vizro.models.types import capture
@@ -32,7 +30,7 @@ def bullet(data_frame: pd.DataFrame, category: str, actual: str, target: str) ->
     actual_values = data_frame[actual].tolist()
     target_values = data_frame[target].tolist()
 
-    if not categories or len(categories) == 0:
+    if not categories:
         return fig
 
     max_val = max(actual_values + target_values + [0.0])
@@ -95,7 +93,6 @@ def bullet(data_frame: pd.DataFrame, category: str, actual: str, target: str) ->
         barmode="overlay",
         xaxis={"range": [0, max_scale * 1.08], "showgrid": True, "zeroline": False},
         yaxis={"showgrid": False},
-        margin={"b": 50},
     )
 
     return fig
