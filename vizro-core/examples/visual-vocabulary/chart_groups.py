@@ -78,7 +78,6 @@ ranking_chart_group = ChartGroup(
     pages=pages.ranking.pages,
     incomplete_pages=[
         IncompletePage("Ordered bubble"),
-        IncompletePage("Bump"),
     ],
     icon="Stacked Bar Chart",
     intro_text=ranking_intro_text,
