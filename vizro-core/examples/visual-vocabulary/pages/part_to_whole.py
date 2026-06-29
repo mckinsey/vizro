@@ -4,7 +4,7 @@ import vizro.models as vm
 
 from pages._factories import waterfall_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import arc, donut, funnel, pie, stacked_bar, stacked_column, treemap, venn
+from pages.examples import arc, donut, funnel, gridplot, pie, stacked_bar, stacked_column, treemap, venn
 
 pie_page = vm.Page(
     title="Pie",
@@ -325,6 +325,48 @@ arc_page = vm.Page(
     ],
 )
 
+gridplot_page = vm.Page(
+    title="Grid plot",
+    path="part-to-whole/grid-plot",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a grid plot?
+
+            A grid plot (also known as small multiples or a trellis chart) displays the same chart type across
+            multiple subsets of a dataset, enabling side-by-side comparison while preserving a consistent visual
+            structure. In this example, the grid is arranged by meal time (rows) and sex (columns), with each
+            donut showing how tips are distributed across days of the week.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a grid plot when you need to compare distributions, trends, or relationships across multiple
+            groups while preserving a consistent visual structure. The grid layout makes it easy to spot patterns
+            that would be difficult to see in a single aggregated chart. Grid plots are particularly effective
+            when faceting by two dimensions (e.g., time and category), as the row and column arrangement guides
+            the viewer's eye toward meaningful comparisons.
+        """
+        ),
+        vm.Graph(figure=gridplot.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("gridplot.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("gridplot.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
 pages = [
     donut_page,
     pie_page,
@@ -335,4 +377,5 @@ pages = [
     funnel_page,
     venn_page,
     waterfall_page,
+    gridplot_page,
 ]
