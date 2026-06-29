@@ -13,6 +13,7 @@ from vizro.models import (
     Checklist,
     Container,
     DatePicker,
+    DateTimePicker,
     Dropdown,
     RadioItems,
     RangeSlider,
@@ -32,6 +33,7 @@ SELECTORS: dict[str, tuple[type, ...]] = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Checklist, Dropdown, RadioItems),
     "date": (DatePicker,),
+    "datetime": (DateTimePicker,),
     "time": (TimePicker,),
     "boolean": (Switch,),
     "hierarchical": (Cascader,),
@@ -126,5 +128,12 @@ def get_selector_default_value(selector: SelectorType) -> Any:
     elif isinstance(selector, TimePicker):
         # dmc.TimePicker needs "" rather than None to properly set originalValue for resetting control.
         return ["", ""] if selector.range else ""
+    elif isinstance(selector, DateTimePicker):
+        if selector.range:
+            if selector.min is not None and selector.max is not None:
+                return [f"{selector.min}T00:00", f"{selector.max}T23:59"]
+            return ["", ""]
+        else:
+            return f"{selector.min}T00:00" if selector.min is not None else ""
     # Boolean selectors always have a default value specified so no need to handle them here.
     return None
