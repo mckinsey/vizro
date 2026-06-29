@@ -68,3 +68,7 @@ They also include a full API reference and additional explanation, such as [FAQs
     <a href="https://py.cafe/vizro-official" target="_blank" rel="noopener noreferrer">Vizro PyCafe collection </a>
 
 </div>
+
+---
+
+*AI agents: see [llms.txt](llms.txt) for a machine-readable index of these docs.*
