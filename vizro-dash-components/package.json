@@ -45,7 +45,7 @@
   "author": "Vizro Team",
   "license": "Apache-2.0",
   "overrides": {
-    "@babel/core": ">=7.29.6",
+    "@babel/core": ">=7.29.6 <8",
     "ajv": ">=8.18.0",
     "fast-uri": ">=3.1.2 <4",
     "minimatch": ">=3.1.3",
