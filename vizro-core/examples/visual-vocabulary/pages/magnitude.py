@@ -2,7 +2,7 @@
 
 import vizro.models as vm
 
-from pages._factories import lollipop_factory
+from pages._factories import lollipop_factory, marimekko_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
 from pages.examples import (
     bar,
@@ -249,6 +249,7 @@ radar_page = vm.Page(
 )
 
 lollipop_page = lollipop_factory("magnitude")
+marimekko_page = marimekko_factory("magnitude")
 
 radial_page = vm.Page(
     title="Radial",
@@ -335,6 +336,7 @@ pages = [
     parallel_coordinates_page,
     radar_page,
     lollipop_page,
+    marimekko_page,
     radial_page,
     pictogram_page,
 ]

@@ -108,7 +108,6 @@ magnitude_chart_group = ChartGroup(
     name="Magnitude",
     pages=pages.magnitude.pages,
     incomplete_pages=[
-        IncompletePage("Marimekko"),
         IncompletePage("Bullet"),
     ],
     icon="Bar Chart",
@@ -139,9 +138,7 @@ the parts to be most important, a magnitude chart may be more appropriate.
 part_to_whole_chart_group = ChartGroup(
     name="Part-to-whole",
     pages=pages.part_to_whole.pages,
-    incomplete_pages=[
-        IncompletePage("Marimekko"),
-    ],
+    incomplete_pages=[],
     icon="Donut Small",
     intro_text=part_to_whole_intro_text,
 )
