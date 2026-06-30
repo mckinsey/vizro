@@ -151,6 +151,8 @@ underlying component may change in the future.""",
             "minDate": self.min,
             "maxDate": self.max,
             "valueFormat": "MMM D, YYYY HH:mm",
+            "persistence": True,
+            "persistence_type": "session",
         }
         if self.range:
             # Add the clientside callback only for range DateTimePicker

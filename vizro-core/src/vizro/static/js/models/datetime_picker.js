@@ -39,13 +39,24 @@ function update_range_datetime_picker_store(
     // tolerate both when detecting the midnight suffix.
     const isMidnight = new_end.endsWith(" 00:00:00") || new_end.endsWith("T00:00:00");
     if (!isMidnight) return new_end;
+
+    // Midnight emit on the END picker is almost always a Mantine reset (re-emit after our promotion,
+    // or inner TimePicker state desync when the user clicks the calendar). If the previous stored
+    // end time was non-midnight, the user did not actively type "00:00" — preserve that time on the
+    // (possibly new) date. If the previous time was already midnight, fall back to 23:59:00 so the
+    // initial state (and any user-cleared state) lands at end-of-day for the end picker.
     const newDate = new_end.split(/[T ]/)[0];
-    const prevDate =
-      typeof prev_store_end === "string" ? prev_store_end.split(/[T ]/)[0] : null;
-    if (prevDate === newDate) return new_end;
-    // Preserve Mantine's emitted separator so downstream serialisation is unchanged.
     const sep = new_end.includes(" ") ? " " : "T";
-    return `${newDate}${sep}23:59:00`;
+
+    let prevTime = null;
+    if (typeof prev_store_end === "string") {
+      const prevParts = prev_store_end.split(/[T ]/);
+      if (prevParts.length === 2) prevTime = prevParts[1];
+    }
+    const prevIsMidnight =
+      prevTime === "00:00:00" || prevTime === "00:00" || prevTime === null;
+    const promotedTime = prevIsMidnight ? "23:59:00" : prevTime;
+    return `${newDate}${sep}${promotedTime}`;
   }
 
   const triggered = dash_clientside.callback_context.triggered[0];
