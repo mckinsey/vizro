@@ -76,10 +76,7 @@ highlighting or labels to ensure the reader understands what matters most.
 ranking_chart_group = ChartGroup(
     name="Ranking",
     pages=pages.ranking.pages,
-    incomplete_pages=[
-        IncompletePage("Ordered bubble"),
-        IncompletePage("Bump"),
-    ],
+    incomplete_pages=[],
     icon="Stacked Bar Chart",
     intro_text=ranking_intro_text,
 )
@@ -112,9 +109,7 @@ magnitude_chart_group = ChartGroup(
     pages=pages.magnitude.pages,
     incomplete_pages=[
         IncompletePage("Marimekko"),
-        IncompletePage("Pictogram"),
         IncompletePage("Bullet"),
-        IncompletePage("Radial"),
     ],
     icon="Bar Chart",
     intro_text=magnitude_intro_text,
@@ -146,7 +141,6 @@ part_to_whole_chart_group = ChartGroup(
     pages=pages.part_to_whole.pages,
     incomplete_pages=[
         IncompletePage("Marimekko"),
-        IncompletePage("Gridplot"),
     ],
     icon="Donut Small",
     intro_text=part_to_whole_intro_text,
