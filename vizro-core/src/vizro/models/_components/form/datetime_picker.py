@@ -19,21 +19,38 @@ from vizro.models._models_utils import (
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionsType, _IdProperty
 
+# Cache the underlying components' prop sets at import time so build() can split `extra` cheaply.
+_DATE_PICKER_INPUT_PROPS = set(dmc.DatePickerInput().available_properties)
+_TIME_PICKER_PROPS = set(dmc.TimePicker().available_properties)
+
 
 def _validate_datetime_string_format(value: Any) -> Any:
-    """Validate string values parse as `YYYY-MM-DDTHH:MM` or `YYYY-MM-DDTHH:MM:SS` without coercing to datetime."""
+    """Validate string values parse as an ISO date or datetime without coercing them.
+
+    Accepted shapes (in priority order):
+      - ``YYYY-MM-DDTHH:MM:SS`` / ``YYYY-MM-DDTHH:MM``      (T separator)
+      - ``YYYY-MM-DD HH:MM:SS`` / ``YYYY-MM-DD HH:MM``      (space separator, emitted by Mantine)
+      - ``YYYY-MM-DD``                                       (date-only, time portion cleared)
+    """
 
     def _validate(v: Any) -> Any:
         if not (v and isinstance(v, str)):
             return v
 
-        for fmt in ("%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M"):
+        for fmt in (
+            "%Y-%m-%dT%H:%M:%S",
+            "%Y-%m-%dT%H:%M",
+            "%Y-%m-%d %H:%M:%S",
+            "%Y-%m-%d %H:%M",
+            "%Y-%m-%d",
+        ):
             with suppress(ValueError):
                 datetime.strptime(v, fmt)
                 return v
 
         raise ValueError(
-            f"Invalid datetime string {v!r}. Expected ISO format 'YYYY-MM-DDTHH:MM' or 'YYYY-MM-DDTHH:MM:SS'."
+            f"Invalid datetime string {v!r}. Expected ISO format "
+            "'YYYY-MM-DD', 'YYYY-MM-DDTHH:MM', or 'YYYY-MM-DDTHH:MM:SS'."
         )
 
     if isinstance(value, list):
@@ -41,10 +58,38 @@ def _validate_datetime_string_format(value: Any) -> Any:
     return _validate(value)
 
 
+def _split_iso_value(v: Any) -> tuple[str | None, str]:
+    """Split a stored ISO date/datetime value into ``(date_part, time_part)`` for the sub-components.
+
+    The time part is returned as ``""`` (not ``None``) when missing — ``dmc.TimePicker`` only clears
+    when given an empty string; ``None`` is silently ignored, leaving stale displayed values.
+
+    Returns ``(None, "")`` for falsey / non-string inputs. Returns ``(date, "")`` for date-only
+    strings (time was cleared). Accepts both ``T`` and space separators.
+    """
+    if v is None or v == "":
+        return None, ""
+    s = str(v)
+    if "T" in s:
+        d, t = s.split("T", 1)
+        return d, t
+    if " " in s:
+        d, t = s.split(" ", 1)
+        return d, t
+    return s, ""
+
+
 class DateTimePicker(VizroBaseModel):
     """Temporal date-and-time-of-day single/range option selector.
 
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
+
+    Under the hood this is rendered as a `dmc.DatePickerInput` plus one or two clearable
+    `dmc.TimePicker` components, glued together by a clientside callback into a single
+    proxy `dcc.Store` (`{id}.data`). When the time portion is cleared the store holds a
+    date-only ISO string (`"YYYY-MM-DD"`), which the filter logic treats as start-of-day for
+    the range start and end-of-day for the range end. Clearing the time therefore widens
+    the filter to the whole day rather than disabling it.
 
     Abstract: Usage documentation
         [How to use temporal selectors](user-guides/selectors.md#temporal-selectors)
@@ -71,9 +116,10 @@ class DateTimePicker(VizroBaseModel):
         Field(default=None, description="End date for the date portion of the datetime picker."),
     ]
     value: Annotated[
-        # Accept strings as-is so input values stay in their original ISO format. Using only `datetime` would coerce
-        # `"2026-03-01T08:00"` to `"2026-03-01T08:00:00"`, which would change the minute-precision detection in
-        # the underlying filter coercion logic.
+        # Accept strings as-is so input values stay in their original ISO format. Using only `datetime`
+        # would coerce `"2026-03-01T08:00"` to `"2026-03-01T08:00:00"`, which would change the
+        # minute-precision detection in the underlying filter coercion logic. We also accept pure
+        # date strings (``"2026-03-01"``) which signal that the time portion is cleared.
         list[datetime | str] | datetime | str | None,
         AfterValidator(_validate_datetime_string_format),
         Field(default=None, description="Default datetime/datetimes for the datetime picker."),
@@ -102,17 +148,21 @@ class DateTimePicker(VizroBaseModel):
             dict[str, Any],
             Field(
                 default={},
-                description="""Extra keyword arguments that are passed to `dmc.DateTimePicker` and overwrite
-any defaults chosen by the Vizro team. This may have unexpected behavior.
-Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datetimepicker)
-to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-underlying component may change in the future.""",
+                description="""Extra keyword arguments forwarded to the underlying `dmc.DatePickerInput`
+and `dmc.TimePicker` components — each key is dispatched to whichever component accepts it.
+Overrides Vizro defaults and may have unexpected behavior. See the dmc docs for available arguments:
+https://www.dash-mantine-components.com/components/datepicker
+https://www.dash-mantine-components.com/components/timepicker
+[Not part of the official Vizro schema](../explanation/schema.md) and the underlying components may
+change in the future.""",
             ),
         ]
     ]
 
     _dynamic: bool = PrivateAttr(False)
-    _inner_component_properties: list[str] = PrivateAttr(dmc.DateTimePicker().available_properties)
+    # DateTimePicker is composed of multiple inner components plus a proxy dcc.Store; there is no
+    # single inner component whose properties should be auto-forwarded via Filter._selector_properties.
+    _inner_component_properties: list[str] = PrivateAttr([])
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
@@ -120,19 +170,26 @@ underlying component may change in the future.""",
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}.{'data' if self.range else 'value'}"}
+        # Both range and single modes expose their combined value through a proxy dcc.Store at `self.id`.
+        return {"__default__": f"{self.id}.data"}
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
         return {
-            "__default__": f"{self.id}.{'data' if self.range else 'value'}",
+            "__default__": f"{self.id}.data",
             **({"title": f"{self.id}_title.children"} if self.title else {}),
             **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}.{'data' if self.range else 'value'}"}
+        return {"__default__": f"{self.id}.data"}
+
+    def _split_extra(self) -> tuple[dict[str, Any], dict[str, Any]]:
+        """Split ``self.extra`` into (date_picker_extra, time_picker_extra) by component prop set."""
+        date_extra = {k: v for k, v in self.extra.items() if k in _DATE_PICKER_INPUT_PROPS}
+        time_extra = {k: v for k, v in self.extra.items() if k in _TIME_PICKER_PROPS}
+        return date_extra, time_extra
 
     @_log_call
     def build(self):
@@ -140,72 +197,128 @@ underlying component may change in the future.""",
         label = (
             dbc.Label(
                 children=[html.Span(id=f"{self.id}_title", children=self.title), *description],
-                html_for=f"{self.id}-start" if self.range else self.id,
+                html_for=f"{self.id}-date",
             )
             if self.title
             else None
         )
 
-        defaults: dict[str, Any] = {
-            "debounce": True,
+        date_defaults: dict[str, Any] = {
             "minDate": self.min,
             "maxDate": self.max,
-            "valueFormat": "MMM D, YYYY HH:mm",
+            "valueFormat": "MMM D, YYYY",
+            "persistence": True,
+            "persistence_type": "session",
+            "withCellSpacing": False,
+            "allowSingleDateInRange": True,
+            "placeholder": "Pick a date",
+        }
+        time_defaults: dict[str, Any] = {
+            "clearable": False,
+            "placeholder": "--:--",
             "persistence": True,
             "persistence_type": "session",
         }
-        if self.range:
-            # Add the clientside callback only for range DateTimePicker
-            self._update_range_datetime_picker_store()
+        date_extra, time_extra = self._split_extra()
 
-            _value = cast(list[datetime | str | None], [None, None] if self.value is None else self.value)
-            start_defaults = {"id": f"{self.id}-start", "value": _value[0], "label": "From", **defaults}
-            # The end picker seeds its inner TimePicker with 23:59 so when the user picks only a date from the
-            # calendar popover the time component fills as end-of-day rather than 00:00 (otherwise the end date
-            # would silently exclude all rows on that day).
-            end_defaults = {
-                "id": f"{self.id}-end",
-                "value": _value[1],
-                "label": "To",
-                "timePickerProps": {"defaultValue": "23:59:00"},
-                **defaults,
-            }
+        if self.range:
+            self._register_range_callback()
+
+            _value = cast(list[Any], [None, None] if self.value is None else self.value)
+            start_date, start_time = _split_iso_value(_value[0])
+            end_date, end_time = _split_iso_value(_value[1])
 
             return html.Div(
                 children=[
                     label,
+                    dmc.DatePickerInput(
+                        id=f"{self.id}-date",
+                        type="range",
+                        value=[start_date, end_date],
+                        **(date_defaults | date_extra),
+                    ),
                     html.Div(
                         children=[
-                            dmc.DateTimePicker(**(start_defaults | self.extra)),
-                            dmc.DateTimePicker(**(end_defaults | self.extra)),
+                            dmc.TimePicker(
+                                id=f"{self.id}-time-start",
+                                value=start_time,
+                                label="From",
+                                **(time_defaults | time_extra),
+                            ),
+                            dmc.TimePicker(
+                                id=f"{self.id}-time-end",
+                                value=end_time,
+                                label="To",
+                                **(time_defaults | time_extra),
+                            ),
                         ],
-                        style={"display": "flex", "gap": "8px"},
+                        className="vizro_datetime_picker_times",
                     ),
                     dcc.Store(id=self.id, data=_value, storage_type="session"),
                 ]
             )
-        else:
-            defaults = {"id": self.id, "value": self.value, **defaults}
-            return html.Div(
-                children=[
-                    label,
-                    dmc.DateTimePicker(**(defaults | self.extra)),
-                ]
-            )
 
-    def _update_range_datetime_picker_store(self):
-        """Define the clientside callback responsible for syncing the range datetime picker value with its store."""
+        self._register_single_callback()
+
+        _value_single = cast(Any, self.value)
+        date_part, time_part = _split_iso_value(_value_single)
+
+        return html.Div(
+            children=[
+                label,
+                html.Div(
+                    children=[
+                        dmc.DatePickerInput(
+                            id=f"{self.id}-date",
+                            type="default",
+                            value=date_part,
+                            **(date_defaults | date_extra),
+                        ),
+                        dmc.TimePicker(
+                            id=f"{self.id}-time",
+                            value=time_part,
+                            **(time_defaults | time_extra),
+                        ),
+                    ],
+                    className="vizro_datetime_picker_single",
+                ),
+                dcc.Store(id=self.id, data=_value_single, storage_type="session"),
+            ]
+        )
+
+    def _register_range_callback(self):
+        """Register the clientside callback that keeps the dcc.Store in sync with date+time inputs."""
         clientside_callback(
             ClientsideFunction(namespace="datetime_picker", function_name="update_range_datetime_picker_store"),
             output=[
                 Output(self.id, "data"),
-                Output(f"{self.id}-start", "value"),
-                Output(f"{self.id}-end", "value"),
+                Output(f"{self.id}-date", "value"),
+                Output(f"{self.id}-time-start", "value"),
+                Output(f"{self.id}-time-end", "value"),
             ],
             inputs=[
                 Input(self.id, "data"),
-                Input(f"{self.id}-start", "value"),
-                Input(f"{self.id}-end", "value"),
+                Input(f"{self.id}-date", "value"),
+                Input(f"{self.id}-time-start", "value"),
+                Input(f"{self.id}-time-end", "value"),
+                State(self.id, "id"),
+            ],
+            hidden=True,
+        )
+
+    def _register_single_callback(self):
+        """Register the clientside callback that keeps the dcc.Store in sync with the single date+time inputs."""
+        clientside_callback(
+            ClientsideFunction(namespace="datetime_picker", function_name="update_single_datetime_picker_store"),
+            output=[
+                Output(self.id, "data"),
+                Output(f"{self.id}-date", "value"),
+                Output(f"{self.id}-time", "value"),
+            ],
+            inputs=[
+                Input(self.id, "data"),
+                Input(f"{self.id}-date", "value"),
+                Input(f"{self.id}-time", "value"),
                 State(self.id, "id"),
             ],
             hidden=True,

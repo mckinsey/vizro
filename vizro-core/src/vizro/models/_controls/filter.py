@@ -83,7 +83,10 @@ _TIME_REGEX = re.compile(r"^\d{2}:\d{2}(:\d{2})?$")
 # Mantine accepts "T" as a separator on input but emits values with a space separator after user
 # interaction — the regex (and the precision detection below) must tolerate both.
 _DATETIME_REGEX = re.compile(r"^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(:\d{2})?$")
+# Pure ISO date — emitted by DateTimePicker when the time portion is cleared.
+_DATE_ONLY_REGEX = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _TIME_PARTS_HH_MM = 2  # "HH:MM".split(":") → 2 parts, i.e. no seconds in format
+_RANGE_VALUE_LEN = 2  # Range filters always carry exactly [start, end].
 
 # Column types whose filter options/bounds can update when the underlying data source is dynamic.
 # "time", "boolean", and "hierarchical" are always static.
@@ -104,6 +107,24 @@ def _coerce_temporal(
     `normalize_precision=True` strips microseconds (and optionally seconds) from the series to make
     comparisons consistent with the user-provided string format.
     """
+    # Mixed-precision range filter (DateTimePicker with one end's time cleared): if at least one
+    # value is a full datetime and at least one is date-only, pad the date-only entries to full
+    # datetimes position-wise so they can be compared on equal footing — index 0 is start-of-day,
+    # index 1 is end-of-day. (Both-date-only and both-full-datetime cases fall through to the
+    # existing _is_date / _is_datetime branches unchanged.)
+    if len(value) == _RANGE_VALUE_LEN:
+        has_full_datetime = any(_DATETIME_REGEX.match(str(v)) for v in value)
+        has_date_only = any(_DATE_ONLY_REGEX.match(str(v)) for v in value)
+        if has_full_datetime and has_date_only:
+            value = [
+                f"{v}T00:00:00"
+                if (i == 0 and isinstance(v, str) and _DATE_ONLY_REGEX.match(v))
+                else f"{v}T23:59:59"
+                if (i == 1 and isinstance(v, str) and _DATE_ONLY_REGEX.match(v))
+                else v
+                for i, v in enumerate(value)
+            ]
+
     _is_time = value and all(_TIME_REGEX.match(str(v)) for v in value)
     # IMPORTANT: check _is_datetime before _is_date so that an ISO datetime string is not collapsed to a date.
     _is_datetime = not _is_time and value and all(_DATETIME_REGEX.match(str(v)) for v in value)
@@ -430,9 +451,9 @@ class Filter(VizroBaseModel):
             # BeforeValidator coerces datetime/Timestamp (including tz-aware) to date via validate_assignment.
             _min, _max = self._get_min_max(targeted_data)
             if self.selector.min is None:
-                self.selector.min = _min
+                self.selector.min = _min  # type: ignore[assignment]
             if self.selector.max is None:
-                self.selector.max = _max
+                self.selector.max = _max  # type: ignore[assignment]
         elif _is_categorical_selector(self.selector):
             self.selector.options = self.selector.options or self._get_options(targeted_data)
         elif _is_hierarchical_selector(self.selector):

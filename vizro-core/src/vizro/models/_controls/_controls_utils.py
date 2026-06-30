@@ -105,7 +105,7 @@ def warn_missing_id_for_url_control(control: ControlType) -> None:
         )
 
 
-def get_selector_default_value(selector: SelectorType) -> Any:
+def get_selector_default_value(selector: SelectorType) -> Any:  # noqa: PLR0911
     """Get default value for a selector if not explicitly provided.
 
     This is used to set selector.value in controls so that the "Reset controls" button works. Ideally it would be
@@ -129,11 +129,18 @@ def get_selector_default_value(selector: SelectorType) -> Any:
         # dmc.TimePicker needs "" rather than None to properly set originalValue for resetting control.
         return ["", ""] if selector.range else ""
     elif isinstance(selector, DateTimePicker):
+        # Initial value uses date-only ISO strings (no time component) so the inline TimePicker
+        # shows as cleared (--:--). The filter logic pads date-only ranges to start-of-day / end-of-day,
+        # so the dashboard still shows the full date range by default — exactly matches DatePicker's
+        # default behavior with the added "time can be set later" affordance.
         if selector.range:
-            if selector.min is not None and selector.max is not None:
-                return [f"{selector.min}T00:00", f"{selector.max}T23:59"]
-            return ["", ""]
+            datetime_default: Any = (
+                [f"{selector.min}", f"{selector.max}"]
+                if (selector.min is not None and selector.max is not None)
+                else ["", ""]
+            )
         else:
-            return f"{selector.min}T00:00" if selector.min is not None else ""
+            datetime_default = f"{selector.min}" if selector.min is not None else ""
+        return datetime_default
     # Boolean selectors always have a default value specified so no need to handle them here.
     return None

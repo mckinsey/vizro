@@ -1,63 +1,63 @@
-// Suffixes appended to the parent selector id when the range DateTimePicker builds its two underlying
-// dmc.DateTimePicker inputs. Must stay in sync with the ids built in
-// vizro.models._components.form.datetime_picker.DateTimePicker.build (`f"{self.id}-start"` / `f"{self.id}-end"`).
-// Inlined inside the function to avoid clashing with identically-named top-level constants in time_picker.js.
+// Suffixes appended to the parent selector id when DateTimePicker builds its sub-components.
+// Must stay in sync with the ids built in vizro.models._components.form.datetime_picker.DateTimePicker.build:
+//   - range:  "{id}-date" (DatePickerInput type=range),
+//             "{id}-time-start" and "{id}-time-end" (two clearable TimePickers),
+//             "{id}" (proxy dcc.Store).
+//   - single: "{id}-date" (DatePickerInput type=default),
+//             "{id}-time" (clearable TimePicker),
+//             "{id}" (proxy dcc.Store).
 
 /**
- * Synchronizes the proxy dcc.Store and the two underlying dmc.DateTimePicker inputs (start / end) that
- * together implement a range DateTimePicker.
+ * Combine a date string and an optional time string into the ISO value stored in the proxy.
+ *  - (null, _)        -> null (no date == no filter target)
+ *  - (date, null|"")  -> "YYYY-MM-DD"            (time cleared; filter pads to 00:00 / 23:59)
+ *  - (date, time)     -> "YYYY-MM-DDTHH:MM[:SS]"
+ */
+function _combine_date_time(date, time) {
+  if (date == null || date === "") return null;
+  if (time == null || time === "") return date;
+  return `${date}T${time}`;
+}
+
+/**
+ * Split a stored ISO string back into [date_part, time_part] for the sub-components.
+ * Accepts both "T" (Python emits this) and " " (Mantine emits this) as the separator.
+ * The time part is returned as "" (not null) when missing — dmc.TimePicker only clears when fed
+ * an empty string; null is ignored, leaving stale displayed values.
+ * Returns [null, ""] for null/empty input, [date, ""] for date-only strings.
+ */
+function _split_iso(value) {
+  if (value == null || typeof value !== "string" || value === "")
+    return [null, ""];
+  let idx = value.indexOf("T");
+  if (idx === -1) idx = value.indexOf(" ");
+  if (idx === -1) return [value, ""];
+  return [value.slice(0, idx), value.slice(idx + 1)];
+}
+
+/**
+ * Synchronizes the proxy dcc.Store with the three sub-components that implement a range DateTimePicker:
+ *   - dmc.DatePickerInput(type="range") at `{id}-date` -> [start_date, end_date]
+ *   - dmc.TimePicker(clearable=True)    at `{id}-time-start` and `{id}-time-end`
  *
  * Two directions:
- *  - A picker changed -> push both picker values into the Store; leave pickers alone.
- *  - The Store changed externally (URL sync on page load, reset button, custom action) -> push both
- *    Store values back into the pickers and raise the guard so the downstream actions chain does NOT
- *    fire on this propagation.
- *
- * @param {Array|null}  store_data   - Current [start, end] tuple stored in the dcc.Store proxy.
- * @param {string|null} start_val    - Current value of the start picker.
- * @param {string|null} end_val      - Current value of the end picker.
- * @param {string}      selector_id  - The id of the parent Filter selector (and of the dcc.Store proxy).
- * @returns {Array|*} Three-tuple [store_output, start_output, end_output] with dash_clientside.no_update
- *                    where unchanged, or a single dash_clientside.no_update when there is no trigger.
+ *  - A sub-component changed -> recompute the [start_iso, end_iso] tuple and push it into the Store;
+ *    leave sub-components alone. If either date is missing the partial state is ignored (Store keeps
+ *    its previous valid value) so the actions chain doesn't oscillate during a fresh range selection.
+ *  - The Store changed externally (URL sync on page load, reset button, custom action) -> split each
+ *    Store entry into a date and time, push them into the sub-components, and raise the guard so the
+ *    downstream actions chain does NOT fire on this propagation.
  */
 function update_range_datetime_picker_store(
   store_data,
-  start_val,
-  end_val,
+  date_value,
+  time_start_value,
+  time_end_value,
   selector_id,
 ) {
-  const RANGE_PICKER_START_SUFFIX = "-start.value";
-  const RANGE_PICKER_END_SUFFIX = "-end.value";
-
-  // Mantine's DateTimePicker always emits time 00:00:00 when the user picks a date from the calendar,
-  // overriding the visual default set via timePickerProps. For the END picker we rewrite that to 23:59:00
-  // (end-of-day) so the filter behaves intuitively, but only when the DATE actually changed — otherwise
-  // we would clobber a user who deliberately set the time to 00:00 on an existing date.
-  function _maybe_promote_end_to_eod(prev_store_end, new_end) {
-    if (typeof new_end !== "string") return new_end;
-    // Mantine accepts "T" as a separator on input but emits values with a space separator;
-    // tolerate both when detecting the midnight suffix.
-    const isMidnight = new_end.endsWith(" 00:00:00") || new_end.endsWith("T00:00:00");
-    if (!isMidnight) return new_end;
-
-    // Midnight emit on the END picker is almost always a Mantine reset (re-emit after our promotion,
-    // or inner TimePicker state desync when the user clicks the calendar). If the previous stored
-    // end time was non-midnight, the user did not actively type "00:00" — preserve that time on the
-    // (possibly new) date. If the previous time was already midnight, fall back to 23:59:00 so the
-    // initial state (and any user-cleared state) lands at end-of-day for the end picker.
-    const newDate = new_end.split(/[T ]/)[0];
-    const sep = new_end.includes(" ") ? " " : "T";
-
-    let prevTime = null;
-    if (typeof prev_store_end === "string") {
-      const prevParts = prev_store_end.split(/[T ]/);
-      if (prevParts.length === 2) prevTime = prevParts[1];
-    }
-    const prevIsMidnight =
-      prevTime === "00:00:00" || prevTime === "00:00" || prevTime === null;
-    const promotedTime = prevIsMidnight ? "23:59:00" : prevTime;
-    return `${newDate}${sep}${promotedTime}`;
-  }
+  const DATE_SUFFIX = "-date.value";
+  const TIME_START_SUFFIX = "-time-start.value";
+  const TIME_END_SUFFIX = "-time-end.value";
 
   const triggered = dash_clientside.callback_context.triggered[0];
   if (!triggered) return dash_clientside.no_update;
@@ -65,39 +65,89 @@ function update_range_datetime_picker_store(
   console.debug("update_range_datetime_picker_store", triggered);
 
   const prop_id = triggered.prop_id;
-  if (
-    prop_id.endsWith(RANGE_PICKER_START_SUFFIX) ||
-    prop_id.endsWith(RANGE_PICKER_END_SUFFIX)
-  ) {
-    // A picker changed -> push both picker values into the Store; leave pickers alone.
-    // Skip until both pickers have a value, otherwise the Store would briefly hold [null, X].
-    if (start_val == null || end_val == null) return dash_clientside.no_update;
+  const isComponentTrigger =
+    prop_id.endsWith(DATE_SUFFIX) ||
+    prop_id.endsWith(TIME_START_SUFFIX) ||
+    prop_id.endsWith(TIME_END_SUFFIX);
 
-    if (prop_id.endsWith(RANGE_PICKER_END_SUFFIX)) {
-      const prev_end = Array.isArray(store_data) ? store_data[1] : null;
-      const promoted = _maybe_promote_end_to_eod(prev_end, end_val);
-      if (promoted !== end_val) {
-        return [[start_val, promoted], dash_clientside.no_update, promoted];
-      }
-    }
+  if (isComponentTrigger) {
+    const dates = Array.isArray(date_value) ? date_value : [null, null];
+    // Both ends of the range need a date for the filter to make sense. While the user is mid-selection
+    // (first click made, second pending) keep the previous Store value to avoid action-chain churn.
+    if (dates[0] == null || dates[1] == null) return dash_clientside.no_update;
+
+    const start_iso = _combine_date_time(dates[0], time_start_value);
+    const end_iso = _combine_date_time(dates[1], time_end_value);
     return [
-      [start_val, end_val],
+      [start_iso, end_iso],
+      dash_clientside.no_update,
       dash_clientside.no_update,
       dash_clientside.no_update,
     ];
   }
 
-  // The Store changed externally (URL load, reset, custom action) -> push both Store values into the
-  // pickers and raise the guard so the actions chain does NOT fire on this propagation.
+  // Store changed externally -> push values into the sub-components and raise the guard.
   dash_clientside.set_props(`${selector_id}_guard_actions_chain`, {
     data: true,
   });
-  return [dash_clientside.no_update, store_data[0], store_data[1]];
+
+  const store = Array.isArray(store_data) ? store_data : [null, null];
+  const [start_date, start_time] = _split_iso(store[0]);
+  const [end_date, end_time] = _split_iso(store[1]);
+
+  return [
+    dash_clientside.no_update,
+    [start_date, end_date],
+    start_time,
+    end_time,
+  ];
+}
+
+/**
+ * Single-mode counterpart: one DatePickerInput + one clearable TimePicker, glued by a proxy dcc.Store.
+ * Same two-direction sync model as the range variant.
+ */
+function update_single_datetime_picker_store(
+  store_data,
+  date_value,
+  time_value,
+  selector_id,
+) {
+  const DATE_SUFFIX = "-date.value";
+  const TIME_SUFFIX = "-time.value";
+
+  const triggered = dash_clientside.callback_context.triggered[0];
+  if (!triggered) return dash_clientside.no_update;
+
+  console.debug("update_single_datetime_picker_store", triggered);
+
+  const prop_id = triggered.prop_id;
+  const isComponentTrigger =
+    prop_id.endsWith(DATE_SUFFIX) || prop_id.endsWith(TIME_SUFFIX);
+
+  if (isComponentTrigger) {
+    // No date -> nothing to filter on. Keep the previous Store value rather than nulling it out so a
+    // transient empty state doesn't fire the actions chain.
+    if (date_value == null || date_value === "")
+      return dash_clientside.no_update;
+
+    const iso = _combine_date_time(date_value, time_value);
+    return [iso, dash_clientside.no_update, dash_clientside.no_update];
+  }
+
+  // Store changed externally -> push values into the sub-components and raise the guard.
+  dash_clientside.set_props(`${selector_id}_guard_actions_chain`, {
+    data: true,
+  });
+
+  const [date, time] = _split_iso(store_data);
+  return [dash_clientside.no_update, date, time];
 }
 
 window.dash_clientside = {
   ...window.dash_clientside,
   datetime_picker: {
     update_range_datetime_picker_store: update_range_datetime_picker_store,
+    update_single_datetime_picker_store: update_single_datetime_picker_store,
   },
 };
