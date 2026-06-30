@@ -2,9 +2,19 @@
 
 import vizro.models as vm
 
-from pages._factories import lollipop_factory
+from pages._factories import lollipop_factory, marimekko_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import bar, bullet, magnitude_column, paired_bar, paired_column, parallel_coordinates, radar
+from pages.examples import (
+    bar,
+    bullet,
+    magnitude_column,
+    paired_bar,
+    paired_column,
+    parallel_coordinates,
+    pictogram,
+    radar,
+    radial,
+)
 
 bar_page = vm.Page(
     title="Bar",
@@ -240,6 +250,7 @@ radar_page = vm.Page(
 )
 
 lollipop_page = lollipop_factory("magnitude")
+marimekko_page = marimekko_factory("magnitude")
 
 bullet_page = vm.Page(
     title="Bullet",
@@ -281,6 +292,83 @@ bullet_page = vm.Page(
     ],
 )
 
+radial_page = vm.Page(
+    title="Radial",
+    path="magnitude/radial",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a radial chart?
+
+            A radial chart displays values as bars arranged around a circular axis. Each bar's length represents
+            the value of a data point, making it easy to compare cyclic patterns such as wind direction or hourly
+            trends.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a radial chart to compare magnitudes across cyclic categories, such as compass directions, hours
+            of the day, or months of the year. It's particularly useful for wind data, directional surveys, and
+            circular performance metrics. Avoid using it with too many categories as the chart can become cluttered.
+        """
+        ),
+        vm.Graph(figure=radial.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("radial.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("radial.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
+pictogram_page = vm.Page(
+    title="Pictogram",
+    path="magnitude/pictogram",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a pictogram chart?
+
+            A pictogram uses repeated icons to represent data values. Each icon represents a specific quantity,
+            making it easy for audiences to quickly grasp the magnitude of each category at a glance.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a pictogram to make data more engaging and accessible, especially for a non-technical audience.
+            It's effective for highlighting population size comparisons and survey results, and works best with
+            whole numbers and a limited number of categories.
+        """
+        ),
+        vm.Graph(figure=pictogram.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("pictogram.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("pictogram.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
 pages = [
     bar_page,
     bullet_page,
@@ -290,4 +378,7 @@ pages = [
     parallel_coordinates_page,
     radar_page,
     lollipop_page,
+    marimekko_page,
+    radial_page,
+    pictogram_page,
 ]
