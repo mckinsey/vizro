@@ -12,7 +12,7 @@ Vizro and Vizro-AI have received contributions from the following on GitHub:
   <img src="https://contrib.rocks/image?repo=mckinsey/vizro" />
 </a>
 
-Thanks in particular to: 
+Thanks in particular to:
 
 [![Special Contributor](https://img.shields.io/badge/Special_Contributor-@Uday-maverick)](https://github.com/Uday-maverick)
 
