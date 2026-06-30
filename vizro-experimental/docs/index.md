@@ -30,3 +30,7 @@ or be removed between releases. Once a feature stabilises, it graduates to `vizr
     [:octicons-arrow-right-24: Add a chat popup](pages/chat/chat-popup.md)
 
 </div>
+
+---
+
+*AI agents: see [llms.txt](llms.txt) for a machine-readable index of these docs.*
