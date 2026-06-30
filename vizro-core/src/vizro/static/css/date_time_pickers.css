@@ -114,24 +114,41 @@
   color: var(--text-secondary);
 }
 
-/* DateTimePicker layout: the model builds either a single DatePickerInput + TimePicker (single mode)
-   or one range DatePickerInput above two TimePickers (range mode). The wrappers below get a class so
-   we can pin them to a 50/50 flex layout with consistent alignment. */
-.vizro_datetime_picker_single,
-.vizro_datetime_picker_times {
+/* DateTimePicker layout:
+   - single mode: one .vizro_datetime_picker_single row (DatePickerInput + TimePicker, 50/50).
+   - range mode: a .vizro_datetime_picker_range column with two .vizro_datetime_picker_range_item sections,
+     each containing a label and a .vizro_datetime_picker_single row. */
+.vizro_datetime_picker_single {
   align-items: stretch;
   display: flex;
   gap: 8px;
 }
 
-.vizro_datetime_picker_single > *,
-.vizro_datetime_picker_times > * {
+.vizro_datetime_picker_single > * {
   flex: 1 1 0;
   min-width: 0;
 }
 
-/* Within the single wrapper, the DatePickerInput's outer wrappers nest a button taller by default than
-   the TimePicker's input — stretch the inner input to fill the column height so the two read as a pair. */
+.vizro_datetime_picker_range {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vizro_datetime_picker_range_item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vizro_datetime_picker_label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* DatePickerInput's outer wrappers nest a button taller by default than the TimePicker's input — stretch
+   the inner input to fill the row height so the two read as a pair. */
 .vizro_datetime_picker_single .mantine-DatePickerInput-root,
 .vizro_datetime_picker_single .mantine-DatePickerInput-wrapper,
 .vizro_datetime_picker_single .mantine-DatePickerInput-input,

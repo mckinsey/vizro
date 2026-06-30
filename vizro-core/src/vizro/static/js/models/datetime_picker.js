@@ -1,10 +1,10 @@
 // Suffixes appended to the parent selector id when DateTimePicker builds its sub-components.
 // Must stay in sync with the ids built in vizro.models._components.form.datetime_picker.DateTimePicker.build:
-//   - range:  "{id}-date" (DatePickerInput type=range),
-//             "{id}-time-start" and "{id}-time-end" (two clearable TimePickers),
+//   - range:  "{id}-date-start" and "{id}-date-end" (two DatePickerInput type=default),
+//             "{id}-time-start" and "{id}-time-end" (two TimePickers),
 //             "{id}" (proxy dcc.Store).
 //   - single: "{id}-date" (DatePickerInput type=default),
-//             "{id}-time" (clearable TimePicker),
+//             "{id}-time" (TimePicker),
 //             "{id}" (proxy dcc.Store).
 
 /**
@@ -36,26 +36,28 @@ function _split_iso(value) {
 }
 
 /**
- * Synchronizes the proxy dcc.Store with the three sub-components that implement a range DateTimePicker:
- *   - dmc.DatePickerInput(type="range") at `{id}-date` -> [start_date, end_date]
- *   - dmc.TimePicker(clearable=True)    at `{id}-time-start` and `{id}-time-end`
+ * Synchronizes the proxy dcc.Store with the four sub-components that implement a range DateTimePicker:
+ *   - dmc.DatePickerInput at `{id}-date-start` and `{id}-date-end`
+ *   - dmc.TimePicker     at `{id}-time-start` and `{id}-time-end`
  *
  * Two directions:
  *  - A sub-component changed -> recompute the [start_iso, end_iso] tuple and push it into the Store;
  *    leave sub-components alone. If either date is missing the partial state is ignored (Store keeps
- *    its previous valid value) so the actions chain doesn't oscillate during a fresh range selection.
+ *    its previous valid value) so the actions chain doesn't oscillate while the user is mid-edit.
  *  - The Store changed externally (URL sync on page load, reset button, custom action) -> split each
  *    Store entry into a date and time, push them into the sub-components, and raise the guard so the
  *    downstream actions chain does NOT fire on this propagation.
  */
 function update_range_datetime_picker_store(
   store_data,
-  date_value,
+  date_start_value,
+  date_end_value,
   time_start_value,
   time_end_value,
   selector_id,
 ) {
-  const DATE_SUFFIX = "-date.value";
+  const DATE_START_SUFFIX = "-date-start.value";
+  const DATE_END_SUFFIX = "-date-end.value";
   const TIME_START_SUFFIX = "-time-start.value";
   const TIME_END_SUFFIX = "-time-end.value";
 
@@ -66,20 +68,22 @@ function update_range_datetime_picker_store(
 
   const prop_id = triggered.prop_id;
   const isComponentTrigger =
-    prop_id.endsWith(DATE_SUFFIX) ||
+    prop_id.endsWith(DATE_START_SUFFIX) ||
+    prop_id.endsWith(DATE_END_SUFFIX) ||
     prop_id.endsWith(TIME_START_SUFFIX) ||
     prop_id.endsWith(TIME_END_SUFFIX);
 
   if (isComponentTrigger) {
-    const dates = Array.isArray(date_value) ? date_value : [null, null];
     // Both ends of the range need a date for the filter to make sense. While the user is mid-selection
-    // (first click made, second pending) keep the previous Store value to avoid action-chain churn.
-    if (dates[0] == null || dates[1] == null) return dash_clientside.no_update;
+    // keep the previous Store value to avoid action-chain churn.
+    if (date_start_value == null || date_end_value == null)
+      return dash_clientside.no_update;
 
-    const start_iso = _combine_date_time(dates[0], time_start_value);
-    const end_iso = _combine_date_time(dates[1], time_end_value);
+    const start_iso = _combine_date_time(date_start_value, time_start_value);
+    const end_iso = _combine_date_time(date_end_value, time_end_value);
     return [
       [start_iso, end_iso],
+      dash_clientside.no_update,
       dash_clientside.no_update,
       dash_clientside.no_update,
       dash_clientside.no_update,
@@ -97,7 +101,8 @@ function update_range_datetime_picker_store(
 
   return [
     dash_clientside.no_update,
-    [start_date, end_date],
+    start_date,
+    end_date,
     start_time,
     end_time,
   ];

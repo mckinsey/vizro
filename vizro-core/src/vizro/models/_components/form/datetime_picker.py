@@ -194,10 +194,11 @@ change in the future.""",
     @_log_call
     def build(self):
         description = self.description.build().children if self.description else [None]
+        label_target_id = f"{self.id}-date-start" if self.range else f"{self.id}-date"
         label = (
             dbc.Label(
                 children=[html.Span(id=f"{self.id}_title", children=self.title), *description],
-                html_for=f"{self.id}-date",
+                html_for=label_target_id,
             )
             if self.title
             else None
@@ -210,7 +211,6 @@ change in the future.""",
             "persistence": True,
             "persistence_type": "session",
             "withCellSpacing": False,
-            "allowSingleDateInRange": True,
             "placeholder": "Pick a date",
         }
         time_defaults: dict[str, Any] = {
@@ -231,28 +231,54 @@ change in the future.""",
             return html.Div(
                 children=[
                     label,
-                    dmc.DatePickerInput(
-                        id=f"{self.id}-date",
-                        type="range",
-                        value=[start_date, end_date],
-                        **(date_defaults | date_extra),
-                    ),
                     html.Div(
                         children=[
-                            dmc.TimePicker(
-                                id=f"{self.id}-time-start",
-                                value=start_time,
-                                label="From",
-                                **(time_defaults | time_extra),
+                            html.Div(
+                                children=[
+                                    html.Div("From", className="vizro_datetime_picker_label"),
+                                    html.Div(
+                                        children=[
+                                            dmc.DatePickerInput(
+                                                id=f"{self.id}-date-start",
+                                                type="default",
+                                                value=start_date,
+                                                **(date_defaults | date_extra),
+                                            ),
+                                            dmc.TimePicker(
+                                                id=f"{self.id}-time-start",
+                                                value=start_time,
+                                                **(time_defaults | time_extra),
+                                            ),
+                                        ],
+                                        className="vizro_datetime_picker_single",
+                                    ),
+                                ],
+                                className="vizro_datetime_picker_range_item",
                             ),
-                            dmc.TimePicker(
-                                id=f"{self.id}-time-end",
-                                value=end_time,
-                                label="To",
-                                **(time_defaults | time_extra),
+                            html.Div(
+                                children=[
+                                    html.Div("To", className="vizro_datetime_picker_label"),
+                                    html.Div(
+                                        children=[
+                                            dmc.DatePickerInput(
+                                                id=f"{self.id}-date-end",
+                                                type="default",
+                                                value=end_date,
+                                                **(date_defaults | date_extra),
+                                            ),
+                                            dmc.TimePicker(
+                                                id=f"{self.id}-time-end",
+                                                value=end_time,
+                                                **(time_defaults | time_extra),
+                                            ),
+                                        ],
+                                        className="vizro_datetime_picker_single",
+                                    ),
+                                ],
+                                className="vizro_datetime_picker_range_item",
                             ),
                         ],
-                        className="vizro_datetime_picker_times",
+                        className="vizro_datetime_picker_range",
                     ),
                     dcc.Store(id=self.id, data=_value, storage_type="session"),
                 ]
@@ -292,13 +318,15 @@ change in the future.""",
             ClientsideFunction(namespace="datetime_picker", function_name="update_range_datetime_picker_store"),
             output=[
                 Output(self.id, "data"),
-                Output(f"{self.id}-date", "value"),
+                Output(f"{self.id}-date-start", "value"),
+                Output(f"{self.id}-date-end", "value"),
                 Output(f"{self.id}-time-start", "value"),
                 Output(f"{self.id}-time-end", "value"),
             ],
             inputs=[
                 Input(self.id, "data"),
-                Input(f"{self.id}-date", "value"),
+                Input(f"{self.id}-date-start", "value"),
+                Input(f"{self.id}-date-end", "value"),
                 Input(f"{self.id}-time-start", "value"),
                 Input(f"{self.id}-time-end", "value"),
                 State(self.id, "id"),
