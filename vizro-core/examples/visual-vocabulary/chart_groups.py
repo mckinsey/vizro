@@ -139,8 +139,7 @@ the parts to be most important, a magnitude chart may be more appropriate.
 part_to_whole_chart_group = ChartGroup(
     name="Part-to-whole",
     pages=pages.part_to_whole.pages,
-    incomplete_pages=[
-    ],
+    incomplete_pages=[],
     icon="Donut Small",
     intro_text=part_to_whole_intro_text,
 )
