@@ -5,8 +5,8 @@ import plotly.graph_objects as go
 from pycirclize import Circos
 from pycirclize.parser import Matrix
 from vizro.models.types import capture
+from vizro.themes._palettes import qualitative
 
-COLORS = ["#497DEF", "#6F39E3", "#05D0E0", "#0F766E", "#E77EC2"]
 NODES = ["USA", "China", "EU", "Japan", "India"]
 R = 1.4
 ARC_WIDTH = 0.06
@@ -72,8 +72,6 @@ def _ribbon_polygon(rad_src_start, rad_src_end, rad_tgt_start, rad_tgt_end, n=20
 
 @capture("graph")
 def chord_diagram(data_frame, node_labels):
-    if len(node_labels) > len(COLORS):
-        raise ValueError(f"Only {len(COLORS)} colors defined but {len(node_labels)} nodes provided")
     matrix = Matrix(data_frame)
 
     circos = Circos(matrix.to_sectors(), space=GAP_DEG)
@@ -112,7 +110,7 @@ def chord_diagram(data_frame, node_labels):
                 fill="toself",
                 mode="lines",
                 line={"width": 0},
-                fillcolor=COLORS[src_idx],
+                fillcolor=qualitative[src_idx % len(qualitative)],
                 opacity=0.35,
                 showlegend=False,
                 hoverinfo="skip",
@@ -127,7 +125,7 @@ def chord_diagram(data_frame, node_labels):
                 x=hx,
                 y=hy,
                 mode="markers",
-                marker={"size": 10, "opacity": 0.01, "color": COLORS[src_idx]},
+                marker={"size": 10, "opacity": 0.01, "color": qualitative[src_idx % len(qualitative)]},
                 showlegend=False,
                 hovertemplate=f"{name1} -&gt; {name2}<br>Flow: {val}<extra></extra>",
             )
@@ -142,7 +140,7 @@ def chord_diagram(data_frame, node_labels):
                 fill="toself",
                 mode="lines",
                 line={"width": 0},
-                fillcolor=COLORS[i],
+                fillcolor=qualitative[i % len(qualitative)],
                 showlegend=False,
                 hoverinfo="none",
             )
@@ -179,10 +177,6 @@ def chord_diagram(data_frame, node_labels):
     fig.update_layout(
         xaxis={"visible": False, "range": [-1.85, 1.85]},
         yaxis={"visible": False, "range": [-1.85, 1.85], "scaleanchor": "x"},
-        showlegend=False,
-        margin={"t": 10, "b": 10, "l": 10, "r": 10},
-        plot_bgcolor="rgba(0,0,0,0)",
-        paper_bgcolor="rgba(0,0,0,0)",
         hovermode="closest",
     )
     return fig
