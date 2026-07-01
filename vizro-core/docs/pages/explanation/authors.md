@@ -12,6 +12,11 @@ Vizro and Vizro-AI have received contributions from the following on GitHub:
   <img src="https://contrib.rocks/image?repo=mckinsey/vizro" />
 </a>
 
+Thanks in particular to:
+
+[![Special Contributor](https://img.shields.io/badge/Special_Contributor-@Uday-maverick)](https://github.com/Uday-maverick)
+
+
 Thanks also to these contributors:
 
 [Annie Wachsmuth](https://github.com/anniecwa), [ataraexia](https://github.com/ataraexia), [Bo Xu](https://github.com/boxuboxu), [Denis Lebedev](https://github.com/DenisLebedevMcK), [Elena Fridman](https://github.com/EllenWie), [Hamza Oza](https://github.com/hamzaoza), [Jenelle Yonkman](https://github.com/yonkmanjl), [Jingjing Guo](https://github.com/jjguo-mck), [Juan Luis Cano Rodríguez](https://github.com/astrojuanlu), [Kee Wen Ng](https://github.com/KeeWenNgQB), [Leon Nallamuthu](https://github.com/leonnallamuthu), [Nikolaos Tsaousis](https://github.com/tsanikgr), [Oleksandr Serdiuk](https://github.com/oserdiuk-lohika), [Prateek Bajaj](https://github.com/prateekdev552), [Qiuyi Chen](https://github.com/Qiuyi-Chen), [Rashida Kanchwala](https://github.com/rashidakanchwala), [Bruna Almeida](https://github.com/balmeidasantos), and [Zachary Kornbluth](https://github.com/zkornbluth).

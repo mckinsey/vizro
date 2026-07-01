@@ -107,9 +107,7 @@ Typically, you will use magnitude for actual numbers versus calculated rates or 
 magnitude_chart_group = ChartGroup(
     name="Magnitude",
     pages=pages.magnitude.pages,
-    incomplete_pages=[
-        IncompletePage("Bullet"),
-    ],
+    incomplete_pages=[],
     icon="Bar Chart",
     intro_text=magnitude_intro_text,
 )
