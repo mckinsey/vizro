@@ -155,6 +155,39 @@ class TestBootstrapDetection:
         assert has_vizro_bootstrap is vizro_bootstrap_included
 
 
+class TestActionLogDevtool:
+    """Tests for _register_action_log_devtool: verifies devtool hooks and store-sync callback are registered."""
+
+    @pytest.fixture
+    def simple_dashboard(self):
+        return vm.Dashboard(pages=[vm.Page(title="Test", components=[vm.Button()])])
+
+    def test_devtool_called_on_build(self, simple_dashboard, mocker):
+        mock_devtool = mocker.patch("vizro._vizro.hooks.devtool")
+        Vizro().build(simple_dashboard)
+        assert mock_devtool.call_count == 2
+
+    def test_devtool_registers_button_and_offcanvas(self, simple_dashboard, mocker):
+        mock_devtool = mocker.patch("vizro._vizro.hooks.devtool")
+        Vizro().build(simple_dashboard)
+        registered_types = {call.kwargs["component_type"] for call in mock_devtool.call_args_list}
+        assert "Button" in registered_types
+        assert "Offcanvas" in registered_types
+
+    def test_store_sync_clientside_callback_registered(self, simple_dashboard):
+        Vizro().build(simple_dashboard)
+        clientside_callbacks = [
+            cb for cb in dash._callback.GLOBAL_CALLBACK_LIST if cb.get("clientside_function") is not None
+        ]
+        outputs = [cb["output"] for cb in clientside_callbacks]
+        assert any("vizro_logs.children" in output for output in outputs)
+
+    def test_vizro_logs_store_in_page_layout(self, simple_dashboard):
+        Vizro().build(simple_dashboard)
+        page_layout = dash.page_registry[simple_dashboard.pages[0].id]["layout"]()
+        assert "vizro_logs_store" in str(page_layout)
+
+
 class TestRun:
     def test_run_block_with_undefined_captured_callables(self):
         dashboard_config = {

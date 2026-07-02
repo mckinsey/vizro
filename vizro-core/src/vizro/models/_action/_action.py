@@ -7,11 +7,12 @@ import time
 import warnings
 from collections import ChainMap
 from collections.abc import Callable, Collection, Iterable, Mapping
+from datetime import datetime, timezone
 from pprint import pformat
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
 
-from dash import ClientsideFunction, Input, Output, State, callback, clientside_callback, dcc, no_update
+from dash import ClientsideFunction, Input, Output, Patch, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
 from dash.exceptions import PreventUpdate
 from pydantic import (
@@ -528,7 +529,7 @@ class _BaseAction(VizroBaseModel):
         return notification
 
     @_log_call
-    def _define_callback(self):
+    def _define_callback(self):  # noqa: PLR0915
         """Defines a callback for the Action model."""
         external_callback_inputs = self._transformed_inputs
         external_callback_outputs = self._transformed_outputs
@@ -604,6 +605,9 @@ class _BaseAction(VizroBaseModel):
                 "action_progress_indicator": Output(
                     "action-progress-indicator-placeholder", "children", allow_duplicate=True
                 ),
+                # vizro_logs_store is always present in the layout; the DevTools panel syncs from it via a
+                # clientside callback that uses optional=True so it silently no-ops when not in debug mode.
+                "action_log": Output("vizro_logs_store", "data", allow_duplicate=True),
             },
         }
 
@@ -670,7 +674,24 @@ class _BaseAction(VizroBaseModel):
                 )
                 notification_key, notification_result = notification_payload.key, notification_payload.result
 
-            return_value = {"internal": {"action_finished": action_finished, "action_progress_indicator": no_update}}
+            timestamp = datetime.now(tz=timezone.utc).strftime("%H:%M:%S.%f")[:-3]
+            if error_msg is None:
+                log_text = f"[{timestamp}] ===== Running action with id {self.id}, function {self._action_name} ====="
+            else:
+                log_text = (
+                    f"[{timestamp}] ===== FAILED action with id {self.id!r}, "
+                    f"function={self._action_name!r}  error={error_msg!r}"
+                )
+            action_log = Patch()
+            action_log.append(log_text + "\n")
+
+            return_value = {
+                "internal": {
+                    "action_finished": action_finished,
+                    "action_progress_indicator": no_update,
+                    "action_log": action_log,
+                }
+            }
             if "external" in callback_outputs:
                 return_value["external"] = external_return
 

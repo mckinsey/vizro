@@ -230,6 +230,7 @@ class Page(VizroBaseModel):
         components_container.children.extend(
             [
                 *action_components,
+                dcc.Store(id="vizro_logs_store", data=[], storage_type="local"),
                 dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
                 dcc.Download(id="vizro_download"),
                 dcc.Location(id="vizro_url", refresh="callback-nav"),
