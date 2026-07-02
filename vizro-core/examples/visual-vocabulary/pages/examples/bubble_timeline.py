@@ -12,7 +12,7 @@ from vizro.themes._palettes import qualitative
 def bubble_timeline(data_frame: pd.DataFrame) -> go.Figure:
     countries = data_frame["country"].unique().tolist()
 
-    rng = random.Random(42)
+    rng = random.Random(42)  # noqa: S311
     jitter = [1 + 0.10 * (2 * rng.random() - 1) for _ in range(len(data_frame))]
     data_frame["_size"] = data_frame["pop"] * jitter
 
@@ -35,29 +35,31 @@ def bubble_timeline(data_frame: pd.DataFrame) -> go.Figure:
             y0=country,
             x1=country_data["year"].max(),
             y1=country,
-            line=dict(color=colors.gray_400, width=1),
+            line={"color": colors.gray_400, "width": 1},
             layer="below",
         )
 
-    fig.update_traces(marker=dict(opacity=0.65, line=dict(width=0.5, color="rgba(255,255,255,0.8)")))
+    fig.update_traces(
+        marker={"opacity": 0.65, "line": {"width": 0.5, "color": "rgba(255,255,255,0.8)"}},
+    )
     fig.update_xaxes(
         title="Year",
         showgrid=False,
         ticklen=4,
-        tickfont=dict(size=11),
-        title_font=dict(size=12),
+        tickfont={"size": 11},
+        title_font={"size": 12},
     )
     fig.update_yaxes(
         showgrid=False,
-        tickfont=dict(size=11),
+        tickfont={"size": 11},
     )
     fig.update_layout(
-        legend=dict(
-            title="Country",
-            itemsizing="constant",
-            tracegroupgap=0,
-        ),
-        margin=dict(l=40, r=20, t=30, b=30),
+        legend={
+            "title": "Country",
+            "itemsizing": "constant",
+            "tracegroupgap": 0,
+        },
+        margin={"l": 40, "r": 20, "t": 30, "b": 30},
     )
 
     return fig
