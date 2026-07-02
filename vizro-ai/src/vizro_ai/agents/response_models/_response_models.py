@@ -18,7 +18,7 @@ from pydantic import (
     field_validator,
 )
 
-from vizro_ai.agents._utils._safeguard import _safeguard_check
+from vizro_ai.agents._utils._safeguard import _safeguard_check, warn_code_execution_is_best_effort
 
 ADDITIONAL_IMPORTS = [
     "import vizro.plotly.express as px",
@@ -55,11 +55,18 @@ def _format_and_lint(code_string: str) -> str:
 
 
 def _exec_code(code: str, namespace: dict) -> dict:
-    """Execute code and return the local dictionary."""
+    """Execute code and return the local dictionary.
+
+    Security:
+        This runs code with `exec()` behind only a best-effort static safeguard
+        (`_safeguard_check`), which cannot guarantee safety. Execute untrusted or
+        LLM-generated code only in an isolated, least-privilege environment.
+    """
     # Need the global namespace for the imports to work for executed code
     # Tried just handling it in local scope, that is, getting the import statement into ldict, but it didn't work
     # TODO: ideally in future we properly handle process and namespace separation, or even Docke execution
     # TODO: this is also important as it can affect unit-tests influencing one another, which is really not good!
+    warn_code_execution_is_best_effort()
     ldict = {}
     try:
         exec(code, namespace, ldict)  # nosec # noqa: S102
@@ -123,7 +130,16 @@ def _test_execute_chart_code(data_frame: pd.DataFrame):
 
 
 class BaseChartPlan(BaseModel):
-    """Base chart plan used to generate chart code based on user visualization requirements."""
+    """Base chart plan used to generate chart code based on user visualization requirements.
+
+    Security:
+        Materializing a chart (for example via `chart_function`, `vizro_chart_function`,
+        `get_chart_function`, or model validation) executes the generated `chart_code` with
+        `exec()`. This is protected only by a best-effort static safeguard that cannot guarantee
+        safety. Only use this with trusted inputs and users, and prefer running Vizro-AI in an
+        isolated, least-privilege environment. See
+        https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safeguard/
+    """
 
     chart_type: str = Field(
         description="""
@@ -224,6 +240,11 @@ class BaseChartPlan(BaseModel):
         This method returns a reusable function that can be called with a dataframe
         and optional keyword arguments. The function name and Vizro compatibility
         can be customized.
+
+        Security:
+            This executes the generated chart code with `exec()` behind only a best-effort
+            safeguard. Call it only with trusted code and in an isolated, least-privilege
+            environment.
 
         Args:
             chart_name: Name of the chart function.

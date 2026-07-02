@@ -2,7 +2,11 @@ import re
 
 import pytest
 
-from vizro_ai.agents._utils._safeguard import _safeguard_check
+from vizro_ai.agents._utils._safeguard import (
+    VizroAICodeExecutionWarning,
+    _safeguard_check,
+    warn_code_execution_is_best_effort,
+)
 
 
 class TestMaliciousImports:
@@ -133,6 +137,48 @@ class TestUnsafeDataFileHandling:
             match=(f"Unsafe loading or saving of data files is used in code: {file_type} in line x = {datafile}"),
         ):
             _safeguard_check(code)
+
+
+class TestFilesystemReachingMethodBypass:
+    """Regression tests for the numpy file-access bypass reported via SECURITY.md.
+
+    numpy is a whitelisted package, but several of its methods reach the filesystem
+    directly. These must be caught by the data-handling denylist even though the
+    package import itself is allowed.
+    """
+
+    @pytest.mark.parametrize(
+        "code_line, method",
+        [
+            # Read + exfiltration variant from the report.
+            ('arr = np.memmap("/tmp/secret.env", dtype="uint8", mode="r")', ".memmap"),
+            # Arbitrary write variant from the report.
+            ('arr = np.memmap("/tmp/out.dat", dtype="uint8", mode="w+", shape=(2,))', ".memmap"),
+            # Additional bypass found during triage: previously masked by the malformed
+            # ".fromfile.save" entry, which matched neither ".fromfile" nor ".save" alone.
+            ('arr = np.fromfile("/tmp/secret.env", dtype="uint8")', ".fromfile"),
+            ('np.save("/tmp/out", np.arange(3))', ".save"),
+        ],
+    )
+    def test_numpy_filesystem_methods_blocked(self, code_line, method):
+        code = f"import numpy as np\n{code_line}"
+        with pytest.raises(Exception, match="Unsafe loading or saving of data files is used in code") as excinfo:
+            _safeguard_check(code)
+        assert method in str(excinfo.value)
+
+
+class TestBestEffortWarning:
+    """The safeguard's best-effort nature must be surfaced whenever generated code is executed."""
+
+    def test_warn_helper_emits_security_warning(self):
+        with pytest.warns(VizroAICodeExecutionWarning, match="best-effort"):
+            warn_code_execution_is_best_effort()
+
+    def test_exec_code_emits_security_warning(self):
+        from vizro_ai.agents.response_models._response_models import _exec_code
+
+        with pytest.warns(VizroAICodeExecutionWarning):
+            _exec_code("x = 1", {})
 
 
 class TestInvalidCodeParsing:
