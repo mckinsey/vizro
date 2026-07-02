@@ -14,10 +14,12 @@ from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.models._controls.filter import (
     Filter,
+    _add_leaf_at_path,
     _coerce_temporal,
     _dataframe_path_to_cascader_options,
     _filter_between,
     _filter_isin,
+    _iter_cascader_leaf_paths,
 )
 
 
@@ -157,6 +159,24 @@ def target_to_data_frame():
             }
         ),
     }
+
+
+@pytest.fixture
+def managers_hierarchical_page():
+    """Page with a single graph whose dataframe has hierarchical continent/country columns."""
+    df = pd.DataFrame(
+        {
+            "continent": ["Eu", "Eu", "As"],
+            "country": ["DE", "FR", "JP"],
+            "gdp": [1.0, 2.0, 3.0],
+        }
+    )
+    vm.Page(
+        id="test_page",
+        title="Page Title",
+        components=[vm.Graph(id="hier_graph", figure=px.scatter(df, x="country", y="gdp"))],
+    )
+    Vizro._pre_build()
 
 
 class TestFilterFunctions:
@@ -1212,6 +1232,7 @@ class TestFilterPreBuildMethod:
             ("pop", vm.Slider()),
             ("pop", vm.RangeSlider()),
             ("year", vm.DatePicker()),
+            (["continent", "country"], vm.Cascader()),
         ],
     )
     def test_filter_is_dynamic_with_dynamic_selectors(
@@ -1241,6 +1262,7 @@ class TestFilterPreBuildMethod:
             ("year", vm.DatePicker(min="2002-01-01")),
             ("year", vm.DatePicker(max="2007-01-01")),
             ("year", vm.DatePicker(min="2002-01-01", max="2007-01-01")),
+            (["continent", "country"], vm.Cascader(options={"Europe": ["DE"]})),
         ],
     )
     def test_filter_is_not_dynamic_with_options_min_max_specified(
@@ -1546,22 +1568,6 @@ class TestFilterHierarchicalColumn:
         df = pd.DataFrame({"code": [1, 2], "leaf": ["a", "b"]})
         assert _dataframe_path_to_cascader_options(df, ["code", "leaf"]) == {"1": ["a"], "2": ["b"]}
 
-    @pytest.fixture
-    def managers_hierarchical_page(self):
-        df = pd.DataFrame(
-            {
-                "continent": ["Eu", "Eu", "As"],
-                "country": ["DE", "FR", "JP"],
-                "gdp": [1.0, 2.0, 3.0],
-            }
-        )
-        vm.Page(
-            id="test_page",
-            title="Page Title",
-            components=[vm.Graph(id="hier_graph", figure=px.scatter(df, x="country", y="gdp"))],
-        )
-        Vizro._pre_build()
-
     def test_hierarchical_pre_build_populates_options_and_action(self, managers_hierarchical_page):
         f = vm.Filter(
             column=["continent", "country"],
@@ -1579,9 +1585,11 @@ class TestFilterHierarchicalColumn:
         assert default_action.column == "country"
         assert default_action.filter_function == _filter_isin
 
-    def test_hierarchical_dynamic_data_without_explicit_options_raises(
+    def test_hierarchical_dynamic_data_without_explicit_options(
         self, managers_one_page_two_graphs_with_dynamic_data, gapminder_dynamic_first_n_last_n_function
     ):
+        # Filter with dynamic data + no explicit Cascader options should be marked dynamic and pre-build should
+        # populate options from the default-args data load.
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
         f = vm.Filter(
             column=["continent", "country"],
@@ -1589,10 +1597,14 @@ class TestFilterHierarchicalColumn:
             selector=vm.Cascader(multi=False),
         )
         model_manager["test_page"].controls = [f]
-        with pytest.raises(ValueError, match="Hierarchical filters cannot derive Cascader options from dynamic data"):
-            f.pre_build()
+        f.pre_build()
+        assert f._dynamic
+        assert f.selector._dynamic
+        assert isinstance(f.selector, vm.Cascader)
+        # Options come from the default-args gapminder load: keyed by continent, leaves are countries.
+        assert set(f.selector.options.keys()) == {"Africa", "Americas", "Asia", "Europe", "Oceania"}
 
-    def test_hierarchical_dynamic_data_with_explicit_options_pre_builds(
+    def test_hierarchical_dynamic_data_with_explicit_options(
         self, managers_one_page_two_graphs_with_dynamic_data, gapminder_dynamic_first_n_last_n_function
     ):
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
@@ -1617,6 +1629,97 @@ class TestFilterHierarchicalColumn:
         model_manager["test_page"].controls = [f]
         with pytest.raises(ValueError, match="continent"):
             f.pre_build()
+
+    @pytest.mark.parametrize(
+        "tree, expected",
+        [
+            ({"A": [1, 2]}, [(("A",), 1), (("A",), 2)]),
+            ({"A": {"B": [1]}}, [(("A", "B"), 1)]),
+            (
+                {"Region": {"East": [1, 2], "West": [3]}, "Other": [9]},
+                [
+                    (("Region", "East"), 1),
+                    (("Region", "East"), 2),
+                    (("Region", "West"), 3),
+                    (("Other",), 9),
+                ],
+            ),
+            ({}, []),
+        ],
+    )
+    def test_iter_cascader_leaf_paths(self, tree, expected):
+        assert list(_iter_cascader_leaf_paths(tree)) == expected
+
+    def test_add_leaf_at_existing_branch(self):
+        tree = {"Eu": ["DE"]}
+        _add_leaf_at_path(tree, ("Eu",), "FR")
+        assert tree == {"Eu": ["DE", "FR"]}
+
+    def test_add_leaf_creates_missing_branch(self):
+        tree = {"Eu": ["DE"]}
+        _add_leaf_at_path(tree, ("As",), "JP")
+        assert tree == {"Eu": ["DE"], "As": ["JP"]}
+
+    def test_add_leaf_creates_nested_branches(self):
+        tree = {}
+        _add_leaf_at_path(tree, ("Eu", "West"), "FR")
+        assert tree == {"Eu": {"West": ["FR"]}}
+
+    def test_add_leaf_is_idempotent_when_leaf_already_present(self):
+        tree = {"Eu": ["DE", "FR"]}
+        _add_leaf_at_path(tree, ("Eu",), "FR")
+        assert tree == {"Eu": ["DE", "FR"]}
+
+    def test_add_leaf_skips_when_path_hits_leaf_list(self):
+        # Path traverses through a segment already occupied by a leaf list — no-op.
+        tree = {"Eu": ["DE"]}
+        _add_leaf_at_path(tree, ("Eu", "West"), "FR")
+        assert tree == {"Eu": ["DE"]}
+
+    def test_hierarchical_call_recomputes_options(self, managers_hierarchical_page):
+        # Filter.__call__ (runtime) rebuilds the Cascader with a freshly-computed options tree from the
+        # incoming target_to_data_frame — proving dynamic parameters propagate through to the selector.
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["hier_graph"],
+            selector=vm.Cascader(id="test_selector_id", multi=True),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+
+        new_df = pd.DataFrame({"continent": ["Eu", "As"], "country": ["DE", "JP"], "gdp": [1.0, 2.0]})
+        selector_build = f(target_to_data_frame={"hier_graph": new_df}, current_value=None)["test_selector_id"]
+        assert selector_build.options == {"As": ["JP"], "Eu": ["DE"]}
+
+    def test_hierarchical_call_preserves_stale_current_value(self, managers_hierarchical_page):
+        # If the user's selected leaf disappears from the new dataframe, its previous path is restored into
+        # the options tree — matching the categorical dynamic-filter contract where selections survive data
+        # reloads (filter may then match zero rows, but the value stays valid).
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["hier_graph"],
+            selector=vm.Cascader(id="test_selector_id", multi=True, options={"Eu": ["DE", "FR"], "As": ["JP"]}),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+
+        # New data drops "FR" from the tree, but user still has it selected.
+        new_df = pd.DataFrame({"continent": ["Eu", "As"], "country": ["DE", "JP"], "gdp": [1.0, 2.0]})
+        selector_build = f(target_to_data_frame={"hier_graph": new_df}, current_value=["FR"])["test_selector_id"]
+        assert selector_build.options == {"As": ["JP"], "Eu": ["DE", "FR"]}
+
+    def test_hierarchical_call_ignores_current_value_still_present_in_tree(self, managers_hierarchical_page):
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["hier_graph"],
+            selector=vm.Cascader(id="test_selector_id", multi=True, options={"Eu": ["DE", "FR"], "As": ["JP"]}),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+
+        new_df = pd.DataFrame({"continent": ["Eu", "As"], "country": ["DE", "JP"], "gdp": [1.0, 2.0]})
+        selector_build = f(target_to_data_frame={"hier_graph": new_df}, current_value=["DE"])["test_selector_id"]
+        assert selector_build.options == {"As": ["JP"], "Eu": ["DE"]}
 
 
 class TestFilterBuild:
@@ -1671,6 +1774,7 @@ class TestFilterBuild:
             ("pop", vm.RangeSlider()),
             ("year", vm.DatePicker()),
             ("year", vm.DatePicker(range=False)),
+            (["continent", "country"], vm.Cascader()),
         ],
     )
     def test_dynamic_filter_build(self, test_column, test_selector, gapminder_dynamic_first_n_last_n_function):
