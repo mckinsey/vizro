@@ -171,6 +171,8 @@ underlying component may change in the future.""",
         ]
     ]
 
+    # Consider making the _dynamic public later. The same property could also be used for all other components.
+    _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
     # Unlike dcc.Dropdown, vdc.Cascader has options as a required field (maybe a mistake).
     _inner_component_properties: list[str] = PrivateAttr(vdc.Cascader(options={}).available_properties)
@@ -195,8 +197,10 @@ underlying component may change in the future.""",
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.value"}
 
-    @_log_call
-    def build(self):
+    def __call__(self, options):
+        # Runtime rebuild entry point used by Filter.__call__ so dynamic-data updates can refresh the tree.
+        # vdc.Cascader handles options changes gracefully clientside (it resets activePath and cleans stale
+        # value entries), so unlike dcc.Dropdown we don't need a placeholder to swap in.
         value = self.value
         if self.multi and value is not None and not isinstance(value, list):
             value = cast(MultiValueType, [value])
@@ -204,7 +208,7 @@ underlying component may change in the future.""",
         description = self.description.build().children if self.description else [None]
         defaults = {
             "id": self.id,
-            "options": self.options,
+            "options": options,
             "value": value,
             "multi": self.multi,
             "persistence": True,
@@ -223,3 +227,7 @@ underlying component may change in the future.""",
                 vdc.Cascader(**(defaults | self.extra)),
             ]
         )
+
+    @_log_call
+    def build(self):
+        return self.__call__(self.options)

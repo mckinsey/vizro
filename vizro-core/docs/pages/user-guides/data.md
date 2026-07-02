@@ -371,6 +371,7 @@ A dynamic filter behaves as follows when updated:
 - The filter's selector updates its available values:
     - For [categorical selectors](selectors.md#categorical-selectors), `options` updates to give all unique values found in `column` across all the data sources of components in `targets`.
     - For [numerical selectors](selectors.md#numerical-selectors) and [temporal selectors](selectors.md#temporal-selectors), `min` and `max` update to give the overall minimum and maximum values found in `column` across all the data sources of components in `targets`.
+    - For [hierarchical selectors](selectors.md#hierarchical-selectors), `options` updates to give the nested tree of values found in the path columns across all the data sources of components in `targets`.
 - The value selected on screen by a dashboard user _does not_ change. If the selected value is not already present in the new set of available values then the `options` or `min` and `max` are modified to include it. In this case, the filtering operation might result in an empty DataFrame.
 - Even though the values present in a data source can change, the schema should not: `column` should remain present and of the same type in the data sources. The `targets` of the filter and selector type cannot change while the dashboard is running. For example, a `vm.Dropdown` selector cannot turn into `vm.RadioItems`.
 

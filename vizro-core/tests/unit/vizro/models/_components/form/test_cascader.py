@@ -150,6 +150,11 @@ class TestCascaderInstantiation:
         [action] = cascader.actions
         assert action._trigger == "cascader-id.value"
 
+    def test_cascader_dynamic_default_false(self):
+        # _dynamic exists and defaults to False; Filter.pre_build flips it for dynamic hierarchical filters.
+        cascader = Cascader(options={"L": ["a"]})
+        assert cascader._dynamic is False
+
 
 class TestCascaderHelpers:
     """Tests module-level helpers used by parameters and validation."""
@@ -302,3 +307,31 @@ class TestCascaderBuild:
             ]
         )
         assert_component_equal(built, expected)
+
+    def test_cascader_call_uses_supplied_options(self):
+        # __call__ is the runtime rebuild entry point used by Filter.__call__ for dynamic data.
+        cascader = Cascader(id="cascader_id", options={"L": ["a"]}, multi=False, value=None, title="")
+        new_options = {"Region": {"East": [1, 2], "West": [3]}}
+        built = cascader(new_options)
+        expected = html.Div(
+            [
+                None,
+                vdc.Cascader(
+                    id="cascader_id",
+                    options=new_options,
+                    value=None,
+                    multi=False,
+                    persistence=True,
+                    persistence_type="session",
+                    placeholder="Select option",
+                    clearable=False,
+                ),
+            ]
+        )
+        assert_component_equal(built, expected)
+
+    def test_cascader_build_equals_call_with_self_options(self):
+        # build() delegates to __call__(self.options); guard that they produce equivalent output.
+        options = {"L": ["a", "b"]}
+        cascader = Cascader(id="cascader_id", options=options, multi=False, value="a", title="Title")
+        assert_component_equal(cascader.build(), cascader(options))
