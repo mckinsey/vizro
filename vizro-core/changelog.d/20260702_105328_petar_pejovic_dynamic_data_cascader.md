@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Enable `vm.Cascader` selector on `vm.Filter` to work with dynamic data — the Cascader options tree now refreshes on page load and when a dynamic data parameter changes, matching the behavior of the other selectors.
+- `Cascader` filters update automatically when underlying dynamic data changes.
 
 <!--
 ### Changed

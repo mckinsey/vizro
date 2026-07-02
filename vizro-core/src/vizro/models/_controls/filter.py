@@ -164,11 +164,17 @@ def _iter_cascader_leaf_paths(
                 yield path, leaf
 
 
+# TODO: remove this parents of leaves calculation once the Cascader propagates full paths,
+#  e.g. `[("continent", "region", "country"), ...]`, instead of bare leaves.
+#  With full paths the new tree options can be extended directly like new_options = {**new_options, **current_value}
+#  without having to calculate the parents of leaves.
 def _add_leaf_at_path(tree: dict[str, Any], path: tuple[str, ...], leaf: Any) -> None:
-    """Add `leaf` to `tree` at `path`, creating any missing branch dicts on the way.
+    """Add `leaf` to `tree` at full `path`, creating any missing branch dicts on the way.
 
-    Used by dynamic hierarchical filters to restore a user-selected leaf back into a freshly-computed
-    Cascader options tree at the same branch context it had before the data reload.
+    This is a Cascader-only problem: `current_value` is a flat list of leaves (e.g. list of country names), so if a data
+    reload drops the rows that carried currently selected values we have to add them to the new tree options.
+    Remember, current_value always has to be part of the newly calculated options. Problem is that we don't know
+    where to place these leaf values, so we have to calculate their parents.
 
     Example:
         >>> tree = {"Eu": ["DE"]}
@@ -351,7 +357,7 @@ class Filter(VizroBaseModel):
         elif _is_hierarchical_selector(selector):
             selector_call_obj = selector(options=self._get_hierarchical_options(target_to_data_frame, current_value))
         else:
-            # Time filters cannot yet be dynamic.
+            # Time and boolean filters cannot yet be dynamic.
             selector_call_obj = selector.build()
 
         # The filter is dynamic, so a guard component (data=True) needs to be added to prevent unexpected action firing.
