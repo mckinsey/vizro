@@ -37,5 +37,5 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Closed a dynamic-code safeguard bypass where whitelisted-package methods that reach the filesystem (`numpy.memmap`, `numpy.fromfile`, `numpy.save`) could be used for arbitrary file read/write. Thanks to b3rt1ng ([@b3rt1ng](https://github.com/b3rt1ng)) for the responsible disclosure. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
-- Surfaced the code-execution safeguard's best-effort nature at the API: executing generated chart code now emits a `VizroAICodeExecutionWarning`, and the relevant public docstrings carry an explicit security note. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- Closed a dynamic-code safeguard bypass where whitelisted-package methods that reach the filesystem (`numpy.memmap`, `numpy.fromfile`, `numpy.save`) could be used for arbitrary file read/write. Thanks to b3rt1ng ([@b3rt1ng](https://github.com/b3rt1ng)) for the responsible disclosure. ([#1786](https://github.com/mckinsey/vizro/pull/1786))
+- Surfaced the code-execution safeguard's best-effort nature at the API: executing generated chart code now emits a `VizroAICodeExecutionWarning`, and the relevant public docstrings carry an explicit security note. ([#1786](https://github.com/mckinsey/vizro/pull/1786))
