@@ -155,9 +155,10 @@ class TestFilesystemReachingMethodBypass:
             # Arbitrary write variant from the report.
             ('arr = np.memmap("/tmp/out.dat", dtype="uint8", mode="w+", shape=(2,))', ".memmap"),
             # Additional bypass found during triage: previously masked by the malformed
-            # ".fromfile.save" entry, which matched neither ".fromfile" nor ".save" alone.
+            # ".fromfile.save" entry, which is now split so ".fromfile" matches on its own.
             ('arr = np.fromfile("/tmp/secret.env", dtype="uint8")', ".fromfile"),
-            ('np.save("/tmp/out", np.arange(3))', ".save"),
+            # np.save writes a .npy file; already caught by the pre-existing ".sav" extension entry.
+            ('np.save("/tmp/out", np.arange(3))', ".sav"),
         ],
     )
     def test_numpy_filesystem_methods_blocked(self, code_line, method):

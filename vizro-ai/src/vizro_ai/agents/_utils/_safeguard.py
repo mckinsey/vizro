@@ -12,12 +12,17 @@ class VizroAICodeExecutionWarning(UserWarning):
     """Warns that Vizro-AI executes LLM-generated code with only a best-effort safeguard."""
 
 
-def warn_code_execution_is_best_effort() -> None:
+def warn_code_execution_is_best_effort(stacklevel: int = 2) -> None:
     """Warn that the safeguard is best-effort before LLM-generated code is executed.
 
     This is intentionally a `warnings.warn` rather than a log message so that it surfaces in
     embedding and server contexts, where the safeguard must not be relied on as a hard boundary.
     By default Python emits it once per process (per call site), so it does not become noisy.
+
+    Args:
+        stacklevel: Frames to skip when attributing the warning. The default of 2 points at the
+            direct caller of this helper; pass a higher value from a wrapper (e.g. `_exec_code`)
+            so the warning is attributed to the API caller rather than the wrapper.
     """
     warnings.warn(
         "Vizro-AI executes LLM-generated Python code with `exec()`. The built-in safeguard is "
@@ -26,7 +31,7 @@ def warn_code_execution_is_best_effort() -> None:
         "Vizro-AI against trusted users and inputs, and prefer an isolated environment (a "
         "sandboxed process or container) with least-privilege access.",
         category=VizroAICodeExecutionWarning,
-        stacklevel=3,
+        stacklevel=stacklevel,
     )
 
 

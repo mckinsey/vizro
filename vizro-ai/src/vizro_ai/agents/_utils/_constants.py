@@ -240,7 +240,6 @@ REDLISTED_DATA_HANDLING = [
     ".genfromtxt",
     ".load",
     ".fromfile",
-    ".save",
     ".memmap",
     ".savetxt",
     ".tofile",

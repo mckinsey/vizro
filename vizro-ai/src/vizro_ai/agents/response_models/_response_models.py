@@ -66,7 +66,8 @@ def _exec_code(code: str, namespace: dict) -> dict:
     # Tried just handling it in local scope, that is, getting the import statement into ldict, but it didn't work
     # TODO: ideally in future we properly handle process and namespace separation, or even Docke execution
     # TODO: this is also important as it can affect unit-tests influencing one another, which is really not good!
-    warn_code_execution_is_best_effort()
+    # stacklevel=3 so the warning is attributed to the caller of _exec_code, not _exec_code itself.
+    warn_code_execution_is_best_effort(stacklevel=3)
     ldict = {}
     try:
         exec(code, namespace, ldict)  # nosec # noqa: S102
