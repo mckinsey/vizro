@@ -157,6 +157,11 @@ class _BaseAction(VizroBaseModel):
         raise NotImplementedError
 
     @property
+    def _log_header(self) -> str:
+        """Optional header prepended to this action's DevTools log entry. Empty by default."""
+        return ""
+
+    @property
     def _validated_outputs(self) -> OutputsType:
         raise NotImplementedError
 
@@ -683,7 +688,7 @@ class _BaseAction(VizroBaseModel):
                     f"function={self._action_name!r}  error={error_msg!r}"
                 )
             action_log = Patch()
-            action_log.append(log_text + "\n")
+            action_log.append(self._log_header + log_text + "\n")
 
             return_value = {
                 "internal": {
