@@ -149,7 +149,7 @@ flow_chart_group = ChartGroup(
     name="Flow",
     pages=pages.flow.pages,
     incomplete_pages=[
-        IncompletePage("Chord"),
+        IncompletePage("Network"),
     ],
     icon="Air",
     intro_text=flow_intro_text,
