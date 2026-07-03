@@ -38,6 +38,7 @@ class TestCascaderInstantiation:
         assert cascader.title == ""
         assert cascader.description is None
         assert cascader.actions == []
+        assert cascader._dynamic is False
         assert cascader._action_triggers == {"__default__": f"{cascader.id}.value"}
         assert cascader._action_outputs == {"__default__": f"{cascader.id}.value"}
         assert cascader._action_inputs == {"__default__": f"{cascader.id}.value"}
@@ -61,6 +62,7 @@ class TestCascaderInstantiation:
         assert cascader.title == "Title"
         assert cascader.actions == []
         assert isinstance(cascader.description, Tooltip)
+        assert cascader._dynamic is False
         assert cascader._action_triggers == {"__default__": "cascader-id.value"}
         assert cascader._action_outputs == {
             "__default__": "cascader-id.value",
@@ -149,11 +151,6 @@ class TestCascaderInstantiation:
         )
         [action] = cascader.actions
         assert action._trigger == "cascader-id.value"
-
-    def test_cascader_dynamic_default_false(self):
-        # _dynamic exists and defaults to False; Filter.pre_build flips it for dynamic hierarchical filters.
-        cascader = Cascader(options={"L": ["a"]})
-        assert cascader._dynamic is False
 
 
 class TestCascaderHelpers:
@@ -308,8 +305,11 @@ class TestCascaderBuild:
         )
         assert_component_equal(built, expected)
 
+
+class TestCascaderCall:
+    """Tests model __call__ method — the runtime rebuild entry point used by Filter.__call__ on dynamic reloads."""
+
     def test_cascader_call_uses_supplied_options(self):
-        # __call__ is the runtime rebuild entry point used by Filter.__call__ for dynamic data.
         cascader = Cascader(id="cascader_id", options={"L": ["a"]}, multi=False, value=None, title="")
         new_options = {"Region": {"East": [1, 2], "West": [3]}}
         built = cascader(new_options)

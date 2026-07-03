@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- `Cascader` filters update automatically when underlying dynamic data changes.
+- `Cascader` filters update automatically when underlying dynamic data changes. ([#1788](https://github.com/mckinsey/vizro/pull/1788))
 
 <!--
 ### Changed
