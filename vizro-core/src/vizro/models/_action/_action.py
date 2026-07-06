@@ -680,6 +680,8 @@ class _BaseAction(VizroBaseModel):
                 notification_key, notification_result = notification_payload.key, notification_payload.result
 
             timestamp = datetime.now(tz=timezone.utc).strftime("%H:%M:%S.%f")[:-3]
+            # A failed entry only reaches the logs panel when the error is handled with a notification; otherwise we
+            # `raise error_msg` below (to avoid failing silently), which aborts the return and discards this `Patch()`.
             if error_msg is None:
                 log_text = f"[{timestamp}] ===== Running action with id {self.id}, function {self._action_name} ====="
             else:
