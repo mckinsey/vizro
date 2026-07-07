@@ -6,6 +6,7 @@ from pages._factories import lollipop_factory, marimekko_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
 from pages.examples import (
     bar,
+    bullet,
     magnitude_column,
     paired_bar,
     paired_column,
@@ -251,6 +252,46 @@ radar_page = vm.Page(
 lollipop_page = lollipop_factory("magnitude")
 marimekko_page = marimekko_factory("magnitude")
 
+bullet_page = vm.Page(
+    title="Bullet",
+    path="magnitude/bullet",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+            #### What is a bullet chart?
+
+            A bullet chart is a variation of a bar chart that displays a single measure against a target
+            and qualitative ranges. It consists of a dark horizontal bar representing the actual value, a
+            vertical line marker indicating the target, and shaded background bands showing performance
+            zones such as below average, average, and above average.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a bullet chart to compare actual performance against a target within defined performance
+            ranges. It is particularly useful in dashboards and scorecards for displaying key performance
+            indicators (KPIs) in a compact, intuitive format. The bullet chart eliminates the need for
+            separate gauge charts, saving space while conveying more information.
+        """
+        ),
+        vm.Graph(figure=bullet.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("bullet.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("bullet.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
 radial_page = vm.Page(
     title="Radial",
     path="magnitude/radial",
@@ -330,6 +371,7 @@ pictogram_page = vm.Page(
 
 pages = [
     bar_page,
+    bullet_page,
     column_page,
     paired_bar_page,
     paired_column_page,
