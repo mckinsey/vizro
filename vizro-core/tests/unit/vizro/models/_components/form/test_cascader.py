@@ -1,6 +1,9 @@
 """Unit tests for vizro.models.Cascader."""
 
+from datetime import date
+
 import dash_bootstrap_components as dbc
+import pandas as pd
 import pytest
 import vizro_dash_components as vdc
 from asserts import assert_component_equal
@@ -142,6 +145,12 @@ class TestCascaderInstantiation:
     def test_create_cascader_invalid_multi(self):
         with pytest.raises(ValidationError, match=r"Please set multi=True if providing a list of default values."):
             Cascader(value=[1, 2], multi=False, options={"N": [1, 2, 3, 4, 5]})
+
+    def test_create_cascader_coerces_datetime_leaves_to_date(self):
+        ts = pd.Timestamp("2024-03-30")
+        cascader = Cascader(options={"Asia": [ts]}, value=[ts], multi=True)
+        assert cascader.options == {"Asia": [date(2024, 3, 30)]}
+        assert cascader.value == [date(2024, 3, 30)]
 
     def test_cascader_trigger(self, identity_action_function):
         cascader = Cascader(

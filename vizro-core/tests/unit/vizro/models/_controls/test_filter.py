@@ -197,11 +197,12 @@ def target_to_data_frame():
 
 @pytest.fixture
 def managers_hierarchical_page():
-    """Page with a single graph whose dataframe has hierarchical continent/country columns."""
+    """Page with a single graph whose dataframe has hierarchical continent/country columns plus a datetime leaf."""
     df = pd.DataFrame(
         {
             "continent": ["Eu", "Eu", "As"],
             "country": ["DE", "FR", "JP"],
+            "joined_at": pd.to_datetime(["2024-01-31", "2024-02-29", "2024-03-30"]),
             "gdp": [1.0, 2.0, 3.0],
         }
     )
@@ -1774,6 +1775,16 @@ class TestFilterHierarchicalColumn:
         model_manager["test_page"].controls = [f]
         with pytest.raises(ValueError, match="continent"):
             f.pre_build()
+
+    def test_hierarchical_pre_build_coerces_datetime_leaf_column(self, managers_hierarchical_page):
+        f = vm.Filter(column=["continent", "joined_at"], targets=["hier_graph"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f.selector.options == {
+            "As": [date(2024, 3, 30)],
+            "Eu": [date(2024, 1, 31), date(2024, 2, 29)],
+        }
+        assert f.selector.value == [date(2024, 3, 30)]
 
     def test_hierarchical_call_recomputes_options(self, managers_hierarchical_page):
         # Filter.__call__ (runtime) rebuilds the Cascader with a freshly-computed options tree from the
