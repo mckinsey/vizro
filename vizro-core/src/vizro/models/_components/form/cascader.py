@@ -228,6 +228,11 @@ underlying component may change in the future.""",
             ]
         )
 
+    def _build_dynamic_placeholder(self):
+        if self.value is None:
+            self.value = get_cascader_default_value(self.options, multi=self.multi)
+        return self.__call__(self.options)
+
     @_log_call
     def build(self):
-        return self.__call__(self.options)
+        return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)
