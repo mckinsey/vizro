@@ -209,12 +209,12 @@ Provide a valid import path for these in your dashboard configuration."""
         """
         offcanvas = dbc.Offcanvas(
             id="vizro_logs_offcanvas",
+            title=[dbc.Button("Clear logs", id="vizro_logs_clear", size="sm", color="secondary", class_name="mb-2")],
             placement="bottom",
             scrollable=True,
             backdrop=False,
             is_open=False,
             children=[
-                dbc.Button("Clear logs", id="vizro_logs_clear", size="sm", color="secondary", class_name="mb-2"),
                 html.Pre(id="vizro_logs", children=[]),
             ],
         )
@@ -253,6 +253,22 @@ Provide a valid import path for these in your dashboard configuration."""
             "function(_) { return []; }",
             Output("vizro_logs_store", "data", allow_duplicate=True),
             Input("vizro_logs_clear", "n_clicks"),
+            optional=True,
+            prevent_initial_call=True,
+        )
+        # Log control resets. Registered once globally (not per page) since reset-button and vizro_logs_store are
+        # shared ids. Deliberately uses a different format from action logs - no "=====" wrapping and a coarser
+        # HH:MM:SS timestamp - to make clear the reset runs client-side and is not itself a server callback; any
+        # on-page-load actions it triggers afterwards produce their own "=====" entries. optional=True no-ops this
+        # when there are no controls (reset-button absent). A plain array assignment is used because clientside
+        # callbacks can't use Patch(); it lands before the downstream action Patches, so nothing is clobbered.
+        clientside_callback(
+            # UTC HH:MM:SS to match the action log timestamps, which are generated server-side in UTC.
+            "function(_, data) { const t = new Date().toISOString().slice(11, 19); "
+            "return [...(data || []), `[${t}] ----- Reset controls -----\\n`]; }",
+            Output("vizro_logs_store", "data", allow_duplicate=True),
+            Input("reset-button", "n_clicks"),
+            State("vizro_logs_store", "data"),
             optional=True,
             prevent_initial_call=True,
         )
