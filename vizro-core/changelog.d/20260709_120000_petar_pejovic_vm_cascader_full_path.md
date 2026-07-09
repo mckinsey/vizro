@@ -24,7 +24,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Changed
 
-- **Breaking:** `vm.Cascader` selections are now full root-to-leaf paths (e.g. `["Europe", "France"]`) instead of just the leaf value, so hierarchical filters support duplicate leaf labels across branches. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- **Breaking:** `vm.Cascader` selections are now full root-to-leaf paths (e.g. `["Europe", "France"]`) instead of just the leaf value, so hierarchical filters support duplicate leaf labels across branches. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
 
 <!--
 ### Deprecated
@@ -34,7 +34,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Fixed
 
-- A hierarchical `vm.Filter` selection now survives dynamic-data reloads even across multiple reloads, because the selected path is restored directly from its own branch context. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- A hierarchical `vm.Filter` selection now survives dynamic-data reloads even across multiple reloads, because the selected path is restored directly from its own branch context. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
 
 <!--
 ### Security
