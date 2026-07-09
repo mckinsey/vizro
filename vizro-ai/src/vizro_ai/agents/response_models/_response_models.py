@@ -20,8 +20,16 @@ from collections.abc import Callable
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.express._core import all_attrables
 from pydantic import BaseModel, ConfigDict, Field, JsonValue, create_model, field_validator, model_validator
+
+try:
+    from plotly.express._core import all_attrables
+except ImportError as e:  # pragma: no cover — depends on the installed plotly version
+    raise ImportError(
+        "vizro-ai derives its chart grammar from `plotly.express._core.all_attrables`, which this "
+        "plotly version does not provide. Upgrade plotly (`pip install -U plotly`), or pin a version "
+        "compatible with your vizro-ai release."
+    ) from e
 
 CUSTOM_CHART_NAME = "custom_chart"
 
@@ -158,7 +166,8 @@ def validate_against_data(plan: "BaseChartPlan", data_frame: pd.DataFrame) -> li
     errors = _plan_problems(plan)
     errors += [f"Column '{col}' is not in the data." for col in plan.referenced_columns() if col not in columns]
     # plotly silently ignores label keys that match nothing, so a typo'd relabel would otherwise
-    # vanish. 'value'/'variable'/'count' are legitimate synthetic wide-form/histogram keys.
+    # vanish. Synthetic keys plotly itself generates are legitimate: 'value'/'variable' for
+    # wide-form data (list-valued x/y) and 'count' for the implied histogram y-axis.
     errors += [
         f"Label key '{key}' does not match a dataframe column."
         for key in plan.labels
@@ -337,7 +346,9 @@ class ChartPlanFactory:
         """Create a chart plan model that validates the plan against `data_frame` (no execution).
 
         Validation checks the plan's keys and referenced columns against the data and
-        test-renders it with `build_figure` — it never runs model-authored code.
+        test-renders it with `build_figure` — it never runs model-authored code. The test render
+        uses a small row sample (same columns and dtypes), so value-dependent edge cases that
+        only appear in unsampled rows can pass validation and surface at the real render.
 
         Args:
             data_frame: DataFrame to validate against.

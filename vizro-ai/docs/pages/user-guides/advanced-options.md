@@ -55,6 +55,10 @@ Synchronously runs the `chart_agent` to generate a chart based on your prompt.
 
 **Returns:** A result object containing a `BaseChartPlan` in `result.output`.
 
+!!! note "Invalid plans are retried automatically"
+
+    The chart specification is validated against your dataframe before it is returned. If the model references a column that does not exist or an argument the chart type does not accept, the errors are fed back to the model and it retries; only a plan that fits your data is returned. (When you override `output_type`, this built-in validation is replaced — use a [`ChartPlanFactory`][vizro_ai.agents.response_models.ChartPlanFactory] model to keep data-aware validation.)
+
 !!! example "run_sync()"
 
     === "Code"

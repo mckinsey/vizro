@@ -36,7 +36,7 @@ def test_add_df_with_fewer_than_five_rows():
     assert result.output.chart_type == "bar"
 
 
-def test_output_validator_retries_on_plan_data_mismatch():
+def test_plan_validation_retries_on_data_mismatch():
     """A plan that does not fit the data goes back to the model as a retry, not to the user."""
     df = pd.DataFrame({"x": range(10), "y": range(10, 20)})
     calls = []
@@ -51,6 +51,23 @@ def test_output_validator_retries_on_plan_data_mismatch():
         result = chart_agent.run_sync(model=function_model, user_prompt="test", deps=df)
     assert len(calls) == 2
     assert result.output.encodings == {"x": "x", "y": "y"}
+
+
+def test_run_output_type_override_still_possible():
+    """Data validation is an output function, not a validator, so output_type= overrides must work."""
+    from vizro_ai.agents.response_models import ChartPlan
+
+    df = pd.DataFrame({"x": range(10), "y": range(10, 20)})
+
+    def chart_plan_model(messages, info):
+        content = json.dumps({"chart_type": "bar", "encodings": {"x": "x", "y": "y"}, "chart_insights": "insight"})
+        return ModelResponse(parts=[TextPart(content=content)])
+
+    function_model = FunctionModel(chart_plan_model)
+    with chart_agent.override(model=function_model):
+        result = chart_agent.run_sync(model=function_model, user_prompt="test", deps=df, output_type=ChartPlan)
+    assert isinstance(result.output, ChartPlan)
+    assert result.output.chart_insights == "insight"
 
 
 def test_add_df_with_none_raises():

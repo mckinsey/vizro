@@ -121,6 +121,31 @@ class TestRendering:
         assert fig.layout.title.text == "Sepals"
         assert tuple(fig.layout.yaxis.range) == (0, 100)
 
+    @pytest.mark.parametrize(
+        "chart_type, encodings",
+        [
+            ("pie", {"names": "species", "values": "sepal_length"}),
+            ("histogram", {"x": "sepal_width"}),
+            ("violin", {"x": "species", "y": "petal_length"}),
+            ("line", {"x": "sepal_width", "y": "sepal_length", "line_group": "species"}),
+            ("scatter", {"x": "sepal_width", "y": "sepal_length", "hover_data": ["species"]}),
+        ],
+    )
+    def test_figure_across_chart_types(self, iris, chart_type, encodings):
+        assert isinstance(BaseChartPlan(chart_type=chart_type, encodings=encodings).figure(iris), go.Figure)
+
+    def test_code_with_list_encoding_and_labels(self, iris):
+        plan = BaseChartPlan(
+            chart_type="scatter",
+            encodings={"x": "sepal_width", "y": "sepal_length", "hover_data": ["species"]},
+            labels={"sepal_width": "Sepal width"},
+        )
+        assert "hover_data=['species']" in plan.code
+        assert "labels={'sepal_width': 'Sepal width'}" in plan.code
+        namespace: dict = {}
+        exec(plan.code, namespace)
+        assert namespace["custom_chart"](iris) == plan.figure(iris)
+
     def test_invalid_encoding_raises_instead_of_silently_dropping(self, iris):
         plan = BaseChartPlan(chart_type="bar", encodings={"xx": "species", "y": "sepal_length"})
         with pytest.raises(ValueError, match="not a valid encoding"):

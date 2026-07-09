@@ -6,9 +6,22 @@ from pydantic_ai import Agent, ModelRetry, RunContext
 from .response_models import CHART_TYPES, BaseChartPlan
 from .response_models._response_models import validate_against_data
 
+
+def _validated_plan(ctx: RunContext[pd.DataFrame], plan: BaseChartPlan) -> BaseChartPlan:
+    """Feed plan/data mismatches back into the model's retry loop instead of failing at render time.
+
+    An output *function* rather than an output validator, so `run_sync(..., output_type=...)`
+    overrides (e.g. `ChartPlan` or a `ChartPlanFactory` model) remain possible.
+    """
+    errors = validate_against_data(plan, ctx.deps)
+    if errors:
+        raise ModelRetry("The chart plan does not fit the data: " + " ".join(errors))
+    return plan
+
+
 chart_agent = Agent[pd.DataFrame, BaseChartPlan](
     deps_type=pd.DataFrame,
-    output_type=BaseChartPlan,
+    output_type=_validated_plan,
     instructions=(
         """You are an expert in data visualization. Given a user request and a pandas DataFrame that is already in
 the shape to plot, describe the requested chart declaratively by filling the chart plan: choose a `chart_type`,
@@ -32,12 +45,3 @@ def add_df(ctx: RunContext[pd.DataFrame | None]) -> str:
         f"Available chart types: {CHART_TYPES}\n\n"
         f"A sample of the data is {ctx.deps.sample(min(5, len(ctx.deps)))} and the data info is:\n{buffer.getvalue()}"
     )
-
-
-@chart_agent.output_validator
-def validate_plan_fits_data(ctx: RunContext[pd.DataFrame], output: BaseChartPlan) -> BaseChartPlan:
-    """Feed plan/data mismatches back into the model's retry loop instead of failing at render time."""
-    errors = validate_against_data(output, ctx.deps)
-    if errors:
-        raise ModelRetry("The chart plan does not fit the data: " + " ".join(errors))
-    return output
