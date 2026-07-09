@@ -12,14 +12,8 @@ models.ALLOW_MODEL_REQUESTS = False
 
 
 def _valid_chart_plan_model(messages, info):
-    chart_code = 'def custom_chart(data_frame):\n    return px.bar(data_frame, x="x", y="y")'
-    content = json.dumps(
-        {
-            "chart_type": "bar",
-            "imports": ["import plotly.express as px"],
-            "chart_code": chart_code,
-        }
-    )
+    # The model returns a declarative plan (data), not code.
+    content = json.dumps({"chart_type": "bar", "encodings": {"x": "x", "y": "y"}})
     return ModelResponse(parts=[TextPart(content=content)])
 
 
@@ -30,6 +24,7 @@ def test_add_df_with_valid_dataframe():
         result = chart_agent.run_sync(model=function_model, user_prompt="test", deps=df)
     messages = result.all_messages()
     assert any("A sample of the data is" in str(msg) for msg in messages)
+    assert result.output.chart_type == "bar"
 
 
 def test_add_df_with_none_raises():

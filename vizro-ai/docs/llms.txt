@@ -4,7 +4,7 @@ Vizro-AI uses generative AI to extend [Vizro](https://vizro.readthedocs.io) so y
 It is built on [Pydantic AI](https://ai.pydantic.dev/) and exposes a flexible `chart_agent` that supports async runs, streaming, dependency injection, and integration with [the A2A protocol](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/).
 
 Note: from version `0.4.0` Vizro-AI supports only chart generation. Dashboard generation has been superseded by [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/).
-Users must connect their own LLM; review the [disclaimer](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/disclaimer/), [safety guidelines](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safety-in-vizro-ai/), and [code-execution safeguarding](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safeguard/) before use.
+Users must connect their own LLM; review the [disclaimer](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/disclaimer/), [safety guidelines](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safety-in-vizro-ai/), and [code execution and data handling](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safeguard/) before use.
 
 All documentation pages return clean markdown when fetched with the `Accept: text/markdown` request header.
 
@@ -30,7 +30,7 @@ All documentation pages return clean markdown when fetched with the `Accept: tex
 
 - [FAQs](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/faq/): Frequently asked questions and the migration guide for dashboard generation users
 - [Disclaimer](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/disclaimer/): Disclaimer for using Vizro-AI with third-party LLMs
-- [Safeguard code execution](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safeguard/): How to safeguard the dynamic code Vizro-AI evaluates
+- [Code execution and data handling](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safeguard/): How Vizro-AI handles code and data — it does not execute model-generated code
 - [Safety in Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safety-in-vizro-ai/): Vizro-AI safety guidelines for using LLMs
 
 ## RELATED PROJECTS

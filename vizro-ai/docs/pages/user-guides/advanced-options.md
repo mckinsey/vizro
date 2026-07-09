@@ -77,7 +77,11 @@ Synchronously runs the `chart_agent` to generate a chart based on your prompt.
 
 ## BaseChartPlan
 
-When you run `chart_agent.run_sync()` or `chart_agent.run()`, the result contains a [`BaseChartPlan`][vizro_ai.agents.response_models.BaseChartPlan] object in `result.output`. This object contains the generated chart code and metadata.
+When you run `chart_agent.run_sync()` or `chart_agent.run()`, the result contains a [`BaseChartPlan`][vizro_ai.agents.response_models.BaseChartPlan] object in `result.output`. This is a declarative chart specification (chart type, column encodings, and styling). Render it to a Plotly figure with `result.output.figure(df)`, get it as JSON for a frontend with `result.output.to_figure_json(df)`, or get the equivalent `plotly.express` code as a string via `result.output.code` / `code_vizro`. The `chart_function` / `vizro_chart_function` callables below are also available.
+
+!!! note "Vizro-AI does not transform your data"
+
+    Vizro-AI maps the columns of the dataframe you pass onto a chart; it does not aggregate, filter, sort or reshape data. Prepare the data in the shape you want to plot first (for example in SQL, or a separate data-preparation step), then pass it to `chart_agent`.
 
 ### `code_vizro` property
 
@@ -197,12 +201,12 @@ Returns a reusable callable function that generates a Vizro-compatible chart (vi
 
 ### `get_chart_function()` method
 
-Returns a reusable callable function with customizable name and vizro flag. This method allows you to specify a custom function name and whether to generate Vizro-compatible code. The returned function can be called later with different dataframes and optional keyword arguments. Since the generated function is returned directly, any `**kwargs` you pass must be accepted by that function.
+Returns a reusable callable function with customizable name and vizro flag. This method allows you to specify a custom function name and whether to produce a Vizro-compatible (`@capture('graph')`) chart function. The returned function can be called later with different dataframes and optional keyword arguments. Since the generated function is returned directly, any `**kwargs` you pass must be accepted by that function.
 
 **Parameters:**
 
 - `chart_name`: Name for the chart function
-- `vizro`: Whether to generate Vizro-compatible code
+- `vizro`: Whether to produce a Vizro-compatible chart function
 
 **Returns:** A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
 
