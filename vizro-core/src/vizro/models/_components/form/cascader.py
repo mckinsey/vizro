@@ -20,10 +20,13 @@ from vizro.models.types import (
     _IdProperty,
 )
 
+_LEAF_ADAPTER: TypeAdapter[SingleValueType] = TypeAdapter(SingleValueType)
 
-def _validate_cascader_leaf_scalar(item: Any) -> None:
+
+def _coerce_cascader_leaf_scalar(item: Any) -> Any:
+    """Coerce a leaf to `SingleValueType` so it matches how `value` gets validated (e.g. Timestamp → date)."""
     try:
-        TypeAdapter(SingleValueType).validate_python(item)
+        return _LEAF_ADAPTER.validate_python(item)
     except Exception as exc:
         raise ValueError(
             "Cascader leaf lists must contain only scalar values "
@@ -40,8 +43,9 @@ def _walk_cascader_branch(node: Any, *, path: str) -> None:
             raise ValueError(
                 f"Cascader options at '{path or 'root'}' contain an empty leaf list; provide at least one scalar leaf."
             )
-        for item in node:
-            _validate_cascader_leaf_scalar(item)
+        # Coerce in place so options and `value` share the same scalar type after validation.
+        for i, item in enumerate(node):
+            node[i] = _coerce_cascader_leaf_scalar(item)
     else:
         raise ValueError(
             f"Cascader options at '{path or 'root'}' must be a nested dict or a list of scalars, "
@@ -171,6 +175,7 @@ underlying component may change in the future.""",
         ]
     ]
 
+    _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
     # Unlike dcc.Dropdown, vdc.Cascader has options as a required field (maybe a mistake).
     _inner_component_properties: list[str] = PrivateAttr(vdc.Cascader(options={}).available_properties)
@@ -195,8 +200,7 @@ underlying component may change in the future.""",
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.value"}
 
-    @_log_call
-    def build(self):
+    def __call__(self, options):
         value = self.value
         if self.multi and value is not None and not isinstance(value, list):
             value = cast(MultiValueType, [value])
@@ -204,7 +208,7 @@ underlying component may change in the future.""",
         description = self.description.build().children if self.description else [None]
         defaults = {
             "id": self.id,
-            "options": self.options,
+            "options": options,
             "value": value,
             "multi": self.multi,
             "persistence": True,
@@ -223,3 +227,12 @@ underlying component may change in the future.""",
                 vdc.Cascader(**(defaults | self.extra)),
             ]
         )
+
+    def _build_dynamic_placeholder(self):
+        if self.value is None:
+            self.value = get_cascader_default_value(self.options, multi=self.multi)
+        return self.__call__(self.options)
+
+    @_log_call
+    def build(self):
+        return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)
