@@ -1,6 +1,9 @@
 """Unit tests for vizro.models.Cascader."""
 
+from datetime import date
+
 import dash_bootstrap_components as dbc
+import pandas as pd
 import pytest
 import vizro_dash_components as vdc
 from asserts import assert_component_equal
@@ -38,6 +41,7 @@ class TestCascaderInstantiation:
         assert cascader.title == ""
         assert cascader.description is None
         assert cascader.actions == []
+        assert cascader._dynamic is False
         assert cascader._action_triggers == {"__default__": f"{cascader.id}.value"}
         assert cascader._action_outputs == {"__default__": f"{cascader.id}.value"}
         assert cascader._action_inputs == {"__default__": f"{cascader.id}.value"}
@@ -61,6 +65,7 @@ class TestCascaderInstantiation:
         assert cascader.title == "Title"
         assert cascader.actions == []
         assert isinstance(cascader.description, Tooltip)
+        assert cascader._dynamic is False
         assert cascader._action_triggers == {"__default__": "cascader-id.value"}
         assert cascader._action_outputs == {
             "__default__": "cascader-id.value",
@@ -140,6 +145,12 @@ class TestCascaderInstantiation:
     def test_create_cascader_invalid_multi(self):
         with pytest.raises(ValidationError, match=r"Please set multi=True if providing a list of default values."):
             Cascader(value=[1, 2], multi=False, options={"N": [1, 2, 3, 4, 5]})
+
+    def test_create_cascader_coerces_datetime_leaves_to_date(self):
+        ts = pd.Timestamp("2024-03-30")
+        cascader = Cascader(options={"Asia": [ts]}, value=[ts], multi=True)
+        assert cascader.options == {"Asia": [date(2024, 3, 30)]}
+        assert cascader.value == [date(2024, 3, 30)]
 
     def test_cascader_trigger(self, identity_action_function):
         cascader = Cascader(
@@ -302,3 +313,34 @@ class TestCascaderBuild:
             ]
         )
         assert_component_equal(built, expected)
+
+
+class TestCascaderCall:
+    """Tests model __call__ method — the runtime rebuild entry point used by Filter.__call__ on dynamic reloads."""
+
+    def test_cascader_call_uses_supplied_options(self):
+        cascader = Cascader(id="cascader_id", options={"L": ["a"]}, multi=False, value=None, title="")
+        new_options = {"Region": {"East": [1, 2], "West": [3]}}
+        built = cascader(new_options)
+        expected = html.Div(
+            [
+                None,
+                vdc.Cascader(
+                    id="cascader_id",
+                    options=new_options,
+                    value=None,
+                    multi=False,
+                    persistence=True,
+                    persistence_type="session",
+                    placeholder="Select option",
+                    clearable=False,
+                ),
+            ]
+        )
+        assert_component_equal(built, expected)
+
+    def test_cascader_build_equals_call_with_self_options(self):
+        # build() delegates to __call__(self.options); guard that they produce equivalent output.
+        options = {"L": ["a", "b"]}
+        cascader = Cascader(id="cascader_id", options=options, multi=False, value="a", title="Title")
+        assert_component_equal(cascader.build(), cascader(options))
