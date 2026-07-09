@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections import Counter
 from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
@@ -10,12 +9,10 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, TypeAd
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._components.form.dropdown import validate_multi
 from vizro.models._models_utils import _log_call, make_actions_chain
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import (
     ActionsType,
-    MultiValueType,
     SingleValueType,
     _IdProperty,
 )
@@ -70,9 +67,8 @@ def validate_cascader_options(data: Any) -> Any:
     leaves = _iter_cascader_leaves_depth_first(data)
     if not leaves:
         raise ValueError("Cascader options must contain at least one leaf value.")
-    dup_counts = Counter(leaves)
-    if duplicates := [v for v, c in dup_counts.items() if c > 1]:
-        raise ValueError(f"Cascader options must not contain duplicate leaf values: {duplicates}.")
+    # Duplicate leaf labels across different branches are allowed: a selection is addressed by its full
+    # root-to-leaf path (see `value`), so `["Eu", "Springfield"]` and `["Us", "Springfield"]` are distinct.
     return data
 
 
@@ -86,34 +82,74 @@ def _iter_cascader_leaves_depth_first(options: dict[str, Any]) -> list[SingleVal
     return leaves
 
 
-# `get_cascader_default_value` uses leaves under the first root key in depth-first order: single-select takes
-# `leaves[0]`; multi-select takes the full list.
-def get_cascader_default_value(options: dict[str, Any], *, multi: bool) -> SingleValueType | MultiValueType:
+def _iter_cascader_paths_depth_first(
+    options: dict[str, Any], _prefix: tuple[Any, ...] = ()
+) -> list[list[SingleValueType]]:
+    """Yield the full root-to-leaf path for every leaf in depth-first order.
+
+    Branch labels (dict keys) form the path prefix and the leaf scalar is the last element, so
+    `{"Region": {"East": [1, 2]}}` yields `[["Region", "East", 1], ["Region", "East", 2]]`.
+    """
+    paths: list[list[SingleValueType]] = []
+    for key, value in options.items():
+        prefix = (*_prefix, key)
+        if isinstance(value, list):
+            paths.extend([*prefix, leaf] for leaf in value)
+        else:
+            paths.extend(_iter_cascader_paths_depth_first(value, prefix))
+    return paths
+
+
+def _normalize_cascader_path(path: Any) -> tuple[Any, ...]:
+    """Path key used for membership tests: branch labels compared as `str`, the leaf kept typed.
+
+    Options built from a dataframe stringify branch labels (see `_dataframe_path_to_cascader_options` in
+    filter.py) but keep leaves typed, so a numeric branch code like `1` must match the string key `"1"`.
+    """
+    path = list(path)
+    return (*(str(segment) for segment in path[:-1]), path[-1])
+
+
+# `get_cascader_default_value` uses the paths under the first root key in depth-first order: single-select
+# takes the first path; multi-select takes the full list of paths.
+def get_cascader_default_value(
+    options: dict[str, Any], *, multi: bool
+) -> list[SingleValueType] | list[list[SingleValueType]]:
     if not options:
         raise ValueError("Cascader options must be non-empty before a default value can be computed.")
-    first_value = next(iter(options.values()))
-    if isinstance(first_value, list):
-        leaves = cast(list[SingleValueType], list(first_value))
-    else:
-        leaves = _iter_cascader_leaves_depth_first(first_value)
+    first_key = next(iter(options))
+    first_branch_paths = _iter_cascader_paths_depth_first({first_key: options[first_key]})
     if multi:
-        return cast(MultiValueType, list(leaves))
-    return leaves[0]
+        return first_branch_paths
+    return first_branch_paths[0]
 
 
-def _cascader_value_allowed(value: SingleValueType | MultiValueType, leaves: list[SingleValueType]) -> bool:
-    if isinstance(value, list):
-        return all(item in leaves for item in value)
-    return value in leaves
+def _cascader_value_allowed(value: Any, valid_paths: set[tuple[Any, ...]]) -> bool:
+    if not value:  # None or [] means nothing is selected, which is always allowed.
+        return True
+    paths = value if isinstance(value[0], (list, tuple)) else [value]
+    return all(_normalize_cascader_path(path) in valid_paths for path in paths if path)
 
 
 def validate_cascader_value(value: Any, info: ValidationInfo) -> Any:
     if "options" not in info.data or not info.data["options"]:
         return value
-    leaves = _iter_cascader_leaves_depth_first(info.data["options"])
-    if value is not None and not _cascader_value_allowed(value, leaves):
+    valid_paths = {_normalize_cascader_path(path) for path in _iter_cascader_paths_depth_first(info.data["options"])}
+    if value is not None and not _cascader_value_allowed(value, valid_paths):
         raise ValueError("Please provide a valid value from `options`.")
     return value
+
+
+def validate_cascader_multi(multi: bool, info: ValidationInfo) -> bool:
+    """Reject a list of paths when `multi=False`.
+
+    Unlike flat selectors, a single-select Cascader `value` is itself a list (one root-to-leaf path), so a
+    list-of-paths (its first element is a list) is what distinguishes a multi value from a single one.
+    """
+    value = info.data.get("value")
+    if not multi and value and isinstance(value[0], (list, tuple)):
+        raise ValueError("Please set multi=True if providing a list of paths.")
+    return multi
 
 
 class Cascader(VizroBaseModel):
@@ -134,18 +170,19 @@ class Cascader(VizroBaseModel):
         ),
     ] = {}
     value: Annotated[
-        SingleValueType | MultiValueType | None,
+        list[SingleValueType] | list[list[SingleValueType]] | None,
         AfterValidator(validate_cascader_value),
         Field(
             default=None,
             validate_default=True,
-            description="Selected leaf value, or list of leaves when multi=True. Must be valid for `options`. "
-            "If omitted, the first parent node is selected.",
+            description="Selected leaf path (the list of node values from the root down to the leaf, e.g. "
+            "`['Europe', 'France']`), or a list of such paths when multi=True. Must be valid for `options`. "
+            "If omitted, the first leaf path is selected.",
         ),
     ]
     multi: Annotated[
         bool,
-        AfterValidator(validate_multi),
+        AfterValidator(validate_cascader_multi),
         Field(default=True, description="Whether to allow selection of multiple values", validate_default=True),
     ]
     title: str = Field(default="", description="Title to be displayed")
@@ -202,8 +239,11 @@ underlying component may change in the future.""",
 
     def __call__(self, options):
         value = self.value
-        if self.multi and value is not None and not isinstance(value, list):
-            value = cast(MultiValueType, [value])
+        # `value` is a single path (list of scalars) or a list of paths. Under multi, wrap a lone single
+        # path into a list-of-paths; a correctly-shaped list-of-paths (first element is itself a list) and
+        # None/[] are left untouched.
+        if self.multi and value and not isinstance(value[0], (list, tuple)):
+            value = cast("list[list[SingleValueType]]", [value])
 
         description = self.description.build().children if self.description else [None]
         defaults = {

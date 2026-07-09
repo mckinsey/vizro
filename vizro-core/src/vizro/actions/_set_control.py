@@ -180,11 +180,18 @@ class set_control(_AbstractAction):
         if value is None:
             value = _controls_store[self.control]["originalValue"]
 
+        from vizro.models._controls._controls_utils import _is_hierarchical_selector
+
         selector = cast(ControlType, model_manager[self.control]).selector
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
         is_range = getattr(selector, "range", isinstance(selector, RangeSlider))
 
-        if is_multi:
+        if _is_hierarchical_selector(selector):
+            # A Cascader value is a full root-to-leaf path (single-select) or a list of paths (multi-select).
+            # Pass it through verbatim: the flat multi/range/single reshaping below would mangle a path (e.g.
+            # treat a two-segment single path as two separate values and return no_update).
+            pass
+        elif is_multi:
             value = value if isinstance(value, list) else [value]
         elif is_range:
             if not isinstance(value, list):

@@ -1,5 +1,6 @@
 """Scratch demo: hierarchical Cascader filter with dynamic data."""
 
+import pandas as pd
 from vizro import Vizro
 import vizro.plotly.express as px
 import vizro.models as vm
@@ -213,11 +214,38 @@ page_static_df = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column=["continent", "region", "country"]),
+        # Single-select with an explicit full-path default value, and shown in the URL to exercise the
+        # path round-trip (?<id>=b64_...).
+        vm.Filter(
+            id="static_hier_filter",
+            column=["continent", "region", "country"],
+            selector=vm.Cascader(multi=False, value=["Americas", "North", "United States"]),
+            show_in_url=True,
+        ),
         vm.Filter(column="country"),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_dynamic_df, page_static_df])
+# Duplicate leaf labels across branches: "Portland" appears under both Oregon and Maine, and "Springfield"
+# under both Oregon and Illinois. Each selection carries its full path, so they filter independently.
+_cities = pd.DataFrame(
+    {
+        "state": ["Oregon", "Oregon", "Oregon", "Maine", "Maine", "Illinois", "Illinois"],
+        "city": ["Portland", "Salem", "Springfield", "Portland", "Augusta", "Chicago", "Springfield"],
+        "population": [652503, 175535, 62607, 66215, 18899, 2716000, 114230],
+    }
+)
+
+page_duplicate_leaves = vm.Page(
+    title="Duplicate leaf labels",
+    components=[
+        vm.Graph(figure=px.bar(_cities, x="city", y="population", color="state")),
+    ],
+    controls=[
+        vm.Filter(column=["state", "city"], selector=vm.Cascader(multi=True)),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page_dynamic_df, page_static_df, page_duplicate_leaves])
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

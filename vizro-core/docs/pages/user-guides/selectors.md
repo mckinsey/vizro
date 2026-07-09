@@ -140,8 +140,10 @@ options = {
 
 By default, `value` is set according to the first group at the top of the tree:
 
-- If `multi=False`, by default `value` is the _first_ leaf listed under the first group. Here the first group is `Asia`, and its first country is `Japan`, so `value="Japan"`.
-- If `multi=True`, by default `value` is _all_ leaves listed under the first group. Here the first group is `Asia`, so `value=["Japan", "India"]`.
+Each selection is a full root-to-leaf **path** (the list of node values from the root down to the leaf), not just the leaf. This means the same leaf label can appear under more than one group and each is addressed unambiguously.
+
+- If `multi=False`, by default `value` is the _first_ leaf listed under the first group, given as its full path. Here the first group is `Asia` and its first country is `Japan`, so `value=["Asia", "Japan"]`.
+- If `multi=True`, by default `value` is _all_ leaves listed under the first group, each as a full path. Here the first group is `Asia`, so `value=[["Asia", "Japan"], ["Asia", "India"]]`.
 
 You can pick a different starting selection by setting `value` on [`Cascader`][vizro.models.Cascader].
 
@@ -177,7 +179,7 @@ You can pick a different starting selection by setting `value` on [`Cascader`][v
             ],
             controls=[
                 vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options)),
-                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, multi=False, value="France"))
+                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, multi=False, value=["Europe", "West", "France"]))
             ],
         )
 
@@ -217,7 +219,10 @@ You can pick a different starting selection by setting `value` on [`Cascader`][v
                   type: cascader
                   options: options
                   multi: false
-                  value: France
+                  value:
+                    - Europe
+                    - West
+                    - France
             title: Gapminder 2007
         ```
 

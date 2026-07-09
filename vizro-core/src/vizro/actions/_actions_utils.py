@@ -64,8 +64,7 @@ def _apply_filter_controls(
     from vizro.actions._filter_action import _filter
 
     for ctd in ctds_filter:
-        selector_value = ctd["value"]
-        selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
+        raw_value = ctd["value"]
         selector_actions = cast(SelectorType, model_manager[ctd["id"]]).actions
 
         for action in selector_actions:
@@ -74,7 +73,14 @@ def _apply_filter_controls(
             if not isinstance(action, _filter) or target not in action.targets:
                 continue
 
-            mask = action.filter_function(data_frame[action.column], selector_value)
+            if isinstance(action.column, list):
+                # Hierarchical filter: `action.column` is the ordered path columns, so `data_frame[column]`
+                # is a DataFrame slice. The value is a root-to-leaf path (or list of paths) and is passed
+                # through unchanged to the path-aware filter function.
+                mask = action.filter_function(data_frame[action.column], raw_value)
+            else:
+                selector_value = raw_value if isinstance(raw_value, list) else [raw_value]
+                mask = action.filter_function(data_frame[action.column], selector_value)
             data_frame = data_frame[mask]
 
     return data_frame

@@ -51,7 +51,7 @@ class TestCascaderInstantiation:
         cascader = Cascader(
             id="cascader-id",
             options=options,
-            value=2,
+            value=["Region", "East", 2],
             multi=False,
             title="Title",
             description=Tooltip(id="tooltip-id", text="Test description", icon="info"),
@@ -60,7 +60,7 @@ class TestCascaderInstantiation:
         assert cascader.id == "cascader-id"
         assert cascader.type == "cascader"
         assert cascader.options == options
-        assert cascader.value == 2
+        assert cascader.value == ["Region", "East", 2]
         assert cascader.multi is False
         assert cascader.title == "Title"
         assert cascader.actions == []
@@ -80,6 +80,8 @@ class TestCascaderInstantiation:
             ({"R": [1, 2]}, {"R": [1, 2]}),
             ({"R": {"S": [True]}}, {"R": {"S": [True]}}),
             ({"A": ["x"], "B": ["y"]}, {"A": ["x"], "B": ["y"]}),
+            # Duplicate leaf labels across branches are allowed: each selection is addressed by full path.
+            ({"A": ["x"], "B": ["x"]}, {"A": ["x"], "B": ["x"]}),
         ],
     )
     def test_create_cascader_valid_options(self, test_options, expected):
@@ -101,8 +103,6 @@ class TestCascaderInstantiation:
             ({"x": 1}, "nested dict or a list of scalars"),
             ({"x": {}}, "at least one leaf"),
             ({"x": [{"a": 1}]}, "scalar values"),
-            ({"R": ["a", "a"]}, "duplicate leaf"),
-            ({"A": ["x"], "B": ["x"]}, "duplicate leaf"),
         ],
     )
     def test_create_cascader_invalid_options(self, test_options, match):
@@ -112,12 +112,18 @@ class TestCascaderInstantiation:
     @pytest.mark.parametrize(
         "test_value, options, multi",
         [
-            ("a", {"L": ["a", "b"]}, False),
-            (1, {"N": [1, 2, 3]}, False),
-            (False, {"B": [True, False]}, True),
-            ("b", {"L": ["a", "b"]}, True),
-            (["a", "b"], {"L": ["a", "b", "c"]}, True),
-            ([1, 3], {"N": [1, 2, 3]}, True),
+            # Single-select: `value` is one root-to-leaf path.
+            (["L", "a"], {"L": ["a", "b"]}, False),
+            (["N", 1], {"N": [1, 2, 3]}, False),
+            (["Region", "East", 2], {"Region": {"East": [1, 2], "West": [3]}}, False),
+            # Multi-select: `value` is a list of paths.
+            ([["B", False]], {"B": [True, False]}, True),
+            ([["L", "b"]], {"L": ["a", "b"]}, True),
+            ([["L", "a"], ["L", "b"]], {"L": ["a", "b", "c"]}, True),
+            ([["N", 1], ["N", 3]], {"N": [1, 2, 3]}, True),
+            # Duplicate leaf labels across branches select independently via their full path.
+            (["A", "x"], {"A": ["x"], "B": ["x"]}, False),
+            ([["A", "x"], ["B", "x"]], {"A": ["x"], "B": ["x"]}, True),
         ],
     )
     def test_create_cascader_valid_value(self, test_value, options, multi):
@@ -133,9 +139,13 @@ class TestCascaderInstantiation:
     @pytest.mark.parametrize(
         "test_value, options",
         [
-            ("z", {"L": ["a", "b"]}),
-            (99, {"N": [1, 2, 3]}),
-            (["a", "z"], {"L": ["a", "b", "c"]}),
+            # Invalid leaf under a valid branch.
+            (["L", "z"], {"L": ["a", "b"]}),
+            (["N", 99], {"N": [1, 2, 3]}),
+            # Non-existent branch.
+            (["X", "a"], {"L": ["a", "b", "c"]}),
+            # A list of paths where one path is invalid.
+            ([["L", "a"], ["L", "z"]], {"L": ["a", "b", "c"]}),
         ],
     )
     def test_create_cascader_invalid_value(self, test_value, options):
@@ -143,14 +153,14 @@ class TestCascaderInstantiation:
             Cascader(value=test_value, options=options)
 
     def test_create_cascader_invalid_multi(self):
-        with pytest.raises(ValidationError, match=r"Please set multi=True if providing a list of default values."):
-            Cascader(value=[1, 2], multi=False, options={"N": [1, 2, 3, 4, 5]})
+        with pytest.raises(ValidationError, match=r"Please set multi=True if providing a list of paths."):
+            Cascader(value=[["N", 1], ["N", 2]], multi=False, options={"N": [1, 2, 3, 4, 5]})
 
     def test_create_cascader_coerces_datetime_leaves_to_date(self):
         ts = pd.Timestamp("2024-03-30")
-        cascader = Cascader(options={"Asia": [ts]}, value=[ts], multi=True)
+        cascader = Cascader(options={"Asia": [ts]}, value=[["Asia", ts]], multi=True)
         assert cascader.options == {"Asia": [date(2024, 3, 30)]}
-        assert cascader.value == [date(2024, 3, 30)]
+        assert cascader.value == [["Asia", date(2024, 3, 30)]]
 
     def test_cascader_trigger(self, identity_action_function):
         cascader = Cascader(
@@ -172,10 +182,10 @@ class TestCascaderHelpers:
     @pytest.mark.parametrize(
         "options, multi, expected",
         [
-            ({"K": [10, 20, 30]}, False, 10),
-            ({"K": [10, 20, 30]}, True, [10, 20, 30]),
-            ({"Outer": {"Inner": [7, 8]}}, False, 7),
-            ({"Outer": {"Inner": [7, 8]}}, True, [7, 8]),
+            ({"K": [10, 20, 30]}, False, ["K", 10]),
+            ({"K": [10, 20, 30]}, True, [["K", 10], ["K", 20], ["K", 30]]),
+            ({"Outer": {"Inner": [7, 8]}}, False, ["Outer", "Inner", 7]),
+            ({"Outer": {"Inner": [7, 8]}}, True, [["Outer", "Inner", 7], ["Outer", "Inner", 8]]),
         ],
     )
     def test_get_cascader_default_value(self, options, multi, expected):
@@ -294,16 +304,17 @@ class TestCascaderBuild:
         )
         assert_component_equal(built, expected)
 
-    def test_cascader_build_multi_coerces_scalar_value_to_list(self):
+    def test_cascader_build_multi_coerces_single_path_to_list_of_paths(self):
+        # A lone single path under multi=True is wrapped into a list-of-paths for the underlying component.
         options = {"L": ["a", "b"]}
-        built = Cascader(id="cascader_id", options=options, multi=True, value="b", title="").build()
+        built = Cascader(id="cascader_id", options=options, multi=True, value=["L", "b"], title="").build()
         expected = html.Div(
             [
                 None,
                 vdc.Cascader(
                     id="cascader_id",
                     options=options,
-                    value=["b"],
+                    value=[["L", "b"]],
                     multi=True,
                     persistence=True,
                     persistence_type="session",
@@ -313,6 +324,44 @@ class TestCascaderBuild:
             ]
         )
         assert_component_equal(built, expected)
+
+    def test_cascader_build_multi_passes_list_of_paths_through(self):
+        # An already-correctly-shaped list-of-paths value passes straight through unchanged.
+        options = {"L": ["a", "b", "c"]}
+        built = Cascader(
+            id="cascader_id", options=options, multi=True, value=[["L", "a"], ["L", "c"]], title=""
+        ).build()
+        expected = html.Div(
+            [
+                None,
+                vdc.Cascader(
+                    id="cascader_id",
+                    options=options,
+                    value=[["L", "a"], ["L", "c"]],
+                    multi=True,
+                    persistence=True,
+                    persistence_type="session",
+                    placeholder="Select option",
+                    clearable=True,
+                ),
+            ]
+        )
+        assert_component_equal(built, expected)
+
+    @pytest.mark.parametrize(
+        "value, multi",
+        [
+            (["Region", "East", 2], False),
+            ([["Region", "East", 2], ["Region", "West", 3]], True),
+        ],
+    )
+    def test_cascader_value_json_round_trip(self, value, multi):
+        # The path-shaped `value` survives a model_dump()/reconstruct round-trip (guards the widened field).
+        options = {"Region": {"East": [1, 2], "West": [3]}}
+        cascader = Cascader(options=options, value=value, multi=multi)
+        dumped = cascader.model_dump()
+        rebuilt = Cascader(options=dumped["options"], value=dumped["value"], multi=dumped["multi"])
+        assert rebuilt.value == cascader.value == value
 
 
 class TestCascaderCall:
@@ -342,5 +391,5 @@ class TestCascaderCall:
     def test_cascader_build_equals_call_with_self_options(self):
         # build() delegates to __call__(self.options); guard that they produce equivalent output.
         options = {"L": ["a", "b"]}
-        cascader = Cascader(id="cascader_id", options=options, multi=False, value="a", title="Title")
+        cascader = Cascader(id="cascader_id", options=options, multi=False, value=["L", "a"], title="Title")
         assert_component_equal(cascader.build(), cascader(options))

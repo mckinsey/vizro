@@ -318,15 +318,12 @@ class TestSetControlFunction:
                 ["1992-01-01", "1993-01-01", "1994-01-01"],
                 ["1992-01-01", "1994-01-01"],
             ),
-            # Hierarchical single-select
-            ("cascade_param_single", [], no_update),
-            ("cascade_param_single", "leaf_a", "leaf_a"),
-            ("cascade_param_single", ["leaf_b"], "leaf_b"),
-            ("cascade_param_single", ["leaf_a", "leaf_b"], no_update),
-            # Hierarchical multi-select
+            # Hierarchical single-select: the full root-to-leaf path passes through verbatim (no reshaping).
+            # A two-segment list is a valid single path here, not a rejected 2-item list.
+            ("cascade_param_single", ["K", "leaf_a"], ["K", "leaf_a"]),
+            # Hierarchical multi-select: the list of paths passes through verbatim.
             ("cascade_param_multi", [], []),
-            ("cascade_param_multi", "leaf_a", ["leaf_a"]),
-            ("cascade_param_multi", ["leaf_b", "leaf_c"], ["leaf_b", "leaf_c"]),
+            ("cascade_param_multi", [["K", "leaf_a"], ["K", "leaf_b"]], [["K", "leaf_a"], ["K", "leaf_b"]]),
         ],
     )
     def test_function_different_value_for_different_controls(self, control, value, expected_result):
@@ -407,7 +404,7 @@ class TestSetControlOutputs:
 @pytest.mark.usefixtures("managers_page_hierarchical_filter_set_control")
 class TestSetControlHierarchicalFilter:
     def test_pre_build_same_page(self):
-        action = set_control(control="hier_set_filter", value="Germany")
+        action = set_control(control="hier_set_filter", value=["Europe", "Germany"])
         model_manager["hier_set_btn"].actions = action
         action.pre_build()
         assert action._same_page is True

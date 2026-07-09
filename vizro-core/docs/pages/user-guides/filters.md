@@ -156,6 +156,8 @@ The following example demonstrates these default selector types.
 
 A hierarchical filter is a filter where the user chooses values from a _tree_ of grouped value. For example, cities around the world could be grouped into a hierarchy by continent and then by country. Rows of the data are filtered using the finest-grained (most "zoomed in") value (the _leaves_ of the tree). In the continent/country/city example, this would be city.
 
+Each selection is matched by its full path through the tree, not just the leaf, so the same leaf label appearing under different branches (for example a city name shared by two countries) is filtered independently.
+
 To add a hierarchical filter to your page:
 
 1. add a [`Filter`][vizro.models.Filter] to `controls`, the same as for a basic filter

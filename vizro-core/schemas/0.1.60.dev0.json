@@ -367,19 +367,6 @@
         "value": {
           "anyOf": [
             {
-              "type": "boolean"
-            },
-            {
-              "type": "number"
-            },
-            {
-              "type": "string"
-            },
-            {
-              "format": "date",
-              "type": "string"
-            },
-            {
               "items": {
                 "anyOf": [
                   {
@@ -400,11 +387,34 @@
               "type": "array"
             },
             {
+              "items": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "format": "date",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              "type": "array"
+            },
+            {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Selected leaf value, or list of leaves when multi=True. Must be valid for `options`. If omitted, the first parent node is selected.",
+          "description": "Selected leaf path (the list of node values from the root down to the leaf, e.g. `['Europe', 'France']`), or a list of such paths when multi=True. Must be valid for `options`. If omitted, the first leaf path is selected.",
           "title": "Value"
         },
         "multi": {

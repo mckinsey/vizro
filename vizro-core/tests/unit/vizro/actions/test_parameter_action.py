@@ -280,18 +280,27 @@ class TestParameter:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "ctx_parameter_y, target_scatter_parameter_y",
-        [("pop", "pop"), ("gdpPercap", "gdpPercap"), ("NONE", None)],
-        indirect=True,
+        "ctx_parameter_y, expected_y",
+        [
+            (["Metrics", "pop"], ["Metrics", "pop"]),
+            (["Metrics", "gdpPercap"], ["Metrics", "gdpPercap"]),
+            ("NONE", None),
+        ],
+        indirect=["ctx_parameter_y"],
     )
-    def test_one_parameter_one_target_cascader(self, ctx_parameter_y, target_scatter_parameter_y):
+    def test_one_parameter_one_target_cascader(self, ctx_parameter_y, expected_y):
+        # A Cascader value is a full root-to-leaf path. Inside a Parameter it is passed through to the target
+        # argument verbatim (no unwrap to leaf), so we assert on the injected config value rather than a
+        # rendered figure (a path is not a valid plotly `y`).
+        from vizro.actions._actions_utils import _get_parametrized_config
+
         y_parameter = vm.Parameter(
             id="test_parameter",
             targets=["scatter_chart.y"],
             selector=vm.Cascader(
                 id="y_parameter",
                 options={"Metrics": ["lifeExp", "pop", "gdpPercap"]},
-                value="lifeExp",
+                value=["Metrics", "lifeExp"],
                 multi=False,
             ),
         )
@@ -299,10 +308,10 @@ class TestParameter:
 
         y_parameter.pre_build()
 
-        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function(_controls=None)
-        expected = {"scatter_chart": target_scatter_parameter_y}
+        ctds_parameter = context_value.get()["args_grouping"]["external"]["_controls"]["parameters"]
+        config = _get_parametrized_config(ctds_parameter=ctds_parameter, target="scatter_chart", data_frame=False)
 
-        assert result == expected
+        assert config["y"] == expected_y
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
