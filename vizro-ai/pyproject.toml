@@ -17,8 +17,6 @@ classifiers = [
 dependencies = [
   "pandas",
   "plotly",
-  "black",
-  "autoflake",
   "pydantic-ai-slim>=1.56.0"
 ]
 description = "Vizro-AI provides pre-configured agents that help with data visualizations"

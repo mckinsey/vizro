@@ -183,46 +183,18 @@ The `chart_agent` returns a `BaseChartPlan` object, a declarative chart specific
 
 
         def custom_chart(data_frame):
-            fig = px.choropleth(
-                data_frame,
-                locations="iso_alpha",
-                color="lifeExp",
-                hover_name="country",
-                color_continuous_scale=px.colors.sequential.Plasma,
-                labels={"lifeExp": "Life Expectancy"},
-            )
-            fig.update_layout(
-                title="Global Life Expectancy Distribution",
-                geo=dict(showframe=False, showcoastlines=True),
-            )
-            return fig
+            return px.line(data_frame, x='year', y='gdpPercap', color='continent', labels={'year': 'Year', 'gdpPercap': 'GDP Per Cap'})
         ```
 
         Vizro code
 
         ```py
         import vizro.plotly.express as px
-        from vizro.models.types import capture
-        import pandas as pd
-        import plotly.graph_objects as go
-        import numpy as np
 
 
-        @capture("graph")
+        # Use in a dashboard: vm.Graph(figure=custom_chart(data_frame))
         def custom_chart(data_frame):
-            fig = px.choropleth(
-                data_frame,
-                locations="iso_alpha",
-                color="lifeExp",
-                hover_name="country",
-                color_continuous_scale=px.colors.sequential.Plasma,
-                labels={"lifeExp": "Life Expectancy"},
-            )
-            fig.update_layout(
-                title="Global Life Expectancy Distribution",
-                geo=dict(showframe=False, showcoastlines=True),
-            )
-            return fig
+            return px.line(data_frame, x='year', y='gdpPercap', color='continent', labels={'year': 'Year', 'gdpPercap': 'GDP Per Cap'})
         ```
 
 <!-- vale off -->

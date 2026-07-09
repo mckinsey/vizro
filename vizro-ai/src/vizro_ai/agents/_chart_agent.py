@@ -1,9 +1,10 @@
 import io
 
 import pandas as pd
-from pydantic_ai import Agent, RunContext
+from pydantic_ai import Agent, ModelRetry, RunContext
 
 from .response_models import CHART_TYPES, BaseChartPlan
+from .response_models._response_models import validate_against_data
 
 chart_agent = Agent[pd.DataFrame, BaseChartPlan](
     deps_type=pd.DataFrame,
@@ -26,7 +27,17 @@ def add_df(ctx: RunContext[pd.DataFrame | None]) -> str:
 
     buffer = io.StringIO()
     ctx.deps.info(buf=buffer)
+    # min() so pre-aggregated dataframes with fewer than 5 rows don't crash the run.
     return (
         f"Available chart types: {CHART_TYPES}\n\n"
-        f"A sample of the data is {ctx.deps.sample(5)} and the data info is:\n{buffer.getvalue()}"
+        f"A sample of the data is {ctx.deps.sample(min(5, len(ctx.deps)))} and the data info is:\n{buffer.getvalue()}"
     )
+
+
+@chart_agent.output_validator
+def validate_plan_fits_data(ctx: RunContext[pd.DataFrame], output: BaseChartPlan) -> BaseChartPlan:
+    """Feed plan/data mismatches back into the model's retry loop instead of failing at render time."""
+    errors = validate_against_data(output, ctx.deps)
+    if errors:
+        raise ModelRetry("The chart plan does not fit the data: " + " ".join(errors))
+    return output
