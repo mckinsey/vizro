@@ -20,12 +20,17 @@ import {
   buildColumns,
   type CascaderOption,
   type CascaderOptionsRaw,
+  type CascaderPath,
   collectAllLeaves,
   collectLeaves,
   normalizeOptions,
   parentCheckState,
   searchOptions,
+  serializePath,
 } from "./cascaderUtils";
+
+/** A single root-to-leaf selection: the sequence of node `value`s (see cascaderUtils). */
+type Path = CascaderPath;
 
 export type CascaderLabels = {
   select_all?: string;
@@ -51,7 +56,7 @@ export type CascaderProps = {
   id?: string;
   setProps?: (props: Record<string, unknown>) => void;
   options: CascaderOptionsRaw;
-  value?: string | number | null | (string | number)[];
+  value?: Path | Path[] | null;
   multi?: boolean;
   searchable?: boolean;
   clearable?: boolean;
@@ -147,36 +152,41 @@ const CascaderFragment = ({
     }
   }, [options]);
 
-  const allLeaves = useMemo(
-    () => new Set(collectAllLeaves(options)),
+  const allLeafPathsSet = useMemo(
+    () => new Set(collectAllLeaves(options).map(serializePath)),
     [options],
   );
-  const prevAllLeavesRef = useRef(allLeaves);
+  const prevAllLeafPathsRef = useRef(allLeafPathsSet);
   useEffect(() => {
+    // On an options change, drop any selected path that no longer terminates on
+    // a leaf (identity is the serialized path, so duplicate labels are safe).
     if (
-      prevAllLeavesRef.current === allLeaves ||
+      prevAllLeafPathsRef.current === allLeafPathsSet ||
       searchValue ||
       value === null ||
       value === undefined
     ) {
-      prevAllLeavesRef.current = allLeaves;
+      prevAllLeafPathsRef.current = allLeafPathsSet;
       return;
     }
-    prevAllLeavesRef.current = allLeaves;
-    if (Array.isArray(value)) {
-      if (multi) {
-        const invalids = value.filter((v) => !allLeaves.has(v));
-        if (invalids.length) {
-          const cleaned = value.filter((v) => allLeaves.has(v));
+    prevAllLeafPathsRef.current = allLeafPathsSet;
+    if (multi) {
+      if (Array.isArray(value)) {
+        const paths = value as Path[];
+        const cleaned = paths.filter((p) =>
+          allLeafPathsSet.has(serializePath(p)),
+        );
+        if (cleaned.length !== paths.length) {
           setProps?.({ value: cleaned });
         }
       }
-    } else {
-      if (!allLeaves.has(value)) {
-        setProps?.({ value: null });
-      }
+    } else if (
+      !Array.isArray(value) ||
+      !allLeafPathsSet.has(serializePath(value as Path))
+    ) {
+      setProps?.({ value: null });
     }
-  }, [allLeaves, value, multi, searchValue, setProps]);
+  }, [allLeafPathsSet, value, multi, searchValue, setProps]);
 
   const finalizeClose = useCallback(() => {
     pendingSearchRef.current = "";
@@ -222,16 +232,17 @@ const CascaderFragment = ({
     [debounce, setProps],
   );
 
-  const selectedValues: (string | number)[] = useMemo(() => {
+  const selectedPaths: Path[] = useMemo(() => {
     const v = localValue;
     if (v === null || v === undefined) return [];
-    if (Array.isArray(v)) return v;
-    return [v];
-  }, [localValue]);
+    // multi: value is a list of paths; single: value is one path.
+    if (multi) return Array.isArray(v) ? (v as Path[]) : [];
+    return Array.isArray(v) ? [v as Path] : [];
+  }, [localValue, multi]);
 
   const selectedSet = useMemo(
-    () => new Set<string | number>(selectedValues),
-    [selectedValues],
+    () => new Set<string>(selectedPaths.map(serializePath)),
+    [selectedPaths],
   );
 
   const columns = useMemo(
@@ -245,18 +256,17 @@ const CascaderFragment = ({
   }, [options, searchValue]);
 
   const findLabel = useCallback(
-    (val: string | number): string => {
-      const find = (opts: CascaderOption[]): string | undefined => {
-        for (const opt of opts) {
-          if (opt.value === val) return opt.label;
-          if (opt.children) {
-            const found = find(opt.children);
-            if (found !== undefined) return found;
-          }
-        }
-        return undefined;
-      };
-      return find(options) ?? String(val);
+    (path: Path): string => {
+      // Walk the tree by path and return the terminal node's label.
+      const fallback = String(path[path.length - 1] ?? "");
+      let level = options;
+      let node: CascaderOption | undefined;
+      for (const seg of path) {
+        node = level.find((o) => o.value === seg);
+        if (!node) return fallback;
+        level = node.children ?? [];
+      }
+      return node?.label ?? fallback;
     },
     [options],
   );
@@ -363,17 +373,19 @@ const CascaderFragment = ({
   );
 
   const handleLeafClick = useCallback(
-    (leafValue: string | number) => {
+    (option: CascaderOption) => {
+      const path = option.path;
+      const key = serializePath(path);
       if (multi) {
-        const next = selectedSet.has(leafValue)
-          ? selectedValues.filter((v) => v !== leafValue)
-          : [...selectedValues, leafValue];
+        const next = selectedSet.has(key)
+          ? selectedPaths.filter((p) => serializePath(p) !== key)
+          : [...selectedPaths, path];
         emitValue(next);
       } else {
-        localValueRef.current = leafValue;
-        valueRef.current = leafValue as typeof value;
-        setLocalValue(leafValue);
-        setProps?.({ value: leafValue });
+        localValueRef.current = path;
+        valueRef.current = path;
+        setLocalValue(path);
+        setProps?.({ value: path });
       }
       if (shouldCloseOnSelect) {
         finalizeClose();
@@ -382,7 +394,7 @@ const CascaderFragment = ({
     [
       multi,
       selectedSet,
-      selectedValues,
+      selectedPaths,
       emitValue,
       setProps,
       shouldCloseOnSelect,
@@ -415,67 +427,72 @@ const CascaderFragment = ({
     (option: CascaderOption, e: React.ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation();
       const state = parentCheckState(option, selectedSet);
-      const leaves = collectLeaves(option);
-      let next: (string | number)[];
+      const leafPaths = collectLeaves(option);
+      let next: Path[];
       if (state === "checked") {
-        next = selectedValues.filter((v) => !leaves.includes(v));
+        const leafKeys = new Set(leafPaths.map(serializePath));
+        next = selectedPaths.filter((p) => !leafKeys.has(serializePath(p)));
       } else {
-        const toAdd = leaves.filter((v) => !selectedSet.has(v));
-        next = [...selectedValues, ...toAdd];
+        const toAdd = leafPaths.filter(
+          (p) => !selectedSet.has(serializePath(p)),
+        );
+        next = [...selectedPaths, ...toAdd];
       }
       emitValue(next);
     },
-    [selectedSet, selectedValues, emitValue],
+    [selectedSet, selectedPaths, emitValue],
   );
 
   const handleSelectAll = useCallback(() => {
-    const pool = searchValue
-      ? searchResults
-          .filter((r) => r.kind === "leaf")
-          .map((r) => r.option.value)
+    const pool: Path[] = searchValue
+      ? searchResults.filter((r) => r.kind === "leaf").map((r) => r.option.path)
       : collectAllLeaves(options);
-    const toAdd = pool.filter((v) => !selectedSet.has(v));
-    emitValue([...selectedValues, ...toAdd]);
+    const toAdd = pool.filter((p) => !selectedSet.has(serializePath(p)));
+    emitValue([...selectedPaths, ...toAdd]);
   }, [
     searchValue,
     searchResults,
     options,
     selectedSet,
-    selectedValues,
+    selectedPaths,
     emitValue,
   ]);
 
   const handleDeselectAll = useCallback(() => {
-    const pool = new Set(
-      searchValue
+    const poolKeys = new Set(
+      (searchValue
         ? searchResults
             .filter((r) => r.kind === "leaf")
-            .map((r) => r.option.value)
-        : collectAllLeaves(options),
+            .map((r) => r.option.path)
+        : collectAllLeaves(options)
+      ).map(serializePath),
     );
-    emitValue(selectedValues.filter((v) => !pool.has(v)));
-  }, [searchValue, searchResults, options, selectedValues, emitValue]);
+    emitValue(selectedPaths.filter((p) => !poolKeys.has(serializePath(p))));
+  }, [searchValue, searchResults, options, selectedPaths, emitValue]);
 
-  const canClear = clearable && !disabled && selectedValues.length > 0;
+  const canClear = clearable && !disabled && selectedPaths.length > 0;
 
   const canDeselectAll = useMemo(() => {
     if (clearable) return true;
-    const pool = searchValue
-      ? searchResults
-          .filter((r) => r.kind === "leaf")
-          .map((r) => r.option.value)
-      : collectAllLeaves(options);
-    return !selectedValues.every((v) => pool.includes(v));
-  }, [clearable, searchValue, searchResults, options, selectedValues]);
+    const poolKeys = new Set(
+      (searchValue
+        ? searchResults
+            .filter((r) => r.kind === "leaf")
+            .map((r) => r.option.path)
+        : collectAllLeaves(options)
+      ).map(serializePath),
+    );
+    return !selectedPaths.every((p) => poolKeys.has(serializePath(p)));
+  }, [clearable, searchValue, searchResults, options, selectedPaths]);
 
   const rowStyle: React.CSSProperties | undefined =
     typeof optionHeight === "number" ? { height: optionHeight } : undefined;
 
   const triggerLabels = useMemo(() => {
-    if (selectedValues.length === 0) return [];
-    if (!multi) return [findLabel(selectedValues[0])];
-    return selectedValues.map(findLabel);
-  }, [selectedValues, multi, findLabel]);
+    if (selectedPaths.length === 0) return [];
+    if (!multi) return [findLabel(selectedPaths[0])];
+    return selectedPaths.map(findLabel);
+  }, [selectedPaths, multi, findLabel]);
 
   const contentMaxHeight = maxHeight
     ? `min(${maxHeight}px, calc(100vh - 100px))`
@@ -529,7 +546,7 @@ const CascaderFragment = ({
               >
                 {triggerLabels.map((label, i) => (
                   <span
-                    key={String(selectedValues[i])}
+                    key={serializePath(selectedPaths[i])}
                     className="dash-dropdown-value-item"
                   >
                     {label}
@@ -537,14 +554,14 @@ const CascaderFragment = ({
                 ))}
               </span>
             )}
-            {multi && selectedValues.length > 1 && (
+            {multi && selectedPaths.length > 1 && (
               <span
                 id={`${accessibleId}-value-count`}
                 className="dash-dropdown-value-count"
               >
                 {labels.selected_count?.replace(
                   "{num_selected}",
-                  `${selectedValues.length}`,
+                  `${selectedPaths.length}`,
                 )}
               </span>
             )}
@@ -597,7 +614,7 @@ const CascaderFragment = ({
                     (r) => r.kind === "leaf",
                   );
                   if (firstLeaf) {
-                    handleLeafClick(firstLeaf.option.value);
+                    handleLeafClick(firstLeaf.option);
                   }
                 }}
               />
@@ -650,14 +667,14 @@ const CascaderFragment = ({
             {colOptions.map((opt, rowIdx) => {
               const isActive = activePath[colIdx] === rowIdx;
               const isLeafNode = !opt.children || opt.children.length === 0;
-              const isSelected = selectedSet.has(opt.value);
+              const isSelected = selectedSet.has(serializePath(opt.path));
 
               if (isLeafNode) {
                 const kbdRow = !multi && !opt.disabled;
                 return (
                   // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style option row
                   <div
-                    key={String(opt.value)}
+                    key={serializePath(opt.path)}
                     className={[
                       "dash-cascader-row",
                       isSelected && !multi ? "selected" : "",
@@ -668,11 +685,11 @@ const CascaderFragment = ({
                       .join(" ")}
                     style={rowStyle}
                     tabIndex={kbdRow ? 0 : undefined}
-                    onClick={() => !opt.disabled && handleLeafClick(opt.value)}
+                    onClick={() => !opt.disabled && handleLeafClick(opt)}
                     onKeyDown={(e) => {
                       if (kbdRow && (e.key === "Enter" || e.key === " ")) {
                         e.preventDefault();
-                        handleLeafClick(opt.value);
+                        handleLeafClick(opt);
                       }
                     }}
                   >
@@ -682,7 +699,7 @@ const CascaderFragment = ({
                         className="dash-cascader-checkbox"
                         checked={isSelected}
                         disabled={opt.disabled}
-                        onChange={() => handleLeafClick(opt.value)}
+                        onChange={() => handleLeafClick(opt)}
                         onClick={(e) => e.stopPropagation()}
                       />
                     )}
@@ -698,7 +715,7 @@ const CascaderFragment = ({
               return (
                 // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style parent row
                 <div
-                  key={String(opt.value)}
+                  key={serializePath(opt.path)}
                   className={[
                     "dash-cascader-row",
                     isActive ? "active" : "",
@@ -764,17 +781,18 @@ const CascaderFragment = ({
         {searchResults.map((result) => {
           const { option, breadcrumb } = result;
           const isLeafHit = result.kind === "leaf";
-          const isSelected = isLeafHit && selectedSet.has(option.value);
+          const isSelected =
+            isLeafHit && selectedSet.has(serializePath(option.path));
           const rowKey =
             result.kind === "branch"
               ? `branch-${result.branchPath.join("-")}`
-              : `leaf-${breadcrumb}-${String(option.value)}`;
+              : `leaf-${serializePath(option.path)}`;
           const onRowClick = () => {
             if (option.disabled) return;
             if (result.kind === "branch") {
               handleSearchBranchNavigate(result.branchPath);
             } else {
-              handleLeafClick(option.value);
+              handleLeafClick(option);
             }
           };
           const kbdRow = !option.disabled && (!multi || (multi && !isLeafHit));
@@ -806,7 +824,7 @@ const CascaderFragment = ({
                   className="dash-cascader-checkbox"
                   checked={isSelected}
                   disabled={option.disabled}
-                  onChange={() => handleLeafClick(option.value)}
+                  onChange={() => handleLeafClick(option)}
                   onClick={(e) => e.stopPropagation()}
                 />
               )}

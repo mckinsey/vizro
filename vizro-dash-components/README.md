@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
 ### Cascader
 
-Hierarchical cascading dropdown inspired by [Ant Design Cascader](https://ant.design/components/cascader) and [`fac.AntdCascader`](https://fac.feffery.tech/AntdCascader). Users navigate a tree of options via side-by-side panels and select leaf values. Supports single-select and multi-select. It accepts all the same arguments as [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown) (for example `className`, `style`, `clearable`, `searchable`, `search_value`, `placeholder`, `disabled`, `multi`, `optionHeight`, `maxHeight`, `debounce`, `closeOnSelect`, `labels`, and persistence props) and is built to visually match it. Use `help(vdc.Cascader)` for the full list.
+Hierarchical cascading dropdown inspired by [Ant Design Cascader](https://ant.design/components/cascader) and [`fac.AntdCascader`](https://fac.feffery.tech/AntdCascader). Users navigate a tree of options via side-by-side panels and select leaves (each returned as its full root-to-leaf path). Supports single-select and multi-select. It accepts all the same arguments as [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown) (for example `className`, `style`, `clearable`, `searchable`, `search_value`, `placeholder`, `disabled`, `multi`, `optionHeight`, `maxHeight`, `debounce`, `closeOnSelect`, `labels`, and persistence props) and is built to visually match it. Use `help(vdc.Cascader)` for the full list.
 
 #### `options` format
 
@@ -58,7 +58,7 @@ Hierarchical cascading dropdown inspired by [Ant Design Cascader](https://ant.de
     - `dcc.Dropdown`: a list of dicts, each with `label` and `value`, plus optional keys such as `disabled` and `search`.
     - `vdc.Cascader`: a list of dicts, each with `label` and `value`, plus optional keys such as `disabled` and `search`. Parents also have `children`, a list of child dicts; leaves omit `children`.
 
-Only leaf values appear in the `vdc.Cascader` component’s `value` (single value or list when `multi=True`).
+The `vdc.Cascader` component’s `value` is the full root-to-leaf **path**: a list of node `value`s from the root down to the selected leaf, for example `["Europe", "France", "Paris"]`. When `multi=True` it is a list of such paths, for example `[["Europe", "France", "Paris"], ["Asia", "Japan", "Tokyo"]]`. Because paths are used, duplicate leaf labels in different branches (for example a `"Portland"` under both `"Oregon"` and `"Maine"`) are addressed unambiguously.
 
 ```python
 from dash import Dash, Input, Output, html
@@ -115,7 +115,8 @@ app.layout = [
 
 @app.callback(Output("out", "children"), Input("regions", "value"))
 def show(value):
-    return f"Selected leaf value: {value!r}"
+    # `value` is the full path, for example ["Asia", "Japan", "Tokyo"].
+    return f"Selected path: {value!r}"
 
 
 if __name__ == "__main__":
