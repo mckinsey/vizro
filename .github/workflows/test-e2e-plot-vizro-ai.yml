@@ -137,7 +137,7 @@ jobs:
         run: hatch run ${{ matrix.config.hatch-env }}:test-e2e-plot
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
+          OPENAI_BASE_URL: ${{ secrets.OPENAI_API_BASE }}
           VIZRO_TYPE: pypi
 
       - name: Run vizro-ai e2e plot tests with local vizro
@@ -146,7 +146,7 @@ jobs:
           hatch run ${{ matrix.config.hatch-env }}:test-e2e-plot
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
+          OPENAI_BASE_URL: ${{ secrets.OPENAI_API_BASE }}
           VIZRO_TYPE: local
 
       - name: Send custom JSON data to Slack

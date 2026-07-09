@@ -1,310 +1,380 @@
-"""Code powering the plot command."""
+"""Code powering the plot command.
 
-import logging
+Vizro-AI turns a natural-language request into a declarative chart *specification*
+(`BaseChartPlan`), then renders it with trusted `plotly.express` code. The model fills the
+spec's fields — chart type, column encodings, styling — it never writes or returns Python. So
+there is no `exec()` of model output and nothing to safeguard: a chart is produced by our own
+reviewed `build_figure`, and the figure can be serialized to JSON for a frontend to render.
+
+Vizro-AI does not manipulate data. The dataframe you pass in must already be in the shape you
+want to plot (aggregation, filtering, sorting done upstream, e.g. in SQL); Vizro-AI maps its
+columns to a chart. The chart grammar (which chart types exist and which arguments each accepts)
+is derived by introspecting `plotly.express`, so new plotly releases expose new charts with no
+change here.
+"""
+
+import inspect
+import math
 from collections.abc import Callable
-from typing import Annotated
 
-import autoflake
-import black
 import pandas as pd
+import plotly.express as px
 import plotly.graph_objects as go
-from pydantic import (
-    AfterValidator,
-    BaseModel,
-    Field,
-    PrivateAttr,
-    ValidationInfo,
-    create_model,
-    field_validator,
-)
+from pydantic import BaseModel, ConfigDict, Field, JsonValue, create_model, field_validator, model_validator
 
-from vizro_ai.agents._utils._safeguard import _safeguard_check, warn_code_execution_is_best_effort
+try:
+    from plotly.express._core import all_attrables
+except ImportError as e:  # pragma: no cover — depends on the installed plotly version
+    raise ImportError(
+        "vizro-ai derives its chart grammar from `plotly.express._core.all_attrables`, which this "
+        "plotly version does not provide. Upgrade plotly (`pip install -U plotly`), or pin a version "
+        "compatible with your vizro-ai release."
+    ) from e
 
-ADDITIONAL_IMPORTS = [
-    "import vizro.plotly.express as px",
-    "import plotly.graph_objects as go",
-    "import pandas as pd",
-    "import numpy as np",
-    "from vizro.models.types import capture",
-]
 CUSTOM_CHART_NAME = "custom_chart"
 
 
-def _strip_markdown(code_string: str) -> str:
-    """Remove any code block wrappers (markdown or triple quotes)."""
-    wrappers = [("```python\n", "```"), ("```py\n", "```"), ("```\n", "```"), ('"""', '"""'), ("'''", "'''")]
-
-    for start, end in wrappers:
-        if code_string.startswith(start) and code_string.endswith(end):
-            code_string = code_string[len(start) : -len(end)]
-            break
-
-    return code_string.strip()
-
-
-def _format_and_lint(code_string: str) -> str:
-    # Tracking https://github.com/astral-sh/ruff/issues/659 for proper Python API
-    # Good example: https://github.com/astral-sh/ruff/issues/8401#issuecomment-1788806462
-    # While we wait for the API, we can autoflake and black to process code strings.
-
-    removed_imports = autoflake.fix_code(code_string, remove_all_unused_imports=True)
-    # Black doesn't yet have a Python API, so format_str might not work at some point in the future.
-    # https://black.readthedocs.io/en/stable/faq.html#does-black-have-an-api
-    formatted = black.format_str(removed_imports, mode=black.Mode())
-    return formatted
+# --------------------------------------------------------------------------------------
+# Chart grammar, derived from plotly express by introspection.
+# --------------------------------------------------------------------------------------
+# Which plotly-express arguments map to dataframe columns — read from plotly's own classification
+# (`plotly.express._core.all_attrables`) so the grammar stays correct across plotly versions.
+# `_core` is a private plotly module: if a future plotly release moves it, the import above fails
+# loudly instead of silently using a stale list. Everything else a chart accepts is styling.
+COLUMN_ENCODINGS = frozenset(all_attrables)
+# Map/geo charts need coordinates or provider tokens, so they can't be driven from an arbitrary
+# dataframe and are excluded from the discovered grammar.
+_MAP_LIKE = ("mapbox", "geo", "choropleth")
 
 
-def _exec_code(code: str, namespace: dict) -> dict:
-    """Execute code and return the local dictionary.
-
-    Security:
-        This runs code with `exec()` behind only a best-effort static safeguard
-        (`_safeguard_check`), which cannot guarantee safety. Execute untrusted or
-        LLM-generated code only in an isolated, least-privilege environment.
-    """
-    # Need the global namespace for the imports to work for executed code
-    # Tried just handling it in local scope, that is, getting the import statement into ldict, but it didn't work
-    # TODO: ideally in future we properly handle process and namespace separation, or even Docke execution
-    # TODO: this is also important as it can affect unit-tests influencing one another, which is really not good!
-    # stacklevel=3 so the warning is attributed to the caller of _exec_code, not _exec_code itself.
-    warn_code_execution_is_best_effort(stacklevel=3)
-    ldict = {}
+def _is_dataframe_chart(obj: object) -> bool:
+    """A plotly-express chart builder takes `data_frame` as its first argument."""
     try:
-        exec(code, namespace, ldict)  # nosec # noqa: S102
-    except ModuleNotFoundError as e:
-        if "vizro" in str(e):
-            raise RuntimeError(
-                """Failed to execute code. Please install `vizro` to use Vizro features — `pip install vizro`"""
-            ) from e
-        raise RuntimeError("Failed to execute code.") from e
-    namespace.update(ldict)
-    return namespace
+        params = list(inspect.signature(obj).parameters)  # type: ignore[arg-type]
+    except (TypeError, ValueError):
+        return False
+    return bool(params) and params[0] == "data_frame"
 
 
-def _check_chart_code(v):
-    v = _strip_markdown(v)
-
-    # TODO: add more checks: ends with return, has return, no second function def, only one indented line
-    func_def = f"def {CUSTOM_CHART_NAME}("
-    if func_def not in v:
-        raise ValueError(f"The chart code must be wrapped in a function named `{CUSTOM_CHART_NAME}`")
-
-    # Keep only the function definition and everything after it
-    # Sometimes models like Gemini return extra imports in chart_code field
-    v = v[v.index(func_def) :].strip()
-
-    first_line = v.split("\n")[0].strip()
-    if "data_frame" not in first_line:
-        raise ValueError(
-            """The chart code must accept a single argument `data_frame`,
-and it should be the first argument of the chart."""
-        )
-    return v
+def _discover_chart_builders() -> dict[str, object]:
+    return {
+        name: getattr(px, name)
+        for name in dir(px)
+        if not (name.startswith("_") or name.endswith("_map") or any(tok in name for tok in _MAP_LIKE))
+        and _is_dataframe_chart(getattr(px, name))
+    }
 
 
-def _test_execute_chart_code(data_frame: pd.DataFrame):
-    def validator_code(v, info: ValidationInfo):
-        """Test the execution of the chart code."""
-        imports = "\n".join(info.data.get("imports", []))
-        code_to_validate = imports + "\n\n" + v
-        try:
-            _safeguard_check(code_to_validate)
-        except Exception as e:
-            raise ValueError(
-                f"Produced code failed the safeguard validation: <{e}>. Please check the code and try again."
-            )
-        try:
-            namespace = globals()
-            namespace = _exec_code(code_to_validate, namespace)
-            custom_chart = namespace[f"{CUSTOM_CHART_NAME}"]
-            fig = custom_chart(data_frame.sample(10, replace=True))
-        except Exception as e:
-            raise ValueError(
-                f"Produced code execution failed the following error: <{e}>. Please check the code and try again, "
-                f"alternatively try with a more powerful model."
-            )
-        if not isinstance(fig, go.Figure):
-            raise TypeError(f"Expected chart code to return a plotly `go.Figure` object, but got {type(fig)}")
+CHART_BUILDERS = _discover_chart_builders()
+CHART_TYPES = sorted(CHART_BUILDERS)
+
+
+def _check_chart_type(chart_type: str) -> None:
+    if chart_type not in CHART_BUILDERS:
+        raise ValueError(f"Unknown chart_type {chart_type!r}. Choose one of: {CHART_TYPES}.")
+
+
+def _signature_params(chart_type: str) -> set[str]:
+    return set(inspect.signature(CHART_BUILDERS[chart_type]).parameters)  # type: ignore[arg-type]
+
+
+def allowed_encodings(chart_type: str) -> set[str]:
+    """Column-mapping arguments valid for a chart type — derived from its plotly signature."""
+    return COLUMN_ENCODINGS & _signature_params(chart_type)
+
+
+def styling_options(chart_type: str) -> set[str]:
+    """Non-column styling arguments valid for a chart type — derived from its plotly signature.
+
+    `labels` and `title` are excluded because they have dedicated fields on the plan; every
+    setting has exactly one home, so a plan can never say the same thing twice.
+    """
+    return _signature_params(chart_type) - COLUMN_ENCODINGS - {"data_frame", "labels", "title"}
+
+
+def _contains_non_finite(value: object) -> bool:
+    if isinstance(value, float):
+        return not math.isfinite(value)
+    if isinstance(value, (list, tuple)):
+        return any(_contains_non_finite(item) for item in value)
+    if isinstance(value, dict):
+        return any(_contains_non_finite(item) for item in value.values())
+    return False
+
+
+# --------------------------------------------------------------------------------------
+# Trusted rendering — plotly express only. The only place a figure is built; no data reshaping.
+# --------------------------------------------------------------------------------------
+def _plan_problems(plan: "BaseChartPlan") -> list[str]:
+    """Key-validity problems of a plan, knowable without data."""
+    valid_encodings = allowed_encodings(plan.chart_type)
+    valid_options = styling_options(plan.chart_type)
+    errors = [
+        f"'{key}' is not a valid encoding for '{plan.chart_type}'. Valid: {sorted(valid_encodings)}."
+        for key in plan.encodings
+        if key not in valid_encodings
+    ]
+    errors += [
+        f"'{key}' is not a valid option for '{plan.chart_type}'. Valid: {sorted(valid_options)}."
+        for key in plan.options
+        if key not in valid_options
+    ]
+    return errors
+
+
+def _plan_kwargs(plan: "BaseChartPlan") -> dict:
+    """The plotly-express keyword arguments a plan describes.
+
+    The single source used by both `build_figure` and `render_px_code`, so the rendered figure
+    and the templated code cannot diverge. Invalid keys raise instead of being dropped, so a
+    wrong plan fails loudly (a retryable error) rather than rendering a silently wrong chart.
+    """
+    _check_chart_type(plan.chart_type)
+    problems = _plan_problems(plan)
+    if problems:
+        raise ValueError(" ".join(problems))
+    # Encodings, options, labels and title are disjoint by construction: encodings keys must be
+    # column-mapping arguments, options keys must be styling arguments minus labels/title.
+    kwargs: dict = dict(plan.encodings)
+    kwargs.update(plan.options)
+    if plan.labels:
+        kwargs["labels"] = plan.labels
+    if plan.title:
+        kwargs["title"] = plan.title
+    return kwargs
+
+
+def build_figure(plan: "BaseChartPlan", data_frame: pd.DataFrame, **overrides) -> go.Figure:
+    """Turn a chart plan into a Plotly figure. This is the whole 'execution' — no `exec()`.
+
+    `data_frame` must already be in the shape to plot; Vizro-AI does not transform data.
+    `overrides` are plotly-express keyword arguments applied on top of the plan (they win), so
+    reusable chart functions can honor per-call customizations such as ``title=``.
+    """
+    kwargs = _plan_kwargs(plan)
+    kwargs.update(overrides)
+    return CHART_BUILDERS[plan.chart_type](data_frame, **kwargs)  # type: ignore[operator]
+
+
+def validate_against_data(plan: "BaseChartPlan", data_frame: pd.DataFrame) -> list[str]:
+    """Return human-readable problems with a plan against the data, or [] if it is valid."""
+    try:
+        _check_chart_type(plan.chart_type)
+    except ValueError as e:
+        return [str(e)]
+    columns = set(data_frame.columns)
+    errors = _plan_problems(plan)
+    errors += [f"Column '{col}' is not in the data." for col in plan.referenced_columns() if col not in columns]
+    # plotly silently ignores label keys that match nothing, so a typo'd relabel would otherwise
+    # vanish. Synthetic keys plotly itself generates are legitimate: 'value'/'variable' for
+    # wide-form data (list-valued x/y) and 'count' for the implied histogram y-axis.
+    errors += [
+        f"Label key '{key}' does not match a dataframe column."
+        for key in plan.labels
+        if key not in columns and key not in {"value", "variable", "count"}
+    ]
+    return list(dict.fromkeys(errors))
+
+
+def render_px_code(plan: "BaseChartPlan", chart_name: str = CUSTOM_CHART_NAME, vizro: bool = False) -> str:
+    """Template the plotly-express code equivalent to `build_figure`. A derived string; never executed.
+
+    Built from the same kwargs as the rendered figure, so the code and the figure cannot diverge.
+    """
+    if not chart_name.isidentifier():
+        raise ValueError(f"chart_name {chart_name!r} must be a valid Python identifier.")
+    parts = [f"{k}={v!r}" for k, v in _plan_kwargs(plan).items()]
+    call = f"px.{plan.chart_type}(data_frame{', ' + ', '.join(parts) if parts else ''})"
+    if vizro:
+        # A standard plotly-express chart drops straight into vm.Graph via vizro.plotly.express.
+        # `@capture('graph')` is only for *custom* charts (post-update / customization), which we
+        # never produce, so it is not used here.
+        imports = "import vizro.plotly.express as px"
+        usage = f"# Use in a dashboard: vm.Graph(figure={chart_name}(data_frame))\n"
+    else:
+        imports = "import plotly.express as px"
+        usage = ""
+    return f"{imports}\n\n\n{usage}def {chart_name}(data_frame):\n    return {call}\n"
+
+
+def _vizro_px_builder(chart_type: str) -> Callable[..., go.Figure]:
+    """The vizro.plotly.express counterpart of a chart builder (Vizro-themed, vm.Graph-ready)."""
+    try:
+        import vizro.plotly.express as vizro_px
+    except ImportError as e:
+        raise RuntimeError("Please install `vizro` to use Vizro features — `pip install vizro`") from e
+    return getattr(vizro_px, chart_type)
+
+
+# --------------------------------------------------------------------------------------
+# Chart plan models. Same public names as before; fields are now a declarative spec, and
+# materialising a chart runs trusted `build_figure`, not `exec()` of model output.
+# --------------------------------------------------------------------------------------
+class BaseChartPlan(BaseModel):
+    """Base chart plan describing a chart declaratively (no code).
+
+    The model fills these fields; a chart is produced by trusted `plotly.express` code via
+    `build_figure`. `figure()` / `to_figure_json()` give a rendered figure (or JSON for a
+    frontend); `code` / `code_vizro` give the equivalent plotly-express code as a string.
+    Vizro-AI does not reshape data — pass a dataframe already in the shape you want to plot.
+    """
+
+    # extra="forbid" turns misplaced top-level keys (e.g. a flat {"x": ..., "y": ...} instead of
+    # nesting under encodings — a common LLM shape error) into retryable validation errors
+    # instead of pydantic silently dropping them and leaving an empty plan.
+    model_config = ConfigDict(extra="forbid")
+
+    chart_type: str = Field(description=f"Plotly-express chart type. One of: {', '.join(CHART_TYPES)}.")
+    encodings: dict[str, str | list[str]] = Field(
+        default_factory=dict,
+        description=(
+            "Map plotly-express column arguments to columns of the (already-shaped) data, e.g. "
+            '{"x": "year", "y": "gdp", "color": "continent"}. For a pie use "names" and "values". '
+            'A few arguments (e.g. "path", "dimensions") take a list of columns.'
+        ),
+    )
+    title: str = Field("", description="Chart title.")
+    labels: dict[str, str] = Field(
+        default_factory=dict,
+        description='Optional axis/legend label overrides, keyed by column name, e.g. {"gdp": "GDP per capita"}.',
+    )
+    options: dict[str, JsonValue] = Field(
+        default_factory=dict,
+        description=(
+            "Other plotly-express styling arguments, e.g. "
+            '{"barmode": "group", "log_y": true, "range_y": [0, 100], "color_discrete_sequence": ["#00b4ff"]}.'
+        ),
+    )
+
+    @field_validator("chart_type")
+    @classmethod
+    def _known_chart_type(cls, v: str) -> str:
+        _check_chart_type(v)
         return v
 
-    return validator_code
+    @field_validator("options")
+    @classmethod
+    def _finite_options(cls, v: dict[str, JsonValue]) -> dict[str, JsonValue]:
+        # JSON parsing accepts NaN/Infinity into floats, but no plotly argument uses them and
+        # their repr ('nan') would not round-trip through the templated code.
+        bad = sorted(key for key, value in v.items() if _contains_non_finite(value))
+        if bad:
+            raise ValueError(f"Options {bad} contain non-finite numbers (NaN/Infinity).")
+        return v
 
+    def referenced_columns(self) -> list[str]:
+        """Every dataframe column this plan relies on."""
+        cols: list[str] = []
+        for value in self.encodings.values():
+            cols.extend([value] if isinstance(value, str) else value)
+        return list(dict.fromkeys(cols))
 
-class BaseChartPlan(BaseModel):
-    """Base chart plan used to generate chart code based on user visualization requirements.
+    def figure(self, data_frame: pd.DataFrame, **kwargs) -> go.Figure:
+        """Render the plan to a Plotly figure with trusted code (no `exec()`).
 
-    Security:
-        Materializing a chart (for example via `chart_function`, `vizro_chart_function`,
-        `get_chart_function`, or model validation) executes the generated `chart_code` with
-        `exec()`. This is protected only by a best-effort static safeguard that cannot guarantee
-        safety. Only use this with trusted inputs and users, and prefer running Vizro-AI in an
-        isolated, least-privilege environment. See
-        https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safeguard/
-    """
+        Keyword arguments are plotly-express overrides applied on top of the plan.
+        """
+        return build_figure(self, data_frame, **kwargs)
 
-    chart_type: str = Field(
-        description="""
-        Describes the chart type that best reflects the user request.
-        """,
-    )
-    imports: list[str] = Field(
-        description="""
-        List of import statements required to render the chart defined by the `chart_code` field. Ensure that every
-        import statement is a separate list/array entry: An example of valid list of import statements would be:
+    def to_figure_json(self, data_frame: pd.DataFrame) -> str:
+        """Render and serialize to Plotly figure JSON — inert data a frontend can render."""
+        return self.figure(data_frame).to_json()
 
-        [`import pandas as pd`,
-        `import plotly.express as px`]
-        """,
-    )
-    chart_code: Annotated[
-        str,
-        AfterValidator(_check_chart_code),
-        Field(
-            description=f"""
-        Python code that generates a generates a plotly `go.Figure` object. It must fulfill the following criteria:
-        1. Must be wrapped in a function named `{CUSTOM_CHART_NAME}`
-        2. Must accept as first argument `data_frame` which is a pandas DataFrame
-        3. Must return a plotly `go.Figure` object
-        4. All data used in the chart must be derived from the data_frame argument, all data manipulations
-        must be done within the function.
-        5. Can have additional arguments, but they must be optional.
-        """,
-        ),
-    ]
+    def get_chart_function(self, chart_name: str = CUSTOM_CHART_NAME, vizro: bool = False) -> Callable[..., go.Figure]:
+        """Return a reusable callable ``(data_frame, **kwargs) -> go.Figure`` that renders this plan.
 
-    _additional_vizro_imports: list[str] = PrivateAttr(ADDITIONAL_IMPORTS)
+        No code is executed: the returned function builds the figure from the plan with trusted
+        plotly-express code. Keyword arguments are plotly-express overrides applied on top of
+        the plan (e.g. ``title="..."``), so they must be arguments the chart type accepts.
 
-    def _get_imports(self, vizro: bool = False) -> str:
-        imports = list(dict.fromkeys(self.imports + self._additional_vizro_imports))  # remove duplicates
-        if vizro:  # TODO: improve code of below
-            imports = [imp for imp in imports if "import plotly.express as px" not in imp]
-        else:
-            imports = [imp for imp in imports if "vizro" not in imp]
-        return "\n".join(imports) + "\n"
-
-    def _get_chart_code(self, chart_name: str | None = None, vizro: bool = False) -> str:
-        chart_code = self.chart_code
-        if vizro:
-            chart_code = chart_code.replace(f"def {CUSTOM_CHART_NAME}", f"@capture('graph')\ndef {CUSTOM_CHART_NAME}")
-        if chart_name is not None:
-            chart_code = chart_code.replace(f"def {CUSTOM_CHART_NAME}", f"def {chart_name}")
-        return chart_code
-
-    def _get_complete_code(self, chart_name: str | None = None, vizro: bool = False, lint: bool = True) -> str:
-        chart_name = chart_name or CUSTOM_CHART_NAME
-        imports = self._get_imports(vizro=vizro)
-        chart_code = self._get_chart_code(chart_name=chart_name, vizro=vizro)
-        unformatted_code = imports + chart_code
-        if lint:
-            try:
-                linted_code = _format_and_lint(unformatted_code)
-                return linted_code
-            except Exception:
-                logging.exception("Code formatting failed; returning unformatted code")
-                return unformatted_code
-
-        return unformatted_code
-
-    @property
-    def chart_function(self) -> Callable[..., go.Figure]:
-        """Return a callable function that generates a pure Plotly chart.
+        With ``vizro=True`` the figure is built with `vizro.plotly.express`, so it is
+        Vizro-themed and drops straight into ``vm.Graph`` — including Vizro dashboard code
+        export, which serializes it as a plain ``px.<chart>(...)`` call.
 
         Example:
             ```python
-            chart_func = result.output.chart_function
-            fig = chart_func(df, x="sepal_width")
+            chart_func = result.output.get_chart_function()
+            fig = chart_func(df, title="My title")
             ```
-
-        Returns:
-            A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
         """
+        if not chart_name.isidentifier():
+            raise ValueError(f"chart_name {chart_name!r} must be a valid Python identifier.")
+        builder = _vizro_px_builder(self.chart_type) if vizro else CHART_BUILDERS[self.chart_type]
+        plan = self
+
+        def chart(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
+            merged = _plan_kwargs(plan)
+            merged.update(kwargs)
+            return builder(data_frame, **merged)  # type: ignore[operator]
+
+        chart.__name__ = chart_name
+        return chart
+
+    @property
+    def chart_function(self) -> Callable[..., go.Figure]:
+        """A callable that renders a pure Plotly figure from a dataframe (kwargs are overrides)."""
         return self.get_chart_function(chart_name=CUSTOM_CHART_NAME, vizro=False)
 
     @property
     def vizro_chart_function(self) -> Callable[..., go.Figure]:
-        """Return a callable function that generates a Vizro-compatible chart.
-
-        Example:
-            ```python
-            vizro_func = result.output.vizro_chart_function
-            fig = vizro_func(df, x="sepal_width")
-            ```
-
-        Returns:
-            A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
-        """
+        """A callable that renders a Vizro-themed, `vm.Graph`-ready figure from a dataframe."""
         return self.get_chart_function(chart_name=CUSTOM_CHART_NAME, vizro=True)
-
-    def get_chart_function(self, chart_name: str, vizro: bool) -> Callable[..., go.Figure]:
-        """Return a callable function with customizable name and vizro flag.
-
-        This method returns a reusable function that can be called with a dataframe
-        and optional keyword arguments. The function name and Vizro compatibility
-        can be customized.
-
-        Security:
-            This executes the generated chart code with `exec()` behind only a best-effort
-            safeguard. Call it only with trusted code and in an isolated, least-privilege
-            environment.
-
-        Args:
-            chart_name: Name of the chart function.
-            vizro: Whether to generate Vizro-compatible code.
-
-        Returns:
-            A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
-
-        Example:
-            ```python
-            chart_func = result.output.get_chart_function(chart_name="my_chart", vizro=True)
-            fig = chart_func(df, x="sepal_width")
-            ```
-        """
-        code_to_execute = self._get_complete_code(chart_name=chart_name, vizro=vizro)
-        namespace = globals()
-        namespace = _exec_code(code_to_execute, namespace)
-        return namespace[chart_name]
 
     @property
     def code(self) -> str:
-        """Get the generated chart code as a pure Plotly code string."""
-        return self._get_complete_code()
+        """The equivalent pure-Plotly code as a string (templated from the plan; never executed)."""
+        return render_px_code(self)
 
     @property
     def code_vizro(self) -> str:
-        """Get the generated chart code formatted for use in Vizro dashboards."""
-        return self._get_complete_code(vizro=True)
+        """The equivalent Vizro-compatible chart code as a string (never executed)."""
+        return render_px_code(self, vizro=True)
 
 
 class ChartPlan(BaseChartPlan):
-    """Extended chart plan model with additional explanatory fields."""
+    """Extended chart plan with an explanatory field."""
 
     chart_insights: str = Field(
         description="""
         Insights to what the chart explains or tries to show.
         Ideally concise and between 30 and 60 words.""",
     )
-    code_explanation: str = Field(
-        description="""
-        Explanation of the code steps used for `chart_code` field.""",
-    )
 
 
 class ChartPlanFactory:
     def __new__(cls, data_frame: pd.DataFrame, chart_plan: type[BaseChartPlan] = ChartPlan) -> type[BaseChartPlan]:
-        """Creates a chart plan model that executes the chart code as part of the model validation.
+        """Create a chart plan model that validates the plan against `data_frame` (no execution).
+
+        Validation checks the plan's keys and referenced columns against the data and
+        test-renders it with `build_figure` — it never runs model-authored code. The test render
+        uses a small row sample (same columns and dtypes), so value-dependent edge cases that
+        only appear in unsampled rows can pass validation and surface at the real render.
 
         Args:
-            data_frame: DataFrame to use for validation
-            chart_plan: Chart plan model to run extended validation against.
+            data_frame: DataFrame to validate against.
+            chart_plan: Chart plan model to add validation to.
 
         Returns:
-            Chart plan model with additional validation
+            Chart plan model with data-aware validation.
         """
+        # Validate against a small sample: it has the same columns and dtypes, so the checks are
+        # identical, but a huge frame is neither rendered on every validation nor kept alive for
+        # the lifetime of the returned class.
+        sample_rows = 10
+        sample = data_frame if len(data_frame) <= sample_rows else data_frame.sample(sample_rows, replace=True)
+
+        def _validate(self: BaseChartPlan) -> BaseChartPlan:
+            errors = validate_against_data(self, sample)
+            if errors:
+                raise ValueError("The chart plan does not fit the data: " + " ".join(errors))
+            try:
+                build_figure(self, sample)
+            except Exception as e:
+                raise ValueError(f"The chart plan could not be rendered (<{type(e).__name__}: {e}>).") from e
+            return self
+
         return create_model(
             "ChartPlanDynamic",
             __base__=chart_plan,
-            __validators__={
-                "validator1": field_validator("chart_code")(_test_execute_chart_code(data_frame)),
-            },
+            __validators__={"validate_against_data": model_validator(mode="after")(_validate)},
         )

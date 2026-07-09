@@ -153,7 +153,7 @@ You might need to give the base URL if you are using a custom OpenAI resource en
 
 The API base URL used for the OpenAI connector is set to `https://api.openai.com/v1` by default. If you are using a custom API endpoint, for example, if your organization has a designated API gateway, you can change the base URL by setting it as an environment variable.
 
-Follow the approach above in Method 2 to add the environment variable `OPENAI_API_BASE` for use by all projects.
+Follow the approach above in Method 2 to add the environment variable `OPENAI_BASE_URL` for use by all projects.
 
 ## Upgrade the Vizro-AI package
 

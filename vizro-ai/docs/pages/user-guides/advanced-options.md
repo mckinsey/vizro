@@ -27,10 +27,11 @@ This guide shows you how to use the [`chart_agent`][vizro_ai.agents.chart_agent]
         "gpt-5-nano-2025-08-07",
         provider=OpenAIProvider(api_key="your-api-key-here"),
     )
-    df = px.data.gapminder()
+    # Vizro-AI does not transform data, so shape it first (here: US rows only).
+    df = px.data.gapminder().query("country == 'United States'")
     result = chart_agent.run_sync(
         model=model,
-        user_prompt="the trend of gdp over years in the US",
+        user_prompt="the trend of gdp per capita over the years",
         deps=df,
     )
     ```
@@ -54,6 +55,10 @@ Synchronously runs the `chart_agent` to generate a chart based on your prompt.
 
 **Returns:** A result object containing a `BaseChartPlan` in `result.output`.
 
+!!! note "Invalid plans are retried automatically"
+
+    The chart specification is validated against your dataframe before it is returned. If the model references a column that does not exist or an argument the chart type does not accept, the errors are fed back to the model and it retries; only a plan that fits your data is returned. (When you override `output_type`, this built-in validation is replaced — use a [`ChartPlanFactory`][vizro_ai.agents.response_models.ChartPlanFactory] model to keep data-aware validation.)
+
 !!! example "run_sync()"
 
     === "Code"
@@ -62,7 +67,7 @@ Synchronously runs the `chart_agent` to generate a chart based on your prompt.
         # For model and data setup, see setup note above.
         result = chart_agent.run_sync(
             model=model,
-            user_prompt="the trend of gdp over years in the US",
+            user_prompt="the trend of gdp per capita over the years",
             deps=df,
         )
         fig = result.output.chart_function(df)
@@ -77,11 +82,15 @@ Synchronously runs the `chart_agent` to generate a chart based on your prompt.
 
 ## BaseChartPlan
 
-When you run `chart_agent.run_sync()` or `chart_agent.run()`, the result contains a [`BaseChartPlan`][vizro_ai.agents.response_models.BaseChartPlan] object in `result.output`. This object contains the generated chart code and metadata.
+When you run `chart_agent.run_sync()` or `chart_agent.run()`, the result contains a [`BaseChartPlan`][vizro_ai.agents.response_models.BaseChartPlan] object in `result.output`. This is a declarative chart specification (chart type, column encodings, and styling). Render it to a Plotly figure with `result.output.figure(df)`, get it as JSON for a frontend with `result.output.to_figure_json(df)`, or get the equivalent `plotly.express` code as a string via `result.output.code` / `code_vizro`. The `chart_function` / `vizro_chart_function` callables below are also available.
+
+!!! note "Vizro-AI does not transform your data"
+
+    Vizro-AI maps the columns of the dataframe you pass onto a chart; it does not aggregate, filter, sort or reshape data. Prepare the data in the shape you want to plot first (for example in SQL, or a separate data-preparation step), then pass it to `chart_agent`.
 
 ### `code_vizro` property
 
-Returns the generated chart code formatted for use in Vizro dashboards. The function will include the `@capture("graph")` decorator and use `vizro.plotly.express`.
+Returns the equivalent chart code, templated from the specification, for use in Vizro dashboards. The function uses `vizro.plotly.express`, so the figure it returns is Vizro-themed and drops straight into [`vm.Graph`](https://vizro.readthedocs.io/en/stable/pages/user-guides/graph/) — a standard plotly express chart needs no `@capture("graph")` decorator.
 
 !!! example "Access the code_vizro property"
 
@@ -97,21 +106,16 @@ Returns the generated chart code formatted for use in Vizro dashboards. The func
 
         ```py
         import vizro.plotly.express as px
-        from vizro.models.types import capture
 
 
-        @capture("graph")
+        # Use in a dashboard: vm.Graph(figure=custom_chart(data_frame))
         def custom_chart(data_frame):
-            us_data = data_frame[data_frame["country"] == "United States"]
-            fig = px.line(
-                us_data, x="year", y="gdpPercap", title="GDP per Capita Over Years in the US"
-            )
-            return fig
+            return px.line(data_frame, x='year', y='gdpPercap', title='GDP per Capita Over Years in the US')
         ```
 
 ### `code` property
 
-Returns the generated chart code as a pure Plotly code string. The function will be named `custom_chart`.
+Returns the equivalent chart code as a pure Plotly code string, templated from the specification. The function will be named `custom_chart`.
 
 !!! example "Access the code property"
 
@@ -130,16 +134,12 @@ Returns the generated chart code as a pure Plotly code string. The function will
 
 
         def custom_chart(data_frame):
-            us_data = data_frame[data_frame["country"] == "United States"]
-            fig = px.line(
-                us_data, x="year", y="gdpPercap", title="GDP per Capita Over Years in the US"
-            )
-            return fig
+            return px.line(data_frame, x='year', y='gdpPercap', title='GDP per Capita Over Years in the US')
         ```
 
 ### `chart_function` property
 
-Returns a reusable callable function that generates a pure Plotly chart (`vizro=False`). This property returns the generated chart function directly, so any `**kwargs` you pass must be accepted by that function.
+Returns a reusable callable function that generates a pure Plotly chart (`vizro=False`). Any `**kwargs` you pass are applied on top of the chart specification as plotly express overrides, so they must be arguments the chart type accepts (for example `title=`).
 
 **Returns:** A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
 
@@ -160,7 +160,7 @@ Returns a reusable callable function that generates a pure Plotly chart (`vizro=
         fig1 = chart_func(df)
         fig2 = chart_func(df.head(10))  # Different dataframe
 
-        # With kwargs (only if the generated chart function accepts them)
+        # With kwargs (plotly express overrides applied on top of the specification)
         fig = result.output.chart_function(df, title="Custom Title")
         ```
 
@@ -170,7 +170,7 @@ Returns a reusable callable function that generates a pure Plotly chart (`vizro=
 
 ### `vizro_chart_function` property
 
-Returns a reusable callable function that generates a Vizro-compatible chart (vizro=True). This is a convenience property that internally calls `get_chart_function(chart_name="custom_chart", vizro=True)`. Since the generated function is returned directly, any `**kwargs` you pass must be accepted by that function.
+Returns a reusable callable function that generates a Vizro-compatible chart (vizro=True). This is a convenience property that internally calls `get_chart_function(chart_name="custom_chart", vizro=True)`. The figure is built with `vizro.plotly.express`, so it is Vizro-themed and can be passed straight to `vm.Graph`. Any `**kwargs` you pass are applied as plotly express overrides, so they must be arguments the chart type accepts.
 
 **Returns:** A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
 
@@ -197,12 +197,12 @@ Returns a reusable callable function that generates a Vizro-compatible chart (vi
 
 ### `get_chart_function()` method
 
-Returns a reusable callable function with customizable name and vizro flag. This method allows you to specify a custom function name and whether to generate Vizro-compatible code. The returned function can be called later with different dataframes and optional keyword arguments. Since the generated function is returned directly, any `**kwargs` you pass must be accepted by that function.
+Returns a reusable callable function with customizable name and vizro flag. This method allows you to specify a custom function name and whether to produce a Vizro-compatible chart function (built with `vizro.plotly.express`). The returned function can be called later with different dataframes and optional keyword arguments; any `**kwargs` are applied as plotly express overrides, so they must be arguments the chart type accepts.
 
 **Parameters:**
 
 - `chart_name`: Name for the chart function
-- `vizro`: Whether to generate Vizro-compatible code
+- `vizro`: Whether to produce a Vizro-compatible chart function
 
 **Returns:** A callable function that accepts `data_frame` and `**kwargs` and returns a `go.Figure` object.
 
@@ -243,7 +243,7 @@ Returns a reusable callable function with customizable name and vizro flag. This
 
 ## Alternative response models
 
-You can also use [`ChartPlan`][vizro_ai.agents.response_models.ChartPlan] or a model created by [`ChartPlanFactory`][vizro_ai.agents.response_models.ChartPlanFactory] as output types. `ChartPlan` extends `BaseChartPlan` with additional explanatory fields like `chart_insights` and `code_explanation`. `ChartPlanFactory` creates a dynamically validated model class that tests code execution before accepting the response.
+You can also use [`ChartPlan`][vizro_ai.agents.response_models.ChartPlan] or a model created by [`ChartPlanFactory`][vizro_ai.agents.response_models.ChartPlanFactory] as output types. `ChartPlan` extends `BaseChartPlan` with an additional explanatory `chart_insights` field. `ChartPlanFactory` creates a dynamically validated model class that checks the chart specification against your dataframe (valid encodings, existing columns, and a test render) before accepting the response — no model-generated code is ever executed.
 
 ```py
 from vizro_ai.agents import chart_agent

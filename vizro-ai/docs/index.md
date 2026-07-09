@@ -18,7 +18,7 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 
     Review the [disclaimer](pages/explanation/disclaimer.md) before using the `vizro-ai` package.
 
-    Users must connect to large language models (LLMs) to use Vizro-AI. Please review our [guidelines on the use of LLMs](pages/explanation/safety-in-vizro-ai.md) and the required [safeguarding for dynamic code evaluation](pages/explanation/safeguard.md).
+    Users must connect to large language models (LLMs) to use Vizro-AI. Please review our [guidelines on the use of LLMs](pages/explanation/safety-in-vizro-ai.md) and how Vizro-AI handles [code execution and data](pages/explanation/safeguard.md) — it does not execute model-generated code.
 
 ---
 

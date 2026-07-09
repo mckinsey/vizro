@@ -109,15 +109,15 @@ Let's create a chart to illustrate the GDP per capita trends for each continent 
             provider=OpenAIProvider(api_key="your-api-key-here"),
         )
 
-        # Load your data
-        df = px.data.gapminder()
+        # Load your data already in the shape you want to plot. Vizro-AI does not transform
+        # data, so do any aggregation/filtering/sorting beforehand (here, average per continent).
+        df = px.data.gapminder().groupby(["continent", "year"], as_index=False)["gdpPercap"].mean()
 
         # Run chart_agent with your natural language prompt
         result = chart_agent.run_sync(
             model=model,
-            user_prompt="""create a line graph for GDP per capita since 1950 for each continent.
-            Mark the x axis as Year, y axis as GDP Per Cap and don't include a title.
-            Make sure to take average over continent.""",
+            user_prompt="""create a line graph of GDP per capita over the years for each continent.
+            Mark the x axis as Year, y axis as GDP Per Cap and don't include a title.""",
             deps=df,
         )
 
@@ -132,7 +132,7 @@ Let's create a chart to illustrate the GDP per capita trends for each continent 
 
         [![LineGraph]][linegraph]
 
-By passing your data and a natural language description, Vizro-AI generates the necessary code for data manipulation and chart creation, then returns an interactive Plotly chart. The chart created is interactive: you can hover over the data for more information.
+By passing your (already-shaped) data and a natural language description, Vizro-AI produces a declarative chart specification that it renders into an interactive Plotly chart — it does not generate or run code, and it does not transform your data. The chart created is interactive: you can hover over the data for more information.
 
 To learn how to customize the model, check out the guide on [how to customize models](../user-guides/customize-vizro-ai.md).
 
@@ -146,7 +146,7 @@ To learn how to customize the model, check out the guide on [how to customize mo
 
 <!-- vale on -->
 
-The `chart_agent` returns a `BaseChartPlan` object that includes the generated code along with metadata. For example, you can access the code using `result.output.code` or `result.output.code_vizro` for Vizro-compatible code. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned may be as follows:
+The `chart_agent` returns a `BaseChartPlan` object, a declarative chart specification. You can get the equivalent Plotly code as a string using `result.output.code`, or `result.output.code_vizro` for Vizro-compatible code. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned may be as follows:
 
 !!! example "Access response model properties"
 
@@ -183,46 +183,18 @@ The `chart_agent` returns a `BaseChartPlan` object that includes the generated c
 
 
         def custom_chart(data_frame):
-            fig = px.choropleth(
-                data_frame,
-                locations="iso_alpha",
-                color="lifeExp",
-                hover_name="country",
-                color_continuous_scale=px.colors.sequential.Plasma,
-                labels={"lifeExp": "Life Expectancy"},
-            )
-            fig.update_layout(
-                title="Global Life Expectancy Distribution",
-                geo=dict(showframe=False, showcoastlines=True),
-            )
-            return fig
+            return px.line(data_frame, x='year', y='gdpPercap', color='continent', labels={'year': 'Year', 'gdpPercap': 'GDP Per Cap'})
         ```
 
         Vizro code
 
         ```py
         import vizro.plotly.express as px
-        from vizro.models.types import capture
-        import pandas as pd
-        import plotly.graph_objects as go
-        import numpy as np
 
 
-        @capture("graph")
+        # Use in a dashboard: vm.Graph(figure=custom_chart(data_frame))
         def custom_chart(data_frame):
-            fig = px.choropleth(
-                data_frame,
-                locations="iso_alpha",
-                color="lifeExp",
-                hover_name="country",
-                color_continuous_scale=px.colors.sequential.Plasma,
-                labels={"lifeExp": "Life Expectancy"},
-            )
-            fig.update_layout(
-                title="Global Life Expectancy Distribution",
-                geo=dict(showframe=False, showcoastlines=True),
-            )
-            return fig
+            return px.line(data_frame, x='year', y='gdpPercap', color='continent', labels={'year': 'Year', 'gdpPercap': 'GDP Per Cap'})
         ```
 
 <!-- vale off -->

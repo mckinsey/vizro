@@ -17,8 +17,6 @@ classifiers = [
 dependencies = [
   "pandas",
   "plotly",
-  "black",
-  "autoflake",
   "pydantic-ai-slim>=1.56.0"
 ]
 description = "Vizro-AI provides pre-configured agents that help with data visualizations"
@@ -66,9 +64,7 @@ filterwarnings = [
   "ignore:The `Layout` model has been renamed `Grid`:FutureWarning",
   "ignore:The `Layout` model has been renamed",
   # Ignore asyncio event loop deprecation warning from pydantic_ai in Python 3.13+
-  "ignore:There is no current event loop:DeprecationWarning",
-  # Best-effort code-execution security notice emitted on every exec of generated code.
-  "ignore::vizro_ai.agents._utils._safeguard.VizroAICodeExecutionWarning"
+  "ignore:There is no current event loop:DeprecationWarning"
 ]
 pythonpath = ["../tools/tests"]
 

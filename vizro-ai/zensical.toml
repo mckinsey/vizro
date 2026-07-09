@@ -32,7 +32,7 @@ nav = [
   {"Explanation" = [
     {"FAQs" = "pages/explanation/faq.md"},
     {"Disclaimer" = "pages/explanation/disclaimer.md"},
-    {"Safeguard code execution" = "pages/explanation/safeguard.md"},
+    {"Code execution and data handling" = "pages/explanation/safeguard.md"},
     {"Safety in Vizro-AI" = "pages/explanation/safety-in-vizro-ai.md"}
   ]},
 ]
