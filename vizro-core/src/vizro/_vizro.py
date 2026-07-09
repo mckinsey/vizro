@@ -233,19 +233,24 @@ Provide a valid import path for these in your dashboard configuration."""
             )
 
         clientside_callback(
-            "function(_, is_open) { return !is_open; }",
+            "function(n_clicks, is_open) { if (!n_clicks) { return is_open; } return !is_open; }",
             Output("vizro_logs_offcanvas", "is_open"),
             Input("open_vizro_logs", "n_clicks"),
             State("vizro_logs_offcanvas", "is_open"),
             optional=True,
+            prevent_initial_call=True,
         )
-        # Sync store and panel: vizro_logs_store lives in the page layout so Patch() on the store is safe.
-        # vizro_logs is in the DevTools overlay (optional=True) so this no-ops when not in debug mode.
-        # A plain list assignment avoids the Redux-store lookup that Patch() would require for a DevTools component.
+        # Sync the store into the DevTools panel. vizro_logs lives in the DevTools overlay (optional=True so this
+        # no-ops outside debug mode); we assign a plain list rather than Patch() since Patch() can't target a
+        # DevTools component. We also trigger on vizro_logs_offcanvas.is_open so the panel repopulates when the
+        # overlay remounts (e.g. collapse then expand) with an empty vizro_logs. The store Input is allow_optional
+        # because the overlay can mount before the page layout (e.g. first load), which would otherwise raise a
+        # "nonexistent object" error for vizro_logs_store.
         clientside_callback(
-            "function(data) { return data || []; }",
+            "function(data, _) { return data || []; }",
             Output("vizro_logs", "children"),
-            Input("vizro_logs_store", "data"),
+            Input("vizro_logs_store", "data", allow_optional=True),
+            Input("vizro_logs_offcanvas", "is_open"),
             optional=True,
         )
         # Clear: reset the store; the sync callback above will propagate the clear to the panel.
@@ -257,15 +262,14 @@ Provide a valid import path for these in your dashboard configuration."""
             prevent_initial_call=True,
         )
         # Log control resets. Registered once globally (not per page) since reset-button and vizro_logs_store are
-        # shared ids. Deliberately uses a different format from action logs - no "=====" wrapping and a coarser
-        # HH:MM:SS timestamp - to make clear the reset runs client-side and is not itself a server callback; any
-        # on-page-load actions it triggers afterwards produce their own "=====" entries. optional=True no-ops this
-        # when there are no controls (reset-button absent). A plain array assignment is used because clientside
-        # callbacks can't use Patch(); it lands before the downstream action Patches, so nothing is clobbered.
+        # shared ids. Matches the action log format ("=====" wrapping and HH:MM:SS.mmm timestamp) for consistency;
+        # any on-page-load actions the reset triggers afterwards produce their own "=====" entries. optional=True
+        # no-ops this when there are no controls (reset-button absent). A plain array assignment is used because
+        # clientside callbacks can't use Patch();
         clientside_callback(
-            # UTC HH:MM:SS to match the action log timestamps, which are generated server-side in UTC.
-            "function(_, data) { const t = new Date().toISOString().slice(11, 19); "
-            "return [...(data || []), `[${t}] ----- Reset controls -----\\n`]; }",
+            # UTC HH:MM:SS.mmm to match the action log timestamps, which are generated server-side in UTC.
+            "function(_, data) { const t = new Date().toISOString().slice(11, 23); "
+            "return [...(data || []), `[${t}] ===== Reset controls =====\\n`]; }",
             Output("vizro_logs_store", "data", allow_duplicate=True),
             Input("reset-button", "n_clicks"),
             State("vizro_logs_store", "data"),
