@@ -1027,6 +1027,24 @@ def test_cascader_boolean_leaves(dash_duo):
     assert dash_duo.get_logs() == []
 
 
+def test_cascader_options_is_optional():
+    """Cascader() with no `options` no longer raises; it falls back to the [] default."""
+    c = Cascader(id="c")
+    assert c.available_properties  # constructed without error
+    assert c.to_plotly_json()["props"].get("options", []) == []
+
+
+def test_cascader_no_options_renders_empty_dropdown(dash_duo):
+    """Cascader with no `options` renders an empty, clickable dropdown with no console errors."""
+    app = _app(Cascader(id="c", placeholder="No options"))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_text_to_equal("#c .dash-dropdown-placeholder", "No options")
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-content")
+    assert not dash_duo.driver.find_elements("css selector", ".dash-cascader-row")
+    assert dash_duo.get_logs() == []
+
+
 def test_cascader_single_empty_list_value_is_no_selection(dash_duo):
     """Single-select value=[] renders as no selection (placeholder), not a phantom empty chip."""
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, value=[], placeholder="Pick one"))

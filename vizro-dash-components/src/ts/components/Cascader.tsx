@@ -18,8 +18,9 @@ interface CascaderComponentProps {
    * In the standard format each node has a `label` and `value`; nodes with a
    * `children` array are parents, nodes without are leaves.
    * Selections are addressed by full root-to-leaf path (see `value`).
+   * Optional; defaults to an empty tree (renders as an empty dropdown).
    */
-  options: CascaderOptionsRaw;
+  options?: CascaderOptionsRaw;
   /**
    * Selected value(s), addressed by full root-to-leaf path. Each path is an
    * array of node `value`s from the root down to the selected leaf, for example
@@ -156,7 +157,7 @@ Cascader.propTypes = {
   options: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.object),
     PropTypes.object,
-  ]).isRequired,
+  ]),
   /**
    * Selected value(s), addressed by full root-to-leaf path. Each path is an
    * array of node `value`s from the root down to the selected leaf, for example
