@@ -18,8 +18,9 @@ interface CascaderComponentProps {
    * In the standard format each node has a `label` and `value`; nodes with a
    * `children` array are parents, nodes without are leaves.
    * Selections are addressed by full root-to-leaf path (see `value`).
+   * Optional; defaults to an empty tree (renders as an empty dropdown).
    */
-  options: CascaderOptionsRaw;
+  options?: CascaderOptionsRaw;
   /**
    * Selected value(s), addressed by full root-to-leaf path. Each path is an
    * array of node `value`s from the root down to the selected leaf, for example
@@ -30,7 +31,10 @@ interface CascaderComponentProps {
    * Because paths are used, duplicate leaf labels across different branches are
    * addressed unambiguously.
    */
-  value?: (string | number)[] | (string | number)[][] | null;
+  value?:
+    | (string | number | boolean)[]
+    | (string | number | boolean)[][]
+    | null;
   /**
    * Enable multi-select. When true, `value` is an array and checkboxes
    * are shown alongside options.
@@ -153,7 +157,7 @@ Cascader.propTypes = {
   options: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.object),
     PropTypes.object,
-  ]).isRequired,
+  ]),
   /**
    * Selected value(s), addressed by full root-to-leaf path. Each path is an
    * array of node `value`s from the root down to the selected leaf, for example
@@ -167,12 +171,16 @@ Cascader.propTypes = {
   value: PropTypes.oneOfType([
     // A single path (multi=false): an array of scalars, e.g. ["europe", "france"].
     PropTypes.arrayOf(
-      PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
     ),
     // A list of paths (multi=true), e.g. [["europe", "france"], ["asia", "japan"]].
     PropTypes.arrayOf(
       PropTypes.arrayOf(
-        PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.number,
+          PropTypes.bool,
+        ]),
       ),
     ),
   ]),
