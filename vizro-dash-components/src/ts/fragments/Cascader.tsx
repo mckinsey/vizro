@@ -153,7 +153,7 @@ const CascaderFragment = ({
   }, [options]);
 
   const allLeafPathsSet = useMemo(
-    () => new Set(collectAllLeaves(options).map(serializePath)),
+    () => new Set(collectAllLeaves(options).map((leaf) => leaf.key)),
     [options],
   );
   const prevAllLeafPathsRef = useRef(allLeafPathsSet);
@@ -179,9 +179,13 @@ const CascaderFragment = ({
         if (cleaned.length !== paths.length) {
           setProps?.({ value: cleaned });
         }
+      } else {
+        // A non-array value is invalid in multi mode; reset to an empty selection.
+        setProps?.({ value: [] });
       }
     } else if (
       !Array.isArray(value) ||
+      value.length === 0 ||
       !allLeafPathsSet.has(serializePath(value as Path))
     ) {
       setProps?.({ value: null });
@@ -237,12 +241,18 @@ const CascaderFragment = ({
     if (v === null || v === undefined) return [];
     // multi: value is a list of paths; single: value is one path.
     if (multi) return Array.isArray(v) ? (v as Path[]) : [];
-    return Array.isArray(v) ? [v as Path] : [];
+    // A single path must be a non-empty array; treat [] as no selection.
+    return Array.isArray(v) && v.length > 0 ? [v as Path] : [];
   }, [localValue, multi]);
 
-  const selectedSet = useMemo(
-    () => new Set<string>(selectedPaths.map(serializePath)),
+  const selectedKeys = useMemo(
+    () => selectedPaths.map(serializePath),
     [selectedPaths],
+  );
+
+  const selectedSet = useMemo(
+    () => new Set<string>(selectedKeys),
+    [selectedKeys],
   );
 
   const columns = useMemo(
@@ -374,11 +384,10 @@ const CascaderFragment = ({
 
   const handleLeafClick = useCallback(
     (option: CascaderOption) => {
-      const path = option.path;
-      const key = serializePath(path);
+      const { path, key } = option;
       if (multi) {
         const next = selectedSet.has(key)
-          ? selectedPaths.filter((p) => serializePath(p) !== key)
+          ? selectedPaths.filter((_, i) => selectedKeys[i] !== key)
           : [...selectedPaths, path];
         emitValue(next);
       } else {
@@ -395,6 +404,7 @@ const CascaderFragment = ({
       multi,
       selectedSet,
       selectedPaths,
+      selectedKeys,
       emitValue,
       setProps,
       shouldCloseOnSelect,
@@ -427,63 +437,46 @@ const CascaderFragment = ({
     (option: CascaderOption, e: React.ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation();
       const state = parentCheckState(option, selectedSet);
-      const leafPaths = collectLeaves(option);
+      const leaves = collectLeaves(option);
       let next: Path[];
       if (state === "checked") {
-        const leafKeys = new Set(leafPaths.map(serializePath));
-        next = selectedPaths.filter((p) => !leafKeys.has(serializePath(p)));
+        const leafKeys = new Set(leaves.map((leaf) => leaf.key));
+        next = selectedPaths.filter((_, i) => !leafKeys.has(selectedKeys[i]));
       } else {
-        const toAdd = leafPaths.filter(
-          (p) => !selectedSet.has(serializePath(p)),
-        );
-        next = [...selectedPaths, ...toAdd];
+        const toAdd = leaves.filter((leaf) => !selectedSet.has(leaf.key));
+        next = [...selectedPaths, ...toAdd.map((leaf) => leaf.path)];
       }
       emitValue(next);
     },
-    [selectedSet, selectedPaths, emitValue],
+    [selectedSet, selectedPaths, selectedKeys, emitValue],
   );
 
+  // Leaves that Select All / Deselect All act on: search hits when filtering,
+  // otherwise every leaf. Shared by both handlers and canDeselectAll.
+  const pool = useMemo<CascaderOption[]>(
+    () =>
+      searchValue
+        ? searchResults.filter((r) => r.kind === "leaf").map((r) => r.option)
+        : collectAllLeaves(options),
+    [searchValue, searchResults, options],
+  );
+  const poolKeys = useMemo(() => new Set(pool.map((leaf) => leaf.key)), [pool]);
+
   const handleSelectAll = useCallback(() => {
-    const pool: Path[] = searchValue
-      ? searchResults.filter((r) => r.kind === "leaf").map((r) => r.option.path)
-      : collectAllLeaves(options);
-    const toAdd = pool.filter((p) => !selectedSet.has(serializePath(p)));
-    emitValue([...selectedPaths, ...toAdd]);
-  }, [
-    searchValue,
-    searchResults,
-    options,
-    selectedSet,
-    selectedPaths,
-    emitValue,
-  ]);
+    const toAdd = pool.filter((leaf) => !selectedSet.has(leaf.key));
+    emitValue([...selectedPaths, ...toAdd.map((leaf) => leaf.path)]);
+  }, [pool, selectedSet, selectedPaths, emitValue]);
 
   const handleDeselectAll = useCallback(() => {
-    const poolKeys = new Set(
-      (searchValue
-        ? searchResults
-            .filter((r) => r.kind === "leaf")
-            .map((r) => r.option.path)
-        : collectAllLeaves(options)
-      ).map(serializePath),
-    );
-    emitValue(selectedPaths.filter((p) => !poolKeys.has(serializePath(p))));
-  }, [searchValue, searchResults, options, selectedPaths, emitValue]);
+    emitValue(selectedPaths.filter((_, i) => !poolKeys.has(selectedKeys[i])));
+  }, [poolKeys, selectedPaths, selectedKeys, emitValue]);
 
   const canClear = clearable && !disabled && selectedPaths.length > 0;
 
   const canDeselectAll = useMemo(() => {
     if (clearable) return true;
-    const poolKeys = new Set(
-      (searchValue
-        ? searchResults
-            .filter((r) => r.kind === "leaf")
-            .map((r) => r.option.path)
-        : collectAllLeaves(options)
-      ).map(serializePath),
-    );
-    return !selectedPaths.every((p) => poolKeys.has(serializePath(p)));
-  }, [clearable, searchValue, searchResults, options, selectedPaths]);
+    return !selectedKeys.every((k) => poolKeys.has(k));
+  }, [clearable, poolKeys, selectedKeys]);
 
   const rowStyle: React.CSSProperties | undefined =
     typeof optionHeight === "number" ? { height: optionHeight } : undefined;
@@ -546,7 +539,7 @@ const CascaderFragment = ({
               >
                 {triggerLabels.map((label, i) => (
                   <span
-                    key={serializePath(selectedPaths[i])}
+                    key={selectedKeys[i]}
                     className="dash-dropdown-value-item"
                   >
                     {label}
@@ -611,7 +604,7 @@ const CascaderFragment = ({
                     return;
                   }
                   const firstLeaf = searchResults.find(
-                    (r) => r.kind === "leaf",
+                    (r) => r.kind === "leaf" && !r.option.disabled,
                   );
                   if (firstLeaf) {
                     handleLeafClick(firstLeaf.option);
@@ -667,14 +660,14 @@ const CascaderFragment = ({
             {colOptions.map((opt, rowIdx) => {
               const isActive = activePath[colIdx] === rowIdx;
               const isLeafNode = !opt.children || opt.children.length === 0;
-              const isSelected = selectedSet.has(serializePath(opt.path));
+              const isSelected = selectedSet.has(opt.key);
 
               if (isLeafNode) {
                 const kbdRow = !multi && !opt.disabled;
                 return (
                   // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style option row
                   <div
-                    key={serializePath(opt.path)}
+                    key={opt.key}
                     className={[
                       "dash-cascader-row",
                       isSelected && !multi ? "selected" : "",
@@ -715,7 +708,7 @@ const CascaderFragment = ({
               return (
                 // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style parent row
                 <div
-                  key={serializePath(opt.path)}
+                  key={opt.key}
                   className={[
                     "dash-cascader-row",
                     isActive ? "active" : "",
@@ -781,12 +774,11 @@ const CascaderFragment = ({
         {searchResults.map((result) => {
           const { option, breadcrumb } = result;
           const isLeafHit = result.kind === "leaf";
-          const isSelected =
-            isLeafHit && selectedSet.has(serializePath(option.path));
+          const isSelected = isLeafHit && selectedSet.has(option.key);
           const rowKey =
             result.kind === "branch"
               ? `branch-${result.branchPath.join("-")}`
-              : `leaf-${serializePath(option.path)}`;
+              : `leaf-${option.key}`;
           const onRowClick = () => {
             if (option.disabled) return;
             if (result.kind === "branch") {

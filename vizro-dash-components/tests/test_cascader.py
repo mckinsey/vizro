@@ -58,6 +58,21 @@ OPTIONS_SHORTHAND_NUMERIC = {"Series": [10, 20, 30]}
 # path: "Portland" appears under both "North" and "South".
 OPTIONS_DUPLICATE_LEAVES = {"North": ["Portland", "Salem"], "South": ["Portland", "Austin"]}
 
+# Boolean leaf values are supported (Vizro allows bool leaves).
+OPTIONS_BOOL_LEAVES = {"Flags": [True, False]}
+
+# The first matching leaf for "ja" ("Japan") is disabled; "Jakarta" is enabled.
+OPTIONS_DISABLED_FIRST_LEAF = [
+    {
+        "label": "Asia",
+        "value": "asia",
+        "children": [
+            {"label": "Japan", "value": "japan", "disabled": True},
+            {"label": "Jakarta", "value": "jakarta"},
+        ],
+    },
+]
+
 
 def _app(layout):
     app = Dash(__name__)
@@ -66,8 +81,14 @@ def _app(layout):
 
 
 def _path_str(v):
-    """Format a single-select Cascader value (one path) for assertions."""
-    return "/".join(str(s) for s in v) if v else "None"
+    """Format a single-select Cascader value (one path) for assertions.
+
+    Distinguishes no selection (`None` -> "None") from an empty-list value
+    (`[]` -> "") so a regression that emits `[]` instead of `None` is not masked.
+    """
+    if v is None:
+        return "None"
+    return "/".join(str(s) for s in v)
 
 
 def _paths_str(v):
@@ -975,4 +996,97 @@ def test_cascader_persistence_duplicate_leaves(dash_duo):
     dash_duo.driver.refresh()
     dash_duo.wait_for_element("#c")
     dash_duo.wait_for_text_to_equal("#out", "South/Portland")
+    assert dash_duo.get_logs() == []
+
+
+# --- Regression coverage: boolean leaves, empty/invalid values, disabled search Enter, pruning ---
+
+
+def test_cascader_boolean_leaves(dash_duo):
+    """Boolean leaf values render, are selectable, and emit their full path without console errors."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_BOOL_LEAVES),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-column:nth-child(1) .dash-cascader-row").click()  # Flags
+    # The row label is JS-coerced to lowercase ("true"), but the emitted value
+    # round-trips back to Python as the boolean True (str(True) == "True").
+    dash_duo.wait_for_text_to_equal(
+        ".dash-cascader-column:nth-child(2) .dash-cascader-row:first-child .dash-cascader-row-label", "true"
+    )
+    dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")[0].click()
+    dash_duo.wait_for_text_to_equal("#out", "Flags/True")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_single_empty_list_value_is_no_selection(dash_duo):
+    """Single-select value=[] renders as no selection (placeholder), not a phantom empty chip."""
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, value=[], placeholder="Pick one"))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_text_to_equal("#c .dash-dropdown-placeholder", "Pick one")
+    # No selected-value chip and no clear button are rendered for an empty selection.
+    assert not dash_duo.driver.find_elements("css selector", "#c .dash-dropdown-value-item")
+    assert not dash_duo.driver.find_elements("css selector", "#c button.dash-dropdown-clear")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_search_enter_skips_disabled_leaf(dash_duo):
+    """Pressing Enter in the search box selects the first ENABLED leaf, skipping disabled hits."""
+    from selenium.webdriver.common.keys import Keys
+
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_DISABLED_FIRST_LEAF),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    search = dash_duo.wait_for_element(".dash-dropdown-search")
+    search.send_keys("ja")
+    dash_duo.wait_for_element(".dash-cascader-result-row")
+    search.send_keys(Keys.ENTER)
+    # "Japan" (disabled) is the first hit in tree order; Enter must skip it and pick "Jakarta".
+    dash_duo.wait_for_text_to_equal("#out", "asia/jakarta")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_options_change_prunes_invalid_selection(dash_duo):
+    """When options change so a selected path no longer exists, that path is pruned from value."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(
+                    id="c",
+                    options=OPTIONS_2LEVEL,
+                    multi=True,
+                    value=[["asia", "japan"], ["europe", "france"]],
+                ),
+                html.Button("swap", id="btn"),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(_paths_str)
+    # New options drop "japan" (asia now only has "china"); "europe/france" still exists.
+    app.callback(Output("c", "options"), Input("btn", "n_clicks"), prevent_initial_call=True)(
+        lambda n: {"asia": ["china"], "europe": ["france", "germany"]}
+    )
+    dash_duo.start_server(app)
+    dash_duo.wait_for_text_to_equal("#out", "asia/japan | europe/france")
+    dash_duo.wait_for_element("#btn").click()
+    dash_duo.wait_for_text_to_equal("#out", "europe/france")
     assert dash_duo.get_logs() == []

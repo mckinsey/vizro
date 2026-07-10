@@ -30,7 +30,10 @@ interface CascaderComponentProps {
    * Because paths are used, duplicate leaf labels across different branches are
    * addressed unambiguously.
    */
-  value?: (string | number)[] | (string | number)[][] | null;
+  value?:
+    | (string | number | boolean)[]
+    | (string | number | boolean)[][]
+    | null;
   /**
    * Enable multi-select. When true, `value` is an array and checkboxes
    * are shown alongside options.
@@ -167,12 +170,16 @@ Cascader.propTypes = {
   value: PropTypes.oneOfType([
     // A single path (multi=false): an array of scalars, e.g. ["europe", "france"].
     PropTypes.arrayOf(
-      PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
     ),
     // A list of paths (multi=true), e.g. [["europe", "france"], ["asia", "japan"]].
     PropTypes.arrayOf(
       PropTypes.arrayOf(
-        PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.number,
+          PropTypes.bool,
+        ]),
       ),
     ),
   ]),

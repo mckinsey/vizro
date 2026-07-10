@@ -1,15 +1,21 @@
-/** A root-to-leaf path: the sequence of node `value`s from the root down to a node (inclusive). */
-export type CascaderPath = (string | number)[];
+/**
+ * A root-to-leaf path: the sequence of node `value`s from the root down to a
+ * node (inclusive). Segments are scalars; booleans are supported because Vizro
+ * allows boolean leaf values.
+ */
+export type CascaderPath = (string | number | boolean)[];
 
 export type CascaderOption = {
   label: string;
-  value: string | number;
+  value: string | number | boolean;
   /**
    * Root-to-this-node path of `value`s (inclusive), computed by `normalizeOptions`.
    * This is the identity used on the wire, so duplicate leaf labels across
    * different branches are addressed unambiguously.
    */
   path: CascaderPath;
+  /** Precomputed `serializePath(path)`; the stable Set/Map/React key for this node. */
+  key: string;
   disabled?: boolean;
   children?: CascaderOption[];
   title?: string;
@@ -29,8 +35,11 @@ export type CascaderOption = {
  */
 export type CascaderOptionsRaw = CascaderOptionRaw[] | CascaderOptionsDict;
 
-/** A raw option node as supplied by the user (before `path` is computed). */
-export type CascaderOptionRaw = Omit<CascaderOption, "path" | "children"> & {
+/** A raw option node as supplied by the user (before `path`/`key` are computed). */
+export type CascaderOptionRaw = Omit<
+  CascaderOption,
+  "path" | "key" | "children"
+> & {
   children?: CascaderOptionRaw[];
 };
 
@@ -38,20 +47,22 @@ export type CascaderOptionRaw = Omit<CascaderOption, "path" | "children"> & {
 export interface CascaderOptionsDict
   extends Record<
     string,
-    CascaderOptionsRaw | (string | number | CascaderOptionRaw)[]
+    CascaderOptionsRaw | (string | number | boolean | CascaderOptionRaw)[]
   > {}
 
-/** Normalize a single raw node (scalar leaf or option dict), computing its `path`. */
+/** Normalize a single raw node (scalar leaf or option dict), computing its `path`/`key`. */
 function normalizeNode(
-  item: string | number | CascaderOptionRaw,
+  item: string | number | boolean | CascaderOptionRaw,
   parentPath: CascaderPath,
 ): CascaderOption {
-  if (typeof item === "string" || typeof item === "number") {
-    return { label: String(item), value: item, path: [...parentPath, item] };
+  // Any non-object scalar (string, number, or boolean) is a leaf value.
+  if (typeof item !== "object") {
+    const path = [...parentPath, item];
+    return { label: String(item), value: item, path, key: serializePath(path) };
   }
   const path = [...parentPath, item.value];
   const { children: rawChildren, ...rest } = item;
-  const node: CascaderOption = { ...rest, path };
+  const node: CascaderOption = { ...rest, path, key: serializePath(path) };
   if (rawChildren?.length) {
     node.children = rawChildren.map((child) => normalizeNode(child, path));
   }
@@ -72,11 +83,13 @@ export function normalizeOptions(
   }
   return Object.entries(raw).map(([key, value]) => {
     const path = [...parentPath, key];
+    const nodeKey = serializePath(path);
     if (Array.isArray(value)) {
       return {
         label: key,
         value: key,
         path,
+        key: nodeKey,
         children: value.map((leaf) => normalizeNode(leaf, path)),
       };
     }
@@ -84,6 +97,7 @@ export function normalizeOptions(
       label: key,
       value: key,
       path,
+      key: nodeKey,
       children: normalizeOptions(value as CascaderOptionsRaw, path),
     };
   });
@@ -97,30 +111,6 @@ export function isLeaf(option: CascaderOption): boolean {
 /** Stable serialization of a path, usable as a Set/Map key or React key. */
 export function serializePath(path: CascaderPath): string {
   return JSON.stringify(path);
-}
-
-/** Element-wise equality of two paths. */
-export function pathsEqual(a: CascaderPath, b: CascaderPath): boolean {
-  return a.length === b.length && a.every((seg, i) => seg === b[i]);
-}
-
-/**
- * Walk `options` following `path` (matching each segment against `node.value`)
- * and return true only if the path terminates on an existing leaf node.
- */
-export function pathIsValid(
-  options: CascaderOption[],
-  path: CascaderPath,
-): boolean {
-  if (path.length === 0) return false;
-  let level = options;
-  let node: CascaderOption | undefined;
-  for (const seg of path) {
-    node = level.find((o) => o.value === seg);
-    if (!node) return false;
-    level = node.children ?? [];
-  }
-  return node !== undefined && isLeaf(node);
 }
 
 /**
@@ -144,14 +134,14 @@ export function buildColumns(
   return columns;
 }
 
-/** Collect the paths of all leaves under a node (depth-first). */
-export function collectLeaves(option: CascaderOption): CascaderPath[] {
-  if (isLeaf(option)) return [option.path];
+/** Collect all leaf nodes under a node (depth-first). Each carries its `path`/`key`. */
+export function collectLeaves(option: CascaderOption): CascaderOption[] {
+  if (isLeaf(option)) return [option];
   return (option.children ?? []).flatMap(collectLeaves);
 }
 
-/** Collect the paths of all leaves in the entire options tree (depth-first). */
-export function collectAllLeaves(options: CascaderOption[]): CascaderPath[] {
+/** Collect all leaf nodes in the entire options tree (depth-first). */
+export function collectAllLeaves(options: CascaderOption[]): CascaderOption[] {
   return options.flatMap(collectLeaves);
 }
 
@@ -165,8 +155,8 @@ export function parentCheckState(
   selectedPathSet: Set<string>,
 ): "checked" | "indeterminate" | "unchecked" {
   const leaves = collectLeaves(option);
-  const selectedCount = leaves.filter((p) =>
-    selectedPathSet.has(serializePath(p)),
+  const selectedCount = leaves.filter((leaf) =>
+    selectedPathSet.has(leaf.key),
   ).length;
   if (selectedCount === 0) return "unchecked";
   if (selectedCount === leaves.length) return "checked";
