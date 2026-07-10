@@ -504,6 +504,24 @@ class _BaseAction(VizroBaseModel):
             return dict.fromkeys(outputs_spec, no_update)
         return no_update
 
+    def _build_action_log(self, error_msg: Any) -> Patch:
+        """Builds this run's DevTools log entry as a `Patch` that appends one line to `vizro_logs_store`.
+
+        A FAILED entry only reaches the logs panel when the error is handled with a notification; otherwise the
+        caller re-raises `error_msg` (to avoid failing silently), which aborts the return and discards this `Patch()`.
+        """
+        timestamp = datetime.now(tz=timezone.utc).strftime("%H:%M:%S.%f")[:-3]
+        if error_msg is None:
+            log_text = f"[{timestamp}] ===== Running action with id {self.id}, function {self._action_name} ====="
+        else:
+            log_text = (
+                f"[{timestamp}] ===== FAILED action with id {self.id!r}, "
+                f"function={self._action_name!r}  error={error_msg!r}"
+            )
+        action_log = Patch()
+        action_log.append(self._log_header + log_text + "\n")
+        return action_log
+
     def _render_notification(
         self,
         notification_key: str,
@@ -534,7 +552,7 @@ class _BaseAction(VizroBaseModel):
         return notification
 
     @_log_call
-    def _define_callback(self):  # noqa: PLR0915
+    def _define_callback(self):
         """Defines a callback for the Action model."""
         external_callback_inputs = self._transformed_inputs
         external_callback_outputs = self._transformed_outputs
@@ -679,18 +697,7 @@ class _BaseAction(VizroBaseModel):
                 )
                 notification_key, notification_result = notification_payload.key, notification_payload.result
 
-            timestamp = datetime.now(tz=timezone.utc).strftime("%H:%M:%S.%f")[:-3]
-            # A failed entry only reaches the logs panel when the error is handled with a notification; otherwise we
-            # `raise error_msg` below (to avoid failing silently), which aborts the return and discards this `Patch()`.
-            if error_msg is None:
-                log_text = f"[{timestamp}] ===== Running action with id {self.id}, function {self._action_name} ====="
-            else:
-                log_text = (
-                    f"[{timestamp}] ===== FAILED action with id {self.id!r}, "
-                    f"function={self._action_name!r}  error={error_msg!r}"
-                )
-            action_log = Patch()
-            action_log.append(self._log_header + log_text + "\n")
+            action_log = self._build_action_log(error_msg)
 
             return_value = {
                 "internal": {

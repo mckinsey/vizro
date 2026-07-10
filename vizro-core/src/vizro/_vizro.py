@@ -30,6 +30,35 @@ if TYPE_CHECKING:
     from _typeshed.wsgi import StartResponse, WSGIEnvironment
 
 
+# Persistent DevTools logs panel. The offcanvas is injected into the served layout rather than the DevTools menu so it
+# stays open when the menu is collapsed (it's then only closed via its own "X" or the "Vizro logs" button). The toggle
+# button itself still lives in the DevTools menu (see Vizro._register_action_log_devtool). Defined and registered once
+# at import time, not per build: layout hooks accumulate in Dash's global hooks singleton (which Vizro._reset() does
+# not clear), so registering per build would inject duplicate vizro_logs_offcanvas ids and crash the callbacks.
+_vizro_logs_offcanvas = dbc.Offcanvas(
+    id="vizro_logs_offcanvas",
+    title=[dbc.Button("Clear logs", id="vizro_logs_clear", size="sm", color="secondary", class_name="mb-2")],
+    placement="bottom",
+    scrollable=True,
+    backdrop=False,
+    is_open=False,
+    children=[html.Pre(id="vizro_logs", children=[])],
+)
+
+
+@hooks.layout()
+def _add_vizro_logs_offcanvas(layout):
+    """Adds the logs panel to the served layout, but only when the Dash DevTools UI is enabled.
+
+    serve_layout runs layout hooks on every request, by which point ``_dev_tools.ui`` is set (it defaults to the
+    ``debug`` flag, so it's only truthy under ``debug=True``). This gates the panel to debug mode, mirroring what
+    ``hooks.devtool`` does automatically for the toggle button.
+    """
+    if dash.get_app()._dev_tools.ui:
+        return html.Div([layout, _vizro_logs_offcanvas])
+    return layout
+
+
 class Vizro:
     """Vizro app."""
 
@@ -201,36 +230,19 @@ Provide a valid import path for these in your dashboard configuration."""
 
     @staticmethod
     def _register_action_log_devtool():
-        """Registers action log components into the Dash DevTools debug panel.
+        """Registers the action log toggle button and its callbacks into the Dash DevTools debug panel.
 
-        When the app is run with ``debug=True``, a "Vizro logs" button appears in the Dash debug menu.
-        When ``debug=False`` the components are not rendered and all callbacks targeting them silently no-op via
-         ``optional=True``.
+        When the app is run with ``debug=True``, a "Vizro logs" button appears in the Dash debug menu that toggles the
+        logs panel (``_vizro_logs_offcanvas``, added to the persistent layout by ``_add_vizro_logs_offcanvas``).
+        When ``debug=False`` neither is rendered and all callbacks targeting them silently no-op via ``optional=True``.
         """
-        offcanvas = dbc.Offcanvas(
-            id="vizro_logs_offcanvas",
-            title=[dbc.Button("Clear logs", id="vizro_logs_clear", size="sm", color="secondary", class_name="mb-2")],
-            placement="bottom",
-            scrollable=True,
-            backdrop=False,
-            is_open=False,
-            children=[
-                html.Pre(id="vizro_logs", children=[]),
-            ],
-        )
         button = html.Button(
             "Vizro logs",
             className="dash-debug-menu__button",
             id="open_vizro_logs",
         )
-
-        for component in [button, offcanvas]:
-            c = component.to_plotly_json()
-            hooks.devtool(
-                namespace=c["namespace"],
-                component_type=c["type"],
-                props=c["props"],
-            )
+        c = button.to_plotly_json()
+        hooks.devtool(namespace=c["namespace"], component_type=c["type"], props=c["props"])
 
         clientside_callback(
             "function(n_clicks, is_open) { if (!n_clicks) { return is_open; } return !is_open; }",
@@ -240,17 +252,14 @@ Provide a valid import path for these in your dashboard configuration."""
             optional=True,
             prevent_initial_call=True,
         )
-        # Sync the store into the DevTools panel. vizro_logs lives in the DevTools overlay (optional=True so this
-        # no-ops outside debug mode); we assign a plain list rather than Patch() since Patch() can't target a
-        # DevTools component. We also trigger on vizro_logs_offcanvas.is_open so the panel repopulates when the
-        # overlay remounts (e.g. collapse then expand) with an empty vizro_logs. The store Input is allow_optional
-        # because the overlay can mount before the page layout (e.g. first load), which would otherwise raise a
-        # "nonexistent object" error for vizro_logs_store.
+        # Sync the store into the logs panel. vizro_logs is only present (in the persistent layout) in debug mode, so
+        # optional=True no-ops this otherwise. We assign a plain list rather than Patch() for simplicity. The panel is
+        # part of the persistent layout (see _add_vizro_logs_offcanvas) so it doesn't remount when the DevTools menu is
+        # collapsed, hence a plain vizro_logs_store.data Input keeps it in sync without needing an is_open trigger.
         clientside_callback(
-            "function(data, _) { return data || []; }",
+            "function(data) { return data || []; }",
             Output("vizro_logs", "children"),
-            Input("vizro_logs_store", "data", allow_optional=True),
-            Input("vizro_logs_offcanvas", "is_open"),
+            Input("vizro_logs_store", "data"),
             optional=True,
         )
         # Clear: reset the store; the sync callback above will propagate the clear to the panel.

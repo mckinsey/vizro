@@ -1,5 +1,7 @@
 """Unit tests for vizro.models.Action."""
 
+import re
+
 import dash
 import pytest
 from asserts import assert_component_equal
@@ -1119,3 +1121,37 @@ class TestDefineCallback:
         action._define_callback()
         registered_callback = dash._callback.GLOBAL_CALLBACK_LIST[-1]
         assert "vizro_logs_store.data" in registered_callback["output"]
+
+
+class TestBuildActionLog:
+    """Tests for _build_action_log: verifies the DevTools log entry format built as a Patch."""
+
+    @staticmethod
+    def _appended_value(action_log):
+        """Extracts the single string appended by the Patch returned from _build_action_log."""
+        operations = action_log.to_plotly_json()["operations"]
+        assert len(operations) == 1
+        assert operations[0]["operation"] == "Append"
+        return operations[0]["params"]["value"]
+
+    @pytest.mark.parametrize(
+        "error_msg, expected_body",
+        [
+            (None, r"===== Running action with id action-id, function action_with_no_args ====="),
+            (
+                ValueError("boom"),
+                r"===== FAILED action with id 'action-id', function='action_with_no_args'  "
+                r"error=ValueError\('boom'\)",
+            ),
+        ],
+    )
+    def test_build_action_log(self, vizro_app, error_msg, expected_body):
+        action = Action(id="action-id", function=action_with_no_args())
+        value = self._appended_value(action._build_action_log(error_msg=error_msg))
+        assert re.fullmatch(rf"\[\d{{2}}:\d{{2}}:\d{{2}}\.\d{{3}}\] {expected_body}\n", value)
+
+    def test_build_action_log_prepends_log_header(self, vizro_app, monkeypatch):
+        monkeypatch.setattr(Action, "_log_header", property(lambda self: '=== Page "Page" loaded ===\n'))
+        action = Action(id="action-id", function=action_with_no_args())
+        value = self._appended_value(action._build_action_log(error_msg=None))
+        assert value.startswith('=== Page "Page" loaded ===\n[')

@@ -2,12 +2,14 @@ import operator
 
 import dash
 import pytest
+from dash import html
 from packaging.version import parse
 
 import vizro
 import vizro.models as vm
 from vizro import Vizro
 from vizro._constants import VIZRO_ASSETS_PATH
+from vizro._vizro import _add_vizro_logs_offcanvas
 
 _git_branch = vizro.__version__ if not parse(vizro.__version__).is_devrelease else "main"
 
@@ -156,23 +158,34 @@ class TestBootstrapDetection:
 
 
 class TestActionLogDevtool:
-    """Tests for _register_action_log_devtool: verifies devtool hooks and store-sync callback are registered."""
+    """Tests for the DevTools logs panel: the toggle button (devtool), the persistent-layout offcanvas and callbacks."""
 
     @pytest.fixture
     def simple_dashboard(self):
         return vm.Dashboard(pages=[vm.Page(title="Test", components=[vm.Button()])])
 
-    def test_devtool_called_on_build(self, simple_dashboard, mocker):
+    def test_devtool_registers_only_button(self, simple_dashboard, mocker):
+        # The offcanvas now lives in the persistent layout (added by _add_vizro_logs_offcanvas), so only the toggle
+        # button is registered into the DevTools menu via hooks.devtool.
         mock_devtool = mocker.patch("vizro._vizro.hooks.devtool")
         Vizro().build(simple_dashboard)
-        assert mock_devtool.call_count == 2
-
-    def test_devtool_registers_button_and_offcanvas(self, simple_dashboard, mocker):
-        mock_devtool = mocker.patch("vizro._vizro.hooks.devtool")
-        Vizro().build(simple_dashboard)
+        assert mock_devtool.call_count == 1
         registered_types = {call.kwargs["component_type"] for call in mock_devtool.call_args_list}
-        assert "Button" in registered_types
-        assert "Offcanvas" in registered_types
+        assert registered_types == {"Button"}
+
+    def test_offcanvas_added_to_layout_in_debug(self, simple_dashboard):
+        Vizro().build(simple_dashboard)
+        dash.get_app()._dev_tools.ui = True
+        layout = _add_vizro_logs_offcanvas(html.Div(id="served-layout"))
+        assert "vizro_logs_offcanvas" in str(layout)
+
+    def test_offcanvas_not_added_to_layout_outside_debug(self, simple_dashboard):
+        Vizro().build(simple_dashboard)
+        dash.get_app()._dev_tools.ui = False
+        original = html.Div(id="served-layout")
+        layout = _add_vizro_logs_offcanvas(original)
+        assert layout is original
+        assert "vizro_logs_offcanvas" not in str(layout)
 
     def test_store_sync_clientside_callback_registered(self, simple_dashboard):
         Vizro().build(simple_dashboard)
