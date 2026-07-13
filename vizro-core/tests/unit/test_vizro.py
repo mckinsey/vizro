@@ -9,7 +9,7 @@ import vizro
 import vizro.models as vm
 from vizro import Vizro
 from vizro._constants import VIZRO_ASSETS_PATH
-from vizro._vizro import _add_vizro_logs_offcanvas
+from vizro._vizro import _add_vizro_logs_offcanvas, _vizro_logs_offcanvas
 
 _git_branch = vizro.__version__ if not parse(vizro.__version__).is_devrelease else "main"
 
@@ -194,6 +194,27 @@ class TestActionLogDevtool:
         ]
         outputs = [cb["output"] for cb in clientside_callbacks]
         assert any("vizro_logs.children" in output for output in outputs)
+
+    def test_logs_auto_scroll_clientside_callback_registered(self, simple_dashboard):
+        Vizro().build(simple_dashboard)
+        clientside_callbacks = [
+            cb for cb in dash._callback.GLOBAL_CALLBACK_LIST if cb.get("clientside_function") is not None
+        ]
+        scroll_on_update_callbacks = [
+            cb
+            for cb in clientside_callbacks
+            if cb.get("output") == "vizro_logs.className"
+            and cb.get("inputs") == [{"id": "vizro_logs", "property": "children"}]
+        ]
+        scroll_on_open_callbacks = [
+            cb
+            for cb in clientside_callbacks
+            if cb.get("output") == "vizro_logs_end.className"
+            and cb.get("inputs") == [{"id": "vizro_logs_offcanvas", "property": "is_open"}]
+        ]
+        assert len(scroll_on_update_callbacks) == 1
+        assert len(scroll_on_open_callbacks) == 1
+        assert "vizro_logs_end" in str(_vizro_logs_offcanvas)
 
     def test_vizro_logs_store_in_page_layout(self, simple_dashboard):
         Vizro().build(simple_dashboard)

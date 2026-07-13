@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any, TypedDict, cast
 import dash
 import dash_bootstrap_components as dbc
 import plotly.io as pio
-from dash import Input, Output, State, clientside_callback, hooks, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, hooks, html
 from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
 from packaging.version import parse
@@ -42,7 +42,11 @@ _vizro_logs_offcanvas = dbc.Offcanvas(
     scrollable=True,
     backdrop=False,
     is_open=False,
-    children=[html.Pre(id="vizro_logs", children=[])],
+    children=[
+        html.Pre(id="vizro_logs", children=[]),
+        # Anchor for scrollIntoView; kept outside the <pre> so log text layout is unchanged.
+        html.Div(id="vizro_logs_end"),
+    ],
 )
 
 
@@ -257,9 +261,23 @@ Provide a valid import path for these in your dashboard configuration."""
         # part of the persistent layout (see _add_vizro_logs_offcanvas) so it doesn't remount when the DevTools menu is
         # collapsed, hence a plain vizro_logs_store.data Input keeps it in sync without needing an is_open trigger.
         clientside_callback(
-            "function(data) { return data || []; }",
+            ClientsideFunction(namespace="dashboard", function_name="sync_vizro_logs"),
             Output("vizro_logs", "children"),
             Input("vizro_logs_store", "data"),
+            optional=True,
+        )
+        # Scroll after vizro_logs.children updates so the DOM already reflects the latest entry (no setTimeout).
+        clientside_callback(
+            ClientsideFunction(namespace="dashboard", function_name="scroll_vizro_logs_on_update"),
+            Output("vizro_logs", "className"),
+            Input("vizro_logs", "children"),
+            optional=True,
+        )
+        # When the panel is opened, jump to the latest log entries.
+        clientside_callback(
+            ClientsideFunction(namespace="dashboard", function_name="scroll_vizro_logs_on_open"),
+            Output("vizro_logs_end", "className"),
+            Input("vizro_logs_offcanvas", "is_open"),
             optional=True,
         )
         # Clear: reset the store; the sync callback above will propagate the clear to the panel.

@@ -145,11 +145,76 @@ function collapse_nav_panel(n_clicks, is_open) {
   }
 }
 
+/**
+ * Returns the Vizro logs store payload for the logs panel <pre>.
+ *
+ * @param {Array<string>|null|undefined} data - Session log lines from vizro_logs_store.
+ * @returns {Array<string>} Log lines to render.
+ */
+function sync_vizro_logs(data) {
+  return data || [];
+}
+
+/**
+ * Scrolls the DevTools logs offcanvas to the latest entry via a sentinel anchor.
+ */
+function scroll_vizro_logs_to_end() {
+  const anchor = document.getElementById("vizro_logs_end");
+  if (anchor) {
+    anchor.scrollIntoView({ block: "end" });
+    return;
+  }
+
+  const scrollContainer = document
+    .getElementById("vizro_logs")
+    ?.closest(".offcanvas-body");
+  if (scrollContainer) {
+    scrollContainer.scrollTop = scrollContainer.scrollHeight;
+  }
+}
+
+/**
+ * Scrolls the logs panel after its children update (runs once the DOM is in sync).
+ *
+ * @param {Array<string>|null|undefined} children - Current log lines rendered in vizro_logs.
+ * @returns {*} dash_clientside.no_update
+ */
+function scroll_vizro_logs_on_update(children) {
+  if (!children || !children.length) {
+    const scrollContainer = document
+      .getElementById("vizro_logs")
+      ?.closest(".offcanvas-body");
+    if (scrollContainer) {
+      scrollContainer.scrollTop = 0;
+    }
+    return dash_clientside.no_update;
+  }
+
+  scroll_vizro_logs_to_end();
+  return dash_clientside.no_update;
+}
+
+/**
+ * Scrolls the logs panel when the offcanvas is opened.
+ *
+ * @param {boolean} is_open - Whether the logs offcanvas is visible.
+ * @returns {*} dash_clientside.no_update
+ */
+function scroll_vizro_logs_on_open(is_open) {
+  if (is_open) {
+    scroll_vizro_logs_to_end();
+  }
+  return dash_clientside.no_update;
+}
+
 window.dash_clientside = {
   ...window.dash_clientside,
   dashboard: {
     update_dashboard_theme: update_dashboard_theme,
     update_graph_theme: update_graph_theme,
     collapse_nav_panel: collapse_nav_panel,
+    sync_vizro_logs: sync_vizro_logs,
+    scroll_vizro_logs_on_update: scroll_vizro_logs_on_update,
+    scroll_vizro_logs_on_open: scroll_vizro_logs_on_open,
   },
 };
