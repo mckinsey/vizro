@@ -159,18 +159,7 @@ function sync_vizro_logs(data) {
  * Scrolls the DevTools logs offcanvas to the latest entry via a sentinel anchor.
  */
 function scroll_vizro_logs_to_end() {
-  const anchor = document.getElementById("vizro_logs_end");
-  if (anchor) {
-    anchor.scrollIntoView({ block: "end" });
-    return;
-  }
-
-  const scrollContainer = document
-    .getElementById("vizro_logs")
-    ?.closest(".offcanvas-body");
-  if (scrollContainer) {
-    scrollContainer.scrollTop = scrollContainer.scrollHeight;
-  }
+  document.getElementById("vizro_logs_end")?.scrollIntoView({ block: "end" });
 }
 
 /**
