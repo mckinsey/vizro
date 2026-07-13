@@ -214,10 +214,7 @@ underlying component may change in the future.""",
 
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
-    # vdc.Cascader made `options` optional from 0.2.0, matching dcc.Dropdown. Once the
-    # vizro-dash-components floor pin is bumped past 0.2.0, drop `options={}` here to match
-    # Dropdown's `dcc.Dropdown().available_properties`.
-    _inner_component_properties: list[str] = PrivateAttr(vdc.Cascader(options={}).available_properties)
+    _inner_component_properties: list[str] = PrivateAttr(vdc.Cascader().available_properties)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
