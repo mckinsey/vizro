@@ -8,7 +8,9 @@ from pathlib import Path, PurePosixPath
 from typing import TYPE_CHECKING, Any, TypedDict, cast
 
 import dash
+import dash_bootstrap_components as dbc
 import plotly.io as pio
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, hooks, html
 from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
 from packaging.version import parse
@@ -26,6 +28,39 @@ logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
     # These are built into wsgiref.types for Python 3.11 onwards.
     from _typeshed.wsgi import StartResponse, WSGIEnvironment
+
+
+# Persistent DevTools logs panel. The offcanvas is injected into the served layout rather than the DevTools menu so it
+# stays open when the menu is collapsed (it's then only closed via its own "X" or the "Vizro logs" button). The toggle
+# button itself still lives in the DevTools menu (see Vizro._register_action_log_devtool). Defined and registered once
+# at import time, not per build: layout hooks accumulate in Dash's global hooks singleton (which Vizro._reset() does
+# not clear), so registering per build would inject duplicate vizro_logs_offcanvas ids and crash the callbacks.
+_vizro_logs_offcanvas = dbc.Offcanvas(
+    id="vizro_logs_offcanvas",
+    title=[dbc.Button("Clear logs", id="vizro_logs_clear", size="sm", color="secondary", class_name="mb-2")],
+    placement="bottom",
+    scrollable=True,
+    backdrop=False,
+    is_open=False,
+    children=[
+        html.Pre(id="vizro_logs", children=[]),
+        # Anchor for scrollIntoView; kept outside the <pre> so log text layout is unchanged.
+        html.Div(id="vizro_logs_end"),
+    ],
+)
+
+
+@hooks.layout()
+def _add_vizro_logs_offcanvas(layout):
+    """Adds the logs panel to the served layout, but only when the Dash DevTools UI is enabled.
+
+    serve_layout runs layout hooks on every request, by which point ``_dev_tools.ui`` is set (it defaults to the
+    ``debug`` flag, so it's only truthy under ``debug=True``). This gates the panel to debug mode, mirroring what
+    ``hooks.devtool`` does automatically for the toggle button.
+    """
+    if dash.get_app()._dev_tools.ui:
+        return html.Div([layout, _vizro_logs_offcanvas])
+    return layout
 
 
 class Vizro:
@@ -153,6 +188,8 @@ class Vizro:
         # Note Dash.index uses self.dash.title instead of self.dash.config.title for backwards compatibility.
         if dashboard.title:
             self.dash.title = dashboard.title
+
+        self._register_action_log_devtool()
         return self
 
     def run(self, **kwargs: Any):
@@ -194,6 +231,78 @@ Provide a valid import path for these in your dashboard configuration."""
             )
 
         self.dash.run(**kwargs)
+
+    @staticmethod
+    def _register_action_log_devtool():
+        """Registers the action log toggle button and its callbacks into the Dash DevTools debug panel.
+
+        When the app is run with ``debug=True``, a "Vizro logs" button appears in the Dash debug menu that toggles the
+        logs panel (``_vizro_logs_offcanvas``, added to the persistent layout by ``_add_vizro_logs_offcanvas``).
+        When ``debug=False`` neither is rendered and all callbacks targeting them silently no-op via ``optional=True``.
+        """
+        button = html.Button(
+            "Vizro logs",
+            className="dash-debug-menu__button",
+            id="open_vizro_logs",
+        )
+        c = button.to_plotly_json()
+        hooks.devtool(namespace=c["namespace"], component_type=c["type"], props=c["props"])
+
+        clientside_callback(
+            "function(n_clicks, is_open) { if (!n_clicks) { return is_open; } return !is_open; }",
+            Output("vizro_logs_offcanvas", "is_open"),
+            Input("open_vizro_logs", "n_clicks"),
+            State("vizro_logs_offcanvas", "is_open"),
+            optional=True,
+            prevent_initial_call=True,
+        )
+        # Sync the store into the logs panel. vizro_logs is only present (in the persistent layout) in debug mode, so
+        # optional=True no-ops this otherwise. We assign a plain list rather than Patch() for simplicity. The panel is
+        # part of the persistent layout (see _add_vizro_logs_offcanvas) so it doesn't remount when the DevTools menu is
+        # collapsed, hence a plain vizro_logs_store.data Input keeps it in sync without needing an is_open trigger.
+        clientside_callback(
+            ClientsideFunction(namespace="dashboard", function_name="sync_vizro_logs"),
+            Output("vizro_logs", "children"),
+            Input("vizro_logs_store", "data"),
+            optional=True,
+        )
+        # Scroll after vizro_logs.children updates so the DOM already reflects the latest entry (no setTimeout).
+        clientside_callback(
+            ClientsideFunction(namespace="dashboard", function_name="scroll_vizro_logs_on_update"),
+            Output("vizro_logs", "className"),
+            Input("vizro_logs", "children"),
+            optional=True,
+        )
+        # When the panel is opened, jump to the latest log entries.
+        clientside_callback(
+            ClientsideFunction(namespace="dashboard", function_name="scroll_vizro_logs_on_open"),
+            Output("vizro_logs_end", "className"),
+            Input("vizro_logs_offcanvas", "is_open"),
+            optional=True,
+        )
+        # Clear: reset the store; the sync callback above will propagate the clear to the panel.
+        clientside_callback(
+            "function(_) { return []; }",
+            Output("vizro_logs_store", "data", allow_duplicate=True),
+            Input("vizro_logs_clear", "n_clicks"),
+            optional=True,
+            prevent_initial_call=True,
+        )
+        # Log control resets. Registered once globally (not per page) since reset-button and vizro_logs_store are
+        # shared ids. Matches the action log format ("=====" wrapping and HH:MM:SS.mmm timestamp) for consistency;
+        # any on-page-load actions the reset triggers afterwards produce their own "=====" entries. optional=True
+        # no-ops this when there are no controls (reset-button absent). A plain array assignment is used because
+        # clientside callbacks can't use Patch();
+        clientside_callback(
+            # UTC HH:MM:SS.mmm to match the action log timestamps, which are generated server-side in UTC.
+            "function(_, data) { const t = new Date().toISOString().slice(11, 23); "
+            "return [...(data || []), `[${t}] ===== Reset controls =====\\n`]; }",
+            Output("vizro_logs_store", "data", allow_duplicate=True),
+            Input("reset-button", "n_clicks"),
+            State("vizro_logs_store", "data"),
+            optional=True,
+            prevent_initial_call=True,
+        )
 
     @staticmethod
     def _pre_build():
