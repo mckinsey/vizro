@@ -5,6 +5,7 @@ from vizro import Vizro
 import vizro.plotly.express as px
 import vizro.models as vm
 from vizro.managers import data_manager
+from vizro.models.types import capture
 
 _gapminder = px.data.gapminder().query("year == 2007").copy()
 _regions = {
@@ -246,6 +247,128 @@ page_duplicate_leaves = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_dynamic_df, page_static_df, page_duplicate_leaves])
+# --- Additional pages exercising value / options / multi / URL combinations for vm.Cascader ---
+
+# Static tree reused by the Parameter page (Parameter selectors need explicit options, unlike Filter which
+# derives them from the target data). Note "Portland" and "Springfield" are duplicated across states.
+_city_tree: dict[str, list[str]] = {}
+for _state, _city in zip(_cities["state"], _cities["city"]):
+    _city_tree.setdefault(_state, [])
+    if _city not in _city_tree[_state]:
+        _city_tree[_state].append(_city)
+
+
+@capture("graph")
+def city_bar(data_frame, path=None):
+    """Bar of city populations, optionally narrowed to a selected root-to-leaf path (state[/city])."""
+    df = data_frame
+    if path:
+        for column, segment in zip(["state", "city"], path):
+            df = df[df[column] == segment]
+    label = " › ".join(map(str, path)) if path else "All"
+    return px.bar(df, x="city", y="population", color="state", title=f"Selected path: {label}")
+
+
+# Filter values supplied the LEGACY leaf-only way; each unique leaf is resolved to its full path.
+page_legacy_values = vm.Page(
+    title="Filter — legacy leaf values",
+    components=[
+        vm.Graph(id="legacy_single_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
+        vm.Graph(id="legacy_multi_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
+    ],
+    controls=[
+        # Legacy single leaf: "Chicago" is unique, so it resolves to ["Illinois", "Chicago"].
+        vm.Filter(
+            column=["state", "city"],
+            targets=["legacy_single_graph"],
+            selector=vm.Cascader(multi=False, value="Chicago", title="Legacy single leaf ('Chicago')"),
+        ),
+        # Legacy multi leaves: each unique leaf resolves to its own path.
+        vm.Filter(
+            column=["state", "city"],
+            targets=["legacy_multi_graph"],
+            selector=vm.Cascader(multi=True, value=["Salem", "Augusta"], title="Legacy multi leaves"),
+        ),
+    ],
+)
+
+# No value supplied → the first leaf path is selected by default (mirrors Dropdown behavior).
+page_default_values = vm.Page(
+    title="Filter — default (no value)",
+    components=[
+        vm.Graph(id="default_single_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
+        vm.Graph(id="default_multi_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
+    ],
+    controls=[
+        vm.Filter(
+            column=["state", "city"],
+            targets=["default_single_graph"],
+            selector=vm.Cascader(multi=False, title="Single, no value"),
+        ),
+        vm.Filter(
+            column=["state", "city"],
+            targets=["default_multi_graph"],
+            selector=vm.Cascader(multi=True, title="Multi, no value"),
+        ),
+    ],
+)
+
+# URL round-trip for both single and multi (nested paths are JSON+base64 encoded as ?<id>=b64_...).
+page_url = vm.Page(
+    title="URL persistence — single & multi",
+    components=[
+        vm.Graph(id="url_single_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
+        vm.Graph(id="url_multi_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
+    ],
+    controls=[
+        vm.Filter(
+            id="url_single_filter",
+            column=["state", "city"],
+            targets=["url_single_graph"],
+            selector=vm.Cascader(multi=False, value=["Oregon", "Salem"], title="Single (in URL)"),
+            show_in_url=True,
+        ),
+        vm.Filter(
+            id="url_multi_filter",
+            column=["state", "city"],
+            targets=["url_multi_graph"],
+            selector=vm.Cascader(
+                multi=True, value=[["Illinois", "Chicago"], ["Maine", "Augusta"]], title="Multi (in URL)"
+            ),
+            show_in_url=True,
+        ),
+    ],
+)
+
+# Cascader inside a Parameter (options supplied explicitly), comparing legacy vs new value forms.
+page_parameter = vm.Page(
+    title="Parameter — Cascader (legacy vs new value)",
+    components=[
+        vm.Graph(id="param_new_graph", figure=city_bar(_cities)),
+        vm.Graph(id="param_legacy_graph", figure=city_bar(_cities)),
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["param_new_graph.path"],
+            selector=vm.Cascader(options=_city_tree, multi=False, value=["Oregon", "Salem"], title="New path value"),
+        ),
+        vm.Parameter(
+            targets=["param_legacy_graph.path"],
+            selector=vm.Cascader(options=_city_tree, multi=False, value="Augusta", title="Legacy leaf value"),
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(
+    pages=[
+        page_dynamic_df,
+        page_static_df,
+        page_duplicate_leaves,
+        page_legacy_values,
+        page_default_values,
+        page_url,
+        page_parameter,
+    ]
+)
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
