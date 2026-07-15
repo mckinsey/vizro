@@ -122,7 +122,6 @@ time_chart_group = ChartGroup(
     pages=pages.time.pages,
     incomplete_pages=[
         IncompletePage("Fan"),
-        IncompletePage("Bubble timeline"),
     ],
     icon="Timeline",
     intro_text=time_intro_text,
