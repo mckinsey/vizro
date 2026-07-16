@@ -16,16 +16,16 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
 ### Added
 
-- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- `Cascader` supports duplicate leaf labels across branches. Its `value` can be defined as a full root-to-leaf path (e.g. `["Europe", "France"]` for single-select, or `[["Europe", "France"], ["Europe", "Germany"]]` for multi-select Cascader), and it emits the full path on selection. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
 
--->
+<!--
 ### Changed
 
-- **Breaking:** `vm.Cascader` selections are now full root-to-leaf paths (e.g. `["Europe", "France"]`) instead of just the leaf value, so hierarchical filters support duplicate leaf labels across branches. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
+- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Deprecated
 
@@ -34,7 +34,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Fixed
 
-- A hierarchical `vm.Filter` selection now survives dynamic-data reloads even across multiple reloads, because the selected path is restored directly from its own branch context. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
+- A hierarchical `vm.Filter` restores the previously selected value across dynamic-data reloads, even across multiple reloads. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
 
 <!--
 ### Security
