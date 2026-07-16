@@ -367,6 +367,19 @@
         "value": {
           "anyOf": [
             {
+              "type": "boolean"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
               "items": {
                 "anyOf": [
                   {
@@ -414,7 +427,7 @@
             }
           ],
           "default": null,
-          "description": "Selected leaf path (the list of node values from the root down to the leaf, e.g. `['Europe', 'France']`), or a list of such paths when multi=True. Must be valid for `options`. If omitted, the first leaf path is selected.",
+          "description": "Selected value as a root-to-leaf path (the list of node values from the root down to the leaf, e.g. `['Europe', 'France']`), or a list of such paths when multi=True. A bare leaf value (e.g. `'France'`, or `['France', 'Japan']` when multi=True) is also accepted for backward compatibility and resolved to its path, provided the leaf is unique. Must be valid for `options`. If omitted, the first leaf path is selected.",
           "title": "Value"
         },
         "multi": {
