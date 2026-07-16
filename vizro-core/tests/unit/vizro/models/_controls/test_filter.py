@@ -1685,8 +1685,9 @@ class TestFilterHierarchicalColumn:
     @pytest.mark.parametrize(
         "value, expected",
         [
-            (None, [True, True, True, True]),
-            ([], [True, True, True, True]),
+            # An empty/None selection matches no rows (a hierarchical filter with nothing selected has no path).
+            (None, [False, False, False, False]),
+            ([], [False, False, False, False]),
             # A single path isolates one branch's leaf even when the leaf label is duplicated elsewhere.
             (["North", "Portland"], [True, False, False, False]),
             (["South", "Portland"], [False, False, True, False]),

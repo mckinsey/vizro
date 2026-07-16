@@ -152,14 +152,17 @@ def _filter_hierarchical_isin(df: pd.DataFrame, value: Any) -> pd.Series:
     `df` holds the hierarchical filter's path columns in root-to-leaf order (branch columns first, the leaf
     column last). `value` is a single path (a list of node values from root to leaf) or a list of such paths
     for multi-select. Each path is matched across all its columns, so duplicate leaf labels in different
-    branches filter independently. An empty/None selection matches all rows, mirroring the categorical filter.
+    branches filter independently.
 
     Branch labels are compared as strings, because `_dataframe_path_to_cascader_options` builds the option tree
     with stringified branch keys. The leaf reuses `_filter_isin` so that temporal/boolean leaves which arrive
     as strings still coerce and match the underlying column.
+
+    An empty/None selection matches no rows (returns an empty result), because a hierarchical filter with
+    nothing selected has no path to match against.
     """
     if not value:
-        return pd.Series(True, index=df.index)
+        return pd.Series(False, index=df.index)
     paths = value if isinstance(value[0], (list, tuple)) else [value]
     mask = pd.Series(False, index=df.index)
     for path in paths:
