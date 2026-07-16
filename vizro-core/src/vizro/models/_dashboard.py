@@ -336,16 +336,24 @@ class Dashboard(VizroBaseModel):
             hidden=_all_hidden(header_right_content),
         )
 
-        # Show reset button with the icon in the control panel when both page controls and control panel exist.
-        if has_page_controls and not control_panel_hidden:
-            icon = html.Span("reset_settings", className="material-symbols-outlined tooltip-icon")
-            text = html.Span("Reset controls", className="btn-text")
+        nav_control_panel_inner = html.Div(
+            id="nav-control-panel-inner",
+            children=[nav_panel, control_panel],
+        )
+        nav_control_panel_content = [nav_control_panel_inner]
 
-            control_panel.children.append(
-                dbc.Button(id="reset-button", children=[icon, text], color="link"),
+        # Show reset button pinned to the bottom of the nav-control-panel when both page controls and control panel
+        # exist. The button is a sibling of the scrollable inner content, not inside it, so it stays visible.
+        if has_page_controls and not control_panel_hidden:
+            icon = html.Span("sync", className="material-symbols-outlined tooltip-icon")
+            text = html.Span("Reset all", className="btn-text")
+            nav_control_panel_content.append(
+                html.Div(
+                    id="reset-button-container",
+                    children=[dbc.Button(id="reset-button", children=[icon, text], color="link")],
+                )
             )
 
-        nav_control_panel_content = [nav_panel, control_panel]
         nav_control_panel = html.Div(
             id="nav-control-panel", children=nav_control_panel_content, hidden=_all_hidden(nav_control_panel_content)
         )

@@ -11,10 +11,26 @@
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
+  overflow: hidden;
+  width: 280px;
+}
+
+#nav-control-panel-inner {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   gap: 1.5rem;
   overflow: auto;
   padding: 20px 20px 0;
   width: 280px;
+}
+
+#reset-button-container {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  padding: 16px 20px;
+  width: 100%;
 }
 
 #left-side {
@@ -124,9 +140,6 @@
   padding-top: 0.5rem;
 }
 
-#control-panel:not(:empty) {
-  border-bottom: 1px solid var(--bs-border-color);
-}
 
 .dashboard_title {
   display: flex;
@@ -244,7 +257,7 @@ Current logic:
     padding-top: 16px;
   }
 
-  #nav-control-panel {
+  #nav-control-panel-inner {
     padding-top: 16px;
   }
 
@@ -262,8 +275,11 @@ Current logic:
 /* Apply specific styles for landscape orientation on small screen heights */
 @media screen and (height <= 576px) and (orientation: landscape) {
   #nav-control-panel {
-    font-size: 12px;
     width: 260px;
+  }
+
+  #nav-control-panel-inner {
+    font-size: 12px;
   }
 
   #nav-control-panel .accordion-button,
@@ -291,8 +307,11 @@ Current logic:
   }
 
   #nav-control-panel {
-    padding-top: 12px;
     width: 280px;
+  }
+
+  #nav-control-panel-inner {
+    padding-top: 12px;
   }
 
   #collapse-left-side.show:has(#nav-control-panel:not([hidden]))

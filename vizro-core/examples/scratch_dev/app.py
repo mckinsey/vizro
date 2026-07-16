@@ -17,6 +17,8 @@ page_1 = vm.Page(
     ],
     controls=[
         vm.Filter(column="species"),
+        vm.Filter(column="sepal_length"),
+        vm.Filter(column="petal_width"),
     ],
 )
 
@@ -33,6 +35,7 @@ page_2 = vm.Page(
 
 dashboard = vm.Dashboard(
     pages=[page_1, page_2],
+    navigation=vm.Navigation(nav_selector=vm.NavBar())
 )
 
 if __name__ == "__main__":
