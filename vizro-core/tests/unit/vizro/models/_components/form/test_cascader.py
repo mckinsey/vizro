@@ -207,7 +207,8 @@ class TestCascaderBuild:
                 vdc.Cascader(
                     id="cascader_id",
                     options=options,
-                    value=None,
+                    # value=None fills the first leaf's full path by default (mirrors Dropdown).
+                    value=["Region", "East", 1],
                     multi=False,
                     persistence=True,
                     persistence_type="session",
@@ -233,7 +234,7 @@ class TestCascaderBuild:
                 vdc.Cascader(
                     id="overridden_id",
                     options=options,
-                    value=None,
+                    value=["L", "a"],
                     multi=False,
                     persistence=True,
                     persistence_type="session",
@@ -273,7 +274,7 @@ class TestCascaderBuild:
                 vdc.Cascader(
                     id="cascader_id",
                     options=options,
-                    value=None,
+                    value=["L", "a"],
                     multi=False,
                     persistence=True,
                     persistence_type="session",
@@ -293,7 +294,8 @@ class TestCascaderBuild:
                 vdc.Cascader(
                     id="cascader_id",
                     options=options,
-                    value=None,
+                    # multi=True default value is a list of paths.
+                    value=[["L", "a"]],
                     multi=True,
                     persistence=True,
                     persistence_type="session",
@@ -304,17 +306,17 @@ class TestCascaderBuild:
         )
         assert_component_equal(built, expected)
 
-    def test_cascader_build_multi_coerces_single_path_to_list_of_paths(self):
-        # A lone single path under multi=True is wrapped into a list-of-paths for the underlying component.
+    def test_cascader_build_multi_coerces_legacy_leaves_to_paths(self):
+        # Under multi=True a flat scalar list is the legacy list-of-leaves form; each leaf resolves to its path.
         options = {"L": ["a", "b"]}
-        built = Cascader(id="cascader_id", options=options, multi=True, value=["L", "b"], title="").build()
+        built = Cascader(id="cascader_id", options=options, multi=True, value=["a", "b"], title="").build()
         expected = html.Div(
             [
                 None,
                 vdc.Cascader(
                     id="cascader_id",
                     options=options,
-                    value=[["L", "b"]],
+                    value=[["L", "a"], ["L", "b"]],
                     multi=True,
                     persistence=True,
                     persistence_type="session",
@@ -377,7 +379,8 @@ class TestCascaderCall:
                 vdc.Cascader(
                     id="cascader_id",
                     options=new_options,
-                    value=None,
+                    # value=None fills the first leaf's full path from the supplied options.
+                    value=["Region", "East", 1],
                     multi=False,
                     persistence=True,
                     persistence_type="session",
