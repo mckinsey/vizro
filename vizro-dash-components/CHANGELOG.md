@@ -1,3 +1,10 @@
+
+<a id='changelog-0.2.0'></a>
+# 0.2.0 — 2026-07-16
+
+## Changed
+
+- `Cascader.value` now returns the full root-to-leaf path (e.g. `["Europe", "France", "Paris"]`, or a list of such paths when `multi=True`) instead of just leaf values, enabling duplicate leaf labels across branches. ([#1792](https://github.com/mckinsey/vizro/pull/1792))
 <a id='changelog-0.1.1'></a>
 
 # 0.1.1 — 2026-03-31
