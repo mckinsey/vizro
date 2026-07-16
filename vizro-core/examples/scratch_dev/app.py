@@ -406,7 +406,7 @@ page_set_control_single = vm.Page(
                     text="Reset filter",
                     actions=[va.set_control(control="sc_single_filter", value=None)],
                 ),
-            ]
+            ],
         ),
         # TARGET: filtered by the cascader, so it reflects the current selection.
         vm.AgGrid(id="sc_single_grid_target", figure=dash_ag_grid(data_frame=_cities)),
@@ -442,9 +442,7 @@ page_set_control_multi = vm.Page(
         vm.AgGrid(id="sc_multi_grid_target", figure=dash_ag_grid(data_frame=_cities)),
         vm.Button(
             text="Select both Portlands",
-            actions=[
-                va.set_control(control="sc_multi_filter", value=[["Oregon", "Portland"], ["Maine", "Portland"]])
-            ],
+            actions=[va.set_control(control="sc_multi_filter", value=[["Oregon", "Portland"], ["Maine", "Portland"]])],
         ),
         vm.Button(
             text="Select all Springfields",
