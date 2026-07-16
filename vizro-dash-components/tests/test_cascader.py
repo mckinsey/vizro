@@ -54,6 +54,25 @@ OPTIONS_SHORTHAND_MIXED_LEAVES = {
 
 OPTIONS_SHORTHAND_NUMERIC = {"Series": [10, 20, 30]}
 
+# Duplicate leaf labels across branches are legal now that identity is the full
+# path: "Portland" appears under both "North" and "South".
+OPTIONS_DUPLICATE_LEAVES = {"North": ["Portland", "Salem"], "South": ["Portland", "Austin"]}
+
+# Boolean leaf values are supported (Vizro allows bool leaves).
+OPTIONS_BOOL_LEAVES = {"Flags": [True, False]}
+
+# The first matching leaf for "ja" ("Japan") is disabled; "Jakarta" is enabled.
+OPTIONS_DISABLED_FIRST_LEAF = [
+    {
+        "label": "Asia",
+        "value": "asia",
+        "children": [
+            {"label": "Japan", "value": "japan", "disabled": True},
+            {"label": "Jakarta", "value": "jakarta"},
+        ],
+    },
+]
+
 
 def _app(layout):
     app = Dash(__name__)
@@ -61,8 +80,20 @@ def _app(layout):
     return app
 
 
-def _multi_values_joined(v):
-    return ",".join(sorted(str(x) for x in (v or [])))
+def _path_str(v):
+    """Format a single-select Cascader value (one path) for assertions.
+
+    Distinguishes no selection (`None` -> "None") from an empty-list value
+    (`[]` -> "") so a regression that emits `[]` instead of `None` is not masked.
+    """
+    if v is None:
+        return "None"
+    return "/".join(str(s) for s in v)
+
+
+def _paths_str(v):
+    """Format a multi-select Cascader value (list of paths), order-independent."""
+    return " | ".join(sorted("/".join(str(s) for s in path) for path in (v or [])))
 
 
 def _sorted_values_string(v):
@@ -113,12 +144,12 @@ def test_cascader_keyboard_backspace_on_trigger_clears(dash_duo):
     app.layout = dmc.MantineProvider(
         html.Div(
             [
-                Cascader(id="c", options=OPTIONS_2LEVEL, value="japan"),
+                Cascader(id="c", options=OPTIONS_2LEVEL, value=["asia", "japan"]),
                 html.Div(id="out"),
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(str)
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
     dash_duo.start_server(app)
     trigger = dash_duo.wait_for_element("#c")
     dash_duo.driver.execute_script("arguments[0].focus();", trigger)
@@ -174,7 +205,7 @@ def test_cascader_single_select_leaf(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(str)
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
     dash_duo.start_server(app)
     # Open
     dash_duo.wait_for_element("#c").click()
@@ -184,7 +215,7 @@ def test_cascader_single_select_leaf(dash_duo):
     rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
     rows[0].click()
     # Panel closes, value updated
-    dash_duo.wait_for_text_to_equal("#out", "japan")
+    dash_duo.wait_for_text_to_equal("#out", "asia/japan")
     panels = dash_duo.driver.find_elements("css selector", ".dash-cascader-content")
     assert len(panels) == 0
     assert dash_duo.get_logs() == []
@@ -209,7 +240,7 @@ def test_cascader_parent_expand_then_collapse(dash_duo):
 
 def test_cascader_single_select_shows_label_in_trigger(dash_duo):
     """Selected leaf label is shown in the trigger."""
-    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, value="japan"))
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, value=["asia", "japan"]))
     dash_duo.start_server(app)
     dash_duo.wait_for_text_to_equal("#c .dash-dropdown-value", "Japan")
 
@@ -220,12 +251,12 @@ def test_cascader_single_clear(dash_duo):
     app.layout = dmc.MantineProvider(
         html.Div(
             [
-                Cascader(id="c", options=OPTIONS_2LEVEL, value="japan"),
+                Cascader(id="c", options=OPTIONS_2LEVEL, value=["asia", "japan"]),
                 html.Div(id="out"),
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(str)
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c button.dash-dropdown-clear").click()
     dash_duo.wait_for_text_to_equal("#out", "None")
@@ -245,7 +276,7 @@ def test_cascader_multi_select_leaf(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
+    app.callback(Output("out", "children"), Input("c", "value"))(_paths_str)
     dash_duo.start_server(app)
     # Open and expand Asia
     dash_duo.wait_for_element("#c").click()
@@ -255,7 +286,7 @@ def test_cascader_multi_select_leaf(dash_duo):
         "css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-checkbox"
     )
     checkboxes[0].click()
-    dash_duo.wait_for_text_to_equal("#out", "japan")
+    dash_duo.wait_for_text_to_equal("#out", "asia/japan")
     # Panel still open
     assert dash_duo.find_element(".dash-cascader-content")
     assert dash_duo.get_logs() == []
@@ -263,7 +294,7 @@ def test_cascader_multi_select_leaf(dash_duo):
 
 def test_cascader_multi_shows_count_badge(dash_duo):
     """Trigger shows count badge when N > 1 values are selected."""
-    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, multi=True, value=["japan", "france"]))
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, multi=True, value=[["asia", "japan"], ["europe", "france"]]))
     dash_duo.start_server(app)
     dash_duo.wait_for_element(".dash-dropdown-value-count")
     badge_text = dash_duo.find_element(".dash-dropdown-value-count").text
@@ -281,11 +312,11 @@ def test_cascader_multi_select_all(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
+    app.callback(Output("out", "children"), Input("c", "value"))(_paths_str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-dropdown-action-button").click()
-    dash_duo.wait_for_text_to_equal("#out", "china,france,germany,japan")
+    dash_duo.wait_for_text_to_equal("#out", "asia/china | asia/japan | europe/france | europe/germany")
     assert dash_duo.get_logs() == []
 
 
@@ -295,7 +326,7 @@ def test_cascader_multi_deselect_all(dash_duo):
     app.layout = dmc.MantineProvider(
         html.Div(
             [
-                Cascader(id="c", options=OPTIONS_2LEVEL, multi=True, value=["japan", "france"]),
+                Cascader(id="c", options=OPTIONS_2LEVEL, multi=True, value=[["asia", "japan"], ["europe", "france"]]),
                 html.Div(id="out"),
             ]
         )
@@ -344,12 +375,12 @@ def test_cascader_search_single_select_closes_on_pick(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(str)
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-dropdown-search").send_keys("jap")
     dash_duo.wait_for_element(".dash-cascader-result-row").click()
-    dash_duo.wait_for_text_to_equal("#out", "japan")
+    dash_duo.wait_for_text_to_equal("#out", "asia/japan")
     panels = dash_duo.driver.find_elements("css selector", ".dash-cascader-content")
     assert len(panels) == 0
 
@@ -386,13 +417,13 @@ def test_cascader_multi_select_all_search_only_leaves(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
+    app.callback(Output("out", "children"), Input("c", "value"))(_paths_str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-dropdown-search").send_keys("a")
     dash_duo.wait_for_element(".dash-cascader-result-row-branch")
     dash_duo.wait_for_element(".dash-dropdown-action-button").click()
-    dash_duo.wait_for_text_to_equal("#out", "china,france,germany,japan")
+    dash_duo.wait_for_text_to_equal("#out", "asia/china | asia/japan | europe/france | europe/germany")
     assert dash_duo.get_logs() == []
 
 
@@ -445,7 +476,7 @@ def test_cascader_shorthand_dict_list(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(str)
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_text_to_equal(
@@ -455,7 +486,7 @@ def test_cascader_shorthand_dict_list(dash_duo):
     dash_duo.wait_for_element(".dash-cascader-row").click()
     rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
     rows[0].click()
-    dash_duo.wait_for_text_to_equal("#out", "Japan")
+    dash_duo.wait_for_text_to_equal("#out", "Asia/Japan")
     assert dash_duo.get_logs() == []
 
 
@@ -470,7 +501,7 @@ def test_cascader_shorthand_nested_dict(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(str)
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Europe
@@ -480,7 +511,7 @@ def test_cascader_shorthand_nested_dict(dash_duo):
         ".dash-cascader-column:nth-child(3) .dash-cascader-row:first-child .dash-cascader-row-label", "France"
     )
     dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(3) .dash-cascader-row")[0].click()
-    dash_duo.wait_for_text_to_equal("#out", "France")
+    dash_duo.wait_for_text_to_equal("#out", "Europe/Western/France")
     assert dash_duo.get_logs() == []
 
 
@@ -495,19 +526,19 @@ def test_cascader_shorthand_mixed_list_option_dicts_and_scalars(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(str)
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
     rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
-    rows[0].click()  # Nippon → value japan
-    dash_duo.wait_for_text_to_equal("#out", "japan")
+    rows[0].click()  # Nippon → path ["Asia", "japan"]
+    dash_duo.wait_for_text_to_equal("#out", "Asia/japan")
     # Re-open: activePath still has Asia expanded; clicking col1 would collapse it.
     dash_duo.wait_for_element("#c").click()
     rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
     assert len(rows) >= 2
     rows[1].click()
-    dash_duo.wait_for_text_to_equal("#out", "China")
+    dash_duo.wait_for_text_to_equal("#out", "Asia/China")
     assert dash_duo.get_logs() == []
 
 
@@ -522,7 +553,7 @@ def test_cascader_shorthand_numeric_leaves(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(str)
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Series
@@ -530,7 +561,7 @@ def test_cascader_shorthand_numeric_leaves(dash_duo):
         ".dash-cascader-column:nth-child(2) .dash-cascader-row:first-child .dash-cascader-row-label", "10"
     )
     dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")[0].click()
-    dash_duo.wait_for_text_to_equal("#out", "10")
+    dash_duo.wait_for_text_to_equal("#out", "Series/10")
     assert dash_duo.get_logs() == []
 
 
@@ -545,14 +576,14 @@ def test_cascader_shorthand_multi_select(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
+    app.callback(Output("out", "children"), Input("c", "value"))(_paths_str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
     checks = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-checkbox")
     checks[0].click()  # Japan
     checks[1].click()  # China
-    dash_duo.wait_for_text_to_equal("#out", "China,Japan")
+    dash_duo.wait_for_text_to_equal("#out", "Asia/China | Asia/Japan")
     assert dash_duo.get_logs() == []
 
 
@@ -646,14 +677,14 @@ def test_cascader_debounce_defers_callback(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(str)
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
     dash_duo.start_server(app)
     # Open and select a leaf
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
     rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")
     rows[0].click()  # Japan — panel closes immediately in single mode, committing the value
-    dash_duo.wait_for_text_to_equal("#out", "japan")
+    dash_duo.wait_for_text_to_equal("#out", "asia/japan")
     assert dash_duo.get_logs() == []
 
 
@@ -671,7 +702,7 @@ def test_cascader_debounce_multi_defers_until_close(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
+    app.callback(Output("out", "children"), Input("c", "value"))(_paths_str)
     dash_duo.start_server(app)
     # Open and check Japan
     dash_duo.wait_for_element("#c").click()
@@ -685,7 +716,7 @@ def test_cascader_debounce_multi_defers_until_close(dash_duo):
     assert dash_duo.find_element("#out").text == ""
     # Close by clicking outside — now it fires
     dash_duo.find_element("#outside").click()
-    dash_duo.wait_for_text_to_equal("#out", "japan")
+    dash_duo.wait_for_text_to_equal("#out", "asia/japan")
     assert dash_duo.get_logs() == []
 
 
@@ -705,7 +736,7 @@ def test_cascader_searchable_false_hides_search_bar(dash_duo):
 
 def test_cascader_clearable_false_hides_clear_button(dash_duo):
     """clearable=False means the clear button is absent even when a value is set."""
-    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, value="japan", clearable=False))
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, value=["asia", "japan"], clearable=False))
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c")
     clears = dash_duo.driver.find_elements("css selector", "#c button.dash-dropdown-clear")
@@ -763,7 +794,7 @@ def test_cascader_multi_parent_checkbox_selects_children(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
+    app.callback(Output("out", "children"), Input("c", "value"))(_paths_str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     # Click the Asia parent checkbox (first row, first column)
@@ -771,7 +802,7 @@ def test_cascader_multi_parent_checkbox_selects_children(dash_duo):
         "css selector", ".dash-cascader-column:first-child .dash-cascader-checkbox"
     )
     checkboxes[0].click()
-    dash_duo.wait_for_text_to_equal("#out", "china,japan")
+    dash_duo.wait_for_text_to_equal("#out", "asia/china | asia/japan")
     assert dash_duo.get_logs() == []
 
 
@@ -781,7 +812,7 @@ def test_cascader_multi_clear_resets_to_empty_list(dash_duo):
     app.layout = dmc.MantineProvider(
         html.Div(
             [
-                Cascader(id="c", options=OPTIONS_2LEVEL, multi=True, value=["japan", "france"]),
+                Cascader(id="c", options=OPTIONS_2LEVEL, multi=True, value=[["asia", "japan"], ["europe", "france"]]),
                 html.Div(id="out"),
             ]
         )
@@ -807,7 +838,7 @@ def test_cascader_flat_options(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(str)
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()
@@ -831,7 +862,7 @@ def test_cascader_programmatic_value_update(dash_duo):
             ]
         )
     )
-    app.callback(Output("c", "value"), Input("btn", "n_clicks"), prevent_initial_call=True)(lambda n: "japan")
+    app.callback(Output("c", "value"), Input("btn", "n_clicks"), prevent_initial_call=True)(lambda n: ["asia", "japan"])
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#btn").click()
     dash_duo.wait_for_text_to_equal("#c .dash-dropdown-value", "Japan")
@@ -852,13 +883,13 @@ def test_cascader_multi_select_all_scoped_to_search(dash_duo):
             ]
         )
     )
-    app.callback(Output("out", "children"), Input("c", "value"))(_multi_values_joined)
+    app.callback(Output("out", "children"), Input("c", "value"))(_paths_str)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-dropdown-search").send_keys("jap")
     dash_duo.wait_for_element(".dash-cascader-result-row")
     dash_duo.wait_for_element(".dash-dropdown-action-button").click()  # Select all (filtered)
-    dash_duo.wait_for_text_to_equal("#out", "japan")
+    dash_duo.wait_for_text_to_equal("#out", "asia/japan")
     assert dash_duo.get_logs() == []
 
 
@@ -881,4 +912,199 @@ def test_cascader_persistence(dash_duo):
     dash_duo.driver.refresh()
     dash_duo.wait_for_element("#c")
     dash_duo.wait_for_text_to_equal("#c .dash-dropdown-value", "Japan")
+    assert dash_duo.get_logs() == []
+
+
+# --- Duplicate leaf labels across branches (path identity) ---
+
+
+def test_cascader_duplicate_leaf_labels_select_independently(dash_duo):
+    """Duplicate leaf labels under different branches select independently via full-path identity."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_DUPLICATE_LEAVES),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
+    dash_duo.start_server(app)
+    # Portland under North.
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-column:nth-child(1) .dash-cascader-row").click()  # North
+    dash_duo.wait_for_element(".dash-cascader-column:nth-child(2) .dash-cascader-row")
+    dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")[
+        0
+    ].click()  # Portland (North)
+    dash_duo.wait_for_text_to_equal("#out", "North/Portland")
+    # Portland under South is a distinct selection with a distinct path.
+    dash_duo.wait_for_element("#c").click()
+    col1_rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(1) .dash-cascader-row")
+    col1_rows[1].click()  # South
+    # "Austin" is unique to South's column, so wait on it to confirm the column switched.
+    dash_duo.wait_for_text_to_equal(
+        ".dash-cascader-column:nth-child(2) .dash-cascader-row:nth-child(2) .dash-cascader-row-label", "Austin"
+    )
+    dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")[
+        0
+    ].click()  # Portland (South)
+    dash_duo.wait_for_text_to_equal("#out", "South/Portland")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_search_duplicate_leaf_labels_distinct_rows(dash_duo):
+    """Search over duplicate labels yields one distinct row per leaf, disambiguated by breadcrumb."""
+    app = _app(Cascader(id="c", options=OPTIONS_DUPLICATE_LEAVES))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-dropdown-search").send_keys("Portland")
+    dash_duo.wait_for_element(".dash-cascader-result-row")
+    rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-result-row")
+    assert len(rows) == 2
+    breadcrumbs = {el.text for el in dash_duo.driver.find_elements("css selector", ".dash-cascader-breadcrumb")}
+    assert breadcrumbs == {"North", "South"}
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_persistence_duplicate_leaves(dash_duo):
+    """A duplicate-label selection round-trips through persistence as its full path."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_DUPLICATE_LEAVES, persistence=True),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    col1_rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(1) .dash-cascader-row")
+    col1_rows[1].click()  # South
+    dash_duo.wait_for_text_to_equal(
+        ".dash-cascader-column:nth-child(2) .dash-cascader-row:nth-child(2) .dash-cascader-row-label", "Austin"
+    )
+    dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")[
+        0
+    ].click()  # Portland (South)
+    dash_duo.wait_for_text_to_equal("#out", "South/Portland")
+
+    # Reload and check the exact path is restored (not just the "Portland" label).
+    dash_duo.driver.refresh()
+    dash_duo.wait_for_element("#c")
+    dash_duo.wait_for_text_to_equal("#out", "South/Portland")
+    assert dash_duo.get_logs() == []
+
+
+# --- Regression coverage: boolean leaves, empty/invalid values, disabled search Enter, pruning ---
+
+
+def test_cascader_boolean_leaves(dash_duo):
+    """Boolean leaf values render, are selectable, and emit their full path without console errors."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_BOOL_LEAVES),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-column:nth-child(1) .dash-cascader-row").click()  # Flags
+    # The row label is JS-coerced to lowercase ("true"), but the emitted value
+    # round-trips back to Python as the boolean True (str(True) == "True").
+    dash_duo.wait_for_text_to_equal(
+        ".dash-cascader-column:nth-child(2) .dash-cascader-row:first-child .dash-cascader-row-label", "true"
+    )
+    dash_duo.driver.find_elements("css selector", ".dash-cascader-column:nth-child(2) .dash-cascader-row")[0].click()
+    dash_duo.wait_for_text_to_equal("#out", "Flags/True")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_options_is_optional():
+    """Cascader() with no `options` no longer raises; it falls back to the [] default."""
+    c = Cascader(id="c")
+    assert c.available_properties  # constructed without error
+    assert c.to_plotly_json()["props"].get("options", []) == []
+
+
+def test_cascader_no_options_renders_empty_dropdown(dash_duo):
+    """Cascader with no `options` renders an empty, clickable dropdown with no console errors."""
+    app = _app(Cascader(id="c", placeholder="No options"))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_text_to_equal("#c .dash-dropdown-placeholder", "No options")
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-content")
+    assert not dash_duo.driver.find_elements("css selector", ".dash-cascader-row")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_single_empty_list_value_is_no_selection(dash_duo):
+    """Single-select value=[] renders as no selection (placeholder), not a phantom empty chip."""
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, value=[], placeholder="Pick one"))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_text_to_equal("#c .dash-dropdown-placeholder", "Pick one")
+    # No selected-value chip and no clear button are rendered for an empty selection.
+    assert not dash_duo.driver.find_elements("css selector", "#c .dash-dropdown-value-item")
+    assert not dash_duo.driver.find_elements("css selector", "#c button.dash-dropdown-clear")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_search_enter_skips_disabled_leaf(dash_duo):
+    """Pressing Enter in the search box selects the first ENABLED leaf, skipping disabled hits."""
+    from selenium.webdriver.common.keys import Keys
+
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_DISABLED_FIRST_LEAF),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(_path_str)
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    search = dash_duo.wait_for_element(".dash-dropdown-search")
+    search.send_keys("ja")
+    dash_duo.wait_for_element(".dash-cascader-result-row")
+    search.send_keys(Keys.ENTER)
+    # "Japan" (disabled) is the first hit in tree order; Enter must skip it and pick "Jakarta".
+    dash_duo.wait_for_text_to_equal("#out", "asia/jakarta")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_options_change_prunes_invalid_selection(dash_duo):
+    """When options change so a selected path no longer exists, that path is pruned from value."""
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(
+                    id="c",
+                    options=OPTIONS_2LEVEL,
+                    multi=True,
+                    value=[["asia", "japan"], ["europe", "france"]],
+                ),
+                html.Button("swap", id="btn"),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(_paths_str)
+    # New options drop "japan" (asia now only has "china"); "europe/france" still exists.
+    app.callback(Output("c", "options"), Input("btn", "n_clicks"), prevent_initial_call=True)(
+        lambda n: {"asia": ["china"], "europe": ["france", "germany"]}
+    )
+    dash_duo.start_server(app)
+    dash_duo.wait_for_text_to_equal("#out", "asia/japan | europe/france")
+    dash_duo.wait_for_element("#btn").click()
+    dash_duo.wait_for_text_to_equal("#out", "europe/france")
     assert dash_duo.get_logs() == []

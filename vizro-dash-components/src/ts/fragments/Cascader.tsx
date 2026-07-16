@@ -20,12 +20,17 @@ import {
   buildColumns,
   type CascaderOption,
   type CascaderOptionsRaw,
+  type CascaderPath,
   collectAllLeaves,
   collectLeaves,
   normalizeOptions,
   parentCheckState,
   searchOptions,
+  serializePath,
 } from "./cascaderUtils";
+
+/** A single root-to-leaf selection: the sequence of node `value`s (see cascaderUtils). */
+type Path = CascaderPath;
 
 export type CascaderLabels = {
   select_all?: string;
@@ -51,7 +56,7 @@ export type CascaderProps = {
   id?: string;
   setProps?: (props: Record<string, unknown>) => void;
   options: CascaderOptionsRaw;
-  value?: string | number | null | (string | number)[];
+  value?: Path | Path[] | null;
   multi?: boolean;
   searchable?: boolean;
   clearable?: boolean;
@@ -107,6 +112,10 @@ const CascaderFragment = ({
 
   const [isOpen, setIsOpen] = useState(false);
   const [activePath, setActivePath] = useState<number[]>([]);
+  // Bumped whenever a pending arrow-key focus target is queued, so the effect
+  // that applies it re-runs even when the target branch was already expanded
+  // (e.g. reopening onto a preselected path) and `columns` doesn't change.
+  const [focusTick, setFocusTick] = useState(0);
   const [localValue, setLocalValue] = useState(value);
 
   const searchValue = search_value ?? "";
@@ -129,6 +138,11 @@ const CascaderFragment = ({
     document.createElement("div"),
   );
   const searchRef = useRef<HTMLInputElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const triggerKeyDownActiveRef = useRef(false);
+  const pendingFocusRef = useRef<{ colIdx: number; rowIndex?: number } | null>(
+    null,
+  );
 
   const reactId = useId();
   const accessibleId = id ?? reactId.replace(/:/g, "");
@@ -147,36 +161,45 @@ const CascaderFragment = ({
     }
   }, [options]);
 
-  const allLeaves = useMemo(
-    () => new Set(collectAllLeaves(options)),
+  const allLeafPathsSet = useMemo(
+    () => new Set(collectAllLeaves(options).map((leaf) => leaf.key)),
     [options],
   );
-  const prevAllLeavesRef = useRef(allLeaves);
+  const prevAllLeafPathsRef = useRef(allLeafPathsSet);
   useEffect(() => {
+    // On an options change, drop any selected path that no longer terminates on
+    // a leaf (identity is the serialized path, so duplicate labels are safe).
     if (
-      prevAllLeavesRef.current === allLeaves ||
+      prevAllLeafPathsRef.current === allLeafPathsSet ||
       searchValue ||
       value === null ||
       value === undefined
     ) {
-      prevAllLeavesRef.current = allLeaves;
+      prevAllLeafPathsRef.current = allLeafPathsSet;
       return;
     }
-    prevAllLeavesRef.current = allLeaves;
-    if (Array.isArray(value)) {
-      if (multi) {
-        const invalids = value.filter((v) => !allLeaves.has(v));
-        if (invalids.length) {
-          const cleaned = value.filter((v) => allLeaves.has(v));
+    prevAllLeafPathsRef.current = allLeafPathsSet;
+    if (multi) {
+      if (Array.isArray(value)) {
+        const paths = value as Path[];
+        const cleaned = paths.filter((p) =>
+          allLeafPathsSet.has(serializePath(p)),
+        );
+        if (cleaned.length !== paths.length) {
           setProps?.({ value: cleaned });
         }
+      } else {
+        // A non-array value is invalid in multi mode; reset to an empty selection.
+        setProps?.({ value: [] });
       }
-    } else {
-      if (!allLeaves.has(value)) {
-        setProps?.({ value: null });
-      }
+    } else if (
+      !Array.isArray(value) ||
+      value.length === 0 ||
+      !allLeafPathsSet.has(serializePath(value as Path))
+    ) {
+      setProps?.({ value: null });
     }
-  }, [allLeaves, value, multi, searchValue, setProps]);
+  }, [allLeafPathsSet, value, multi, searchValue, setProps]);
 
   const finalizeClose = useCallback(() => {
     pendingSearchRef.current = "";
@@ -191,6 +214,9 @@ const CascaderFragment = ({
       setProps?.(updates);
     }
     setIsOpen(false);
+    // Radix restores focus to whatever was focused when the panel opened (the
+    // trigger), but guarantee it explicitly rather than depending on that timing.
+    requestAnimationFrame(() => triggerRef.current?.focus());
   }, [debounce, search_value, setProps]);
 
   const handleOpenChange = useCallback(
@@ -222,16 +248,23 @@ const CascaderFragment = ({
     [debounce, setProps],
   );
 
-  const selectedValues: (string | number)[] = useMemo(() => {
+  const selectedPaths: Path[] = useMemo(() => {
     const v = localValue;
     if (v === null || v === undefined) return [];
-    if (Array.isArray(v)) return v;
-    return [v];
-  }, [localValue]);
+    // multi: value is a list of paths; single: value is one path.
+    if (multi) return Array.isArray(v) ? (v as Path[]) : [];
+    // A single path must be a non-empty array; treat [] as no selection.
+    return Array.isArray(v) && v.length > 0 ? [v as Path] : [];
+  }, [localValue, multi]);
+
+  const selectedKeys = useMemo(
+    () => selectedPaths.map(serializePath),
+    [selectedPaths],
+  );
 
   const selectedSet = useMemo(
-    () => new Set<string | number>(selectedValues),
-    [selectedValues],
+    () => new Set<string>(selectedKeys),
+    [selectedKeys],
   );
 
   const columns = useMemo(
@@ -239,24 +272,55 @@ const CascaderFragment = ({
     [options, activePath],
   );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-run on focusTick (bumped whenever a pending focus target is queued), not just when columns changes
+  useEffect(() => {
+    const pending = pendingFocusRef.current;
+    if (!pending) return;
+    pendingFocusRef.current = null;
+    const root = cascaderContentRef.current;
+    if (!root) return;
+    const columnEls = root.querySelectorAll<HTMLElement>(
+      ".dash-cascader-column",
+    );
+    const columnEl = columnEls[pending.colIdx];
+    if (!columnEl) return;
+    // In single-select mode the row itself is focusable (.dash-cascader-kbd-row);
+    // in multi-select mode only its checkbox is, so fall back to that.
+    const rowEl =
+      pending.rowIndex !== undefined
+        ? columnEl.querySelector<HTMLElement>(
+            `[data-row-index="${pending.rowIndex}"]`,
+          )
+        : null;
+    const searchScope = rowEl ?? columnEl;
+    const target = searchScope.matches(".dash-cascader-kbd-row")
+      ? searchScope
+      : searchScope.querySelector<HTMLElement>(
+          ".dash-cascader-kbd-row, input[type='checkbox']:not([disabled])",
+        );
+    if (target) {
+      target.focus();
+      target.scrollIntoView({ behavior: "auto", block: "nearest" });
+    }
+  }, [focusTick]);
+
   const searchResults = useMemo(() => {
     if (!searchValue) return [];
     return searchOptions(options, searchValue);
   }, [options, searchValue]);
 
   const findLabel = useCallback(
-    (val: string | number): string => {
-      const find = (opts: CascaderOption[]): string | undefined => {
-        for (const opt of opts) {
-          if (opt.value === val) return opt.label;
-          if (opt.children) {
-            const found = find(opt.children);
-            if (found !== undefined) return found;
-          }
-        }
-        return undefined;
-      };
-      return find(options) ?? String(val);
+    (path: Path): string => {
+      // Walk the tree by path and return the terminal node's label.
+      const fallback = String(path[path.length - 1] ?? "");
+      let level = options;
+      let node: CascaderOption | undefined;
+      for (const seg of path) {
+        node = level.find((o) => o.value === seg);
+        if (!node) return fallback;
+        level = node.children ?? [];
+      }
+      return node?.label ?? fallback;
     },
     [options],
   );
@@ -363,17 +427,18 @@ const CascaderFragment = ({
   );
 
   const handleLeafClick = useCallback(
-    (leafValue: string | number) => {
+    (option: CascaderOption) => {
+      const { path, key } = option;
       if (multi) {
-        const next = selectedSet.has(leafValue)
-          ? selectedValues.filter((v) => v !== leafValue)
-          : [...selectedValues, leafValue];
+        const next = selectedSet.has(key)
+          ? selectedPaths.filter((_, i) => selectedKeys[i] !== key)
+          : [...selectedPaths, path];
         emitValue(next);
       } else {
-        localValueRef.current = leafValue;
-        valueRef.current = leafValue as typeof value;
-        setLocalValue(leafValue);
-        setProps?.({ value: leafValue });
+        localValueRef.current = path;
+        valueRef.current = path;
+        setLocalValue(path);
+        setProps?.({ value: path });
       }
       if (shouldCloseOnSelect) {
         finalizeClose();
@@ -382,7 +447,8 @@ const CascaderFragment = ({
     [
       multi,
       selectedSet,
-      selectedValues,
+      selectedPaths,
+      selectedKeys,
       emitValue,
       setProps,
       shouldCloseOnSelect,
@@ -403,6 +469,28 @@ const CascaderFragment = ({
     });
   }, []);
 
+  const handleArrowRight = useCallback(
+    (colIdx: number, rowIdx: number) => {
+      if (activePath[colIdx] !== rowIdx) {
+        handleParentClick(colIdx, rowIdx);
+      }
+      pendingFocusRef.current = { colIdx: colIdx + 1 };
+      setFocusTick((t) => t + 1);
+    },
+    [activePath, handleParentClick],
+  );
+
+  const handleArrowLeft = useCallback(
+    (colIdx: number) => {
+      if (colIdx === 0) return;
+      const parentRowIdx = activePath[colIdx - 1];
+      setActivePath((prev) => prev.slice(0, colIdx - 1));
+      pendingFocusRef.current = { colIdx: colIdx - 1, rowIndex: parentRowIdx };
+      setFocusTick((t) => t + 1);
+    },
+    [activePath],
+  );
+
   const handleSearchBranchNavigate = useCallback(
     (branchPath: number[]) => {
       setActivePath(branchPath);
@@ -411,71 +499,66 @@ const CascaderFragment = ({
     [setSearchValue],
   );
 
-  const handleParentCheckbox = useCallback(
-    (option: CascaderOption, e: React.ChangeEvent<HTMLInputElement>) => {
-      e.stopPropagation();
+  const setParentSelection = useCallback(
+    (option: CascaderOption) => {
       const state = parentCheckState(option, selectedSet);
       const leaves = collectLeaves(option);
-      let next: (string | number)[];
+      let next: Path[];
       if (state === "checked") {
-        next = selectedValues.filter((v) => !leaves.includes(v));
+        const leafKeys = new Set(leaves.map((leaf) => leaf.key));
+        next = selectedPaths.filter((_, i) => !leafKeys.has(selectedKeys[i]));
       } else {
-        const toAdd = leaves.filter((v) => !selectedSet.has(v));
-        next = [...selectedValues, ...toAdd];
+        const toAdd = leaves.filter((leaf) => !selectedSet.has(leaf.key));
+        next = [...selectedPaths, ...toAdd.map((leaf) => leaf.path)];
       }
       emitValue(next);
     },
-    [selectedSet, selectedValues, emitValue],
+    [selectedSet, selectedPaths, selectedKeys, emitValue],
   );
 
+  const handleParentCheckbox = useCallback(
+    (option: CascaderOption, e: React.ChangeEvent<HTMLInputElement>) => {
+      e.stopPropagation();
+      setParentSelection(option);
+    },
+    [setParentSelection],
+  );
+
+  // Leaves that Select All / Deselect All act on: search hits when filtering,
+  // otherwise every leaf. Shared by both handlers and canDeselectAll.
+  const pool = useMemo<CascaderOption[]>(
+    () =>
+      searchValue
+        ? searchResults.filter((r) => r.kind === "leaf").map((r) => r.option)
+        : collectAllLeaves(options),
+    [searchValue, searchResults, options],
+  );
+  const poolKeys = useMemo(() => new Set(pool.map((leaf) => leaf.key)), [pool]);
+
   const handleSelectAll = useCallback(() => {
-    const pool = searchValue
-      ? searchResults
-          .filter((r) => r.kind === "leaf")
-          .map((r) => r.option.value)
-      : collectAllLeaves(options);
-    const toAdd = pool.filter((v) => !selectedSet.has(v));
-    emitValue([...selectedValues, ...toAdd]);
-  }, [
-    searchValue,
-    searchResults,
-    options,
-    selectedSet,
-    selectedValues,
-    emitValue,
-  ]);
+    const toAdd = pool.filter((leaf) => !selectedSet.has(leaf.key));
+    emitValue([...selectedPaths, ...toAdd.map((leaf) => leaf.path)]);
+  }, [pool, selectedSet, selectedPaths, emitValue]);
 
   const handleDeselectAll = useCallback(() => {
-    const pool = new Set(
-      searchValue
-        ? searchResults
-            .filter((r) => r.kind === "leaf")
-            .map((r) => r.option.value)
-        : collectAllLeaves(options),
-    );
-    emitValue(selectedValues.filter((v) => !pool.has(v)));
-  }, [searchValue, searchResults, options, selectedValues, emitValue]);
+    emitValue(selectedPaths.filter((_, i) => !poolKeys.has(selectedKeys[i])));
+  }, [poolKeys, selectedPaths, selectedKeys, emitValue]);
 
-  const canClear = clearable && !disabled && selectedValues.length > 0;
+  const canClear = clearable && !disabled && selectedPaths.length > 0;
 
   const canDeselectAll = useMemo(() => {
     if (clearable) return true;
-    const pool = searchValue
-      ? searchResults
-          .filter((r) => r.kind === "leaf")
-          .map((r) => r.option.value)
-      : collectAllLeaves(options);
-    return !selectedValues.every((v) => pool.includes(v));
-  }, [clearable, searchValue, searchResults, options, selectedValues]);
+    return !selectedKeys.every((k) => poolKeys.has(k));
+  }, [clearable, poolKeys, selectedKeys]);
 
   const rowStyle: React.CSSProperties | undefined =
     typeof optionHeight === "number" ? { height: optionHeight } : undefined;
 
   const triggerLabels = useMemo(() => {
-    if (selectedValues.length === 0) return [];
-    if (!multi) return [findLabel(selectedValues[0])];
-    return selectedValues.map(findLabel);
-  }, [selectedValues, multi, findLabel]);
+    if (selectedPaths.length === 0) return [];
+    if (!multi) return [findLabel(selectedPaths[0])];
+    return selectedPaths.map(findLabel);
+  }, [selectedPaths, multi, findLabel]);
 
   const contentMaxHeight = maxHeight
     ? `min(${maxHeight}px, calc(100vh - 100px))`
@@ -485,6 +568,7 @@ const CascaderFragment = ({
     <Popover.Root open={isOpen} onOpenChange={handleOpenChange}>
       <Popover.Trigger asChild>
         <button
+          ref={triggerRef}
           id={id}
           type="button"
           disabled={disabled}
@@ -495,13 +579,21 @@ const CascaderFragment = ({
           data-dash-is-loading={loading || undefined}
           onKeyDown={(e) => {
             if (e.key === "ArrowDown" || e.key === "Enter") {
+              // Only a keydown that actually started on the trigger should be able
+              // to open it; a keyup can otherwise land here after focus returns to
+              // the trigger mid-selection (e.g. Enter-selecting a row), which would
+              // immediately reopen the panel that selection just closed.
+              triggerKeyDownActiveRef.current = true;
               e.preventDefault();
             }
           }}
           onKeyUp={(e) => {
             if (disabled) return;
             if (e.key === "ArrowDown" || e.key === "Enter") {
-              setIsOpen(true);
+              if (triggerKeyDownActiveRef.current) {
+                setIsOpen(true);
+              }
+              triggerKeyDownActiveRef.current = false;
             }
             if ((e.key === "Delete" || e.key === "Backspace") && canClear) {
               clearSelection();
@@ -529,7 +621,7 @@ const CascaderFragment = ({
               >
                 {triggerLabels.map((label, i) => (
                   <span
-                    key={String(selectedValues[i])}
+                    key={selectedKeys[i]}
                     className="dash-dropdown-value-item"
                   >
                     {label}
@@ -537,14 +629,14 @@ const CascaderFragment = ({
                 ))}
               </span>
             )}
-            {multi && selectedValues.length > 1 && (
+            {multi && selectedPaths.length > 1 && (
               <span
                 id={`${accessibleId}-value-count`}
                 className="dash-dropdown-value-count"
               >
                 {labels.selected_count?.replace(
                   "{num_selected}",
-                  `${selectedValues.length}`,
+                  `${selectedPaths.length}`,
                 )}
               </span>
             )}
@@ -593,11 +685,12 @@ const CascaderFragment = ({
                   ) {
                     return;
                   }
-                  const firstLeaf = searchResults.find(
-                    (r) => r.kind === "leaf",
-                  );
-                  if (firstLeaf) {
-                    handleLeafClick(firstLeaf.option.value);
+                  const first = searchResults.find((r) => !r.option.disabled);
+                  if (!first) return;
+                  if (first.kind === "leaf") {
+                    handleLeafClick(first.option);
+                  } else {
+                    handleSearchBranchNavigate(first.branchPath);
                   }
                 }}
               />
@@ -650,14 +743,14 @@ const CascaderFragment = ({
             {colOptions.map((opt, rowIdx) => {
               const isActive = activePath[colIdx] === rowIdx;
               const isLeafNode = !opt.children || opt.children.length === 0;
-              const isSelected = selectedSet.has(opt.value);
+              const isSelected = selectedSet.has(opt.key);
 
               if (isLeafNode) {
                 const kbdRow = !multi && !opt.disabled;
                 return (
                   // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style option row
                   <div
-                    key={String(opt.value)}
+                    key={opt.key}
                     className={[
                       "dash-cascader-row",
                       isSelected && !multi ? "selected" : "",
@@ -668,11 +761,19 @@ const CascaderFragment = ({
                       .join(" ")}
                     style={rowStyle}
                     tabIndex={kbdRow ? 0 : undefined}
-                    onClick={() => !opt.disabled && handleLeafClick(opt.value)}
+                    data-row-index={rowIdx}
+                    onClick={() => !opt.disabled && handleLeafClick(opt)}
                     onKeyDown={(e) => {
-                      if (kbdRow && (e.key === "Enter" || e.key === " ")) {
+                      if (opt.disabled) return;
+                      // Space is left to the native checkbox toggle in multi mode
+                      // (handling it here too would double-toggle); Enter has no
+                      // native effect on a checkbox, so it's always ours to handle.
+                      if (e.key === "Enter" || (kbdRow && e.key === " ")) {
                         e.preventDefault();
-                        handleLeafClick(opt.value);
+                        handleLeafClick(opt);
+                      } else if (e.key === "ArrowLeft" && colIdx > 0) {
+                        e.preventDefault();
+                        handleArrowLeft(colIdx);
                       }
                     }}
                   >
@@ -682,7 +783,7 @@ const CascaderFragment = ({
                         className="dash-cascader-checkbox"
                         checked={isSelected}
                         disabled={opt.disabled}
-                        onChange={() => handleLeafClick(opt.value)}
+                        onChange={() => handleLeafClick(opt)}
                         onClick={(e) => e.stopPropagation()}
                       />
                     )}
@@ -698,7 +799,7 @@ const CascaderFragment = ({
               return (
                 // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style parent row
                 <div
-                  key={String(opt.value)}
+                  key={opt.key}
                   className={[
                     "dash-cascader-row",
                     isActive ? "active" : "",
@@ -709,13 +810,28 @@ const CascaderFragment = ({
                     .join(" ")}
                   style={rowStyle}
                   tabIndex={kbdRow ? 0 : undefined}
+                  data-row-index={rowIdx}
                   onClick={() =>
                     !opt.disabled && handleParentClick(colIdx, rowIdx)
                   }
                   onKeyDown={(e) => {
-                    if (kbdRow && (e.key === "Enter" || e.key === " ")) {
+                    if (opt.disabled) return;
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      if (multi) {
+                        setParentSelection(opt);
+                      } else {
+                        handleParentClick(colIdx, rowIdx);
+                      }
+                    } else if (kbdRow && e.key === " ") {
                       e.preventDefault();
                       handleParentClick(colIdx, rowIdx);
+                    } else if (e.key === "ArrowRight") {
+                      e.preventDefault();
+                      handleArrowRight(colIdx, rowIdx);
+                    } else if (e.key === "ArrowLeft" && colIdx > 0) {
+                      e.preventDefault();
+                      handleArrowLeft(colIdx);
                     }
                   }}
                 >
@@ -764,17 +880,17 @@ const CascaderFragment = ({
         {searchResults.map((result) => {
           const { option, breadcrumb } = result;
           const isLeafHit = result.kind === "leaf";
-          const isSelected = isLeafHit && selectedSet.has(option.value);
+          const isSelected = isLeafHit && selectedSet.has(option.key);
           const rowKey =
             result.kind === "branch"
               ? `branch-${result.branchPath.join("-")}`
-              : `leaf-${breadcrumb}-${String(option.value)}`;
+              : `leaf-${option.key}`;
           const onRowClick = () => {
             if (option.disabled) return;
             if (result.kind === "branch") {
               handleSearchBranchNavigate(result.branchPath);
             } else {
-              handleLeafClick(option.value);
+              handleLeafClick(option);
             }
           };
           const kbdRow = !option.disabled && (!multi || (multi && !isLeafHit));
@@ -794,7 +910,11 @@ const CascaderFragment = ({
               tabIndex={kbdRow ? 0 : undefined}
               onClick={onRowClick}
               onKeyDown={(e) => {
-                if (kbdRow && (e.key === "Enter" || e.key === " ")) {
+                if (option.disabled) return;
+                // Space is left to the native checkbox toggle in multi mode
+                // (handling it here too would double-toggle); Enter has no
+                // native effect on a checkbox, so it's always ours to handle.
+                if (e.key === "Enter" || (kbdRow && e.key === " ")) {
                   e.preventDefault();
                   onRowClick();
                 }
@@ -806,7 +926,7 @@ const CascaderFragment = ({
                   className="dash-cascader-checkbox"
                   checked={isSelected}
                   disabled={option.disabled}
-                  onChange={() => handleLeafClick(option.value)}
+                  onChange={() => handleLeafClick(option)}
                   onClick={(e) => e.stopPropagation()}
                 />
               )}
