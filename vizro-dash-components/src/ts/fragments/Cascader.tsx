@@ -910,7 +910,11 @@ const CascaderFragment = ({
               tabIndex={kbdRow ? 0 : undefined}
               onClick={onRowClick}
               onKeyDown={(e) => {
-                if (kbdRow && (e.key === "Enter" || e.key === " ")) {
+                if (option.disabled) return;
+                // Space is left to the native checkbox toggle in multi mode
+                // (handling it here too would double-toggle); Enter has no
+                // native effect on a checkbox, so it's always ours to handle.
+                if (e.key === "Enter" || (kbdRow && e.key === " ")) {
                   e.preventDefault();
                   onRowClick();
                 }
