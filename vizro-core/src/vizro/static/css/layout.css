@@ -140,7 +140,6 @@
   padding-top: 0.5rem;
 }
 
-
 .dashboard_title {
   display: flex;
   flex-direction: column;
@@ -201,9 +200,6 @@ a:has(#logo-dark),
 }
 
 #collapse-icon.material-symbols-outlined {
-  background-color: var(--bs-tertiary-bg);
-  border: 1px solid var(--bs-border-color);
-  border-radius: 50%;
   color: var(--bs-tertiary-color);
   cursor: pointer;
   font-size: 26px;
@@ -219,6 +215,42 @@ a:has(#logo-dark),
   justify-content: center;
   padding-top: 22px;
   width: 0;
+}
+
+/* Side nav: wrapper that holds dbc.Navbar + the collapse icon below it. */
+#nav-bar-wrapper {
+  border-right: 1px solid var(--bs-border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Remove the redundant border from the navbar itself when it sits inside the wrapper. */
+#nav-bar-wrapper #nav-bar {
+  border-right: none;
+}
+
+/* Collapse icon at the bottom of the wrapper via margin-top: auto. */
+#nav-bar-wrapper #collapse-icon-outer {
+  flex-shrink: 0;
+  margin-top: auto;
+  padding-bottom: 16px;
+  padding-top: 0;
+  width: 60px;
+}
+
+#nav-bar-wrapper #collapse-icon.material-symbols-outlined {
+  position: static;
+}
+
+/* Collapse icon inside header-controls (no side nav-bar): flows next to the theme switch. */
+#header-controls #collapse-icon-outer {
+  padding-top: 0;
+  width: auto;
+}
+
+#header-controls #collapse-icon.material-symbols-outlined {
+  font-size: 20px;
+  position: static;
 }
 
 /*
@@ -253,10 +285,6 @@ Current logic:
 
 /* Apply zoom-out on small screen sizes */
 @media screen and (width <= 576px), screen and (height <= 576px) {
-  #collapse-icon-outer {
-    padding-top: 16px;
-  }
-
   #nav-control-panel-inner {
     padding-top: 16px;
   }
@@ -312,13 +340,6 @@ Current logic:
 
   #nav-control-panel-inner {
     padding-top: 12px;
-  }
-
-  #collapse-left-side.show:has(#nav-control-panel:not([hidden]))
-    ~ #collapse-icon-outer
-    #collapse-icon {
-    right: -7px;
-    z-index: 10;
   }
 
   #nav-bar {

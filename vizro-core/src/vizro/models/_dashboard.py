@@ -63,6 +63,7 @@ _InnerPageContentType = TypedDict(
         "page-components": html.Div,
         "nav-bar": dbc.Navbar,
         "nav-control-panel": html.Div,
+        "collapse-icon-outer": html.Div,
     },
 )
 
@@ -174,7 +175,6 @@ class Dashboard(VizroBaseModel):
                 ClientsideFunction(namespace="dashboard", function_name="collapse_nav_panel"),
                 [
                     Output("collapse-left-side", "is_open"),
-                    Output("collapse-icon", "style"),
                     Output("collapse-tooltip", "children"),
                 ],
                 Input("collapse-icon", "n_clicks"),
@@ -358,6 +358,25 @@ class Dashboard(VizroBaseModel):
             id="nav-control-panel", children=nav_control_panel_content, hidden=_all_hidden(nav_control_panel_content)
         )
 
+        collapse_icon_outer = html.Div(
+            children=[
+                html.Span(id="collapse-icon", children="keyboard_arrow_left", className="material-symbols-outlined"),
+                dbc.Tooltip(
+                    id="collapse-tooltip",
+                    children="Hide Menu",
+                    placement="right",
+                    target="collapse-icon",
+                ),
+            ],
+            id="collapse-icon-outer",
+            hidden=_all_hidden([nav_control_panel]),
+        )
+
+        # When nav-bar is absent, insert the collapse icon into header_controls directly
+        nav_bar_is_side = not _all_hidden([nav_bar]) and not self._is_top_navigation
+        if not nav_bar_is_side:
+            header_controls.children.insert(-1, collapse_icon_outer)
+
         return html.Div(
             [
                 header_left,
@@ -366,6 +385,7 @@ class Dashboard(VizroBaseModel):
                 page_components,
                 nav_bar,
                 nav_control_panel,
+                collapse_icon_outer if nav_bar_is_side else None,
             ]
         )
 
@@ -394,19 +414,9 @@ class Dashboard(VizroBaseModel):
             is_open=True,
             dimension="width",
         )
-        collapse_icon_outer = html.Div(
-            children=[
-                html.Span(id="collapse-icon", children="keyboard_arrow_left", className="material-symbols-outlined"),
-                dbc.Tooltip(
-                    id="collapse-tooltip",
-                    children="Hide Menu",
-                    placement="right",
-                    target="collapse-icon",
-                ),
-            ],
-            id="collapse-icon-outer",
-            hidden=_all_hidden([nav_control_panel]),
-        )
+        collapse_icon_outer = inner_page["collapse-icon-outer"]
+        nav_bar_is_side = not _all_hidden([nav_bar]) and not self._is_top_navigation
+
         header = html.Div(
             id="header",
             children=[header_left, header_right],
@@ -420,7 +430,7 @@ class Dashboard(VizroBaseModel):
                 nav_bar,
                 right_side,
                 collapse_left_side,
-                collapse_icon_outer,
+                collapse_icon_outer if nav_bar_is_side else None,
             ]
         )
 
@@ -437,15 +447,18 @@ class Dashboard(VizroBaseModel):
         collapse_left_side = outer_page["collapse-left-side"]
         collapse_icon_outer = outer_page["collapse-icon-outer"]
         right_side = outer_page["right-side"]
-
-        # Build header
         header = outer_page["header"]
+
+        nav_bar_is_side = not _all_hidden([nav_bar]) and not self._is_top_navigation
+        nav_bar_section = (
+            html.Div(id="nav-bar-wrapper", children=[nav_bar, collapse_icon_outer]) if nav_bar_is_side else nav_bar
+        )
 
         page_main = html.Div(
             id="page-main",
-            children=[nav_bar, collapse_left_side, collapse_icon_outer, right_side]
+            children=[nav_bar_section, collapse_left_side, right_side]
             if not self._is_top_navigation
-            else [collapse_left_side, collapse_icon_outer, right_side],
+            else [collapse_left_side, right_side],
         )
 
         page_main_outer = html.Div(

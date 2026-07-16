@@ -35,7 +35,7 @@ page_2 = vm.Page(
 
 dashboard = vm.Dashboard(
     pages=[page_1, page_2],
-    navigation=vm.Navigation(nav_selector=vm.NavBar())
+    # navigation=vm.Navigation(nav_selector=vm.NavBar())
 )
 
 if __name__ == "__main__":
