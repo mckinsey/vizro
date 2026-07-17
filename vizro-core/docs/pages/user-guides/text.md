@@ -6,6 +6,8 @@ This guide shows you how to display text in your dashboard with the [`Text` comp
 
     Choose `Text` for plain Markdown text without styling — introductory paragraphs, page-level descriptions, or inline explanatory notes. For text that should stand out inside a bordered callout, or that acts as a navigation tile, use [`Card`](card.md) instead. To trigger an action or navigate, use [`Button`](button.md).
 
+**API reference:** [`Text`][vizro.models.Text]
+
 !!! note "Card and Text components"
 
     The [`Card` component](card.md) and `Text` component both enable you to add text to your page using [Markdown syntax](https://markdown-guide.readthedocs.io/en/latest/) through the underlying Dash component [`dcc.Markdown`](https://dash.plotly.com/dash-core-components/markdown/).
