@@ -765,7 +765,7 @@ We still have an explicit actions chain `[update_time_date_formats, fetch_weathe
 
 In terms of execution order, we know that `fetch_weather` can only execute once `update_time_date_formats` has completed since these are in an explicit actions chain. But when `update_time_date_formats` completes, as well as triggering `fetch_weather`, it also implicitly triggers `update_time_card` and `update_date_card` simultaneously. Looking at the flowchart, we can see that all three of these actions can run in parallel and, in general, will do so. Each action will update its outputs on screen as soon as it has completed.
 
-??? details "Parallel execution is not guaranteed"
+!!! warning "Parallel execution is not guaranteed"
 
     The reason we say that the actions will _in general_ run in parallel wherever possible is that, as [explained in the Dash documentation](https://dash.plotly.com/advanced-callbacks#as-a-direct-result-of-user-interaction), execution depends on the server environment. If you [use the Flask development server](../user-guides/run-deploy.md#develop-in-python-script), it is by default set to run multi-threaded and so actions can execute in parallel. In production, if you [use gunicorn](../user-guides/run-deploy.md#gunicorn) with multiple workers then multiple actions can run in parallel.
 

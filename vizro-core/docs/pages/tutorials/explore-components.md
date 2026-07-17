@@ -35,7 +35,7 @@ There's no need to install Vizro locally because you can experiment with the com
 
 For more information about working with Vizro on PyCafe, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
 
-??? note "If you prefer working in a Notebook or Python script"
+!!! note "If you prefer working in a Notebook or Python script"
 
     To work in a Notebook or locally using a Python script, you need to [install Vizro](../user-guides/install.md).
 
