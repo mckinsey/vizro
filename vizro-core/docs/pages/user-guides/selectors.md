@@ -151,6 +151,8 @@ You can pick a different starting selection by setting `value` on [`Cascader`][v
 
     If a leaf label is unique across the whole tree, you can set `value` using just the leaf instead of its full path; Vizro resolves it to the matching path for you. For example, if `Japan` and `India` appear nowhere else in the tree, then `value="Japan"` is equivalent to `value=["Asia", "Japan"]` (single-select), and `value=["Japan", "India"]` is equivalent to `value=[["Asia", "Japan"], ["Asia", "India"]]` (multi-select). This shorthand only works when the leaf is unambiguous — if the same label appears under more than one group, you must give the full path.
 
+In a hierarchical [`Filter`][vizro.models.Filter], every path in `options` must be as deep as `Filter.column` is long, since each level is matched against the corresponding column. Below, `Filter.column=["continent", "country"]` has two levels, so each branch is a flat list of countries; a deeper branch would produce paths that no longer line up with the columns and match no rows. (A [`Parameter`][vizro.models.Parameter] does not match against columns, so it accepts arbitrarily nested trees.)
+
 !!! example "Hierarchical selector multi vs single"
 
     === "app.py"
@@ -164,7 +166,7 @@ You can pick a different starting selection by setting `value` on [`Cascader`][v
 
         options = {
             "Asia": ["Japan", "India"],
-            "Europe": {"West": ["France", "Germany"], "North": ["Norway"]},
+            "Europe": ["France", "Germany", "Norway"],
         }
 
         page = vm.Page(
@@ -183,7 +185,7 @@ You can pick a different starting selection by setting `value` on [`Cascader`][v
             ],
             controls=[
                 vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options)),
-                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, multi=False, value=["Europe", "West", "France"]))
+                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, multi=False, value=["Europe", "France"]))
             ],
         )
 
@@ -225,7 +227,6 @@ You can pick a different starting selection by setting `value` on [`Cascader`][v
                   multi: false
                   value:
                     - Europe
-                    - West
                     - France
             title: Gapminder 2007
         ```
