@@ -1,6 +1,6 @@
 # Models
 
-Vizro's dashboard grammar is defined by a small set of Pydantic models in `vizro.models`, typically aliased as `vm` (`import vizro.models as vm`). Every dashboard is built by composing these models. Use the [Model index](#model-index) below to jump to the reference entry for a specific model; the full auto-generated reference for every public model follows in the [full model reference](#full-model-reference) section.
+Vizro's grammar of dashboards is defined by a small set of Pydantic models in `vizro.models`, typically aliased as `vm` (`import vizro.models as vm`). Every dashboard is built by composing these models. Use the [Model index](#model-index) below to jump to the reference entry for a specific model; the full auto-generated reference for every public model follows in the [full model reference](#full-model-reference) section.
 
 ## Model index
 
@@ -21,7 +21,7 @@ Vizro's dashboard grammar is defined by a small set of Pydantic models in `vizro
 | [`Flex`][vizro.models.Flex]    | Flexible-box layout for responsive arrangements. See the [layouts user guide](../user-guides/layouts.md#flex-layout).                            |
 | [`Layout`][vizro.models.Layout] | Deprecated alias for `Grid`. See the [deprecations page](deprecations.md). Prefer `Grid` in new code.                                             |
 
-### Visualisation components
+### Visualization components
 
 | Model                              | Purpose                                                                                                                                       |
 | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -45,7 +45,7 @@ Vizro's dashboard grammar is defined by a small set of Pydantic models in `vizro
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`Filter`][vizro.models.Filter]           | Applies a filter to one or more components based on a column value. See the [filters user guide](../user-guides/filters.md).                               |
 | [`Parameter`][vizro.models.Parameter]     | Overrides a function argument on one or more components. See the [parameters user guide](../user-guides/parameters.md).                                    |
-| [`ControlGroup`][vizro.models.ControlGroup] | Groups related controls together in the sidebar for organisation.                                                                                          |
+| [`ControlGroup`][vizro.models.ControlGroup] | Groups related controls together in the sidebar for organization.                                                                                          |
 
 ### Selectors
 

@@ -64,7 +64,7 @@ Use these instead of writing a custom action wherever the built-in fits.
 | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | [`va.export_data()`][vizro.actions.export_data]           | Export filtered data of targeted components to CSV or XLSX.                                                                         | [Handle data](user-guides/data-actions.md)                       |
 | [`va.set_control()`][vizro.actions.set_control]           | Set a `Filter` or `Parameter` value from a graph or table click, row selection, or another source component.                        | [Graph and table interactions](user-guides/graph-table-actions.md) |
-| [`va.filter_interaction()`][vizro.actions.filter_interaction] | Legacy alias for cross-filter behaviour. Prefer `va.set_control` in new code.                                                   | [Graph and table interactions](user-guides/graph-table-actions.md) |
+| [`va.filter_interaction()`][vizro.actions.filter_interaction] | Legacy alias for cross-filter behavior. Prefer `va.set_control` in new code.                                                   | [Graph and table interactions](user-guides/graph-table-actions.md) |
 | [`va.show_notification()`][vizro.actions.show_notification] | Show a toast notification.                                                                                                        | [Notifications](user-guides/notification-actions.md)              |
 | [`va.update_notification()`][vizro.actions.update_notification] | Update an already-visible toast (progress, success, error).                                                                   | [Notifications](user-guides/notification-actions.md)              |
 
@@ -106,7 +106,7 @@ The following features **cannot** be expressed in a YAML or JSON dashboard confi
 1. **Custom components** subclassing [`VizroBaseModel`][vizro.models.VizroBaseModel]. See [custom components](user-guides/custom-components.md).
 2. **Custom actions** wrapped with `@capture("action")`. See [custom actions](user-guides/custom-actions.md).
 3. **`Model.add_type(field_name, new_type)`** to widen a discriminated-union field for a custom component. See [custom components](user-guides/custom-components.md).
-4. **Custom dashboard headers or overrides** (any argument that takes a Dash / dbc Python object rather than a serialisable dict).
+4. **Custom dashboard headers or overrides** (any argument that takes a Dash / dbc Python object rather than a serializable dict).
 5. **Registration of `CapturedCallable`s** (`@capture("graph"|"table"|"figure"|"action")` decorators, custom `plotly` functions passed to `Graph.figure`, etc.). YAML and JSON can only reference registered names.
 
 ## Top errors and fixes
