@@ -54,6 +54,8 @@ To download data from your dashboard, you can use the [`export_data` action][viz
 
     === "Result"
 
+        The dashboard renders the "Export data action" example.
+
         [![ExportData]][exportdata]
 
 When you click the "Export data" button, the data for all graphs, tables and figures on the page is downloaded. In this example, this will produce a csv file for the graph's source data `px.data.iris()`.

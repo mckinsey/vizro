@@ -57,6 +57,8 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
     === "Result"
 
+        The dashboard renders the "Card" example.
+
         [![Card]][card]
 
 ## Customize card text
@@ -195,6 +197,8 @@ The [`Card`][vizro.models.Card] uses the [`vdc.Markdown` component](https://gith
 
     === "Result"
 
+        The dashboard renders the "Card using markdown" example.
+
         [![CardText]][cardtext]
 
 ## Add header and footer
@@ -240,6 +244,8 @@ You can now add a header and footer to your [`Card`][vizro.models.Card] by using
         ```
 
     === "Result"
+
+        The dashboard renders the "Card with header and footer" example.
 
         [![CardHeaderFooter]][cardheaderfooter]
 
@@ -310,6 +316,8 @@ An image ALT text offers a description to your image and serves as a text placeh
         ```
 
     === "Result"
+
+        The dashboard renders the "Card with image" example.
 
         [![CardImageDefault]][cardimagedefault]
 
@@ -395,6 +403,8 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
         ```
 
     === "Result"
+
+        The dashboard renders the "Card with styled image" example.
 
         [![CardImageStyled]][cardimagestyled]
 
@@ -488,6 +498,8 @@ To float an image for example to the right of the text, use the `src` attribute 
         ```
 
     === "Result"
+
+        The dashboard renders the "Card with floating image" example.
 
         [![CardImageFloating]][cardimagefloating]
 
@@ -598,6 +610,8 @@ To create a navigation card:
 
     === "Result"
 
+        The dashboard renders the "Navigation Card" example.
+
         [![NavCard]][navcard]
 
 If you now click on the card area, you should automatically be redirected to the relevant `href`.
@@ -664,6 +678,8 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) to the `
         ```
 
     === "Result"
+
+        The dashboard renders the "Card with a tooltip" example.
 
         [![CardInfoIcon]][cardinfoicon]
 
@@ -743,6 +759,8 @@ The example below shows how to use the [set_control action][vizro.actions.set_co
 
     === "Result"
 
+        The dashboard renders the "Action triggered by card" example.
+
         ![](../../assets/user_guides/components/actions-card-trigger.gif)
 
 ## The `extra` argument
@@ -792,6 +810,8 @@ An example use would be to specify a fixed `Card` height and width. For this, yo
         ```
 
     === "Result"
+
+        The dashboard renders the "Card with limited height" example.
 
         [![CardStyle]][cardstyle]
 

@@ -68,6 +68,8 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
 
     === "Result"
 
+        The dashboard renders the "Basic Dash AG Grid" example.
+
         [![AGGrid]][aggrid]
 
 ## Interact with other graphs and tables
@@ -116,6 +118,8 @@ By default, pagination is enabled in AG Grid to improve performance and usabilit
         ```
 
     === "Result"
+
+        The dashboard renders the "Dash AG Grid without pagination" example.
 
         [![AGGrid]][aggrid]
 
@@ -192,6 +196,8 @@ In the example below we select and format some columns of the gapminder data.
         ```
 
     === "Result"
+
+        The dashboard renders the "AG Grid with formatted columns" example.
 
         [![AGGrid2]][aggrid2]
 
@@ -288,6 +294,8 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
         ```
 
     === "Result"
+
+        The dashboard renders the "AG Grid with column sizing" example.
 
         [![AGGridColumnSize]][aggridcolumnsize]
 
@@ -416,6 +424,8 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
 
     === "Result"
 
+        The dashboard renders the "Styled and modified Dash AG Grid" example.
+
         [![AGGrid3]][aggrid3]
 
 If the available arguments are not sufficient, there is always the option to [create a custom AG Grid callable](custom-tables.md).
@@ -514,6 +524,8 @@ All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/r
         ```
 
     === "Result"
+
+        The dashboard renders the "Dash DataTable" example.
 
         [![Table]][table]
 
@@ -648,6 +660,8 @@ As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.c
 
     === "Result"
 
+        The dashboard renders the "Styled Dash DataTable" example.
+
         [![Table2]][table2]
 
 If the available arguments are not sufficient, there is always the option to create a [custom Dash DataTable](custom-tables.md).
@@ -724,6 +738,8 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
 
     === "Result"
 
+        The dashboard renders the "Formatted AgGrid" example.
+
         [![FormattedGrid]][formattedgrid]
 
 ### Formatted DataTable
@@ -786,6 +802,8 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
         ```
 
     === "Result"
+
+        The dashboard renders the "Formatted DataTable" example.
 
         [![FormattedTable]][formattedtable]
 

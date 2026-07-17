@@ -111,6 +111,8 @@ The following examples show a possible version of a custom table. In this case t
 
     === "Result"
 
+        The dashboard renders the "Custom Dash DataTable" example.
+
         [![Table3]][table3]
 
 ??? example "Custom Dash AgGrid"
@@ -211,6 +213,8 @@ The following examples show a possible version of a custom table. In this case t
         ```
 
     === "Result"
+
+        The dashboard renders the "Custom Dash AgGrid" example.
 
         [![GridCustom]][gridcustom]
 

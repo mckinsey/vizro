@@ -386,6 +386,8 @@ When sharing your dashboard, it can be useful to share or bookmark a link to a p
 
     === "Result"
 
+        The dashboard renders the "Shareable URL that includes filter" example.
+
         [![filterInUrl]][filterinurl]
 
 !!! note "Page state rather than dashboard state"
