@@ -92,6 +92,8 @@ The below example uses the Iris data saved to a file `iris.csv` in the same dire
 
     === "Result"
 
+        The dashboard renders the "Static data supplied directly" example.
+
         [![DataBasic]][databasic]
 
 The [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid] and [`Table`][vizro.models.Table] models all have an argument called `figure`. This accepts a function (in the [supply directly example](#supply-directly), `px.scatter`) that takes a pandas DataFrame as its first argument. The name of this argument is always `data_frame`. When configuring the dashboard using Python, it is optional to give the name of the argument: if you like, you could write `data_frame=iris` instead of `iris`.
@@ -146,6 +148,8 @@ If you would like to specify your dashboard configuration through YAML then you 
 
     === "Result"
 
+        The dashboard renders the "Static data referenced by name" example.
+
         [![DataBasic]][databasic]
 
 It is also possible to refer to a named data source using the Python API: `px.scatter("iris", ...)` or `px.scatter(data_frame="iris", ...)` would work if the `"iris"` data source has been registered in the data manager.
@@ -193,6 +197,8 @@ The example below shows how data is fetched dynamically every time the page is r
         1. Dynamic data is referenced by the name of the data source `"iris"`.
 
     === "Result"
+
+        The dashboard renders the "Dynamic data" example.
 
         [![DynamicData]][dynamicdata]
 
@@ -350,6 +356,8 @@ For example, let us extend the [dynamic data example](#dynamic-data) above into 
 
     === "Result"
 
+        The dashboard renders the "Parametrized dynamic data" example.
+
         [![ParametrizedDynamicData]][parametrizeddynamicdata]
 
 Parametrized data loading is compatible with [caching](#configure-cache). The cache uses [memoization](https://flask-caching.readthedocs.io/en/latest/#memoization), so that the dynamic data function's arguments are included in the cache key. This means that `load_iris_data(number_of_points=10)` is cached independently of `load_iris_data(number_of_points=20)`.
@@ -416,6 +424,8 @@ For example, let us extend the [parametrized dynamic data example](#parametrize-
         1. This filter implicitly controls the dynamic data source `"iris"`, which supplies the `data_frame` to the targeted `vm.Graph`. On page refresh or when the dynamic data parameter changes, Vizro reloads this data, finds all the unique values in the `"species"` column and sets the categorical selector's `options` accordingly. We set `selector=vm.RadioItems()` just to make the `options` more obvious in the example app; if `selector` had not been specified then the filter would have defaulted to using `vm.Dropdown` but options would refresh exactly the same way.
 
     === "Result"
+
+        The dashboard renders the "Dynamic filters" example.
 
         [![DynamicFilter]][dynamicfilter]
 

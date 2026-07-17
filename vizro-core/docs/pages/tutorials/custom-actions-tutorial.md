@@ -40,6 +40,8 @@ Let's start by making a very simple single-page app that tells us the current ti
 
     === "Result"
 
+        The dashboard renders the "App layout" example.
+
         [![CustAction1]][custaction1]
 
 We have specified that a button should be included in the page layout but haven't configured what should happen when it is clicked. Let's define an action for that and [attach it to the button](../user-guides/custom-actions.md#trigger-an-action-with-a-button) with the `actions` argument and the [`Action`][vizro.models.Action] model.
@@ -89,6 +91,8 @@ We have specified that a button should be included in the page layout but haven'
         1. To use the `vm.Card` as an output, we supply `id="time_card"` that matches onto the action's `outputs`. It does not matter that this component is defined after the `vm.Action` that uses it.
 
     === "Result"
+
+        The dashboard renders the "A simple action" example.
 
         [![CustAction2]][custaction2]
 
@@ -159,6 +163,8 @@ Let's extend our action to depend on an _input_ from the user's screen. As befor
 
     === "Result"
 
+        The dashboard renders the "Add `Switch` to layout" example.
+
         [![CustAction3]][custaction3]
 
 Now we need to connect `vm.Switch(id="clock_switch")` to our `update_card` action. We add an argument `use_24_hour_clock` to the `update_card` function and configure the function call in `vm.Action` to use the `clock_switch` component as the input value of this argument.
@@ -215,6 +221,8 @@ Now we need to connect `vm.Switch(id="clock_switch")` to our `update_card` actio
         1. The argument `use_24_hour_clock` is set at runtime to the value of the `clock_switch` component. This will be `True` or `False` depending on whether the switch is toggled on or off. Here we use a keyword argument but, just like a normal Python function call, we could also use a positional argument as `update_card("clock_switch")`.
 
     === "Result"
+
+        The dashboard renders the "Connect `Switch` to `update_card`" example.
 
         [![CustAction4]][custaction4]
 
@@ -297,6 +305,8 @@ Let's extend our example to handle multiple inputs and outputs. We add another c
         1. There are now two outputs: `time_card` and `date_card`.
 
     === "Result"
+
+        The dashboard renders the "Multiple inputs and outputs" example.
 
         [![CustAction5]][custaction5]
 
@@ -445,6 +455,8 @@ The full code is shown below.
 
     === "Result"
 
+        The dashboard renders the "Explicit actions chain" example.
+
         [![CustAction6]][custaction6]
 
 When you click the button, the `update_cards` action executes and sets the placeholder message "Fetching current weather...". When this action completes, the `fetch_weather` action executes to find the actual weather and update the message. The Open-Meteo API request generally completes very quickly and so "Fetching current weather..." will only flash on your screen very briefly. If you'd like to artificially slow down the `fetch_weather` action to see it more clearly then you can add `from time import sleep; sleep(3)` to the function body to add a delay of 3 seconds.
@@ -569,6 +581,8 @@ When the city is selected in the dropdown, we want to immediately update the car
         1. `update_time_date_formats` sets the `clock_switch` and `date_radio_items` form fields and also updates `submit_button`. This update of `submit_button` triggers the actions chain associated with the submit button.
 
     === "Result"
+
+        The dashboard renders the "Implicit actions chain" example.
 
         [![CustAction7]][custaction7]
 
@@ -725,6 +739,8 @@ As an additional enhancement we add `location_dropdown` as an input to these act
         1. Now that `submit_button` no longer exists, it is the responsibility of `update_time_date_formats` to update `weather_card` with the "Fetching current weather..." placeholder. This action is otherwise unchanged.
 
     === "Result"
+
+        The dashboard renders the "Parallel actions" example.
 
         [![CustAction8]][custaction8]
 
@@ -892,6 +908,8 @@ For a better user experience, we can wrap the relevant code in `try/except` so t
         1. Fetching `temperature` from the response is another potential source of an exception, for example if the structure of the Open-Meteo response changes, so we also put this line inside the `try`.
 
     === "Result"
+
+        The dashboard renders the "Handle errors" example.
 
         [![CustAction9]][custaction9]
 

@@ -129,6 +129,8 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
 
     === "Result"
 
+        The dashboard renders the "Custom `plotly.express` scatter chart with a `Parameter`" example.
+
         [![Graph2]][graph2]
 
 ## New Waterfall chart based on `go.Figure()`
@@ -222,6 +224,8 @@ The below examples shows a more involved use-case. We create and style a waterfa
         ```
 
     === "Result"
+
+        The dashboard renders the "Custom `go.Figure()` waterfall chart with a `Parameter`" example.
 
         [![Graph3]][graph3]
 

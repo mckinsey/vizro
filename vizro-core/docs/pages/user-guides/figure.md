@@ -102,6 +102,8 @@ To add a `Figure` to your page:
 
     === "Result"
 
+        The dashboard renders the "Use existing figure functions" example.
+
         [![Figure]][figure]
 
 ### Key Performance Indicator (KPI) cards
@@ -288,6 +290,8 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
         ```
 
     === "Result"
+
+        The dashboard renders the "KPI card variations" example.
 
         [![KPICards]][kpicards]
 
