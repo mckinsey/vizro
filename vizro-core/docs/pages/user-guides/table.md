@@ -6,7 +6,7 @@ There are two ways to visualize tables in Vizro, using either [AG Grid](#ag-grid
 
 ## Choose between AG Grid and Dash DataTable
 
-Vizro offers two models - the [`AgGrid`][vizro.models.AgGrid] model and the [`Table`][vizro.models.Table] model - for the above two approaches respectively. They both visualize tabular data in similar ways.
+Vizro offers two models - the [`AgGrid`][vizro.models.AgGrid] model and the [`Table`][vizro.models.Table] model - for the AG Grid and Dash DataTable approaches respectively. They both visualize tabular data in similar ways.
 
 The main difference between the two is that the [`AgGrid`][vizro.models.AgGrid] model is based on Plotly's [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) component, while the [`Table`][vizro.models.Table] model is based on the [Dash DataTable](https://dash.plotly.com/datatable) component.
 

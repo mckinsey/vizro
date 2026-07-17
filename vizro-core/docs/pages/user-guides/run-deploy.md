@@ -69,7 +69,7 @@ The `run` method wraps [Dash's run method](https://dash.plotly.com/reference#app
 
 ### Develop in a Notebook
 
-If you develop in a Jupyter Notebook or JupyterLab then you should use exactly the [same code as above](#develop-in-python-script):
+If you develop in a Jupyter Notebook or JupyterLab then you should use exactly the [same code as in the Python script example](#develop-in-python-script):
 
 ```python
 from vizro import Vizro

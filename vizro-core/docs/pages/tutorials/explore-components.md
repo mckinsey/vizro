@@ -330,7 +330,7 @@ These steps add two KPI cards to the second page:
 1. Add a [`Figure`][vizro.models.Figure] model to the list of `components`.
 1. Inside the `figure` argument of the `Figure`, use the [`kpi_card`][vizro.figures.kpi_card] function.
 1. Configure your `kpi_card` by setting the `value_column`, `agg_func`, `value_format`, and `title`. To learn more about configuring KPI cards, check out our [guide to KPI cards](../user-guides/figure.md#key-performance-indicator-kpi-cards).
-1. Repeat the above steps to add another KPI card to the page.
+1. Repeat the previous three steps to add another KPI card to the page.
 
 !!! example "Add KPI Cards"
 
@@ -1165,7 +1165,7 @@ Take a moment to interact with the parameter. Notice how the x-axis of all chart
 
 ### 5.4. Add a custom chart
 
-You may notice that the `bar` chart has many inner lines. This happens because each line represents a unique data point when an unaggregated dataset is provided to `px.bar`. To avoid this, you can aggregate the data before plotting. However, the aggregation needs to be dynamic, based on the parameter you added in the previous step. The following steps create a custom chart:
+You may notice that the `bar` chart has many inner lines. This happens because each line represents a unique data point when an unaggregated dataset is provided to `px.bar`. To avoid this, you can aggregate the data before plotting. However, the aggregation needs to be dynamic, based on the parameter added in [Step 5.3](#53-add-a-parameter). The following steps create a custom chart:
 
 1. Create a function that takes the `data_frame` as input and returns a Plotly figure.
 1. Decorate the function with the `@capture(graph)` decorator.
