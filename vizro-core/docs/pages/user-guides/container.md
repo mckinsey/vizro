@@ -159,8 +159,6 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
     === "Result"
 
-        The dashboard renders the "Container" example.
-
         [![Container]][container]
 
 Note that an almost identical layout can also be achieved using solely the [`Page.layout`](layouts.md) by configuring the `Page.layout` as `vm.Grid(grid = [[0, 1], [2, 2]])`.
@@ -297,8 +295,6 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
 
     === "Result"
 
-        The dashboard renders the "Container with different styles" example.
-
         [![StyleContainer]][stylecontainer]
 
 If you want to style your `Container` beyond the styling options available inside `variant`, please refer to our user guide on [overwriting CSS for selected components](custom-css.md#overwrite-css-for-selected-components).
@@ -386,8 +382,6 @@ Collapsible containers are supported in both `Grid` and `Flex` layouts. However,
 
     === "Result"
 
-        The dashboard renders the "Collapsible container inside `Flex`" example.
-
         [![CollapsibleContainerFlex]][collapsiblecontainerflex]
 
 Collapsible containers can be used in `Grid` layout as well.
@@ -460,8 +454,6 @@ Collapsible containers can be used in `Grid` layout as well.
         ```
 
     === "Result"
-
-        The dashboard renders the "Collapsible container inside `Grid`" example.
 
         [![CollapsibleContainerGrid]][collapsiblecontainergrid]
 
@@ -546,8 +538,6 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
         ```
 
     === "Result"
-
-        The dashboard renders the "Container with tooltip" example.
 
         [![ContainerInfoIcon]][containerinfoicon]
 
@@ -637,8 +627,6 @@ Here are a few cases where you might want to use `controls` within a `Container`
         ```
 
     === "Result"
-
-        The dashboard renders the "Container with controls" example.
 
         [![ContainerWithControls]][containerwithcontrols]
 

@@ -68,8 +68,6 @@ To display a notification, call [`show_notification`][vizro.actions.show_notific
 
     === "Result"
 
-        The dashboard renders the "Basic notification" example.
-
         [![BasicNotification]][basicnotification]
 
 When you click the button, a notification appears in the top-right corner of the screen. Since only `text` is provided, the notification uses the default `variant="info"` styling with a blue color scheme and an info icon. The `text` field accepts [Markdown text](https://markdown-guide.readthedocs.io/).
@@ -135,8 +133,6 @@ By default, notifications use the capitalized variant name as the title (e.g., "
         ```
 
     === "Result"
-
-        The dashboard renders the "Custom content" example.
 
         [![CustomNotification]][customnotification]
 
@@ -228,8 +224,6 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
 
     === "Result"
 
-        The dashboard renders the "Auto-close settings" example.
-
         [![AutoCloseNotification]][autoclosenotification]
 
 ### Chain with other actions
@@ -296,8 +290,6 @@ Notifications can be chained with other actions to provide user feedback. For ex
         ```
 
     === "Result"
-
-        The dashboard renders the "Notification with export" example.
 
         [![ExportNotification]][exportnotification]
 
@@ -376,8 +368,6 @@ You can update an existing notification with the [`update_notification`][vizro.a
         ```
 
     === "Result"
-
-        The dashboard renders the "Update notification" example.
 
         [![UpdateNotification]][updatenotification]
 

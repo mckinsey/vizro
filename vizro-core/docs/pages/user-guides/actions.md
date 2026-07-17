@@ -85,8 +85,6 @@ Here is an example action that uses the [`export_data` action](data-actions.md#e
 
     === "Result"
 
-        The dashboard renders the "Action triggered by button" example.
-
         [![ExportData]][exportdata]
 
 When you click the "Export data" button, the data for all graphs, tables and figures on the page is downloaded. In this example, this will produce a csv file for the graph's source data `px.data.iris()`.
@@ -165,8 +163,6 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
         ```
 
     === "Result"
-
-        The dashboard renders the "Cross-filter from graph to table" example.
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif)
 

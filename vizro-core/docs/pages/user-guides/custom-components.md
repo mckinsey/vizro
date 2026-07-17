@@ -147,9 +147,6 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
-
-        The dashboard renders the "Example based on existing component" example.
-
         [![CustomComponent1]][CustomComponent1]
 
     [CustomComponent1]: ../../assets/user_guides/custom_components/custom-components0.png
@@ -263,8 +260,6 @@ Here is the full code for `Rating` and a simple app containing it.
         ```
     === "Result"
 
-        The dashboard renders the "New component creation" example.
-
         ![](../../assets/user_guides/custom_components/custom-components1.png)
 
 ## Use custom components with actions
@@ -338,8 +333,6 @@ It is then immediately possible to [address the properties of Dash components](c
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
-
-        The dashboard renders the "Use custom component Dash properties as an action output" example.
 
         ![](../../assets/user_guides/custom_components/custom-components2.png)
 
@@ -437,8 +430,6 @@ This enables you to replace in your dashboard configuration all action input and
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
-
-        The dashboard renders the "Use custom component model ID as an action output" example.
 
         ![](../../assets/user_guides/custom_components/custom-components2.png)
 
@@ -551,8 +542,6 @@ This enables you to replace in your dashboard configuration all references to `o
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
-
-        The dashboard renders the "Use custom component model field as an action output" example.
 
         ![](../../assets/user_guides/custom_components/custom-components3.png)
 
@@ -700,8 +689,6 @@ A full example is given below.
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
-
-        The dashboard renders the "Trigger actions with a custom component" example.
 
         ![](../../assets/user_guides/custom_components/custom-components4.png)
 

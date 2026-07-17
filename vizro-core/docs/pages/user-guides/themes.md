@@ -218,8 +218,6 @@ You can customize the built-in `vizro_dark` and `vizro_light` themes by modifyin
 
     === "Result"
 
-        The dashboard renders the "Modify template color scheme" example.
-
         [![ModifiedColors]][modifiedcolors]
 
 !!! note "Color scheme applies to both light and dark themes"
@@ -266,8 +264,6 @@ For more comprehensive customizations, you can modify multiple template properti
         ```
 
     === "Result"
-
-        The dashboard renders the "Modify multiple template properties" example.
 
         [![ModifiedProperties]][modifiedproperties]
 
@@ -316,8 +312,6 @@ You can achieve fine-grained control over individual charts by using arguments s
         ```
 
     === "Result"
-
-        The dashboard renders the "Template colors vs chart-specific colors" example.
 
         [![ColorPrecedence]][colorprecedence]
 

@@ -63,8 +63,6 @@ To add a [`Graph`][vizro.models.Graph] model to your page, do the following:
 
     === "Result"
 
-        The dashboard renders the "Graph" example.
-
         [![Graph]][graph]
 
 In the Python example we directly inserted the pandas DataFrame `df` into `figure=px.scatter_matrix(df, ...)`. This is [one way to supply data to a chart](data.md#supply-directly). For the YAML version, we [refer to the data source by name](data.md#reference-by-name) as `data_frame: iris`. For a full explanation of the different methods you can use to send data to your dashboard, see [our guide to using data in Vizro](data.md).
@@ -175,8 +173,6 @@ The [`Graph`][vizro.models.Graph] model accepts `title`, `header`, `footer` and 
 
     === "Result"
 
-        The dashboard renders the "Formatted Graph" example.
-
         [![FormattedGraph]][formattedgraph]
 
 ## The `extra` argument
@@ -237,8 +233,6 @@ An example use would be to [remove the plotly mode bar](https://plotly.com/pytho
         ```
 
     === "Result"
-
-        The dashboard renders the "Graph with extra" example.
 
         [![GraphWithExtra]][graphwithextra]
 

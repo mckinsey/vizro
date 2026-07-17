@@ -126,8 +126,6 @@ To start, let's get an overview of the data by displaying it in a table using [`
 
     === "Result"
 
-        The dashboard renders the "First Page" example.
-
         [![FirstPage]][firstpage]
 
 After running your code (either locally or on PyCafe), you can now view the dashboard (on `localhost:8050` if you ran it locally, or on the right part of the screen if you are using PyCafe).
@@ -187,8 +185,6 @@ These steps add an export data button:
 
     === "Result"
 
-        The dashboard renders the "Export Data Button" example.
-
         [![FirstPageButton]][firstpagebutton]
 
 **Click on the Button and see what happens! 📂**
@@ -246,8 +242,6 @@ To achieve this, we'll switch to the `Flex` layout and set a `height` for the `A
         ```
 
     === "Result"
-
-        The dashboard renders the "Use Flex layout" example.
 
         [![FirstPageLayout]][firstpagelayout]
 
@@ -322,8 +316,6 @@ These steps add a histogram to the page:
         ```
 
     === "Result"
-
-        The dashboard renders the "Second Page" example.
 
         [![SecondPage]][secondpage]
 
@@ -432,8 +424,6 @@ These steps add two KPI cards to the second page:
 
     === "Result"
 
-        The dashboard renders the "Add KPI Cards" example.
-
         [![SecondPage2]][secondpage2]
 
 ### 4.3. Add tabs to switch views
@@ -541,8 +531,6 @@ These steps place the two histograms in separate tabs:
         ```
 
     === "Result"
-
-        The dashboard renders the "Add Tabs" example.
 
         [![SecondPage3]][secondpage3]
 
@@ -658,8 +646,6 @@ Run the code below to apply the layout to the dashboard page:
 
     === "Result"
 
-        The dashboard renders the "Code - Layout" example.
-
         [![SecondPage4]][secondpage4]
 
 **Much better, don't you think? The layout now provides sufficient space for the charts!**
@@ -755,8 +741,6 @@ These steps add a filter to the dashboard:
         ```
 
     === "Result"
-
-        The dashboard renders the "Add a filter" example.
 
         [![SecondPage5]][secondpage5]
 
@@ -917,8 +901,6 @@ These steps should feel familiar, as they add three charts to the new page.
 
     === "Result"
 
-        The dashboard renders the "Third page" example.
-
         [![ThirdPage]][thirdpage]
 
 Depending on your screen size, you may notice that the third chart is not visible. This issue can occur with Plotly charts when there isn't enough space to display them properly. Let's revise the layout to allocate more space for the heatmap.
@@ -1041,8 +1023,6 @@ Run the code below to apply the layout to the dashboard page:
         ```
 
     === "Result"
-
-        The dashboard renders the "Code - Layout" example.
 
         [![ThirdPage2]][thirdpage2]
 
@@ -1180,8 +1160,6 @@ These steps add a parameter to the dashboard:
         ```
 
     === "Result"
-
-        The dashboard renders the "Add a parameter" example.
 
         [![ThirdPage3]][thirdpage3]
 
@@ -1325,8 +1303,6 @@ For more information on when to create a custom chart, check out [How to create 
         ```
 
     === "Result"
-
-        The dashboard renders the "Add custom chart" example.
 
         [![ThirdPage4]][thirdpage4]
 
@@ -1479,8 +1455,6 @@ Your directory structure should look like this:
         ```
 
     === "Result"
-
-        The dashboard renders the "Add a dashboard title and logo" example.
 
         [![Dashboard]][dashboard]
 
@@ -1640,8 +1614,6 @@ The following steps create a navigation bar:
         ```
 
     === "Result"
-
-        The dashboard renders the "Customize navigation" example.
 
         [![DashboardFinal]][dashboardfinal]
 

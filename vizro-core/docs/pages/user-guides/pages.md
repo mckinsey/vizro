@@ -85,8 +85,6 @@ To create and add a page to your dashboard, do the following steps:
 
     === "Result"
 
-        The dashboard renders the "Page" example.
-
         [![Page]][page]
 
 An accordion page selector is automatically added to your dashboard in the top-left of the control container for through the different pages. It will not be added if your dashboard consists of only one page.
