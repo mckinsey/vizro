@@ -21,7 +21,7 @@ To add a parameter to your page, do the following:
 1. add the `targets` argument
 1. add a selector model to the `selector` argument.
 
-In the `targets` argument, you can specify the component and function argument that the parameter should be applied to in the form of `<target_component_id>.<target_argument>` (for example, `scatter_chart.title`).
+In the `targets` argument, you can specify the component and function argument that the parameter should be applied to in the form of `{target_component_id}.{target_argument}` (for example, `scatter_chart.title`).
 
 Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure the `selector` argument, by providing it with an appropriate model and the desired options/numeric ranges.
 
@@ -93,7 +93,7 @@ If you would like to pass `None` as a parameter and make a parameter optional, y
 
 ## Nested parameters
 
-If you want to change nested parameters, you can specify the `targets` argument with a dot separated string like `<target_component_id>.<target_argument>.<first_hierarchy>`.
+If you want to change nested parameters, you can specify the `targets` argument with a dot separated string like `{target_component_id}.{target_argument}.{first_hierarchy}`.
 
 !!! example "Nested Parameters for multiple targets"
 
