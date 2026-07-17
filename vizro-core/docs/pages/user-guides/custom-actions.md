@@ -152,6 +152,10 @@ Before clicking the button, the text shows "Click the button". When you click th
 
     If you have many buttons that trigger actions then you might like to [give them icons](./button/#add-an-icon). You can even have icon-only buttons with no text.
 
+## Trigger an action with a graph
+
+This is already possible, and documentation is coming soon!
+
 ## Trigger with a runtime input
 
 This extends the [above example](#trigger-an-action-with-a-button) of an action triggered by a button to include an input. Here is the action function:
