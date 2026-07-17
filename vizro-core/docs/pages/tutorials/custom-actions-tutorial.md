@@ -12,6 +12,10 @@ This tutorial should take **about an hour to finish**. You will gradually build 
 
 [![CustAction8]][custaction8]
 
+!!! tip "Complete final code"
+
+    Prefer to read the final dashboard code in one place rather than step by step? See [`vizro-core/examples/tutorial-custom-actions/app.py`](https://github.com/mckinsey/vizro/blob/main/vizro-core/examples/tutorial-custom-actions/app.py) for the complete, runnable end state of this tutorial (with a working Open-Meteo URL wrapped in `try`/`except`).
+
 ## A simple action
 
 Let's start by making a very simple single-page app that tells us the current time when the user clicks on a button. We begin by configuring the layout: a [button](../user-guides/button.md) and a [card with text](../user-guides/card.md) in a [flex layout](../user-guides/layouts.md).

@@ -29,6 +29,10 @@ This tutorial uses the [tips dataset](https://plotly.com/python-api-reference/ge
 
 ![](../../assets/tutorials/dashboard/vizro-tutorial.gif)
 
+!!! tip "Complete final code"
+
+    Prefer to read the final dashboard code in one place rather than step by step? See [`vizro-core/examples/tutorial/app.py`](https://github.com/mckinsey/vizro/blob/main/vizro-core/examples/tutorial/app.py) for the complete, runnable end state of this tutorial.
+
 ## 1. Install Vizro or run on PyCafe
 
 There's no need to install Vizro locally because you can experiment with the complete code for the tutorial directly on [PyCafe](https://py.cafe/vizro-official/vizro-tips-analysis-tutorial) in your browser. We recommend starting with a [blank Vizro project on PyCafe](https://py.cafe/snippet/vizro/v1) and copying the code snippets from this tutorial into it, to build it up from scratch and see how it fits together.
