@@ -311,11 +311,11 @@ actions = [
 
 ## Address specific parts of a model
 
-For most actions that you write, you should only need to specify `{model_id}` for the `outputs` or as input arguments to the action function. However, some models have multiple arguments that you may want to use in an action. This is possible with the syntax [`{model_id}.{argument_name}`](#model-arguments-as-input-and-output). For more advanced use cases you can even [address the underlying Dash component and property](#dash-properties-as-input-and-output).
+For most actions that you write, you only need the model's `id` (for example, `"clock_switch"`) for the `outputs` or as input arguments to the action function. However, some models have multiple arguments that you may want to use in an action. To target a specific argument, join the model's `id` and the argument name with a dot (for example, `"clock_switch.title"`), [as described below](#model-arguments-as-input-and-output). For more advanced use cases you can even [address the underlying Dash component and property](#dash-properties-as-input-and-output).
 
 ### Model arguments as input and output
 
-The syntax for using a particular model argument as an action input or output is `{model_id}.{argument_name}`.
+To target a particular argument of a model, join the model's `id` and the argument name with a dot. For example, `clock_switch.title` targets the `title` argument of a `Switch` whose `id` is `"clock_switch"`.
 
 For example, let's alter the [above example](#trigger-with-a-runtime-input) of a switch that toggles between formatting time with the 12- and 24-hour clock. [`Switch`][vizro.models.Switch] has an argument `title` that adds a label to the switch. We can update this in an action by including `clock_switch.title` in the action's `outputs`.
 
@@ -376,7 +376,7 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
 
 ### Dash properties as input and output
 
-Sometimes you might like to use as input or output a component that is on the screen but cannot be addressed explicitly with `{model_id}.{argument_name}`. Vizro actions in fact accept as input and output _any_ Dash component in the format `{component_id}.{property}`.
+Sometimes you might like to use as input or output a component that is on the screen but cannot be addressed through a Vizro model argument (as in the [previous section](#model-arguments-as-input-and-output)). Vizro actions in fact accept as input and output _any_ Dash component, addressed by joining the Dash component's `id` and the property name with a dot. For example, `clock_switch.disabled` targets the `disabled` property of the underlying `dbc.Switch`.
 
 For example, let's alter the [above example](#trigger-with-a-runtime-input) of a switch that toggles between formatting time with the 12- and 24-hour clock. We want to disable the switch when the button is clicked so that it can no longer be toggled. [`Switch`][vizro.models.Switch] does not contain an argument to disable the switch, but the underlying Dash component [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/) does. We can address this by using `"clock_switch.disabled"` in our `outputs`.
 
