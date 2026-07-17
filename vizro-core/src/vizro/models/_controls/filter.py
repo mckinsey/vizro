@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 import re
 from collections.abc import Callable, Iterable
 from contextlib import suppress
@@ -18,7 +19,11 @@ from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch, TimePicker
-from vizro.models._components.form.cascader import Cascader
+from vizro.models._components.form.cascader import (
+    Cascader,
+    _iter_cascader_paths_depth_first,
+    _normalize_cascader_path,
+)
 from vizro.models._controls._controls_utils import (
     SELECTORS,
     _is_categorical_selector,
@@ -117,6 +122,9 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     >>> pd.Series([0, 1]).isin([False])  # [True, False]
     >>> pd.Series([False, True]).isin([1])  # [False, True]
     """
+    # A single-select selector supplies a scalar; wrap it so `.isin` always receives a list of selected values.
+    value = value if isinstance(value, list) else [value]
+
     # Skip filtering if any value is missing — both pickers must be set for a range filter.
     if any(v in [None, ""] for v in value):
         return pd.Series(True, index=series.index)
@@ -146,13 +154,21 @@ def _filter_between(series: pd.Series, value: list[float] | list[str | None]) ->
     return series.between(value[0], value[1], inclusive="both")
 
 
-def _filter_hierarchical_isin(df: pd.DataFrame, value: Any) -> pd.Series:
+def _filter_hierarchical_isin(df: pd.DataFrame, value: Any, *, multi: bool) -> pd.Series:
     """Filter rows whose ordered path columns match any selected root-to-leaf path.
 
     `df` holds the hierarchical filter's path columns in root-to-leaf order (branch columns first, the leaf
-    column last). `value` is a single path (a list of node values from root to leaf) or a list of such paths
-    for multi-select. Each path is matched across all its columns, so duplicate leaf labels in different
+    column last). Each selected entry is either a full path (a list of node values from root to leaf) or a
+    legacy leaf-only value. A path is matched across all its columns, so duplicate leaf labels in different
     branches filter independently.
+
+    `multi` disambiguates the value shape (the Cascader emits one entry when `multi=False`, a list of entries
+    when `multi=True`): a flat list of scalars is a single path under `multi=False`, but a list of separate
+    legacy leaves under `multi=True`.
+
+    A legacy leaf-only value (from a pre-full-path Cascader, e.g. restored from session persistence after an
+    upgrade) carries no branch context, so it can only be matched against the leaf column alone, mirroring the
+    old behavior. Fresh selections always arrive as full paths.
 
     Branch labels are compared as strings, because `_dataframe_path_to_cascader_options` builds the option tree
     with stringified branch keys. The leaf reuses `_filter_isin` so that temporal/boolean leaves which arrive
@@ -163,14 +179,21 @@ def _filter_hierarchical_isin(df: pd.DataFrame, value: Any) -> pd.Series:
     """
     if not value:
         return pd.Series(False, index=df.index)
-    paths = value if isinstance(value[0], (list, tuple)) else [value]
+    # multi=False: `value` is a single entry (one path or one legacy leaf).
+    # multi=True: `value` is a list of entries (paths and/or legacy leaves).
+    entries = (value if isinstance(value, (list, tuple)) else [value]) if multi else [value]
+    leaf_column = df.columns[-1]
     mask = pd.Series(False, index=df.index)
-    for path in paths:
-        if not path:
+    for entry in entries:
+        if entry is None or (isinstance(entry, (list, tuple)) and not len(entry)):
+            continue
+        if not isinstance(entry, (list, tuple)):
+            # Legacy leaf-only value: no branch context, so match the leaf column alone.
+            mask |= _filter_isin(df[leaf_column], [entry])
             continue
         row_matches = pd.Series(True, index=df.index)
-        for position, (column, segment) in enumerate(zip(df.columns, path)):
-            is_leaf = position == len(path) - 1
+        for position, (column, segment) in enumerate(zip(df.columns, entry)):
+            is_leaf = position == len(entry) - 1
             row_matches &= _filter_isin(df[column], [segment]) if is_leaf else df[column].astype(str) == str(segment)
         mask |= row_matches
     return mask
@@ -178,13 +201,7 @@ def _filter_hierarchical_isin(df: pd.DataFrame, value: Any) -> pd.Series:
 
 def _paths_in_tree(tree: dict[str, Any]) -> set[tuple[Any, ...]]:
     """Set of all full root-to-leaf paths present in `tree` (branch labels as `str`, leaf kept typed)."""
-    paths: set[tuple[Any, ...]] = set()
-    for key, value in tree.items():
-        if isinstance(value, dict):
-            paths |= {(str(key), *rest) for rest in _paths_in_tree(value)}
-        else:
-            paths |= {(str(key), leaf) for leaf in value}
-    return paths
+    return {_normalize_cascader_path(path) for path in _iter_cascader_paths_depth_first(tree)}
 
 
 def _ensure_path_in_tree(tree: dict[str, Any], path: list[Any]) -> None:
@@ -482,8 +499,9 @@ class Filter(VizroBaseModel):
                 column = self._single_filter_column
             elif _is_hierarchical_selector(self.selector):
                 # Hierarchical filters match the full root-to-leaf path, so the action needs every path
-                # column (in order) and the path-aware filter function.
-                filter_function = _filter_hierarchical_isin
+                # column (in order) and the path-aware filter function. `multi` is bound in so the function
+                # can disambiguate a flat scalar list (one path vs. separate legacy leaves).
+                filter_function = functools.partial(_filter_hierarchical_isin, multi=self.selector.multi)
                 column = self.column
             else:
                 filter_function = _filter_isin
@@ -659,7 +677,10 @@ class Filter(VizroBaseModel):
         categorical dynamic-filter contract where user-selected values remain valid even after a data reload —
         the filter still applies, even if it now matches zero rows.
 
-        `current_value` is a single path (`multi=False`) or a list of paths (`multi=True`), or None/`[]`.
+        `current_value` is a single path (`multi=False`) or a list of paths (`multi=True`), or None/`[]`. A
+        legacy leaf-only value (pre-full-path Cascader) carries no branch context, so it can't be re-inserted
+        and is skipped; `multi` disambiguates a flat scalar list (one path when `multi=False`, separate legacy
+        leaves when `multi=True`).
         """
         path_cols = list(cast(list[str], self.column))
         combined = pd.concat(
@@ -670,13 +691,18 @@ class Filter(VizroBaseModel):
 
         if not current_value:
             return new_options
-        paths = current_value if isinstance(current_value[0], (list, tuple)) else [current_value]
+        multi = cast(Cascader, self.selector).multi
+        entries = (
+            (current_value if isinstance(current_value, (list, tuple)) else [current_value])
+            if multi
+            else [current_value]
+        )
         present = _paths_in_tree(new_options)
-        for path in paths:
-            if not path:
+        for entry in entries:
+            # Only a full-path entry carries the branch context needed to place it in the tree; a legacy
+            # leaf-only value can't be re-inserted without knowing its parent, so skip it.
+            if not isinstance(entry, (list, tuple)) or not entry:
                 continue
-            # Branch labels compared as str (options stringify them), leaf kept typed — see `_paths_in_tree`.
-            normalized = (*(str(segment) for segment in path[:-1]), path[-1])
-            if normalized not in present:
-                _ensure_path_in_tree(new_options, list(path))
+            if _normalize_cascader_path(entry) not in present:
+                _ensure_path_in_tree(new_options, list(entry))
         return new_options

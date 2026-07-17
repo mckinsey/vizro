@@ -147,6 +147,10 @@ Each selection is a full root-to-leaf **path** (the list of node values from the
 
 You can pick a different starting selection by setting `value` on [`Cascader`][vizro.models.Cascader].
 
+!!! note "Shorthand when leaf labels are unique"
+
+    If a leaf label is unique across the whole tree, you can set `value` using just the leaf instead of its full path; Vizro resolves it to the matching path for you. For example, if `Japan` and `India` appear nowhere else in the tree, then `value="Japan"` is equivalent to `value=["Asia", "Japan"]` (single-select), and `value=["Japan", "India"]` is equivalent to `value=[["Asia", "Japan"], ["Asia", "India"]]` (multi-select). This shorthand only works when the leaf is unambiguous — if the same label appears under more than one group, you must give the full path.
+
 !!! example "Hierarchical selector multi vs single"
 
     === "app.py"

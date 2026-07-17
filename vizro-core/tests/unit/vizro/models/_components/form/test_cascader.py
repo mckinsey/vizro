@@ -156,6 +156,39 @@ class TestCascaderInstantiation:
         with pytest.raises(ValidationError, match=r"Please set multi=True if providing a list of paths."):
             Cascader(value=[["N", 1], ["N", 2]], multi=False, options={"N": [1, 2, 3, 4, 5]})
 
+    @pytest.mark.parametrize(
+        "test_value, options, multi, expected_value",
+        [
+            # Single-select: a bare leaf resolves to its unique full path.
+            ("a", {"L": ["a", "b"]}, False, ["L", "a"]),
+            (1, {"Region": {"East": [1, 2], "West": [3]}}, False, ["Region", "East", 1]),
+            # Multi-select: a bare leaf, or a flat list of leaves, resolves to a list of full paths.
+            ("a", {"L": ["a", "b"]}, True, [["L", "a"]]),
+            (["a", "b"], {"L": ["a", "b"]}, True, [["L", "a"], ["L", "b"]]),
+        ],
+    )
+    def test_create_cascader_legacy_leaf_value_resolves_to_path(self, test_value, options, multi, expected_value):
+        # Legacy leaf-only values (pre-full-path Cascader) are accepted and normalized to canonical path form.
+        cascader = Cascader(options=options, value=test_value, multi=multi)
+        assert cascader.value == expected_value
+
+    @pytest.mark.parametrize(
+        "test_value, multi",
+        [
+            ("x", False),  # single-select bare leaf
+            (["x"], True),  # multi-select flat list of leaves
+        ],
+    )
+    def test_create_cascader_ambiguous_leaf_value_raises(self, test_value, multi):
+        # A bare leaf duplicated across branches can't be resolved to a single path; the full path is required.
+        with pytest.raises(ValidationError, match="ambiguous"):
+            Cascader(value=test_value, options={"A": ["x"], "B": ["x"]}, multi=multi)
+
+    def test_create_cascader_empty_list_value_passthrough(self):
+        # An empty list means "no selection" and passes through unchanged (not filled with a default).
+        cascader = Cascader(value=[], options={"L": ["a", "b"]}, multi=True)
+        assert cascader.value == []
+
     def test_create_cascader_coerces_datetime_leaves_to_date(self):
         ts = pd.Timestamp("2024-03-30")
         cascader = Cascader(options={"Asia": [ts]}, value=[["Asia", ts]], multi=True)
@@ -306,40 +339,26 @@ class TestCascaderBuild:
         )
         assert_component_equal(built, expected)
 
-    def test_cascader_build_multi_coerces_legacy_leaves_to_paths(self):
-        # Under multi=True a flat scalar list is the legacy list-of-leaves form; each leaf resolves to its path.
+    @pytest.mark.parametrize(
+        "value, expected_value",
+        [
+            # A flat scalar list under multi=True is the legacy list-of-leaves form; each leaf resolves to its path.
+            (["a", "b"], [["L", "a"], ["L", "b"]]),
+            # An already-correctly-shaped list-of-paths value passes straight through unchanged.
+            ([["L", "a"], ["L", "b"]], [["L", "a"], ["L", "b"]]),
+        ],
+        ids=["legacy_leaves", "list_of_paths"],
+    )
+    def test_cascader_build_multi_value_normalization(self, value, expected_value):
         options = {"L": ["a", "b"]}
-        built = Cascader(id="cascader_id", options=options, multi=True, value=["a", "b"], title="").build()
+        built = Cascader(id="cascader_id", options=options, multi=True, value=value, title="").build()
         expected = html.Div(
             [
                 None,
                 vdc.Cascader(
                     id="cascader_id",
                     options=options,
-                    value=[["L", "a"], ["L", "b"]],
-                    multi=True,
-                    persistence=True,
-                    persistence_type="session",
-                    placeholder="Select option",
-                    clearable=True,
-                ),
-            ]
-        )
-        assert_component_equal(built, expected)
-
-    def test_cascader_build_multi_passes_list_of_paths_through(self):
-        # An already-correctly-shaped list-of-paths value passes straight through unchanged.
-        options = {"L": ["a", "b", "c"]}
-        built = Cascader(
-            id="cascader_id", options=options, multi=True, value=[["L", "a"], ["L", "c"]], title=""
-        ).build()
-        expected = html.Div(
-            [
-                None,
-                vdc.Cascader(
-                    id="cascader_id",
-                    options=options,
-                    value=[["L", "a"], ["L", "c"]],
+                    value=expected_value,
                     multi=True,
                     persistence=True,
                     persistence_type="session",

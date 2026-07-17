@@ -101,10 +101,11 @@ def _iter_cascader_paths_depth_first(
 
 
 def _normalize_cascader_path(path: Any) -> tuple[Any, ...]:
-    """Path key used for membership tests: branch labels compared as `str`, the leaf kept typed.
+    """Path key for membership tests: branch labels stringified, leaf kept typed.
 
-    Options built from a dataframe stringify branch labels (see `_dataframe_path_to_cascader_options` in
-    filter.py) but keep leaves typed, so a numeric branch code like `1` must match the string key `"1"`.
+    Options built from a dataframe stringify branch labels but keep leaves typed, so branches must be
+    compared as `str` while the leaf keeps its type:
+    >>> _normalize_cascader_path([1, 2, 3])  # ("1", "2", 3)
     """
     path = list(path)
     return (*(str(segment) for segment in path[:-1]), path[-1])
@@ -152,9 +153,9 @@ def _to_single_path(
     value: Any, all_paths: list[list[SingleValueType]], valid_paths: set[tuple[Any, ...]]
 ) -> list[SingleValueType]:
     """Normalize a single-select `value`: a bare scalar is a legacy leaf; a list is a full path."""
-    if not isinstance(value, (list, tuple)):
+    if not isinstance(value, list):
         return _resolve_leaf_to_path(value, all_paths)
-    if any(isinstance(item, (list, tuple)) for item in value):
+    if any(isinstance(item, list) for item in value):
         # A list of paths under multi=False (also caught by validate_cascader_multi); guard anyway.
         raise ValueError("Please set multi=True if providing a list of paths.")
     return _validate_full_path(value, valid_paths)
@@ -164,9 +165,9 @@ def _to_multi_paths(
     value: Any, all_paths: list[list[SingleValueType]], valid_paths: set[tuple[Any, ...]]
 ) -> list[list[SingleValueType]]:
     """Normalize a multi-select `value`: a list of paths (current) or a list of leaves (legacy)."""
-    if not isinstance(value, (list, tuple)):
+    if not isinstance(value, list):
         return [_resolve_leaf_to_path(value, all_paths)]  # a bare scalar is a single legacy leaf
-    item_is_path = [isinstance(item, (list, tuple)) for item in value]
+    item_is_path = [isinstance(item, list) for item in value]
     if all(item_is_path):
         return [_validate_full_path(item, valid_paths) for item in value]  # current form: list of paths
     if not any(item_is_path):
@@ -208,7 +209,7 @@ def validate_cascader_multi(multi: bool, info: ValidationInfo) -> bool:
     the indexing because `value` may now be a bare scalar (a legacy single leaf).
     """
     value = info.data.get("value")
-    if not multi and isinstance(value, list) and value and isinstance(value[0], (list, tuple)):
+    if not multi and isinstance(value, list) and value and isinstance(value[0], list):
         raise ValueError("Please set multi=True if providing a list of paths.")
     return multi
 

@@ -34,7 +34,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Fixed
 
-- A hierarchical `vm.Filter` restores the previously selected value across dynamic-data reloads, even across multiple reloads. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
+- A hierarchical `vm.Filter` restores the previously selected value across multiple dynamic-data reloads. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
 
 <!--
 ### Security

@@ -1,3 +1,4 @@
+import functools
 from datetime import date, datetime, time
 from typing import Literal
 
@@ -1483,7 +1484,11 @@ class TestFilterPreBuildMethod:
 
         assert isinstance(default_action, _filter)
         assert default_action.id == f"__filter_action_{filter.id}"
-        assert default_action.filter_function == filter_function
+        # The hierarchical filter binds `multi` into its filter function via functools.partial, so unwrap it.
+        actual_filter_function = default_action.filter_function
+        if isinstance(actual_filter_function, functools.partial):
+            actual_filter_function = actual_filter_function.func
+        assert actual_filter_function == filter_function
         # Hierarchical filters match the full path, so the action carries every path column (in order).
         assert default_action.column == filtered_column
         assert default_action.targets == expected_targets
@@ -1669,6 +1674,10 @@ class TestFilterHierarchicalColumn:
             ({}, ["Eu", "West", "FR"], {"Eu": {"West": ["FR"]}}),
             ({"Eu": ["DE", "FR"]}, ["Eu", "FR"], {"Eu": ["DE", "FR"]}),
             ({"Eu": ["DE"]}, ["Eu", "West", "FR"], {"Eu": ["DE"]}),
+            # A path with no branch above the leaf can't be placed, so it is a no-op.
+            ({"Eu": ["DE"]}, ["JP"], {"Eu": ["DE"]}),
+            # A new leaf is added as a sibling under an already-existing intermediate branch dict.
+            ({"Eu": {"West": ["FR"]}}, ["Eu", "North", "NO"], {"Eu": {"West": ["FR"], "North": ["NO"]}}),
         ],
         ids=[
             "existing_branch",
@@ -1676,6 +1685,8 @@ class TestFilterHierarchicalColumn:
             "creates_nested_branches",
             "idempotent_when_leaf_already_present",
             "skips_when_path_hits_leaf_list",
+            "noop_when_no_branch",
+            "adds_sibling_under_existing_branch",
         ],
     )
     def test_ensure_path_in_tree(self, tree, path, expected):
@@ -1683,20 +1694,38 @@ class TestFilterHierarchicalColumn:
         assert tree == expected
 
     @pytest.mark.parametrize(
-        "value, expected",
+        "value, multi, expected",
         [
             # An empty/None selection matches no rows (a hierarchical filter with nothing selected has no path).
-            (None, [False, False, False, False]),
-            ([], [False, False, False, False]),
+            (None, False, [False, False, False, False]),
+            ([], True, [False, False, False, False]),
             # A single path isolates one branch's leaf even when the leaf label is duplicated elsewhere.
-            (["North", "Portland"], [True, False, False, False]),
-            (["South", "Portland"], [False, False, True, False]),
+            (["North", "Portland"], False, [True, False, False, False]),
+            (["South", "Portland"], False, [False, False, True, False]),
             # A list of paths ORs the matches together.
-            ([["North", "Portland"], ["South", "Austin"]], [True, False, False, True]),
+            ([["North", "Portland"], ["South", "Austin"]], True, [True, False, False, True]),
+            # Legacy leaf-only values (pre-full-path Cascader, e.g. restored from session persistence) carry no
+            # branch context, so they match the leaf column alone. A unique leaf resolves to its one row; a
+            # duplicated leaf matches every branch (the ambiguity the full-path form was introduced to remove).
+            ("Salem", False, [False, True, False, False]),
+            ("Portland", False, [True, False, True, False]),
+            (["Salem", "Austin"], True, [False, True, False, True]),
+            # Empty/None entries within a multi selection are skipped; the remaining path still matches.
+            ([[], ["South", "Austin"]], True, [False, False, False, True]),
         ],
-        ids=["none", "empty", "single_north", "single_south_duplicate_leaf", "multi"],
+        ids=[
+            "none",
+            "empty",
+            "single_north",
+            "single_south_duplicate_leaf",
+            "multi",
+            "legacy_single_unique_leaf",
+            "legacy_single_duplicate_leaf",
+            "legacy_multi_leaves",
+            "multi_skips_empty_entry",
+        ],
     )
-    def test_filter_hierarchical_isin(self, value, expected):
+    def test_filter_hierarchical_isin(self, value, multi, expected):
         # "Portland" appears under both North and South, so only the full path disambiguates the two.
         df = pd.DataFrame(
             {
@@ -1704,7 +1733,7 @@ class TestFilterHierarchicalColumn:
                 "city": ["Portland", "Salem", "Portland", "Austin"],
             }
         )
-        result = _filter_hierarchical_isin(df[["region", "city"]], value)
+        result = _filter_hierarchical_isin(df[["region", "city"]], value, multi=multi)
         assert result.tolist() == expected
 
     def test_hierarchical_pre_build_populates_options_and_action(self, managers_hierarchical_page):
@@ -1722,7 +1751,10 @@ class TestFilterHierarchicalColumn:
         [default_action] = f.selector.actions
         assert isinstance(default_action, _filter)
         assert default_action.column == ["continent", "country"]
-        assert default_action.filter_function == _filter_hierarchical_isin
+        # The filter function is `_filter_hierarchical_isin` with the selector's `multi` bound in.
+        assert isinstance(default_action.filter_function, functools.partial)
+        assert default_action.filter_function.func == _filter_hierarchical_isin
+        assert default_action.filter_function.keywords == {"multi": True}
 
     def test_hierarchical_dynamic_data_without_explicit_options(
         self, managers_one_page_two_graphs_with_dynamic_data, gapminder_dynamic_first_n_last_n_function
@@ -1827,6 +1859,22 @@ class TestFilterHierarchicalColumn:
         selector_build = f(target_to_data_frame={"hier_graph": new_df}, current_value=[["Eu", "DE"]])[
             "test_selector_id"
         ]
+        assert selector_build.options == {"As": ["JP"], "Eu": ["DE"]}
+
+    def test_hierarchical_call_skips_legacy_leaf_current_value(self, managers_hierarchical_page):
+        # A legacy leaf-only current_value (pre-full-path Cascader) carries no branch context, so it can't be
+        # re-inserted into the tree and is skipped; the options are just the freshly-computed tree.
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["hier_graph"],
+            selector=vm.Cascader(id="test_selector_id", multi=True, options={"Eu": ["DE", "FR"], "As": ["JP"]}),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+
+        # "FR" is dropped from the new data and, as a bare leaf, cannot be placed back without its parent.
+        new_df = pd.DataFrame({"continent": ["Eu", "As"], "country": ["DE", "JP"], "gdp": [1.0, 2.0]})
+        selector_build = f(target_to_data_frame={"hier_graph": new_df}, current_value=["FR"])["test_selector_id"]
         assert selector_build.options == {"As": ["JP"], "Eu": ["DE"]}
 
 
