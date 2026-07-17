@@ -25,6 +25,7 @@ from vizro.models.types import capture
 
 @capture("action")
 def update_time_card(use_24_hour_clock, location):
+    """Return a Markdown string with the current time at ``location``."""
     time_format = "%H:%M:%S %Z" if use_24_hour_clock else "%I:%M:%S %p %Z"
     timezone_name = "Europe/Berlin" if location == "Berlin" else "America/New_York"
     now = datetime.now(ZoneInfo(timezone_name))
@@ -34,6 +35,7 @@ def update_time_card(use_24_hour_clock, location):
 
 @capture("action")
 def update_date_card(date_format, location):
+    """Return a Markdown string with the current date at ``location``."""
     date_format = "%d/%m/%y" if date_format == "DD/MM/YY" else "%m/%d/%y"
     timezone_name = "Europe/Berlin" if location == "Berlin" else "America/New_York"
     now = datetime.now(ZoneInfo(timezone_name))
@@ -43,11 +45,12 @@ def update_date_card(date_format, location):
 
 @capture("action")
 def fetch_weather(location):
+    """Fetch the current temperature at ``location`` from Open-Meteo."""
     berlin_params = {"latitude": 52.5, "longitude": 13.4, "current": "temperature_2m"}
     washington_dc_params = {"latitude": 38.9, "longitude": -77.0, "current": "temperature_2m"}
     params = berlin_params if location == "Berlin" else washington_dc_params
     try:
-        r = requests.get("https://api.open-meteo.com/v1/forecast", params=params)
+        r = requests.get("https://api.open-meteo.com/v1/forecast", params=params, timeout=5)
         temperature = r.json()["current"]["temperature_2m"]
     except Exception:
         return "❗ Could not fetch weather"
@@ -56,6 +59,7 @@ def fetch_weather(location):
 
 @capture("action")
 def update_time_date_formats(location):
+    """Return default clock, date-format and placeholder weather text for ``location``."""
     if location == "Berlin":
         return True, "DD/MM/YY", "Fetching current weather..."
     return False, "MM/DD/YY", "Fetching current weather..."
