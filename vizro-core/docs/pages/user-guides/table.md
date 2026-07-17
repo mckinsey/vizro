@@ -2,7 +2,9 @@
 
 This guide shows you how to visualize tables in Vizro.
 
-**When to use this:** choose [`AgGrid`][vizro.models.AgGrid] or [`Table`][vizro.models.Table] to display tabular data. Prefer [`AgGrid`](#ag-grid) (recommended) unless you specifically need the [Dash DataTable](#dash-datatable). For Plotly charts use [`Graph`](graph.md), for KPI tiles use a [`kpi_card` figure](figure.md#key-performance-indicator-kpi-cards), and for any other reactive Dash component use [`Figure`](figure.md).
+!!! tip "When to use this"
+
+    Choose `AgGrid` or `Table` to display tabular data. Prefer [`AgGrid`](#ag-grid) (recommended) unless you specifically need the [Dash DataTable](#dash-datatable). For Plotly charts use [`Graph`](graph.md), for KPI tiles use a [`kpi_card` figure](figure.md#key-performance-indicator-kpi-cards), and for any other reactive Dash component use [`Figure`](figure.md).
 
 There are two ways to visualize tables in Vizro, using either [AG Grid](#ag-grid) or [Dash DataTable](#dash-datatable). In general, [AG Grid](#ag-grid) is Vizro's recommended table implementation, but sometimes it may make sense to use the [Dash DataTable](#dash-datatable) instead.
 

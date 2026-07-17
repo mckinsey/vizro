@@ -2,7 +2,9 @@
 
 This guide shows you how to display text in your dashboard with the [`Text` component][vizro.models.Text] model.
 
-**When to use this:** choose [`Text`][vizro.models.Text] for plain Markdown text without styling — introductory paragraphs, page-level descriptions, or inline explanatory notes. For text that should stand out inside a bordered callout, or that acts as a navigation tile, use [`Card`](card.md) instead. To trigger an action or navigate, use [`Button`](button.md).
+!!! tip "When to use this"
+
+    Choose `Text` for plain Markdown text without styling — introductory paragraphs, page-level descriptions, or inline explanatory notes. For text that should stand out inside a bordered callout, or that acts as a navigation tile, use [`Card`](card.md) instead. To trigger an action or navigate, use [`Button`](button.md).
 
 !!! note "Card and Text components"
 

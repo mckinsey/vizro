@@ -2,7 +2,9 @@
 
 This guide shows you how to use containers to group your components into sections and subsections within the page.
 
-**When to use this:** choose [`Container`][vizro.models.Container] to group components into a nested section that has its own layout, styling ([`variant`](#styled-containers)), collapsible behavior, or scoped controls. For plain page-wide arrangement, prefer [`Page.layout`](layouts.md) alone. To let users switch between multiple containers occupying the same screen space, wrap them in [`Tabs`](tabs.md).
+!!! tip "When to use this"
+
+    Choose `Container` to group components into a nested section that has its own layout, styling ([`variant`](#styled-containers)), collapsible behavior, or scoped controls. For plain page-wide arrangement, prefer [`Page.layout`](layouts.md) alone. To let users switch between multiple containers occupying the same screen space, wrap them in [`Tabs`](tabs.md).
 
 A [Container][vizro.models.Container] complements a [Page][vizro.models.Page]: both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page. The `Container` is based on the underlying Dash component [`dbc.Container`](https://www.dash-bootstrap-components.com/docs/components/layout/).
 

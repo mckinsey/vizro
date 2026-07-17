@@ -2,7 +2,9 @@
 
 This guide shows you how to use graphs to visualize your data in the dashboard.
 
-**When to use this:** choose [`Graph`][vizro.models.Graph] to render a Plotly Express chart or a custom Plotly figure. Use [`AgGrid` or `Table`](table.md) for tabular data, a [`kpi_card` figure](figure.md#key-performance-indicator-kpi-cards) for KPI tiles, and [`Figure`](figure.md) for other reactive Dash components. If you need to customize the Plotly figure beyond a single function call, see [custom charts](custom-charts.md).
+!!! tip "When to use this"
+
+    Choose `Graph` to render a Plotly Express chart or a custom Plotly figure. Use [`AgGrid` or `Table`](table.md) for tabular data, a [`kpi_card` figure](figure.md#key-performance-indicator-kpi-cards) for KPI tiles, and [`Figure`](figure.md) for other reactive Dash components. If you need to customize the Plotly figure beyond a single function call, see [custom charts](custom-charts.md).
 
 The [`Graph`][vizro.models.Graph] model is the most used component in many dashboards, allowing you to visualize data in a variety of ways. It is based on [`dcc.Graph`](https://dash.plotly.com/dash-core-components/graph).
 

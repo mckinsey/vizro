@@ -2,7 +2,9 @@
 
 This guide shows you how to use buttons to interact with your data in the dashboard.
 
-**When to use this:** choose [`Button`][vizro.models.Button] to let users trigger an [action](actions.md), submit a form, or navigate to a URL. For a control that filters or parametrises data, use a [`Filter`](filters.md) or [`Parameter`](parameters.md) instead; for text-only content use [`Card`](card.md) or [`Text`](text.md); to make a `Card` clickable for navigation see [`Card`'s navigation tile](card.md#create-a-navigation-card).
+!!! tip "When to use this"
+
+    Choose `Button` to let users trigger an [action](actions.md), submit a form, or navigate to a URL. For a control that filters or parametrises data, use a [`Filter`](filters.md) or [`Parameter`](parameters.md) instead; for text-only content use [`Card`](card.md) or [`Text`](text.md); to make a `Card` clickable for navigation see [`Card`'s navigation tile](card.md#create-a-navigation-card).
 
 The Button component is commonly used for dashboard interactions such as form submissions, navigation links, and other action triggers. It is based on the underlying Dash component [`dbc.Button`](https://www.dash-bootstrap-components.com/docs/components/button/).
 
