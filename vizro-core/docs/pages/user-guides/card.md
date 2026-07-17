@@ -2,6 +2,8 @@
 
 This guide shows you how to use cards in your dashboard.
 
+**When to use this:** choose [`Card`][vizro.models.Card] to display Markdown text that needs to stand out (a bordered, attention-drawing callout) or to act as a [navigation tile](#create-a-navigation-card). For plain Markdown text with no styling, use [`Text`](text.md); for KPI tiles use a [KPI card figure](figure.md#key-performance-indicator-kpi-cards); to trigger an [action](actions.md) or navigate, use [`Button`](button.md).
+
 !!! note "Card and Text components"
 
     The `Card` component and [`Text`](text.md) component both enable you to add text to your page using [Markdown syntax](https://markdown-guide.readthedocs.io/en/latest/) through the underlying Dash component [`dcc.Markdown`](https://dash.plotly.com/dash-core-components/markdown/).
