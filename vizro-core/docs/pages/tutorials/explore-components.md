@@ -56,7 +56,7 @@ For more information about working with Vizro on PyCafe, check out the [PyCafe d
     1. Navigate to the directory where `app.py` file is located using your terminal.
     1. Run the script by executing the command `python app.py`.
 
-    Once the script is running, open your web browser and navigate to `localhost:8050` to view the dashboard. To enable debug mode for hot reloading, add `debug=True` inside the run() method at the end of your `app.py` file:
+    Once the script is running, open your web browser and navigate to `localhost:8050` to view the dashboard. To enable debug mode for hot reloading, add `debug=True` inside the `run()` method at the end of your `app.py` file:
 
     `Vizro().build(dashboard).run(debug=True)`
 
