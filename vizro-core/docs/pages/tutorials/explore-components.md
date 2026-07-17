@@ -334,7 +334,7 @@ These steps add two KPI cards to the second page:
 1. Add a [`Figure`][vizro.models.Figure] model to the list of `components`.
 1. Inside the `figure` argument of the `Figure`, use the [`kpi_card`][vizro.figures.kpi_card] function.
 1. Configure your `kpi_card` by setting the `value_column`, `agg_func`, `value_format`, and `title`. To learn more about configuring KPI cards, check out our [guide to KPI cards](../user-guides/figure.md#key-performance-indicator-kpi-cards).
-1. Repeat the previous three steps to add another KPI card to the page.
+1. Add a second `Figure` model with its own `kpi_card` and configure it the same way, to place another KPI card on the page.
 
 !!! example "Add KPI Cards"
 
