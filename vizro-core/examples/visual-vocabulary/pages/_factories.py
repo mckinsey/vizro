@@ -116,7 +116,7 @@ def column_and_line_factory(group: str):
                 #### When should I use it?
 
                 Use this type of chart when you wish to compare quantities of one item with changes in another item.
-                It's ideal for showing patterns over time (e.g., monthly sales and growth rates) but can also be used
+                It's ideal for showing patterns over time, such as monthly sales and growth rates, but can also be used
                 for other types of data comparisons.
         """
             ),

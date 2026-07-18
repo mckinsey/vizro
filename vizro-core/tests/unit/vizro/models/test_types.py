@@ -352,7 +352,7 @@ def decorated_graph_function_crash(data_frame):
 
 
 # The _pio_default_template context manager resets pio.templates.default on exit, but the fixture should do this also.
-# This fixtures acts as if someone has set the pio.templates.default e.g. in a Jupyter notebook.
+# This fixtures acts as if someone has set the pio.templates.default for example, in a Jupyter notebook.
 @pytest.fixture
 def set_pio_default_template(request):
     old_default = pio.templates.default

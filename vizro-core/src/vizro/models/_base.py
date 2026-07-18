@@ -272,7 +272,7 @@ class VizroBaseModel(BaseModel):
         )
         cls.model_fields[field_name] = FieldInfo.merge_field_infos(field, annotation=new_annotation)
 
-        # We need to resolve all ForwardRefs again e.g. in the case of Page, which requires update_forward_refs in
+        # We need to resolve all ForwardRefs again. For example, Page requires update_forward_refs in
         # vizro.models. The vm.__dict__.copy() is inspired by pydantic's own implementation of update_forward_refs and
         # effectively replaces all ForwardRefs defined in vizro.models.
         import vizro.models as vm

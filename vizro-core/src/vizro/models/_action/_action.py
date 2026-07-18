@@ -184,7 +184,7 @@ class _BaseAction(VizroBaseModel):
 
         page = model_manager._get_model_page(self)
 
-        # States are stored in the parent model (e.g. AgGrid) whose actions contains the filter_interaction rather than
+        # States are stored in the parent model, such as AgGrid. Its actions contains the filter_interaction rather than
         # the filter_interaction model itself, hence needing to lookup action._parent_model.
         # This is also needed to trigger the parent model's `_get_value_from_trigger` method in set_control.
         # After work on the model_manager we should be able to tidy this to directly get the parent model
@@ -200,10 +200,10 @@ class _BaseAction(VizroBaseModel):
         """Transform a component dependency into its mapped property value.
 
         This method handles two formats of component dependencies:
-        1. Explicit format: "component-id.component-property" (e.g. "graph-1.figure")
+        1. Explicit format: "component-id.component-property" (for example, "graph-1.figure")
            - Returns the mapped value if it exists in the component's _action_outputs/_action_inputs
            - Returns the original dependency otherwise
-        2. Implicit format: "component-id" (e.g. "card-id")
+        2. Implicit format: "component-id" (for example, "card-id")
            - Returns the value of "__default__" key from the component's _action_outputs/_action_inputs
            - Raises an error if the component doesn't exist or doesn't have the required property
 
@@ -218,7 +218,7 @@ class _BaseAction(VizroBaseModel):
             KeyError: If component does not exist in model_manager
             KeyError: If component exists but has no "__default__" key in its _action_outputs/_action_inputs
             AttributeError: If component exists but has no _action_outputs/_action_inputs property defined
-            ValueError: If dependency format is invalid (e.g. "id.prop.prop" or "id..prop")
+            ValueError: If dependency format is invalid (for example, "id.prop.prop" or "id..prop")
         """
         attribute_type = "_action_outputs" if type == "output" else "_action_inputs"
 
@@ -242,7 +242,7 @@ class _BaseAction(VizroBaseModel):
                 return getattr(models[component_id], attribute_type)[component_property]
             except (KeyError, AttributeError):
                 # Captures these cases and returns dependency unchanged, as we want to enable the user to target
-                # Dash components, that are not registered in the model_manager (e.g. theme-selector).
+                # Dash components, that are not registered in the model_manager (for example, theme-selector).
                 # 1. component_id is not in model_manager
                 # 2. component doesn't have _action_outputs/_action_inputs defined
                 # 3. component_property is not in the _action_outputs/inputs dictionary
@@ -342,8 +342,8 @@ class _BaseAction(VizroBaseModel):
             callback_outputs = [_transform_output(output) for output in self._validated_outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
-            # of a single output. This means the action function can return a single value (e.g. "text") rather than a
-            # single element list (e.g. ["text"]).
+            # of a single output. This means the action function can return a single value, such as "text", instead of a
+            # single element list (for example, ["text"]).
             if len(callback_outputs) == 1:
                 [callback_outputs] = callback_outputs
             return callback_outputs
@@ -564,7 +564,7 @@ class _BaseAction(VizroBaseModel):
             # prevent_initial_call=True which otherwise does not prevent initial callback execution when
             # an Input component appears if an Output already exists in the page layout:
             # https://dash.plotly.com/advanced-callbacks#prevent-callback-execution-upon-initial-component-render
-            # e.g. for the case of a dynamic filter, we want the guard to let through genuine callback triggers (user
+            # For a dynamic filter, we want the guard to let through genuine callback triggers (user
             # changes value of filter) vs. when the dropdown is created. This works as follows:
             #   1. When a new dynamic component is created, a dcc.Store component labeled *_guard_actions_chain
             #   is created at the same time with data=True.
@@ -804,7 +804,7 @@ class Action(_BaseAction):
 
     @property
     def _parameters(self) -> set[str]:
-        # TODO-AV2 B 2: in future, if we improve wrapping of __call__ inside CapturedCallable (e.g. by using wrapt),
+        # TODO-AV2 B 2: In future, we could improve wrapping of __call__ inside CapturedCallable with wrapt.
         #  this could be done the same way as in _AbstractAction and avoid looking at _function. Then we could remove
         #  this _parameters property from both Action and _AbstractAction. Possibly also the _action_name one.
         #  Try and get IDE completion to work for action arguments.

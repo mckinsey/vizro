@@ -338,4 +338,4 @@ class TestFilterInteraction:
     # TODO: Simplify parametrization, such that we have less repetitive code
     # TODO: Eliminate above xfails
     # TODO: Complement tests above with backend tests (currently the targets are also taken from model_manager!
-    # see _get_action_callback_mapping eg.)
+    # see _get_action_callback_mapping as an example.)

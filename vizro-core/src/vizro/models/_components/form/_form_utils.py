@@ -12,7 +12,7 @@ def get_dict_options_and_value(
     options: OptionsType, value: SingleValueType | MultiValueType | None, multi: bool
 ) -> tuple[list[_OptionsDictType], SingleValueType | MultiValueType]:
     """Returns `(dict_options, value)`. If input `value` is `None`, it is derived from `options`."""
-    # Omitted string conversion for "label" to avoid unintended formatting issues (e.g., 2002 becoming '2002.0').
+    # Omitted string conversion for "label" to avoid unintended formatting issues (for example, 2002 becoming '2002.0').
     dict_options = [option if isinstance(option, dict) else {"label": option, "value": option} for option in options]
 
     list_values = [dict_option["value"] for dict_option in dict_options]

@@ -397,7 +397,7 @@ pages:
     title: Tabs
   - components:
       - text: |
-          A selector can be used within the **Parameter** or **Filter** component to allow the user to select a value.
+          A selector can be used within the **Parameter** or **Filter** component to enable the user to select a value.
 
           The following selectors are available:
           * Dropdown (**categorical** multi and single option selector)
@@ -731,7 +731,7 @@ pages:
         type: card
     description: |
       Use Grid when you have a specific layout in mind—like a dashboard with clearly defined sections
-      (e.g. top summary row, bottom detail view).
+      (for example, top summary row, bottom detail view).
     layout:
       grid:
         [[0, 0, 0, 0], [1, 1, 3, 3], [1, 1, 4, 4], [2, 2, 5, 5], [2, 2, 6, 6]]

@@ -23,7 +23,7 @@ class _filter(_AbstractAction):
         """Applies _controls to charts on page once filter is applied.
 
         Returns:
-            Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
+            Dict mapping target chart ids to modified figures, for example, {"my_scatter": Figure(...)}.
         """
         # This is identical to _on_page_load.
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This

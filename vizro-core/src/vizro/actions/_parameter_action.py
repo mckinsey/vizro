@@ -28,7 +28,7 @@ class _parameter(_AbstractAction):
         """Applies _controls to charts on page once the page is opened (or refreshed).
 
         Returns:
-            Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
+            Dict mapping target chart ids to modified figures, for example, {"my_scatter": Figure(...)}.
 
         """
         # This is identical to _on_page_load but with self._target_ids rather than self.targets.

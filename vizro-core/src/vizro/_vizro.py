@@ -108,7 +108,7 @@ class Vizro:
         # Automatically detect if Bootstrap CSS is provided in external_stylesheets
         use_vizro_bootstrap = not self._has_bootstrap_css(kwargs.get("external_stylesheets", []))
 
-        # vizro-bootstrap.min.css must be first so that it can be overridden, e.g. by bootstrap_overrides.css.
+        # vizro-bootstrap.min.css must be first so that it can be overridden, for example, by bootstrap_overrides.css.
         # After that, all other items are sorted alphabetically.
         for path in sorted(
             VIZRO_ASSETS_PATH.rglob("*.*"), key=lambda file: (file.name != "vizro-bootstrap.min.css", file)
@@ -307,7 +307,7 @@ Provide a valid import path for these in your dashboard configuration."""
     @staticmethod
     def _pre_build():
         """Runs pre_build method on all models in the model_manager."""
-        # Note that a pre_build method can itself add a model (e.g. an Action) to the model manager, and so we need to
+        # Note that a pre_build method can itself add a model, for example an Action, to the model manager. We need to
         # iterate through set(model_manager) rather than model_manager itself or we loop through something that
         # changes size.
         # Any models that are created during the pre-build process *will not* themselves have pre_build run on them.
@@ -330,7 +330,7 @@ Provide a valid import path for these in your dashboard configuration."""
     def __call__(self, environ: WSGIEnvironment, start_response: StartResponse) -> Iterable[bytes]:
         """Implements WSGI application interface.
 
-        This means you can do e.g. gunicorn app:app without needing to manually define server = app.dash.server.
+        This means you can run `gunicorn app:app` without manually defining `server = app.dash.server`.
         """
         return self.dash.server(environ, start_response)
 
@@ -381,7 +381,7 @@ class _ResourceType(TypedDict, total=False):
 
 
 def _make_resource_spec(path: Path) -> _ResourceType:
-    # For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
+    # For dev versions, a branch or tag such as 0.1.20.dev0 does not exist and so won't work with the CDN. We point
     # to main instead, but this can be manually overridden to the current feature branch name if required.
     # This would only be the case where you need to test something with serve_locally=False and have changed
     # assets compared to main. In this case you need to push your assets changes to remote for the CDN to update,

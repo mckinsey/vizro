@@ -118,11 +118,11 @@ underlying component may change in the future.""",
 
         Priority:
           1) If `value` matches a column name in self["custom_data"], take it as from customdata[index].
-          2) Otherwise treat `value` as a Box lookup (e.g. "x", "customdata[0]").
+          2) Otherwise treat `value` as a Box lookup (for example, "x", "customdata[0]").
 
         Notes:
           - Enables camelCase and snake_case value keys interchangeably (camel_killer_box=True).
-          - Enables dot-style (e.g. value="key.subkey") access to nested dict values (box_dots=True).
+          - Enables dot-style (for example, value="key.subkey") access to nested dict values (box_dots=True).
           - Automatically creates missing keys as empty boxes instead of raising errors (default_box=True). This is done
             to avoid exceptions when the `trigger` has a key with a dot in it.
 
@@ -150,7 +150,7 @@ underlying component may change in the future.""",
             lookup = f"customdata[{index}]"
         except (KeyError, ValueError):
             # Treat the value as a box lookup string, as https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots
-            # This works for e.g. value="x" or value="customdata[0]".
+            # This works for values such as value="x" or value="customdata[0]".
             lookup = value
 
         unique_points = set()
@@ -160,8 +160,8 @@ underlying component may change in the future.""",
                 if isinstance(val := point[lookup], Box):
                     raise KeyError
 
-                # Certain grouped charts (e.g. pie charts) return custom data as a list of single-item lists
-                # (e.g. [["setosa"], ["setosa"]]). Since all values are identical, flatten to a single value to avoid
+                # Certain grouped charts (for example, pie charts) return custom data as a list of single-item lists
+                # (for example, [["setosa"], ["setosa"]]). Since all values are identical, flatten them to avoid
                 # returning a nested object.
                 unique_points.add(val[0] if isinstance(val, list) else val)
         except (KeyError, IndexError, TypeError):
@@ -197,7 +197,7 @@ underlying component may change in the future.""",
 
         # No "guard" component needed for vm.Graph. The reason is that vm.Graph has never been recreated after it's
         # built. Only that updates is its "figure" property after the build method.
-        # Guard components are only for components (e.g. AgGrid, dynamic Filter) that get fully recreated.
+        # Guard components are only for components (for example, AgGrid, dynamic Filter) that get fully recreated.
         return fig
 
     # Convenience wrapper/syntactic sugar.

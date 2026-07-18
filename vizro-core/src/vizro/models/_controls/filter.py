@@ -44,7 +44,7 @@ DEFAULT_SELECTORS = {
 
 # This disallowed selectors for each column type map is based on the discussion at the following link:
 # See https://github.com/mckinsey/vizro/pull/319#discussion_r1524888171
-# Really numerical data should also disallow SELECTORS["boolean"], but we allow it so that a column
+# Really numerical data should also disallow SELECTORS["boolean"], but we enable it so that a column
 # of 0s and 1s can be interpreted as boolean data. We could modify the detection of data type in
 # validate_column_type to check for this case, but this would mean checking actual data values. This is
 # something we should avoid at least until we have moved to narwhals since maybe it's an unnecessary
@@ -65,7 +65,7 @@ DISALLOWED_SELECTORS = {
 
 # Accepts "HH:MM" and "HH:MM:SS" formats. These are the only that the underlying dmc.TimePicker selector can produce.
 _TIME_REGEX = re.compile(r"^\d{2}:\d{2}(:\d{2})?$")
-_TIME_PARTS_HH_MM = 2  # "HH:MM".split(":") → 2 parts, i.e. no seconds in format
+_TIME_PARTS_HH_MM = 2  # "HH:MM".split(":") → 2 parts, that is, no seconds in format
 
 # Column types whose filter options/bounds can update when the underlying data source is dynamic.
 # "time" and "boolean" are always static.
@@ -140,7 +140,7 @@ def _filter_between(series: pd.Series, value: list[float] | list[str | None]) ->
     # If needed, coerce series and value to comparable time or date objects based on value format.
     series, value = _coerce_temporal(series=series, value=value, normalize_precision=False)
 
-    # Handle time-of-day ranges that cross midnight: e.g. [21:00, 06:00] means time >= 21:00 OR time <= 06:00.
+    # Handle time-of-day ranges that cross midnight: for example, [21:00, 06:00] means time >= 21:00 OR time <= 06:00.
     if isinstance(value[0], dt_time) and value[0] > value[1]:
         return (series >= value[0]) | (series <= value[1])
     return series.between(value[0], value[1], inclusive="both")
@@ -165,13 +165,13 @@ def _iter_cascader_leaf_paths(
 
 
 # TODO: remove this parents of leaves calculation once the Cascader propagates full paths,
-#  e.g. `[("continent", "region", "country"), ...]`, instead of bare leaves.
+#  for example, `[("continent", "region", "country"), ...]`, instead of bare leaves.
 #  With full paths the new tree options can be extended directly like new_options = {**new_options, **current_value}
 #  without having to calculate the parents of leaves.
 def _add_leaf_at_path(tree: dict[str, Any], path: tuple[str, ...], leaf: Any) -> None:
     """Add `leaf` to `tree` at full `path`, creating any missing branch dicts on the way.
 
-    This is a Cascader-only problem: `current_value` is a flat list of leaves (e.g. list of country names), so if a data
+    This is a Cascader-only problem: `current_value` is a flat list of leaves, such as country names. If a data
     reload drops the rows that carried currently selected values we have to add them to the new tree options.
     Remember, current_value always has to be part of the newly calculated options. Problem is that we don't know
     where to place these leaf values, so we have to calculate their parents.
@@ -390,7 +390,7 @@ class Filter(VizroBaseModel):
         ]
 
         # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a
-        #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
+        #  dataframe parameter, the default value is used when pre-build the filter, for example, to find the targets,
         #  column type (and hence selector) and initial values. There are three ways to handle this:
         #  1. (Current approach) - Propagate {} and use only default arguments value in the dynamic data function.
         #  2. Propagate values from the model_manager and relax the limitation of requiring argument default values.

@@ -980,7 +980,7 @@ class TestFilterCall:
         # "DE" is restored under Eu from the pre_build options tree.
         assert selector_build.options == {"As": ["JP"], "Eu": ["DE"]}
 
-    # TODO: remove xfail once Cascader propagates full paths (e.g. [("Eu", "IT"), ...]) instead of bare leaves.
+    # TODO: remove xfail once Cascader propagates full paths (for example, [("Eu", "IT"), ...]) instead of bare leaves.
     #  With full paths the runtime call can restore stale selections directly, without a prev-options lookup.
     #  Right now `self.selector.options` is only set at pre_build time and never updated between reloads, so a
     #  leaf that appears during a runtime reload can't be restored on a subsequent reload.

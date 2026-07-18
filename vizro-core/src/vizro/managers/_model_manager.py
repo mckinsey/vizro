@@ -23,7 +23,7 @@ class FIGURE_MODELS:
 
 
 class DuplicateIDError(ValueError):
-    """Useful for providing a more explicit error message when a model has id set automatically, e.g. Page."""
+    """Useful for providing a more explicit error message when a model has id set automatically, for example, Page."""
 
 
 class ModelManager:

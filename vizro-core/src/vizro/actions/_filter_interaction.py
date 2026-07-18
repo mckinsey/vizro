@@ -52,7 +52,7 @@ class filter_interaction(_AbstractAction):
         #  triggered_model._filter_interaction_input. We should revisit this when reworking filter interaction
         #  to find a better way to reintegrate it. Possibly now that self._inner_component_id is now set in
         #  model_post_init rather than pre_build there's an easier solution here.
-        # # Check that the triggered model has the required attributes (e.g. Graph does but Button doesn't).
+        # # Check that the triggered model has the required attributes (for example, Graph does but Button doesn't).
         # # This could potentially be done with isinstance and FigureWithFilterInteractionType but filter_interaction
         # # will be removed in future anyway.
         # triggered_model = self._get_triggered_model()
@@ -70,7 +70,7 @@ class filter_interaction(_AbstractAction):
         """Applies _controls to charts on page once the page is opened (or refreshed).
 
         Returns:
-            Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
+            Dict mapping target chart ids to modified figures, for example, {"my_scatter": Figure(...)}.
         """
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
