@@ -94,7 +94,7 @@ The below example uses the Iris data saved to a file `iris.csv` in the same dire
 
         [![DataBasic]][databasic]
 
-The [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid] and [`Table`][vizro.models.Table] models all have an argument called `figure`. This accepts a function (in the above example, `px.scatter`) that takes a pandas DataFrame as its first argument. The name of this argument is always `data_frame`. When configuring the dashboard using Python, it is optional to give the name of the argument: if you like, you could write `data_frame=iris` instead of `iris`.
+The [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid] and [`Table`][vizro.models.Table] models all have an argument called `figure`. This accepts a function (in the [supply directly example](#supply-directly), `px.scatter`) that takes a pandas DataFrame as its first argument. The name of this argument is always `data_frame`. When configuring the dashboard using Python, it is optional to give the name of the argument: if you like, you could write `data_frame=iris` instead of `iris`.
 
 !!! note
 
@@ -206,7 +206,7 @@ The Vizro data manager has a server-side caching mechanism to help solve this. V
 
 <!-- vale off -->
 
-In a development environment the easiest way to enable caching is to use a [simple memory cache](https://cachelib.readthedocs.io/en/stable/simple/) with the default configuration options. This is achieved by adding one line to the above example to set `data_manager.cache`:
+In a development environment the easiest way to enable caching is to use a [simple memory cache](https://cachelib.readthedocs.io/en/stable/simple/) with the default configuration options. This is achieved by adding one line to the [dynamic data example](#dynamic-data) to set `data_manager.cache`:
 
 !!! example "Simple cache with default timeout of 5 minutes"
 
@@ -302,7 +302,7 @@ To add a parameter to control a dynamic data source, do the following:
 
 1. add the appropriate argument to your dynamic data function and specify a default value for the argument.
 1. give an `id` to all components that have the data source you wish to alter through a parameter.
-1. [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md).
+1. [add a parameter](parameters.md) with `targets` that combine the component's `id`, the literal `data_frame`, and the argument of your dynamic data function, all joined by dots. For example, `my_graph.data_frame.number_of_points` targets the `number_of_points` argument of the dynamic data function used by the component with `id="my_graph"`. Use a suitable [selector](selectors.md).
 
 For example, let us extend the [dynamic data example](#dynamic-data) above into an example of how parametrized dynamic data works. The `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
 
@@ -419,7 +419,7 @@ For example, let us extend the [parametrized dynamic data example](#parametrize-
 
         [![DynamicFilter]][dynamicfilter]
 
-Consider a filter that depends on dynamic data, where you do **not** want the available values to change when the dynamic data changes. You should manually specify the `selector`'s `options` field (categorical selector) or `min` and `max` fields (numerical and temporal selector). In the above example, this could be achieved as follows:
+Consider a filter that depends on dynamic data, where you do **not** want the available values to change when the dynamic data changes. You should manually specify the `selector`'s `options` field (categorical selector) or `min` and `max` fields (numerical and temporal selector). In the [dynamic filter example above](#filters), this could be achieved as follows:
 
 ```python title="Override selector options to make a dynamic filter static"
 controls = [

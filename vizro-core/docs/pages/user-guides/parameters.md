@@ -21,7 +21,7 @@ To add a parameter to your page, do the following:
 1. add the `targets` argument
 1. add a selector model to the `selector` argument.
 
-In the `targets` argument, you can specify the component and function argument that the parameter should be applied to in the form of `<target_component_id>.<target_argument>` (for example, `scatter_chart.title`).
+In the `targets` argument, specify the component and the argument you want to parametrize by joining the component's `id` and the argument name with a dot. For example, `scatter_chart.title` parametrizes the `title` argument of the component with `id="scatter_chart"`.
 
 Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure the `selector` argument, by providing it with an appropriate model and the desired options/numeric ranges.
 
@@ -93,7 +93,7 @@ If you would like to pass `None` as a parameter and make a parameter optional, y
 
 ## Nested parameters
 
-If you want to change nested parameters, you can specify the `targets` argument with a dot separated string like `<target_component_id>.<target_argument>.<first_hierarchy>`.
+If you want to change nested parameters, extend the `targets` argument with another dot and the nested key. For example, `scatter_chart.color_discrete_map.virginica` parametrizes the `virginica` key of the `color_discrete_map` argument of the component with `id="scatter_chart"`.
 
 !!! example "Nested Parameters for multiple targets"
 
@@ -190,9 +190,9 @@ If you want to change nested parameters, you can specify the `targets` argument 
 
         [![Nested]][nested]
 
-In the above example, the object passed to the function argument `color_discrete_map` is a dictionary which maps the different flower species to fixed colors (for example, `{"virginica":"blue"}`). In this case, only the value `blue` should be changed instead of the entire dictionary. This can be achieved by specifying a target as `scatter.color_discrete_map.virginica`.
+In the [Nested parameters](#nested-parameters) example, the object passed to the function argument `color_discrete_map` is a dictionary which maps the different flower species to fixed colors (for example, `{"virginica":"blue"}`). In this case, only the value `blue` should be changed instead of the entire dictionary. This can be achieved by specifying a target as `scatter.color_discrete_map.virginica`.
 
-Note that in the above example, one parameter affects multiple targets.
+Note that in the [Nested parameters](#nested-parameters) example, one parameter affects multiple targets.
 
 ## Dynamic data parameters
 
