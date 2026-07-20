@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Made Vizro docs more agent-friendly for LLMs (new "Vizro for LLMs" cheatsheet, clearer user-guide guidance, and linked complete tutorial end-state code). ([#????](https://github.com/mckinsey/vizro/pull/????))
+- Made Vizro docs more agent-friendly for LLMs (new "Vizro for LLMs" cheatsheet, clearer user-guide guidance, and linked complete tutorial end-state code). ([#1797](https://github.com/mckinsey/vizro/pull/1797))
 <!--
 ### Changed
 

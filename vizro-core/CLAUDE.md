@@ -9,7 +9,7 @@ If you are an AI agent or LLM writing Python (or YAML / JSON) that uses the `viz
 - The minimum runnable app.
 - The `vizro.models` index (every public model, one-liner, link to guide).
 - The `vizro.actions` index (built-in actions).
-- Selector auto-selection rules for `Filter` and `Parameter`.
+- Selector auto-selection rules for `Filter`.
 - The `@capture` decorator matrix.
 - Features that only work in Python (not YAML / JSON).
 - Top errors and their fixes.

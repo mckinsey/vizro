@@ -109,9 +109,9 @@ page = vm.Page(
                 ),
             ],
         ),
-        vm.Card(id="time_card", text="Click the button"),
-        vm.Card(id="date_card", text="Click the button"),
-        vm.Card(id="weather_card", text="Click the button"),
+        vm.Card(id="time_card", text="Select a location to show the current time."),
+        vm.Card(id="date_card", text="Select a location to show the current date."),
+        vm.Card(id="weather_card", text="Select a location to fetch the current weather."),
     ],
 )
 

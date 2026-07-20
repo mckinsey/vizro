@@ -70,7 +70,8 @@ Use these instead of writing a custom action wherever the built-in fits.
 
 ## Selector auto-selection
 
-`Filter(column=...)` (and `Parameter`) picks a selector from the column dtype if `selector` is not set. Override by passing an explicit selector.
+`Filter(column=...)` picks a selector from the column dtype if `selector` is not set. Override by passing an explicit selector.
+`Parameter` always requires an explicit `selector` (it does not auto-select based on dtype).
 
 | Column dtype                       | Default selector          |
 | ---------------------------------- | ------------------------- |
