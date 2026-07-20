@@ -214,6 +214,10 @@ See the [installation guide](https://vizro.readthedocs.io/en/stable/pages/user-g
 
 The [get started documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/first-dashboard/) explains how to create your first dashboard.
 
+## For AI agents and LLMs
+
+If you are an AI agent or LLM building Vizro apps, start with the [Vizro for LLMs cheatsheet](https://vizro.readthedocs.io/en/stable/pages/for-llms/) — a single-page reference covering the minimum runnable app, model index, action index, `@capture` decorator matrix, and top errors with fixes. The [llms.txt](https://vizro.readthedocs.io/en/stable/llms.txt) file provides a machine-readable index of the full documentation, and every documentation page returns clean Markdown when fetched with the `Accept: text/markdown` request header.
+
 ## Packages
 
 This repository is a monorepo containing the following packages:

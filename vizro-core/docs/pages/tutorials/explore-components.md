@@ -29,13 +29,17 @@ This tutorial uses the [tips dataset](https://plotly.com/python-api-reference/ge
 
 ![](../../assets/tutorials/dashboard/vizro-tutorial.gif)
 
+!!! tip "Complete final code"
+
+    Prefer to read the final dashboard code in one place rather than step by step? See [`vizro-core/examples/tutorial/app.py`](https://github.com/mckinsey/vizro/blob/main/vizro-core/examples/tutorial/app.py) for the complete, runnable end state of this tutorial.
+
 ## 1. Install Vizro or run on PyCafe
 
 There's no need to install Vizro locally because you can experiment with the complete code for the tutorial directly on [PyCafe](https://py.cafe/vizro-official/vizro-tips-analysis-tutorial) in your browser. We recommend starting with a [blank Vizro project on PyCafe](https://py.cafe/snippet/vizro/v1) and copying the code snippets from this tutorial into it, to build it up from scratch and see how it fits together.
 
 For more information about working with Vizro on PyCafe, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
 
-??? note "If you prefer working in a Notebook or Python script"
+!!! note "If you prefer working in a Notebook or Python script"
 
     To work in a Notebook or locally using a Python script, you need to [install Vizro](../user-guides/install.md).
 
@@ -52,7 +56,7 @@ For more information about working with Vizro on PyCafe, check out the [PyCafe d
     1. Navigate to the directory where `app.py` file is located using your terminal.
     1. Run the script by executing the command `python app.py`.
 
-    Once the script is running, open your web browser and navigate to `localhost:8050` to view the dashboard. To enable debug mode for hot reloading, add `debug=True` inside the run() method at the end of your `app.py` file:
+    Once the script is running, open your web browser and navigate to `localhost:8050` to view the dashboard. To enable debug mode for hot reloading, add `debug=True` inside the `run()` method at the end of your `app.py` file:
 
     `Vizro().build(dashboard).run(debug=True)`
 
@@ -330,7 +334,7 @@ These steps add two KPI cards to the second page:
 1. Add a [`Figure`][vizro.models.Figure] model to the list of `components`.
 1. Inside the `figure` argument of the `Figure`, use the [`kpi_card`][vizro.figures.kpi_card] function.
 1. Configure your `kpi_card` by setting the `value_column`, `agg_func`, `value_format`, and `title`. To learn more about configuring KPI cards, check out our [guide to KPI cards](../user-guides/figure.md#key-performance-indicator-kpi-cards).
-1. Repeat the above steps to add another KPI card to the page.
+1. Add a second `Figure` model with its own `kpi_card` and configure it the same way, to place another KPI card on the page.
 
 !!! example "Add KPI Cards"
 
@@ -1165,7 +1169,7 @@ Take a moment to interact with the parameter. Notice how the x-axis of all chart
 
 ### 5.4. Add a custom chart
 
-You may notice that the `bar` chart has many inner lines. This happens because each line represents a unique data point when an unaggregated dataset is provided to `px.bar`. To avoid this, you can aggregate the data before plotting. However, the aggregation needs to be dynamic, based on the parameter you added in the previous step. The following steps create a custom chart:
+You may notice that the `bar` chart has many inner lines. This happens because each line represents a unique data point when an unaggregated dataset is provided to `px.bar`. To avoid this, you can aggregate the data before plotting. However, the aggregation needs to be dynamic, based on the parameter added in [Step 5.3](#53-add-a-parameter). The following steps create a custom chart:
 
 1. Create a function that takes the `data_frame` as input and returns a Plotly figure.
 1. Decorate the function with the `@capture(graph)` decorator.

@@ -2,6 +2,12 @@
 
 This guide shows you how to use the [`Tabs`][vizro.models.Tabs] model, which organize and separate groups of related content in a dashboard, letting users switch between different sections or views.
 
+!!! tip "When to use this"
+
+    Choose `Tabs` to let users switch between several [`Container`s](container.md) that share the same screen space. To group components into a single visible section, use a [`Container`](container.md) directly; to arrange components on the page as a whole, use [`Page.layout`](layouts.md).
+
+**API reference:** [`Tabs`][vizro.models.Tabs]
+
 They are essentially a way of putting multiple [`Container`][vizro.models.Container] models in the same screen space, and letting the user switch between them. A [`Container`](../user-guides/container.md) enables the grouping of page components into sections and subsections. The [`Tabs`][vizro.models.Tabs] model is based on the underlying Dash component [`dbc.Tabs`](https://www.dash-bootstrap-components.com/docs/components/tabs/).
 
 <figure markdown>

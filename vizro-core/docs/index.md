@@ -47,6 +47,8 @@ They also include a full API reference and additional explanation, such as [FAQs
 
     ---
 
+    [Vizro for LLMs (agent cheatsheet)](pages/for-llms.md)
+
     [Vizro cheatsheet](pages/cheatsheet/cheatsheet.html)
 
     [Vizro components compendium](pages/components_compendium/index.html)
@@ -71,4 +73,4 @@ They also include a full API reference and additional explanation, such as [FAQs
 
 ---
 
-*AI agents: see [llms.txt](llms.txt) for a machine-readable index of these docs.*
+*AI agents: see [Vizro for LLMs](pages/for-llms.md) for a curated cheatsheet, and [llms.txt](llms.txt) for a machine-readable index of these docs.*
