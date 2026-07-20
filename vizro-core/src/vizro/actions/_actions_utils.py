@@ -65,7 +65,6 @@ def _apply_filter_controls(
 
     for ctd in ctds_filter:
         selector_value = ctd["value"]
-        selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
         selector_actions = cast(SelectorType, model_manager[ctd["id"]]).actions
 
         for action in selector_actions:
