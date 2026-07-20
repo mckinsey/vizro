@@ -2,7 +2,7 @@
   "$defs": {
     "Accordion": {
       "additionalProperties": false,
-      "description": "Accordion to be used as `nav_selector` in [`Navigation`][vizro.models.Navigation].\n\nAbstract: Usage documentation\n    [How to use an accordion](../user-guides/navigation.md/#group-pages)",
+      "description": "Accordion to be used as `nav_selector` in [`Navigation`][vizro.models.Navigation].\n\nAbstract: Usage documentation\n    [How to use an accordion](../user-guides/navigation.md#group-pages)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -100,7 +100,7 @@
     },
     "AgGrid": {
       "additionalProperties": false,
-      "description": "Wrapper for `dash_ag_grid.AgGrid` to visualize grids in a dashboard.\n\nAbstract: Usage documentation\n    [How to use an AgGrid](../user-guides/table.md/#ag-grid)",
+      "description": "Wrapper for `dash_ag_grid.AgGrid` to visualize grids in a dashboard.\n\nAbstract: Usage documentation\n    [How to use an AgGrid](../user-guides/table.md#ag-grid)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -752,7 +752,7 @@
     },
     "ControlGroup": {
       "additionalProperties": false,
-      "description": "Container to group together a set of controls.\n\nAbstract: Usage documentation\n    [How to group controls](../user-guides/controls.md/#group-controls)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    vm.ControlGroup(\n        title=\"Control group title\",\n        controls=[vm.Filter(column=\"species\"), vm.Filter(column=\"sepal_length\")],\n    )\n    ```",
+      "description": "Container to group together a set of controls.\n\nAbstract: Usage documentation\n    [How to group controls](../user-guides/controls.md#group-controls)\n\nExample:\n    ```python\n    import vizro.models as vm\n\n    vm.ControlGroup(\n        title=\"Control group title\",\n        controls=[vm.Filter(column=\"species\"), vm.Filter(column=\"sepal_length\")],\n    )\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1880,7 +1880,7 @@
     },
     "RadioItems": {
       "additionalProperties": false,
-      "description": "Categorical single-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use categorical selectors](../user-guides/selectors.md/#categorical-selectors)",
+      "description": "Categorical single-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -1992,7 +1992,7 @@
     },
     "RangeSlider": {
       "additionalProperties": false,
-      "description": "Numeric multi-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md/#numerical-selectors)",
+      "description": "Numeric multi-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md#numerical-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2129,7 +2129,7 @@
     },
     "Slider": {
       "additionalProperties": false,
-      "description": "Numeric single-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md/#numerical-selectors)",
+      "description": "Numeric single-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md#numerical-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2262,7 +2262,7 @@
     },
     "Switch": {
       "additionalProperties": false,
-      "description": "Boolean single-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use boolean selectors](../user-guides/selectors.md/#boolean-selectors)",
+      "description": "Boolean single-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use boolean selectors](../user-guides/selectors.md#boolean-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
