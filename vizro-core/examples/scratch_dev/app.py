@@ -8,7 +8,9 @@ from vizro.tables import dash_ag_grid
 page = vm.Page(
     title="Default Dash AG Grid",
     components=[
-        vm.AgGrid(figure=dash_ag_grid(data_frame=px.data.gapminder())),
+        vm.AgGrid(
+            figure=dash_ag_grid(data_frame=px.data.gapminder()),
+        ),
     ],
 )
 
