@@ -33,10 +33,7 @@ page_2 = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(
-    pages=[page_1, page_2],
-    # navigation=vm.Navigation(nav_selector=vm.NavBar())
-)
+dashboard = vm.Dashboard(title="Vizro", pages=[page_1, page_2], navigation=vm.Navigation(nav_selector=vm.NavBar()))
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run(debug=True)

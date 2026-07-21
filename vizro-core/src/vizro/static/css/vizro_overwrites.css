@@ -308,9 +308,9 @@ div.form-check.form-switch {
 
 .navbar .nav-link {
   border: none;
-  height: 60px;
-  padding: 1rem;
-  width: 60px;
+  height: 64px;
+  padding: 1.25rem;
+  width: 64px;
 }
 
 .accordion {

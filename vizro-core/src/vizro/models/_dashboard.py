@@ -166,8 +166,15 @@ class Dashboard(VizroBaseModel):
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
             # This currently doesn't do anything, but we need to define an Output such that the callback is triggered.
             Output("dashboard-container", "className"),
-            Input("theme-selector", "value"),
+            Input("theme-selector", "data"),
             hidden=True,
+        )
+        clientside_callback(
+            "function(n, current) { return !current; }",
+            Output("theme-selector", "data"),
+            Input("theme-toggle", "n_clicks"),
+            State("theme-selector", "data"),
+            prevent_initial_call=True,
         )
         left_side_div_present = any([len(self.pages) > 1, self.pages[0].controls])
         if left_side_div_present:
@@ -360,7 +367,7 @@ class Dashboard(VizroBaseModel):
 
         collapse_icon_outer = html.Div(
             children=[
-                html.Span(id="collapse-icon", children="keyboard_arrow_left", className="material-symbols-outlined"),
+                html.Span(id="collapse-icon", children="left_panel_close", className="material-symbols-outlined"),
                 dbc.Tooltip(
                     id="collapse-tooltip",
                     children="Hide Menu",
@@ -483,12 +490,11 @@ class Dashboard(VizroBaseModel):
         error_404_svg = base64.b64encode((VIZRO_ASSETS_PATH / "images/error_404.svg").read_bytes()).decode("utf-8")
         return html.Div(
             [
-                # Theme switch is added such that the 404 page has the same theme as the user-selected one.
-                dbc.Switch(
+                # Theme store is added such that the 404 page has the same theme as the user-selected one.
+                dcc.Store(
                     id="theme-selector",
-                    value=self.theme == "vizro_light",
-                    persistence=True,
-                    persistence_type="session",
+                    data=self.theme == "vizro_light",
+                    storage_type="session",
                 ),
                 html.Img(src=f"data:image/svg+xml;base64,{error_404_svg}"),
                 html.H3("This page could not be found."),
@@ -527,8 +533,12 @@ class Dashboard(VizroBaseModel):
             color="link",
             class_name="btn-circular",
         )
-        theme_switch = dbc.Switch(
-            id="theme-selector", value=self.theme == "vizro_light", persistence=True, persistence_type="session"
+        theme_store = dcc.Store(id="theme-selector", data=self.theme == "vizro_light", storage_type="session")
+        theme_toggle = html.Button(
+            html.Span("contrast", className="material-symbols-outlined"),
+            id="theme-toggle",
+            className="btn-theme-toggle",
+            n_clicks=0,
         )
 
         return html.Div(
@@ -536,7 +546,8 @@ class Dashboard(VizroBaseModel):
             children=[
                 action_progress_indicator,
                 reset_controls_button if has_page_controls and control_panel_hidden else None,
-                theme_switch,
+                theme_store,
+                theme_toggle,
             ],
         )
 

@@ -7,7 +7,7 @@
 
 #nav-control-panel {
   align-items: flex-start;
-  border-right: 1px solid var(--bs-border-color);
+  border-right: 1px solid var(--bs-body-bg);
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
@@ -61,14 +61,14 @@
 #header {
   background-color: var(--bs-tertiary-bg);
   display: flex;
-  height: 60px;
+  height: 64px;
   justify-content: space-between;
   min-height: 0;
   padding: 0 20px;
 }
 
 #header:not(:empty) {
-  border-bottom: 1px solid var(--bs-border-color);
+  border-bottom: 1px solid var(--bs-body-bg);
 }
 
 #header.no-left {
@@ -147,12 +147,11 @@
 }
 
 #nav-bar {
-  border-right: 1px solid var(--bs-border-color);
+  border-right: 1px solid var(--bs-body-bg);
   display: flex;
   justify-content: flex-start;
-  max-width: 60px;
-  min-width: 60px;
-  padding-top: 4px;
+  max-width: 64px;
+  min-width: 64px;
 }
 
 #dashboard-container div[hidden] {
@@ -202,7 +201,7 @@ a:has(#logo-dark),
 #collapse-icon.material-symbols-outlined {
   color: var(--bs-tertiary-color);
   cursor: pointer;
-  font-size: 26px;
+  font-size: 24px;
   position: absolute;
 }
 
@@ -211,15 +210,18 @@ a:has(#logo-dark),
 }
 
 #collapse-icon-outer {
+  background: var(--bs-tertiary-bg);
   display: flex;
+  flex-shrink: 0;
   justify-content: center;
-  padding-top: 22px;
-  width: 0;
+  margin-top: auto;
+  padding-bottom: 28px;
 }
 
 /* Side nav: wrapper that holds dbc.Navbar + the collapse icon below it. */
 #nav-bar-wrapper {
-  border-right: 1px solid var(--bs-border-color);
+  background: var(--bs-tertiary-bg);
+  border-right: 1px solid var(--bs-body-bg);
   display: flex;
   flex-direction: column;
 }
@@ -229,27 +231,18 @@ a:has(#logo-dark),
   border-right: none;
 }
 
-/* Collapse icon at the bottom of the wrapper via margin-top: auto. */
-#nav-bar-wrapper #collapse-icon-outer {
-  flex-shrink: 0;
-  margin-top: auto;
-  padding-bottom: 16px;
-  padding-top: 0;
-  width: 60px;
-}
-
 #nav-bar-wrapper #collapse-icon.material-symbols-outlined {
   position: static;
 }
 
 /* Collapse icon inside header-controls (no side nav-bar): flows next to the theme switch. */
 #header-controls #collapse-icon-outer {
-  padding-top: 0;
-  width: auto;
+  margin-top: 0;
+  padding-bottom: 0;
 }
 
 #header-controls #collapse-icon.material-symbols-outlined {
-  font-size: 20px;
+  font-size: 24px;
   position: static;
 }
 
@@ -376,6 +369,23 @@ Current logic:
   border-radius: 50%;
   height: 24px;
   width: 24px;
+}
+
+.btn-theme-toggle {
+  background: none;
+  border: none;
+  color: var(--bs-body-color);
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-theme-toggle .material-symbols-outlined {
+  font-size: 24px;
+  vertical-align: middle;
+}
+
+.btn-theme-toggle:hover .material-symbols-outlined {
+  color: var(--bs-primary-text-emphasis);
 }
 
 .card-wrapper {
