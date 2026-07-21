@@ -169,8 +169,22 @@ class TestBuildMethod:
                 dbc.Label([html.Span("Title", id="timepicker_id_title"), None], html_for="timepicker_id-start"),
                 html.Div(
                     children=[
-                        dmc.TimePicker(id="timepicker_id-start", value="09:00", label="From", debounce=True),
-                        dmc.TimePicker(id="timepicker_id-end", value="17:00", label="To", debounce=True),
+                        dmc.TimePicker(
+                            id="timepicker_id-start",
+                            value="09:00",
+                            label="From",
+                            debounce=True,
+                            persistence=True,
+                            persistence_type="session",
+                        ),
+                        dmc.TimePicker(
+                            id="timepicker_id-end",
+                            value="17:00",
+                            label="To",
+                            debounce=True,
+                            persistence=True,
+                            persistence_type="session",
+                        ),
                     ],
                     style={"display": "flex", "gap": "8px"},
                 ),
@@ -185,7 +199,13 @@ class TestBuildMethod:
         expected_timepicker = html.Div(
             children=[
                 dbc.Label([html.Span("Title", id="timepicker_id_title"), None], html_for="timepicker_id"),
-                dmc.TimePicker(id="timepicker_id", value="09:00", debounce=True),
+                dmc.TimePicker(
+                    id="timepicker_id",
+                    value="09:00",
+                    debounce=True,
+                    persistence=True,
+                    persistence_type="session",
+                ),
             ]
         )
         assert_component_equal(time_picker, expected_timepicker)
@@ -197,7 +217,13 @@ class TestBuildMethod:
         expected_timepicker = html.Div(
             children=[
                 None,
-                dmc.TimePicker(id="timepicker_id", value="10:30", debounce=True),
+                dmc.TimePicker(
+                    id="timepicker_id",
+                    value="10:30",
+                    debounce=True,
+                    persistence=True,
+                    persistence_type="session",
+                ),
             ]
         )
         assert_component_equal(time_picker, expected_timepicker)
@@ -226,7 +252,13 @@ class TestBuildMethod:
                     [html.Span("Title", id="timepicker_id_title"), *expected_description],
                     html_for="timepicker_id",
                 ),
-                dmc.TimePicker(id="timepicker_id", value="10:30", debounce=True),
+                dmc.TimePicker(
+                    id="timepicker_id",
+                    value="10:30",
+                    debounce=True,
+                    persistence=True,
+                    persistence_type="session",
+                ),
             ]
         )
         assert_component_equal(time_picker, expected_timepicker)
@@ -253,6 +285,8 @@ class TestBuildMethod:
                             debounce=True,
                             withDropdown=True,
                             clearable=True,
+                            persistence=True,
+                            persistence_type="session",
                         ),
                         dmc.TimePicker(
                             id="timepicker_id-end",
@@ -261,6 +295,8 @@ class TestBuildMethod:
                             debounce=True,
                             withDropdown=True,
                             clearable=True,
+                            persistence=True,
+                            persistence_type="session",
                         ),
                     ],
                     style={"display": "flex", "gap": "8px"},
@@ -289,6 +325,8 @@ class TestBuildMethod:
                     debounce=True,
                     withDropdown=True,
                     clearable=True,
+                    persistence=True,
+                    persistence_type="session",
                 ),
             ]
         )
