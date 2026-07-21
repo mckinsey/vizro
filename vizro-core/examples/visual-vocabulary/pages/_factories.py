@@ -7,7 +7,7 @@ each chart type used in different groups.
 import vizro.models as vm
 
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import butterfly, column_and_line, connected_scatter, lollipop, slope, waterfall
+from pages.examples import butterfly, column_and_line, connected_scatter, lollipop, marimekko, slope, waterfall
 
 
 def butterfly_factory(group: str):
@@ -262,6 +262,51 @@ def slope_factory(group: str):
                     vm.Container(
                         title="Plotly figure",
                         components=[make_code_clipboard_from_py_file("slope.py", mode="plotly")],
+                    ),
+                ]
+            ),
+        ],
+    )
+
+
+def marimekko_factory(group: str):
+    """Reusable function to create the page content for the marimekko chart with a unique ID."""
+    return vm.Page(
+        id=f"{group}-marimekko",
+        path=f"{group}/marimekko",
+        title="Marimekko",
+        layout=vm.Grid(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
+
+                #### What is a marimekko chart?
+
+                A marimekko chart (also known as a mekko chart) is a 100% stacked bar chart where the **width** of
+                each bar represents the total magnitude of a category, and the stacked segments within each bar show
+                the proportional breakdown of sub-categories.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Use a marimekko chart when you want to emphasize both the size of each category (magnitude) and the
+                composition within it (part-to-whole) simultaneously. The bar width is proportional to the category's
+                total — wider bars mean larger totals. It's ideal for market share analysis and budget allocation where
+                both total value and component breakdown matter. Avoid using it with too many categories or
+                sub-categories as the chart can become difficult to read.
+            """
+            ),
+            vm.Graph(figure=marimekko.fig),
+            vm.Tabs(
+                tabs=[
+                    vm.Container(
+                        title="Vizro dashboard",
+                        components=[make_code_clipboard_from_py_file("marimekko.py", mode="vizro")],
+                    ),
+                    vm.Container(
+                        title="Plotly figure",
+                        components=[make_code_clipboard_from_py_file("marimekko.py", mode="plotly")],
                     ),
                 ]
             ),

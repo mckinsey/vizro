@@ -76,9 +76,7 @@ highlighting or labels to ensure the reader understands what matters most.
 ranking_chart_group = ChartGroup(
     name="Ranking",
     pages=pages.ranking.pages,
-    incomplete_pages=[
-        IncompletePage("Ordered bubble"),
-    ],
+    incomplete_pages=[],
     icon="Stacked Bar Chart",
     intro_text=ranking_intro_text,
 )
@@ -95,7 +93,6 @@ distribution_chart_group = ChartGroup(
     pages=pages.distribution.pages,
     incomplete_pages=[
         IncompletePage("Barcode"),
-        IncompletePage("Cumulative curve"),
         IncompletePage("Beeswarm"),
     ],
     icon="Waterfall Chart",
@@ -110,12 +107,7 @@ Typically, you will use magnitude for actual numbers versus calculated rates or 
 magnitude_chart_group = ChartGroup(
     name="Magnitude",
     pages=pages.magnitude.pages,
-    incomplete_pages=[
-        IncompletePage("Marimekko"),
-        IncompletePage("Pictogram"),
-        IncompletePage("Bullet"),
-        IncompletePage("Radial"),
-    ],
+    incomplete_pages=[],
     icon="Bar Chart",
     intro_text=magnitude_intro_text,
 )
@@ -130,7 +122,6 @@ time_chart_group = ChartGroup(
     pages=pages.time.pages,
     incomplete_pages=[
         IncompletePage("Fan"),
-        IncompletePage("Bubble timeline"),
     ],
     icon="Timeline",
     intro_text=time_intro_text,
@@ -144,9 +135,7 @@ the parts to be most important, a magnitude chart may be more appropriate.
 part_to_whole_chart_group = ChartGroup(
     name="Part-to-whole",
     pages=pages.part_to_whole.pages,
-    incomplete_pages=[
-        IncompletePage("Marimekko"),
-    ],
+    incomplete_pages=[],
     icon="Donut Small",
     intro_text=part_to_whole_intro_text,
 )
@@ -159,7 +148,7 @@ flow_chart_group = ChartGroup(
     name="Flow",
     pages=pages.flow.pages,
     incomplete_pages=[
-        IncompletePage("Chord"),
+        IncompletePage("Network"),
     ],
     icon="Air",
     intro_text=flow_intro_text,

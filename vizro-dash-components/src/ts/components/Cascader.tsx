@@ -17,15 +17,24 @@ interface CascaderComponentProps {
    * List items become leaves; scalars use the scalar as both label and value.
    * In the standard format each node has a `label` and `value`; nodes with a
    * `children` array are parents, nodes without are leaves.
-   * Only leaf values are ever stored in `value`.
+   * Selections are addressed by full root-to-leaf path (see `value`).
+   * Optional; defaults to an empty tree (renders as an empty dropdown).
    */
-  options: CascaderOptionsRaw;
+  options?: CascaderOptionsRaw;
   /**
-   * Selected value(s).
-   * When `multi=false`: a single leaf value (string or number) or null.
-   * When `multi=true`: an array of leaf values.
+   * Selected value(s), addressed by full root-to-leaf path. Each path is an
+   * array of node `value`s from the root down to the selected leaf, for example
+   * ["europe", "france"].
+   * When `multi=false`: a single path (or null), for example ["europe", "france"].
+   * When `multi=true`: a list of paths, for example
+   * [["europe", "france"], ["asia", "japan"]].
+   * Because paths are used, duplicate leaf labels across different branches are
+   * addressed unambiguously.
    */
-  value?: string | number | null | (string | number)[];
+  value?:
+    | (string | number | boolean)[]
+    | (string | number | boolean)[][]
+    | null;
   /**
    * Enable multi-select. When true, `value` is an array and checkboxes
    * are shown alongside options.
@@ -143,22 +152,36 @@ Cascader.propTypes = {
    * List items become leaves; scalars use the scalar as both label and value.
    * In the standard format each node has a `label` and `value`; nodes with a
    * `children` array are parents, nodes without are leaves.
-   * Only leaf values are ever stored in `value`.
+   * Selections are addressed by full root-to-leaf path (see `value`).
    */
   options: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.object),
     PropTypes.object,
-  ]).isRequired,
+  ]),
   /**
-   * Selected value(s).
-   * When `multi=false`: a single leaf value (string or number) or null.
-   * When `multi=true`: an array of leaf values.
+   * Selected value(s), addressed by full root-to-leaf path. Each path is an
+   * array of node `value`s from the root down to the selected leaf, for example
+   * ["europe", "france"].
+   * When `multi=false`: a single path (or null), for example ["europe", "france"].
+   * When `multi=true`: a list of paths, for example
+   * [["europe", "france"], ["asia", "japan"]].
+   * Because paths are used, duplicate leaf labels across different branches are
+   * addressed unambiguously.
    */
   value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
+    // A single path (multi=false): an array of scalars, e.g. ["europe", "france"].
     PropTypes.arrayOf(
-      PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
+    ),
+    // A list of paths (multi=true), e.g. [["europe", "france"], ["asia", "japan"]].
+    PropTypes.arrayOf(
+      PropTypes.arrayOf(
+        PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.number,
+          PropTypes.bool,
+        ]),
+      ),
     ),
   ]),
   /**

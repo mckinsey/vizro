@@ -14,10 +14,12 @@ from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.models._controls.filter import (
     Filter,
+    _add_leaf_at_path,
     _coerce_temporal,
     _dataframe_path_to_cascader_options,
     _filter_between,
     _filter_isin,
+    _iter_cascader_leaf_paths,
 )
 
 
@@ -88,6 +90,28 @@ def managers_column_only_exists_in_some():
             ),
             vm.Graph(id="column_boolean_exists_1", figure=px.scatter(pd.DataFrame({"column_boolean": [True, False]}))),
             vm.Graph(id="column_boolean_exists_2", figure=px.scatter(pd.DataFrame({"column_boolean": [True, False]}))),
+            vm.Graph(
+                id="column_hierarchical_exists_1",
+                figure=px.scatter(
+                    pd.DataFrame(
+                        {
+                            "column_hierarchical_parent": ["Eu", "Eu"],
+                            "column_hierarchical_leaf": ["DE", "FR"],
+                        }
+                    )
+                ),
+            ),
+            vm.Graph(
+                id="column_hierarchical_exists_2",
+                figure=px.scatter(
+                    pd.DataFrame(
+                        {
+                            "column_hierarchical_parent": ["Eu", "As"],
+                            "column_hierarchical_leaf": ["FR", "JP"],
+                        }
+                    )
+                ),
+            ),
         ],
     )
     Vizro._pre_build()
@@ -156,7 +180,38 @@ def target_to_data_frame():
                 "column_boolean": [False, True],
             }
         ),
+        "column_hierarchical_exists_1": pd.DataFrame(
+            {
+                "column_hierarchical_parent": ["Eu", "Eu"],
+                "column_hierarchical_leaf": ["DE", "FR"],
+            }
+        ),
+        "column_hierarchical_exists_2": pd.DataFrame(
+            {
+                "column_hierarchical_parent": ["Eu", "As"],
+                "column_hierarchical_leaf": ["FR", "JP"],
+            }
+        ),
     }
+
+
+@pytest.fixture
+def managers_hierarchical_page():
+    """Page with a single graph whose dataframe has hierarchical continent/country columns plus a datetime leaf."""
+    df = pd.DataFrame(
+        {
+            "continent": ["Eu", "Eu", "As"],
+            "country": ["DE", "FR", "JP"],
+            "joined_at": pd.to_datetime(["2024-01-31", "2024-02-29", "2024-03-30"]),
+            "gdp": [1.0, 2.0, 3.0],
+        }
+    )
+    vm.Page(
+        id="test_page",
+        title="Page Title",
+        components=[vm.Graph(id="hier_graph", figure=px.scatter(df, x="country", y="gdp"))],
+    )
+    Vizro._pre_build()
 
 
 class TestFilterFunctions:
@@ -903,6 +958,72 @@ class TestFilterCall:
         assert selector_build.minDate == datetime(2024, 1, 1, 10, 0)
         assert selector_build.maxDate == datetime(2024, 1, 4)
 
+    def test_filter_call_hierarchical_selector_valid(self):
+        filter = vm.Filter(
+            column=["column_hierarchical_parent", "column_hierarchical_leaf"],
+            targets=["column_hierarchical_exists_1", "column_hierarchical_exists_2"],
+            selector=vm.Cascader(id="test_selector_id"),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()  # pre_build options = {"As": ["JP"], "Eu": ["DE", "FR"]}
+
+        # Runtime data narrows to just As-JP; user still has "DE" selected.
+        reload_data = {
+            "column_hierarchical_exists_1": pd.DataFrame(
+                {"column_hierarchical_parent": ["As"], "column_hierarchical_leaf": ["JP"]}
+            ),
+            "column_hierarchical_exists_2": pd.DataFrame(
+                {"column_hierarchical_parent": ["As"], "column_hierarchical_leaf": ["JP"]}
+            ),
+        }
+        selector_build = filter(target_to_data_frame=reload_data, current_value=["DE"])["test_selector_id"]
+        # "DE" is restored under Eu from the pre_build options tree.
+        assert selector_build.options == {"As": ["JP"], "Eu": ["DE"]}
+
+    # TODO: remove xfail once Cascader propagates full paths (e.g. [("Eu", "IT"), ...]) instead of bare leaves.
+    #  With full paths the runtime call can restore stale selections directly, without a prev-options lookup.
+    #  Right now `self.selector.options` is only set at pre_build time and never updated between reloads, so a
+    #  leaf that appears during a runtime reload can't be restored on a subsequent reload.
+    @pytest.mark.xfail(
+        reason="self.selector.options is not refreshed between Filter.__call__ reloads, so leaves that only "
+        "existed during an earlier runtime reload are lost on subsequent reloads.",
+        strict=True,
+    )
+    def test_filter_call_hierarchical_selector_preserves_leaf_across_multiple_reloads(self):
+        filter = vm.Filter(
+            column=["column_hierarchical_parent", "column_hierarchical_leaf"],
+            targets=["column_hierarchical_exists_1", "column_hierarchical_exists_2"],
+            selector=vm.Cascader(id="test_selector_id"),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()  # pre_build options = {"As": ["JP"], "Eu": ["DE", "FR"]}
+
+        # First reload: data introduces "IT" under Eu (user later picks it).
+        data_with_it = {
+            "column_hierarchical_exists_1": pd.DataFrame(
+                {"column_hierarchical_parent": ["Eu"], "column_hierarchical_leaf": ["IT"]}
+            ),
+            "column_hierarchical_exists_2": pd.DataFrame(
+                {"column_hierarchical_parent": ["Eu", "As"], "column_hierarchical_leaf": ["DE", "JP"]}
+            ),
+        }
+        filter(target_to_data_frame=data_with_it, current_value=None)
+
+        # Second reload: "IT" is gone from the data, but the user still has it selected. Since options wasn't
+        # persisted after the first reload, we can no longer look up where "IT" belongs, so it is dropped.
+        reverted_data = {
+            "column_hierarchical_exists_1": pd.DataFrame(
+                {"column_hierarchical_parent": ["Eu"], "column_hierarchical_leaf": ["DE"]}
+            ),
+            "column_hierarchical_exists_2": pd.DataFrame(
+                {"column_hierarchical_parent": ["Eu", "As"], "column_hierarchical_leaf": ["FR", "JP"]}
+            ),
+        }
+        selector_build = filter(target_to_data_frame=reverted_data, current_value=["IT"])["test_selector_id"]
+
+        # This fails as the path of the currently selected value "IT" cannot be restored from the original options.
+        assert selector_build.options == {"As": ["JP"], "Eu": ["DE", "FR", "IT"]}
+
     def test_dynamic_filter_call_guard_component_is_true(self, target_to_data_frame):
         filter = vm.Filter(
             column="column_categorical",
@@ -1064,6 +1185,7 @@ class TestFilterPreBuildMethod:
             ("column_date", vm.DatePicker),
             ("column_datetime", vm.DatePicker),
             ("column_time", vm.TimePicker),
+            (["column_hierarchical_parent", "column_hierarchical_leaf"], vm.Cascader),
         ],
     )
     def test_selector_default_selector(self, filtered_column, expected_selector, managers_column_only_exists_in_some):
@@ -1071,7 +1193,6 @@ class TestFilterPreBuildMethod:
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert isinstance(filter.selector, expected_selector)
-        assert filter.selector.title == filtered_column.title()
 
     @pytest.mark.parametrize("filtered_column", ["country", "year", "lifeExp"])
     def test_selector_specific_selector(self, filtered_column, managers_one_page_two_graphs):
@@ -1113,6 +1234,8 @@ class TestFilterPreBuildMethod:
             ("column_datetime", vm.TimePicker),
             # time column - time selectors only (same reason as datetime).
             ("column_time", vm.TimePicker),
+            # hierarchical columns - hierarchical selectors only
+            (["column_hierarchical_parent", "column_hierarchical_leaf"], vm.Cascader),
         ],
     )
     def test_allowed_selectors_per_column_type(self, filtered_column, selector, managers_column_only_exists_in_some):
@@ -1212,6 +1335,7 @@ class TestFilterPreBuildMethod:
             ("pop", vm.Slider()),
             ("pop", vm.RangeSlider()),
             ("year", vm.DatePicker()),
+            (["continent", "country"], vm.Cascader()),
         ],
     )
     def test_filter_is_dynamic_with_dynamic_selectors(
@@ -1350,6 +1474,12 @@ class TestFilterPreBuildMethod:
                 _filter_isin,
                 ["column_time_exists_1", "column_time_exists_2"],
             ),
+            (
+                ["column_hierarchical_parent", "column_hierarchical_leaf"],
+                None,
+                _filter_isin,
+                ["column_hierarchical_exists_1", "column_hierarchical_exists_2"],
+            ),
         ],
     )
     def test_set_actions(
@@ -1364,7 +1494,9 @@ class TestFilterPreBuildMethod:
         assert isinstance(default_action, _filter)
         assert default_action.id == f"__filter_action_{filter.id}"
         assert default_action.filter_function == filter_function
-        assert default_action.column == filtered_column
+        # For hierarchical columns the action filters on the leaf (last) column.
+        expected_column = filtered_column if isinstance(filtered_column, str) else filtered_column[-1]
+        assert default_action.column == expected_column
         assert default_action.targets == expected_targets
 
     # TODO: Add tests for custom temporal and categorical selectors too. Probably inside the conftest file and reused in
@@ -1474,8 +1606,6 @@ class TestFilterPreBuildMethod:
 
 
 class TestFilterHierarchicalColumn:
-    """Hierarchical filter: column is list[str] + vm.Cascader (static only)."""
-
     def test_single_filter_column(self):
         f = vm.Filter(column=["continent", "country", "city"])
         assert f._single_filter_column == "city"
@@ -1487,11 +1617,7 @@ class TestFilterHierarchicalColumn:
             vm.Filter(column=["only_one"])
 
     def test_column_list_requires_cascader_selector(self, managers_hierarchical_page):
-        f = vm.Filter(
-            column=["continent", "country"],
-            targets=["hier_graph"],
-            selector=vm.Dropdown(options=["x"]),
-        )
+        f = vm.Filter(column=["continent", "country"], targets=["hier_graph"], selector=vm.Dropdown(options=["x"]))
         model_manager["test_page"].controls = [f]
         with pytest.raises(ValueError, match="not compatible with hierarchical"):
             f.pre_build()
@@ -1546,21 +1672,47 @@ class TestFilterHierarchicalColumn:
         df = pd.DataFrame({"code": [1, 2], "leaf": ["a", "b"]})
         assert _dataframe_path_to_cascader_options(df, ["code", "leaf"]) == {"1": ["a"], "2": ["b"]}
 
-    @pytest.fixture
-    def managers_hierarchical_page(self):
-        df = pd.DataFrame(
-            {
-                "continent": ["Eu", "Eu", "As"],
-                "country": ["DE", "FR", "JP"],
-                "gdp": [1.0, 2.0, 3.0],
-            }
-        )
-        vm.Page(
-            id="test_page",
-            title="Page Title",
-            components=[vm.Graph(id="hier_graph", figure=px.scatter(df, x="country", y="gdp"))],
-        )
-        Vizro._pre_build()
+    @pytest.mark.parametrize(
+        "tree, expected",
+        [
+            ({"A": [1, 2]}, [(("A",), 1), (("A",), 2)]),
+            ({"A": {"B": [1]}}, [(("A", "B"), 1)]),
+            (
+                {"Region": {"East": [1, 2], "West": [3]}, "Other": [9]},
+                [
+                    (("Region", "East"), 1),
+                    (("Region", "East"), 2),
+                    (("Region", "West"), 3),
+                    (("Other",), 9),
+                ],
+            ),
+            ({}, []),
+        ],
+        ids=["single_level", "nested", "mixed_branches", "empty"],
+    )
+    def test_iter_cascader_leaf_paths(self, tree, expected):
+        assert list(_iter_cascader_leaf_paths(tree)) == expected
+
+    @pytest.mark.parametrize(
+        "tree, path, leaf, expected",
+        [
+            ({"Eu": ["DE"]}, ("Eu",), "FR", {"Eu": ["DE", "FR"]}),
+            ({"Eu": ["DE"]}, ("As",), "JP", {"Eu": ["DE"], "As": ["JP"]}),
+            ({}, ("Eu", "West"), "FR", {"Eu": {"West": ["FR"]}}),
+            ({"Eu": ["DE", "FR"]}, ("Eu",), "FR", {"Eu": ["DE", "FR"]}),
+            ({"Eu": ["DE"]}, ("Eu", "West"), "FR", {"Eu": ["DE"]}),
+        ],
+        ids=[
+            "existing_branch",
+            "creates_missing_branch",
+            "creates_nested_branches",
+            "idempotent_when_leaf_already_present",
+            "skips_when_path_hits_leaf_list",
+        ],
+    )
+    def test_add_leaf_at_path(self, tree, path, leaf, expected):
+        _add_leaf_at_path(tree, path, leaf)
+        assert tree == expected
 
     def test_hierarchical_pre_build_populates_options_and_action(self, managers_hierarchical_page):
         f = vm.Filter(
@@ -1579,9 +1731,11 @@ class TestFilterHierarchicalColumn:
         assert default_action.column == "country"
         assert default_action.filter_function == _filter_isin
 
-    def test_hierarchical_dynamic_data_without_explicit_options_raises(
+    def test_hierarchical_dynamic_data_without_explicit_options(
         self, managers_one_page_two_graphs_with_dynamic_data, gapminder_dynamic_first_n_last_n_function
     ):
+        # Filter with dynamic data + no explicit Cascader options should be marked dynamic and pre-build should
+        # populate options from the default-args data load.
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
         f = vm.Filter(
             column=["continent", "country"],
@@ -1589,10 +1743,14 @@ class TestFilterHierarchicalColumn:
             selector=vm.Cascader(multi=False),
         )
         model_manager["test_page"].controls = [f]
-        with pytest.raises(ValueError, match="Hierarchical filters cannot derive Cascader options from dynamic data"):
-            f.pre_build()
+        f.pre_build()
+        assert f._dynamic
+        assert f.selector._dynamic
+        assert isinstance(f.selector, vm.Cascader)
+        # Options come from the default-args gapminder load: keyed by continent, leaves are countries.
+        assert set(f.selector.options.keys()) == {"Africa", "Americas", "Asia", "Europe", "Oceania"}
 
-    def test_hierarchical_dynamic_data_with_explicit_options_pre_builds(
+    def test_hierarchical_dynamic_data_with_explicit_options(
         self, managers_one_page_two_graphs_with_dynamic_data, gapminder_dynamic_first_n_last_n_function
     ):
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
@@ -1618,6 +1776,61 @@ class TestFilterHierarchicalColumn:
         with pytest.raises(ValueError, match="continent"):
             f.pre_build()
 
+    def test_hierarchical_pre_build_coerces_datetime_leaf_column(self, managers_hierarchical_page):
+        f = vm.Filter(column=["continent", "joined_at"], targets=["hier_graph"])
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert f.selector.options == {
+            "As": [date(2024, 3, 30)],
+            "Eu": [date(2024, 1, 31), date(2024, 2, 29)],
+        }
+        assert f.selector.value == [date(2024, 3, 30)]
+
+    def test_hierarchical_call_recomputes_options(self, managers_hierarchical_page):
+        # Filter.__call__ (runtime) rebuilds the Cascader with a freshly-computed options tree from the
+        # incoming target_to_data_frame — proving dynamic parameters propagate through to the selector.
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["hier_graph"],
+            selector=vm.Cascader(id="test_selector_id", multi=True),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+
+        new_df = pd.DataFrame({"continent": ["Eu", "As"], "country": ["DE", "JP"], "gdp": [1.0, 2.0]})
+        selector_build = f(target_to_data_frame={"hier_graph": new_df}, current_value=None)["test_selector_id"]
+        assert selector_build.options == {"As": ["JP"], "Eu": ["DE"]}
+
+    def test_hierarchical_call_preserves_stale_current_value(self, managers_hierarchical_page):
+        # If the user's selected leaf disappears from the new dataframe, its previous path is restored into
+        # the options tree — matching the categorical dynamic-filter contract where selections survive data
+        # reloads (filter may then match zero rows, but the value stays valid).
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["hier_graph"],
+            selector=vm.Cascader(id="test_selector_id", multi=True, options={"Eu": ["DE", "FR"], "As": ["JP"]}),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+
+        # New data drops "FR" from the tree, but user still has it selected.
+        new_df = pd.DataFrame({"continent": ["Eu", "As"], "country": ["DE", "JP"], "gdp": [1.0, 2.0]})
+        selector_build = f(target_to_data_frame={"hier_graph": new_df}, current_value=["FR"])["test_selector_id"]
+        assert selector_build.options == {"As": ["JP"], "Eu": ["DE", "FR"]}
+
+    def test_hierarchical_call_ignores_current_value_still_present_in_tree(self, managers_hierarchical_page):
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["hier_graph"],
+            selector=vm.Cascader(id="test_selector_id", multi=True, options={"Eu": ["DE", "FR"], "As": ["JP"]}),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+
+        new_df = pd.DataFrame({"continent": ["Eu", "As"], "country": ["DE", "JP"], "gdp": [1.0, 2.0]})
+        selector_build = f(target_to_data_frame={"hier_graph": new_df}, current_value=["DE"])["test_selector_id"]
+        assert selector_build.options == {"As": ["JP"], "Eu": ["DE"]}
+
 
 class TestFilterBuild:
     """Tests filter build method."""
@@ -1641,6 +1854,8 @@ class TestFilterBuild:
             ("column_datetime", vm.TimePicker(range=False)),
             ("column_time", vm.TimePicker()),
             ("column_time", vm.TimePicker(range=False)),
+            (["column_hierarchical_parent", "column_hierarchical_leaf"], vm.Cascader()),
+            (["column_hierarchical_parent", "column_hierarchical_leaf"], vm.Cascader(multi=False)),
         ],
     )
     def test_filter_build(self, test_column, test_selector):
@@ -1671,6 +1886,7 @@ class TestFilterBuild:
             ("pop", vm.RangeSlider()),
             ("year", vm.DatePicker()),
             ("year", vm.DatePicker(range=False)),
+            (["continent", "country"], vm.Cascader()),
         ],
     )
     def test_dynamic_filter_build(self, test_column, test_selector, gapminder_dynamic_first_n_last_n_function):

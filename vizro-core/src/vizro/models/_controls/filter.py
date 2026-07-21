@@ -89,9 +89,9 @@ _TIME_PARTS_HH_MM = 2  # "HH:MM".split(":") → 2 parts, i.e. no seconds in form
 _RANGE_VALUE_LEN = 2  # Range filters always carry exactly [start, end].
 
 # Column types whose filter options/bounds can update when the underlying data source is dynamic.
-# "time", "boolean", and "hierarchical" are always static.
-# The TimePicker and DateTimePicker on a "datetime" column are also always static (no dynamic min/max).
-_DYNAMIC_COLUMN_TYPES = {"numerical", "categorical", "date", "datetime"}
+# "time" and "boolean" are always static.
+# The TimePicker on a "datetime" column is also always static (no min/max concept to derive dynamically).
+_DYNAMIC_COLUMN_TYPES = {"numerical", "categorical", "date", "datetime", "hierarchical"}
 
 
 def _coerce_temporal(
@@ -206,6 +206,62 @@ def _filter_between(series: pd.Series, value: list[float] | list[str | None]) ->
     if isinstance(value[0], dt_time) and value[0] > value[1]:
         return (series >= value[0]) | (series <= value[1])
     return series.between(value[0], value[1], inclusive="both")
+
+
+def _iter_cascader_leaf_paths(
+    tree: dict[str, Any], _prefix: tuple[str, ...] = ()
+) -> Iterable[tuple[tuple[str, ...], Any]]:
+    """Yield each `(branch_path, leaf)` pair in a Cascader options tree.
+
+    Example:
+        >>> list(_iter_cascader_leaf_paths({"Eu": {"West": ["FR"]}, "As": ["JP"]}))
+        [(('Eu', 'West'), 'FR'), (('As',), 'JP')]
+    """
+    for key, value in tree.items():
+        path = (*_prefix, str(key))
+        if isinstance(value, dict):
+            yield from _iter_cascader_leaf_paths(value, path)
+        else:
+            for leaf in value:
+                yield path, leaf
+
+
+# TODO: remove this parents of leaves calculation once the Cascader propagates full paths,
+#  e.g. `[("continent", "region", "country"), ...]`, instead of bare leaves.
+#  With full paths the new tree options can be extended directly like new_options = {**new_options, **current_value}
+#  without having to calculate the parents of leaves.
+def _add_leaf_at_path(tree: dict[str, Any], path: tuple[str, ...], leaf: Any) -> None:
+    """Add `leaf` to `tree` at full `path`, creating any missing branch dicts on the way.
+
+    This is a Cascader-only problem: `current_value` is a flat list of leaves (e.g. list of country names), so if a data
+    reload drops the rows that carried currently selected values we have to add them to the new tree options.
+    Remember, current_value always has to be part of the newly calculated options. Problem is that we don't know
+    where to place these leaf values, so we have to calculate their parents.
+
+    Example:
+        >>> tree = {"Eu": ["DE"]}
+        >>> _add_leaf_at_path(tree, ("Eu",), "FR")
+        >>> tree
+        {'Eu': ['DE', 'FR']}
+        >>> _add_leaf_at_path(tree, ("As", "East"), "JP")
+        >>> tree
+        {'Eu': ['DE', 'FR'], 'As': {'East': ['JP']}}
+    """
+    node = tree
+    for key in path[:-1]:
+        child = node.get(key)
+        if child is None:
+            child = {}
+            node[key] = child
+        elif not isinstance(child, dict):
+            return  # shape mismatch — a leaf list already lives where we'd need a branch dict
+        node = child
+    last = path[-1]
+    existing = node.get(last)
+    if existing is None:
+        node[last] = [leaf]
+    elif isinstance(existing, list) and leaf not in existing:
+        existing.append(leaf)
 
 
 def _dataframe_path_to_cascader_options(df: pd.DataFrame, path_columns: list[str]) -> dict[str, Any]:
@@ -360,8 +416,10 @@ class Filter(VizroBaseModel):
         elif _is_numerical_or_date_selector(selector):
             _min, _max = self._get_min_max(targeted_data, current_value)
             selector_call_obj = selector(min=_min, max=_max)
+        elif _is_hierarchical_selector(selector):
+            selector_call_obj = selector(options=self._get_hierarchical_options(target_to_data_frame, current_value))
         else:
-            # Hierarchical and time filters cannot yet be dynamic.
+            # Time and boolean filters cannot yet be dynamic.
             selector_call_obj = selector.build()
 
         # The filter is dynamic, so a guard component (data=True) needs to be added to prevent unexpected action firing.
@@ -457,14 +515,6 @@ class Filter(VizroBaseModel):
         elif _is_categorical_selector(self.selector):
             self.selector.options = self.selector.options or self._get_options(targeted_data)
         elif _is_hierarchical_selector(self.selector):
-            if not self.selector.options and any(
-                isinstance(data_manager[cast(FigureType, model_manager[target])["data_frame"]], _DynamicData)
-                for target in self.targets
-            ):
-                raise ValueError(
-                    "Hierarchical filters cannot derive Cascader options from dynamic data. "
-                    "Set explicit `selector=vm.Cascader(options=...)` or use a static `data_frame`. "
-                )
             self.selector.options = self.selector.options or self._get_hierarchical_options(target_to_data_frame)
 
         # Set default value for the selector if not explicitly provided.
@@ -636,11 +686,37 @@ class Filter(VizroBaseModel):
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
         return sorted(set(targeted_data))
 
-    def _get_hierarchical_options(self, target_to_data_frame: dict[ModelID, pd.DataFrame]) -> dict[str, Any]:
-        """Build Cascader options from path columns; needs full dataframes (not the leaf-only `targeted_data`)."""
+    def _get_hierarchical_options(
+        self,
+        target_to_data_frame: dict[ModelID, pd.DataFrame],
+        current_value: SingleValueType | MultiValueType | None = None,
+    ) -> dict[str, Any]:
+        """Build Cascader options from path columns; needs full dataframes (not the leaf-only `targeted_data`).
+
+        When `current_value` is provided, any selected leaves that are absent from the new tree are restored at
+        their previous path (looked up in `self.selector.options`). This mirrors the categorical dynamic-filter
+        contract where user-selected values remain valid even after a data reload — the filter still applies,
+        even if it now matches zero rows.
+        """
         path_cols = list(cast(list[str], self.column))
         combined = pd.concat(
             [target_to_data_frame[target_id][path_cols] for target_id in self.targets],
             ignore_index=True,
         ).drop_duplicates()
-        return _dataframe_path_to_cascader_options(combined, path_cols)
+        new_options = _dataframe_path_to_cascader_options(combined, path_cols)
+
+        if current_value is None:
+            return new_options
+        selected_leaves = current_value if isinstance(current_value, list) else [current_value]
+        new_leaves = {leaf for _, leaf in _iter_cascader_leaf_paths(new_options)}
+        stale_leaves = [leaf for leaf in selected_leaves if leaf is not None and leaf not in new_leaves]
+        if not stale_leaves:
+            return new_options
+
+        # Restore each stale leaf under its previous path so the branch context is preserved.
+        prev_options = getattr(self.selector, "options", None) or {}
+        stale_set = set(stale_leaves)
+        for path, leaf in _iter_cascader_leaf_paths(prev_options):
+            if leaf in stale_set:
+                _add_leaf_at_path(new_options, path, leaf)
+        return new_options

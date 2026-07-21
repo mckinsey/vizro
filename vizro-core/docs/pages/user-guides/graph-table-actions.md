@@ -129,7 +129,7 @@ The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking o
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_table.gif)
 
-In the example above, when you **select one or more rows** in the table, the graph is cross-filtered to the corresponding **`sex` values** from those rows. **Which cell you click does not change which field is used:** the action always reads the `sex` column for the current row selection, not the clicked column.
+In the [cross-filter from table example](#cross-filter-from-table), when you **select one or more rows** in the table, the graph is cross-filtered to the corresponding **`sex` values** from those rows. **Which cell you click does not change which field is used:** the action always reads the `sex` column for the current row selection, not the clicked column.
 
 ??? details "Behind the scenes mechanism"
 
@@ -534,7 +534,7 @@ When select multiple points in the scatter plot, the bar chart is cross-filtered
 
 A cross-filter often works best when used [inside a container](container.md#add-controls-to-container). This typically makes it clearer which components the filter applies to, especially when the [container is styled](container.md#styled-containers).
 
-For example, let us rearrange the above example of a [cross-filter from a table](#cross-filter-from-table) into containers. Now the control appears directly above the table that it targets rather than on the left hand side of the page. The rearrangement here is purely visual to give a better user experience; `va.set_control` itself is configured exactly the same way and behaves identically while the dashboard is running.
+For example, let us rearrange the [cross-filter from a table example](#cross-filter-from-table) into containers. Now the control appears directly above the table that it targets rather than on the left hand side of the page. The rearrangement here is purely visual to give a better user experience; `va.set_control` itself is configured exactly the same way and behaves identically while the dashboard is running.
 
 !!! example "Cross-filter between containers"
 
@@ -620,7 +620,7 @@ For example, let us rearrange the above example of a [cross-filter from a table]
 
 You can perform a cross-filter where the target components are on a different page from the source. The use of [`va.set_control`][vizro.actions.set_control] is identical, but the intermediate filter must have [`show_in_url=True`](run-deploy.md#shareable-url).
 
-For example, let us rearrange the above example of a [cross-filter from a table](#cross-filter-from-table) so that the source table is on a different page from the target graph (and hence filter). When you click or press ++space++ on a row in the table, you are taken to the target page with the graph cross-filtered to show data only for one sex.
+For example, let us rearrange the [cross-filter from a table example](#cross-filter-from-table) so that the source table is on a different page from the target graph (and hence filter). When you click or press ++space++ on a row in the table, you are taken to the target page with the graph cross-filtered to show data only for one sex.
 
 !!! example "Cross filter between pages"
 
