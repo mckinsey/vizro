@@ -99,7 +99,7 @@ The page URL is generated based on the following order of preference:
 1. `id` of the page (if explicitly set by the user)
 1. `title` argument
 
-For example, if `title="This is my first page"` (and neither `path` nor `id` is explicitly set) the generated page URL will be `path=this-is-my-first-page`. You can then access the page via `localhost:<port_number>/this-is-my-first-page`.
+For example, if `title="This is my first page"` (and neither `path` nor `id` is explicitly set) the generated page URL will be `path=this-is-my-first-page`. You can then access the page via `localhost:8050/this-is-my-first-page` (or whichever port your app is running on).
 
 You cannot have duplicate `path` values, whether explicitly set or generated.
 
@@ -178,6 +178,6 @@ To customize the page URL, pass a valid URL name to the `path` argument of [`Pag
             path: my-custom-url
         ```
 
-You can now access the first page via `localhost:<port_number>/` and the second page via `localhost:<port_number>/my-custom-url`.
+You can now access the first page via `localhost:8050/` and the second page via `localhost:8050/my-custom-url` (substitute `8050` for whichever port your app is running on).
 
 [page]: ../../assets/user_guides/pages/page_sunburst.png

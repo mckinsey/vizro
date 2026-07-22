@@ -47,6 +47,15 @@ PRODUCTS = {
     },
 }
 
+# "Portland" (Oregon + Maine) and "Springfield" (Oregon + Illinois) are duplicate
+# leaf labels across branches. Each selection carries its full path, so they are
+# addressed unambiguously.
+DUPLICATE_LEAVES = {
+    "Oregon": ["Portland", "Salem", "Springfield"],
+    "Maine": ["Portland", "Augusta"],
+    "Illinois": ["Chicago", "Springfield"],
+}
+
 
 def section(title, description, *content):
     return html.Div(
@@ -78,7 +87,7 @@ layout = html.Div(
             None,
             html.Div(
                 [
-                    vdc.Cascader(id="single-preseeded", options=LOCATIONS, value="Tokyo"),
+                    vdc.Cascader(id="single-preseeded", options=LOCATIONS, value=["Asia", "Japan", "Tokyo"]),
                     value_out("single-preseeded-out"),
                 ],
                 style={"maxWidth": MAX_WIDTH},
@@ -102,7 +111,14 @@ layout = html.Div(
             html.Div(
                 [
                     vdc.Cascader(
-                        id="multi-preseeded", options=LOCATIONS, multi=True, value=["Tokyo", "Paris", "Berlin"]
+                        id="multi-preseeded",
+                        options=LOCATIONS,
+                        multi=True,
+                        value=[
+                            ["Asia", "Japan", "Tokyo"],
+                            ["Europe", "France", "Paris"],
+                            ["Europe", "Germany", "Berlin"],
+                        ],
                     ),
                     value_out("multi-preseeded-out"),
                 ],
@@ -116,6 +132,19 @@ layout = html.Div(
                 [
                     vdc.Cascader(id="products", options=PRODUCTS, multi=True, placeholder="Select products..."),
                     value_out("products-out"),
+                ],
+                style={"maxWidth": MAX_WIDTH},
+            ),
+        ),
+        section(
+            "Duplicate leaf labels",
+            'The same city name appears under different states ("Portland" in Oregon and Maine, '
+            '"Springfield" in Oregon and Illinois). Each selection carries its full path, so the '
+            "value distinguishes them.",
+            html.Div(
+                [
+                    vdc.Cascader(id="duplicates", options=DUPLICATE_LEAVES, multi=True, placeholder="Select cities..."),
+                    value_out("duplicates-out"),
                 ],
                 style={"maxWidth": MAX_WIDTH},
             ),
@@ -144,7 +173,9 @@ layout = html.Div(
                         style={"width": MAX_WIDTH},
                     ),
                     html.Div(
-                        vdc.Cascader(id="disabled-val", options=LOCATIONS, disabled=True, value="Tokyo"),
+                        vdc.Cascader(
+                            id="disabled-val", options=LOCATIONS, disabled=True, value=["Asia", "Japan", "Tokyo"]
+                        ),
                         style={"width": MAX_WIDTH},
                     ),
                 ],
@@ -208,6 +239,11 @@ def show_products(v):
     return f"value: {sorted(v or [])}"
 
 
+@callback(Output("duplicates-out", "children"), Input("duplicates", "value"))
+def show_duplicates(v):
+    return f"value: {v}"
+
+
 @callback(
     Output("programmatic", "value"),
     Input("btn-tokyo", "n_clicks"),
@@ -217,9 +253,9 @@ def show_products(v):
 )
 def set_programmatic(_t, _p, _c):
     if ctx.triggered_id == "btn-tokyo":
-        return "Tokyo"
+        return ["Asia", "Japan", "Tokyo"]
     if ctx.triggered_id == "btn-paris":
-        return "Paris"
+        return ["Europe", "France", "Paris"]
     return None
 
 
