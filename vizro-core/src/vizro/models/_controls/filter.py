@@ -30,6 +30,7 @@ from vizro.models._components.form.cascader import Cascader
 from vizro.models._controls._controls_utils import (
     SELECTORS,
     _is_categorical_selector,
+    _is_datetime_selector,
     _is_hierarchical_selector,
     _is_numerical_or_date_selector,
     check_control_targets,
@@ -152,8 +153,12 @@ def _coerce_temporal(
 
         # If the series is tz-aware, localize the (naive) parsed values to its tz so comparisons don't raise.
         # Convention: the typed wall-clock time represents a moment in the series's own timezone.
+        # nonexistent/ambiguous guard against DST-transition wall-clock times (e.g. the spring-forward gap
+        # or the fall-back overlap), which would otherwise raise instead of filtering.
         if is_datetime64_any_dtype(series) and getattr(series.dt, "tz", None) is not None:
-            value = [pd.Timestamp(v).tz_localize(series.dt.tz) for v in value]
+            value = [
+                pd.Timestamp(v).tz_localize(series.dt.tz, nonexistent="shift_forward", ambiguous=True) for v in value
+            ]
 
         if normalize_precision and is_datetime64_any_dtype(series):
             # Strip sub-second precision from the series.
@@ -497,21 +502,13 @@ class Filter(VizroBaseModel):
                     break
 
         # TimePicker always has a default min/max specified so no need to handle it here.
-        if _is_numerical_or_date_selector(self.selector):
+        if _is_numerical_or_date_selector(self.selector) or _is_datetime_selector(self.selector):
             _min, _max = self._get_min_max(targeted_data)
             # Note that manually set self.selector.min/max = 0 are Falsey and should not be overwritten.
             if self.selector.min is None:
                 self.selector.min = _min
             if self.selector.max is None:
                 self.selector.max = _max
-        elif isinstance(self.selector, DateTimePicker):
-            # DateTimePicker.min/max are date-typed and bound the date portion of the picker. The
-            # BeforeValidator coerces datetime/Timestamp (including tz-aware) to date via validate_assignment.
-            _min, _max = self._get_min_max(targeted_data)
-            if self.selector.min is None:
-                self.selector.min = _min  # type: ignore[assignment]
-            if self.selector.max is None:
-                self.selector.max = _max  # type: ignore[assignment]
         elif _is_categorical_selector(self.selector):
             self.selector.options = self.selector.options or self._get_options(targeted_data)
         elif _is_hierarchical_selector(self.selector):

@@ -214,8 +214,7 @@ change in the future.""",
             "placeholder": "Pick a date",
         }
         time_defaults: dict[str, Any] = {
-            "clearable": False,
-            "placeholder": "--:--",
+            "debounce": True,
             "persistence": True,
             "persistence_type": "session",
         }
