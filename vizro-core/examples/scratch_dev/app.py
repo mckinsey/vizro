@@ -119,7 +119,7 @@ page_2 = vm.Page(
 )
 
 page_3 = vm.Page(
-    title="Single Pickers",
+    title="Detailed: Single Pickers",
     components=[vm.AgGrid(figure=dash_ag_grid(data_frame=dff))],
     controls=[
         # datetime_utc — tested as date (DatePicker), time-of-day (TimePicker), and datetime (DateTimePicker)
@@ -221,7 +221,7 @@ page_4 = vm.Page(
 )
 
 page_5 = vm.Page(
-    title="Time as Parameter",
+    title="DateTime as Parameter",
     components=[
         vm.Graph(
             id="scatter_chart",
@@ -233,59 +233,7 @@ page_5 = vm.Page(
     controls=[
         vm.Parameter(
             targets=["scatter_chart.title"],
-            selector=vm.TimePicker(range=False),
-        ),
-    ],
-)
-
-
-from vizro.models.types import capture
-
-vm.Page.add_type("controls", vm.RadioItems)
-
-
-@capture("action")
-def update_time_pickers(radio_items_value: str):
-    if radio_items_value == "Both shifts":
-        return "", ""
-    elif radio_items_value == "First shift":
-        return "08:00", "20:00"
-    elif radio_items_value == "Second shift":
-        return "20:00", "08:00"
-
-
-page_6 = vm.Page(
-    title="Coda example",
-    components=[
-        vm.AgGrid(figure=dash_ag_grid(data_frame=dff)),
-    ],
-    controls=[
-        vm.Filter(column="datetime_utc"),
-        # vm.RadioItems(
-        #     id="radio_items_id",
-        #     options=["Both shifts", "First shift", "Second shift"],
-        #     value="Both shifts",
-        #     actions=vm.Action(
-        #         function=update_time_pickers("radio_items_id"),
-        #         outputs=["time_picker_id-start.value", "time_picker_id-end.value"],
-        #     ),
-        # ),
-        vm.Filter(
-            # visible=False,
-            column="time_hh_mm_ss",
-            selector=vm.TimePicker(
-                title='Filter "time_hh_mm_ss" column:',
-                description="Input start and end time to filter results by time_hh_mm_ss column.",
-                id="time_picker_id",
-                extra=dict(
-                    withSeconds=True,
-                    withDropdown=True,
-                    presets=[
-                        {"label": "08am -> 08pm (first shift)", "values": ["08:00:00"]},
-                        {"label": "08pm -> 08am (second shift)", "values": ["20:00:00"]},
-                    ],
-                ),
-            ),
+            selector=vm.DateTimePicker(range=False),
         ),
     ],
 )
@@ -299,33 +247,9 @@ starts = tips["time"].map(lambda x: windows[x][0])
 ends = tips["time"].map(lambda x: windows[x][1])
 clock = pd.to_datetime(_rng.integers(starts, ends), unit="s")
 
-# "hour" column is integer
-tips["hour"] = clock.hour
 # "clock_time" is in format HH:MM:SS
 tips["clock_time"] = clock.time
 tips = tips.sort_values("clock_time").reset_index(drop=True)
-
-page_7 = vm.Page(
-    title="Time Pickers",
-    components=[
-        vm.Graph(
-            figure=px.histogram(
-                tips,
-                x="hour",
-                y="tip",
-                color="time",
-                histfunc="sum",
-                title="Summarized tip by hour of day",
-                labels={"hour": "Hour of day", "tip": "Summarized tip ($)", "time": "Meal"},
-            ),
-        ),
-        vm.AgGrid(title="Row Data", figure=dash_ag_grid(data_frame=tips)),
-    ],
-    controls=[
-        vm.Filter(column="clock_time", selector=vm.TimePicker(title="Lunch/Dinner - time range")),
-        vm.Filter(column="clock_time", selector=vm.TimePicker(title="Lunch/Dinner - time", range=False)),
-    ],
-)
 
 page_8 = vm.Page(
     title="DateTime Pickers",
@@ -346,6 +270,41 @@ page_8 = vm.Page(
     ],
 )
 
+# Build a full "order_datetime" per row: spread orders across a two-week window and attach the
+# clock time-of-day, so the newly added column is a real "datetime" (date + time) type.
+_order_date = pd.Series(
+    pd.to_datetime("2026-06-01") + pd.to_timedelta(_rng.integers(0, 14, size=len(tips)), unit="D")
+).dt.normalize()
+# "order_datetime" is a datetime64 column (date + time), filterable with DateTimePicker.
+# Drop the helper "size"/"clock_time" columns so the page shows a clean datetime-focused table.
+tips_orders = tips.drop(columns=["size", "clock_time"])
+tips_orders["order_datetime"] = pd.to_datetime(
+    _order_date.dt.strftime("%Y-%m-%d") + " " + tips["clock_time"].astype(str)
+)
+tips_orders = tips_orders.sort_values("order_datetime").reset_index(drop=True)
+
+page_9 = vm.Page(
+    title="DateTime Pickers (orders)",
+    components=[
+        vm.Graph(
+            figure=px.histogram(
+                tips_orders,
+                x="order_datetime",
+                y="tip",
+                color="time",
+                histfunc="sum",
+                title="Summarized tip by order date-time",
+                labels={"order_datetime": "Order date-time", "tip": "Summarized tip ($)", "time": "Meal"},
+            ),
+        ),
+        vm.AgGrid(title="Row Data", figure=dash_ag_grid(data_frame=tips_orders)),
+    ],
+    controls=[
+        vm.Filter(column="order_datetime", selector=vm.DateTimePicker(title="Lunch/Dinner - date-time range")),
+        vm.Filter(column="order_datetime", selector=vm.DateTimePicker(title="Lunch/Dinner - date-time", range=False)),
+    ],
+)
+
 dashboard = vm.Dashboard(
     pages=[
         page_0,
@@ -354,9 +313,8 @@ dashboard = vm.Dashboard(
         page_3,
         page_4,
         page_5,
-        page_6,
-        page_7,
         page_8,
+        page_9,
     ],
 )
 

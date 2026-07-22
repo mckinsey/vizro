@@ -160,7 +160,7 @@ class TestPreBuildMethod:
             parameter.pre_build()
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
-    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider(), vm.DatePicker()])
+    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider(), vm.DatePicker(), vm.DateTimePicker()])
     def test_numerical_and_temporal_selectors_missing_values(self, test_input):
         parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
         page = model_manager["test_page"]

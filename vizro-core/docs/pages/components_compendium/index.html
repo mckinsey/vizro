@@ -190,6 +190,12 @@
                       <a href="#timerangepicker" class="nav-link nav-link-sub">TimePicker (time range)</a>
                     </li>
                     <li class="nav-item">
+                      <a href="#datetimepicker" class="nav-link nav-link-sub">DateTimePicker (single date-time)</a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="#datetimerangepicker" class="nav-link nav-link-sub">DateTimePicker (date-time range)</a>
+                    </li>
+                    <li class="nav-item">
                       <a href="#switch" class="nav-link nav-link-sub">Switch</a>
                     </li>
                     <li class="nav-item">
@@ -248,16 +254,16 @@
                         <div class="carousel__item">
                           <div class="carousel__item-content">
                             <div class="carousel__item-image">
-                              <img src="assets/images/timepicker_highlight.gif" alt="Filter by Time-of-day" />
+                              <img src="assets/images/datetimepicker_highlight.gif" alt="Filter by Date and Time" />
                             </div>
                             <div class="carousel-content">
-                              <h3 class="carousel__item-title">Filter by Time-of-day</h3>
-                              <p class="carousel__item-description">The new <b>TimePicker</b> selector lets users filter by time-of-day, either as a
-single time or as a time range. Use it together with the DatePicker to slice your
-data by both date and time.
+                              <h3 class="carousel__item-title">Filter by Date and Time</h3>
+                              <p class="carousel__item-description">The new <b>DateTimePicker</b> selector lets users filter by both date and
+time-of-day in a single control, either as a single date-time or as a
+date-time range spanning multiple days.
 </p>
                               <div class="view-btn">
-                                <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#timepicker" class="version-link">View TimePicker</a>
+                                <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#temporal-selectors" class="version-link">View DateTimePicker</a>
                               </div>
                             </div>
                           </div>
@@ -1408,6 +1414,55 @@ respective models.
         column=&#34;time&#34;,
         selector=vm.timePicker(
             title=&#34;Time Picker (Stocks - date)&#34;,
+        )
+    ),
+]</code></pre>
+                            </div>
+                          </div>
+                        </div>
+
+                                                <div class="component_card" id="datetimepicker" data-aliases="datetime date time timestamp single datetime">
+                          <h3 class="component_card_title">DateTimePicker (single date-time)</h3>
+                          <div class="component_card_content">
+                            <img src="assets/images/datetimepicker.png" alt="DateTimePicker (single date-time)" />
+                            <div class="code-block">
+                              <button class="code-block__copy-button" aria-label="Copy code to clipboard">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+                                <span class="code-block__copy-text">Copy</span>
+                              </button>
+                              <pre><code class="language-python">controls=[
+    vm.Filter(
+        column=&#34;datetime&#34;,
+        selector=vm.DateTimePicker(
+            title=&#34;Date-time Picker (single)&#34;,
+            range=False,
+        )
+    ),
+]</code></pre>
+                            </div>
+                          </div>
+                        </div>
+
+                                                <div class="component_card" id="datetimerangepicker" data-aliases="datetime range date time range from to period DateTimeRangePicker">
+                          <h3 class="component_card_title">DateTimePicker (date-time range)</h3>
+                          <div class="component_card_content">
+                            <img src="assets/images/datetimerangepicker.png" alt="DateTimePicker (date-time range)" />
+                            <div class="code-block">
+                              <button class="code-block__copy-button" aria-label="Copy code to clipboard">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+                                <span class="code-block__copy-text">Copy</span>
+                              </button>
+                              <pre><code class="language-python">controls=[
+    vm.Filter(
+        column=&#34;datetime&#34;,
+        selector=vm.DateTimePicker(
+            title=&#34;Date-time Picker (range)&#34;,
         )
     ),
 ]</code></pre>

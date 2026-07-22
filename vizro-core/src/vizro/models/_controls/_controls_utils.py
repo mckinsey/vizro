@@ -45,6 +45,10 @@ def _is_numerical_or_date_selector(x: object) -> TypeIs[RangeSlider | Slider | D
     return isinstance(x, SELECTORS["numerical"] + SELECTORS["date"])
 
 
+def _is_datetime_selector(x: object) -> TypeIs[DateTimePicker]:
+    return isinstance(x, SELECTORS["datetime"])
+
+
 def _is_categorical_selector(x: object) -> TypeIs[Checklist | Dropdown | RadioItems]:
     return isinstance(x, SELECTORS["categorical"])
 

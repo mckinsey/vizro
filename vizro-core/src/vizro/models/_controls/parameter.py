@@ -10,6 +10,7 @@ from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._controls._controls_utils import (
     _is_categorical_selector,
+    _is_datetime_selector,
     _is_hierarchical_selector,
     _is_numerical_or_date_selector,
     check_control_targets,
@@ -134,7 +135,9 @@ class Parameter(VizroBaseModel):
     def pre_build(self):
         check_control_targets(control=self)
 
-        if _is_numerical_or_date_selector(self.selector) and (self.selector.min is None or self.selector.max is None):
+        if (_is_numerical_or_date_selector(self.selector) or _is_datetime_selector(self.selector)) and (
+            self.selector.min is None or self.selector.max is None
+        ):
             raise TypeError(f"{self.selector.type} requires the arguments 'min' and 'max' when used within Parameter.")
         elif (
             _is_categorical_selector(self.selector) or _is_hierarchical_selector(self.selector)
