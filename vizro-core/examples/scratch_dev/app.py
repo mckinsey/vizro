@@ -9,7 +9,9 @@ page = vm.Page(
     title="Default Dash AG Grid",
     components=[
         vm.AgGrid(
-            figure=dash_ag_grid(data_frame=px.data.gapminder()),
+            figure=dash_ag_grid(
+                data_frame=px.data.gapminder(),
+            ),
         ),
     ],
 )
