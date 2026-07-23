@@ -21,7 +21,7 @@ class _on_page_load(_AbstractAction):
         """Applies controls to charts on page once the page is opened (or refreshed).
 
         Returns:
-            Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
+            Dict mapping target chart ids to modified figures, for example, {"my_scatter": Figure(...)}.
 
         """
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This

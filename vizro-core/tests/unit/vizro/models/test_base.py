@@ -44,7 +44,7 @@ ChildType = Annotated[ChildX | ChildY, Field(discriminator="type")]
 # These parent classes must be done as fixtures so that each test gets a fresh, unmodified copy of the class.
 @pytest.fixture()
 def Parent():
-    # e.g. Parameter.selector: SelectorType
+    # For example, Parameter.selector: SelectorType
     class _Parent(vm.VizroBaseModel):
         child: ChildType
 
@@ -53,7 +53,7 @@ def Parent():
 
 @pytest.fixture()
 def ParentWithOptional():
-    # e.g. Filter.selector: SelectorType | None
+    # For example, Filter.selector: SelectorType | None
     class _ParentWithOptional(vm.VizroBaseModel):
         child: ChildType | None
 
@@ -62,7 +62,7 @@ def ParentWithOptional():
 
 @pytest.fixture()
 def ParentWithList():
-    # e.g. Page.controls: list[ControlType] and Page.components: list[ComponentType]
+    # For example, Page.controls: list[ControlType] and Page.components: list[ComponentType]
     class _ParentWithList(vm.VizroBaseModel):
         child: list[ChildType]
 

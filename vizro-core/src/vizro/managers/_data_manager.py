@@ -109,7 +109,7 @@ class _StaticData:
         """Loads data.
 
         Returns a copy of the data. This is not necessary if we are careful to not do any inplace=True operations,
-        but safest to leave it here, e.g. in case a user-defined action mutates the data. To be even safer we could
+        but safest to leave it here in case a user-defined action mutates the data. To be even safer, we could
         additionally (but not instead) copy data when setting it in __init__ but this consumes more memory and is not
         necessary so long as data is only ever accessed through the intended API of data_manager["static_data"].load().
         """
@@ -169,12 +169,12 @@ class DataManager:
             # correctly - see https://github.com/mckinsey/vizro/blob/abb7eebb230ba7e6cfdf6150dc56b211a78b1cd5/
             # vizro-core/src/vizro/managers/_data_manager.py.
             # Once partial has been used, all dynamic data sources are on equal footing since they're all treated as
-            # functions rather than bound methods, e.g. by flask_caching.utils.function_namespace. This makes it much
+            # functions rather than bound methods. flask_caching.utils.function_namespace handles this, making it much
             # simpler to use flask-caching reliably.
             # Note that for kedro>=0.19.9 we use lambda: catalog.load(dataset_name) rather than dataset.load so the
             # bound method case no longer arises when using kedro integration.
             # It's important the __qualname__ is the same across all workers, so use the data source name rather than
-            # e.g. the repr method that includes the id of the instance so would only work in the case that gunicorn is
+            # The repr method includes the ID of the instance, so it would only work if gunicorn is
             # running with --preload.
             # __module__ is also required in flask_caching.utils.function_namespace and not defined for partial
             # functions in some versions of Python.
@@ -237,7 +237,7 @@ class DataManager:
 
     def _clear(self):
         # We do not actually call self.cache.clear() because (a) it would only work when self._cache_has_app is True,
-        # which is not the case when e.g. Vizro._reset is called, and (b) because we do not want to accidentally
+        # which is not the case when Vizro._reset is called, and (b) because we do not want to accidentally
         # clear the cache if we eventually put a call to Vizro._reset inside Vizro(), since cache should be persisted
         # across server restarts.
         self.__init__()  # type: ignore[misc]

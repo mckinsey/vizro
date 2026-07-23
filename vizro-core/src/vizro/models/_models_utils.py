@@ -124,7 +124,7 @@ def make_actions_chain(self):
     action_triggers property, which needs the parent model instance. Hence, it must be done as a model validator.
 
     This runs after model_post_init so that self._inner_component_id will have already been set correctly in
-    Table and AgGrid. Even though it's a model validator it is also run on assignment e.g. selector.actions = ...
+    Table and AgGrid. Even though it's a model validator, it also runs on assignment, such as `selector.actions = ...`.
     """
     from vizro.actions import export_data, filter_interaction
     from vizro.actions._on_page_load import _on_page_load

@@ -131,7 +131,7 @@ def _get_target_dot_separated_strings(dot_separated_strings: list[str], target: 
 
     Args:
         dot_separated_strings: list of dot separated strings that can be targeted by a vm.Parameter,
-            e.g. ["target_name.data_frame.arg", "target_name.x"]
+            for example, ["target_name.data_frame.arg", "target_name.x"]
         target: id of targeted Figure.
         data_frame: whether to return only DataFrame parameters starting "data_frame." or only non-DataFrame parameters.
 

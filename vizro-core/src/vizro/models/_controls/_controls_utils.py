@@ -107,7 +107,7 @@ def get_selector_default_value(selector: SelectorType) -> Any:
     """Get default value for a selector if not explicitly provided.
 
     This is used to set selector.value in controls so that the "Reset controls" button works. Ideally it would be
-    done elsewhere, e.g. in the selector models themselves, but that is tricky to get in the right order because it
+    done elsewhere, such as in the selector models themselves, but that is tricky to get in the right order because it
     would require running the selector.pre_build as part of Filter.pre_build.
     """
     if selector.value is not None:

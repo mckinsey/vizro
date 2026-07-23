@@ -914,7 +914,7 @@ grid_layout = vm.Page(
     ],
     description="""
         Use Grid when you have a specific layout in mind—like a dashboard with clearly defined sections
-        (e.g. top summary row, bottom detail view).
+        (for example, top summary row, bottom detail view).
     """,
 )
 

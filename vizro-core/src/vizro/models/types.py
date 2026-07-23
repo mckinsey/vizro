@@ -186,7 +186,7 @@ def _validate_captured_callable(cls, value: Any, info: ValidationInfo):
 
 # CapturedCallable now enables instantiation via string, which will instantiate an object with ._prevent_run = True.
 # This enables us to instantiate dashboard objects without needing to execute/import the function definition.
-# Useful in the context of untrusted code generation (e.g. by LLMs).
+# Useful in the context of untrusted code generation (for example, by LLMs).
 class CapturedCallable:
     """Stores a captured function call to use in a dashboard.
 
@@ -371,7 +371,7 @@ class CapturedCallable:
 
         This uses the hydra syntax for _target_ but none of the other bits and we don't actually use hydra
         to implement it. In future, we might like to switch to using hydra's actual implementation
-        which would enable nested functions (e.g. for transformers?) and to specify the path to a _target_ that lives
+        which would enable nested functions, for example for transformers, and specify the path to a _target_ that lives
         outside of vizro.plotly_express. See https://hydra.cc/docs/advanced/instantiate_objects/overview/.
         """
         if not isinstance(captured_callable_config, dict):
@@ -414,7 +414,7 @@ class CapturedCallable:
     def _extract_from_attribute(
         cls, captured_callable: Union[_SupportsCapturedCallable, CapturedCallable]
     ) -> CapturedCallable:
-        """Extracts CapturedCallable from _SupportCapturedCallable (e.g. _DashboardReadyFigure).
+        """Extracts CapturedCallable from _SupportCapturedCallable (for example, _DashboardReadyFigure).
 
         If captured_callable is already CapturedCallable then it just passes through untouched.
         """
@@ -484,7 +484,7 @@ def _pio_templates_default():
     """Sets pio.templates.default to "vizro_dark" and then reverts it.
 
     This is to ensure that in a Jupyter Notebook captured charts look the same as when they're in the dashboard. When
-    the context manager exits the global theme is reverted just to keep things clean (e.g. if you really wanted to,
+    the context manager exits, the global theme is reverted to keep things clean. For example, you could
     you could compare a captured vs. non-captured chart in the same Python session).
 
     This works even if users have tweaked the templates, so long as pio.templates has been updated correctly and you
@@ -592,7 +592,7 @@ class capture:
                     raise ValueError(f"{func.__name__} must supply a value to data_frame argument.") from exc
 
                 if isinstance(captured_callable["data_frame"], str):
-                    # Enable running e.g. px.scatter("iris") from the Python API. Don't actually run the function
+                    # Enable running `px.scatter("iris")` from the Python API. Don't actually run the function
                     # because it won't work as there's no data. This case is not relevant for the JSON/YAML API,
                     # which is handled separately through validation of CapturedCallable.
                     fig = _DashboardReadyFigure()
@@ -655,7 +655,7 @@ class capture:
         )
 
 
-# For "component_id.component_property", e.g. "dropdown_id.value".
+# For "component_id.component_property", for example, "dropdown_id.value".
 _IdProperty: TypeAlias = str
 """A string that must be in the format 'component-id.component-property'."""
 

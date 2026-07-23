@@ -19,7 +19,7 @@ pio.templates["vizro_light"] = json.loads((base_path / "vizro_light.json").read_
 __all__ = ["Vizro"]
 __version__ = "0.1.60.dev0"
 
-# For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
+# For dev versions, a branch or tag such as 0.1.20.dev0 does not exist and so won't work with the CDN. We point
 # to main instead, but this can be manually overridden to the current feature branch name if required.
 # This would only be the case where you need to test something with serve_locally=False and have changed
 # assets compared to main. In this case you need to push your assets changes to remote for the CDN to update,
@@ -40,7 +40,7 @@ bootstrap = f"{BASE_EXTERNAL_URL}static/css/vizro-bootstrap.min.css"
 # import of vizro, regardless of whether the Vizro class or any other bits are used.
 ComponentRegistry.registry.add("vizro")
 
-# Files needed to use Vizro as a library (not a framework), e.g. in a pure Dash app.
+# Files needed to use Vizro as a library (not a framework), for example, in a pure Dash app.
 # This list should be kept to the bare minimum so we don't insert any more than the minimum required CSS on pure Dash
 # apps. At the moment the only library components we support just are KPI cards. Note that anything that's not CSS
 # is handled as a script, even if it's a font file or image.

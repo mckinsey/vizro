@@ -39,7 +39,7 @@ def set_layout(layout, info: ValidationInfo):
     if isinstance(layout, Flex):
         return layout
 
-    # This exists only to eagerly raise the error, otherwise obscure error message on eg Page()
+    # This exists only to eagerly raise the error, otherwise obscure error message, for example, on Page()
     # Same for similar code in other places
     # TODO[MS]: find another solution that clashes less with typing
     if "components" not in info.data:

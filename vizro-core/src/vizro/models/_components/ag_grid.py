@@ -158,7 +158,7 @@ class AgGrid(VizroBaseModel):
                 # `cell_clicked_value` always present in the `cell_clicked`.
                 return cell_clicked[cell_clicked_value]
             else:
-                # Keep the target control unchanged if `cellClicked` is missing (e.g. checkbox row selection)
+                # Keep the target control unchanged if `cellClicked` is missing (for example, checkbox row selection)
                 return no_update
 
         selected_rows = trigger.get("selectedRows")
