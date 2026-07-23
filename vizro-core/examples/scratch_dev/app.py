@@ -233,7 +233,11 @@ page_5 = vm.Page(
     controls=[
         vm.Parameter(
             targets=["scatter_chart.title"],
-            selector=vm.DateTimePicker(min="2026-01-01", max="2026-02-02", range=False),
+            selector=vm.DateTimePicker(
+                min="2026-01-01",
+                max="2026-02-02",
+                range=False,
+            ),
         ),
     ],
 )
