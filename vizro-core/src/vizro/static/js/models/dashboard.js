@@ -111,37 +111,14 @@ function collapse_nav_panel(n_clicks, is_open) {
   if (!n_clicks) {
     /* Automatically collapses left-side if xs, s and m-devices are detected*/
     if (window.innerWidth < 768 || window.innerHeight < 768) {
-      return [
-        false,
-        {
-          transform: "rotate(180deg)",
-          transition: "transform 0.35s ease-in-out",
-          marginLeft: "8px",
-        },
-        "Show Menu",
-      ];
+      return [false, "Show Menu"];
     }
     throw dash_clientside.PreventUpdate;
   }
   if (is_open) {
-    return [
-      false,
-      {
-        transform: "rotate(180deg)",
-        transition: "transform 0.35s ease-in-out",
-        marginLeft: "8px",
-      },
-      "Show Menu",
-    ];
+    return [false, "Show Menu"];
   } else {
-    return [
-      true,
-      {
-        transform: "rotate(0deg)",
-        transition: "transform 0.35s ease-in-out",
-      },
-      "Hide Menu",
-    ];
+    return [true, "Hide Menu"];
   }
 }
 
