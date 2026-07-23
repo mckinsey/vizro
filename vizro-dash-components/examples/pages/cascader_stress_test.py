@@ -131,9 +131,7 @@ layout = html.Div(
     [
         dmc.Title("Stress tests — leaf vs path", order=2, mb="sm"),
         dmc.Stack(
-            [
-                _scenario(title, blurb, options, prefix) for (title, blurb, options, prefix) in _SCENARIOS
-            ],
+            [_scenario(title, blurb, options, prefix) for (title, blurb, options, prefix) in _SCENARIOS],
             gap="xl",
         ),
         html.Div(style={"height": "200px"}),

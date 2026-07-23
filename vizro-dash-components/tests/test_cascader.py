@@ -390,9 +390,7 @@ def test_cascader_multi_select_all(dash_duo, full_path):
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-dropdown-action-button").click()
     expected = (
-        "asia/china | asia/japan | europe/france | europe/germany"
-        if full_path
-        else "china | france | germany | japan"
+        "asia/china | asia/japan | europe/france | europe/germany" if full_path else "china | france | germany | japan"
     )
     dash_duo.wait_for_text_to_equal("#out", expected)
     assert dash_duo.get_logs() == []
@@ -511,9 +509,7 @@ def test_cascader_multi_select_all_search_only_leaves(dash_duo, full_path):
     dash_duo.wait_for_element(".dash-cascader-result-row-branch")
     dash_duo.wait_for_element(".dash-dropdown-action-button").click()
     expected = (
-        "asia/china | asia/japan | europe/france | europe/germany"
-        if full_path
-        else "china | france | germany | japan"
+        "asia/china | asia/japan | europe/france | europe/germany" if full_path else "china | france | germany | japan"
     )
     dash_duo.wait_for_text_to_equal("#out", expected)
     assert dash_duo.get_logs() == []
@@ -1281,9 +1277,7 @@ def test_cascader_options_change_prunes_invalid_selection(dash_duo, full_path):
         lambda n: {"asia": ["china"], "europe": ["france", "germany"]}
     )
     dash_duo.start_server(app)
-    dash_duo.wait_for_text_to_equal(
-        "#out", "asia/japan | europe/france" if full_path else "france | japan"
-    )
+    dash_duo.wait_for_text_to_equal("#out", "asia/japan | europe/france" if full_path else "france | japan")
     dash_duo.wait_for_element("#btn").click()
     dash_duo.wait_for_text_to_equal("#out", "europe/france" if full_path else "france")
     assert dash_duo.get_logs() == []

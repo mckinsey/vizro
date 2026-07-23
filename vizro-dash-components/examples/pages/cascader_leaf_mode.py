@@ -75,7 +75,10 @@ layout = html.Div(
             "Single-select",
             "Click through the tree to select a leaf. The emitted value is the bare leaf scalar.",
             html.Div(
-                [vdc.Cascader(id="leaf-single", options=LOCATIONS, placeholder="Select a city..."), value_out("leaf-single-out")],
+                [
+                    vdc.Cascader(id="leaf-single", options=LOCATIONS, placeholder="Select a city..."),
+                    value_out("leaf-single-out"),
+                ],
                 style={"maxWidth": MAX_WIDTH},
             ),
         ),
@@ -155,7 +158,9 @@ layout = html.Div(
             dmc.Group(
                 [
                     html.Div(
-                        vdc.Cascader(id="leaf-disabled-empty", options=LOCATIONS, disabled=True, placeholder="Disabled..."),
+                        vdc.Cascader(
+                            id="leaf-disabled-empty", options=LOCATIONS, disabled=True, placeholder="Disabled..."
+                        ),
                         style={"width": MAX_WIDTH},
                     ),
                     html.Div(
