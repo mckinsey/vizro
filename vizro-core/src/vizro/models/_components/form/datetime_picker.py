@@ -25,15 +25,23 @@ _TIME_PICKER_PROPS = set(dmc.TimePicker().available_properties)
 
 
 def _validate_datetime_string_format(value: Any) -> Any:
-    """Validate string values parse as an ISO date or datetime without coercing them.
+    """Validate/normalize datetime values for the picker.
 
-    Accepted shapes (in priority order):
+    ``datetime`` objects (including ``pandas.Timestamp``) are normalized to a seconds-precision ISO
+    string, because ``dmc.TimePicker`` only renders ``HH:MM[:SS]`` — the sub-second precision of
+    ``str(datetime)`` (e.g. ``"09:00:00.123456"``) breaks rendering and store round-trips.
+
+    Strings are validated (not coerced) against the accepted shapes (in priority order):
       - ``YYYY-MM-DDTHH:MM:SS`` / ``YYYY-MM-DDTHH:MM``      (T separator)
       - ``YYYY-MM-DD HH:MM:SS`` / ``YYYY-MM-DD HH:MM``      (space separator, emitted by Mantine)
       - ``YYYY-MM-DD``                                       (date-only, time portion cleared)
     """
 
     def _validate(v: Any) -> Any:
+        # datetime is a subclass of date, so this also catches pandas Timestamp. Drop sub-second
+        # precision that dmc.TimePicker can't handle.
+        if isinstance(v, datetime):
+            return v.strftime("%Y-%m-%dT%H:%M:%S")
         if not (v and isinstance(v, str)):
             return v
 
@@ -50,7 +58,7 @@ def _validate_datetime_string_format(value: Any) -> Any:
 
         raise ValueError(
             f"Invalid datetime string {v!r}. Expected ISO format "
-            "'YYYY-MM-DD', 'YYYY-MM-DDTHH:MM', or 'YYYY-MM-DDTHH:MM:SS'."
+            "'YYYY-MM-DD', 'YYYY-MM-DDTHH:MM[:SS]', or 'YYYY-MM-DD HH:MM[:SS]'."
         )
 
     if isinstance(value, list):
@@ -92,7 +100,7 @@ class DateTimePicker(VizroBaseModel):
     the filter to the whole day rather than disabling it.
 
     Abstract: Usage documentation
-        [How to use temporal selectors](user-guides/selectors.md#temporal-selectors)
+        [How to use temporal selectors](../user-guides/selectors.md#temporal-selectors)
 
     Example:
         ```python

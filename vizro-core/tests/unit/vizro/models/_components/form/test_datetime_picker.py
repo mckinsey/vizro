@@ -180,6 +180,30 @@ class TestDateTimePickerInstantiation:
         assert datetime_picker.value == ["2024-01-01T09:00", "2024-02-01T17:00:30"]
         assert all(isinstance(v, str) for v in datetime_picker.value)
 
+    @pytest.mark.parametrize(
+        "value, expected",
+        [
+            # datetime objects (incl. sub-second precision) are normalized to seconds-precision ISO strings,
+            # since dmc.TimePicker only renders HH:MM[:SS] — fractional seconds break rendering/round-trips.
+            (datetime(2024, 1, 1, 9, 0, 0, 123456), "2024-01-01T09:00:00"),
+            (datetime(2024, 1, 1, 9, 0), "2024-01-01T09:00:00"),
+            (pd.Timestamp("2024-01-01T09:00:30.999999"), "2024-01-01T09:00:30"),
+        ],
+    )
+    def test_datetimepicker_datetime_value_normalized_to_seconds(self, value, expected):
+        datetime_picker = vm.DateTimePicker(range=False, value=value)
+        assert datetime_picker.value == expected
+        assert isinstance(datetime_picker.value, str)
+
+    def test_datetimepicker_range_datetime_value_normalized_to_seconds(self):
+        """Each datetime end of a range is normalized independently to a seconds-precision ISO string."""
+        datetime_picker = vm.DateTimePicker(
+            range=True,
+            value=[datetime(2024, 1, 1, 9, 0, 0, 123456), pd.Timestamp("2024-02-01T17:30:45.999")],
+        )
+        assert datetime_picker.value == ["2024-01-01T09:00:00", "2024-02-01T17:30:45"]
+        assert all(isinstance(v, str) for v in datetime_picker.value)
+
 
 class TestBuildMethod:
     """Tests the build method for range and single modes."""
