@@ -61,7 +61,7 @@ DEFAULT_SELECTORS = {
 DISALLOWED_SELECTORS = {
     "numerical": SELECTORS["date"] + SELECTORS["datetime"] + SELECTORS["time"],
     "date": SELECTORS["numerical"] + SELECTORS["boolean"] + SELECTORS["datetime"] + SELECTORS["time"],
-    # Both DatePicker and DateTimePicker are allowed on "datetime" columns; TimePicker is not.
+    # DatePicker, DateTimePicker, and TimePicker are all allowed on "datetime" columns
     "datetime": SELECTORS["numerical"] + SELECTORS["boolean"],
     "time": SELECTORS["numerical"] + SELECTORS["boolean"] + SELECTORS["date"] + SELECTORS["datetime"],
     "categorical": SELECTORS["numerical"]
