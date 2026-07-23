@@ -13,19 +13,32 @@ page_1 = vm.Page(
     title="Action Logs 1",
     components=[
         vm.Container(
-            title="container",
+            title="",
             components=[
-                vm.Card(text="placeholder text"),
-                # vm.Graph(id="graph_3", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))
+                # vm.Card(text="placeholder text"),
+                vm.Graph(id="graph_3", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))
             ],
+            variant="filled",
+            controls=[vm.Filter(column="species")],
         ),
         vm.Graph(id="graph_1", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
-        vm.Button(text="Download data", actions=[va.export_data(targets=["graph_1"])]),
     ],
     controls=[
         vm.Filter(column="species"),
-        vm.Filter(column="sepal_length"),
-        vm.Filter(column="petal_width"),
+        vm.ControlGroup(
+            title="Control group 1",
+            controls=[
+                vm.Filter(column="sepal_length"),
+            ],
+            description="control group info",
+        ),
+        vm.ControlGroup(
+            title="Control group 2",
+            controls=[
+                vm.Filter(column="petal_width"),
+            ],
+            description="control group info",
+        ),
     ],
 )
 

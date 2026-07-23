@@ -80,7 +80,7 @@
 #header-custom {
   align-items: center;
   display: flex;
-  gap: 8px;
+  gap: 24px;
   height: 100%;
   width: max-content;
 }
