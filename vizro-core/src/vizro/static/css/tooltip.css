@@ -61,3 +61,8 @@
 #dashboard-title .tooltip-icon {
   font-size: 24px;
 }
+
+#header-controls .tooltip-icon {
+  color: var(--bs-body-color);
+  font-size: 24px;
+}

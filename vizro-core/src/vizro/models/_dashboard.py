@@ -527,7 +527,7 @@ class Dashboard(VizroBaseModel):
         reset_controls_button = dbc.Button(
             id="reset-button",
             children=[
-                html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
+                html.Span("sync", className="material-symbols-outlined tooltip-icon"),
                 dbc.Tooltip(children="Reset all page controls", target="reset-button"),
             ],
             color="link",
