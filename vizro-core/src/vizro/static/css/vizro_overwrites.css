@@ -202,7 +202,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-body-bg: #141721; /* QBDS: --surface-bg-accent */
   --bs-tertiary-bg: #181b26; /* QBDS: --surface-bg-primary */
   --bs-primary-bg-subtle: #272a35; /* QBDS: --fill-onsurface-ui-3  */
-  --bs-highlight-bg: #ffffff14; /* QBDS: --stateslayer-overlay-hover */
+  --bs-highlight-bg: #1f222e; /* QBDS: --stateslayer-overlay-hover */
   --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent */
   --bs-card-bg: var(--bs-primary-bg-subtle);
   --bs-dropdown-bg: var(--bs-primary-bg-subtle); /* Dropdown bg on left-side */
@@ -214,10 +214,10 @@ All the HEX values starting with --text-code are taken from the Github code high
 }
 
 [data-bs-theme="light"] {
-  --bs-body-bg: #ffffff;
-  --bs-tertiary-bg: #f5f6f6;
+  --bs-body-bg: #fafafb;
+  --bs-tertiary-bg: #ffffff;
   --bs-primary-bg-subtle: #f5f6f6;
-  --bs-highlight-bg: #14172114;
+  --bs-highlight-bg: #fafafb;
   --bs-focus-ring-color: #00a9f4;
   --bs-card-bg: var(--bs-primary-bg-subtle);
   --bs-dropdown-bg: var(--bs-body-bg); /* Dropdown bg on left-side */

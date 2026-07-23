@@ -12,6 +12,13 @@ iris = px.data.iris()
 page_1 = vm.Page(
     title="Action Logs 1",
     components=[
+        vm.Container(
+            title="container",
+            components=[
+                vm.Card(text="placeholder text"),
+                # vm.Graph(id="graph_3", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))
+            ],
+        ),
         vm.Graph(id="graph_1", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
         vm.Button(text="Download data", actions=[va.export_data(targets=["graph_1"])]),
     ],
@@ -33,7 +40,11 @@ page_2 = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(title="Vizro", pages=[page_1, page_2], navigation=vm.Navigation(nav_selector=vm.NavBar()))
+dashboard = vm.Dashboard(
+    title="Vizro",
+    pages=[page_1, page_2],
+    # navigation=vm.Navigation(nav_selector=vm.NavBar()),
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run(debug=True)
