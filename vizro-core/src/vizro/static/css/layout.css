@@ -34,14 +34,14 @@
 }
 
 #left-side {
-  background-color: var(--bs-tertiary-bg);
+  background-color: var(--bs-left-side-bg);
   display: flex;
   flex-direction: row;
   height: 100%;
 }
 
 #right-side {
-  background: var(--bs-body-bg);
+  background: var(--bs-right-side-bg);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
