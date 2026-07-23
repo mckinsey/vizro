@@ -1,20 +1,20 @@
-"""Cascader stress tests: two ~10k-leaf trees (deep uneven 6-level vs wide 2-level)."""
+"""Cascader stress tests: two ~10k-leaf trees (deep uneven 6-level vs wide 2-level).
+
+Each tree is rendered in both value modes side by side — leaf mode (`full_path=False`) and path
+mode (`full_path=True`) — so their performance and emitted-value shapes can be compared directly.
+The stress trees use globally-unique leaf values, so leaf mode is valid for them.
+"""
 
 from __future__ import annotations
-
-from typing import NamedTuple
 
 import dash
 import dash_mantine_components as dmc
 import vizro_dash_components as vdc
 from dash import Input, Output, callback, html
 
-dash.register_page(
-    __name__,
-    name="Cascader stress test",
-)
+dash.register_page(__name__, name="Cascader stress test")
 
-MAX_WIDTH = 400
+MAX_WIDTH = 380
 PANEL_MAX_HEIGHT = 360
 
 _CASCADE_BASE: dict = {
@@ -65,102 +65,95 @@ WIDE_TREE: dict[str, list[str]] = {
 }
 WIDE_LEAF_COUNT = WIDE_ROOT_COUNT * WIDE_LEAVES_PER_ROOT
 
+# Every (scenario, mode) pair; used to build the layout columns and register echo callbacks.
+_SCENARIOS = [
+    (
+        "Deep tree",
+        f"{DEEP_LEVELS} levels · branching {DEEP_BRANCHING} · "
+        f"{DEEP_LEAVES_PER_TERMINAL} leaves per terminal → {DEEP_LEAF_COUNT:,} leaf values.",
+        DEEP_TREE,
+        "stress-deep",
+    ),
+    (
+        "Wide tree",
+        f"{WIDE_ROOT_COUNT} roots by {WIDE_LEAVES_PER_ROOT} leaves each → {WIDE_LEAF_COUNT:,} leaf values.",
+        WIDE_TREE,
+        "stress-wide",
+    ),
+]
+_MODES = [("Leaf mode", "leaf", False), ("Path mode", "path", True)]
 
-class _StressIds(NamedTuple):
-    """NamedTuple (not dataclass): Dash loads pages before they appear in sys.modules, which breaks @dataclass."""
 
-    single_id: str
-    multi_id: str
-    single_out: str
-    multi_out: str
+def _mode_column(mode_title: str, mode_key: str, full_path: bool, options: dict, prefix: str) -> dmc.Stack:
+    single_id = f"{prefix}-{mode_key}-single"
+    multi_id = f"{prefix}-{mode_key}-multi"
+    return dmc.Stack(
+        [
+            dmc.Title(mode_title, order=4),
+            dmc.Text(f"full_path={full_path}", c="dimmed", size="xs", mb="xs"),
+            dmc.Text("Single-select", size="sm", fw=600),
+            vdc.Cascader(
+                id=single_id, options=options, full_path=full_path, placeholder="Single-select…", **_CASCADE_BASE
+            ),
+            dmc.Text(id=f"{single_id}-out", size="xs", c="dimmed"),
+            dmc.Text("Multi-select", size="sm", fw=600, mt="sm"),
+            vdc.Cascader(
+                id=multi_id,
+                options=options,
+                full_path=full_path,
+                multi=True,
+                debounce=True,
+                placeholder="Multi-select…",
+                **_CASCADE_BASE,
+            ),
+            dmc.Text(id=f"{multi_id}-out", size="xs", c="dimmed"),
+        ],
+        style={"maxWidth": MAX_WIDTH},
+        gap="xs",
+    )
 
 
-def _stress_scenario(title: str, blurb: str, options: dict, ids: _StressIds) -> list:
-    base = {**_CASCADE_BASE, "options": options}
-    return [
-        dmc.Title(title, order=3, mb="xs"),
-        dmc.Text(blurb, c="dimmed", size="sm", mb="lg"),
-        dmc.Title("Single-select", order=4),
-        html.Div(
-            [
-                vdc.Cascader(id=ids.single_id, placeholder="Single-select…", **base),
-                dmc.Text(id=ids.single_out, size="sm", c="dimmed"),
-            ],
-            style={"maxWidth": MAX_WIDTH},
-        ),
-        dmc.Divider(),
-        dmc.Title("Multi-select", order=4),
-        html.Div(
-            [
-                vdc.Cascader(
-                    id=ids.multi_id,
-                    placeholder="Multi-select…",
-                    multi=True,
-                    debounce=True,
-                    **base,
-                ),
-                dmc.Text(id=ids.multi_out, size="sm", c="dimmed"),
-            ],
-            style={"maxWidth": MAX_WIDTH},
-        ),
-    ]
+def _scenario(title: str, blurb: str, options: dict, prefix: str) -> html.Div:
+    return html.Div(
+        [
+            dmc.Title(title, order=3, mb="xs"),
+            dmc.Text(blurb, c="dimmed", size="sm", mb="md"),
+            dmc.Group(
+                [_mode_column(t, k, fp, options, prefix) for (t, k, fp) in _MODES],
+                align="start",
+                grow=True,
+            ),
+        ]
+    )
 
 
 layout = html.Div(
     [
-        dmc.Title("Stress tests", order=2, mb="sm"),
+        dmc.Title("Stress tests — leaf vs path", order=2, mb="sm"),
         dmc.Stack(
             [
-                *_stress_scenario(
-                    "Deep tree",
-                    f"{DEEP_LEVELS} levels · branching {DEEP_BRANCHING} · "
-                    f"{DEEP_LEAVES_PER_TERMINAL} leaves per terminal → {DEEP_LEAF_COUNT:,} leaf values.",
-                    DEEP_TREE,
-                    _StressIds(
-                        single_id="stress-single",
-                        multi_id="stress-multi",
-                        single_out="stress-single-out",
-                        multi_out="stress-multi-out",
-                    ),
-                ),
-                dmc.Divider(),
-                *_stress_scenario(
-                    "Wide tree",
-                    f"{WIDE_ROOT_COUNT} roots by {WIDE_LEAVES_PER_ROOT} leaves each → {WIDE_LEAF_COUNT:,} leaf values.",
-                    WIDE_TREE,
-                    _StressIds(
-                        single_id="stress-wide-single",
-                        multi_id="stress-wide-multi",
-                        single_out="stress-wide-single-out",
-                        multi_out="stress-wide-multi-out",
-                    ),
-                ),
+                _scenario(title, blurb, options, prefix) for (title, blurb, options, prefix) in _SCENARIOS
             ],
-            gap="md",
+            gap="xl",
         ),
+        html.Div(style={"height": "200px"}),
     ]
 )
 
 
-def _fmt_multi(v):
-    return sorted(v) if v else v
+def _fmt(v):
+    if isinstance(v, list):
+        return sorted(v, key=repr)
+    return v
 
 
-@callback(Output("stress-single-out", "children"), Input("stress-single", "value"))
-def _stress_single(v):
-    return f"Cascader: {v!r}"
+def _register_echo(cid: str) -> None:
+    @callback(Output(f"{cid}-out", "children"), Input(cid, "value"))
+    def _echo(v):
+        return f"Cascader: {_fmt(v)!r}"
 
 
-@callback(Output("stress-multi-out", "children"), Input("stress-multi", "value"))
-def _stress_multi(v):
-    return f"Cascader: {_fmt_multi(v)!r}"
-
-
-@callback(Output("stress-wide-single-out", "children"), Input("stress-wide-single", "value"))
-def _stress_wide_single(v):
-    return f"Cascader: {v!r}"
-
-
-@callback(Output("stress-wide-multi-out", "children"), Input("stress-wide-multi", "value"))
-def _stress_wide_multi(v):
-    return f"Cascader: {_fmt_multi(v)!r}"
+for _prefix in ("stress-deep", "stress-wide"):
+    for _mode_key in ("leaf", "path"):
+        _register_echo(f"{_prefix}-{_mode_key}-single")
+        _register_echo(f"{_prefix}-{_mode_key}-multi")
