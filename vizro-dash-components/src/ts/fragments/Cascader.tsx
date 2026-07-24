@@ -273,9 +273,17 @@ const CascaderFragment = ({
   );
 
   useEffect(() => {
-    if (isOpen && searchable) {
-      requestAnimationFrame(() => searchRef.current?.focus());
-    }
+    if (!isOpen) return;
+    requestAnimationFrame(() => {
+      if (searchable) {
+        searchRef.current?.focus();
+      } else {
+        // No search input to receive focus, so focus the panel itself. It is not in the panel's
+        // focusable list, so `handlePanelKeyDown` treats it as index -1 and ArrowDown moves to the
+        // first option (rather than the keystroke being lost on the still-focused trigger).
+        cascaderContentRef.current?.focus();
+      }
+    });
   }, [isOpen, searchable]);
 
   // OUTPUT seam: `next` is always the selection in internal path form; `toWire` encodes it to the
@@ -406,9 +414,14 @@ const CascaderFragment = ({
 
       const focusableSelector =
         'input[type="search"], input:not([disabled]), button:not([disabled]), .dash-cascader-kbd-row';
-      const focusableElements = e.currentTarget.querySelectorAll(
-        focusableSelector,
-      ) as NodeListOf<HTMLElement>;
+      // Select All / Deselect All are excluded from the vertical (up/down) flow: they form a
+      // horizontal group navigated with Left/Right, and ArrowDown from them jumps to the options
+      // (see handleActionKeyDown).
+      const focusableElements = (
+        Array.from(
+          e.currentTarget.querySelectorAll(focusableSelector),
+        ) as HTMLElement[]
+      ).filter((el) => !el.classList.contains("dash-dropdown-action-button"));
 
       if (focusableElements.length === 0) {
         return;
@@ -416,7 +429,7 @@ const CascaderFragment = ({
 
       e.preventDefault();
 
-      const currentIndex = Array.from(focusableElements).indexOf(
+      const currentIndex = focusableElements.indexOf(
         document.activeElement as HTMLElement,
       );
       let nextIndex = -1;
@@ -463,6 +476,36 @@ const CascaderFragment = ({
             block: "nearest",
           });
         }
+      }
+    },
+    [],
+  );
+
+  // Keyboard nav for the Select All / Deselect All action buttons: Left/Right move within the
+  // horizontal group, ArrowDown leaves the group and focuses the first option below.
+  const handleActionKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      const root = cascaderContentRef.current;
+      if (!root) return;
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        e.stopPropagation();
+        const buttons = Array.from(
+          root.querySelectorAll<HTMLElement>(".dash-dropdown-action-button"),
+        );
+        const next =
+          buttons[
+            buttons.indexOf(e.currentTarget) + (e.key === "ArrowRight" ? 1 : -1)
+          ];
+        next?.focus();
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        e.stopPropagation();
+        root
+          .querySelector<HTMLElement>(
+            '.dash-cascader-column .dash-cascader-kbd-row, .dash-cascader-column input[type="checkbox"]:not([disabled])',
+          )
+          ?.focus();
       }
     },
     [],
@@ -691,6 +734,16 @@ const CascaderFragment = ({
                 type="button"
                 className="dash-dropdown-clear"
                 onClick={() => clearSelection()}
+                onKeyDown={(e) => {
+                  // When the clear button is focused, Enter/Space clears the selection. Stop the
+                  // event so it does not bubble to the trigger, whose handler would otherwise open
+                  // the panel instead of clearing.
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    clearSelection();
+                  }
+                }}
                 title={labels.clear_selection}
                 aria-label={labels.clear_selection}
               >
@@ -708,6 +761,7 @@ const CascaderFragment = ({
           className="dash-dropdown-content dash-cascader-content"
           align="start"
           sideOffset={5}
+          tabIndex={-1}
           onOpenAutoFocus={(e) => e.preventDefault()}
           onKeyDown={handlePanelKeyDown}
           style={{ maxHeight: contentMaxHeight }}
@@ -758,6 +812,7 @@ const CascaderFragment = ({
                 type="button"
                 className="dash-dropdown-action-button"
                 onClick={handleSelectAll}
+                onKeyDown={handleActionKeyDown}
               >
                 {labels.select_all}
               </button>
@@ -766,6 +821,7 @@ const CascaderFragment = ({
                   type="button"
                   className="dash-dropdown-action-button"
                   onClick={handleDeselectAll}
+                  onKeyDown={handleActionKeyDown}
                 >
                   {labels.deselect_all}
                 </button>

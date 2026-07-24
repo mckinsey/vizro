@@ -884,6 +884,79 @@ def test_cascader_escape_closes_panel(dash_duo):
     assert dash_duo.get_logs() == []
 
 
+# --- Keyboard navigation: not-searchable, action buttons, clear button ---
+
+
+def test_cascader_not_searchable_arrow_down_focuses_option(dash_duo):
+    """With searchable=False, opening focuses the panel so ArrowDown moves into the options."""
+    import time
+
+    from selenium.webdriver.common.keys import Keys
+
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, searchable=False))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-content")
+    time.sleep(0.25)  # allow the on-open focus (requestAnimationFrame) to land on the panel
+    # ArrowDown on whatever is focused after open must move focus onto the first option row,
+    # rather than being lost on the trigger (the pre-fix behavior with no search input).
+    dash_duo.driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+    active = dash_duo.driver.switch_to.active_element
+    assert "dash-cascader-kbd-row" in (active.get_attribute("class") or "")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_action_buttons_arrow_navigation(dash_duo):
+    """Select All / Deselect All: Left/Right move between them; ArrowDown jumps to the options."""
+    from selenium.webdriver.common.keys import Keys
+
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, multi=True))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-dropdown-action-button")
+    buttons = dash_duo.driver.find_elements("css selector", ".dash-dropdown-action-button")
+    assert [b.text for b in buttons] == ["Select All", "Deselect All"]
+
+    # ArrowRight from Select All focuses Deselect All (horizontal group).
+    dash_duo.driver.execute_script("arguments[0].focus();", buttons[0])
+    buttons[0].send_keys(Keys.ARROW_RIGHT)
+    assert dash_duo.driver.switch_to.active_element.text == "Deselect All"
+    # ArrowLeft goes back to Select All.
+    dash_duo.driver.switch_to.active_element.send_keys(Keys.ARROW_LEFT)
+    assert dash_duo.driver.switch_to.active_element.text == "Select All"
+
+    # ArrowDown from Select All leaves the group and focuses the first option (a checkbox), not
+    # the sibling Deselect All button.
+    dash_duo.driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+    active = dash_duo.driver.switch_to.active_element
+    assert active.get_attribute("type") == "checkbox"
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_clear_button_enter_clears_without_opening(dash_duo):
+    """Enter on the focused clear button clears the selection and does not open the panel."""
+    from selenium.webdriver.common.keys import Keys
+
+    app = Dash(__name__)
+    app.layout = dmc.MantineProvider(
+        html.Div(
+            [
+                Cascader(id="c", options=OPTIONS_2LEVEL, value="japan"),
+                html.Div(id="out"),
+            ]
+        )
+    )
+    app.callback(Output("out", "children"), Input("c", "value"))(_single_leaf_fmt)
+    dash_duo.start_server(app)
+    clear = dash_duo.wait_for_element("#c button.dash-dropdown-clear")
+    dash_duo.driver.execute_script("arguments[0].focus();", clear)
+    clear.send_keys(Keys.ENTER)
+    dash_duo.wait_for_text_to_equal("#out", "None")
+    # The panel must not have opened as a side effect of the Enter keypress.
+    assert not dash_duo.driver.find_elements("css selector", ".dash-cascader-content")
+    assert dash_duo.get_logs() == []
+
+
 # --- Multi: parent checkbox, multi clear ---
 
 
