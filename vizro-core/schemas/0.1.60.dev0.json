@@ -409,7 +409,7 @@
         },
         "multi": {
           "default": true,
-          "description": "Whether to allow selection of multiple values",
+          "description": "Whether to enable selection of multiple values",
           "title": "Multi",
           "type": "boolean"
         },
@@ -2744,7 +2744,6 @@
       "type": "object"
     },
     "_OptionsDictType": {
-      "additionalProperties": false,
       "description": "Permissible sub-type for OptionsType. Needs to be in the format of {\"label\": XXX, \"value\": XXX}.",
       "properties": {
         "label": {

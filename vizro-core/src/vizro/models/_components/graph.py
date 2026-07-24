@@ -118,11 +118,11 @@ underlying component may change in the future.""",
 
         Priority:
           1) If `value` matches a column name in self["custom_data"], take it as from customdata[index].
-          2) Otherwise treat `value` as a Box lookup (e.g. "x", "customdata[0]").
+          2) Otherwise treat `value` as a Box lookup (for example, "x", "customdata[0]").
 
         Notes:
           - Enables camelCase and snake_case value keys interchangeably (camel_killer_box=True).
-          - Enables dot-style (e.g. value="key.subkey") access to nested dict values (box_dots=True).
+          - Enables dot-style (for example, value="key.subkey") access to nested dict values (box_dots=True).
           - Automatically creates missing keys as empty boxes instead of raising errors (default_box=True). This is done
             to avoid exceptions when the `trigger` has a key with a dot in it.
 
