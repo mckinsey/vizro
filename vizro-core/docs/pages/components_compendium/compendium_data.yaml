@@ -33,14 +33,14 @@ categories:
         image: assets/images/charts.png
         highlight_lines: "10-16"
         featured:
-          title: Filter by Time-of-day
-          image: assets/images/timepicker_highlight.gif
+          title: Filter by Date and Time
+          image: assets/images/datetimepicker_highlight.gif
           description: |
-            The new <b>TimePicker</b> selector lets users filter by time-of-day, either as a
-            single time or as a time range. Use it together with the DatePicker to slice your
-            data by both date and time.
-          link_text: View TimePicker
-          link_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#timepicker
+            The new <b>DateTimePicker</b> selector lets users filter by both date and
+            time-of-day in a single control, either as a single date-time or as a
+            date-time range spanning multiple days.
+          link_text: View DateTimePicker
+          link_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#temporal-selectors
         code: |
           import vizro.plotly.express as px
           from vizro import Vizro
@@ -629,6 +629,42 @@ categories:
                   ),
               ]
 
+          - id: datetimepicker
+            name: "DateTimePicker (single date-time)"
+            aliases: [datetime, date time, timestamp, single datetime]
+            image: assets/images/datetimepicker.png
+            code: |
+              controls=[
+                  vm.Filter(
+                      column="datetime",
+                      selector=vm.DateTimePicker(
+                          title="Date-time Picker (single)",
+                          range=False,
+                      )
+                  ),
+              ]
+
+          - id: datetimerangepicker
+            name: "DateTimePicker (date-time range)"
+            aliases:
+              [
+                datetime range,
+                date time range,
+                from to,
+                period,
+                DateTimeRangePicker,
+              ]
+            image: assets/images/datetimerangepicker.png
+            code: |
+              controls=[
+                  vm.Filter(
+                      column="datetime",
+                      selector=vm.DateTimePicker(
+                          title="Date-time Picker (range)",
+                      )
+                  ),
+              ]
+
           - id: switch
             name: Switch
             aliases: [toggle, boolean, on off, checkbox switch, vm.Switch]
@@ -645,7 +681,7 @@ categories:
             name: Cascader
             aliases:
               [hierarchical, tree, nested, cascading, hierarchy, vm.Cascader]
-            image: assets/images/cascader.png # TODO: add screenshot
+            image: assets/images/cascader.png
             code: |
               controls=[
                   vm.Filter(

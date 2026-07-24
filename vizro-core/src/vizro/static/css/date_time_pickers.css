@@ -34,16 +34,34 @@
   text-decoration: underline;
 }
 
-/* Single month or year selection */
-.mantine-PickerControl-pickerControl,
-.mantine-DatePickerInput-monthsListControl {
+/* Month / year picker grid (shown when the user clicks the calendar header level button).
+   The actual cells use `.mantine-DatePickerInput-pickerControl`; the older `.mantine-PickerControl-pickerControl`
+   selector did not match anything and left the cells with Mantine's white-on-dark defaults. */
+.mantine-DatePickerInput-pickerControl,
+.mantine-DatePickerInput-monthsListControl,
+.mantine-DatePickerInput-yearsListControl {
   color: var(--bs-body-color);
+}
+
+.mantine-DatePickerInput-pickerControl[data-selected],
+.mantine-DatePickerInput-monthsListControl[data-selected],
+.mantine-DatePickerInput-yearsListControl[data-selected] {
+  background: var(--bs-primary);
+  color: var(--text-primary-inverted);
+}
+
+.mantine-DatePickerInput-pickerControl[data-in-range],
+.mantine-DatePickerInput-monthsListControl[data-in-range],
+.mantine-DatePickerInput-yearsListControl[data-in-range] {
+  background: var(--bs-primary-bg-subtle);
+  color: var(--bs-primary);
 }
 
 /* Important tags are required as otherwise mantine media queries will have higher specificity */
 .mantine-DatePickerInput-day:hover,
-.mantine-PickerControl-pickerControl:hover,
-.mantine-DatePickerInput-monthsListControl:hover {
+.mantine-DatePickerInput-pickerControl:hover,
+.mantine-DatePickerInput-monthsListControl:hover,
+.mantine-DatePickerInput-yearsListControl:hover {
   background: var(--bs-primary) !important;
   color: var(--text-primary-inverted) !important;
 }
@@ -94,4 +112,55 @@
 
 .mantine-TimePicker-label {
   color: var(--text-secondary);
+}
+
+/* DateTimePicker layout:
+   - single mode: one .vizro_datetime_picker_single row (DatePickerInput + TimePicker, 50/50).
+   - range mode: a .vizro_datetime_picker_range column with two .vizro_datetime_picker_range_item sections,
+     each containing a label and a .vizro_datetime_picker_single row. */
+.vizro_datetime_picker_single {
+  align-items: stretch;
+  display: flex;
+  gap: 8px;
+}
+
+.vizro_datetime_picker_single > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.vizro_datetime_picker_range {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vizro_datetime_picker_range_item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vizro_datetime_picker_label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* DatePickerInput's outer wrappers nest a button taller by default than the TimePicker's input — stretch
+   the inner input to fill the row height so the two read as a pair. */
+.vizro_datetime_picker_single .mantine-DatePickerInput-root,
+.vizro_datetime_picker_single .mantine-DatePickerInput-wrapper,
+.vizro_datetime_picker_single .mantine-DatePickerInput-input,
+.vizro_datetime_picker_single .mantine-TimePicker-root,
+.vizro_datetime_picker_single .mantine-TimePicker-wrapper,
+.vizro_datetime_picker_single .mantine-TimePicker-input {
+  height: 100%;
+  width: 100%;
+}
+
+/* Center the individual time fields (hour/minute inputs) vertically within the stretched container. */
+.vizro_datetime_picker_single .mantine-TimePicker-input {
+  align-items: center;
+  display: flex;
 }
