@@ -8,6 +8,7 @@ from e2e.vizro.navigation import (
     page_select,
     select_dropdown_value,
     select_slider_value,
+    select_time_picker_range_value,
 )
 from e2e.vizro.paths import (
     categorical_components_value_path,
@@ -256,6 +257,35 @@ def test_url_params_encoding_and_page_refresh_datepicker(dash_br):
     # check correct urls params
     selected_params = {cnst.DATEPICKER_FILTER_CONTROL_ID: ["2016-05-17", "2016-05-18"]}
     enc_data = encode_url_params(selected_params, apply_on_keys=cnst.DATEPICKER_FILTER_CONTROL_ID)
+    url_params_dict = get_url_params(dash_br)
+    assert_that(url_params_dict, equal_to(enc_data))
+    # refresh the page
+    dash_br.driver.refresh()
+    # check url params still the same
+    url_params_dict = get_url_params(dash_br)
+    assert_that(url_params_dict, equal_to(enc_data))
+
+
+def test_url_params_encoding_and_page_refresh_timepicker(dash_br):
+    """Verifies that URL params for timepicker are correctly encoded and restored after a page refresh."""
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.TIMEPICKER_RANGE_PAGE,
+        page_path=cnst.TIMEPICKER_RANGE_PAGE_PATH,
+    )
+    # only the time_hh_mm_ss range filter has show_in_url=True on the timepicker range page
+    select_time_picker_range_value(
+        dash_br,
+        elem_id=cnst.TIMEPICKER_TIME_HH_MM_SS_RANGE_ID,
+        start_hour="10",
+        start_minute="43",
+        end_hour="10",
+        end_minute="44",
+    )
+    # range TimePicker values are serialized as ["HH:MM", "HH:MM"] in the URL
+    selected_params = {cnst.TIMEPICKER_TIME_HH_MM_SS_RANGE_FILTER_CONTROL_ID: ["10:43", "10:44"]}
+    enc_data = encode_url_params(selected_params, apply_on_keys=cnst.TIMEPICKER_TIME_HH_MM_SS_RANGE_FILTER_CONTROL_ID)
     url_params_dict = get_url_params(dash_br)
     assert_that(url_params_dict, equal_to(enc_data))
     # refresh the page

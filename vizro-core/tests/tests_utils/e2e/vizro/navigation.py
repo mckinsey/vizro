@@ -8,7 +8,7 @@ from e2e.vizro.paths import (
     dropdown_select_all_path,
     page_title_path,
 )
-from e2e.vizro.waiters import graph_load_waiter
+from e2e.vizro.waiters import callbacks_finish_waiter, graph_load_waiter
 from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -74,6 +74,52 @@ def page_select_selenium(driver, page_path, page_name, timeout=cnst.SELENIUM_WAI
                 (By.CSS_SELECTOR, "div[class='dash-graph'] path[class='xtick ticks crisp']")
             )
         )
+
+
+def select_time_picker_value(driver, elem_id, hour, minute):
+    """Set a single TimePicker value (HH:MM).
+
+    Clicks outside the control after entry to trigger debounce and waits for Dash callbacks to finish.
+
+    Args:
+        driver: dash_br fixture.
+        elem_id: id of the TimePicker wrapper (without -start/-end suffix).
+        hour: two-digit hour string.
+        minute: two-digit minute string.
+    """
+    _set_time_picker_fields(driver, elem_id, hour, minute)
+    driver.find_element("body").click()
+    callbacks_finish_waiter(driver)
+
+
+def select_time_picker_range_value(driver, elem_id, start_hour, start_minute, end_hour, end_minute):
+    """Set a range TimePicker value (HH:MM).
+
+    Fills both "From" and "To" inputs before blurring once so the dcc.Store receives a complete [start, end] tuple.
+
+    Args:
+        driver: dash_br fixture.
+        elem_id: id of the range TimePicker (dcc.Store id, without -start/-end suffix).
+        start_hour: two-digit hour string for the "From" input.
+        start_minute: two-digit minute string for the "From" input.
+        end_hour: two-digit hour string for the "To" input.
+        end_minute: two-digit minute string for the "To" input.
+    """
+    _set_time_picker_fields(driver, f"{elem_id}-start", start_hour, start_minute)
+    _set_time_picker_fields(driver, f"{elem_id}-end", end_hour, end_minute)
+    driver.find_element("body").click()
+    callbacks_finish_waiter(driver)
+
+
+def _set_time_picker_fields(driver, elem_id, hour, minute):
+    """Fill hour and minute fields of one dmc.TimePicker input (used by single and range selectors)."""
+    fields = driver.find_elements(f"div[id='{elem_id}'] input.mantine-TimePicker-field")
+    for field, part in zip(fields, [hour, minute]):
+        field.click()
+        field.send_keys(Keys.CONTROL + "a")
+        field.send_keys(part)
+        field.send_keys(Keys.TAB)
+        time.sleep(0.3)
 
 
 def select_slider_value(driver, elem_id, min_value=None, max_value=None):
