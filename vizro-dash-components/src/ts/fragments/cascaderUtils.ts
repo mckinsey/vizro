@@ -178,29 +178,36 @@ export function toWire(
   return fullPath ? paths[0] : leafOf(paths[0]);
 }
 
-/**
- * INPUT boundary: normalize an incoming wire `value` into the internal list-of-paths form.
- * - `full_path=true`: `value` already carries paths (a single path or a list of paths).
- * - `full_path=false`: `value` carries leaf scalars; each is resolved to its path via `leafToPath`.
- *
- * Tolerant by design: any leaf/path that does not resolve to a current leaf is dropped (multi) or
- * yields no selection (single), so a stale persisted value of the wrong shape degrades gracefully
- * rather than crashing.
- */
-/**
- * True if `x` is a valid single path: a non-empty array of scalar leaf values (not a nested
- * array/object). Guards `fromWire`'s path-mode branch against malformed `value`s — e.g. a bare
- * single path passed where a list of paths is expected — so they're dropped rather than
- * misinterpreted (an array of scalars would otherwise be cast as if each scalar were itself a path).
- */
-function isValidPath(x: unknown): x is CascaderPath {
+/** True if `x` is a scalar node/leaf value (string, number, or boolean). */
+function isScalar(x: unknown): x is CascaderScalar {
   return (
-    Array.isArray(x) &&
-    x.length > 0 &&
-    x.every((segment) => segment !== null && typeof segment !== "object")
+    typeof x === "string" || typeof x === "number" || typeof x === "boolean"
   );
 }
 
+/**
+ * True if `x` is a well-formed single path: a non-empty array of scalar node values (the
+ * root-to-leaf sequence of `value`s — mostly ancestor values, with only the last a leaf — not a
+ * nested array/object). Guards `fromWire`'s path-mode branch against malformed `value`s, e.g. a
+ * bare single path passed where a list of paths is expected, so they are dropped rather than
+ * misinterpreted (an array of scalars would otherwise be read as if each scalar were its own path).
+ */
+function isValidPath(x: unknown): x is CascaderPath {
+  return Array.isArray(x) && x.length > 0 && x.every(isScalar);
+}
+
+/**
+ * INPUT boundary: normalize an incoming wire `value` into the internal list-of-paths form.
+ * - `full_path=true`: `value` must already carry paths (a single path or a list of paths); entries
+ *   that are not well-formed paths (see `isValidPath`) are dropped. This validates path SHAPE, not
+ *   existence in the current tree — well-shaped but nonexistent paths are pruned separately when
+ *   `options` change (see the pruning effect in Cascader.tsx).
+ * - `full_path=false`: `value` carries leaf scalars; each is resolved to its path via `leafToPath`,
+ *   and any leaf absent from the tree is dropped.
+ *
+ * Tolerant by design: a malformed or unresolvable entry is dropped (multi) or yields no selection
+ * (single), so a stale persisted value of the wrong shape degrades gracefully rather than crashing.
+ */
 export function fromWire(
   value: unknown,
   leafToPath: Map<string, CascaderPath>,

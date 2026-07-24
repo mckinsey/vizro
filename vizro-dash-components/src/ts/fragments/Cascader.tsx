@@ -126,8 +126,9 @@ const CascaderFragment = ({
   );
   const options = useMemo(() => normalizeOptions(optionsRaw), [optionsRaw]);
 
-  // Leaf → path lookup for the leaf-mode (full_path=false) wire boundary. Path mode never uses it,
-  // so skip the full leaf traversal there (matters for large trees).
+  // Leaf → path lookup for the leaf-mode (full_path=false) wire boundary. Path mode never reads it,
+  // so skip building the per-leaf Map there. (The tree is still walked in path mode for
+  // `allLeafPathsSet` and `pool`; this only avoids the extra Map allocation.)
   const leafToPath = useMemo(
     () => (full_path ? EMPTY_LEAF_TO_PATH : buildLeafToPath(options)),
     [options, full_path],

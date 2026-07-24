@@ -1226,36 +1226,62 @@ def test_cascader_single_empty_list_value_is_no_selection(dash_duo, full_path):
     assert dash_duo.get_logs() == []
 
 
-def test_cascader_path_mode_multi_rejects_malformed_single_path(dash_duo):
-    """A malformed multi-select value (a single path, not a list of paths) is dropped, not miscast.
+def test_cascader_path_mode_multi_keeps_valid_drops_malformed(dash_duo):
+    """Path-mode multi keeps well-formed paths and drops malformed entries (pins `.filter(isValidPath)`).
 
-    Without validating each element is itself a path array, ["asia", "japan"] would be treated as
-    two one-character "paths" (string iteration), rendering garbage chips instead of no selection.
+    The value mixes one valid path with two malformed entries: a bare scalar `"asia"` (not an array)
+    and an empty path `[]`. Only the valid path survives. In leaf mode none of these three entries
+    would resolve (the selection would be empty), so asserting that `"Japan"` is selected also proves
+    the path-mode branch — not leaf mode — produced this result.
     """
-    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, multi=True, full_path=True, value=["asia", "japan"]))
+    app = _app(
+        Cascader(id="c", options=OPTIONS_2LEVEL, multi=True, full_path=True, value=[["asia", "japan"], "asia", []])
+    )
     dash_duo.start_server(app)
-    dash_duo.wait_for_element("#c")
-    assert not dash_duo.driver.find_elements("css selector", "#c .dash-dropdown-value-item")
+    # Exactly the one valid path is rendered as a selected chip.
+    dash_duo.wait_for_text_to_equal("#c .dash-dropdown-value", "Japan")
+    assert len(dash_duo.driver.find_elements("css selector", "#c .dash-dropdown-value-item")) == 1
+    # A surviving selection is clearable.
+    assert dash_duo.driver.find_elements("css selector", "#c button.dash-dropdown-clear")
     assert dash_duo.get_logs() == []
 
 
-def test_cascader_path_mode_single_rejects_malformed_nested_value(dash_duo):
-    """A malformed single-select value (a list of paths, not one path) is dropped, not miscast.
+def test_cascader_path_mode_drops_malformed_path_shapes(dash_duo):
+    """Path mode drops values that are not arrays of scalars: nested-list path, null segment, empty path.
 
-    Without validating the path is an array of scalars, a list-of-paths would be wrapped as a single
-    "path" whose segments are the nested sub-arrays, rendering their Array.toString() as a label.
+    Covers the edge shapes `isValidPath` now rejects — `[["asia","japan"]]` (a segment that is itself
+    an array), `[None]` (a null segment), and `[]` (an empty path) — leaving no selection and no
+    clear button, rather than rendering phantom chips.
     """
     app = _app(
         Cascader(
             id="c",
             options=OPTIONS_2LEVEL,
+            multi=True,
             full_path=True,
-            value=[["asia", "japan"], ["europe", "france"]],
+            value=[[["asia", "japan"]], [None], []],
+            placeholder="Pick",
         )
     )
     dash_duo.start_server(app)
-    dash_duo.wait_for_element("#c")
+    dash_duo.wait_for_text_to_equal("#c .dash-dropdown-placeholder", "Pick")
     assert not dash_duo.driver.find_elements("css selector", "#c .dash-dropdown-value-item")
+    assert not dash_duo.driver.find_elements("css selector", "#c button.dash-dropdown-clear")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_path_mode_single_drops_nested_value(dash_duo):
+    """Path-mode single drops a well-shaped-but-nested value (a list of paths given for one path).
+
+    `[["asia", "japan"]]` is a non-empty array, so an `Array.isArray` check alone would accept it and
+    render a chip labelled from its array segment; the per-segment scalar check drops it instead,
+    leaving no selection and no clear button.
+    """
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, full_path=True, value=[["asia", "japan"]], placeholder="Pick"))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_text_to_equal("#c .dash-dropdown-placeholder", "Pick")
+    assert not dash_duo.driver.find_elements("css selector", "#c .dash-dropdown-value-item")
+    assert not dash_duo.driver.find_elements("css selector", "#c button.dash-dropdown-clear")
     assert dash_duo.get_logs() == []
 
 
