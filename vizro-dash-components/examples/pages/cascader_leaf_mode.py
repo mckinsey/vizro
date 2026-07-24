@@ -1,7 +1,7 @@
 """Example page for the Cascader component in leaf mode (`full_path=False`, the default).
 
 Every selection's `value` is the bare leaf scalar (single-select) or a list of leaf scalars
-(multi-select), matching the pre-0.2 behaviour. Leaf `value`s (not `label`s) must be unique across
+(multi-select), matching the pre-0.2 behavior. Leaf `value`s (not `label`s) must be unique across
 the whole tree; for trees with duplicate leaf values across branches use path mode
 (`full_path=True`, see the "Cascader (path)" page).
 """

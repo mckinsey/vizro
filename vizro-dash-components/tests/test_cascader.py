@@ -1347,7 +1347,7 @@ def test_cascader_path_mode_single_drops_nested_value(dash_duo):
     """Path-mode single drops a well-shaped-but-nested value (a list of paths given for one path).
 
     `[["asia", "japan"]]` is a non-empty array, so an `Array.isArray` check alone would accept it and
-    render a chip labelled from its array segment; the per-segment scalar check drops it instead,
+    render a chip labeled from its array segment; the per-segment scalar check drops it instead,
     leaving no selection and no clear button.
     """
     app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, full_path=True, value=[["asia", "japan"]], placeholder="Pick"))

@@ -1,7 +1,7 @@
 """Example page for the Cascader component in path mode (`full_path=True`).
 
 Every selection's `value` is the full root-to-leaf path, which is what makes duplicate leaf labels
-across branches addressable. See the "Cascader (leaf)" page for the default leaf-scalar behaviour.
+across branches addressable. See the "Cascader (leaf)" page for the default leaf-scalar behavior.
 """
 
 # ruff: noqa: D103
