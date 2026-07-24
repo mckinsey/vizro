@@ -187,6 +187,20 @@ export function toWire(
  * yields no selection (single), so a stale persisted value of the wrong shape degrades gracefully
  * rather than crashing.
  */
+/**
+ * True if `x` is a valid single path: a non-empty array of scalar leaf values (not a nested
+ * array/object). Guards `fromWire`'s path-mode branch against malformed `value`s — e.g. a bare
+ * single path passed where a list of paths is expected — so they're dropped rather than
+ * misinterpreted (an array of scalars would otherwise be cast as if each scalar were itself a path).
+ */
+function isValidPath(x: unknown): x is CascaderPath {
+  return (
+    Array.isArray(x) &&
+    x.length > 0 &&
+    x.every((segment) => segment !== null && typeof segment !== "object")
+  );
+}
+
 export function fromWire(
   value: unknown,
   leafToPath: Map<string, CascaderPath>,
@@ -195,11 +209,12 @@ export function fromWire(
 ): CascaderPath[] {
   if (value === null || value === undefined) return [];
   if (fullPath) {
-    if (multi) return Array.isArray(value) ? (value as CascaderPath[]) : [];
-    // A single path must be a non-empty array; treat [] as no selection.
-    return Array.isArray(value) && value.length > 0
-      ? [value as CascaderPath]
-      : [];
+    if (multi) {
+      return Array.isArray(value)
+        ? (value as unknown[]).filter(isValidPath)
+        : [];
+    }
+    return isValidPath(value) ? [value] : [];
   }
   // Leaf mode: resolve each bare leaf scalar to its full path.
   const resolve = (leaf: unknown): CascaderPath | undefined =>

@@ -1226,6 +1226,39 @@ def test_cascader_single_empty_list_value_is_no_selection(dash_duo, full_path):
     assert dash_duo.get_logs() == []
 
 
+def test_cascader_path_mode_multi_rejects_malformed_single_path(dash_duo):
+    """A malformed multi-select value (a single path, not a list of paths) is dropped, not miscast.
+
+    Without validating each element is itself a path array, ["asia", "japan"] would be treated as
+    two one-character "paths" (string iteration), rendering garbage chips instead of no selection.
+    """
+    app = _app(Cascader(id="c", options=OPTIONS_2LEVEL, multi=True, full_path=True, value=["asia", "japan"]))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c")
+    assert not dash_duo.driver.find_elements("css selector", "#c .dash-dropdown-value-item")
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_path_mode_single_rejects_malformed_nested_value(dash_duo):
+    """A malformed single-select value (a list of paths, not one path) is dropped, not miscast.
+
+    Without validating the path is an array of scalars, a list-of-paths would be wrapped as a single
+    "path" whose segments are the nested sub-arrays, rendering their Array.toString() as a label.
+    """
+    app = _app(
+        Cascader(
+            id="c",
+            options=OPTIONS_2LEVEL,
+            full_path=True,
+            value=[["asia", "japan"], ["europe", "france"]],
+        )
+    )
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c")
+    assert not dash_duo.driver.find_elements("css selector", "#c .dash-dropdown-value-item")
+    assert dash_duo.get_logs() == []
+
+
 @pytest.mark.parametrize("full_path", [False, True])
 def test_cascader_search_enter_skips_disabled_leaf(dash_duo, full_path):
     """Pressing Enter in the search box selects the first ENABLED leaf, skipping disabled hits."""

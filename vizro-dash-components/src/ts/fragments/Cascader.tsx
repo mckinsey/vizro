@@ -43,6 +43,9 @@ type Path = CascaderPath;
  */
 type CascaderValue = Path | Path[] | CascaderScalar | CascaderScalar[] | null;
 
+// Stable identity so path mode's `leafToPath` memo dep doesn't churn; path mode never reads it.
+const EMPTY_LEAF_TO_PATH: Map<string, CascaderPath> = new Map();
+
 export type CascaderLabels = {
   select_all?: string;
   deselect_all?: string;
@@ -123,8 +126,12 @@ const CascaderFragment = ({
   );
   const options = useMemo(() => normalizeOptions(optionsRaw), [optionsRaw]);
 
-  // Leaf → path lookup for the leaf-mode (full_path=false) wire boundary. Path mode never uses it.
-  const leafToPath = useMemo(() => buildLeafToPath(options), [options]);
+  // Leaf → path lookup for the leaf-mode (full_path=false) wire boundary. Path mode never uses it,
+  // so skip the full leaf traversal there (matters for large trees).
+  const leafToPath = useMemo(
+    () => (full_path ? EMPTY_LEAF_TO_PATH : buildLeafToPath(options)),
+    [options, full_path],
+  );
 
   // Leaf mode requires unique leaf values (a leaf is the wire identity). Duplicates make the
   // leaf→path resolution ambiguous, so warn loudly (last-wins) rather than crash. Path mode is fine.

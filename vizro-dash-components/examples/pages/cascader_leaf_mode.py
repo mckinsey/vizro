@@ -1,9 +1,9 @@
 """Example page for the Cascader component in leaf mode (`full_path=False`, the default).
 
 Every selection's `value` is the bare leaf scalar (single-select) or a list of leaf scalars
-(multi-select), matching the pre-0.2 behaviour. Leaf values must be unique across the whole tree;
-for trees with duplicate leaf labels across branches use path mode (`full_path=True`, see the
-"Cascader (path)" page).
+(multi-select), matching the pre-0.2 behaviour. Leaf `value`s (not `label`s) must be unique across
+the whole tree; for trees with duplicate leaf values across branches use path mode
+(`full_path=True`, see the "Cascader (path)" page).
 """
 
 # ruff: noqa: D103
@@ -133,8 +133,9 @@ layout = html.Div(
         ),
         section(
             "Leaf values must be unique",
-            "In leaf mode a selection is identified by its leaf alone, so duplicate leaf labels across "
-            "branches are ambiguous and log a console error. Switch to path mode to support them "
+            "In leaf mode a selection is identified by its leaf value alone, so duplicate leaf "
+            "values across branches are ambiguous and log a console error (labels may repeat as "
+            "long as values differ). Switch to path mode to support duplicate values "
             '(see the "Cascader (path)" page).',
             None,
         ),

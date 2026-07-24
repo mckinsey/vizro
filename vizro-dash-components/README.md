@@ -62,8 +62,8 @@ Hierarchical cascading dropdown inspired by [Ant Design Cascader](https://ant.de
 
 The shape of `value` depends on the `full_path` prop (default `False`):
 
-- **Leaf mode (`full_path=False`, default)**: `value` is the bare leaf scalar, for example `"Paris"`; when `multi=True` it is a list of leaf scalars, for example `["Paris", "Tokyo"]`. Leaf values must be unique across the whole tree — a duplicate leaf label under two branches is ambiguous in this mode (the component logs a console error).
-- **Path mode (`full_path=True`)**: `value` is the full root-to-leaf **path**: a list of node `value`s from the root down to the selected leaf, for example `["Europe", "France", "Paris"]`; when `multi=True` it is a list of such paths, for example `[["Europe", "France", "Paris"], ["Asia", "Japan", "Tokyo"]]`. Because paths are used, duplicate leaf labels in different branches (for example a `"Portland"` under both `"Oregon"` and `"Maine"`) are addressed unambiguously.
+- **Leaf mode (`full_path=False`, default)**: `value` is the bare leaf scalar, for example `"Paris"`; when `multi=True` it is a list of leaf scalars, for example `["Paris", "Tokyo"]`. Leaf `value`s must be unique across the whole tree — a duplicate leaf `value` under two branches is ambiguous in this mode (the component logs a console error). This is a constraint on `value`, not `label`: two leaves may share a `label` as long as their `value`s differ.
+- **Path mode (`full_path=True`)**: `value` is the full root-to-leaf **path**: a list of node `value`s from the root down to the selected leaf, for example `["Europe", "France", "Paris"]`; when `multi=True` it is a list of such paths, for example `[["Europe", "France", "Paris"], ["Asia", "Japan", "Tokyo"]]`. Because paths are used, duplicate leaf `value`s in different branches (for example a `"Portland"` under both `"Oregon"` and `"Maine"`) are addressed unambiguously.
 
 ```python
 from dash import Dash, Input, Output, html
