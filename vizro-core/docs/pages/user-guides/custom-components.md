@@ -189,7 +189,7 @@ class Rating(vm.VizroBaseModel):
             )
     ```
 
-    1. In this example, for simplicity we use [`html.Div`](https://dash.plotly.com/dash-html-components/Div) to provide the outer container. You could also use [`html.Fieldset`](https://dash.plotly.com/dash-html-components/fieldset), which is specifically designed for grouping a form legend with a set of controls.
+    1. In this example, for simplicity we use [`html.Div`](https://dash.plotly.com/dash-html-components/div) to provide the outer container. You could also use [`html.Fieldset`](https://dash.plotly.com/dash-html-components/fieldset), which is specifically designed for grouping a form legend with a set of controls.
     1. This is not the core component but we will later [address it with an action](#model-fields-as-input-and-output), so it must have an `id` set. We prefix its `id` with `self.id`.
     1. This is the core component, and so it has `id=self.id`.
 

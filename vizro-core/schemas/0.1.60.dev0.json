@@ -931,6 +931,136 @@
       "title": "DatePicker",
       "type": "object"
     },
+    "DateTimePicker": {
+      "additionalProperties": false,
+      "description": "Temporal date-and-time-of-day single/range option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nUnder the hood this is rendered as a `dmc.DatePickerInput` plus one or two clearable\n`dmc.TimePicker` components, glued together by a clientside callback into a single\nproxy `dcc.Store` (`{id}.data`). When the time portion is cleared the store holds a\ndate-only ISO string (`\"YYYY-MM-DD\"`), which the filter logic treats as start-of-day for\nthe range start and end-of-day for the range end. Clearing the time therefore widens\nthe filter to the whole day rather than disabling it.\n\nAbstract: Usage documentation\n    [How to use temporal selectors](../user-guides/selectors.md#temporal-selectors)\n\nExample:\n    ```python\n    import pandas as pd\n    import vizro.models as vm\n\n    df = pd.DataFrame({\"datetime_column\": pd.to_datetime([\"2026-01-01 09:00\", \"2026-06-15 14:30\"])})\n\n    vm.Filter(column=\"datetime_column\", selector=vm.DateTimePicker())\n    ```",
+      "properties": {
+        "id": {
+          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "datetime_picker",
+          "default": "datetime_picker",
+          "title": "Type",
+          "type": "string"
+        },
+        "min": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Start date for the date portion of the datetime picker.",
+          "title": "Min"
+        },
+        "max": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "End date for the date portion of the datetime picker.",
+          "title": "Max"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default datetime/datetimes for the datetime picker.",
+          "title": "Value"
+        },
+        "title": {
+          "default": "",
+          "description": "Title to be displayed.",
+          "title": "Title",
+          "type": "string"
+        },
+        "range": {
+          "default": true,
+          "description": "Boolean flag for displaying range picker.",
+          "title": "Range",
+          "type": "boolean"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              },
+              {
+                "$ref": "#/$defs/set_control"
+              },
+              {
+                "$ref": "#/$defs/show_notification"
+              },
+              {
+                "$ref": "#/$defs/update_notification"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "title": "DateTimePicker",
+      "type": "object"
+    },
     "Dropdown": {
       "additionalProperties": false,
       "description": "Categorical single/multi-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use categorical selectors](../user-guides/selectors.md#categorical-selectors)",
@@ -1171,6 +1301,7 @@
                   "cascader": "#/$defs/Cascader",
                   "checklist": "#/$defs/Checklist",
                   "date_picker": "#/$defs/DatePicker",
+                  "datetime_picker": "#/$defs/DateTimePicker",
                   "dropdown": "#/$defs/Dropdown",
                   "radio_items": "#/$defs/RadioItems",
                   "range_slider": "#/$defs/RangeSlider",
@@ -1189,6 +1320,9 @@
                 },
                 {
                   "$ref": "#/$defs/DatePicker"
+                },
+                {
+                  "$ref": "#/$defs/DateTimePicker"
                 },
                 {
                   "$ref": "#/$defs/Dropdown"
@@ -1821,6 +1955,7 @@
               "cascader": "#/$defs/Cascader",
               "checklist": "#/$defs/Checklist",
               "date_picker": "#/$defs/DatePicker",
+              "datetime_picker": "#/$defs/DateTimePicker",
               "dropdown": "#/$defs/Dropdown",
               "radio_items": "#/$defs/RadioItems",
               "range_slider": "#/$defs/RangeSlider",
@@ -1839,6 +1974,9 @@
             },
             {
               "$ref": "#/$defs/DatePicker"
+            },
+            {
+              "$ref": "#/$defs/DateTimePicker"
             },
             {
               "$ref": "#/$defs/Dropdown"
