@@ -18,19 +18,33 @@ import "../css/cascader.css";
 import { ChevronRightIcon } from "./CascaderIcons";
 import {
   buildColumns,
+  buildLeafToPath,
   type CascaderOption,
   type CascaderOptionsRaw,
   type CascaderPath,
+  type CascaderScalar,
   collectAllLeaves,
   collectLeaves,
+  findDuplicateLeafValues,
+  fromWire,
   normalizeOptions,
   parentCheckState,
   searchOptions,
   serializePath,
+  toWire,
 } from "./cascaderUtils";
 
 /** A single root-to-leaf selection: the sequence of node `value`s (see cascaderUtils). */
 type Path = CascaderPath;
+
+/**
+ * The wire `value`: a list of paths / single path (`full_path=true`), or a list of leaf
+ * scalars / single leaf scalar (`full_path=false`), or null. Normalized internally via `fromWire`.
+ */
+type CascaderValue = Path | Path[] | CascaderScalar | CascaderScalar[] | null;
+
+// Stable identity so path mode's `leafToPath` memo dep doesn't churn; path mode never reads it.
+const EMPTY_LEAF_TO_PATH: Map<string, CascaderPath> = new Map();
 
 export type CascaderLabels = {
   select_all?: string;
@@ -56,7 +70,8 @@ export type CascaderProps = {
   id?: string;
   setProps?: (props: Record<string, unknown>) => void;
   options: CascaderOptionsRaw;
-  value?: Path | Path[] | null;
+  value?: CascaderValue;
+  full_path?: boolean;
   multi?: boolean;
   searchable?: boolean;
   clearable?: boolean;
@@ -80,6 +95,7 @@ const CascaderFragment = ({
   setProps,
   options: optionsRaw,
   value,
+  full_path = false,
   multi = false,
   searchable = true,
   clearable = true,
@@ -109,6 +125,28 @@ const CascaderFragment = ({
     [labelsProp],
   );
   const options = useMemo(() => normalizeOptions(optionsRaw), [optionsRaw]);
+
+  // Leaf → path lookup for the leaf-mode (full_path=false) wire boundary. Path mode never reads it,
+  // so skip building the per-leaf Map there. (The tree is still walked in path mode for
+  // `allLeafPathsSet` and `pool`; this only avoids the extra Map allocation.)
+  const leafToPath = useMemo(
+    () => (full_path ? EMPTY_LEAF_TO_PATH : buildLeafToPath(options)),
+    [options, full_path],
+  );
+
+  // Leaf mode requires unique leaf values (a leaf is the wire identity). Duplicates make the
+  // leaf→path resolution ambiguous, so warn loudly (last-wins) rather than crash. Path mode is fine.
+  useEffect(() => {
+    if (full_path) return;
+    const duplicates = findDuplicateLeafValues(options);
+    if (duplicates.length > 0) {
+      console.error(
+        `vdc.Cascader: leaf mode (full_path=false) requires unique leaf values, but found ` +
+          `duplicates: ${duplicates.map(String).join(", ")}. Selections may be ambiguous; ` +
+          `set full_path=true to address leaves by their full path.`,
+      );
+    }
+  }, [options, full_path]);
 
   const [isOpen, setIsOpen] = useState(false);
   const [activePath, setActivePath] = useState<number[]>([]);
@@ -167,8 +205,8 @@ const CascaderFragment = ({
   );
   const prevAllLeafPathsRef = useRef(allLeafPathsSet);
   useEffect(() => {
-    // On an options change, drop any selected path that no longer terminates on
-    // a leaf (identity is the serialized path, so duplicate labels are safe).
+    // On an options change, drop any selection that no longer terminates on a current leaf.
+    // Normalize the wire value to internal paths (mode-aware), prune, then re-encode to the wire.
     if (
       prevAllLeafPathsRef.current === allLeafPathsSet ||
       searchValue ||
@@ -179,27 +217,31 @@ const CascaderFragment = ({
       return;
     }
     prevAllLeafPathsRef.current = allLeafPathsSet;
+    if (multi && !Array.isArray(value)) {
+      // A non-array value is invalid in multi mode; reset to an empty selection.
+      setProps?.({ value: [] });
+      return;
+    }
+    const paths = fromWire(value, leafToPath, multi, full_path);
+    const cleaned = paths.filter((p) => allLeafPathsSet.has(serializePath(p)));
     if (multi) {
-      if (Array.isArray(value)) {
-        const paths = value as Path[];
-        const cleaned = paths.filter((p) =>
-          allLeafPathsSet.has(serializePath(p)),
-        );
-        if (cleaned.length !== paths.length) {
-          setProps?.({ value: cleaned });
-        }
-      } else {
-        // A non-array value is invalid in multi mode; reset to an empty selection.
-        setProps?.({ value: [] });
+      const cleanedWire = toWire(cleaned, multi, full_path);
+      // fromWire drops unresolved leaves in leaf mode, so compare the re-encoded wire to the input.
+      if (JSON.stringify(cleanedWire) !== JSON.stringify(value)) {
+        setProps?.({ value: cleanedWire });
       }
-    } else if (
-      !Array.isArray(value) ||
-      value.length === 0 ||
-      !allLeafPathsSet.has(serializePath(value as Path))
-    ) {
+    } else if (cleaned.length === 0) {
       setProps?.({ value: null });
     }
-  }, [allLeafPathsSet, value, multi, searchValue, setProps]);
+  }, [
+    allLeafPathsSet,
+    value,
+    multi,
+    searchValue,
+    setProps,
+    leafToPath,
+    full_path,
+  ]);
 
   const finalizeClose = useCallback(() => {
     pendingSearchRef.current = "";
@@ -231,31 +273,39 @@ const CascaderFragment = ({
   );
 
   useEffect(() => {
-    if (isOpen && searchable) {
-      requestAnimationFrame(() => searchRef.current?.focus());
-    }
+    if (!isOpen) return;
+    requestAnimationFrame(() => {
+      if (searchable) {
+        searchRef.current?.focus();
+      } else {
+        // No search input to receive focus, so focus the panel itself. It is not in the panel's
+        // focusable list, so `handlePanelKeyDown` treats it as index -1 and ArrowDown moves to the
+        // first option (rather than the keystroke being lost on the still-focused trigger).
+        cascaderContentRef.current?.focus();
+      }
+    });
   }, [isOpen, searchable]);
 
+  // OUTPUT seam: `next` is always the selection in internal path form; `toWire` encodes it to the
+  // active wire shape (leaf scalars when full_path=false, paths when true) before emitting.
   const emitValue = useCallback(
-    (next: unknown) => {
+    (next: Path[]) => {
+      const wire = toWire(next, multi, full_path) as typeof value;
       if (debounce) {
-        setLocalValue(next as typeof value);
+        setLocalValue(wire);
       } else {
-        setLocalValue(next as typeof value);
-        setProps?.({ value: next });
+        setLocalValue(wire);
+        setProps?.({ value: wire });
       }
     },
-    [debounce, setProps],
+    [debounce, setProps, multi, full_path],
   );
 
-  const selectedPaths: Path[] = useMemo(() => {
-    const v = localValue;
-    if (v === null || v === undefined) return [];
-    // multi: value is a list of paths; single: value is one path.
-    if (multi) return Array.isArray(v) ? (v as Path[]) : [];
-    // A single path must be a non-empty array; treat [] as no selection.
-    return Array.isArray(v) && v.length > 0 ? [v as Path] : [];
-  }, [localValue, multi]);
+  // INPUT seam: normalize the wire `localValue` into internal path form (mode-aware).
+  const selectedPaths: Path[] = useMemo(
+    () => fromWire(localValue, leafToPath, multi, full_path),
+    [localValue, leafToPath, multi, full_path],
+  );
 
   const selectedKeys = useMemo(
     () => selectedPaths.map(serializePath),
@@ -326,9 +376,9 @@ const CascaderFragment = ({
   );
 
   const clearSelection = useCallback(() => {
-    const next = multi ? [] : null;
-    emitValue(next);
-  }, [multi, emitValue]);
+    // Empty selection; toWire encodes it as [] (multi) or null (single) in either mode.
+    emitValue([]);
+  }, [emitValue]);
 
   const handleClearSearch = useCallback(
     (e: MouseEvent) => {
@@ -364,9 +414,14 @@ const CascaderFragment = ({
 
       const focusableSelector =
         'input[type="search"], input:not([disabled]), button:not([disabled]), .dash-cascader-kbd-row';
-      const focusableElements = e.currentTarget.querySelectorAll(
-        focusableSelector,
-      ) as NodeListOf<HTMLElement>;
+      // Select All / Deselect All are excluded from the vertical (up/down) flow: they form a
+      // horizontal group navigated with Left/Right, and ArrowDown from them jumps to the options
+      // (see handleActionKeyDown).
+      const focusableElements = (
+        Array.from(
+          e.currentTarget.querySelectorAll(focusableSelector),
+        ) as HTMLElement[]
+      ).filter((el) => !el.classList.contains("dash-dropdown-action-button"));
 
       if (focusableElements.length === 0) {
         return;
@@ -374,7 +429,7 @@ const CascaderFragment = ({
 
       e.preventDefault();
 
-      const currentIndex = Array.from(focusableElements).indexOf(
+      const currentIndex = focusableElements.indexOf(
         document.activeElement as HTMLElement,
       );
       let nextIndex = -1;
@@ -426,6 +481,36 @@ const CascaderFragment = ({
     [],
   );
 
+  // Keyboard nav for the Select All / Deselect All action buttons: Left/Right move within the
+  // horizontal group, ArrowDown leaves the group and focuses the first option below.
+  const handleActionKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      const root = cascaderContentRef.current;
+      if (!root) return;
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        e.stopPropagation();
+        const buttons = Array.from(
+          root.querySelectorAll<HTMLElement>(".dash-dropdown-action-button"),
+        );
+        const next =
+          buttons[
+            buttons.indexOf(e.currentTarget) + (e.key === "ArrowRight" ? 1 : -1)
+          ];
+        next?.focus();
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        e.stopPropagation();
+        root
+          .querySelector<HTMLElement>(
+            '.dash-cascader-column .dash-cascader-kbd-row, .dash-cascader-column input[type="checkbox"]:not([disabled])',
+          )
+          ?.focus();
+      }
+    },
+    [],
+  );
+
   const handleLeafClick = useCallback(
     (option: CascaderOption) => {
       const { path, key } = option;
@@ -435,10 +520,13 @@ const CascaderFragment = ({
           : [...selectedPaths, path];
         emitValue(next);
       } else {
-        localValueRef.current = path;
-        valueRef.current = path;
-        setLocalValue(path);
-        setProps?.({ value: path });
+        // OUTPUT seam: single-select commits immediately (even under debounce). Encode to the wire
+        // shape and keep the refs in sync so finalizeClose sees the committed value this tick.
+        const wire = toWire([path], multi, full_path) as typeof value;
+        localValueRef.current = wire;
+        valueRef.current = wire;
+        setLocalValue(wire);
+        setProps?.({ value: wire });
       }
       if (shouldCloseOnSelect) {
         finalizeClose();
@@ -446,6 +534,7 @@ const CascaderFragment = ({
     },
     [
       multi,
+      full_path,
       selectedSet,
       selectedPaths,
       selectedKeys,
@@ -645,6 +734,16 @@ const CascaderFragment = ({
                 type="button"
                 className="dash-dropdown-clear"
                 onClick={() => clearSelection()}
+                onKeyDown={(e) => {
+                  // When the clear button is focused, Enter/Space clears the selection. Stop the
+                  // event so it does not bubble to the trigger, whose handler would otherwise open
+                  // the panel instead of clearing.
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    clearSelection();
+                  }
+                }}
                 title={labels.clear_selection}
                 aria-label={labels.clear_selection}
               >
@@ -662,6 +761,7 @@ const CascaderFragment = ({
           className="dash-dropdown-content dash-cascader-content"
           align="start"
           sideOffset={5}
+          tabIndex={-1}
           onOpenAutoFocus={(e) => e.preventDefault()}
           onKeyDown={handlePanelKeyDown}
           style={{ maxHeight: contentMaxHeight }}
@@ -712,6 +812,7 @@ const CascaderFragment = ({
                 type="button"
                 className="dash-dropdown-action-button"
                 onClick={handleSelectAll}
+                onKeyDown={handleActionKeyDown}
               >
                 {labels.select_all}
               </button>
@@ -720,6 +821,7 @@ const CascaderFragment = ({
                   type="button"
                   className="dash-dropdown-action-button"
                   onClick={handleDeselectAll}
+                  onKeyDown={handleActionKeyDown}
                 >
                   {labels.deselect_all}
                 </button>
