@@ -6,7 +6,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Introduce `DateTimePicker` as a new selector for `Filter` and `Parameter`. See the [user guide on selectors](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/) for more details. ([#1801](https://github.com/mckinsey/vizro/pull/1801))
+- Introduce `DateTimePicker` as a new selector for `Filter` and `Parameter`. See the [user guide on selectors](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/) for more details. ([#1805](https://github.com/mckinsey/vizro/pull/1805))
 
 <!--
 ### Removed

@@ -107,6 +107,8 @@ For more information, refer to the API reference of the selector, or the documen
 - [`TimePicker`][vizro.models.TimePicker] based on [`dmc.TimePicker`](https://www.dash-mantine-components.com/components/timepicker)
 - [`DateTimePicker`][vizro.models.DateTimePicker] based on [`dmc.DatePickerInput`](https://www.dash-mantine-components.com/components/datepickerinput) combined with [`dmc.TimePicker`](https://www.dash-mantine-components.com/components/timepicker)
 
+All mentioned temporal selectors show a range picker by default (`range=True`). Set `range=False` for a single selection.
+
 Which temporal selector to use depends on the target column type:
 
 - `date` columns: use [`DatePicker`][vizro.models.DatePicker].
@@ -127,20 +129,19 @@ Which temporal selector to use depends on the target column type:
 
     Each [`DateTimePicker`][vizro.models.DateTimePicker] input pairs a date field with a clearable time field. When the time portion is cleared (shown as `--:--`), the value falls back to a date-only string and the filter treats it as the whole day: start-of-day (`00:00:00`) for the start of a range and end-of-day (`23:59:59`) for the end. Clearing the time therefore widens the filter to cover the full day rather than disabling it — matching the behavior of a plain [`DatePicker`][vizro.models.DatePicker].
 
-Like the other temporal selectors, [`DateTimePicker`][vizro.models.DateTimePicker] shows a range picker by default (`range=True`). Set `range=False` for a single date-and-time selection.
-
 !!! example "DateTimePicker"
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="13-14"}
+        ```{.python pycafe-link hl_lines="14-15"}
         import pandas as pd
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
 
         df = px.data.stocks()
-        df["date"] = pd.to_datetime(df["date"])
+        # Add a deterministic time-of-day component so the column is a true `datetime` (not just `date`).
+        df["date"] = pd.to_datetime(df["date"]) + pd.to_timedelta(df.index % 24, unit="h")
 
         page = vm.Page(
             title="Filter by date and time",
@@ -177,6 +178,10 @@ Like the other temporal selectors, [`DateTimePicker`][vizro.models.DateTimePicke
                 type: filter
             title: Filter by date and time
         ```
+
+    === "Result"
+
+        [![Datetimepicker]][datetimepicker]
 
 ## Boolean selectors
 
@@ -428,6 +433,7 @@ An example would be to make the [`RadioItem`][vizro.models.RadioItems] display i
 
         [![InlineRadio]][inlineradio]
 
+[datetimepicker]: ../../assets/user_guides/selectors/datetimepicker.gif
 [dropdown]: ../../assets/user_guides/selectors/dropdown.png
 [infoiconselector]: ../../assets/user_guides/selectors/info_icon_selector.png
 [inlineradio]: ../../assets/user_guides/selectors/inlineradio.png
