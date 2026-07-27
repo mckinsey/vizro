@@ -160,7 +160,16 @@ class TestPreBuildMethod:
             parameter.pre_build()
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
-    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider(), vm.DatePicker()])
+    @pytest.mark.parametrize(
+        "test_input",
+        [
+            vm.Slider(),
+            vm.RangeSlider(),
+            vm.DatePicker(),
+            vm.DateTimePicker(),
+            vm.DateTimePicker(range=False),
+        ],
+    )
     def test_numerical_and_temporal_selectors_missing_values(self, test_input):
         parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
         page = model_manager["test_page"]
@@ -169,6 +178,24 @@ class TestPreBuildMethod:
             TypeError, match=f"{test_input.type} requires the arguments 'min' and 'max' when used within Parameter."
         ):
             parameter.pre_build()
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs")
+    @pytest.mark.parametrize(
+        "test_input, expected_value",
+        [
+            # Range default is date-only ISO strings derived from min/max (time portion cleared).
+            (vm.DateTimePicker(min="2024-01-01", max="2024-12-31"), ["2024-01-01", "2024-12-31"]),
+            (vm.DateTimePicker(min="2024-01-01", max="2024-12-31", range=False), "2024-01-01"),
+        ],
+    )
+    def test_datetime_selector_with_min_max_valid(self, test_input, expected_value):
+        """DateTimePicker with min/max is accepted in a Parameter and gets a date-only default value."""
+        parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
+        page = model_manager["test_page"]
+        page.controls = [parameter]
+        parameter.pre_build()
+        assert parameter.targets == ["scatter_chart.x"]
+        assert parameter.selector.value == expected_value
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
     @pytest.mark.parametrize("test_input", [vm.Checklist(), vm.Dropdown(), vm.RadioItems()])

@@ -48,6 +48,7 @@ Every dashboard is a tree of these models. See the full [model reference](API-re
 | [`RangeSlider`][vizro.models.RangeSlider] | Numeric range slider.                                                                              | [Selectors](user-guides/selectors.md)                    |
 | [`DatePicker`][vizro.models.DatePicker]   | Date / date-range picker.                                                                          | [Selectors](user-guides/selectors.md)                    |
 | [`TimePicker`][vizro.models.TimePicker]   | Time / time-range picker.                                                                          | [Selectors](user-guides/selectors.md)                    |
+| [`DateTimePicker`][vizro.models.DateTimePicker] | Combined date-and-time / date-and-time-range picker for `datetime` columns.                        | [Selectors](user-guides/selectors.md)                    |
 | [`Cascader`][vizro.models.Cascader]       | Cascading multi-level selector.                                                                    | [Selectors](user-guides/selectors.md)                    |
 | [`Navigation`][vizro.models.Navigation]   | Dashboard navigation model.                                                                        | [Navigation](user-guides/navigation.md)                  |
 | [`NavBar`][vizro.models.NavBar]           | Icon sidebar or horizontal bar of `NavLink`s.                                                      | [Navigation](user-guides/navigation.md)                  |

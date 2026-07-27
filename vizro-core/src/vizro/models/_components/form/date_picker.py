@@ -1,3 +1,4 @@
+from contextlib import suppress
 from datetime import date, datetime
 from typing import Annotated, Any, Literal
 
@@ -23,9 +24,18 @@ from vizro.models.types import ActionsType, _IdProperty
 
 
 def _coerce_datetime_to_date(value: Any) -> Any:
-    """Coerce datetime to date object. It's useful if datetime is in the ISO format including the time part as well."""
+    """Coerce a datetime to a date, keeping only the date portion.
+
+    Accepts both datetime objects and ISO datetime strings that include a time part (``T`` or space
+    separator, with or without seconds), e.g. ``"2024-01-01T10:00"`` -> ``date(2024, 1, 1)``. Date-only
+    strings and unparsable strings are passed through unchanged for pydantic's own date validation.
+    """
     if isinstance(value, datetime):
         return value.date()
+    if isinstance(value, str):
+        for fmt in ("%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"):
+            with suppress(ValueError):
+                return datetime.strptime(value, fmt).date()
     return value
 
 

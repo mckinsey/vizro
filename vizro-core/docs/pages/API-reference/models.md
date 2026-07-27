@@ -61,6 +61,7 @@ Selectors are the input widgets used inside `Filter.selector` and `Parameter.sel
 | [`RangeSlider`][vizro.models.RangeSlider] | Numeric range slider (default for numerical data).                                   |
 | [`DatePicker`][vizro.models.DatePicker] | Date or date-range picker (default for temporal data).                               |
 | [`TimePicker`][vizro.models.TimePicker] | Time or time-range picker.                                                           |
+| [`DateTimePicker`][vizro.models.DateTimePicker] | Combined date-and-time (or date-and-time-range) picker for `datetime` columns.       |
 | [`Cascader`][vizro.models.Cascader]     | Cascading multi-level selection widget.                                              |
 
 ### Navigation
