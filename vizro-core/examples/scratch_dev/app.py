@@ -1,7 +1,6 @@
 """Scratch demo app."""
 
 import vizro.models as vm
-import vizro.actions as va
 import vizro.plotly.express as px
 
 from vizro import Vizro

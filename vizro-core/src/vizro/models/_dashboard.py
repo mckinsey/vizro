@@ -346,6 +346,7 @@ class Dashboard(VizroBaseModel):
         nav_control_panel_inner = html.Div(
             id="nav-control-panel-inner",
             children=[nav_panel, control_panel],
+            hidden=_all_hidden([nav_panel, control_panel]),
         )
         nav_control_panel_content = [nav_control_panel_inner]
 
@@ -367,7 +368,15 @@ class Dashboard(VizroBaseModel):
 
         collapse_icon_outer = html.Div(
             children=[
-                html.Span(id="collapse-icon", children="left_panel_close", className="material-symbols-outlined"),
+                html.Span(
+                    id="collapse-icon",
+                    children="left_panel_close",
+                    className="material-symbols-outlined",
+                    role="button",
+                    tabIndex=0,
+                    title="Toggle menu",
+                    **{"aria-label": "Toggle menu"},
+                ),
                 dbc.Tooltip(
                     id="collapse-tooltip",
                     children="Hide Menu",
@@ -539,6 +548,9 @@ class Dashboard(VizroBaseModel):
             id="theme-toggle",
             className="btn-theme-toggle",
             n_clicks=0,
+            type="button",
+            title="Toggle theme",
+            **{"aria-label": "Toggle theme"},
         )
 
         return html.Div(
