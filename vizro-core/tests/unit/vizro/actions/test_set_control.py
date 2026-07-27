@@ -164,7 +164,7 @@ class TestSetControlPreBuild:
             ValueError,
             match=re.escape(
                 "`set_control` action was added to the model with ID `table_1`, "
-                "but this action can only be used with models that support it (e.g. Graph, AgGrid, Figure, and so on). "
+                "but this action can only be used with models that support it (for example, Graph, AgGrid, Figure, and so on). "
                 "See all models that can source a `set_control` at "
                 "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_control"
             ),
@@ -211,7 +211,7 @@ class TestSetControlPreBuild:
             TypeError,
             match=re.escape(
                 "Model with ID `scatter_chart_2` used as a `control` in `set_control` action must be a control model "
-                "(e.g. Filter, Parameter)."
+                "(for example, Filter, Parameter)."
             ),
         ):
             action.pre_build()
