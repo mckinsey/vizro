@@ -1,6 +1,7 @@
 """Scratch demo app."""
 
 import vizro.models as vm
+import vizro.actions as va
 import vizro.plotly.express as px
 
 from vizro import Vizro
@@ -9,12 +10,11 @@ iris = px.data.iris()
 
 
 page_1 = vm.Page(
-    title="Action Logs 1",
+    title="Regular page",
     components=[
         vm.Container(
             title="",
             components=[
-                # vm.Card(text="placeholder text"),
                 vm.Graph(id="graph_3", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))
             ],
             variant="filled",
@@ -42,19 +42,119 @@ page_1 = vm.Page(
 )
 
 page_2 = vm.Page(
-    title="Action Logs 2",
+    title="Controls in container",
     components=[
-        vm.Graph(id="graph_2", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+        vm.Container(
+            title="",
+            components=[
+                vm.Card(text="Placeholder text"),
+                vm.Card(text="Placeholder text"),
+                vm.Card(text="Placeholder text"),
+                vm.Card(text="Placeholder text"),
+                vm.Container(
+                    title="",
+                    components=[
+                        vm.Graph(
+                            figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"), id="graph_4"
+                        ),
+                        vm.Container(
+                            title="",
+                            components=[
+                                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                            ],
+                            variant="filled",
+                        ),
+                    ],
+                    layout=vm.Grid(grid=[[0, 0, 1]]),
+                    variant="filled",
+                ),
+                vm.Button(text="Export", actions=[va.export_data(targets=["graph_4"])], icon="download"),
+            ],
+            layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 4, 4, 4], [4, 4, 4, 4], [4, 4, 4, 4], [5, -1, -1, -1]]),
+            controls=[
+                vm.Filter(column="species"),
+                vm.Filter(column="species"),
+                vm.Filter(column="species"),
+                vm.Filter(column="species"),
+            ],
+        )
     ],
     controls=[
-        vm.Filter(column="species"),
+        vm.ControlGroup(
+            title="Control group 1",
+            controls=[
+                vm.Filter(column="sepal_length"),
+            ],
+            description="control group info",
+        ),
+        vm.ControlGroup(
+            title="Control group 2",
+            controls=[
+                vm.Filter(column="petal_width"),
+            ],
+            description="control group info",
+        ),
+    ],
+)
+
+page_3 = vm.Page(
+    title="Nested container controls",
+    components=[
+        vm.Container(
+            title="",
+            components=[
+                vm.Card(text="Placeholder text"),
+                vm.Card(text="Placeholder text"),
+                vm.Card(text="Placeholder text"),
+                vm.Card(text="Placeholder text"),
+                vm.Container(
+                    title="",
+                    components=[
+                        vm.Graph(
+                            figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"), id="graph_5"
+                        ),
+                    ],
+                    variant="filled",
+                    controls=[
+                        vm.Filter(column="species"),
+                        vm.Filter(column="species"),
+                        vm.Filter(column="species"),
+                        vm.Filter(column="species"),
+                    ],
+                ),
+                vm.Button(text="Export", actions=[va.export_data(targets=["graph_5"])], icon="download"),
+            ],
+            layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 4, 4, 4], [4, 4, 4, 4], [4, 4, 4, 4], [5, -1, -1, -1]]),
+            controls=[
+                vm.Filter(column="species"),
+                vm.Filter(column="species"),
+                vm.Filter(column="species"),
+                vm.Filter(column="species"),
+            ],
+        )
+    ],
+    controls=[
+        vm.ControlGroup(
+            title="Control group 1",
+            controls=[
+                vm.Filter(column="sepal_length"),
+            ],
+            description="control group info",
+        ),
+        vm.ControlGroup(
+            title="Control group 2",
+            controls=[
+                vm.Filter(column="petal_width"),
+            ],
+            description="control group info",
+        ),
     ],
 )
 
 
 dashboard = vm.Dashboard(
     title="Vizro",
-    pages=[page_1, page_2],
+    pages=[page_1, page_2, page_3],
     # navigation=vm.Navigation(nav_selector=vm.NavBar()),
 )
 
