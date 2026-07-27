@@ -29,7 +29,7 @@ def minimal_example(data_frame:pd.DataFrame=None):
     return go.Figure()
 ```
 
-Building on the above, there are several routes one can take. The following examples are guides on the most common custom requests, but also serve as an illustration of more general principles.
+Building on this minimal example, there are several routes one can take. The following examples are guides on the most common custom requests, but also serve as an illustration of more general principles.
 
 To alter the data in the `data_frame` argument, consider using a [Filter](filters.md) or [parametrized data loading](./data/#parametrize-data-loading) and [dynamic data](./data/#dynamic-data). The `data_frame` argument input to a custom chart contains the data **after** filters and parameters have been applied.
 

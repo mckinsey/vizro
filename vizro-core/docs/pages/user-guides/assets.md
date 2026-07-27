@@ -25,18 +25,18 @@ To change the default favicon (website icon appearing in the browser tab), add a
 
 ### Single logo
 
-If an image named `logo.<extension>` is present in the assets folder, Vizro automatically incorporates the logo in the top-left corner of the dashboard. By default, clicking the logo redirects to the homepage.
+If you place a file named `logo.svg` (or `logo` with any of the supported extensions below) in the assets folder, Vizro automatically incorporates it in the top-left corner of the dashboard. By default, clicking the logo redirects to the homepage.
 
 **Supported image extensions:** `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp`
 
 ### Theme-specific logos
 
-You can also supply two images named `logo_dark.<extension>` and `logo_light.<extension>` to switch logos based on the theme (dark or light).
+You can also supply two files named `logo_dark.svg` and `logo_light.svg` (or `logo_dark` and `logo_light` with any of the supported extensions above) to switch logos based on the theme (dark or light).
 
-Note that both `logo_light.<extension>` and `logo_dark.<extension>` must be supplied together, unless a single `logo.<extension>` is supplied for both light and dark themes. That is, the valid configurations are as follows:
+Note that `logo_light` and `logo_dark` must be supplied together, unless a single `logo` file is supplied for both light and dark themes. That is, the valid configurations are as follows:
 
-- Single logo: Supply only `logo.<extension>`, which is used for dark and light themes. **Do not include light and dark theme logos**.
-- Theme logos: Supply both `logo_light.<extension>` and `logo_dark.<extension>` for light/dark themes. **Do not include `logo.<extension>`**.
+- Single logo: Supply only a `logo.svg` file (or `logo` with any supported extension), which is used for both dark and light themes. **Do not also include light and dark theme logos**.
+- Theme logos: Supply both `logo_light.svg` and `logo_dark.svg` (or `logo_light` and `logo_dark` with any supported extension) for the light and dark themes. **Do not also include a `logo` file**.
 - No logo: No logo images supplied.
 
 ![Logo dark](../../assets/user_guides/assets/logo-dark.png) ![Logo light](../../assets/user_guides/assets/logo-light.png)
@@ -51,7 +51,7 @@ Vizro(assets_folder="path/to/assets/folder").build(dashboard).run()
 
 ## Include a meta tags image
 
-Vizro automatically adds meta tags to display a preview card when your app is shared on social media and chat clients. To include an image in the preview, place an image file in the assets folder named `app.<extension>` or `logo.<extension>`. Vizro searches the assets folder and uses the first one it finds.
+Vizro automatically adds meta tags to display a preview card when your app is shared on social media and chat clients. To include an image in the preview, place a file in the assets folder named `app.png` or `logo.svg` (or `app`/`logo` with any of the supported extensions listed below). Vizro searches the assets folder and uses the first one it finds.
 
 Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
 

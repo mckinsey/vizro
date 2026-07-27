@@ -44,7 +44,7 @@ class TimePicker(VizroBaseModel):
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
     Abstract: Usage documentation
-        [How to use temporal selectors](user-guides/selectors.md#temporal-selectors)
+        [How to use temporal selectors](../user-guides/selectors.md#temporal-selectors)
 
     Example:
         ```python
@@ -135,7 +135,11 @@ underlying component may change in the future.""",
             else None
         )
 
-        defaults: dict[str, Any] = {"debounce": True}
+        defaults: dict[str, Any] = {
+            "debounce": True,
+            "persistence": True,
+            "persistence_type": "session",
+        }
         if self.range:
             # Add the clientside callback only for range TimePicker
             self._update_range_time_picker_store()
