@@ -17,11 +17,20 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
-from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch, TimePicker
+from vizro.models._components.form import (
+    Checklist,
+    DatePicker,
+    DateTimePicker,
+    Dropdown,
+    RangeSlider,
+    Switch,
+    TimePicker,
+)
 from vizro.models._components.form.cascader import Cascader
 from vizro.models._controls._controls_utils import (
     SELECTORS,
     _is_categorical_selector,
+    _is_datetime_selector,
     _is_hierarchical_selector,
     _is_numerical_or_date_selector,
     check_control_targets,
@@ -50,22 +59,35 @@ DEFAULT_SELECTORS = {
 # something we should avoid at least until we have moved to narwhals since maybe it's an unnecessary
 # performance hit.
 DISALLOWED_SELECTORS = {
-    "numerical": SELECTORS["date"] + SELECTORS["time"],
-    "date": SELECTORS["numerical"] + SELECTORS["boolean"] + SELECTORS["time"],
+    "numerical": SELECTORS["date"] + SELECTORS["datetime"] + SELECTORS["time"],
+    "date": SELECTORS["numerical"] + SELECTORS["boolean"] + SELECTORS["datetime"] + SELECTORS["time"],
+    # DatePicker, DateTimePicker, and TimePicker are all allowed on "datetime" columns
     "datetime": SELECTORS["numerical"] + SELECTORS["boolean"],
-    "time": SELECTORS["numerical"] + SELECTORS["boolean"] + SELECTORS["date"],
-    "categorical": SELECTORS["numerical"] + SELECTORS["date"] + SELECTORS["time"] + SELECTORS["boolean"],
-    "boolean": SELECTORS["numerical"] + SELECTORS["date"] + SELECTORS["time"],
+    "time": SELECTORS["numerical"] + SELECTORS["boolean"] + SELECTORS["date"] + SELECTORS["datetime"],
+    "categorical": SELECTORS["numerical"]
+    + SELECTORS["date"]
+    + SELECTORS["datetime"]
+    + SELECTORS["time"]
+    + SELECTORS["boolean"],
+    "boolean": SELECTORS["numerical"] + SELECTORS["date"] + SELECTORS["datetime"] + SELECTORS["time"],
     "hierarchical": SELECTORS["numerical"]
     + SELECTORS["categorical"]
     + SELECTORS["date"]
+    + SELECTORS["datetime"]
     + SELECTORS["time"]
     + SELECTORS["boolean"],
 }
 
 # Accepts "HH:MM" and "HH:MM:SS" formats. These are the only that the underlying dmc.TimePicker selector can produce.
 _TIME_REGEX = re.compile(r"^\d{2}:\d{2}(:\d{2})?$")
+# Accepts "YYYY-MM-DD<sep>HH:MM" and "YYYY-MM-DD<sep>HH:MM:SS" formats produced by dmc.DateTimePicker.
+# Mantine accepts "T" as a separator on input but emits values with a space separator after user
+# interaction — the regex (and the precision detection below) must tolerate both.
+_DATETIME_REGEX = re.compile(r"^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(:\d{2})?$")
+# Pure ISO date — emitted by DateTimePicker when the time portion is cleared.
+_DATE_ONLY_REGEX = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _TIME_PARTS_HH_MM = 2  # "HH:MM".split(":") → 2 parts, i.e. no seconds in format
+_RANGE_VALUE_LEN = 2  # Range filters always carry exactly [start, end].
 
 # Column types whose filter options/bounds can update when the underlying data source is dynamic.
 # "time" and "boolean" are always static.
@@ -76,16 +98,38 @@ _DYNAMIC_COLUMN_TYPES = {"numerical", "categorical", "date", "datetime", "hierar
 def _coerce_temporal(
     series: pd.Series, value: list[Any], normalize_precision: bool = False
 ) -> tuple[pd.Series, list[Any]]:
-    """If needed, coerce `series` and `value` to comparable `datetime.time` or `datetime.date` objects.
+    """If needed, coerce `series` and `value` to comparable temporal objects.
 
-    `normalize_precision=True` strips microseconds (and optionally seconds) from time values in the series to make
-     comparisons consistent with the user-provided string format.
+    Handles three input shapes:
+      - "HH:MM[:SS]" time-of-day strings (from TimePicker) -> compare as `datetime.time`.
+      - "YYYY-MM-DDTHH:MM[:SS]" ISO datetime strings (from DateTimePicker) -> compare as `pd.Timestamp`.
+      - Date strings on a datetime64 series (from DatePicker) -> compare as `datetime.date`.
 
-    Returns the coerced series and value to `datetime.time` or `datetime.date` objects if possible. Otherwise,
-    returns unchanged series and value.
+    `normalize_precision=True` strips microseconds (and optionally seconds) from the series to make
+    comparisons consistent with the user-provided string format.
     """
+    # Mixed-precision range filter (DateTimePicker with one end's time cleared): if at least one
+    # value is a full datetime and at least one is date-only, pad the date-only entries to full
+    # datetimes position-wise so they can be compared on equal footing — index 0 is start-of-day,
+    # index 1 is end-of-day. (Both-date-only and both-full-datetime cases fall through to the
+    # existing _is_date / _is_datetime branches unchanged.)
+    if len(value) == _RANGE_VALUE_LEN:
+        has_full_datetime = any(_DATETIME_REGEX.match(str(v)) for v in value)
+        has_date_only = any(_DATE_ONLY_REGEX.match(str(v)) for v in value)
+        if has_full_datetime and has_date_only:
+            value = [
+                f"{v}T00:00:00"
+                if (i == 0 and isinstance(v, str) and _DATE_ONLY_REGEX.match(v))
+                else f"{v}T23:59:59"
+                if (i == 1 and isinstance(v, str) and _DATE_ONLY_REGEX.match(v))
+                else v
+                for i, v in enumerate(value)
+            ]
+
     _is_time = value and all(_TIME_REGEX.match(str(v)) for v in value)
-    _is_date = not _is_time and is_datetime64_any_dtype(series)
+    # IMPORTANT: check _is_datetime before _is_date so that an ISO datetime string is not collapsed to a date.
+    _is_datetime = not _is_time and value and all(_DATETIME_REGEX.match(str(v)) for v in value)
+    _is_date = not _is_time and not _is_datetime and is_datetime64_any_dtype(series)
 
     if _is_time:
         if is_datetime64_any_dtype(series):
@@ -100,6 +144,29 @@ def _coerce_temporal(
 
         # Time selector: convert "HH:MM" or "HH:MM:SS" input value strings to datetime.time objects.
         value = pd.to_datetime(value, format="mixed").time
+
+    elif _is_datetime:
+        # DateTimePicker selector: convert ISO datetime strings to Timestamps and compare against the datetime series.
+        # Use format="ISO8601" so a mix of "YYYY-MM-DDTHH:MM" and "YYYY-MM-DDTHH:MM:SS" parses correctly.
+        value_strs = [str(v) for v in value]
+        value = list(pd.to_datetime(value_strs, format="ISO8601"))
+
+        # If the series is tz-aware, localize the (naive) parsed values to its tz so comparisons don't raise.
+        # Convention: the typed wall-clock time represents a moment in the series's own timezone.
+        # nonexistent/ambiguous guard against DST-transition wall-clock times (e.g. the spring-forward gap
+        # or the fall-back overlap), which would otherwise raise instead of filtering.
+        if is_datetime64_any_dtype(series) and getattr(series.dt, "tz", None) is not None:
+            value = [
+                pd.Timestamp(v).tz_localize(series.dt.tz, nonexistent="shift_forward", ambiguous=True) for v in value
+            ]
+
+        if normalize_precision and is_datetime64_any_dtype(series):
+            # Strip sub-second precision from the series.
+            series = series.dt.floor("s")
+            # If no `value` has seconds defined, also strip seconds from the series.
+            # The separator is "T" on input or " " after Mantine round-trips the value — normalize both.
+            if all(len(v.replace(" ", "T").split("T")[1].split(":")) == _TIME_PARTS_HH_MM for v in value_strs):
+                series = series.dt.floor("min")
 
     elif _is_date:
         # Date selector: convert date strings to datetime.date objects.
@@ -422,7 +489,7 @@ class Filter(VizroBaseModel):
         # Note: min or max = 0 are falsey but must not be treated as "not set".
         if (
             self._column_type in _DYNAMIC_COLUMN_TYPES
-            and not isinstance(self.selector, TimePicker)
+            and not isinstance(self.selector, (TimePicker, DateTimePicker))
             and not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None
@@ -435,7 +502,7 @@ class Filter(VizroBaseModel):
                     break
 
         # TimePicker always has a default min/max specified so no need to handle it here.
-        if _is_numerical_or_date_selector(self.selector):
+        if _is_numerical_or_date_selector(self.selector) or _is_datetime_selector(self.selector):
             _min, _max = self._get_min_max(targeted_data)
             # Note that manually set self.selector.min/max = 0 are Falsey and should not be overwritten.
             if self.selector.min is None:
@@ -453,7 +520,7 @@ class Filter(VizroBaseModel):
         if not self.selector.actions:
             filter_function: Callable[[pd.Series, Any], pd.Series]
             if isinstance(self.selector, RangeSlider) or (
-                isinstance(self.selector, (DatePicker, TimePicker)) and self.selector.range
+                isinstance(self.selector, (DatePicker, TimePicker, DateTimePicker)) and self.selector.range
             ):
                 filter_function = _filter_between
             else:
