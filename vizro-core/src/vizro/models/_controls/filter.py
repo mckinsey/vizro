@@ -241,57 +241,6 @@ def _ensure_path_in_tree(tree: dict[str, Any], path: list[Any]) -> None:
         existing.append(leaf)
 
 
-def _iter_cascader_leaf_paths(
-    tree: dict[str, Any], _prefix: tuple[str, ...] = ()
-) -> Iterable[tuple[tuple[str, ...], Any]]:
-    """Yield each `(branch_path, leaf)` pair in a Cascader options tree (leaf mode helper).
-
-    Example:
-        >>> list(_iter_cascader_leaf_paths({"Eu": {"West": ["FR"]}, "As": ["JP"]}))
-        [(('Eu', 'West'), 'FR'), (('As',), 'JP')]
-    """
-    for key, value in tree.items():
-        path = (*_prefix, str(key))
-        if isinstance(value, dict):
-            yield from _iter_cascader_leaf_paths(value, path)
-        else:
-            for leaf in value:
-                yield path, leaf
-
-
-def _add_leaf_at_path(tree: dict[str, Any], path: tuple[str, ...], leaf: Any) -> None:
-    """Add `leaf` to `tree` at full `path`, creating any missing branch dicts on the way (leaf mode helper).
-
-    In leaf mode `current_value` is a flat list of leaves, so if a data reload drops the rows that carried
-    currently selected values we have to add them back to the new tree options at their previous path (looked up
-    in the selector's prior options), since a bare leaf carries no branch context of its own.
-
-    Example:
-        >>> tree = {"Eu": ["DE"]}
-        >>> _add_leaf_at_path(tree, ("Eu",), "FR")
-        >>> tree
-        {'Eu': ['DE', 'FR']}
-        >>> _add_leaf_at_path(tree, ("As", "East"), "JP")
-        >>> tree
-        {'Eu': ['DE', 'FR'], 'As': {'East': ['JP']}}
-    """
-    node = tree
-    for key in path[:-1]:
-        child = node.get(key)
-        if child is None:
-            child = {}
-            node[key] = child
-        elif not isinstance(child, dict):
-            return  # shape mismatch — a leaf list already lives where we'd need a branch dict
-        node = child
-    last = path[-1]
-    existing = node.get(last)
-    if existing is None:
-        node[last] = [leaf]
-    elif isinstance(existing, list) and leaf not in existing:
-        existing.append(leaf)
-
-
 def _dataframe_path_to_cascader_options(df: pd.DataFrame, path_columns: list[str]) -> dict[str, Any]:
     """Build nested Cascader options from unique rows via groupby then nested dict (str keys, list leaves).
 
@@ -760,7 +709,8 @@ class Filter(VizroBaseModel):
         ).drop_duplicates()
         new_options = _dataframe_path_to_cascader_options(combined, path_cols)
 
-        if not current_value:
+        # None and an empty list mean "no selection"; a falsy leaf (0, False, "") is a real selection.
+        if current_value is None or (isinstance(current_value, list) and not current_value):
             return new_options
 
         selector = cast(Cascader, self.selector)
@@ -778,15 +728,15 @@ class Filter(VizroBaseModel):
                     _ensure_path_in_tree(new_options, list(entry))
             return new_options
 
-        # Leaf mode: restore each stale leaf at its previous path so the branch context is preserved.
+        # Leaf mode: a bare leaf carries no branch context, so look up its previous path in the selector's prior
+        # options and re-insert it (via `_ensure_path_in_tree`) so the selection survives a data reload.
         selected_leaves = current_value if isinstance(current_value, list) else [current_value]
-        new_leaves = {leaf for _, leaf in _iter_cascader_leaf_paths(new_options)}
-        stale_leaves = [leaf for leaf in selected_leaves if leaf is not None and leaf not in new_leaves]
+        new_leaves = {path[-1] for path in _iter_cascader_paths_depth_first(new_options)}
+        stale_leaves = {leaf for leaf in selected_leaves if leaf is not None and leaf not in new_leaves}
         if not stale_leaves:
             return new_options
         prev_options = getattr(self.selector, "options", None) or {}
-        stale_set = set(stale_leaves)
-        for path, leaf in _iter_cascader_leaf_paths(prev_options):
-            if leaf in stale_set:
-                _add_leaf_at_path(new_options, path, leaf)
+        for path in _iter_cascader_paths_depth_first(prev_options):
+            if path[-1] in stale_leaves:
+                _ensure_path_in_tree(new_options, path)
         return new_options

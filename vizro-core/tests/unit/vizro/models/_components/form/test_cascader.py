@@ -126,14 +126,18 @@ class TestCascaderInstantiation:
             ([False], {"B": [True, False]}, True),
             (["a", "b"], {"L": ["a", "b", "c"]}, True),
             ([1, 3], {"N": [1, 2, 3]}, True),
-            # A bare scalar is tolerated under multi=True (wrapped in __call__).
-            ("a", {"L": ["a", "b"]}, True),
         ],
     )
     def test_create_cascader_leaf_valid_value(self, test_value, options, multi):
         cascader = Cascader(options=options, value=test_value, multi=multi)
         assert cascader.value == test_value
         assert cascader.multi == multi
+
+    def test_create_cascader_leaf_multi_scalar_normalized_to_list(self):
+        # A bare scalar under multi=True is normalized to a single-element list so the stored value (and the
+        # "Reset controls" original value) matches the multi component shape.
+        cascader = Cascader(options={"L": ["a", "b"]}, value="a", multi=True)
+        assert cascader.value == ["a"]
 
     @pytest.mark.parametrize(
         "test_value, options, multi",
@@ -237,12 +241,14 @@ class TestCascaderInstantiation:
         ts = pd.Timestamp("2024-03-30")
         cascader = Cascader(options={"Asia": [ts]}, value=ts, multi=True)
         assert cascader.options == {"Asia": [date(2024, 3, 30)]}
-        assert cascader.value == date(2024, 3, 30)  # value is a leaf scalar, coerced to date like the options leaves
+        # Leaf coerced to date like the options leaves, and the bare multi scalar normalized to a list.
+        assert cascader.value == [date(2024, 3, 30)]
 
     def test_create_cascader_path_coerces_datetime_leaves_to_date(self):
         ts = pd.Timestamp("2024-03-30")
         cascader = Cascader(options={"Asia": [ts]}, value=[["Asia", ts]], multi=True, full_path=True)
         assert cascader.options == {"Asia": [date(2024, 3, 30)]}
+        assert cascader.value == [["Asia", date(2024, 3, 30)]]
 
     def test_cascader_trigger(self, identity_action_function):
         cascader = Cascader(

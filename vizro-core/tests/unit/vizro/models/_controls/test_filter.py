@@ -1776,6 +1776,32 @@ class TestFilterHierarchicalColumn:
         assert default_action.column == "country"
         assert default_action.filter_function is _filter_isin
 
+    def test_hierarchical_pre_build_path_mode_depth_mismatch_raises(self, managers_hierarchical_page):
+        # Path mode: every options path must be exactly as deep as `column` is long. Here `column` has two
+        # levels but the explicit options are three deep, so no path lines up with the columns.
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["hier_graph"],
+            selector=vm.Cascader(
+                multi=True, full_path=True, options={"Eu": {"West": ["FR"]}}, value=[["Eu", "West", "FR"]]
+            ),
+        )
+        model_manager["test_page"].controls = [f]
+        with pytest.raises(ValueError, match="must have exactly 2 levels"):
+            f.pre_build()
+
+    def test_hierarchical_pre_build_leaf_mode_allows_ragged_depth(self, managers_hierarchical_page):
+        # Leaf mode has no depth restriction: an options tree deeper than `column` is accepted (it matches on
+        # the last column regardless of tree depth).
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["hier_graph"],
+            selector=vm.Cascader(multi=True, options={"Eu": {"West": ["FR"]}}, value=["FR"]),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()  # does not raise
+        assert f.selector.options == {"Eu": {"West": ["FR"]}}
+
     def test_hierarchical_dynamic_data_without_explicit_options(
         self, managers_one_page_two_graphs_with_dynamic_data, gapminder_dynamic_first_n_last_n_function
     ):

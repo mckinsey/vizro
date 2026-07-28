@@ -114,14 +114,13 @@ def _normalize_cascader_path(path: Any) -> tuple[Any, ...]:
     return (*(str(segment) for segment in path[:-1]), path[-1])
 
 
-def _reject_duplicate_leaves(options: dict[str, Any]) -> None:
+def _reject_duplicate_leaves(leaves: list[SingleValueType]) -> None:
     """Leaf-mode only: forbid the same leaf label under more than one branch.
 
     In leaf mode a selection is addressed by its bare leaf value, so a duplicate leaf is ambiguous. Path mode
     (full_path=True) addresses selections by their full root-to-leaf path and therefore allows duplicate leaves.
     """
-    dup_counts = Counter(_iter_cascader_leaves_depth_first(options))
-    if duplicates := [value for value, count in dup_counts.items() if count > 1]:
+    if duplicates := [value for value, count in Counter(leaves).items() if count > 1]:
         raise ValueError(
             f"Cascader options must not contain duplicate leaf values: {duplicates}. "
             "Set full_path=True to address selections by their full root-to-leaf path instead."
@@ -135,13 +134,15 @@ def _validate_full_path(path: Any, valid_paths: set[tuple[Any, ...]]) -> list[Si
     return list(path)
 
 
-def _validate_leaf_value(value: Any, options: dict[str, Any], *, multi: bool) -> None:
-    """Leaf mode (full_path=False): `value` is a leaf scalar (single) or a list of leaf scalars (multi).
+def _validate_leaf_value(value: Any, leaves: set[Any], *, multi: bool) -> Any:
+    """Leaf mode (full_path=False): validate `value` and return it in canonical form.
 
-    A path (list) for a single-select, or a list of paths (list of lists) for a multi-select, is rejected — that
-    is the path-mode shape and requires full_path=True.
+    `value` is a leaf scalar (single) or a list of leaf scalars (multi). A path (list) for a single-select, or a
+    list of paths (list of lists) for a multi-select, is rejected — that is the path-mode shape and requires
+    full_path=True. For a multi-select a bare scalar is normalized to a single-element list so the stored value
+    matches the multi component shape (important for the "Reset controls" original value). `leaves` is a set for
+    O(1) membership.
     """
-    leaves = _iter_cascader_leaves_depth_first(options)
     if not multi:
         if isinstance(value, list):
             raise ValueError(
@@ -150,9 +151,9 @@ def _validate_leaf_value(value: Any, options: dict[str, Any], *, multi: bool) ->
             )
         if value not in leaves:
             raise ValueError("Please provide a valid value from `options`.")
-        return
+        return value
 
-    # multi=True: accept a bare scalar (wrapped later in `__call__`) or a list of leaf scalars, but reject paths.
+    # multi=True: accept a bare scalar (normalized to a list below) or a list of leaf scalars, but reject paths.
     items = value if isinstance(value, list) else [value]
     for item in items:
         if isinstance(item, list):
@@ -162,6 +163,7 @@ def _validate_leaf_value(value: Any, options: dict[str, Any], *, multi: bool) ->
             )
         if item not in leaves:
             raise ValueError("Please provide a valid value from `options`.")
+    return items
 
 
 def _validate_path_value(value: Any, options: dict[str, Any], *, multi: bool) -> None:
@@ -294,22 +296,27 @@ underlying component may change in the future.""",
         # Validate `value` against `options` per mode. For a dynamic filter, `options` is empty here at
         # construction and only populated later when its `pre_build` assigns `self.options`; because
         # `validate_assignment=True`, that assignment re-runs this validator, which then validates against the
-        # now-populated tree. The validator only checks (never rewrites) `value`, so re-runs are safe.
+        # now-populated tree. Leaf mode may normalize `value` (bare multi scalar → list); this is idempotent, so
+        # re-runs are safe.
         if not self.options:
             return self
 
-        # Leaf mode forbids duplicate leaves regardless of whether a value is set (they are inherently ambiguous).
-        if not self.full_path:
-            _reject_duplicate_leaves(self.options)
-
         # `None` and an empty list both mean "no selection".
-        if self.value is None or (isinstance(self.value, list) and not self.value):
-            return self
+        no_selection = self.value is None or (isinstance(self.value, list) and not self.value)
 
         if self.full_path:
-            _validate_path_value(self.value, self.options, multi=self.multi)
-        else:
-            _validate_leaf_value(self.value, self.options, multi=self.multi)
+            if not no_selection:
+                _validate_path_value(self.value, self.options, multi=self.multi)
+            return self
+
+        # Leaf mode: collect leaves once (used for both the duplicate check and O(1) membership). Duplicate
+        # leaves are forbidden regardless of whether a value is set (they are inherently ambiguous).
+        leaves = _iter_cascader_leaves_depth_first(self.options)
+        _reject_duplicate_leaves(leaves)
+        if not no_selection:
+            # Assign via `__dict__` to normalize (e.g. a bare multi scalar → list) without re-triggering
+            # `validate_assignment`; idempotent, so re-runs on the canonical value are safe.
+            self.__dict__["value"] = _validate_leaf_value(self.value, set(leaves), multi=self.multi)
         return self
 
     @model_validator(mode="after")
@@ -336,15 +343,14 @@ underlying component may change in the future.""",
         # Fill the first-leaf/path default when unset (mirrors Dropdown). Otherwise pass the stored value straight
         # through: it is already valid for the mode. We must not re-validate against these `options`, because a
         # runtime data reload can narrow the tree so a still-valid selection is temporarily absent.
+        # `self.value` is already canonical for the mode (validated/normalized in `_validate_value`, which also
+        # re-runs when a dynamic filter assigns `options` in `pre_build`): a leaf scalar or list of leaves in leaf
+        # mode, a path or list of paths in path mode. A default is filled the same way when unset.
         value = (
             get_cascader_default_value(options, multi=self.multi, full_path=self.full_path)
             if self.value is None
             else self.value
         )
-
-        # Leaf multi-select: a bare scalar is wrapped into a list (path mode always carries lists already).
-        if not self.full_path and self.multi and value is not None and not isinstance(value, list):
-            value = cast(MultiValueType, [value])
 
         description = self.description.build().children if self.description else [None]
         defaults = {
