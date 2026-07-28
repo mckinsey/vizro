@@ -7,7 +7,7 @@
 
 #nav-control-panel {
   align-items: flex-start;
-  border-right: 1px solid var(--bs-body-bg);
+  border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
@@ -34,14 +34,14 @@
 }
 
 #left-side {
-  background-color: var(--bs-left-side-bg);
+  background-color: var(--bs-tertiary-bg);
   display: flex;
   flex-direction: row;
   height: 100%;
 }
 
 #right-side {
-  background: var(--bs-right-side-bg);
+  background: var(--bs-body-bg);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -68,7 +68,7 @@
 }
 
 #header:not(:empty) {
-  border-bottom: 1px solid var(--bs-body-bg);
+  border-bottom: 1px solid var(--bs-border-color);
 }
 
 #header.no-left {
@@ -147,7 +147,6 @@
 }
 
 #nav-bar {
-  border-right: 1px solid var(--bs-body-bg);
   display: flex;
   justify-content: flex-start;
   max-width: 64px;
@@ -221,7 +220,7 @@ a:has(#logo-dark),
 /* Side nav: wrapper that holds dbc.Navbar + the collapse icon below it. */
 #nav-bar-wrapper {
   background: var(--bs-tertiary-bg);
-  border-right: 1px solid var(--bs-body-bg);
+  border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex-direction: column;
 }
