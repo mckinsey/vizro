@@ -1,3 +1,5 @@
+[![MCP Toplist](https://mcptoplist.com/badge/glama%2Fmckinsey%2Fvizro.svg)](https://mcptoplist.com/server/glama%2Fmckinsey%2Fvizro)
+
 <br><br>
 
 <div align="center">
