@@ -107,7 +107,7 @@ def check_range_date_picker_value(driver, elem_id, expected_min_date_value=None,
     )
 
 
-def check_time_picker_value(driver, elem_id, expected_hour, expected_minute):
+def check_single_time_picker_value(driver, elem_id, expected_hour, expected_minute):
     """Checks that a single dmc.TimePicker displays the expected hour and minute.
 
     Args:
@@ -145,8 +145,8 @@ def check_range_time_picker_value(driver, elem_id, start_hour, start_minute, end
         end_hour: two-digit hour string for the "To" input.
         end_minute: two-digit minute string for the "To" input.
     """
-    check_time_picker_value(driver, f"{elem_id}-start", start_hour, start_minute)
-    check_time_picker_value(driver, f"{elem_id}-end", end_hour, end_minute)
+    check_single_time_picker_value(driver, f"{elem_id}-start", start_hour, start_minute)
+    check_single_time_picker_value(driver, f"{elem_id}-end", end_hour, end_minute)
 
 
 def check_accordion_active(driver, accordion_name):

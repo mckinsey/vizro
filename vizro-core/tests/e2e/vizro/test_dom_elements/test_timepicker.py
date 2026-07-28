@@ -1,14 +1,20 @@
 import e2e.vizro.constants as cnst
 from e2e.vizro.checkers import (
     check_range_time_picker_value,
+    check_single_time_picker_value,
     check_table_ag_grid_rows_number,
     check_table_ag_grid_time_values_equal,
     check_table_ag_grid_time_values_in_range,
-    check_time_picker_value,
 )
-from e2e.vizro.navigation import accordion_select, page_select, select_time_picker_range_value, select_time_picker_value
+from e2e.vizro.navigation import (
+    accordion_select,
+    page_select,
+    select_range_time_picker_value,
+    select_single_time_picker_value,
+)
 
 
+# filtered values format is hh:mm:ss
 def test_timepicker_range_time_hh_mm_ss(dash_br):
     """Tests that range TimePicker as filter works correctly for a time column."""
     accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
@@ -19,7 +25,7 @@ def test_timepicker_range_time_hh_mm_ss(dash_br):
     )
 
     # set time range 10:43-10:44 on the native time_hh_mm_ss column (2 matching rows in seeded dff)
-    select_time_picker_range_value(
+    select_range_time_picker_value(
         dash_br,
         elem_id=cnst.TIMEPICKER_TIME_HH_MM_SS_RANGE_ID,
         start_hour="10",
@@ -49,6 +55,7 @@ def test_timepicker_range_time_hh_mm_ss(dash_br):
     )
 
 
+# filtered values format is YYYY-DD-MMThh:mm:ss.ffffff±HH:MM
 def test_timepicker_range_datetime_utc_time(dash_br):
     """Tests that range TimePicker filters datetime column by time-of-day."""
     accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
@@ -59,7 +66,7 @@ def test_timepicker_range_datetime_utc_time(dash_br):
     )
 
     # filter datetime_utc by time-of-day only (ignores the calendar date component)
-    select_time_picker_range_value(
+    select_range_time_picker_value(
         dash_br,
         elem_id=cnst.TIMEPICKER_DATETIME_UTC_TIME_RANGE_ID,
         start_hour="10",
@@ -87,6 +94,7 @@ def test_timepicker_range_datetime_utc_time(dash_br):
     )
 
 
+# filtered values format is hh:mm:ss.ffffff
 def test_timepicker_range_time_iso(dash_br):
     """Tests that range TimePicker as filter works correctly for a time_iso column."""
     accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
@@ -97,7 +105,7 @@ def test_timepicker_range_time_iso(dash_br):
     )
 
     # time_iso holds microsecond-precision times derived from datetime_utc
-    select_time_picker_range_value(
+    select_range_time_picker_value(
         dash_br,
         elem_id=cnst.TIMEPICKER_TIME_ISO_RANGE_ID,
         start_hour="05",
@@ -124,6 +132,7 @@ def test_timepicker_range_time_iso(dash_br):
     )
 
 
+# filtered values format is hh:mm:ss
 def test_timepicker_single_time_hh_mm_ss(dash_br):
     """Tests that single TimePicker as filter works correctly for a time column."""
     accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
@@ -134,14 +143,14 @@ def test_timepicker_single_time_hh_mm_ss(dash_br):
     )
 
     # single-mode TimePicker matches rows where hour and minute equal the selection
-    select_time_picker_value(
+    select_single_time_picker_value(
         dash_br,
         elem_id=cnst.TIMEPICKER_TIME_HH_MM_SS_SINGLE_ID,
         hour="10",
         minute="43",
     )
 
-    check_time_picker_value(
+    check_single_time_picker_value(
         dash_br,
         elem_id=cnst.TIMEPICKER_TIME_HH_MM_SS_SINGLE_ID,
         expected_hour="10",
@@ -156,6 +165,7 @@ def test_timepicker_single_time_hh_mm_ss(dash_br):
     )
 
 
+# filtered values format is YYYY-DD-MMThh:mm:ss.ffffff±HH:MM
 def test_timepicker_single_datetime_utc_time(dash_br):
     """Tests that single TimePicker filters datetime column by time-of-day."""
     accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
@@ -165,14 +175,14 @@ def test_timepicker_single_datetime_utc_time(dash_br):
         page_path=cnst.TIMEPICKER_SINGLE_PAGE_PATH,
     )
 
-    select_time_picker_value(
+    select_single_time_picker_value(
         dash_br,
         elem_id=cnst.TIMEPICKER_DATETIME_UTC_TIME_SINGLE_ID,
         hour="08",
         minute="28",
     )
 
-    check_time_picker_value(
+    check_single_time_picker_value(
         dash_br,
         elem_id=cnst.TIMEPICKER_DATETIME_UTC_TIME_SINGLE_ID,
         expected_hour="08",
@@ -187,6 +197,7 @@ def test_timepicker_single_datetime_utc_time(dash_br):
     )
 
 
+# filtered values format is hh:mm:ss.ffffff
 def test_timepicker_single_time_iso(dash_br):
     """Tests that single TimePicker as filter works correctly for a time_iso column."""
     accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
@@ -196,14 +207,14 @@ def test_timepicker_single_time_iso(dash_br):
         page_path=cnst.TIMEPICKER_SINGLE_PAGE_PATH,
     )
 
-    select_time_picker_value(
+    select_single_time_picker_value(
         dash_br,
         elem_id=cnst.TIMEPICKER_TIME_ISO_SINGLE_ID,
         hour="00",
         minute="19",
     )
 
-    check_time_picker_value(
+    check_single_time_picker_value(
         dash_br,
         elem_id=cnst.TIMEPICKER_TIME_ISO_SINGLE_ID,
         expected_hour="00",
@@ -228,7 +239,7 @@ def test_timepicker_parameter(dash_br):
     )
 
     # set time 10:43 via the parameter TimePicker
-    select_time_picker_value(
+    select_single_time_picker_value(
         dash_br,
         elem_id=cnst.TIMEPICKER_PARAMETER_ID,
         hour="10",
@@ -237,7 +248,7 @@ def test_timepicker_parameter(dash_br):
 
     # parameter value is applied to scatter_chart.title
     dash_br.wait_for_text_to_equal(".gtitle", "10:43")
-    check_time_picker_value(
+    check_single_time_picker_value(
         dash_br,
         elem_id=cnst.TIMEPICKER_PARAMETER_ID,
         expected_hour="10",

@@ -76,7 +76,7 @@ def page_select_selenium(driver, page_path, page_name, timeout=cnst.SELENIUM_WAI
         )
 
 
-def select_time_picker_value(driver, elem_id, hour, minute):
+def select_single_time_picker_value(driver, elem_id, hour, minute):
     """Set a single TimePicker value (HH:MM).
 
     Clicks outside the control after entry to trigger debounce and waits for Dash callbacks to finish.
@@ -92,7 +92,7 @@ def select_time_picker_value(driver, elem_id, hour, minute):
     callbacks_finish_waiter(driver)
 
 
-def select_time_picker_range_value(driver, elem_id, start_hour, start_minute, end_hour, end_minute):
+def select_range_time_picker_value(driver, elem_id, start_hour, start_minute, end_hour, end_minute):
     """Set a range TimePicker value (HH:MM).
 
     Fills both "From" and "To" inputs before blurring once so the dcc.Store receives a complete [start, end] tuple.
@@ -120,6 +120,23 @@ def _set_time_picker_fields(driver, elem_id, hour, minute):
         field.send_keys(part)
         field.send_keys(Keys.TAB)
         time.sleep(0.3)
+
+
+def select_range_time_picker_value_playwright(page, elem_id, start_hour, start_minute, end_hour, end_minute):
+    """Set a range TimePicker value (HH:MM) using Playwright."""
+    _set_time_picker_fields_playwright(page, f"{elem_id}-start", start_hour, start_minute)
+    _set_time_picker_fields_playwright(page, f"{elem_id}-end", end_hour, end_minute)
+    page.locator("body").click()
+
+
+def _set_time_picker_fields_playwright(page, elem_id, hour, minute):
+    """Fill hour and minute fields of one dmc.TimePicker input via Playwright."""
+    fields = page.locator(f"div[id='{elem_id}'] input.mantine-TimePicker-field").all()
+    for field, part in zip(fields, [hour, minute]):
+        field.click()
+        field.press("Control+a")
+        field.fill(part)
+        page.wait_for_timeout(300)
 
 
 def select_slider_value(driver, elem_id, min_value=None, max_value=None):

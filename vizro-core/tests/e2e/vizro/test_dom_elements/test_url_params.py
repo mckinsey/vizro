@@ -7,8 +7,8 @@ from e2e.vizro.navigation import (
     clear_dropdown,
     page_select,
     select_dropdown_value,
+    select_range_time_picker_value,
     select_slider_value,
-    select_time_picker_range_value,
 )
 from e2e.vizro.paths import (
     categorical_components_value_path,
@@ -275,7 +275,7 @@ def test_url_params_encoding_and_page_refresh_timepicker(dash_br):
         page_path=cnst.TIMEPICKER_RANGE_PAGE_PATH,
     )
     # only the time_hh_mm_ss range filter has show_in_url=True on the timepicker range page
-    select_time_picker_range_value(
+    select_range_time_picker_value(
         dash_br,
         elem_id=cnst.TIMEPICKER_TIME_HH_MM_SS_RANGE_ID,
         start_hour="10",
