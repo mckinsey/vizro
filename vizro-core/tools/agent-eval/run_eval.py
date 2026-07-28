@@ -17,9 +17,9 @@ import subprocess
 import sys
 import tempfile
 import time
-from dataclasses import dataclass, field, asdict
+from collections.abc import Callable
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Callable
 
 try:
     import yaml
@@ -64,7 +64,6 @@ MODES: dict[str, AgentCallable] = {}
 
 def register_mode(name: str, fn: AgentCallable) -> None:
     """Register an agent-invocation callable for a mode."""
-
     MODES[name] = fn
 
 
@@ -79,7 +78,6 @@ def score_validates(code: str) -> tuple[int, list[str]]:
     Returns ``(score, tags)``. The subprocess should import the module and call
     ``dashboard = vm.Dashboard(...)`` cleanly.
     """
-
     tags: list[str] = []
     with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as f:
         f.write(code)
@@ -121,10 +119,7 @@ def score_renders(code: str) -> tuple[int, list[str]]:
     to run a Dash app. Fill in with the eval harness's own boot loop, or
     replace with PyCafe's execution sandbox.
     """
-
-    raise NotImplementedError(
-        "score_renders is a stub. Wire this to your dashboard-boot harness (see docstring)."
-    )
+    raise NotImplementedError("score_renders is a stub. Wire this to your dashboard-boot harness (see docstring).")
 
 
 def score_intent(code: str, prompt: Prompt) -> tuple[int, list[str]]:
@@ -140,10 +135,7 @@ def score_intent(code: str, prompt: Prompt) -> tuple[int, list[str]]:
     eval harness (e.g. ``INTENT_CHECKS[prompt.id]``) rather than a monolithic
     matcher here.
     """
-
-    raise NotImplementedError(
-        "score_intent is a stub. Implement per-prompt checks (see docstring)."
-    )
+    raise NotImplementedError("score_intent is a stub. Implement per-prompt checks (see docstring).")
 
 
 def run_one(prompt: Prompt, model: str, mode: str) -> RunResult:
