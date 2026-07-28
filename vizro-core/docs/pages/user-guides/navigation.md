@@ -64,6 +64,8 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
 
     === "Result"
 
+        The dashboard renders the "Default navigation" example.
+
         [![DefaultNavigation]][defaultnavigation]
 
 ## Include a subset of pages
@@ -120,6 +122,8 @@ To include only some of the dashboard pages in the navigation, list them in the 
         ```
 
     === "Result"
+
+        The dashboard renders the "Navigation with only some pages" example.
 
         [![OnlySomePages]][onlysomepages]
 
@@ -185,6 +189,8 @@ You can also group your pages together by specifying `pages` as a dictionary:
         ```
 
     === "Result"
+
+        The dashboard renders the "Grouping pages" example.
 
         [![GroupedNavigation]][groupednavigation]
 
@@ -254,6 +260,8 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
         ```
 
     === "Result"
+
+        The dashboard renders the "Using `NavBar`" example.
 
         [![NavBar]][navbar]
 
@@ -338,6 +346,8 @@ The same configuration for [grouping pages](#group-pages) applies inside a `NavL
 
     === "Result"
 
+        The dashboard renders the "Accordions inside a `Navlink`" example.
+
         [![AccordionInsideNavBar]][accordioninsidenavbar]
 
 ### Change icons
@@ -420,6 +430,8 @@ You can alter the icons used by specifying the name of the icon in the [Google M
 
     === "Result"
 
+        The dashboard renders the "Custom icon" example.
+
         [![CustomIcons]][customicons]
 
 ## Horizontal navigation
@@ -482,6 +494,8 @@ To create a horizontal navigation bar, set `position="top"` in your `NavBar` mod
         ```
 
     === "Result"
+
+        The dashboard renders the "Basic Horizontal navigation" example.
 
         [![BasicHorizontalNavigation]][basichorizontalnavigation]
 
@@ -558,6 +572,8 @@ You can group multiple pages under a single navigation item in horizontal mode e
         ```
 
     === "Result"
+
+        The dashboard renders the "Grouped horizontal navigation" example.
 
         [![GroupedHorizontalNavigation]][groupedhorizontalnavigation]
 

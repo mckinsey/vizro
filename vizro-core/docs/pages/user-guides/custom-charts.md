@@ -29,7 +29,7 @@ def minimal_example(data_frame:pd.DataFrame=None):
     return go.Figure()
 ```
 
-Building on the above, there are several routes one can take. The following examples are guides on the most common custom requests, but also serve as an illustration of more general principles.
+Building on this minimal example, there are several routes one can take. The following examples are guides on the most common custom requests, but also serve as an illustration of more general principles.
 
 To alter the data in the `data_frame` argument, consider using a [Filter](filters.md) or [parametrized data loading](./data/#parametrize-data-loading) and [dynamic data](./data/#dynamic-data). The `data_frame` argument input to a custom chart contains the data **after** filters and parameters have been applied.
 
@@ -129,6 +129,8 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
 
     === "Result"
 
+        The dashboard renders the "Custom `plotly.express` scatter chart with a `Parameter`" example.
+
         [![Graph2]][graph2]
 
 ## New Waterfall chart based on `go.Figure()`
@@ -222,6 +224,8 @@ The below examples shows a more involved use-case. We create and style a waterfa
         ```
 
     === "Result"
+
+        The dashboard renders the "Custom `go.Figure()` waterfall chart with a `Parameter`" example.
 
         [![Graph3]][graph3]
 

@@ -2,11 +2,17 @@
 
 This guide shows you how to visualize tables in Vizro.
 
+!!! tip "When to use this"
+
+    Choose `AgGrid` or `Table` to display tabular data. Prefer [`AgGrid`](#ag-grid) (recommended) unless you specifically need the [Dash DataTable](#dash-datatable). For Plotly charts use [`Graph`](graph.md), for KPI tiles use a [`kpi_card` figure](figure.md#key-performance-indicator-kpi-cards), and for any other reactive Dash component use [`Figure`](figure.md).
+
+**API reference:** [`AgGrid`][vizro.models.AgGrid], [`Table`][vizro.models.Table]
+
 There are two ways to visualize tables in Vizro, using either [AG Grid](#ag-grid) or [Dash DataTable](#dash-datatable). In general, [AG Grid](#ag-grid) is Vizro's recommended table implementation, but sometimes it may make sense to use the [Dash DataTable](#dash-datatable) instead.
 
 ## Choose between AG Grid and Dash DataTable
 
-Vizro offers two models - the [`AgGrid`][vizro.models.AgGrid] model and the [`Table`][vizro.models.Table] model - for the above two approaches respectively. They both visualize tabular data in similar ways.
+Vizro offers two models - the [`AgGrid`][vizro.models.AgGrid] model and the [`Table`][vizro.models.Table] model - for the AG Grid and Dash DataTable approaches respectively. They both visualize tabular data in similar ways.
 
 The main difference between the two is that the [`AgGrid`][vizro.models.AgGrid] model is based on Plotly's [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) component, while the [`Table`][vizro.models.Table] model is based on the [Dash DataTable](https://dash.plotly.com/datatable) component.
 
@@ -68,6 +74,8 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
 
     === "Result"
 
+        The dashboard renders the "Basic Dash AG Grid" example.
+
         [![AGGrid]][aggrid]
 
 ## Interact with other graphs and tables
@@ -116,6 +124,8 @@ By default, pagination is enabled in AG Grid to improve performance and usabilit
         ```
 
     === "Result"
+
+        The dashboard renders the "Dash AG Grid without pagination" example.
 
         [![AGGrid]][aggrid]
 
@@ -192,6 +202,8 @@ In the example below we select and format some columns of the gapminder data.
         ```
 
     === "Result"
+
+        The dashboard renders the "AG Grid with formatted columns" example.
 
         [![AGGrid2]][aggrid2]
 
@@ -288,6 +300,8 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
         ```
 
     === "Result"
+
+        The dashboard renders the "AG Grid with column sizing" example.
 
         [![AGGridColumnSize]][aggridcolumnsize]
 
@@ -416,6 +430,8 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
 
     === "Result"
 
+        The dashboard renders the "Styled and modified Dash AG Grid" example.
+
         [![AGGrid3]][aggrid3]
 
 If the available arguments are not sufficient, there is always the option to [create a custom AG Grid callable](custom-tables.md).
@@ -514,6 +530,8 @@ All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/r
         ```
 
     === "Result"
+
+        The dashboard renders the "Dash DataTable" example.
 
         [![Table]][table]
 
@@ -648,6 +666,8 @@ As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.c
 
     === "Result"
 
+        The dashboard renders the "Styled Dash DataTable" example.
+
         [![Table2]][table2]
 
 If the available arguments are not sufficient, there is always the option to create a [custom Dash DataTable](custom-tables.md).
@@ -724,6 +744,8 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
 
     === "Result"
 
+        The dashboard renders the "Formatted AgGrid" example.
+
         [![FormattedGrid]][formattedgrid]
 
 ### Formatted DataTable
@@ -786,6 +808,8 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
         ```
 
     === "Result"
+
+        The dashboard renders the "Formatted DataTable" example.
 
         [![FormattedTable]][formattedtable]
 

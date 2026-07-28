@@ -13,6 +13,10 @@ Optional high-code extensions enable almost infinite customization in a modular 
 
 All documentation pages return clean markdown when fetched with the `Accept: text/markdown` request header.
 
+## AGENT QUICK START
+
+- [Vizro for LLMs cheatsheet](https://vizro.readthedocs.io/en/stable/pages/for-llms/): Single-page cheatsheet with the minimum runnable app, `vm.*` model index, `va.*` action index, selector auto-selection rules, `@capture` decorator matrix, Python-only features, and top errors with fixes
+
 ## TUTORIALS
 
 - [Quickstart tutorial](https://vizro.readthedocs.io/en/stable/pages/tutorials/quickstart-tutorial/): A quickstart dashboard tutorial

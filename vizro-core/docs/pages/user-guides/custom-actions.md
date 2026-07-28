@@ -144,6 +144,8 @@ Here is the full example code that includes the output component `vm.Time(id="ti
 
     === "Result"
 
+        The dashboard renders the "Trigger an action with a button" example.
+
         ![](../../assets/user_guides/actions/custom-actions1.png)
 
 Before clicking the button, the text shows "Click the button". When you click the button, the `current_time_text` action is triggered. This finds the current time and returns a string "The time is ...". The resulting value is sent back to the user's screen and updates the text of the model `vm.Text(id="time_text")`.
@@ -240,6 +242,8 @@ Here is the full example code that includes the input component `vm.Switch(id="c
         ```
     === "Result"
 
+        The dashboard renders the "Use runtime inputs" example.
+
         ![](../../assets/user_guides/actions/custom-actions2.png)
 
 Before clicking the button, the text shows "Click the button". When you click the button, the `current_time_text` action is triggered. This finds the current time and returns a string "The time is ..." with a time format that depends on the switch's setting. The resulting value is sent back to the user's screen and updates the text of the model `vm.Text(id="time_text")`.
@@ -311,11 +315,11 @@ actions = [
 
 ## Address specific parts of a model
 
-For most actions that you write, you should only need to specify `<model_id>` for the `outputs` or as input arguments to the action function. However, some models have multiple arguments that you may want to use in an action. This is possible with the syntax [`<model_id>.<argument_name>`](#model-arguments-as-input-and-output). For more advanced use cases you can even [address the underlying Dash component and property](#dash-properties-as-input-and-output).
+For most actions that you write, you only need the model's `id` (for example, `"clock_switch"`) for the `outputs` or as input arguments to the action function. However, some models have multiple arguments that you may want to use in an action. To target a specific argument, join the model's `id` and the argument name with a dot (for example, `"clock_switch.title"`), [as described below](#model-arguments-as-input-and-output). For more advanced use cases you can even [address the underlying Dash component and property](#dash-properties-as-input-and-output).
 
 ### Model arguments as input and output
 
-The syntax for using a particular model argument as an action input or output is `<model_id>.<argument_name>`.
+To target a particular argument of a model, join the model's `id` and the argument name with a dot. For example, `clock_switch.title` targets the `title` argument of a `Switch` whose `id` is `"clock_switch"`.
 
 For example, let's alter the [above example](#trigger-with-a-runtime-input) of a switch that toggles between formatting time with the 12- and 24-hour clock. [`Switch`][vizro.models.Switch] has an argument `title` that adds a label to the switch. We can update this in an action by including `clock_switch.title` in the action's `outputs`.
 
@@ -372,11 +376,13 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
         ```
     === "Result"
 
+        The dashboard renders the "Use model argument as output" example.
+
         ![](../../assets/user_guides/actions/custom-actions3.png)
 
 ### Dash properties as input and output
 
-Sometimes you might like to use as input or output a component that is on the screen but cannot be addressed explicitly with `<model_id>.<argument_name>`. Vizro actions in fact accept as input and output _any_ Dash component in the format `<component_id>.<property>`.
+Sometimes you might like to use as input or output a component that is on the screen but cannot be addressed through a Vizro model argument (as in the [previous section](#model-arguments-as-input-and-output)). Vizro actions in fact accept as input and output _any_ Dash component, addressed by joining the Dash component's `id` and the property name with a dot. For example, `clock_switch.disabled` targets the `disabled` property of the underlying `dbc.Switch`.
 
 For example, let's alter the [above example](#trigger-with-a-runtime-input) of a switch that toggles between formatting time with the 12- and 24-hour clock. We want to disable the switch when the button is clicked so that it can no longer be toggled. [`Switch`][vizro.models.Switch] does not contain an argument to disable the switch, but the underlying Dash component [`dbc.Switch`](https://www.dash-bootstrap-components.com/docs/components/input/) does. We can address this by using `"clock_switch.disabled"` in our `outputs`.
 
@@ -429,6 +435,8 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
         # Custom components and added component types (with `add_type`) are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "Use Dash property as input" example.
 
         ![](../../assets/user_guides/actions/custom-actions4.png)
 
@@ -518,6 +526,8 @@ These keys are all optional; you can define only the ones that are relevant for 
         ```
 
     === "Result"
+
+        The dashboard renders the "Progress, success and error notifications" example.
 
         [![ProgressSuccessErrorNotification]][progresssuccesserrornotification]
 
@@ -628,6 +638,8 @@ Custom notifications use the "info" style by default unless [configured otherwis
 
     === "Result"
 
+        The dashboard renders the "Custom notification keys" example.
+
         [![CustomNotificationKeys]][customnotificationkeys]
 
 
@@ -734,6 +746,8 @@ There are two templates to provide more informative and contextual feedback to u
         ```
 
     === "Result"
+
+        The dashboard renders the "Templating with `{result}` and `{error_msg}`" example.
 
         [![TemplatedNotifications]][templatednotifications]
 
@@ -852,6 +866,8 @@ The progress message reflects the current inputs of the action to make it more i
         ```
 
     === "Result"
+
+        The dashboard renders the "Dynamic progress text" example.
 
         [![DynamicProgressText]][dynamicprogresstext]
 
@@ -986,6 +1002,8 @@ To customize notifications when you define them, use the [`show_notification`][v
         ```
 
     === "Result"
+
+        The dashboard renders the "Customized notification with `show_notification`" example.
 
         [![CustomizedNotification]][customizednotification]
 

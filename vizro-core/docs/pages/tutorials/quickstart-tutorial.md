@@ -32,6 +32,8 @@ Click on the **Run and edit this code in Py.Cafe** link below to live-edit the d
 
     === "Result"
 
+        The dashboard renders the "First dashboard" example.
+
         [![FirstDash]][firstdash]
 
 <!-- vale off -->

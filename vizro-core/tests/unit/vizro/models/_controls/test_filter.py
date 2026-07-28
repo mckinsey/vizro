@@ -545,6 +545,48 @@ class TestFilterFunctions:
                 [date(2024, 1, 1), date(2024, 2, 1)],
                 [date(2024, 1, 1), date(2024, 2, 1)],
             ),
+            # ISO datetime range value + datetime series: both compared as pd.Timestamp (series unchanged).
+            (
+                [datetime(2024, 1, 1, 10, 0), datetime(2024, 1, 2, 14, 30)],
+                ["2024-01-01T09:00", "2024-01-02T15:00"],
+                False,
+                [datetime(2024, 1, 1, 10, 0), datetime(2024, 1, 2, 14, 30)],
+                [datetime(2024, 1, 1, 9, 0), datetime(2024, 1, 2, 15, 0)],
+            ),
+            # Mixed precision: date-only END is padded to end-of-day (23:59:59) so the last day is inclusive.
+            (
+                [datetime(2024, 1, 1, 10, 0), datetime(2024, 1, 2, 14, 30)],
+                ["2024-01-01T09:00", "2024-01-02"],
+                False,
+                [datetime(2024, 1, 1, 10, 0), datetime(2024, 1, 2, 14, 30)],
+                [datetime(2024, 1, 1, 9, 0), datetime(2024, 1, 2, 23, 59, 59)],
+            ),
+            # Mixed precision: date-only START is padded to start-of-day (00:00:00).
+            (
+                [datetime(2024, 1, 1, 10, 0), datetime(2024, 1, 2, 14, 30)],
+                ["2024-01-01", "2024-01-02T15:00"],
+                False,
+                [datetime(2024, 1, 1, 10, 0), datetime(2024, 1, 2, 14, 30)],
+                [datetime(2024, 1, 1, 0, 0, 0), datetime(2024, 1, 2, 15, 0)],
+            ),
+            # Single ISO datetime value + normalize_precision=True with HH:MM input:
+            # floors microseconds AND seconds off the series.
+            (
+                [datetime(2024, 1, 1, 10, 0, 15, 500), datetime(2024, 1, 1, 10, 30)],
+                ["2024-01-01T10:00"],
+                True,
+                [datetime(2024, 1, 1, 10, 0, 0), datetime(2024, 1, 1, 10, 30, 0)],
+                [datetime(2024, 1, 1, 10, 0)],
+            ),
+            # Single ISO datetime value + normalize_precision=True with HH:MM:SS input:
+            # floors microseconds ONLY off the series (seconds are kept).
+            (
+                [datetime(2024, 1, 1, 10, 0, 15, 500), datetime(2024, 1, 1, 10, 30, 45)],
+                ["2024-01-01T10:00:15"],
+                True,
+                [datetime(2024, 1, 1, 10, 0, 15), datetime(2024, 1, 1, 10, 30, 45)],
+                [datetime(2024, 1, 1, 10, 0, 15)],
+            ),
             # Non-temporal value + numerical series: unchanged.
             (
                 [1, 2, 3],
@@ -568,6 +610,23 @@ class TestFilterFunctions:
         result_series, result_value = _coerce_temporal(series, value, normalize_precision=normalize_precision)
         assert list(result_series) == expected_series
         assert list(result_value) == expected_value
+
+    def test_coerce_temporal_datetime_tz_aware(self):
+        """A tz-aware datetime series localizes the (naive) typed values to the series's timezone."""
+        series = pd.Series(pd.to_datetime(["2024-01-01T10:00", "2024-01-02T14:30"]).tz_localize("US/Eastern"))
+        _, value = _coerce_temporal(series, ["2024-01-01T09:00", "2024-01-02T15:00"])
+        assert all(v.tz is not None and str(v.tz) == "US/Eastern" for v in value)
+        assert value == [
+            pd.Timestamp("2024-01-01T09:00", tz="US/Eastern"),
+            pd.Timestamp("2024-01-02T15:00", tz="US/Eastern"),
+        ]
+
+    def test_coerce_temporal_datetime_tz_aware_dst_transition(self):
+        """A wall-clock time inside a DST spring-forward gap is shifted forward instead of raising."""
+        series = pd.Series(pd.to_datetime(["2024-03-10T00:00"]).tz_localize("US/Eastern"))
+        # 2024-03-10 02:30 does not exist in US/Eastern (clocks jump 02:00 -> 03:00).
+        _, value = _coerce_temporal(series, ["2024-03-10T02:30", "2024-03-10T05:00"])
+        assert value[0] == pd.Timestamp("2024-03-10T03:00", tz="US/Eastern")
 
 
 class TestFilterStaticMethods:
@@ -1228,10 +1287,11 @@ class TestFilterPreBuildMethod:
             ("column_date", vm.Dropdown),
             ("column_date", vm.RadioItems),
             ("column_date", vm.Checklist),
-            # datetime column - date + time selectors only (categorical selectors fail because
+            # datetime column - date + time + datetime selectors only (categorical selectors fail because
             # non-midnight Timestamps and time objects are not accepted as Dropdown options).
             ("column_datetime", vm.DatePicker),
             ("column_datetime", vm.TimePicker),
+            ("column_datetime", vm.DateTimePicker),
             # time column - time selectors only (same reason as datetime).
             ("column_time", vm.TimePicker),
             # hierarchical columns - hierarchical selectors only
@@ -1254,19 +1314,23 @@ class TestFilterPreBuildMethod:
             ("column_categorical", vm.TimePicker, "TimePicker", "categorical"),
             # Also disallowed for categorical binary columns such as Off/On etc.
             ("column_categorical", vm.Switch, "Switch", "categorical"),
+            ("column_categorical", vm.DateTimePicker, "DateTimePicker", "categorical"),
             # numerical column
             ("column_numerical", vm.DatePicker, "DatePicker", "numerical"),
             ("column_numerical", vm.TimePicker, "TimePicker", "numerical"),
+            ("column_numerical", vm.DateTimePicker, "DateTimePicker", "numerical"),
             # boolean column
             ("column_boolean", vm.Slider, "Slider", "boolean"),
             ("column_boolean", vm.RangeSlider, "RangeSlider", "boolean"),
             ("column_boolean", vm.DatePicker, "DatePicker", "boolean"),
             ("column_boolean", vm.TimePicker, "TimePicker", "boolean"),
+            ("column_boolean", vm.DateTimePicker, "DateTimePicker", "boolean"),
             # date column
             ("column_date", vm.Slider, "Slider", "date"),
             ("column_date", vm.RangeSlider, "RangeSlider", "date"),
             ("column_date", vm.Switch, "Switch", "date"),
             ("column_date", vm.TimePicker, "TimePicker", "date"),
+            ("column_date", vm.DateTimePicker, "DateTimePicker", "date"),
             # datetime column
             ("column_datetime", vm.Slider, "Slider", "datetime"),
             ("column_datetime", vm.RangeSlider, "RangeSlider", "datetime"),
@@ -1276,6 +1340,7 @@ class TestFilterPreBuildMethod:
             ("column_time", vm.RangeSlider, "RangeSlider", "time"),
             ("column_time", vm.Switch, "Switch", "time"),
             ("column_time", vm.DatePicker, "DatePicker", "time"),
+            ("column_time", vm.DateTimePicker, "DateTimePicker", "time"),
         ],
     )
     def test_disallowed_selectors_per_column_type(
@@ -1415,6 +1480,38 @@ class TestFilterPreBuildMethod:
         assert filter.selector.min == date(1952, 1, 1)
         assert filter.selector.max == date(2007, 1, 1)
 
+    def test_datetime_min_max_default(self, managers_column_only_exists_in_some):
+        """DateTimePicker min/max are populated from the datetime column as pure dates (date portion only)."""
+        filter = vm.Filter(column="column_datetime", selector=vm.DateTimePicker())
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        # column_datetime spans 2024-01-01 10:00 .. 2024-01-02 11:00 across the two graphs.
+        assert filter.selector.min == date(2024, 1, 1)
+        assert filter.selector.max == date(2024, 1, 2)
+
+    def test_datetime_min_max_specific(self, managers_column_only_exists_in_some):
+        filter = vm.Filter(column="column_datetime", selector=vm.DateTimePicker(min="1952-01-01", max="2007-01-01"))
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter.selector.min == date(1952, 1, 1)
+        assert filter.selector.max == date(2007, 1, 1)
+
+    @pytest.mark.parametrize(
+        "range, expected_value",
+        [
+            # Default value uses date-only ISO strings derived from min/max, so the inline time shows cleared.
+            (True, ["1952-01-01", "2007-01-01"]),
+            (False, "1952-01-01"),
+        ],
+    )
+    def test_datetime_default_value(self, range, expected_value, managers_column_only_exists_in_some):
+        filter = vm.Filter(
+            column="column_datetime", selector=vm.DateTimePicker(min="1952-01-01", max="2007-01-01", range=range)
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter.selector.value == expected_value
+
     @pytest.mark.parametrize("selector", [vm.Checklist, vm.Dropdown, vm.RadioItems])
     def test_categorical_options_default(self, selector, gapminder, managers_one_page_two_graphs):
         filter = vm.Filter(column="continent", selector=selector())
@@ -1464,6 +1561,18 @@ class TestFilterPreBuildMethod:
             (
                 "column_datetime",
                 vm.TimePicker(range=False),
+                _filter_isin,
+                ["column_datetime_exists_1", "column_datetime_exists_2"],
+            ),
+            (
+                "column_datetime",
+                vm.DateTimePicker(),
+                _filter_between,
+                ["column_datetime_exists_1", "column_datetime_exists_2"],
+            ),
+            (
+                "column_datetime",
+                vm.DateTimePicker(range=False),
                 _filter_isin,
                 ["column_datetime_exists_1", "column_datetime_exists_2"],
             ),

@@ -2,6 +2,12 @@
 
 This guide shows you how to use buttons to interact with your data in the dashboard.
 
+!!! tip "When to use this"
+
+    Choose `Button` to let users trigger an [action](actions.md), submit a form, or navigate to a URL. For a control that filters or parametrizes data, use a [`Filter`](filters.md) or [`Parameter`](parameters.md) instead; for text-only content use [`Card`](card.md) or [`Text`](text.md); to make a `Card` clickable for navigation see [`Card`'s navigation tile](card.md#create-a-navigation-card).
+
+**API reference:** [`Button`][vizro.models.Button]
+
 The Button component is commonly used for dashboard interactions such as form submissions, navigation links, and other action triggers. It is based on the underlying Dash component [`dbc.Button`](https://www.dash-bootstrap-components.com/docs/components/button/).
 
 To add a [`Button`][vizro.models.Button], insert it into the `components` argument of the [`Page`][vizro.models.Page] model.
@@ -40,6 +46,8 @@ You can configure the `text` argument to alter the display text of the [`Button`
         ```
 
     === "Result"
+
+        The dashboard renders the "Customize text" example.
 
         [![ButtonText]][buttontext]
 
@@ -126,6 +134,8 @@ If your app includes several action buttons, consider [adding icons](#add-an-ico
 
     === "Result"
 
+        The dashboard renders the "Button with action" example.
+
         [![Button]][button]
 
 ## Use as a control
@@ -196,6 +206,8 @@ There are three predefined button styles that can be customized using the `varia
 
     === "Result"
 
+        The dashboard renders the "Button with different styles" example.
+
         [![ButtonVariant]][buttonvariant]
 
 ## Add a tooltip
@@ -238,6 +250,8 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
         ```
 
     === "Result"
+
+        The dashboard renders the "Button with a tooltip" example.
 
         [![ButtonTooltip]][buttontooltip]
 
@@ -317,6 +331,8 @@ You can use it alongside the `text` argument, or on its own to create a circular
 
     === "Result"
 
+        The dashboard renders the "Button with an icon" example.
+
         [![ButtonIcon]][buttonicon]
 
 ## The `extra` argument
@@ -365,6 +381,8 @@ An example use would be to create an outlined success button. For this, you can 
         ```
 
     === "Result"
+
+        The dashboard renders the "Button with custom style" example.
 
         [![ButtonExtra]][buttonextra]
 

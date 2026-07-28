@@ -72,7 +72,7 @@ In practice this means that data can be identified as valid or invalid:
 
 ## What is the Vizro JSON schema?
 
-Similar to the above example, the Vizro framework also has a JSON schema. It can be [found in our GitHub repository](https://github.com/mckinsey/vizro/tree/main/vizro-core/schemas). It is more complicated than the simple schema above, but it generally follows the same principle.
+Similar to the [toy JSON schema example](#what-is-a-json-schema), the Vizro framework also has a JSON schema. It can be [found in our GitHub repository](https://github.com/mckinsey/vizro/tree/main/vizro-core/schemas). It is more complicated than the simple schema in that section, but it generally follows the same principle.
 
 To get a feeling of what it generally looks like, we have provided a simplified schema below. Reading through it shows us for example that every dashboards needs to have a set of pages, which in turn must have components, but optionally can have controls.
 
@@ -285,7 +285,7 @@ class Example(pydantic.BaseModel):
 print(json.dumps(Example.model_json_schema(), indent=2))
 ```
 
-The above example shows that Pydantic makes it very easy to produce JSON schemas by using just Python classes and type annotations. The rest is taken care of by Pydantic.
+This Pydantic example shows that Pydantic makes it very easy to produce JSON schemas by using just Python classes and type annotations. The rest is taken care of by Pydantic.
 
 But Pydantic allows us to go beyond the usual constraints that a JSON schema allows. In our [toy example above](#what-is-a-json-schema), with the help of Pydantic, we could define that all string elements in `B` need to start with either `a` or `b`.
 
