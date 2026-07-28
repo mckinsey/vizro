@@ -1,3 +1,7 @@
+---
+description: "Trigger `export_data` from a button to download every graph, table, and figure on the current page, respecting active filters and dynamic-data parameters."
+---
+
 # How to use actions to handle data
 
 ## Export data

@@ -1,3 +1,7 @@
+---
+description: "Migration notes for deprecations ahead of Vizro 0.2.0: `Layout` renamed to `Grid`, changes to `Action.inputs`, static custom-action arguments, and `filter_interaction`."
+---
+
 # Deprecations and breaking changes
 
 This page lists Vizro features that are now deprecated and forthcoming breaking changes for Vizro 0.2.0.

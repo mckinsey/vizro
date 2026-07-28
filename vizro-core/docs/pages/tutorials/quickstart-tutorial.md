@@ -1,3 +1,7 @@
+---
+description: "Five-line first Vizro dashboard on PyCafe, plus prompts for what to change next and pointers to a deeper tutorial."
+---
+
 # Quickstart tutorial
 
 There is no setup needed for your first dashboard, so you can get started with Vizro quickly, thanks to [PyCafe](https://py.cafe/).

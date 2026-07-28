@@ -1,3 +1,7 @@
+---
+description: "Write actions with `@capture('action')`: triggers, runtime inputs, multiple actions, targeting specific model parts, and emitting notifications."
+---
+
 # How to create custom actions
 
 Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not available in Vizro's [built-in actions](actions.md) then you can create a custom action. In this guide we show how to do this.

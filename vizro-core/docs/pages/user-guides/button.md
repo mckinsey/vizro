@@ -1,3 +1,7 @@
+---
+description: "Configure `Button` text, link URLs, action triggers, use as a control, styled variants, tooltips, icons, and the `extra` pass-through argument."
+---
+
 # How to use buttons
 
 This guide shows you how to use buttons to interact with your data in the dashboard.

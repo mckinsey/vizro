@@ -1,3 +1,7 @@
+---
+description: "Show toast notifications with `show_notification` (variants, custom title/icon, auto-close, chaining) and modify them in place with `update_notification`."
+---
+
 # How to use actions to show notifications
 
 This guide shows you how to display notifications and alerts in your dashboard to provide feedback to users about their interactions with the UI.

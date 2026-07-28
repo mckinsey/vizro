@@ -1,3 +1,7 @@
+---
+description: "Choose between static pandas data and dynamic data-loading functions, control caching, refresh at runtime, and drive parameters from dynamic data."
+---
+
 # How to connect your dashboard to data
 
 Vizro supports two different types of data:

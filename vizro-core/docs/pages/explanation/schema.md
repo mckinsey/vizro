@@ -1,3 +1,7 @@
+---
+description: "Explains the Vizro JSON schema, its Pydantic origins, its grammar of dashboards, and the role of `extra` for pass-through arguments."
+---
+
 # Vizro schema and grammar of dashboards
 
 This page explains the [Vizro JSON schema](#what-is-the-vizro-json-schema), which is our attempt to create a ["grammar of dashboards"](#the-grammar-of-dashboards), and the [role of Pydantic](#the-role-of-pydantic).

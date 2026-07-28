@@ -1,3 +1,7 @@
+---
+description: "Configure basic and hierarchical `Filter`s, target specific components, swap the selector widget, and customize title, tooltip, and label."
+---
+
 # How to use filters
 
 This guide shows you how to add filters to your dashboard. A filter selects a subset of rows of a component's data to alter the appearance of that component. The following [components](components.md) are reactive to filters:

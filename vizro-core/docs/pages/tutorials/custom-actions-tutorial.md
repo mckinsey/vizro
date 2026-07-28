@@ -1,3 +1,7 @@
+---
+description: "Walkthrough of writing a custom action: runtime inputs, multiple inputs and outputs, action chains, parallel actions, error handling, and security."
+---
+
 # Write your own actions
 
 Actions control how your app responds to user input such as clicking a button or a point on a graph. Vizro provides [built-in actions](../user-guides/actions.md) and also enables you to write your own [custom actions](../user-guides/custom-actions.md). In this tutorial you will learn how to write your own custom actions.

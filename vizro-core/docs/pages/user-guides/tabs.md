@@ -1,3 +1,7 @@
+---
+description: "Use `Tabs` to let users switch between multiple `Container`s that share the same screen space, and add a tooltip to the tab strip."
+---
+
 # How to use tabs
 
 This guide shows you how to use the [`Tabs`][vizro.models.Tabs] model, which organize and separate groups of related content in a dashboard, letting users switch between different sections or views.

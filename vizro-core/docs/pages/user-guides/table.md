@@ -1,3 +1,7 @@
+---
+description: "Choose between `AgGrid` and Dash DataTable, format number, date, and string columns, disable pagination, resize columns, and apply sticky headers and styling."
+---
+
 # How to use tables
 
 This guide shows you how to visualize tables in Vizro.

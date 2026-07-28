@@ -1,3 +1,7 @@
+---
+description: "Cross-filter, cross-parameter, and cross-highlight between graphs and tables via `set_control`, including multi-select, cross-container, cross-page, and pivoted-data variants."
+---
+
 # Graph and table interactions
 
 In this guide we show you how to configure interactions between graphs and tables, as is commonly done in business intelligence (BI) tools. In Vizro, all such interactions are enabled by an intermediate [control](controls.md) that you must explicitly define. For example:

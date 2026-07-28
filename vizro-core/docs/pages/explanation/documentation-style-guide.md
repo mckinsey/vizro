@@ -1,3 +1,7 @@
+---
+description: "Vizro docs conventions: product lexicon, sentence-case headings, admonition types, hyperlink phrasing, code formatting, and pitfalls to avoid."
+---
+
 # Vizro documentation style guide
 
 <!-- vale off -->
