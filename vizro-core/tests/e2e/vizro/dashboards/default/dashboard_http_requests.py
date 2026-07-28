@@ -22,6 +22,7 @@ from pages.set_control_multi_select_pages import (
     filtered_graph_aggrid_trigger_set_control,
     self_filter_set_control_page,
 )
+from pages.timepicker_pages import timepicker_range
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -306,6 +307,7 @@ dashboard = vm.Dashboard(
         filtered_graph_aggrid_trigger_set_control,
         self_filter_set_control_page,
         conditional_notifications_page,
+        timepicker_range,
     ]
 )
 
