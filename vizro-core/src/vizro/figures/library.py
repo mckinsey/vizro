@@ -120,9 +120,9 @@ def kpi_card_reference(  # noqa: PLR0913
             `value_column`.
         icon: Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons)
             to be displayed on the left side of the KPI title. If not provided, no icon is displayed.
-        reverse_color: If `False`, a positive delta will be colored positively (e.g., blue) and a negative delta
-            negatively (e.g., red). If `True`, the colors will be inverted: a positive delta will be colored
-            negatively (e.g., red) and a negative delta positively (e.g., blue).
+        reverse_color: If `False`, a positive delta will be colored positively (for example, blue) and a negative delta
+            negatively (for example, red). If `True`, the colors will be inverted: a positive delta will be colored
+            negatively (for example, red) and a negative delta positively (for example, blue).
 
     Returns:
         A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value and reference.
