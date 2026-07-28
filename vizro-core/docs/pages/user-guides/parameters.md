@@ -1,3 +1,7 @@
+---
+description: "Basic, nested, and dynamic-data `Parameter`s that update non-data arguments of a component's `figure`, plus title, tooltip, and selector customization."
+---
+
 # How to use parameters
 
 This guide shows you how to add parameters to your dashboard. A parameter sets any argument other than `data_frame` in the `figure` function of a component. For example, a user could select using a dropdown which variable is plotted on the x-axis of a graph. Parameters can also be used to set [dynamic data parameters](parameters.md#dynamic-data-parameters). The following [components](components.md) are reactive to parameters:

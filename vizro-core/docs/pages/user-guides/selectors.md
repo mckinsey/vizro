@@ -1,3 +1,7 @@
+---
+description: "Categorical, numerical, temporal, boolean, and hierarchical selectors for `Filter` and `Parameter`, plus styled dropdowns, tooltips, and `extra`."
+---
+
 # How to use selectors
 
 This guide highlights different selectors that can be used in a dashboard. Selectors do not serve a purpose on their own, but they enable you to change how the input is given to other models, for example, the [`Filter`][vizro.models.Filter] or the [`Parameter`][vizro.models.Parameter] model.

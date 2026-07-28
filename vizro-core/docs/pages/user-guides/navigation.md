@@ -1,3 +1,7 @@
+---
+description: "Default navigation, subset selection, grouped sections, side navigation bar with icons, custom navigation bars, and horizontal top-bar navigation."
+---
+
 # How to configure dashboard navigation
 
 This guide shows you how to use and customize the navigation in your dashboard.

@@ -1,3 +1,7 @@
+---
+description: "Cross-cutting control patterns: set a control's value programmatically via `set_control`, reset controls to defaults, and group controls in the panel."
+---
+
 # Controls
 
 Vizro supports _controls_ to perform common business intelligence (BI) operations. This guide gives an overview of the different ways you can configure controls.

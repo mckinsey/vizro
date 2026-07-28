@@ -1,4 +1,5 @@
 ---
+description: "Answers on Vizro versioning, Python and browser support, licensing, how it compares to Dash, Streamlit, and BI tools, and where to ask for help."
 hide:
   - toc
 ---

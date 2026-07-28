@@ -1,3 +1,7 @@
+---
+description: "Configure `Dashboard` in pydantic, dict, YAML, or JSON, and set the title, logo, tooltip, header, social meta tags, and browser tab title."
+---
+
 # How to create a dashboard
 
 This guide shows you how to configure and call a [`Dashboard`][vizro.models.Dashboard] model using either pydantic models, Python dictionaries, YAML, or JSON.

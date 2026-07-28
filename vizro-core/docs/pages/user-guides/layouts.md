@@ -1,3 +1,7 @@
+---
+description: "Choose between `Grid` (row/column) and `Flex` (flexible box) on a `Page` or `Container`, and see alternative approaches like tabs and containers."
+---
+
 # How to change the layout of your page
 
 The [`Page`][vizro.models.Page] and [`Container`][vizro.models.Container] models accept a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the `layout` with:

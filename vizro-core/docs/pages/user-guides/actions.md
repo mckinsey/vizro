@@ -1,3 +1,7 @@
+---
+description: "Attach built-in actions with `import vizro.actions as va`, trigger them from buttons or graphs, and chain multiple actions on a single trigger."
+---
+
 # How to use actions
 
 Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not built into Vizro then you can [write your own custom action](custom-actions.md). In these guides we show how to use built-in actions across a range of areas:
