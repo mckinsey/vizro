@@ -302,6 +302,7 @@ class TestParameter:
                 options={"Metrics": ["lifeExp", "pop", "gdpPercap"]},
                 value=["Metrics", "lifeExp"],
                 multi=False,
+                full_path=True,
             ),
         )
         model_manager["test_page"].controls = [y_parameter]

@@ -122,7 +122,9 @@ def get_selector_default_value(selector: SelectorType) -> Any:
         return default_value
     elif _is_hierarchical_selector(selector):
         is_multi = getattr(selector, "multi", False)
-        return get_cascader_default_value(selector.options, multi=is_multi)
+        return get_cascader_default_value(
+            selector.options, multi=is_multi, full_path=getattr(selector, "full_path", False)
+        )
     elif isinstance(selector, TimePicker):
         # dmc.TimePicker needs "" rather than None to properly set originalValue for resetting control.
         return ["", ""] if selector.range else ""

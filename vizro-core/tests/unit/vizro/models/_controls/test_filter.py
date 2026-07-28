@@ -963,7 +963,7 @@ class TestFilterCall:
         filter = vm.Filter(
             column=["column_hierarchical_parent", "column_hierarchical_leaf"],
             targets=["column_hierarchical_exists_1", "column_hierarchical_exists_2"],
-            selector=vm.Cascader(id="test_selector_id"),
+            selector=vm.Cascader(id="test_selector_id", full_path=True),
         )
         model_manager["test_page"].controls = [filter]
         filter.pre_build()  # pre_build options = {"As": ["JP"], "Eu": ["DE", "FR"]}
@@ -985,7 +985,7 @@ class TestFilterCall:
         filter = vm.Filter(
             column=["column_hierarchical_parent", "column_hierarchical_leaf"],
             targets=["column_hierarchical_exists_1", "column_hierarchical_exists_2"],
-            selector=vm.Cascader(id="test_selector_id"),
+            selector=vm.Cascader(id="test_selector_id", full_path=True),
         )
         model_manager["test_page"].controls = [filter]
         filter.pre_build()  # pre_build options = {"As": ["JP"], "Eu": ["DE", "FR"]}
@@ -1467,7 +1467,7 @@ class TestFilterPreBuildMethod:
             ),
             (
                 ["column_hierarchical_parent", "column_hierarchical_leaf"],
-                None,
+                vm.Cascader(full_path=True),
                 _filter_hierarchical_isin,
                 ["column_hierarchical_exists_1", "column_hierarchical_exists_2"],
             ),
@@ -1736,11 +1736,11 @@ class TestFilterHierarchicalColumn:
         result = _filter_hierarchical_isin(df[["region", "city"]], value, multi=multi)
         assert result.tolist() == expected
 
-    def test_hierarchical_pre_build_populates_options_and_action(self, managers_hierarchical_page):
+    def test_hierarchical_pre_build_populates_options_and_action_path_mode(self, managers_hierarchical_page):
         f = vm.Filter(
             column=["continent", "country"],
             targets=["hier_graph"],
-            selector=vm.Cascader(multi=True),
+            selector=vm.Cascader(multi=True, full_path=True),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -1750,11 +1750,31 @@ class TestFilterHierarchicalColumn:
         assert not getattr(f.selector, "_dynamic", False)
         [default_action] = f.selector.actions
         assert isinstance(default_action, _filter)
+        # Path mode: the action carries every path column (in order) and the path-aware filter function.
         assert default_action.column == ["continent", "country"]
-        # The filter function is `_filter_hierarchical_isin` with the selector's `multi` bound in.
         assert isinstance(default_action.filter_function, functools.partial)
         assert default_action.filter_function.func == _filter_hierarchical_isin
         assert default_action.filter_function.keywords == {"multi": True}
+
+    def test_hierarchical_pre_build_populates_options_and_action_leaf_mode(self, managers_hierarchical_page):
+        # Leaf mode (default): the hierarchical filter behaves like a flat categorical filter on the last column.
+        f = vm.Filter(
+            column=["continent", "country"],
+            targets=["hier_graph"],
+            selector=vm.Cascader(multi=True),
+        )
+        model_manager["test_page"].controls = [f]
+        f.pre_build()
+        assert isinstance(f.selector, vm.Cascader)
+        assert f.selector.full_path is False
+        assert f.selector.options == {"As": ["JP"], "Eu": ["DE", "FR"]}
+        # Default value is the first branch's leaves (multi=True): the "As" branch.
+        assert f.selector.value == ["JP"]
+        [default_action] = f.selector.actions
+        assert isinstance(default_action, _filter)
+        # Leaf mode filters by bare leaf value on the last (leaf) column.
+        assert default_action.column == "country"
+        assert default_action.filter_function is _filter_isin
 
     def test_hierarchical_dynamic_data_without_explicit_options(
         self, managers_one_page_two_graphs_with_dynamic_data, gapminder_dynamic_first_n_last_n_function
@@ -1809,8 +1829,8 @@ class TestFilterHierarchicalColumn:
             "As": [date(2024, 3, 30)],
             "Eu": [date(2024, 1, 31), date(2024, 2, 29)],
         }
-        # Default value is the first branch's leaf paths (multi=True by default): the "As" branch.
-        assert f.selector.value == [["As", date(2024, 3, 30)]]
+        # Default selector is leaf mode: default value is the first branch's leaves (multi=True): the "As" branch.
+        assert f.selector.value == [date(2024, 3, 30)]
 
     def test_hierarchical_call_recomputes_options(self, managers_hierarchical_page):
         # Filter.__call__ (runtime) rebuilds the Cascader with a freshly-computed options tree from the
@@ -1828,13 +1848,15 @@ class TestFilterHierarchicalColumn:
         assert selector_build.options == {"As": ["JP"], "Eu": ["DE"]}
 
     def test_hierarchical_call_preserves_stale_current_value(self, managers_hierarchical_page):
-        # If the user's selected leaf disappears from the new dataframe, its previous path is restored into
-        # the options tree — matching the categorical dynamic-filter contract where selections survive data
-        # reloads (filter may then match zero rows, but the value stays valid).
+        # Path mode: if the user's selected path disappears from the new dataframe, it is restored directly into
+        # the options tree (it carries its own branch context) — matching the categorical dynamic-filter contract
+        # where selections survive data reloads (filter may then match zero rows, but the value stays valid).
         f = vm.Filter(
             column=["continent", "country"],
             targets=["hier_graph"],
-            selector=vm.Cascader(id="test_selector_id", multi=True, options={"Eu": ["DE", "FR"], "As": ["JP"]}),
+            selector=vm.Cascader(
+                id="test_selector_id", multi=True, full_path=True, options={"Eu": ["DE", "FR"], "As": ["JP"]}
+            ),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -1850,7 +1872,9 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["hier_graph"],
-            selector=vm.Cascader(id="test_selector_id", multi=True, options={"Eu": ["DE", "FR"], "As": ["JP"]}),
+            selector=vm.Cascader(
+                id="test_selector_id", multi=True, full_path=True, options={"Eu": ["DE", "FR"], "As": ["JP"]}
+            ),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -1861,9 +1885,9 @@ class TestFilterHierarchicalColumn:
         ]
         assert selector_build.options == {"As": ["JP"], "Eu": ["DE"]}
 
-    def test_hierarchical_call_skips_legacy_leaf_current_value(self, managers_hierarchical_page):
-        # A legacy leaf-only current_value (pre-full-path Cascader) carries no branch context, so it can't be
-        # re-inserted into the tree and is skipped; the options are just the freshly-computed tree.
+    def test_hierarchical_call_leaf_mode_restores_stale_leaf_at_previous_path(self, managers_hierarchical_page):
+        # Leaf mode: a stale leaf current_value carries no branch context, so its previous path is looked up in
+        # the selector's prior options and the leaf is restored there, mirroring the categorical contract.
         f = vm.Filter(
             column=["continent", "country"],
             targets=["hier_graph"],
@@ -1872,10 +1896,10 @@ class TestFilterHierarchicalColumn:
         model_manager["test_page"].controls = [f]
         f.pre_build()
 
-        # "FR" is dropped from the new data and, as a bare leaf, cannot be placed back without its parent.
+        # "FR" is dropped from the new data; as a bare leaf it is restored under its previous parent "Eu".
         new_df = pd.DataFrame({"continent": ["Eu", "As"], "country": ["DE", "JP"], "gdp": [1.0, 2.0]})
         selector_build = f(target_to_data_frame={"hier_graph": new_df}, current_value=["FR"])["test_selector_id"]
-        assert selector_build.options == {"As": ["JP"], "Eu": ["DE"]}
+        assert selector_build.options == {"As": ["JP"], "Eu": ["DE", "FR"]}
 
 
 class TestFilterBuild:

@@ -177,24 +177,31 @@ def load_gapminder(top_n_per_continent: int = 5):
 data_manager["gapminder_dynamic"] = load_gapminder
 
 
-page_dynamic_df = vm.Page(
-    title="Gapminder 2007 - dynamic hierarchical filter",
+# ===================================================================================================
+# vm.Cascader has two modes, set by `full_path` (default False):
+#   * LEAF MODE  (full_path=False): a selection is a bare leaf value; leaf labels must be unique across
+#     the tree; a hierarchical Filter matches the LAST column; `set_control` is supported.
+#   * PATH MODE  (full_path=True):  a selection is a full root-to-leaf path; duplicate leaf labels are
+#     allowed and addressed unambiguously; a Filter matches EVERY column; `set_control` is disabled.
+# Gapminder countries are globally unique → used for leaf-mode pages. The cities dataset has duplicate
+# city names across states (two "Portland"s, two "Springfield"s) → used for path-mode pages.
+# ===================================================================================================
+
+# ---- LEAF MODE (default): gapminder, unique country leaves --------------------------------------
+
+page_leaf_dynamic = vm.Page(
+    title="Leaf mode - dynamic filter",
     components=[
         vm.Graph(
             id="scatter_dynamic",
             figure=px.scatter(
-                "gapminder_dynamic",
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-                hover_name="country",
+                "gapminder_dynamic", x="gdpPercap", y="lifeExp", size="pop", color="continent", hover_name="country"
             ),
         ),
     ],
     controls=[
+        # Default hierarchical filter is leaf mode: options can be arbitrarily deep, rows match on `country`.
         vm.Filter(column=["continent", "region", "country"]),
-        vm.Filter(column="country"),
         vm.Parameter(
             targets=["scatter_dynamic.data_frame.top_n_per_continent"],
             selector=vm.Slider(min=1, max=20, step=1, value=5, title="Top N per continent"),
@@ -202,35 +209,29 @@ page_dynamic_df = vm.Page(
     ],
 )
 
-page_static_df = vm.Page(
-    title="Gapminder 2007 - static hierarchical filter",
+page_leaf_static = vm.Page(
+    title="Leaf mode - static filter (URL)",
     components=[
         vm.Graph(
             figure=px.scatter(
-                load_gapminder(),
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-                hover_name="country",
+                load_gapminder(), x="gdpPercap", y="lifeExp", size="pop", color="continent", hover_name="country"
             ),
         ),
     ],
     controls=[
-        # Single-select with an explicit full-path default value, and shown in the URL to exercise the
-        # path round-trip (?<id>=b64_...).
+        # Single-select leaf value ("United States" is a unique country), shown in the URL as a scalar.
         vm.Filter(
-            id="static_hier_filter",
+            id="leaf_static_filter",
             column=["continent", "region", "country"],
-            selector=vm.Cascader(multi=False, value=["Americas", "North", "United States"]),
+            selector=vm.Cascader(multi=False, value="United States"),
             show_in_url=True,
         ),
-        vm.Filter(column="country"),
     ],
 )
 
-# Duplicate leaf labels across branches: "Portland" appears under both Oregon and Maine, and "Springfield"
-# under both Oregon and Illinois. Each selection carries its full path, so they filter independently.
+# ---- PATH MODE (full_path=True): cities, duplicate leaf labels ----------------------------------
+
+# "Portland" appears under both Oregon and Maine, "Springfield" under both Oregon and Illinois.
 _cities = pd.DataFrame(
     {
         "state": ["Oregon", "Oregon", "Oregon", "Maine", "Maine", "Illinois", "Illinois"],
@@ -239,25 +240,52 @@ _cities = pd.DataFrame(
     }
 )
 
-page_duplicate_leaves = vm.Page(
-    title="Duplicate leaf labels",
-    components=[
-        vm.Graph(figure=px.bar(_cities, x="city", y="population", color="state")),
-    ],
-    controls=[
-        vm.Filter(column=["state", "city"], selector=vm.Cascader(multi=True)),
-    ],
-)
-
-# --- Additional pages exercising value / options / multi / URL combinations for vm.Cascader ---
-
-# Static tree reused by the Parameter page (Parameter selectors need explicit options, unlike Filter which
-# derives them from the target data). Note "Portland" and "Springfield" are duplicated across states.
+# Static tree reused by the path-mode Parameter (Parameter selectors need explicit options).
 _city_tree: dict[str, list[str]] = {}
 for _state, _city in zip(_cities["state"], _cities["city"]):
     _city_tree.setdefault(_state, [])
     if _city not in _city_tree[_state]:
         _city_tree[_state].append(_city)
+
+page_path_duplicate = vm.Page(
+    title="Path mode - duplicate leaves",
+    components=[
+        vm.Graph(figure=px.bar(_cities, x="city", y="population", color="state")),
+    ],
+    controls=[
+        # full_path=True: each selection is a full path, so the two "Portland"s filter independently.
+        vm.Filter(column=["state", "city"], selector=vm.Cascader(multi=True, full_path=True)),
+    ],
+)
+
+page_path_url = vm.Page(
+    title="Path mode - URL persistence",
+    components=[
+        vm.Graph(id="url_single_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
+        vm.Graph(id="url_multi_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
+    ],
+    controls=[
+        vm.Filter(
+            id="url_single_filter",
+            column=["state", "city"],
+            targets=["url_single_graph"],
+            selector=vm.Cascader(multi=False, full_path=True, value=["Oregon", "Salem"], title="Single (in URL)"),
+            show_in_url=True,
+        ),
+        vm.Filter(
+            id="url_multi_filter",
+            column=["state", "city"],
+            targets=["url_multi_graph"],
+            selector=vm.Cascader(
+                multi=True,
+                full_path=True,
+                value=[["Illinois", "Chicago"], ["Maine", "Augusta"]],
+                title="Multi (in URL)",
+            ),
+            show_in_url=True,
+        ),
+    ],
+)
 
 
 @capture("graph")
@@ -271,213 +299,89 @@ def city_bar(data_frame, path=None):
     return px.bar(df, x="city", y="population", color="state", title=f"Selected path: {label}")
 
 
-# Filter values supplied the LEGACY leaf-only way; each unique leaf is resolved to its full path.
-page_legacy_values = vm.Page(
-    title="Filter - legacy leaf values",
-    components=[
-        vm.Graph(id="legacy_single_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
-        vm.Graph(id="legacy_multi_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
-    ],
-    controls=[
-        # Legacy single leaf: "Chicago" is unique, so it resolves to ["Illinois", "Chicago"].
-        vm.Filter(
-            column=["state", "city"],
-            targets=["legacy_single_graph"],
-            selector=vm.Cascader(multi=False, value="Chicago", title="Legacy single leaf ('Chicago')"),
-        ),
-        # Legacy multi leaves: each unique leaf resolves to its own path.
-        vm.Filter(
-            column=["state", "city"],
-            targets=["legacy_multi_graph"],
-            selector=vm.Cascader(multi=True, value=["Salem", "Augusta"], title="Legacy multi leaves"),
-        ),
-    ],
-)
+@capture("graph")
+def metric_bar(data_frame, y="lifeExp"):
+    """Bar of a chosen (leaf) metric column — driven by a leaf-mode Cascader parameter."""
+    return px.bar(data_frame.head(15), x="country", y=y, title=f"Metric: {y}")
 
-# No value supplied → the first leaf path is selected by default (mirrors Dropdown behavior).
-page_default_values = vm.Page(
-    title="Filter - default (no value)",
-    components=[
-        vm.Graph(id="default_single_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
-        vm.Graph(id="default_multi_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
-    ],
-    controls=[
-        vm.Filter(
-            column=["state", "city"],
-            targets=["default_single_graph"],
-            selector=vm.Cascader(multi=False, title="Single, no value"),
-        ),
-        vm.Filter(
-            column=["state", "city"],
-            targets=["default_multi_graph"],
-            selector=vm.Cascader(multi=True, title="Multi, no value"),
-        ),
-    ],
-)
 
-# URL round-trip for both single and multi (nested paths are JSON+base64 encoded as ?<id>=b64_...).
-page_url = vm.Page(
-    title="URL persistence - single & multi",
-    components=[
-        vm.Graph(id="url_single_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
-        vm.Graph(id="url_multi_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
-    ],
-    controls=[
-        vm.Filter(
-            id="url_single_filter",
-            column=["state", "city"],
-            targets=["url_single_graph"],
-            selector=vm.Cascader(multi=False, value=["Oregon", "Salem"], title="Single (in URL)"),
-            show_in_url=True,
-        ),
-        vm.Filter(
-            id="url_multi_filter",
-            column=["state", "city"],
-            targets=["url_multi_graph"],
-            selector=vm.Cascader(
-                multi=True, value=[["Illinois", "Chicago"], ["Maine", "Augusta"]], title="Multi (in URL)"
-            ),
-            show_in_url=True,
-        ),
-    ],
-)
-
-# Cascader inside a Parameter (options supplied explicitly), comparing legacy vs new value forms.
+# Cascader inside a Parameter: a leaf-mode metric picker and a path-mode city picker.
 page_parameter = vm.Page(
-    title="Parameter - Cascader (legacy vs new value)",
+    title="Parameter - leaf & path",
     components=[
-        vm.Graph(id="param_new_graph", figure=city_bar(_cities)),
-        vm.Graph(id="param_legacy_graph", figure=city_bar(_cities)),
+        vm.Graph(id="param_leaf_graph", figure=metric_bar(load_gapminder())),
+        vm.Graph(id="param_path_graph", figure=city_bar(_cities)),
     ],
     controls=[
+        # Leaf mode: forwards the chosen leaf ("pop") to the target argument.
         vm.Parameter(
-            targets=["param_new_graph.path"],
-            selector=vm.Cascader(options=_city_tree, multi=False, value=["Oregon", "Salem"], title="New path value"),
+            targets=["param_leaf_graph.y"],
+            selector=vm.Cascader(
+                options={"Metrics": ["lifeExp", "pop", "gdpPercap"]}, multi=False, value="lifeExp", title="Metric"
+            ),
         ),
+        # Path mode: forwards the full path (e.g. ["Oregon", "Salem"]) to the target argument.
         vm.Parameter(
-            targets=["param_legacy_graph.path"],
-            selector=vm.Cascader(options=_city_tree, multi=False, value="Augusta", title="Legacy leaf value"),
+            targets=["param_path_graph.path"],
+            selector=vm.Cascader(
+                options=_city_tree, multi=False, full_path=True, value=["Oregon", "Salem"], title="City path"
+            ),
         ),
     ],
 )
 
-# --- set_control pages: several sources set a Cascader control's value at runtime ---
-# A Button/Card trigger returns its literal `value` verbatim, and set_control passes a hierarchical selector's
-# value straight through, so a Button's `value` is a full root-to-leaf path (single) or list of paths (multi).
-#
-# Graph and AgGrid sources are added too, but note (as discussed) they only emit a BARE LEAF, not a full
-# path: a graph point click sends the clicked `x` (a city), and an AgGrid cell click / row selection sends the
-# `city` column value(s). Those bare leaves are passed through set_control WITHOUT the construction-time
-# canonicalization, so they do not currently resolve to a path — kept here on purpose so we can decide the
-# policy later. `value=None` (empty selection) resets the control to its original value.
-#
-# Each page also has a second AgGrid that is a TARGET of the cascader filter, so it re-renders to show the
-# rows the current selection keeps (i.e. what set_control ultimately drives downstream).
+# ---- set_control (leaf mode only; path mode raises at build) ------------------------------------
+# A leaf-mode hierarchical Cascader behaves like a flat selector, so a trigger's single column value sets
+# it directly. (A path-mode Cascader as a set_control target raises at build, because a trigger cannot
+# reconstruct a full path — hence this demo uses leaf mode on the unique-country gapminder data.)
 
-# Single-select page.
-page_set_control_single = vm.Page(
-    title="set_control - single-select Cascader",
+_gapminder_top = load_gapminder()
+
+page_set_control_leaf = vm.Page(
+    title="set_control - leaf mode",
     components=[
-        # SOURCE: clicking a bar sends the clicked city (`x`), a bare leaf.
+        # SOURCE: clicking a bar sends the clicked country (`x`), a leaf value.
         vm.Graph(
-            id="sc_single_graph",
-            figure=px.bar(_cities, x="city", y="population", color="state"),
-            actions=[va.set_control(control="sc_single_filter", value="x")],
+            id="sc_graph",
+            figure=px.bar(_gapminder_top, x="country", y="pop", color="continent"),
+            actions=[va.set_control(control="sc_filter", value="x")],
         ),
-        # SOURCE: clicking a cell sends that row's `city`, a bare leaf.
+        # SOURCE: clicking a cell sends that row's `country`, a leaf value.
         vm.AgGrid(
-            id="sc_single_grid_source",
-            figure=dash_ag_grid(data_frame=_cities),
-            actions=[va.set_control(control="sc_single_filter", value="city")],
+            id="sc_grid_source",
+            figure=dash_ag_grid(data_frame=_gapminder_top),
+            actions=[va.set_control(control="sc_filter", value="country")],
         ),
         vm.Container(
             title="Buttons",
             layout=vm.Flex(direction="row"),
             components=[
-                vm.Button(
-                    text="Show Oregon › Salem",
-                    actions=[va.set_control(control="sc_single_filter", value=["Oregon", "Salem"])],
-                ),
-                vm.Button(
-                    text="Show Illinois › Chicago",
-                    actions=[va.set_control(control="sc_single_filter", value=["Illinois", "Chicago"])],
-                ),
-                vm.Button(
-                    text="Reset filter",
-                    actions=[va.set_control(control="sc_single_filter", value=None)],
-                ),
+                vm.Button(text="Show China", actions=[va.set_control(control="sc_filter", value="China")]),
+                vm.Button(text="Show Brazil", actions=[va.set_control(control="sc_filter", value="Brazil")]),
+                vm.Button(text="Reset filter", actions=[va.set_control(control="sc_filter", value=None)]),
             ],
         ),
         # TARGET: filtered by the cascader, so it reflects the current selection.
-        vm.AgGrid(id="sc_single_grid_target", figure=dash_ag_grid(data_frame=_cities)),
+        vm.AgGrid(id="sc_grid_target", figure=dash_ag_grid(data_frame=_gapminder_top)),
     ],
     controls=[
         vm.Filter(
-            id="sc_single_filter",
-            column=["state", "city"],
-            targets=["sc_single_grid_target"],
-            selector=vm.Cascader(multi=False, value=["Oregon", "Salem"], title="City (single)"),
-        ),
-    ],
-)
-
-# Multi-select page. Buttons set a list of full paths, which cleanly disambiguates duplicate leaves (both
-# "Portland"s, all "Springfield"s) that a bare leaf value could not address.
-page_set_control_multi = vm.Page(
-    title="set_control - multi-select Cascader",
-    components=[
-        # SOURCE: clicking a bar sends the clicked city (`x`), a bare leaf.
-        vm.Graph(
-            id="sc_multi_graph",
-            figure=px.bar(_cities, x="city", y="population", color="state"),
-            actions=[va.set_control(control="sc_multi_filter", value="x")],
-        ),
-        # SOURCE: selecting rows sends their `city` values, bare leaves.
-        vm.AgGrid(
-            id="sc_multi_grid_source",
-            figure=dash_ag_grid(data_frame=_cities),
-            actions=[va.set_control(control="sc_multi_filter", value="city")],
-        ),
-        # TARGET: filtered by the cascader, so it reflects the current selection.
-        vm.AgGrid(id="sc_multi_grid_target", figure=dash_ag_grid(data_frame=_cities)),
-        vm.Button(
-            text="Select both Portlands",
-            actions=[va.set_control(control="sc_multi_filter", value=[["Oregon", "Portland"], ["Maine", "Portland"]])],
-        ),
-        vm.Button(
-            text="Select all Springfields",
-            actions=[
-                va.set_control(
-                    control="sc_multi_filter", value=[["Oregon", "Springfield"], ["Illinois", "Springfield"]]
-                )
-            ],
-        ),
-        vm.Button(
-            text="Reset filter",
-            actions=[va.set_control(control="sc_multi_filter", value=None)],
-        ),
-    ],
-    controls=[
-        vm.Filter(
-            id="sc_multi_filter",
-            column=["state", "city"],
-            targets=["sc_multi_graph", "sc_multi_grid_target"],
-            selector=vm.Cascader(multi=True, value=[["Illinois", "Chicago"]], title="Cities (multi)"),
+            id="sc_filter",
+            column=["continent", "region", "country"],
+            targets=["sc_grid_target"],
+            selector=vm.Cascader(multi=False, value="China", title="Country (single, leaf mode)"),
         ),
     ],
 )
 
 dashboard = vm.Dashboard(
     pages=[
-        page_dynamic_df,
-        page_static_df,
-        page_duplicate_leaves,
-        page_legacy_values,
-        page_default_values,
-        page_url,
+        page_leaf_dynamic,
+        page_leaf_static,
+        page_path_duplicate,
+        page_path_url,
         page_parameter,
-        page_set_control_single,
-        page_set_control_multi,
+        page_set_control_leaf,
     ]
 )
 if __name__ == "__main__":

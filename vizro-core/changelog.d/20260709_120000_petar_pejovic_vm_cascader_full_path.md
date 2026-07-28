@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- `Cascader` supports duplicate leaf labels across branches. Its `value` can be defined as a full root-to-leaf path (e.g. `["Europe", "France"]` for single-select, or `[["Europe", "France"], ["Europe", "Germany"]]` for multi-select Cascader), and it emits the full path on selection. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
+- `Cascader` gains a `full_path` attribute. With `full_path=False` (default, leaf mode) a selection is a bare leaf value (single-select) or a list of leaf values (multi-select), leaf labels must be unique across the tree, a hierarchical `Filter` matches the last `column`, and `set_control` is supported — matching the previous behavior. With `full_path=True` (path mode) a selection is a full root-to-leaf path (single-select) or a list of paths (multi-select), so duplicate leaf labels across branches are addressed unambiguously and a hierarchical `Filter` matches every `column`. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
 
 <!--
 ### Changed

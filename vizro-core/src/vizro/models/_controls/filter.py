@@ -241,6 +241,57 @@ def _ensure_path_in_tree(tree: dict[str, Any], path: list[Any]) -> None:
         existing.append(leaf)
 
 
+def _iter_cascader_leaf_paths(
+    tree: dict[str, Any], _prefix: tuple[str, ...] = ()
+) -> Iterable[tuple[tuple[str, ...], Any]]:
+    """Yield each `(branch_path, leaf)` pair in a Cascader options tree (leaf mode helper).
+
+    Example:
+        >>> list(_iter_cascader_leaf_paths({"Eu": {"West": ["FR"]}, "As": ["JP"]}))
+        [(('Eu', 'West'), 'FR'), (('As',), 'JP')]
+    """
+    for key, value in tree.items():
+        path = (*_prefix, str(key))
+        if isinstance(value, dict):
+            yield from _iter_cascader_leaf_paths(value, path)
+        else:
+            for leaf in value:
+                yield path, leaf
+
+
+def _add_leaf_at_path(tree: dict[str, Any], path: tuple[str, ...], leaf: Any) -> None:
+    """Add `leaf` to `tree` at full `path`, creating any missing branch dicts on the way (leaf mode helper).
+
+    In leaf mode `current_value` is a flat list of leaves, so if a data reload drops the rows that carried
+    currently selected values we have to add them back to the new tree options at their previous path (looked up
+    in the selector's prior options), since a bare leaf carries no branch context of its own.
+
+    Example:
+        >>> tree = {"Eu": ["DE"]}
+        >>> _add_leaf_at_path(tree, ("Eu",), "FR")
+        >>> tree
+        {'Eu': ['DE', 'FR']}
+        >>> _add_leaf_at_path(tree, ("As", "East"), "JP")
+        >>> tree
+        {'Eu': ['DE', 'FR'], 'As': {'East': ['JP']}}
+    """
+    node = tree
+    for key in path[:-1]:
+        child = node.get(key)
+        if child is None:
+            child = {}
+            node[key] = child
+        elif not isinstance(child, dict):
+            return  # shape mismatch — a leaf list already lives where we'd need a branch dict
+        node = child
+    last = path[-1]
+    existing = node.get(last)
+    if existing is None:
+        node[last] = [leaf]
+    elif isinstance(existing, list) and leaf not in existing:
+        existing.append(leaf)
+
+
 def _dataframe_path_to_cascader_options(df: pd.DataFrame, path_columns: list[str]) -> dict[str, Any]:
     """Build nested Cascader options from unique rows via groupby then nested dict (str keys, list leaves).
 
@@ -485,6 +536,8 @@ class Filter(VizroBaseModel):
             self.selector.options = self.selector.options or self._get_options(targeted_data)
         elif _is_hierarchical_selector(self.selector):
             self.selector.options = self.selector.options or self._get_hierarchical_options(target_to_data_frame)
+            if self.selector.full_path:
+                self._validate_hierarchical_options_depth(self.selector.options)
 
         # Set default value for the selector if not explicitly provided.
         self.selector.value = get_selector_default_value(self.selector)
@@ -497,13 +550,15 @@ class Filter(VizroBaseModel):
             ):
                 filter_function = _filter_between
                 column = self._single_filter_column
-            elif _is_hierarchical_selector(self.selector):
-                # Hierarchical filters match the full root-to-leaf path, so the action needs every path
-                # column (in order) and the path-aware filter function. `multi` is bound in so the function
-                # can disambiguate a flat scalar list (one path vs. separate legacy leaves).
+            elif _is_hierarchical_selector(self.selector) and self.selector.full_path:
+                # Path-mode hierarchical filters (full_path=True) match the full root-to-leaf path, so the action
+                # needs every path column (in order) and the path-aware filter function. `multi` is bound in so the
+                # function can disambiguate a flat scalar list (one path vs. separate entries).
                 filter_function = functools.partial(_filter_hierarchical_isin, multi=self.selector.multi)
                 column = self.column
             else:
+                # Leaf-mode hierarchical filters (full_path=False) behave like a flat categorical filter on the
+                # last (leaf) column, matching by bare leaf value with `_filter_isin`.
                 filter_function = _filter_isin
                 column = self._single_filter_column
 
@@ -664,6 +719,22 @@ class Filter(VizroBaseModel):
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
         return sorted(set(targeted_data))
 
+    def _validate_hierarchical_options_depth(self, options: dict[str, Any]) -> None:
+        """Path mode only: every path in `options` must be exactly as deep as `column` is long.
+
+        A full-path selection identifies a row across all `column` columns, so a ragged tree (a branch shorter or
+        deeper than `len(column)`) cannot be addressed. Leaf mode (full_path=False) has no such restriction and
+        supports arbitrary-depth trees. No-op for empty options (dynamically built options are always uniform).
+        """
+        expected = len(cast(list[str], self.column))
+        for path in _iter_cascader_paths_depth_first(options):
+            if len(path) != expected:
+                raise ValueError(
+                    f"For a hierarchical filter with full_path=True, every path in `options` must have exactly "
+                    f"{expected} levels to match column={self.column!r}, but found path {path} with "
+                    f"{len(path)} level(s). Use full_path=False to allow arbitrary-depth options."
+                )
+
     def _get_hierarchical_options(
         self,
         target_to_data_frame: dict[ModelID, pd.DataFrame],
@@ -671,16 +742,16 @@ class Filter(VizroBaseModel):
     ) -> dict[str, Any]:
         """Build Cascader options from path columns; needs full dataframes (not the leaf-only `targeted_data`).
 
-        When `current_value` is provided, any selected path absent from the new tree is re-inserted directly.
-        Because the Cascader value is a full root-to-leaf path, each selected path carries its own branch
-        context, so the path is inserted where it belongs with no lookup of previous options. This mirrors the
-        categorical dynamic-filter contract where user-selected values remain valid even after a data reload —
-        the filter still applies, even if it now matches zero rows.
+        When `current_value` is provided, any selection absent from the new tree is re-inserted so it stays valid
+        after a data reload (mirroring the categorical dynamic-filter contract: the filter still applies, even if
+        it now matches zero rows). The re-insertion strategy depends on the selector mode:
 
-        `current_value` is a single path (`multi=False`) or a list of paths (`multi=True`), or None/`[]`. A
-        legacy leaf-only value (pre-full-path Cascader) carries no branch context, so it can't be re-inserted
-        and is skipped; `multi` disambiguates a flat scalar list (one path when `multi=False`, separate legacy
-        leaves when `multi=True`).
+        * Path mode (full_path=True): `current_value` is a single path (`multi=False`) or a list of paths
+          (`multi=True`). Each path carries its own branch context, so it is inserted directly where it belongs
+          with no lookup of previous options.
+        * Leaf mode (full_path=False): `current_value` is a single leaf (`multi=False`) or a list of leaves
+          (`multi=True`). A bare leaf carries no branch context, so its previous path is looked up in the
+          selector's current `options` and the leaf is restored there.
         """
         path_cols = list(cast(list[str], self.column))
         combined = pd.concat(
@@ -691,18 +762,31 @@ class Filter(VizroBaseModel):
 
         if not current_value:
             return new_options
-        multi = cast(Cascader, self.selector).multi
-        entries = (
-            (current_value if isinstance(current_value, (list, tuple)) else [current_value])
-            if multi
-            else [current_value]
-        )
-        present = _paths_in_tree(new_options)
-        for entry in entries:
-            # Only a full-path entry carries the branch context needed to place it in the tree; a legacy
-            # leaf-only value can't be re-inserted without knowing its parent, so skip it.
-            if not isinstance(entry, (list, tuple)) or not entry:
-                continue
-            if _normalize_cascader_path(entry) not in present:
-                _ensure_path_in_tree(new_options, list(entry))
+
+        selector = cast(Cascader, self.selector)
+        if selector.full_path:
+            entries = (
+                (current_value if isinstance(current_value, (list, tuple)) else [current_value])
+                if selector.multi
+                else [current_value]
+            )
+            present = _paths_in_tree(new_options)
+            for entry in entries:
+                if not isinstance(entry, (list, tuple)) or not entry:
+                    continue
+                if _normalize_cascader_path(entry) not in present:
+                    _ensure_path_in_tree(new_options, list(entry))
+            return new_options
+
+        # Leaf mode: restore each stale leaf at its previous path so the branch context is preserved.
+        selected_leaves = current_value if isinstance(current_value, list) else [current_value]
+        new_leaves = {leaf for _, leaf in _iter_cascader_leaf_paths(new_options)}
+        stale_leaves = [leaf for leaf in selected_leaves if leaf is not None and leaf not in new_leaves]
+        if not stale_leaves:
+            return new_options
+        prev_options = getattr(self.selector, "options", None) or {}
+        stale_set = set(stale_leaves)
+        for path, leaf in _iter_cascader_leaf_paths(prev_options):
+            if leaf in stale_set:
+                _add_leaf_at_path(new_options, path, leaf)
         return new_options

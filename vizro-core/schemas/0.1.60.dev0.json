@@ -357,6 +357,12 @@
           "title": "Type",
           "type": "string"
         },
+        "full_path": {
+          "default": false,
+          "description": "How a selection is identified. In leaf mode (False, default) `value` is a bare leaf scalar (single-select) or a list of leaf scalars (multi-select), and leaf labels must be unique across the tree. In path mode (True) `value` is a full root-to-leaf path (single-select) or a list of paths (multi-select), so duplicate leaf labels across different branches are addressed unambiguously. This attribute is immutable once set.",
+          "title": "Full Path",
+          "type": "boolean"
+        },
         "options": {
           "additionalProperties": true,
           "default": {},
@@ -427,7 +433,7 @@
             }
           ],
           "default": null,
-          "description": "Selected value as a root-to-leaf path (the list of node values from the root down to the leaf, e.g. `['Europe', 'France']`), or a list of such paths when multi=True. A bare leaf value (e.g. `'France'`, or `['France', 'Japan']` when multi=True) is also accepted for backward compatibility and resolved to its path, provided the leaf is unique. Must be valid for `options`. If omitted, the first leaf path is selected.",
+          "description": "Selected value. With full_path=False (default): a leaf value (e.g. `'France'`), or a list of leaves when multi=True. With full_path=True: a root-to-leaf path (e.g. `['Europe', 'France']`), or a list of such paths when multi=True. Must be valid for `options`. If omitted, the first leaf/path is selected.",
           "title": "Value"
         },
         "multi": {

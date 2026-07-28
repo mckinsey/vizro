@@ -156,7 +156,7 @@ The following example demonstrates these default selector types.
 
 A hierarchical filter is a filter where the user chooses values from a _tree_ of grouped values. For example, cities around the world could be grouped into a hierarchy by continent and then by country. Rows of the data are filtered down to the finest-grained (most "zoomed in") level (the _leaves_ of the tree). In the continent/country/city example, this would be city.
 
-Each selection is matched by its full path through the tree, not just the leaf, so the same leaf label appearing under different branches (for example a city name shared by two countries) is filtered independently. Clearing a multi-select hierarchical filter (removing every selection) matches no rows, because there is no path left to filter on.
+By default (leaf mode), rows are matched on the finest-grained column alone, so a hierarchical filter behaves like a flat filter on the leaf column and leaf labels must be unique across the tree. If you set `full_path=True` on the [`Cascader`][vizro.models.Cascader] selector (path mode), each selection is instead matched by its full path through the tree, so the same leaf label appearing under different branches (for example a city name shared by two countries) is filtered independently; clearing a multi-select path-mode filter (removing every selection) then matches no rows, because there is no path left to filter on. See [hierarchical selectors](selectors.md#hierarchical-selectors) for how to choose between the two modes.
 
 To add a hierarchical filter to your page:
 
