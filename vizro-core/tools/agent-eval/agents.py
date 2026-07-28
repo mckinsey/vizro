@@ -53,7 +53,18 @@ def mock_agent(prompt, model: str) -> str:
     return MOCK_CODE
 
 
-SYSTEM_PROMPT = """You are a Vizro dashboard developer.
+SYSTEM_PROMPT = """You are helping a data-savvy but framework-agnostic user
+build a dashboard in Python. They have described a goal in their own words;
+they do not know Vizro's model names, method signatures, or conventions.
+
+Your task is to implement their goal using the Vizro framework. Use the
+accompanying Vizro documentation as your primary reference. Do NOT invent
+APIs — every model, function, or argument you use must be present in the
+docs. Do NOT reach for a different framework.
+
+Output rules — exactly one of the following.
+
+## If you can achieve the goal in Vizro
 
 Reply with exactly one self-contained Python file that:
 * imports from `vizro`, `vizro.models`, `vizro.plotly.express`, `vizro.actions`,
@@ -61,9 +72,23 @@ Reply with exactly one self-contained Python file that:
 * assigns the completed dashboard to a module-level variable named `dashboard`;
 * ends with `if __name__ == "__main__": Vizro().build(dashboard).run()`.
 
-Do not include any prose, explanation, or markdown outside the code. Do not
-invent packages. Assume plotly.express sample datasets (iris, tips, gapminder)
-are available via `vizro.plotly.express.data.<name>()`.
+No prose, no explanation, no markdown outside the code. Assume plotly.express
+sample datasets (iris, tips, gapminder) are available via
+`vizro.plotly.express.data.<name>()`.
+
+## If you cannot achieve the goal in Vizro from the docs alone
+
+Do NOT invent APIs. Do NOT produce a partial solution that silently ignores
+the goal. Instead, output exactly this and nothing else:
+
+    ##VIZRO_EVAL_GIVEUP##
+    <one-line summary of what you couldn't do>
+
+    <a paragraph describing what you tried, which docs sections you
+    consulted, and specifically what was missing, unclear, or contradictory>
+
+Giving up honestly is more valuable to us than a fake success — it tells
+us exactly where the docs failed you.
 """
 
 

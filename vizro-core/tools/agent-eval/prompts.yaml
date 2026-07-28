@@ -1,203 +1,209 @@
-# Vizro docs agent eval - realistic dashboard-building prompts.
+# Vizro docs agent eval - vibe-coding prompts.
+#
+# These prompts describe user *goals*, not Vizro implementations. The model
+# is instructed (via the system prompt) to attempt each one in Vizro using
+# only the docs, and to emit an explicit giveup marker if it can't. Prompts
+# should be phrased the way a data-savvy but framework-agnostic user would
+# actually type them.
 #
 # Ids are stable. When adding new prompts, append (do not renumber).
 # Group tags let you slice results by capability area.
 
-version: 1
+version: 2
 
 prompts:
   # ---- Basic setup ------------------------------------------------------
   - id: P01
     group: basic
     prompt: |
-      Build the smallest possible Vizro dashboard: a single page called
-      "Iris" that renders a Plotly Express scatter plot of the iris
-      dataset (sepal_length on x, petal_width on y, colored by species).
+      I have the plotly express tips dataset. Build me a one-page dashboard
+      that shows how the size of the bill relates to the size of the tip.
     intent:
-      - single vm.Page named "Iris"
-      - a vm.Graph with a px.scatter figure
-      - x=sepal_length, y=petal_width, color=species
+      - dashboard has exactly one page
+      - page contains a visualization relating total_bill to tip
 
   - id: P02
     group: basic
     prompt: |
-      Build a two-page Vizro dashboard. Page 1 shows a scatter plot of the
-      Plotly Express tips dataset (total_bill vs tip). Page 2 shows the
-      same data as a Dash AG Grid. Use NavBar navigation with sensible
-      icons for each page.
+      Build me a two-page dashboard for the plotly express tips dataset. One
+      page should show a chart of the data. The other page should let me
+      browse the underlying rows in a table. Add some sort of navigation so
+      I can flip between them.
     intent:
-      - vm.Dashboard with two vm.Page entries
-      - page 1 uses vm.Graph with px.scatter over tips
-      - page 2 uses vm.AgGrid over tips
-      - vm.Navigation with vm.NavBar and one vm.NavLink per page
+      - dashboard has two pages
+      - one page shows a chart of tips
+      - the other page shows the tips rows in a table
+      - navigation lets the user switch between pages
 
   - id: P03
-    group: basic
+    group: config
     prompt: |
-      Configure a Vizro dashboard purely in YAML that shows a Plotly
-      Express histogram of the iris dataset with a filter on species.
-      Include the minimal Python entry point needed to parse the YAML
-      and register the data source.
+      My colleague isn't a Python developer but she needs to be able to
+      tweak our dashboard config. Set things up so the dashboard lives in a
+      YAML file she can edit, using a simple histogram of the iris dataset
+      as an example.
     intent:
-      - dashboard.yaml with pages -> components -> vm.Graph histogram
-      - vm.Filter(column="species")
-      - Python entry point registers "iris" in data_manager and parses the YAML
+      - dashboard configuration lives in a YAML file (not entirely in Python)
+      - a Python entry point loads the YAML and wires the data
+      - histogram of iris data is present
 
   # ---- Controls ---------------------------------------------------------
   - id: P04
     group: controls
     prompt: |
-      Add a date range filter to a dashboard that has two Plotly line
-      charts of the same time-series data. The filter must be shareable
-      via the page URL so users can bookmark a filtered view.
+      I have a time-series dataset with a date column and two related
+      metrics I'd like to plot as line charts. Let a user narrow the view
+      to a chosen date range, and make it so I can share a URL of a
+      particular filtered view with a colleague.
     intent:
-      - vm.Filter on a date column
-      - selector auto-selects vm.DatePicker or is set explicitly
-      - filter has show_in_url=True
+      - two line charts share a date axis
+      - a control on the page lets the user restrict the view to a date range
+      - the chosen range is reflected in the URL so the view is bookmarkable
 
   - id: P05
     group: controls
     prompt: |
-      Add a Parameter to a Vizro dashboard that switches the x-axis
-      column of two scatter plots at once between "day", "time" and
-      "sex". Present the choices as radio items with a helpful title.
+      I have two scatter charts on one page. Let the user pick which
+      column is on the x-axis of both charts at once, from a small fixed
+      list of options.
     intent:
-      - vm.Parameter with targets on two graphs' x argument
-      - selector=vm.RadioItems with the three options and a title
-      - both charts update together
+      - a single control on the page changes the x-axis of both charts together
+      - the control offers a fixed list of column options
+      - both charts update when the control changes
 
   - id: P06
     group: controls
     prompt: |
-      A dashboard has a numeric column with hundreds of unique values.
-      Add a filter with a RangeSlider selector whose default range
-      covers the middle 80% of the data.
+      One of my columns is numeric with hundreds of unique values. Let a
+      user focus on the middle chunk of the range using some sort of
+      slider.
     intent:
-      - vm.Filter using vm.RangeSlider
-      - RangeSlider min/max/value chosen from the data
+      - a slider control on the page filters by a numeric column
+      - the control lets the user pick a range (not a single value)
+      - the default range covers roughly the middle 80% of the data
 
   # ---- Actions and interactions -----------------------------------------
   - id: P07
     group: actions
     prompt: |
-      Add a Button labeled "Export" that downloads the currently filtered
-      data of a chosen chart to CSV.
+      Add a button to my dashboard that lets me download whatever is
+      currently on screen as a CSV file.
     intent:
-      - vm.Button with actions=va.export_data(targets=[...])
-      - va.export_data used from vizro.actions
+      - a button on the page indicates export or download
+      - clicking it downloads the currently visible/filtered data as CSV
+      - implemented using Vizro's built-in mechanism, not a hand-rolled callback
 
   - id: P08
     group: actions
     prompt: |
-      Build a dashboard where clicking a bar in a bar chart cross-filters
-      a data table on the same page. Do it using the built-in Vizro
-      action rather than writing a custom callback.
+      I want clicking on a bar in one of my charts to filter a table on the
+      same page down to just the rows for that category. No custom code if
+      Vizro has a built-in way.
     intent:
-      - vm.Graph with actions including va.set_control(...)
-      - vm.Filter targeting the table
-      - table is a vm.AgGrid or vm.Table
+      - a bar chart and a table share a page
+      - clicking a bar filters the table down to matching rows
+      - the built-in Vizro cross-filter mechanism is used, not a custom callback
 
   - id: P09
     group: actions
     prompt: |
-      Write a custom Vizro action that, when a button is clicked, updates
-      a Card to display the current UTC time in ISO 8601 format.
+      Add a button that, when clicked, updates a card on the page to show
+      the current UTC time in ISO 8601 format.
     intent:
-      - function decorated with @capture("action")
-      - vm.Action wired to a vm.Button with outputs pointing to a vm.Card
+      - a button and a card appear on the same page
+      - clicking the button updates the card to show a current UTC timestamp
+      - the update is wired through Vizro's action/callback mechanism
 
   - id: P10
     group: actions
     prompt: |
-      Build a dashboard where selecting a row in an AgGrid cross-filters
-      a scatter plot on the same page based on the "sex" column of the
-      selected row. Use set_control rather than filter_interaction.
+      Selecting a row in a table on my page should filter a chart next to
+      it, using the value in one of the row's columns as the filter.
     intent:
-      - vm.AgGrid with actions=va.set_control(control="...", value="row")
-      - vm.Filter(column="sex") targeting the scatter plot
+      - a table and a chart appear on the same page
+      - selecting a row filters the chart by a specified column of that row
+      - built-in Vizro cross-filter mechanism is used, not a custom callback
 
   # ---- Layouts and composition ------------------------------------------
   - id: P11
     group: layout
     prompt: |
-      Lay out a Vizro page with two KPI cards on the top row and one
-      full-width scatter plot below. Use the Grid layout model.
+      Two summary number cards on top, one big chart filling the width
+      underneath.
     intent:
-      - vm.Page.layout is vm.Grid with the correct grid shape
-      - two vm.Figure(kpi_card(...)) entries
-      - one vm.Graph spanning the full width in row 2
+      - two summary/KPI-style cards sit side by side on the top row
+      - a chart spans the full width on the row below
 
   - id: P12
     group: layout
     prompt: |
-      Show three charts side by side in a responsive row that wraps to
-      the next line on narrow screens. Do NOT use vm.Grid for this.
+      Three charts arranged side by side that wrap to a new row when the
+      screen is narrow.
     intent:
-      - vm.Page.layout=vm.Flex (or a container with vm.Flex(direction="row"))
-      - three vm.Graph components inside
+      - three charts share the same page
+      - they lay out in a horizontally-flowing row that wraps on narrow screens
 
   - id: P13
     group: layout
     prompt: |
-      Group two related charts into their own bordered, titled section on
-      a page. Add a filter that only applies to that section.
+      Group two related charts inside a titled, bordered section on my
+      page. Add a filter that only affects the charts inside that section.
     intent:
-      - vm.Container with variant="outlined" (or filled) and a title
-      - two vm.Graph inside the container
-      - vm.Filter inside container.controls with correct targets
+      - two charts are grouped into a distinct visible container with a title
+      - a filter appears inside that container
+      - the filter only affects charts inside the container, not others on the page
 
   # ---- Components -------------------------------------------------------
   - id: P14
     group: components
     prompt: |
-      Add a KPI card that shows the average total_bill of the tips
-      dataset formatted as USD with two decimals, with a descriptive
-      title. Use the built-in figure function rather than writing markdown.
+      Show me the average total bill from the tips dataset as a big number
+      at the top of the page, formatted as US dollars.
     intent:
-      - vm.Figure with figure=kpi_card(...)
-      - value_column="total_bill", agg_func="mean", value_format="${value:.2f}"
+      - a prominent number shows the mean of total_bill
+      - the number is formatted with a dollar sign and two decimals
+      - implemented via Vizro's built-in KPI/figure pattern rather than raw markdown
 
   - id: P15
     group: components
     prompt: |
-      Add a tabbed section with two tabs on the same page. The first tab
-      shows a histogram of total_bill. The second tab shows a histogram
-      of tip.
+      On one page, let me flip between a histogram of bill size and a
+      histogram of tip size using tabs.
     intent:
-      - vm.Tabs with tabs=[vm.Container(...), vm.Container(...)]
-      - each container has one vm.Graph with px.histogram
+      - the page has a tabbed layout with two tabs
+      - one tab shows a histogram of total_bill; the other a histogram of tip
 
   # ---- Custom extensions ------------------------------------------------
   - id: P16
     group: custom
     prompt: |
-      Write a custom Plotly chart function decorated with @capture("graph")
-      that produces a bar chart of the mean tip per day, and use it in a
-      vm.Graph.
+      I want to plot the average tip by weekday but I want full control
+      over the plot styling. Show me the pattern for writing my own chart
+      function that Vizro will use.
     intent:
-      - function has @capture("graph") from vizro.models.types
-      - first argument is data_frame
-      - vm.Graph(figure=<callable>(...))
+      - a custom chart function is defined and used in a page
+      - the function is registered via Vizro's decorator / capture mechanism
+      - its first argument accepts a data frame
 
   - id: P17
     group: custom
     prompt: |
-      Create a custom Vizro component that subclasses vm.Text and adds a
-      "prefix" argument prepended to the text. Register it with the
-      appropriate add_type call and use it in a page.
+      I want a text component that always prepends a fixed prefix to
+      whatever text I give it. Show me the recommended pattern for
+      extending Vizro with my own component type.
     intent:
-      - subclass of vm.Text (or VizroBaseModel) that overrides build
-      - vm.Page.add_type("components", MyCustom) called
-      - component used inside a vm.Page
+      - a custom component class extending an appropriate Vizro base is defined
+      - Vizro is told how to accept this new component type inside a page
+      - the component is used in a page
 
   # ---- Theming and polish -----------------------------------------------
   - id: P18
     group: theming
     prompt: |
-      Set up a Vizro dashboard with a dark theme, a custom logo image at
-      assets/logo.png, and a page-level Tooltip on the Graph title that
-      explains what the chart shows.
+      Set my dashboard to dark mode, add my logo image in the header, and
+      add a helpful tooltip on the main chart's title explaining what it
+      shows.
     intent:
-      - vm.Dashboard(theme="vizro_dark") (or the current name)
-      - assets/logo.png referenced through the assets folder
-      - vm.Graph.description passed a vm.Tooltip (or string)
+      - the dashboard is themed dark
+      - a logo image is loaded from the assets folder
+      - the main chart has a tooltip / description on its title

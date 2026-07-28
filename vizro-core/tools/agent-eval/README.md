@@ -1,17 +1,22 @@
 # Vizro docs agent eval suite
 
-A small prototype harness for measuring how well AI coding agents build Vizro dashboards from a natural-language prompt using only the Vizro docs, and for surfacing where the docs need work.
+A small prototype harness that measures how well AI coding agents build Vizro dashboards from a **user-goal** prompt — the kind of thing a data-savvy but framework-agnostic user would actually type — using only the Vizro docs, and surfaces where the docs need work.
 
 ## What this measures
 
-For every prompt in [`prompts.yaml`](prompts.yaml), the harness asks a coding agent (Claude, GPT-5, Cursor, etc.) to produce a working Vizro app. Each run is scored against the [rubric](rubric.md).
+For every prompt in [`prompts.yaml`](prompts.yaml), the harness asks a coding agent (Claude, GPT-5, Cursor, …) to produce a working Vizro app from a user-goal description. Each run is scored against the [rubric](rubric.md).
 
-The agent has access only to the published Vizro docs (and `llms.txt`) — no `vizro-mcp` server, no `vizro-e2e-flow` skill. Prompts that score poorly point at gaps or ambiguities in the docs that the docs team can address.
+Two design choices are worth calling out:
+
+1. **Prompts describe user goals, not Vizro implementations.** The agent has to translate "let a user restrict the view to a date range" into whatever Vizro model actually satisfies that. This mimics real vibe-coding and stops the suite from being biased in favor of features Vizro already does well.
+2. **The agent is permitted (and encouraged) to give up honestly.** The system prompt tells the model to attempt the goal in Vizro using the docs, and to emit a `##VIZRO_EVAL_GIVEUP##` marker with a written reason if it can't. Honest giveups with a reason are the highest-value signal for the docs team — they name the section that failed to unblock the agent. Silent failures (invented APIs) are actively discouraged.
+
+The agent has access only to the published Vizro docs (and `llms.txt`) — no `vizro-mcp` server, no `vizro-e2e-flow` skill.
 
 ## Contents
 
-- [`prompts.yaml`](prompts.yaml): 18 realistic dashboard-building prompts, organized by capability area.
-- [`rubric.md`](rubric.md): scoring rubric — three criteria (validates, renders, intent) each 0-2, so 0-6 per run.
+- [`prompts.yaml`](prompts.yaml): 18 vibe-coding prompts, organized by capability area, phrased as user goals.
+- [`rubric.md`](rubric.md): scoring rubric — three criteria (validates, renders, intent) each 0-2, so 0-6 per run, plus the giveup outcome.
 - [`run_eval.py`](run_eval.py): CLI runner. Iterates prompts × models, calls the configured agent, scores the result, writes `results/<timestamp>/`.
 - [`agents.py`](agents.py): agent callables — `mock` (fixed valid dashboard, for smoke tests) and `anthropic-docs-only` (real Anthropic API call, optionally injecting `llms.txt`).
 
@@ -66,13 +71,16 @@ Useful flags:
 
 The runner produces:
 
-- `results/<timestamp>/raw/<model>-<prompt-id>.py` — the code the agent produced.
-- `results/<timestamp>/scores.jsonl` — one JSON object per run with prompt id, model, scores, tags.
-- `results/<timestamp>/summary.md` — per-model averages, pass rate, and a failure-tag frequency table.
+- `results/<timestamp>/raw/<model>-<prompt-id>.py` — the code the agent produced (or, on a giveup, the reason text).
+- `results/<timestamp>/scores.jsonl` — one JSON object per run with prompt id, model, scores, tags, and — for giveups — the reason in `notes`.
+- `results/<timestamp>/summary.md` — per-model averages, pass rate, giveup count, failure-tag frequency, and the full text of every giveup reason.
 
 ## Interpreting results
 
-Focus triage on prompts that repeatedly score 0 or 1 on **Config validates** or **Dashboard renders** — the failure tags in `scores.jsonl` (`wrong-import`, `wrong-argument`, `render-boot-crash`, `render-error-log`, …) point at the section of the docs that needs work.
+Two things to look at, in order of docs-team value:
+
+1. **Giveup reasons** (top of each model's section in `summary.md`). These are the agent explicitly naming the section of the docs that failed to unblock it. Highest-signal, most-actionable.
+2. **Prompts scoring 0 or 1 on Config validates / Dashboard renders**. The failure tags (`wrong-import`, `wrong-argument`, `hallucinated-api`, `render-boot-crash`, …) point at silent failures where the docs led the agent down a wrong path.
 
 ## Extending the suite
 

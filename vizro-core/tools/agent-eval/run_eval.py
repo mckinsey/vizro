@@ -49,6 +49,7 @@ HTTP_OK = 200
 PASSING_TOTAL = 5  # ≥ this out of 6 counts as a passing run in the summary
 
 BOOT_MARKER = "__VIZRO_EVAL_BOOT_PORT__"
+GIVEUP_MARKER = "##VIZRO_EVAL_GIVEUP##"
 
 
 @dataclass
@@ -349,12 +350,41 @@ def score_intent(code: str, prompt: Prompt) -> tuple[int, list[str]]:
     raise NotImplementedError("score_intent is a stub. Implement per-prompt checks (see docstring).")
 
 
+def _extract_giveup_reason(code: str) -> str:
+    """Return the free-text reason a giveup reply included after the marker.
+
+    Everything after the first ``GIVEUP_MARKER`` occurrence up to the end of
+    the reply is treated as the reason. Whitespace is trimmed. If the reply
+    is malformed (marker at the very end), the returned reason is empty.
+    """
+    _, _, tail = code.partition(GIVEUP_MARKER)
+    return tail.strip()
+
+
 def run_one(prompt: Prompt, model: str) -> RunResult:
-    """Ask the registered agent for code, then score it against all three criteria."""
+    """Ask the registered agent for code, then score it against all three criteria.
+
+    Handles the giveup path specially: if the agent's reply contains the
+    ``GIVEUP_MARKER``, we do not attempt to score the output as code. Instead
+    we record a zero-scored ``agent-gave-up`` outcome with the reason in
+    ``notes`` — this is the highest-value signal for the docs team.
+    """
     if AGENT is None:
         raise RuntimeError("No agent callable registered. See register_agent or pass --agent.")
 
     code = AGENT(prompt, model)
+
+    if GIVEUP_MARKER in code:
+        return RunResult(
+            prompt_id=prompt.id,
+            model=model,
+            code=code,
+            score_validates=0,
+            score_renders=0,
+            score_intent=0,
+            tags=["agent-gave-up"],
+            notes=_extract_giveup_reason(code),
+        )
 
     validates_score, validates_tags = score_validates(code)
     try:
@@ -410,13 +440,15 @@ def write_results(out_dir: Path, results: list[RunResult]) -> None:
         avg_ren = sum(r.score_renders for r in runs) / len(runs)
         avg_int = sum(r.score_intent for r in runs) / len(runs)
         pass_rate = sum(1 for r in runs if r.total >= PASSING_TOTAL) / len(runs)
+        giveups = [r for r in runs if "agent-gave-up" in r.tags]
         summary_lines.append(
             f"## {model}\n"
             f"- Prompts run: {len(runs)}\n"
             f"- Avg validates: {avg_val:.2f}/2\n"
             f"- Avg renders: {avg_ren:.2f}/2\n"
             f"- Avg intent: {avg_int:.2f}/2\n"
-            f"- Pass rate (>=5/6): {pass_rate:.0%}\n",
+            f"- Pass rate (>=5/6): {pass_rate:.0%}\n"
+            f"- Giveups: {len(giveups)}/{len(runs)}\n",
         )
 
         # Failure-tag frequency, sorted, so the docs team can see the most
@@ -429,6 +461,17 @@ def write_results(out_dir: Path, results: list[RunResult]) -> None:
             summary_lines.append("### Failure tags\n")
             for tag, n in sorted(tag_counts.items(), key=lambda kv: -kv[1]):
                 summary_lines.append(f"- `{tag}`: {n}")
+            summary_lines.append("")
+
+        # Giveup reasons are the most actionable docs-team signal, so surface
+        # each one in full rather than just a count. If the model gave up
+        # honestly, its reason names the docs section that failed to unblock
+        # it.
+        if giveups:
+            summary_lines.append("### Prompts where the agent gave up\n")
+            for r in sorted(giveups, key=lambda r: r.prompt_id):
+                summary_lines.append(f"**{r.prompt_id}**\n")
+                summary_lines.append(f"> {r.notes or '(no reason provided)'}\n")
             summary_lines.append("")
 
     (out_dir / "summary.md").write_text("\n".join(summary_lines))
