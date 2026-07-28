@@ -144,6 +144,8 @@ To overwrite any global CSS property, you need to target the element selector an
 
     === "Result"
 
+        The dashboard renders the "Overwrite CSS globally" example.
+
         [![AssetsCSS]][assetscss]
 
 ### Overwrite CSS for selected pages
@@ -212,6 +214,8 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
         ```
 
     === "Result"
+
+        The dashboard renders the "Hide page title on selected pages" example.
 
         [![PageTitle]][pagetitle]
 
@@ -301,6 +305,8 @@ It's essential to understand the relationship between the targeted CSS class or 
         ```
 
     === "Result"
+
+        The dashboard renders the "Customizing CSS properties in selective components" example.
 
         [![CardCSS]][cardcss]
 

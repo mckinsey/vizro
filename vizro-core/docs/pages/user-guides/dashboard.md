@@ -147,6 +147,8 @@ To create a dashboard:
 
     === "Result"
 
+        The dashboard renders the "Dashboard Configuration Syntaxes" example.
+
         [![Dashboard]][dashboard]
 
 !!! note "Extra `.py` files for `yaml` and `json` required"
@@ -251,6 +253,8 @@ To add items to the custom header area, subclass the [Dashboard][vizro.models.Da
         Custom dashboards are currently only possible via Python configuration.
 
     === "Result"
+
+        The dashboard renders the "Customize dashboard header" example.
 
         [![CustomHeader]][customheader]
 

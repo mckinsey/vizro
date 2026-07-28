@@ -144,6 +144,8 @@ To add a [`Tabs`][vizro.models.Tabs] model to your page, do the following:
 
     === "Result"
 
+        The dashboard renders the "Tabs" example.
+
         [![Tabs]][tabs]
 
 ## Add a tooltip
@@ -271,6 +273,8 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
         ```
 
     === "Result"
+
+        The dashboard renders the "Tabs with tooltip" example.
 
         [![TabsInfoIcon]][tabsinfoicon]
 
