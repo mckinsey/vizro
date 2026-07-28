@@ -87,6 +87,8 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
 
     === "Result"
 
+        The dashboard renders the "Basic Parameter" example.
+
         [![Parameter]][parameter]
 
 If you would like to pass `None` as a parameter and make a parameter optional, you can specify the string `"NONE"` in the `options` or `value` field.
@@ -187,6 +189,8 @@ If you want to change nested parameters, extend the `targets` argument with anot
         ```
 
     === "Result"
+
+        The dashboard renders the "Nested Parameters for multiple targets" example.
 
         [![Nested]][nested]
 

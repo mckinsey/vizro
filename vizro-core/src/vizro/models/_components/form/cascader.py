@@ -146,7 +146,7 @@ class Cascader(VizroBaseModel):
     multi: Annotated[
         bool,
         AfterValidator(validate_multi),
-        Field(default=True, description="Whether to allow selection of multiple values", validate_default=True),
+        Field(default=True, description="Whether to enable selection of multiple values", validate_default=True),
     ]
     title: str = Field(default="", description="Title to be displayed")
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
