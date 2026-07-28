@@ -66,3 +66,12 @@
   color: var(--bs-body-color);
   font-size: 24px;
 }
+
+.btn-reset {
+  background: inherit;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--text-primary);
+  gap: 2px;
+  height: 24px;
+}

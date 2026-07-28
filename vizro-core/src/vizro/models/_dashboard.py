@@ -62,7 +62,8 @@ _InnerPageContentType = TypedDict(
         "page-header": html.Div,
         "page-components": html.Div,
         "nav-bar": dbc.Navbar,
-        "nav-control-panel": html.Div,
+        "nav-panel": html.Div,
+        "control-panel": html.Div,
         "collapse-icon-outer": html.Div,
     },
 )
@@ -343,28 +344,16 @@ class Dashboard(VizroBaseModel):
             hidden=_all_hidden(header_right_content),
         )
 
-        nav_control_panel_inner = html.Div(
-            id="nav-control-panel-inner",
-            children=[nav_panel, control_panel],
-            hidden=_all_hidden([nav_panel, control_panel]),
-        )
-        nav_control_panel_content = [nav_control_panel_inner]
-
-        # Show reset button pinned to the bottom of the nav-control-panel when both page controls and control panel
-        # exist. The button is a sibling of the scrollable inner content, not inside it, so it stays visible.
+        # Add reset button to bottom of control-panel when page controls exist and the panel is visible.
         if has_page_controls and not control_panel_hidden:
             icon = html.Span("sync", className="material-symbols-outlined tooltip-icon")
             text = html.Span("Reset all", className="btn-text")
-            nav_control_panel_content.append(
+            control_panel.children.append(
                 html.Div(
                     id="reset-button-container",
-                    children=[dbc.Button(id="reset-button", children=[icon, text], color="link")],
+                    children=[dbc.Button(id="reset-button", children=[icon, text], className="btn-reset")],
                 )
             )
-
-        nav_control_panel = html.Div(
-            id="nav-control-panel", children=nav_control_panel_content, hidden=_all_hidden(nav_control_panel_content)
-        )
 
         collapse_icon_outer = html.Div(
             children=[
@@ -385,7 +374,7 @@ class Dashboard(VizroBaseModel):
                 ),
             ],
             id="collapse-icon-outer",
-            hidden=_all_hidden([nav_control_panel]),
+            hidden=_all_hidden([nav_panel, control_panel]),
         )
 
         # When nav-bar is absent, insert the collapse icon into header_controls directly
@@ -400,7 +389,8 @@ class Dashboard(VizroBaseModel):
                 page_header,
                 page_components,
                 nav_bar,
-                nav_control_panel,
+                nav_panel,
+                control_panel,
                 collapse_icon_outer if nav_bar_is_side else None,
             ]
         )
@@ -421,12 +411,13 @@ class Dashboard(VizroBaseModel):
         page_header = inner_page["page-header"]
         page_components = inner_page["page-components"]
         nav_bar = inner_page["nav-bar"]
-        nav_control_panel = inner_page["nav-control-panel"]
+        nav_panel = inner_page["nav-panel"]
+        control_panel = inner_page["control-panel"]
         right_side = html.Div(id="right-side", children=[page_header, page_components])
 
         collapse_left_side = dbc.Collapse(
             id="collapse-left-side",
-            children=html.Div(id="left-side", children=[nav_control_panel]),
+            children=html.Div(id="left-side", children=[nav_panel, control_panel]),
             is_open=True,
             dimension="width",
         )

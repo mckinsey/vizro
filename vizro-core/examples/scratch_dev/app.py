@@ -16,20 +16,6 @@ page_1 = vm.Page(
     ],
     controls=[
         vm.Filter(column="species"),
-        vm.ControlGroup(
-            title="Control group 1",
-            controls=[
-                vm.Filter(column="sepal_length"),
-            ],
-            description="control group info",
-        ),
-        vm.ControlGroup(
-            title="Control group 2",
-            controls=[
-                vm.Filter(column="petal_width"),
-            ],
-            description="control group info",
-        ),
     ],
 )
 
@@ -254,7 +240,7 @@ page_5 = vm.Page(
 dashboard = vm.Dashboard(
     title="Vizro",
     pages=[page_1, page_2, page_3, page_4, page_5],
-    navigation=vm.Navigation(nav_selector=vm.NavBar()),
+    # navigation=vm.Navigation(nav_selector=vm.NavBar()),
 )
 
 if __name__ == "__main__":
