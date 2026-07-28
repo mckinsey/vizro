@@ -12,7 +12,7 @@ prompts:
     prompt: |
       Build the smallest possible Vizro dashboard: a single page called
       "Iris" that renders a Plotly Express scatter plot of the iris
-      dataset (sepal_length on x, petal_width on y, coloured by species).
+      dataset (sepal_length on x, petal_width on y, colored by species).
     intent:
       - single vm.Page named "Iris"
       - a vm.Graph with a px.scatter figure
@@ -80,7 +80,7 @@ prompts:
   - id: P07
     group: actions
     prompt: |
-      Add a Button labelled "Export" that downloads the currently filtered
+      Add a Button labeled "Export" that downloads the currently filtered
       data of a chosen chart to CSV.
     intent:
       - vm.Button with actions=va.export_data(targets=[...])

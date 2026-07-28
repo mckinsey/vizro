@@ -1,0 +1,6 @@
+# Dependencies for the docs agent eval harness.
+# The harness also needs `vizro` importable to score dashboards; run inside
+# the vizro-core hatch env, or install vizro alongside these.
+pyyaml>=6
+requests>=2
+anthropic>=0.34
