@@ -42,11 +42,10 @@ Each prompt lists explicit intent bullets under `intent:` in `prompts.yaml`. Com
 
 ## Aggregation
 
-For a `(model, mode)` pair, report:
+For each model, report:
 
 - **Per-criterion average** across all prompts (three floats between 0 and 2).
 - **Overall pass rate** = fraction of prompts scoring **≥ 5 / 6** on the sum.
-- **Docs-attribution rate** = fraction of prompts where `docs-only` scored ≥ 2 points below `skill` or `mcp` on any criterion. These are the prompts the docs should learn to answer.
 
 ## Failure triage tags
 

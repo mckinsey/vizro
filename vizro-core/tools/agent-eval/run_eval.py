@@ -1,12 +1,13 @@
 """Skeleton runner for the Vizro docs agent eval suite.
 
-Loads prompts.yaml, iterates over (model, mode, prompt), calls the configured
+Loads prompts.yaml, iterates over (model, prompt), calls the configured
 agent for each combination, executes the produced code, scores each run
 against rubric.md, and writes a summary.
 
-Agent-invocation is deliberately abstract: register a callable per mode via
-:func:`register_mode`. Without at least one registered mode, the runner
-raises before making any calls.
+Agent-invocation is deliberately abstract: register a callable via
+:func:`register_agent`. Without a registered agent, the runner raises
+before making any calls. The agent should have access to the published
+Vizro docs (and ``llms.txt``) only.
 """
 
 from __future__ import annotations
@@ -17,9 +18,9 @@ import subprocess
 import sys
 import tempfile
 import time
-from collections.abc import Callable
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field, asdict
 from pathlib import Path
+from typing import Callable
 
 try:
     import yaml
@@ -42,7 +43,6 @@ class Prompt:
 class RunResult:
     prompt_id: str
     model: str
-    mode: str
     code: str
     score_validates: int
     score_renders: int
@@ -59,12 +59,14 @@ AgentCallable = Callable[[Prompt, str], str]
 """Signature: ``fn(prompt, model) -> python source code as a string``."""
 
 
-MODES: dict[str, AgentCallable] = {}
+AGENT: AgentCallable | None = None
 
 
-def register_mode(name: str, fn: AgentCallable) -> None:
-    """Register an agent-invocation callable for a mode."""
-    MODES[name] = fn
+def register_agent(fn: AgentCallable) -> None:
+    """Register the docs-only agent-invocation callable."""
+
+    global AGENT
+    AGENT = fn
 
 
 def load_prompts(path: Path) -> list[Prompt]:
@@ -78,6 +80,7 @@ def score_validates(code: str) -> tuple[int, list[str]]:
     Returns ``(score, tags)``. The subprocess should import the module and call
     ``dashboard = vm.Dashboard(...)`` cleanly.
     """
+
     tags: list[str] = []
     with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as f:
         f.write(code)
@@ -119,7 +122,10 @@ def score_renders(code: str) -> tuple[int, list[str]]:
     to run a Dash app. Fill in with the eval harness's own boot loop, or
     replace with PyCafe's execution sandbox.
     """
-    raise NotImplementedError("score_renders is a stub. Wire this to your dashboard-boot harness (see docstring).")
+
+    raise NotImplementedError(
+        "score_renders is a stub. Wire this to your dashboard-boot harness (see docstring)."
+    )
 
 
 def score_intent(code: str, prompt: Prompt) -> tuple[int, list[str]]:
@@ -135,15 +141,17 @@ def score_intent(code: str, prompt: Prompt) -> tuple[int, list[str]]:
     eval harness (e.g. ``INTENT_CHECKS[prompt.id]``) rather than a monolithic
     matcher here.
     """
-    raise NotImplementedError("score_intent is a stub. Implement per-prompt checks (see docstring).")
+
+    raise NotImplementedError(
+        "score_intent is a stub. Implement per-prompt checks (see docstring)."
+    )
 
 
-def run_one(prompt: Prompt, model: str, mode: str) -> RunResult:
-    if mode not in MODES:
-        raise RuntimeError(f"No agent callable registered for mode {mode!r}. See register_mode.")
+def run_one(prompt: Prompt, model: str) -> RunResult:
+    if AGENT is None:
+        raise RuntimeError("No agent callable registered. See register_agent.")
 
-    agent_fn = MODES[mode]
-    code = agent_fn(prompt, model)
+    code = AGENT(prompt, model)
 
     validates_score, validates_tags = score_validates(code)
     try:
@@ -158,7 +166,6 @@ def run_one(prompt: Prompt, model: str, mode: str) -> RunResult:
     return RunResult(
         prompt_id=prompt.id,
         model=model,
-        mode=mode,
         code=code,
         score_validates=validates_score,
         score_renders=renders_score,
@@ -173,7 +180,7 @@ def write_results(out_dir: Path, results: list[RunResult]) -> None:
     raw_dir = out_dir / "raw"
     raw_dir.mkdir(exist_ok=True)
     for r in results:
-        (raw_dir / f"{r.model}-{r.mode}-{r.prompt_id}.py").write_text(r.code)
+        (raw_dir / f"{r.model}-{r.prompt_id}.py").write_text(r.code)
 
     with (out_dir / "scores.jsonl").open("w") as f:
         for r in results:
@@ -191,17 +198,17 @@ def write_results(out_dir: Path, results: list[RunResult]) -> None:
     ]
     from collections import defaultdict
 
-    by_pair: dict[tuple[str, str], list[RunResult]] = defaultdict(list)
+    by_model: dict[str, list[RunResult]] = defaultdict(list)
     for r in results:
-        by_pair[(r.model, r.mode)].append(r)
+        by_model[r.model].append(r)
 
-    for (model, mode), runs in sorted(by_pair.items()):
+    for model, runs in sorted(by_model.items()):
         avg_val = sum(r.score_validates for r in runs) / len(runs)
         avg_ren = sum(r.score_renders for r in runs) / len(runs)
         avg_int = sum(r.score_intent for r in runs) / len(runs)
         pass_rate = sum(1 for r in runs if r.total >= 5) / len(runs)
         summary_lines.append(
-            f"## {model} - {mode}\n"
+            f"## {model}\n"
             f"- Prompts run: {len(runs)}\n"
             f"- Avg validates: {avg_val:.2f}/2\n"
             f"- Avg renders: {avg_ren:.2f}/2\n"
@@ -216,7 +223,6 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--prompts", type=Path, required=True)
     ap.add_argument("--models", nargs="+", required=True)
-    ap.add_argument("--modes", nargs="+", required=True)
     ap.add_argument("--out", type=Path, required=True)
     args = ap.parse_args()
 
@@ -226,9 +232,8 @@ def main() -> None:
 
     results: list[RunResult] = []
     for model in args.models:
-        for mode in args.modes:
-            for prompt in prompts:
-                results.append(run_one(prompt, model, mode))
+        for prompt in prompts:
+            results.append(run_one(prompt, model))
 
     write_results(out_dir, results)
     print(f"Wrote {len(results)} runs to {out_dir}")
