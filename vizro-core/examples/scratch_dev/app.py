@@ -15,7 +15,7 @@ page_1 = vm.Page(
         vm.Graph(id="graph_1", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
     ],
     controls=[
-        vm.Filter(column="species"),
+        vm.Filter(column="species", visible=True),
     ],
 )
 
@@ -240,6 +240,7 @@ page_5 = vm.Page(
 dashboard = vm.Dashboard(
     title="Vizro",
     pages=[page_1, page_2, page_3, page_4, page_5],
+    # pages=[page_1],
     # navigation=vm.Navigation(nav_selector=vm.NavBar()),
 )
 

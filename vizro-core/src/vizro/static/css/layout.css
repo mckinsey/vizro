@@ -20,7 +20,6 @@
   flex: 0 0 auto;
   flex-direction: column;
   height: 100%;
-  justify-content: space-between;
   overflow: hidden;
   width: 280px;
 }
@@ -126,6 +125,7 @@
   flex-direction: column;
   flex-shrink: 0;
   gap: 1.5rem;
+  margin-top: auto;
   overflow: auto;
   padding: 24px 20px 0;
 }

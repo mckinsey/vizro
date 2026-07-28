@@ -417,7 +417,11 @@ class Dashboard(VizroBaseModel):
 
         collapse_left_side = dbc.Collapse(
             id="collapse-left-side",
-            children=html.Div(id="left-side", children=[nav_panel, control_panel]),
+            children=html.Div(
+                id="left-side",
+                children=[nav_panel, control_panel],
+                hidden=_all_hidden([nav_panel, control_panel]),
+            ),
             is_open=True,
             dimension="width",
         )
