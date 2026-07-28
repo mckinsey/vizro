@@ -71,6 +71,8 @@ You can also set `targets` to specify which components on the page the filter sh
 
     === "Result"
 
+        The dashboard renders the "Basic Filter" example.
+
         [![Filter]][filter]
 
 The selector is configured automatically based on the target column type data as follows:
@@ -150,6 +152,8 @@ The following example demonstrates these default selector types.
 
     === "Result"
 
+        The dashboard renders the "Default Filter selectors" example.
+
         [![FilterDefault]][filterdefault]
 
 ## Hierarchical filters
@@ -219,6 +223,8 @@ To add a hierarchical filter to your page:
 
     === "Result"
 
+        The dashboard renders the "Hierarchical Filter" example.
+
         ![](../../assets/user_guides/filters/hierarchical_filter.gif)
 
 ## Change selector
@@ -274,6 +280,8 @@ You can explore and test all available selectors interactively on our [feature d
         ```
 
     === "Result"
+
+        The dashboard renders the "Filter with different selector" example.
 
         [![Selector]][selector]
 
@@ -347,6 +355,8 @@ Below is an example where we only target one page component, and where we furthe
         ```
 
     === "Result"
+
+        The dashboard renders the "Customized Filter" example.
 
         [![Advanced]][advanced]
 

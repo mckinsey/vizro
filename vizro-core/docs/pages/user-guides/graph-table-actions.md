@@ -127,6 +127,8 @@ The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking o
 
     === "Result"
 
+        The dashboard renders the "Cross-filter from table to graph - sex column value from selected rows" example.
+
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_table.gif)
 
 In the [cross-filter from table example](#cross-filter-from-table), when you **select one or more rows** in the table, the graph is cross-filtered to the corresponding **`sex` values** from those rows. **Which cell you click does not change which field is used:** the action always reads the `sex` column for the current row selection, not the clicked column.
@@ -210,6 +212,8 @@ If you set the `set_control.value` argument to `value="cell"`, the value of the 
         ```
 
     === "Result"
+
+        The dashboard renders the "Cross-filter from table to graph - propagating cell value" example.
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_table_2.gif)
 
@@ -324,6 +328,8 @@ We show an example of each of these in turn. Here is an example where we use `cu
 
     === "Result"
 
+        The dashboard renders the "Cross-filter from graph to table with `custom_data`" example.
+
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_1.gif)
 
 When you click on a box in the graph, the table is cross-filtered to show data for only one sex.
@@ -415,6 +421,8 @@ Here is an example where we do not need to use `custom_data` because the value u
         ```
 
     === "Result"
+
+        The dashboard renders the "Cross-filter from graph without `custom_data` to table" example.
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif)
 
@@ -508,6 +516,8 @@ Vizro automatically turns on click selection (`clickmode` is set to `"event+sele
         ```
 
     === "Result"
+
+        The dashboard renders the "Cross-filter from graph with multi-select" example.
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_3.gif)
 
@@ -614,6 +624,8 @@ For example, let us rearrange the [cross-filter from a table example](#cross-fil
 
     === "Result"
 
+        The dashboard renders the "Cross-filter between containers" example.
+
         ![](../../assets/user_guides/graph_table_actions/cross_filter_between_containers.gif)
 
 ### Cross-filter between pages
@@ -691,6 +703,8 @@ For example, let us rearrange the [cross-filter from a table example](#cross-fil
         ```
 
     === "Result"
+
+        The dashboard renders the "Cross filter between pages" example.
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_between_pages.gif)
 
@@ -792,6 +806,8 @@ To perform multiple cross-filters, each dimension that is filtered must have its
         ```
 
     === "Result"
+
+        The dashboard renders the "Cross-filter over 2 dimensions - from a graph" example.
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_pivoted.gif)
 
@@ -909,6 +925,8 @@ vm.AgGrid(
 
     === "Result"
 
+        The dashboard renders the "Cross-filter over 2 dimensions - from a table" example.
+
         ![](../../assets/user_guides/graph_table_actions/cross_filter_pivoted_table.gif)
 
 ### Cross-filter with non-categorical selectors
@@ -1004,6 +1022,8 @@ The examples above use categorical selectors such as [`Dropdown`][vizro.models.D
         ```
 
     === "Result"
+
+        The dashboard renders the "Cross-filter from table with non-categorical selector" example.
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_4.gif)
 
@@ -1227,6 +1247,8 @@ The full code is given below. This shows a slightly more complicated highlightin
 
     === "Result"
 
+        The dashboard renders the "Cross-highlight from table" example.
+
         ![](../../assets/user_guides/graph_table_actions/cross_highlight_from_table.gif)
 
 When you click on a row in the table, the corresponding point is highlighted in the scatter plot with an orange color, full opacity, and a thick border. Clicking the "Reset controls" button resets the parameter to its original value and hence clears the highlighting.
@@ -1430,6 +1452,8 @@ The full code is given below. This includes the complete code for a bump chart w
         ```
 
     === "Result"
+
+        The dashboard renders the "Cross-highlight from graph" example.
 
         ![](../../assets/user_guides/graph_table_actions/cross_highlight_from_graph.gif)
 
