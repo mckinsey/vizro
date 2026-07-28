@@ -55,7 +55,7 @@ The `layout` argument enables you to choose between two layout models: [`Grid`][
 
     === "Result"
 
-        The dashboard renders the "The default layout" step.
+        The dashboard renders the default layout.
 
         [![Layout]][layout]
 
