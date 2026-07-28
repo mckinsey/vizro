@@ -1,4 +1,5 @@
 ---
+description: "Index page for Vizro includes links to key pages and sections including a curated cheatsheet for agents and llms.txt"
 hide:
   - navigation
   - toc

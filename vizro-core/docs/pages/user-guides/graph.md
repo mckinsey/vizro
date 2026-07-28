@@ -1,3 +1,7 @@
+---
+description: "Insert Plotly Express and `plotly.graph_objects` charts in `Graph`, customize the figure, wire cross-filter interactions, add captions, and pass through `extra` arguments."
+---
+
 # How to use graphs
 
 This guide shows you how to use graphs to visualize your data in the dashboard.

@@ -1,3 +1,7 @@
+---
+description: "Half-hour tutorial that builds a three-page Iris and Gapminder dashboard, adding charts, controls, filters, parameters, and navigation step by step."
+---
+
 # Explore Vizro
 
 In this tutorial, you'll learn how to build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components. You can follow along using the written guide below or join in with the accompanying video tutorial.

@@ -1,3 +1,7 @@
+---
+description: "Add Markdown paragraphs, notes, images, and links to a page with `Text`, and use the `extra` argument to pass options through to `dcc.Markdown`."
+---
+
 # How to add text to your page
 
 This guide shows you how to display text in your dashboard with the [`Text` component][vizro.models.Text] model.

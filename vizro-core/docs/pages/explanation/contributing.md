@@ -1,3 +1,7 @@
+---
+description: "Contribute to Vizro: GitHub Codespaces setup, local development with Hatch, PR review requirements, and the code of conduct."
+---
+
 # Contributing
 
 Contributions of all experience levels are welcome! There are many ways to contribute, and we appreciate any help: it doesn't have to be a pull request (PR) on our code. You can also [report a bug](faq.md#how-can-i-report-a-bug), [request a feature](faq.md#how-can-i-request-a-feature), or [ask and answer community questions](faq.md#i-still-have-a-question-where-can-i-ask-it). Before making significant changes to Vizro code, you should first use [GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution.

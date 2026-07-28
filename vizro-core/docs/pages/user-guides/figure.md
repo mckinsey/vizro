@@ -1,3 +1,7 @@
+---
+description: "Render arbitrary reactive Dash components inside a `Figure`, and use built-in `kpi_card` and `kpi_card_reference` for KPI tiles with aggregation and delta references."
+---
+
 # How to use figures
 
 This guide shows you how to add any [Dash component](https://dash.plotly.com/#open-source-component-libraries) that needs to be reactive to [controls](controls.md) such as [filters](filters.md) and [parameters](parameters.md). If you want to add a static Dash component to your page, use [custom components](custom-components.md) instead.

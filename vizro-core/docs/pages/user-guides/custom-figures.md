@@ -1,3 +1,7 @@
+---
+description: "Write reactive Dash figure functions with `@capture('figure')`, with examples of custom KPI cards, dynamic HTML headers, and a dynamic number of cards."
+---
+
 # How to create custom figures
 
 This guide explains how to create custom figures, which is useful when you need a component that reacts to [filter](filters.md) and [parameter](parameters.md) controls.

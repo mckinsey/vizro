@@ -1,3 +1,7 @@
+---
+description: "Install Vizro with pip or uv, verify the version, upgrade to new releases, and enable IDE autocompletion via the Pydantic plugins."
+---
+
 # Installation Guide for Vizro
 
 ## Overview

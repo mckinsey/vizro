@@ -1,3 +1,7 @@
+---
+description: "Extend an existing Vizro model or subclass `VizroBaseModel` to wrap any Dash component, wire it to actions, and enable persistence."
+---
+
 # How to create custom components
 
 The number of [built-in Vizro models][vizro.models] is deliberately kept quite small to enable quick and easy configuration of a dashboard. However, Vizro is also extensible, so that you can modify any model or create an entirely new one. This guide shows you how to do so.

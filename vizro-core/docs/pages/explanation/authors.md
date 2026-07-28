@@ -1,3 +1,7 @@
+---
+description: "Roll call of the current and previous Vizro core team members and external code contributors, with GitHub links to each person."
+---
+
 ## Current team members
 
 <!-- vale off -->

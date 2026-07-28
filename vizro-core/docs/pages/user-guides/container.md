@@ -1,3 +1,7 @@
+---
+description: "Basic, nested, styled, and collapsible `Container`s, scoping controls to a container, adding tooltips, and passing extra Dash arguments."
+---
+
 # How to use containers
 
 This guide shows you how to use containers to group your components into sections and subsections within the page.

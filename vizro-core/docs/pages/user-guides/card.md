@@ -1,3 +1,7 @@
+---
+description: "Configure `Card` text, header and footer, embedded images, theme-aware icons, navigation tiles, KPI cards, tooltips, action triggers, and `extra`."
+---
+
 # How to use cards
 
 This guide shows you how to use cards in your dashboard.
