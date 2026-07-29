@@ -426,6 +426,7 @@ class Dashboard(VizroBaseModel):
             id="collapse-left-side",
             children=html.Div(
                 id="left-side",
+                className="no-nav" if _all_hidden([nav_panel]) else "",
                 children=[nav_panel, control_panel, reset_button],
                 hidden=_all_hidden([nav_panel, control_panel]),
             ),

@@ -102,6 +102,10 @@ the lighter shade, both in dark and light theme. */
   height: fit-content;
 }
 
+.control-group-panel:last-child {
+  border-bottom: none;
+}
+
 .control-group {
   gap: 24px;
   height: fit-content;

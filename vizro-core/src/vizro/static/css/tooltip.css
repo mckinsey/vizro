@@ -70,7 +70,7 @@
 .btn-reset {
   background: inherit;
   border: none;
-  box-shadow: none;
+  box-shadow: none !important;
   color: var(--text-primary);
   gap: 2px;
   height: 100%;

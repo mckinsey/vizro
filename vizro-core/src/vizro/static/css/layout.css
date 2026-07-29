@@ -130,6 +130,11 @@
   padding: 24px 20px 0;
 }
 
+#left-side.no-nav #control-panel {
+  border-top: none;
+  margin-top: 0;
+}
+
 .dashboard_title {
   display: flex;
   flex-direction: column;
