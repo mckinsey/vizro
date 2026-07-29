@@ -1855,6 +1855,7 @@ class TestFilterHierarchicalColumn:
         f.pre_build()
         assert isinstance(f.selector, vm.Cascader)
         assert f.selector.options == {"As": ["JP"], "Eu": ["DE", "FR"]}
+        assert f.selector.value == [["As", "JP"]]
         assert not f._dynamic
         assert not getattr(f.selector, "_dynamic", False)
         [default_action] = f.selector.actions
