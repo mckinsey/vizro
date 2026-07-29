@@ -259,7 +259,7 @@ class Cascader(VizroBaseModel):
             "leaf/path is selected.",
         ),
     ]
-    multi: bool = Field(default=True, description="Whether to allow selection of multiple values")
+    multi: bool = Field(default=True, description="Whether to enable selection of multiple values")
     title: str = Field(default="", description="Title to be displayed")
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
