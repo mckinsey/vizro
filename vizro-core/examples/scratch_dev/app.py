@@ -241,7 +241,7 @@ dashboard = vm.Dashboard(
     title="Vizro",
     pages=[page_1, page_2, page_3, page_4, page_5],
     # pages=[page_1],
-    # navigation=vm.Navigation(nav_selector=vm.NavBar()),
+    navigation=vm.Navigation(nav_selector=vm.NavBar()),
 )
 
 if __name__ == "__main__":

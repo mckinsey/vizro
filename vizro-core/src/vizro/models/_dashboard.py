@@ -65,6 +65,7 @@ _InnerPageContentType = TypedDict(
         "nav-panel": html.Div,
         "control-panel": html.Div,
         "collapse-icon-outer": html.Div,
+        "reset-button-container": html.Div,
     },
 )
 
@@ -344,16 +345,20 @@ class Dashboard(VizroBaseModel):
             hidden=_all_hidden(header_right_content),
         )
 
-        # Add reset button to bottom of control-panel when page controls exist and the panel is visible.
-        if has_page_controls and not control_panel_hidden:
-            icon = html.Span("sync", className="material-symbols-outlined tooltip-icon")
-            text = html.Span("Reset all", className="btn-text")
-            control_panel.children.append(
-                html.Div(
-                    id="reset-button-container",
-                    children=[dbc.Button(id="reset-button", children=[icon, text], className="btn-reset")],
+        reset_button_outer = html.Div(
+            id="reset-button-container",
+            children=[
+                dbc.Button(
+                    id="reset-button",
+                    children=[
+                        html.Span("sync", className="material-symbols-outlined tooltip-icon"),
+                        html.Span("Reset all", className="btn-text"),
+                    ],
+                    className="btn-reset",
                 )
-            )
+            ],
+            hidden=not has_page_controls or control_panel_hidden,
+        )
 
         collapse_icon_outer = html.Div(
             children=[
@@ -392,6 +397,7 @@ class Dashboard(VizroBaseModel):
                 nav_panel,
                 control_panel,
                 collapse_icon_outer if nav_bar_is_side else None,
+                reset_button_outer,
             ]
         )
 
@@ -414,12 +420,13 @@ class Dashboard(VizroBaseModel):
         nav_panel = inner_page["nav-panel"]
         control_panel = inner_page["control-panel"]
         right_side = html.Div(id="right-side", children=[page_header, page_components])
+        reset_button = inner_page["reset-button-container"]
 
         collapse_left_side = dbc.Collapse(
             id="collapse-left-side",
             children=html.Div(
                 id="left-side",
-                children=[nav_panel, control_panel],
+                children=[nav_panel, control_panel, reset_button],
                 hidden=_all_hidden([nav_panel, control_panel]),
             ),
             is_open=True,
@@ -442,6 +449,7 @@ class Dashboard(VizroBaseModel):
                 right_side,
                 collapse_left_side,
                 collapse_icon_outer if nav_bar_is_side else None,
+                reset_button,
             ]
         )
 

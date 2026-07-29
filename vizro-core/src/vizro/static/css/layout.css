@@ -9,7 +9,6 @@
   display: flex;
   flex-shrink: 0;
   justify-content: center;
-  padding: 8px;
   width: 100%;
 }
 
@@ -19,6 +18,7 @@
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
+  gap: 24px;
   height: 100%;
   overflow: hidden;
   width: 280px;
