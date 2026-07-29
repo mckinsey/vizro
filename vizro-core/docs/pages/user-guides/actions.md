@@ -1,3 +1,7 @@
+---
+description: "Attach built-in actions with `import vizro.actions as va`, trigger them from buttons or graphs, and chain multiple actions on a single trigger."
+---
+
 # How to use actions
 
 Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not built into Vizro then you can [write your own custom action](custom-actions.md). In these guides we show how to use built-in actions across a range of areas:
@@ -85,6 +89,8 @@ Here is an example action that uses the [`export_data` action](data-actions.md#e
 
     === "Result"
 
+        The dashboard renders the "Action triggered by button" example.
+
         [![ExportData]][exportdata]
 
 When you click the "Export data" button, the data for all graphs, tables and figures on the page is downloaded. In this example, this will produce a csv file for the graph's source data `px.data.iris()`.
@@ -163,6 +169,8 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
         ```
 
     === "Result"
+
+        The dashboard renders the "Cross-filter from graph to table" example.
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif)
 

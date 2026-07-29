@@ -1,3 +1,7 @@
+---
+description: "Run Vizro from a script, notebook, or PyCafe with hot reload, then deploy via Hugging Face, Dash Enterprise, Gunicorn, or Docker."
+---
+
 # How to run and/or deploy your dashboard
 
 Typically when you create a dashboard, there are two distinct stages:
@@ -385,6 +389,8 @@ When sharing your dashboard, it can be useful to share or bookmark a link to a p
         ```
 
     === "Result"
+
+        The dashboard renders the "Shareable URL that includes filter" example.
 
         [![filterInUrl]][filterinurl]
 

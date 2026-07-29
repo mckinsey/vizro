@@ -1,3 +1,7 @@
+---
+description: "Write actions with `@capture('action')`: triggers, runtime inputs, multiple actions, targeting specific model parts, and emitting notifications."
+---
+
 # How to create custom actions
 
 Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not available in Vizro's [built-in actions](actions.md) then you can create a custom action. In this guide we show how to do this.
@@ -144,6 +148,8 @@ Here is the full example code that includes the output component `vm.Time(id="ti
 
     === "Result"
 
+        The dashboard renders the "Trigger an action with a button" example.
+
         ![](../../assets/user_guides/actions/custom-actions1.png)
 
 Before clicking the button, the text shows "Click the button". When you click the button, the `current_time_text` action is triggered. This finds the current time and returns a string "The time is ...". The resulting value is sent back to the user's screen and updates the text of the model `vm.Text(id="time_text")`.
@@ -239,6 +245,8 @@ Here is the full example code that includes the input component `vm.Switch(id="c
         # Custom components and added component types (with `add_type`) are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "Use runtime inputs" example.
 
         ![](../../assets/user_guides/actions/custom-actions2.png)
 
@@ -372,6 +380,8 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
         ```
     === "Result"
 
+        The dashboard renders the "Use model argument as output" example.
+
         ![](../../assets/user_guides/actions/custom-actions3.png)
 
 ### Dash properties as input and output
@@ -429,6 +439,8 @@ For example, let's alter the [above example](#trigger-with-a-runtime-input) of a
         # Custom components and added component types (with `add_type`) are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "Use Dash property as input" example.
 
         ![](../../assets/user_guides/actions/custom-actions4.png)
 
@@ -518,6 +530,8 @@ These keys are all optional; you can define only the ones that are relevant for 
         ```
 
     === "Result"
+
+        The dashboard renders the "Progress, success and error notifications" example.
 
         [![ProgressSuccessErrorNotification]][progresssuccesserrornotification]
 
@@ -628,6 +642,8 @@ Custom notifications use the "info" style by default unless [configured otherwis
 
     === "Result"
 
+        The dashboard renders the "Custom notification keys" example.
+
         [![CustomNotificationKeys]][customnotificationkeys]
 
 
@@ -734,6 +750,8 @@ There are two templates to provide more informative and contextual feedback to u
         ```
 
     === "Result"
+
+        The dashboard renders the "Templating with `{result}` and `{error_msg}`" example.
 
         [![TemplatedNotifications]][templatednotifications]
 
@@ -852,6 +870,8 @@ The progress message reflects the current inputs of the action to make it more i
         ```
 
     === "Result"
+
+        The dashboard renders the "Dynamic progress text" example.
 
         [![DynamicProgressText]][dynamicprogresstext]
 
@@ -986,6 +1006,8 @@ To customize notifications when you define them, use the [`show_notification`][v
         ```
 
     === "Result"
+
+        The dashboard renders the "Customized notification with `show_notification`" example.
 
         [![CustomizedNotification]][customizednotification]
 

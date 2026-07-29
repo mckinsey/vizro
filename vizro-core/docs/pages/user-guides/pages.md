@@ -1,3 +1,7 @@
+---
+description: "Structure a `Page` with `components`, `controls`, `layout`, `title`, and `description`, and set its URL via the `path` argument."
+---
+
 # How to make dashboard pages
 
 This guide shows you how to add pages to your dashboard and customize the URL paths if needed. A [`Page`][vizro.models.Page] model enables you to:
@@ -84,6 +88,8 @@ To create and add a page to your dashboard, do the following steps:
         ```
 
     === "Result"
+
+        The dashboard renders the "Page" example.
 
         [![Page]][page]
 

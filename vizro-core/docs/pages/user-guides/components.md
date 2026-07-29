@@ -1,3 +1,7 @@
+---
+description: "Decision table for picking between `Graph`, `Table`, `AgGrid`, `Figure`, `Card`, `Text`, `Button`, `Container`, and `Tabs` for a piece of page content."
+---
+
 # Components
 
 Components are the visual building blocks of a Vizro dashboard page. You add them to the `components` argument of a [`Page`][vizro.models.Page] (or [`Container`][vizro.models.Container]) to display charts and tables, present text, group related content into sections, or expose interactive elements such as buttons.

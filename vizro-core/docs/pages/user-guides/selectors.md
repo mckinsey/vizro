@@ -1,3 +1,7 @@
+---
+description: "Categorical, numerical, temporal, boolean, and hierarchical selectors for `Filter` and `Parameter`, plus styled dropdowns, tooltips, and `extra`."
+---
+
 # How to use selectors
 
 This guide highlights different selectors that can be used in a dashboard. Selectors do not serve a purpose on their own, but they enable you to change how the input is given to other models, for example, the [`Filter`][vizro.models.Filter] or the [`Parameter`][vizro.models.Parameter] model.
@@ -85,6 +89,8 @@ You can customize two predefined dropdown styles that can be customized using th
         ```
 
     === "Result"
+
+        The dashboard renders the "Styled dropdowns" example.
 
         [![Dropdown]][dropdown]
 
@@ -289,6 +295,8 @@ You can pick a different starting selection by setting `value` on [`Cascader`][v
 
     === "Result"
 
+        The dashboard renders the "Hierarchical selector multi vs single" example.
+
         ![](../../assets/user_guides/selectors/hierarchical_selectors.gif)
 
 Hierarchical selectors can be used in [hierarchical filters](filters.md#hierarchical-filters) and [parameters](parameters.md).
@@ -362,6 +370,8 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
     === "Result"
 
+        The dashboard renders the "Selectors with tooltip" example.
+
         [![InfoIconSelector]][infoiconselector]
 
 ## The `extra` argument
@@ -430,6 +440,8 @@ An example would be to make the [`RadioItem`][vizro.models.RadioItems] display i
         ```
 
     === "Result"
+
+        The dashboard renders the "Inline Radio Items" example.
 
         [![InlineRadio]][inlineradio]
 

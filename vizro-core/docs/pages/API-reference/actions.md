@@ -1,3 +1,7 @@
+---
+description: "Signatures for every built-in action in `vizro.actions`: `export_data`, `filter_interaction`, `set_control`, `show_notification`, `update_notification`, and the `AbstractAction` base."
+---
+
 # Actions
 <!-- vale off -->
 

@@ -1,3 +1,7 @@
+---
+description: "Compact reference for LLMs: minimum runnable Vizro app, model and action indices, `@capture` matrix, selector auto-selection, top errors, and schema link."
+---
+
 # Vizro for LLMs
 
 This page is a single-file cheatsheet for LLMs and coding agents. It restates only what an agent needs to write correct Vizro code in one pass, and links out to canonical reference for everything else. Do not duplicate content from linked pages here — follow the links.
