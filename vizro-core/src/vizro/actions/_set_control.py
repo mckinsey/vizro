@@ -32,7 +32,7 @@ class set_control(_AbstractAction):
     """Sets the value of a control, which then updates its targets.
 
     Abstract: Usage documentation
-        [Graph and table interactions](user-guides/graph-table-actions.md)
+        [Graph and table interactions](../user-guides/graph-table-actions.md)
 
     The following Vizro models can be a source of `set_control`:
 
@@ -134,7 +134,8 @@ class set_control(_AbstractAction):
         if not isinstance(self._parent_model, _SupportsSetControl):
             raise ValueError(
                 f"`set_control` action was added to the model with ID `{self._parent_model.id}`, "
-                "but this action can only be used with models that support it (e.g. Graph, AgGrid, Figure, and so on). "
+                "but this action can only be used with models that support it "
+                "(for example, Graph, AgGrid, Figure, and so on). "
                 "See all models that can source a `set_control` at "
                 "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_control"
             )
@@ -152,7 +153,7 @@ class set_control(_AbstractAction):
         if not hasattr(control_model, "selector"):
             raise TypeError(
                 f"Model with ID `{self.control}` used as a `control` in `set_control` action must be a control model "
-                f"(e.g. Filter, Parameter)."
+                f"(for example, Filter, Parameter)."
             )
 
         # A path-mode Cascader (full_path=True) identifies a selection by its full root-to-leaf path. A trigger

@@ -1,3 +1,7 @@
+---
+description: "Choose between `Grid` (row/column) and `Flex` (flexible box) on a `Page` or `Container`, and see alternative approaches like tabs and containers."
+---
+
 # How to change the layout of your page
 
 The [`Page`][vizro.models.Page] and [`Container`][vizro.models.Container] models accept a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the `layout` with:
@@ -54,6 +58,8 @@ The `layout` argument enables you to choose between two layout models: [`Grid`][
         ```
 
     === "Result"
+
+        The dashboard renders the default layout.
 
         [![Layout]][layout]
 
@@ -146,6 +152,8 @@ This defines a single row that occupies the entire width and height, divided int
         ```
 
     === "Result"
+
+        The dashboard renders the "Grid Arrangement - Basic Example" example.
 
         [![Grid]][grid]
 
@@ -282,6 +290,8 @@ The `Grid` provides full control over the arrangement of top-level components wi
 
     === "Result"
 
+        The dashboard renders the "Grid Arrangement - Advanced Example" example.
+
         [![GridAdv]][gridadv]
 
 ### Cheatsheet - grid examples
@@ -363,6 +373,8 @@ grid = [[0, 1, -1], [0, 2, -1]]
 
     === "Result"
 
+        The dashboard renders the "Adding Empty Spaces" example.
+
         [![GridEmpty]][gridempty]
 
 ### Control the scroll behavior
@@ -440,6 +452,8 @@ By default, the grid fits all charts/components on the screen. This can lead to 
         ```
 
     === "Result"
+
+        The dashboard renders the "Activate Scrolling" example.
 
         [![GridScroll]][gridscroll]
 
@@ -606,6 +620,8 @@ In this example, there isn’t enough space to fit all three graphs in a single 
 
     === "Result"
 
+        The dashboard renders the "Flex - advanced example" example.
+
         [![FlexAdvanced]][flexadvanced]
 
 ### Align and position flex items
@@ -672,6 +688,8 @@ Common properties you can pass through `extra` include:
         ```
 
     === "Result"
+
+        The dashboard renders the "Flex with justify and align" example.
 
         [![FlexExtra]][flexextra]
 
@@ -775,6 +793,8 @@ We will reuse the example from the previous section, but this time we set `width
 
     === "Result"
 
+        The dashboard renders the "Change the width for Graph" example.
+
         [![FlexItemSizeArg]][flexitemsizearg]
 
 #### Change size via CSS
@@ -824,6 +844,8 @@ Each item within the `Flex` layout is wrapped in a `<div class="flex-item">`, wh
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/flex-items-cards-width">Run and edit this code in PyCafe</a></b>
 
     === "Result"
+
+        The dashboard renders the "Change the width of all flex items with CSS" example.
 
         [![FlexItemSizeCSS]][flexitemsizecss]
 
@@ -875,6 +897,8 @@ For example, in the layout below, we use the [`Grid`](#grid-layout) layout to ar
         ```
 
     === "Result"
+
+        The dashboard renders the "Grid with Flex container" example.
 
         [![FlexGridCombined]][flexgridcombined]
 

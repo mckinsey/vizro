@@ -1,3 +1,7 @@
+---
+description: "Configure `Dashboard` in pydantic, dict, YAML, or JSON, and set the title, logo, tooltip, header, social meta tags, and browser tab title."
+---
+
 # How to create a dashboard
 
 This guide shows you how to configure and call a [`Dashboard`][vizro.models.Dashboard] model using either pydantic models, Python dictionaries, YAML, or JSON.
@@ -147,6 +151,8 @@ To create a dashboard:
 
     === "Result"
 
+        The dashboard renders the "Dashboard Configuration Syntaxes" example.
+
         [![Dashboard]][dashboard]
 
 !!! note "Extra `.py` files for `yaml` and `json` required"
@@ -251,6 +257,8 @@ To add items to the custom header area, subclass the [Dashboard][vizro.models.Da
         Custom dashboards are currently only possible via Python configuration.
 
     === "Result"
+
+        The dashboard renders the "Customize dashboard header" example.
 
         [![CustomHeader]][customheader]
 

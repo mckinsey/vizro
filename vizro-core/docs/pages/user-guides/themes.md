@@ -1,3 +1,7 @@
+---
+description: "Switch between Vizro's dark and light themes, use a custom Bootstrap theme, apply Vizro's Plotly templates and palettes, or reuse them in pure Dash."
+---
+
 # How to use themes and colors
 
 This guide shows you how to use themes. Themes are pre-designed collections of stylings that are applied to entire charts and dashboards. The themes provided by Vizro are infused with our design best practices that make charts and dashboards look visually consistent and professional.
@@ -218,6 +222,8 @@ You can customize the built-in `vizro_dark` and `vizro_light` themes by modifyin
 
     === "Result"
 
+        The dashboard renders the "Modify template color scheme" example.
+
         [![ModifiedColors]][modifiedcolors]
 
 !!! note "Color scheme applies to both light and dark themes"
@@ -264,6 +270,8 @@ For more comprehensive customizations, you can modify multiple template properti
         ```
 
     === "Result"
+
+        The dashboard renders the "Modify multiple template properties" example.
 
         [![ModifiedProperties]][modifiedproperties]
 
@@ -312,6 +320,8 @@ You can achieve fine-grained control over individual charts by using arguments s
         ```
 
     === "Result"
+
+        The dashboard renders the "Template colors vs chart-specific colors" example.
 
         [![ColorPrecedence]][colorprecedence]
 

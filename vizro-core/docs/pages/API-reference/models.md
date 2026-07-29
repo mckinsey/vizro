@@ -1,3 +1,7 @@
+---
+description: "Full reference for every model in `vizro.models`, including Dashboard, Page, Container, Tabs, Grid, Flex, Graph, Table, Filter, Parameter, and Action."
+---
+
 # Models
 
 Vizro's grammar of dashboards is defined by a small set of Pydantic models in `vizro.models`, typically aliased as `vm` (`import vizro.models as vm`). Every dashboard is built by composing these models. Use the [Model index](#model-index) below to jump to the reference entry for a specific model; the full auto-generated reference for every public model follows in the [full model reference](#full-model-reference) section.
@@ -61,6 +65,7 @@ Selectors are the input widgets used inside `Filter.selector` and `Parameter.sel
 | [`RangeSlider`][vizro.models.RangeSlider] | Numeric range slider (default for numerical data).                                   |
 | [`DatePicker`][vizro.models.DatePicker] | Date or date-range picker (default for temporal data).                               |
 | [`TimePicker`][vizro.models.TimePicker] | Time or time-range picker.                                                           |
+| [`DateTimePicker`][vizro.models.DateTimePicker] | Combined date-and-time (or date-and-time-range) picker for `datetime` columns.       |
 | [`Cascader`][vizro.models.Cascader]     | Cascading multi-level selection widget.                                              |
 
 ### Navigation

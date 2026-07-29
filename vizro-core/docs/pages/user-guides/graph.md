@@ -1,3 +1,7 @@
+---
+description: "Insert Plotly Express and `plotly.graph_objects` charts in `Graph`, customize the figure, wire cross-filter interactions, add captions, and pass through `extra` arguments."
+---
+
 # How to use graphs
 
 This guide shows you how to use graphs to visualize your data in the dashboard.
@@ -66,6 +70,8 @@ To add a [`Graph`][vizro.models.Graph] model to your page, do the following:
         ```
 
     === "Result"
+
+        The dashboard renders the "Graph" example.
 
         [![Graph]][graph]
 
@@ -177,6 +183,8 @@ The [`Graph`][vizro.models.Graph] model accepts `title`, `header`, `footer` and 
 
     === "Result"
 
+        The dashboard renders the "Formatted Graph" example.
+
         [![FormattedGraph]][formattedgraph]
 
 ## The `extra` argument
@@ -237,6 +245,8 @@ An example use would be to [remove the plotly mode bar](https://plotly.com/pytho
         ```
 
     === "Result"
+
+        The dashboard renders the "Graph with extra" example.
 
         [![GraphWithExtra]][graphwithextra]
 

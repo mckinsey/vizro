@@ -515,10 +515,10 @@ class capture:
     """Captures a function call to create a custom [`CapturedCallable`][vizro.models.types.CapturedCallable].
 
     Abstract: Usage documentation
-        [How to create custom actions](user-guides/custom-actions.md),
-        [How to create custom charts](user-guides/custom-charts.md),
-        [How to create custom tables](user-guides/custom-tables.md),
-        [How to create figures](user-guides/custom-figures.md).
+        [How to create custom actions](../user-guides/custom-actions.md),
+        [How to create custom charts](../user-guides/custom-charts.md),
+        [How to create custom tables](../user-guides/custom-tables.md),
+        [How to create figures](../user-guides/custom-figures.md).
 
     Args:
         mode: The mode of the captured callable.
@@ -687,11 +687,12 @@ OptionsType: TypeAlias = list[SingleValueType | _OptionsDictType]
 # All the below types rely on models and so must use ForwardRef (that is, "Checklist" rather than actual
 # Checklist class).
 SelectorType = Annotated[
-    "Cascader | Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch | TimePicker",
+    "Cascader | Checklist | DatePicker | DateTimePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch | TimePicker",  # noqa: E501
     Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Cascader`][vizro.models.Cascader],
-[`Checklist`][vizro.models.Checklist], [`DatePicker`][vizro.models.DatePicker], [`Dropdown`][vizro.models.Dropdown],
+[`Checklist`][vizro.models.Checklist], [`DatePicker`][vizro.models.DatePicker],
+[`DateTimePicker`][vizro.models.DateTimePicker], [`Dropdown`][vizro.models.Dropdown],
 [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider],
 [`Switch`][vizro.models.Switch] or [`TimePicker`][vizro.models.TimePicker]."""
 
