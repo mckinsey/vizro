@@ -193,17 +193,39 @@ page_leaf_dynamic = vm.Page(
     title="Leaf mode - dynamic filter",
     components=[
         vm.Graph(
-            id="scatter_dynamic",
+            id="scatter_leaf_single",
+            figure=px.scatter(
+                "gapminder_dynamic", x="gdpPercap", y="lifeExp", size="pop", color="continent", hover_name="country"
+            ),
+        ),
+        vm.Graph(
+            id="scatter_leaf_multi",
             figure=px.scatter(
                 "gapminder_dynamic", x="gdpPercap", y="lifeExp", size="pop", color="continent", hover_name="country"
             ),
         ),
     ],
     controls=[
-        # Default hierarchical filter is leaf mode: options can be arbitrarily deep, rows match on `country`.
-        vm.Filter(column=["continent", "region", "country"]),
+        # Leaf mode: options can be arbitrarily deep, rows match on the last column (`country`).
+        # Single-select Cascader → its own graph.
+        vm.Filter(
+            id="leaf_dyn_single_filter",
+            column=["continent", "region", "country"],
+            targets=["scatter_leaf_single"],
+            selector=vm.Cascader(multi=False, title="Country (single, leaf)"),
+        ),
+        # Multi-select Cascader → its own graph.
+        vm.Filter(
+            id="leaf_dyn_multi_filter",
+            column=["continent", "region", "country"],
+            targets=["scatter_leaf_multi"],
+            selector=vm.Cascader(multi=True, title="Countries (multi, leaf)"),
+        ),
         vm.Parameter(
-            targets=["scatter_dynamic.data_frame.top_n_per_continent"],
+            targets=[
+                "scatter_leaf_single.data_frame.top_n_per_continent",
+                "scatter_leaf_multi.data_frame.top_n_per_continent",
+            ],
             selector=vm.Slider(min=1, max=20, step=1, value=5, title="Top N per continent"),
         ),
     ],
@@ -213,6 +235,13 @@ page_leaf_static = vm.Page(
     title="Leaf mode - static filter (URL)",
     components=[
         vm.Graph(
+            id="leaf_static_single_graph",
+            figure=px.scatter(
+                load_gapminder(), x="gdpPercap", y="lifeExp", size="pop", color="continent", hover_name="country"
+            ),
+        ),
+        vm.Graph(
+            id="leaf_static_multi_graph",
             figure=px.scatter(
                 load_gapminder(), x="gdpPercap", y="lifeExp", size="pop", color="continent", hover_name="country"
             ),
@@ -221,9 +250,18 @@ page_leaf_static = vm.Page(
     controls=[
         # Single-select leaf value ("United States" is a unique country), shown in the URL as a scalar.
         vm.Filter(
-            id="leaf_static_filter",
+            id="leaf_static_single_filter",
             column=["continent", "region", "country"],
-            selector=vm.Cascader(multi=False, value="United States"),
+            targets=["leaf_static_single_graph"],
+            selector=vm.Cascader(multi=False, value="United States", title="Country (single, leaf)"),
+            show_in_url=True,
+        ),
+        # Multi-select leaf values, shown in the URL as a list.
+        vm.Filter(
+            id="leaf_static_multi_filter",
+            column=["continent", "region", "country"],
+            targets=["leaf_static_multi_graph"],
+            selector=vm.Cascader(multi=True, value=["United States", "China"], title="Countries (multi, leaf)"),
             show_in_url=True,
         ),
     ],
@@ -250,11 +288,26 @@ for _state, _city in zip(_cities["state"], _cities["city"]):
 page_path_duplicate = vm.Page(
     title="Path mode - duplicate leaves",
     components=[
-        vm.Graph(figure=px.bar(_cities, x="city", y="population", color="state")),
+        vm.Graph(id="path_dup_single_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
+        vm.Graph(id="path_dup_multi_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
     ],
     controls=[
-        # full_path=True: each selection is a full path, so the two "Portland"s filter independently.
-        vm.Filter(column=["state", "city"], selector=vm.Cascader(multi=True, full_path=True)),
+        # Single-select path Cascader → its own graph: one full path, so a specific "Portland" is unambiguous.
+        vm.Filter(
+            id="path_dup_single_filter",
+            column=["state", "city"],
+            targets=["path_dup_single_graph"],
+            selector=vm.Cascader(
+                multi=False, full_path=True, value=["Oregon", "Portland"], title="City (single, path)"
+            ),
+        ),
+        # Multi-select path Cascader → its own graph: the two "Portland"s filter independently.
+        vm.Filter(
+            id="path_dup_multi_filter",
+            column=["state", "city"],
+            targets=["path_dup_multi_graph"],
+            selector=vm.Cascader(multi=True, full_path=True, title="Cities (multi, path)"),
+        ),
     ],
 )
 
@@ -369,7 +422,7 @@ page_set_control_leaf = vm.Page(
             id="sc_filter",
             column=["continent", "region", "country"],
             targets=["sc_grid_target"],
-            selector=vm.Cascader(multi=False, value="China", title="Country (single, leaf mode)"),
+            selector=vm.Cascader(multi=True, value="China", title="Country (single, leaf mode)"),
         ),
     ],
 )
