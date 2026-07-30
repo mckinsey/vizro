@@ -121,6 +121,27 @@ def managers_page_hierarchical_filter_set_control(standard_px_chart):
     Vizro._pre_build()
 
 
+@pytest.fixture
+def managers_page_hierarchical_filter_set_control_path(standard_px_chart):
+    vm.Page(
+        id="hier-set-page-path",
+        title="hier-path",
+        components=[
+            vm.Button(id="hier_set_btn_path", text="Set"),
+            vm.Graph(id="hier_set_chart_path", figure=standard_px_chart),
+        ],
+        controls=[
+            vm.Filter(
+                id="hier_set_filter_path",
+                targets=["hier_set_chart_path"],
+                column=["continent", "country"],
+                selector=vm.Cascader(multi=False, full_path=True),
+            ),
+        ],
+    )
+    Vizro._pre_build()
+
+
 class TestSetControlInstantiation:
     """Tests set control instantiation."""
 
@@ -319,15 +340,15 @@ class TestSetControlFunction:
                 ["1992-01-01", "1993-01-01", "1994-01-01"],
                 ["1992-01-01", "1994-01-01"],
             ),
-            # Hierarchical single-select
-            ("cascade_param_single", [], no_update),
+            # Leaf-mode hierarchical single-select behaves like a flat single-value selector: a bare leaf passes
+            # through, and a 1-item list is unwrapped to its single leaf.
             ("cascade_param_single", "leaf_a", "leaf_a"),
-            ("cascade_param_single", ["leaf_b"], "leaf_b"),
-            ("cascade_param_single", ["leaf_a", "leaf_b"], no_update),
-            # Hierarchical multi-select
+            ("cascade_param_single", ["leaf_a"], "leaf_a"),
+            # Leaf-mode hierarchical multi-select behaves like a flat multi selector: the list of leaves passes
+            # through, and a bare leaf is wrapped into a list.
             ("cascade_param_multi", [], []),
+            ("cascade_param_multi", ["leaf_a", "leaf_b"], ["leaf_a", "leaf_b"]),
             ("cascade_param_multi", "leaf_a", ["leaf_a"]),
-            ("cascade_param_multi", ["leaf_b", "leaf_c"], ["leaf_b", "leaf_c"]),
         ],
     )
     def test_function_different_value_for_different_controls(self, control, value, expected_result):
@@ -407,8 +428,20 @@ class TestSetControlOutputs:
 
 @pytest.mark.usefixtures("managers_page_hierarchical_filter_set_control")
 class TestSetControlHierarchicalFilter:
-    def test_pre_build_same_page(self):
+    def test_pre_build_same_page_leaf_mode_allowed(self):
+        # Leaf-mode (full_path=False) hierarchical filter: set_control is allowed.
         action = set_control(control="hier_set_filter", value="Germany")
         model_manager["hier_set_btn"].actions = action
         action.pre_build()
         assert action._same_page is True
+
+
+@pytest.mark.usefixtures("managers_page_hierarchical_filter_set_control_path")
+class TestSetControlHierarchicalFilterPathMode:
+    def test_pre_build_path_mode_raises(self):
+        # Path-mode (full_path=True) hierarchical filter: set_control cannot reconstruct a full path from a
+        # trigger's single column value, so it is disabled at pre_build.
+        action = set_control(control="hier_set_filter_path", value="Germany")
+        model_manager["hier_set_btn_path"].actions = action
+        with pytest.raises(ValueError, match="full_path=True"):
+            action.pre_build()
