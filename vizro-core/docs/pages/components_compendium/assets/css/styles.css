@@ -5,15 +5,23 @@
 }
 
 :root {
-  --color-primary: #4a90e2;
-  --color-primary-dark: #357abd;
+  /* Vizro brand colors (aligned with vizro_overwrites.css light theme) */
+  --color-primary: #00a9f4;
+  --color-primary-dark: #0088cc;
   --color-secondary: #7b68ee;
   --color-text: #333333;
   --color-text-light: #666666;
   --color-border: #e0e0e0;
   --color-bg: #ffffff;
-  --color-bg-alt: #f8f9fa;
-  --color-success: #28a745;
+  --color-bg-alt: #f5f6f6; /* Matches Vizro --bs-tertiary-bg */
+  --color-success: #00b5a9; /* Matches Vizro --bs-success */
+  --color-hover-overlay: rgba(
+    20,
+    23,
+    33,
+    0.08
+  ); /* Vizro --bs-highlight-bg equivalent */
+
   --spacing-xxs: 0.2rem;
   --spacing-xs: 0.5rem;
   --spacing-sm: 1rem;
@@ -25,10 +33,10 @@
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
   --max-width: 1200px;
-  --primary: #0066ff;
-  --primary-dark: #0052cc;
-  --accent: #00d4ff;
-  --bg-main: #fafbfc;
+  --primary: #00a9f4; /* Vizro focus ring / brand accent */
+  --primary-dark: #0088cc;
+  --accent: #097dfe; /* Matches Vizro --bs-info */
+  --bg-main: #f5f6f6; /* Matches Vizro --bs-tertiary-bg */
   --bg-card: #ffffff;
   --text-primary: #0f1419;
   --text-secondary: #536471;
@@ -273,7 +281,7 @@ a {
 }
 
 .category__title:hover {
-  background-color: #e8f0f8;
+  background-color: var(--color-hover-overlay);
 }
 
 .category__title-text {
@@ -437,7 +445,7 @@ a {
   border-radius: 4px;
   color: #ffffff;
   display: flex;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   gap: 0.5rem;
   padding: var(--spacing-xxs) var(--spacing-xs);
   position: absolute;
@@ -639,7 +647,7 @@ a {
 
 .search-box__input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 169, 244, 0.12);
   outline: none;
 }
 
@@ -926,7 +934,7 @@ a {
 
 .demo-preview {
   align-items: center;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, var(--color-bg-alt) 0%, #e9ecef 100%);
   display: flex;
   height: 200px;
   justify-content: center;
@@ -944,7 +952,7 @@ a {
   background: linear-gradient(
     135deg,
     transparent 0%,
-    rgba(0, 102, 255, 0.05) 50%,
+    rgba(0, 169, 244, 0.05) 50%,
     transparent 100%
   );
   content: "";
@@ -1253,12 +1261,11 @@ a {
 }
 
 .nav-link:hover {
-  background: rgba(0, 102, 255, 0.08);
-  color: var(--primary);
+  background: var(--color-hover-overlay);
 }
 
 .nav-link.active {
-  background: rgba(0, 102, 255, 0.1);
+  background: rgba(0, 169, 244, 0.12);
   color: var(--primary);
   font-weight: 600;
 }
@@ -1281,7 +1288,7 @@ a {
 }
 
 .nav-count {
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--color-hover-overlay);
   border-radius: 10px;
   color: var(--text-secondary);
   font-family: var(--font-sans);
@@ -1324,7 +1331,7 @@ a {
   background: var(--primary);
   border: none;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 169, 244, 0.3);
   color: white;
   cursor: pointer;
   display: none;
@@ -1392,8 +1399,7 @@ html {
 }
 
 .nav-category-header:hover {
-  background: rgba(0, 102, 255, 0.08);
-  color: var(--primary);
+  background: var(--color-hover-overlay);
 }
 
 .nav-category-header span:nth-child(2) {
@@ -1437,8 +1443,7 @@ html {
 }
 
 .nav-subcategory-header:hover {
-  background: rgba(0, 102, 255, 0.08);
-  color: var(--primary);
+  background: var(--color-hover-overlay);
 }
 
 .nav-subcategory-header span:first-child {
