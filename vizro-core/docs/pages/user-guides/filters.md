@@ -171,6 +171,11 @@ To add a hierarchical filter to your page:
 1. add a [`Filter`][vizro.models.Filter] to `controls`, the same as for a basic filter
 1. set `column` to a list of at least two columns' names from the top level of the hierarchy down to the column you want to filter on
 
+!!! note "Path mode (`full_path=True`) constraints"
+
+    - The number of columns in `Filter.column` must equal the number of levels in the `options` hierarchy, because every level of a selected path is matched against the corresponding column. (Leaf mode has no such restriction: it matches on the last column only, so `options` may be arbitrarily deep.)
+    - Path mode does not support [`set_control`](graph-table-actions.md) yet, because a single click cannot reconstruct a full root-to-leaf path. Use leaf mode (`full_path=False`) for filters that are targets of `set_control`.
+
 !!! example "Hierarchical Filter"
 
     === "app.py"

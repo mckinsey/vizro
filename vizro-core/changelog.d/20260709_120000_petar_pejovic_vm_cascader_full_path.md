@@ -18,7 +18,9 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- `Cascader` gains a `full_path` attribute. With `full_path=False` (default, leaf mode) a selection is a bare leaf value (single-select) or a list of leaf values (multi-select), leaf labels must be unique across the tree, a hierarchical `Filter` matches the last `column`, and `set_control` is supported — matching the previous behavior. With `full_path=True` (path mode) a selection is a full root-to-leaf path (single-select) or a list of paths (multi-select), so duplicate leaf labels across branches are addressed unambiguously and a hierarchical `Filter` matches every `column`. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
+- `vm.Cascader` gains a `full_path` flag. The default (`full_path=False`, leaf mode) preserves existing behavior: a selection is a bare leaf value (single-select) or a list of leaf values (multi-select), leaf labels must be unique across the tree, a hierarchical `vm.Filter` matches the last `Filter.column`, and `set_control` is supported. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
+
+- Set `full_path=True` on `vm.Cascader` to enable path mode: a selection becomes a full root-to-leaf path (single-select) or a list of paths (multi-select), allowing duplicate leaf labels across branches. A hierarchical `vm.Filter` then matches on every level of `Filter.column`, so the number of `Filter.column` entries must equal the number of levels in the `options` hierarchy. Path mode does not support `set_control` yet. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
 
 <!--
 ### Changed
