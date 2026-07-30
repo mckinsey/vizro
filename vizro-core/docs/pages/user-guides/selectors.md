@@ -210,12 +210,18 @@ options = {
 }
 ```
 
-By default, `value` is set according to the first group at the top of the tree:
+By default, a selection is identified by its **leaf** value and `value` is set according to the first group at the top of the tree:
 
 - If `multi=False`, by default `value` is the _first_ leaf listed under the first group. Here the first group is `Asia`, and its first country is `Japan`, so `value="Japan"`.
 - If `multi=True`, by default `value` is _all_ leaves listed under the first group. Here the first group is `Asia`, so `value=["Japan", "India"]`.
 
-You can pick a different starting selection by setting `value` on [`Cascader`][vizro.models.Cascader].
+You can pick a different starting selection by setting `value` on [`Cascader`][vizro.models.Cascader]. In this default **leaf mode** (`full_path=False`), leaf labels must be unique across the whole tree, since a bare leaf identifies the selection.
+
+!!! note "Addressing duplicate leaf labels with `full_path=True`"
+
+    If the same leaf label appears under more than one group (for example a city name shared by two countries), set `full_path=True` on the [`Cascader`][vizro.models.Cascader] to switch to **path mode**. A selection is then a full root-to-leaf **path** (the list of node values from the root down to the leaf) instead of a bare leaf, so each duplicate is addressed unambiguously: `value=["Asia", "Japan"]` for single-select, or `value=[["Asia", "Japan"], ["Asia", "India"]]` for multi-select. Path mode does not support setting the control from a chart click (see [`set_control`](actions.md)).
+
+In a hierarchical [`Filter`][vizro.models.Filter], leaf mode matches rows on the last column of `Filter.column` (like a flat filter on the leaf), and `options` may be arbitrarily deep. In path mode, every level of the path is matched against the corresponding column, so every path in `options` must be exactly as deep as `Filter.column` is long. (A [`Parameter`][vizro.models.Parameter] does not match against columns, so it accepts arbitrarily nested trees in either mode.)
 
 !!! example "Hierarchical selector multi vs single"
 
@@ -230,7 +236,7 @@ You can pick a different starting selection by setting `value` on [`Cascader`][v
 
         options = {
             "Asia": ["Japan", "India"],
-            "Europe": {"West": ["France", "Germany"], "North": ["Norway"]},
+            "Europe": ["France", "Germany", "Norway"],
         }
 
         page = vm.Page(

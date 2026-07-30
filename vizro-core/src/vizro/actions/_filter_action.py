@@ -13,8 +13,10 @@ from vizro.models.types import ModelID, _Controls
 class _filter(_AbstractAction):
     type: Literal["_filter"] = "_filter"
 
-    column: str = Field(description="Column to filter on.")
-    filter_function: Callable[[pd.Series, Any], pd.Series] = Field(
+    column: str | list[str] = Field(
+        description="Column to filter on, or an ordered list of path columns for a hierarchical filter."
+    )
+    filter_function: Callable[[pd.Series | pd.DataFrame, Any], pd.Series] = Field(
         description="Function to apply to column to perform filtering"
     )
     targets: list[ModelID] = Field(description="Target component IDs.")
