@@ -11,6 +11,37 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.60'></a>
+# 0.1.60 — 2026-07-30
+
+## Highlights ✨
+
+- Introduce `DateTimePicker` as a new selector for `Filter` and `Parameter`. See the [user guide on selectors](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/) for more details. ([#1805](https://github.com/mckinsey/vizro/pull/1805))
+
+## Added
+
+- Add Vizro actions log to Dash DevTools debug panel when `debug=True`. ([#1782](https://github.com/mckinsey/vizro/pull/1782))
+
+- `Cascader` filters update automatically when underlying dynamic data changes. ([#1788](https://github.com/mckinsey/vizro/pull/1788))
+
+- `Cascader` gains a `full_path` attribute (default `full_path=False`, leaf mode). Set `full_path=True` on `Cascader` to enable path mode: a selection becomes a full root-to-leaf path (single-select) or a list of paths (multi-select), allowing duplicate leaf labels across branches. A hierarchical `vm.Filter` then matches on every level of `Filter.column`, so the number of `Filter.column` entries must equal the number of levels in the `options` hierarchy. Path mode does not support `set_control` yet. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
+
+- Advertised the existing `llms.txt` from the docs home page and via a machine-readable `<link>` tag in every page's `<head>`. ([#1762](https://github.com/mckinsey/vizro/pull/1762))
+
+- Made Vizro docs more agent-friendly for LLMs (new "Vizro for LLMs" cheatsheet, clearer user-guide guidance, and linked complete tutorial end-state code). ([#1797](https://github.com/mckinsey/vizro/pull/1797))
+
+- Added `description:` YAML front matter to every documentation page under `vizro-core/docs/pages/` to improve agent semantic search and page snippets. ([#1813](https://github.com/mckinsey/vizro/pull/1813))
+
+## Changed
+
+- Updated vizro-bootstrap stylesheet based on QBDS token updates. ([#1779](https://github.com/mckinsey/vizro/pull/1779))
+
+## Fixed
+
+- Fixed broken links from API reference docstrings to the user guides. ([#1803](https://github.com/mckinsey/vizro/pull/1803))
+
+- Updated docstrings and inline comments to follow preferred style: replaced abbreviated Latin terms (`e.g.`, `eg`) with `for example` and updated field description wording for consistency. ([#1800](https://github.com/mckinsey/vizro/pull/1800))
+
 <a id='changelog-0.1.59'></a>
 # 0.1.59 — 2026-06-18
 
