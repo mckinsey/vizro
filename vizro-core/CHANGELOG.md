@@ -29,13 +29,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- Updated vizro-bootstrap stylesheet based on QBDS token updates. ([#1779](https://github.com/mckinsey/vizro/pull/1779))
-
-## Fixed
-
-- Fixed broken links from API reference docstrings to the user guides. ([#1803](https://github.com/mckinsey/vizro/pull/1803))
-
-- Updated docstrings and inline comments to follow preferred style: replaced abbreviated Latin terms (`e.g.`, `eg`) with `for example` and updated field description wording for consistency. ([#1800](https://github.com/mckinsey/vizro/pull/1800))
+- Update vizro-bootstrap stylesheet based on QBDS token updates. ([#1779](https://github.com/mckinsey/vizro/pull/1779))
 
 <a id='changelog-0.1.59'></a>
 # 0.1.59 — 2026-06-18
