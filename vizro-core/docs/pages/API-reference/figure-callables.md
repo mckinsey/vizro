@@ -1,3 +1,7 @@
+---
+description: "Reference for the built-in figure functions `kpi_card` and `kpi_card_reference` in `vizro.figures`, reusable inside a `Figure` or a pure Dash app."
+---
+
 <!-- vale off -->
 # Figure functions
 

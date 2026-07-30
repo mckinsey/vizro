@@ -2,6 +2,8 @@
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@mckinsey/vizro/badge" />
 </a> -->
 
+[![Python version](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Fmckinsey%2Fvizro%2Frefs%2Fheads%2Fmain%2Fvizro-core%2Fpyproject.toml)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro-mcp.svg)](https://badge.fury.io/py/vizro-mcp) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md) [![Documentation](https://readthedocs.org/projects/vizro-mcp/badge/?version=latest)]([https://vizro.readthedocs.io/](https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/))[![MCP Toplist](https://mcptoplist.com/badge/glama%2Fmckinsey%2Fvizro.svg)](https://mcptoplist.com/server/glama%2Fmckinsey%2Fvizro)
+
 # Vizro-MCP
 
 Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, which works alongside an LLM to help you create Vizro dashboards and charts.

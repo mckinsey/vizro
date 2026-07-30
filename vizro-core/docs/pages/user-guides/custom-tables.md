@@ -1,3 +1,7 @@
+---
+description: "Wrap AG Grid or Dash DataTable options with `@capture('ag_grid')` or `@capture('table')` to configure grids beyond Vizro's built-in `dash_ag_grid`."
+---
+
 # How to create custom Dash AG Grids and Dash DataTables
 
 In cases where the available arguments for the [`dash_ag_grid`][vizro.tables.dash_ag_grid] or [`dash_data_table`][vizro.tables.dash_data_table] models are not sufficient, you can create a custom Dash AG Grid or Dash DataTable.
@@ -111,6 +115,8 @@ The following examples show a possible version of a custom table. In this case t
 
     === "Result"
 
+        The dashboard renders the "Custom Dash DataTable" example.
+
         [![Table3]][table3]
 
 ??? example "Custom Dash AgGrid"
@@ -211,6 +217,8 @@ The following examples show a possible version of a custom table. In this case t
         ```
 
     === "Result"
+
+        The dashboard renders the "Custom Dash AgGrid" example.
 
         [![GridCustom]][gridcustom]
 

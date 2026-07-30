@@ -1,3 +1,7 @@
+---
+description: "Configure `Button` text, link URLs, action triggers, use as a control, styled variants, tooltips, icons, and the `extra` pass-through argument."
+---
+
 # How to use buttons
 
 This guide shows you how to use buttons to interact with your data in the dashboard.
@@ -46,6 +50,8 @@ You can configure the `text` argument to alter the display text of the [`Button`
         ```
 
     === "Result"
+
+        The dashboard renders the "Customize text" example.
 
         [![ButtonText]][buttontext]
 
@@ -132,6 +138,8 @@ If your app includes several action buttons, consider [adding icons](#add-an-ico
 
     === "Result"
 
+        The dashboard renders the "Button with action" example.
+
         [![Button]][button]
 
 ## Use as a control
@@ -202,6 +210,8 @@ There are three predefined button styles that can be customized using the `varia
 
     === "Result"
 
+        The dashboard renders the "Button with different styles" example.
+
         [![ButtonVariant]][buttonvariant]
 
 ## Add a tooltip
@@ -244,6 +254,8 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
         ```
 
     === "Result"
+
+        The dashboard renders the "Button with a tooltip" example.
 
         [![ButtonTooltip]][buttontooltip]
 
@@ -323,6 +335,8 @@ You can use it alongside the `text` argument, or on its own to create a circular
 
     === "Result"
 
+        The dashboard renders the "Button with an icon" example.
+
         [![ButtonIcon]][buttonicon]
 
 ## The `extra` argument
@@ -371,6 +385,8 @@ An example use would be to create an outlined success button. For this, you can 
         ```
 
     === "Result"
+
+        The dashboard renders the "Button with custom style" example.
 
         [![ButtonExtra]][buttonextra]
 

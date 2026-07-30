@@ -1,3 +1,7 @@
+---
+description: "Add images, CSS, and JS via an `assets/` folder: favicon, logo, custom folder path, social meta-tag image, and CSS load order."
+---
+
 # How to add static assets
 
 This guide shows you how to add static assets to your dashboard. Static assets are images that you would like to show in your dashboard, or custom CSS and JS files with which you would like to enhance/change the appearance of your dashboard.

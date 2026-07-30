@@ -65,6 +65,7 @@ from pages.set_control_non_categorical_controls_page import (
 from pages.switch_control_page import switch_control_page
 from pages.table_interactions_page import table_interactions_page
 from pages.table_page import table_page
+from pages.timepicker_pages import timepicker_parameter, timepicker_range, timepicker_single
 from pages.vizro_url_and_download_page import vizro_url_and_download_page
 
 import vizro.models as vm
@@ -128,6 +129,9 @@ dashboard = vm.Dashboard(
         set_control_ag_grid_cellclicked,
         set_control_non_categorical_graph,
         set_control_non_categorical_ag_grid,
+        timepicker_range,
+        timepicker_single,
+        timepicker_parameter,
     ],
     navigation=vm.Navigation(
         pages={
@@ -148,6 +152,9 @@ dashboard = vm.Dashboard(
             cnst.DATEPICKER_ACCORDION: [
                 cnst.DATEPICKER_PAGE,
                 cnst.DATEPICKER_PARAMS_PAGE,
+                cnst.TIMEPICKER_RANGE_PAGE,
+                cnst.TIMEPICKER_SINGLE_PAGE,
+                cnst.TIMEPICKER_PARAMETER_PAGE,
             ],
             cnst.AG_GRID_ACCORDION: [
                 cnst.TABLE_PAGE,

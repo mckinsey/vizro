@@ -1,3 +1,7 @@
+---
+description: "Four ways to extend Vizro: model customizations (`@capture`), raw Dash callbacks and components, CSS overrides, and React.js customizations."
+---
+
 # How to extend and customize Vizro dashboards
 
 At its simplest, Vizro enables low-code configuration, but you can also customize it to go beyond its default capabilities by incorporating any Dash component, Dash callback, or Plotly chart.

@@ -1,3 +1,7 @@
+---
+description: "Index of ways to restyle a Vizro dashboard: layout, themes and colors, static assets, custom CSS, and per-component `extra` overrides."
+---
+
 # How to customize the style of Vizro dashboards
 
 Vizro has a default styling to help users with no design experience get started. There are several options if you want to customize the style:

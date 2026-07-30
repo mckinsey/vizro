@@ -1,3 +1,7 @@
+---
+description: "Full reference for every model in `vizro.models`, including Dashboard, Page, Container, Tabs, Grid, Flex, Graph, Table, Filter, Parameter, and Action."
+---
+
 # Models
 
 Vizro's grammar of dashboards is defined by a small set of Pydantic models in `vizro.models`, typically aliased as `vm` (`import vizro.models as vm`). Every dashboard is built by composing these models. Use the [Model index](#model-index) below to jump to the reference entry for a specific model; the full auto-generated reference for every public model follows in the [full model reference](#full-model-reference) section.
