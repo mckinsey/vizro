@@ -24,7 +24,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - `Cascader` filters update automatically when underlying dynamic data changes. ([#1788](https://github.com/mckinsey/vizro/pull/1788))
 
-- `Cascader` gains a `full_path` attribute (default `full_path=False`, leaf mode). Set `full_path=True` on `Cascader` to enable path mode: a selection becomes a full root-to-leaf path (single-select) or a list of paths (multi-select), allowing duplicate leaf labels across branches. A hierarchical `vm.Filter` then matches on every level of `Filter.column`, so the number of `Filter.column` entries must equal the number of levels in the `options` hierarchy. Path mode does not support `set_control` yet. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
+- `Cascader` gains a `full_path` attribute (default `full_path=False`, leaf mode). Set `full_path=True` on `Cascader` to enable path mode: a selection becomes a full root-to-leaf path (single-select) or a list of paths (multi-select), allowing duplicate leaf labels across branches. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
 
 - Advertised the existing `llms.txt` from the docs home page and via a machine-readable `<link>` tag in every page's `<head>`. ([#1762](https://github.com/mckinsey/vizro/pull/1762))
 
