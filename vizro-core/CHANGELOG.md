@@ -26,11 +26,6 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - `Cascader` gains a `full_path` attribute (default `full_path=False`, leaf mode). Set `full_path=True` on `Cascader` to enable path mode: a selection becomes a full root-to-leaf path (single-select) or a list of paths (multi-select), allowing duplicate leaf labels across branches. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
 
-- Advertised the existing `llms.txt` from the docs home page and via a machine-readable `<link>` tag in every page's `<head>`. ([#1762](https://github.com/mckinsey/vizro/pull/1762))
-
-- Made Vizro docs more agent-friendly for LLMs (new "Vizro for LLMs" cheatsheet, clearer user-guide guidance, and linked complete tutorial end-state code). ([#1797](https://github.com/mckinsey/vizro/pull/1797))
-
-- Added `description:` YAML front matter to every documentation page under `vizro-core/docs/pages/` to improve agent semantic search and page snippets. ([#1813](https://github.com/mckinsey/vizro/pull/1813))
 
 ## Changed
 
