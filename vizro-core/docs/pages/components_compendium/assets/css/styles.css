@@ -7,7 +7,6 @@
 :root {
   /* Vizro brand colors (aligned with vizro_overwrites.css light theme) */
   --color-primary: #00a9f4;
-  --color-primary-dark: #0088cc;
   --color-secondary: #7b68ee;
   --color-text: #333333;
   --color-text-light: #666666;
@@ -460,10 +459,6 @@ a {
 .code-block__copy-button:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
-}
-
-.code-block__copy-button.copied {
-  color: #ffffff;
 }
 
 .code-block code {
