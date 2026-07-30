@@ -588,7 +588,7 @@ class Filter(VizroBaseModel):
                 _filter(
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
                     column=column,
-                    filter_function=self._filter_function,
+                    filter_function=filter_function,
                     targets=self.targets,
                 ),
             ]
