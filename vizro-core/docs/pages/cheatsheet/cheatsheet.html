@@ -1499,6 +1499,9 @@ def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
             "minWidth": 70,
         },
         "style": {"height": "100%"},
+        "dashGridOptions": {
+            "theme": {"function": "vizroTheme(themeQuartz, agGrid)"},
+        },
     }
     return AgGrid(
         columnDefs=[{"field": col} for col in chosen_columns],

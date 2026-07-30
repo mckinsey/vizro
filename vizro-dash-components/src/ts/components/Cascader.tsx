@@ -17,15 +17,36 @@ interface CascaderComponentProps {
    * List items become leaves; scalars use the scalar as both label and value.
    * In the standard format each node has a `label` and `value`; nodes with a
    * `children` array are parents, nodes without are leaves.
-   * Only leaf values are ever stored in `value`.
+   * Selections are addressed by full root-to-leaf path (see `value`).
+   * Optional; defaults to an empty tree (renders as an empty dropdown).
    */
-  options: CascaderOptionsRaw;
+  options?: CascaderOptionsRaw;
   /**
-   * Selected value(s).
-   * When `multi=false`: a single leaf value (string or number) or null.
-   * When `multi=true`: an array of leaf values.
+   * Selected value(s). The shape depends on `full_path`:
+   * - `full_path=false` (default, LEAF MODE): a bare leaf scalar when `multi=false`
+   *   (e.g. "france", or null), or a list of leaf scalars when `multi=true`
+   *   (e.g. ["france", "japan"]). Leaf values must be unique across the tree.
+   * - `full_path=true` (PATH MODE): a full root-to-leaf path when `multi=false`
+   *   (e.g. ["europe", "france"], or null), or a list of such paths when
+   *   `multi=true` (e.g. [["europe", "france"], ["asia", "japan"]]). Paths address
+   *   duplicate leaf labels across different branches unambiguously.
    */
-  value?: string | number | null | (string | number)[];
+  value?:
+    | string
+    | number
+    | boolean
+    | (string | number | boolean)[]
+    | (string | number | boolean)[][]
+    | null;
+  /**
+   * Selection value mode.
+   * - `false` (default, LEAF MODE): `value` is a bare leaf scalar (or list of them
+   *   when `multi=true`). Leaf values must be unique across the tree; duplicates
+   *   are ambiguous and logged as an error.
+   * - `true` (PATH MODE): `value` is a full root-to-leaf path (or list of paths).
+   *   Duplicate leaf labels across branches are supported.
+   */
+  full_path?: boolean;
   /**
    * Enable multi-select. When true, `value` is an array and checkboxes
    * are shown alongside options.
@@ -143,24 +164,52 @@ Cascader.propTypes = {
    * List items become leaves; scalars use the scalar as both label and value.
    * In the standard format each node has a `label` and `value`; nodes with a
    * `children` array are parents, nodes without are leaves.
-   * Only leaf values are ever stored in `value`.
+   * Selections are addressed by full root-to-leaf path (see `value`).
    */
   options: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.object),
     PropTypes.object,
-  ]).isRequired,
+  ]),
   /**
-   * Selected value(s).
-   * When `multi=false`: a single leaf value (string or number) or null.
-   * When `multi=true`: an array of leaf values.
+   * Selected value(s). The shape depends on `full_path`:
+   * - `full_path=false` (default, LEAF MODE): a bare leaf scalar (or null) when
+   *   `multi=false`, e.g. "france"; a list of leaf scalars when `multi=true`,
+   *   e.g. ["france", "japan"]. Leaf values must be unique across the tree.
+   * - `full_path=true` (PATH MODE): a full root-to-leaf path (or null) when
+   *   `multi=false`, e.g. ["europe", "france"]; a list of paths when `multi=true`,
+   *   e.g. [["europe", "france"], ["asia", "japan"]]. Paths address duplicate leaf
+   *   labels across different branches unambiguously.
    */
   value: PropTypes.oneOfType([
+    // A bare leaf scalar (leaf mode, multi=false), e.g. "france".
     PropTypes.string,
     PropTypes.number,
+    PropTypes.bool,
+    // A list of leaf scalars (leaf mode, multi=true) OR a single path (path mode,
+    // multi=false): an array of scalars, e.g. ["france", "japan"] or ["europe", "france"].
     PropTypes.arrayOf(
-      PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
+    ),
+    // A list of paths (path mode, multi=true), e.g. [["europe", "france"], ["asia", "japan"]].
+    PropTypes.arrayOf(
+      PropTypes.arrayOf(
+        PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.number,
+          PropTypes.bool,
+        ]),
+      ),
     ),
   ]),
+  /**
+   * Selection value mode.
+   * - `false` (default, LEAF MODE): `value` is a bare leaf scalar (or list of them
+   *   when `multi=true`). Leaf values must be unique across the tree; duplicates
+   *   are ambiguous and logged as an error.
+   * - `true` (PATH MODE): `value` is a full root-to-leaf path (or list of paths).
+   *   Duplicate leaf labels across branches are supported.
+   */
+  full_path: PropTypes.bool,
   /**
    * Enable multi-select. When true, `value` is an array and checkboxes
    * are shown alongside options.
@@ -256,6 +305,7 @@ Cascader.propTypes = {
 Cascader.defaultProps = {
   options: [],
   value: null,
+  full_path: false,
   multi: false,
   searchable: true,
   clearable: true,

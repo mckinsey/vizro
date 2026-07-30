@@ -1,3 +1,7 @@
+---
+description: "Cross-filter, cross-parameter, and cross-highlight between graphs and tables via `set_control`, including multi-select, cross-container, cross-page, and pivoted-data variants."
+---
+
 # Graph and table interactions
 
 In this guide we show you how to configure interactions between graphs and tables, as is commonly done in business intelligence (BI) tools. In Vizro, all such interactions are enabled by an intermediate [control](controls.md) that you must explicitly define. For example:
@@ -127,9 +131,11 @@ The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking o
 
     === "Result"
 
+        The dashboard renders the "Cross-filter from table to graph - sex column value from selected rows" example.
+
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_table.gif)
 
-In the example above, when you **select one or more rows** in the table, the graph is cross-filtered to the corresponding **`sex` values** from those rows. **Which cell you click does not change which field is used:** the action always reads the `sex` column for the current row selection, not the clicked column.
+In the [cross-filter from table example](#cross-filter-from-table), when you **select one or more rows** in the table, the graph is cross-filtered to the corresponding **`sex` values** from those rows. **Which cell you click does not change which field is used:** the action always reads the `sex` column for the current row selection, not the clicked column.
 
 ??? details "Behind the scenes mechanism"
 
@@ -210,6 +216,8 @@ If you set the `set_control.value` argument to `value="cell"`, the value of the 
         ```
 
     === "Result"
+
+        The dashboard renders the "Cross-filter from table to graph - propagating cell value" example.
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_table_2.gif)
 
@@ -324,6 +332,8 @@ We show an example of each of these in turn. Here is an example where we use `cu
 
     === "Result"
 
+        The dashboard renders the "Cross-filter from graph to table with `custom_data`" example.
+
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_1.gif)
 
 When you click on a box in the graph, the table is cross-filtered to show data for only one sex.
@@ -415,6 +425,8 @@ Here is an example where we do not need to use `custom_data` because the value u
         ```
 
     === "Result"
+
+        The dashboard renders the "Cross-filter from graph without `custom_data` to table" example.
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif)
 
@@ -509,6 +521,8 @@ Vizro automatically turns on click selection (`clickmode` is set to `"event+sele
 
     === "Result"
 
+        The dashboard renders the "Cross-filter from graph with multi-select" example.
+
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_3.gif)
 
 When select multiple points in the scatter plot, the bar chart is cross-filtered to show data for all the selected days. If only one point is clicked, the filter is set to that single value. If you deselect all points the control resets to its original value. You can deselect all points by double clicking on an empty area of the plot or by clicking on the last single selected point.
@@ -534,7 +548,7 @@ When select multiple points in the scatter plot, the bar chart is cross-filtered
 
 A cross-filter often works best when used [inside a container](container.md#add-controls-to-container). This typically makes it clearer which components the filter applies to, especially when the [container is styled](container.md#styled-containers).
 
-For example, let us rearrange the above example of a [cross-filter from a table](#cross-filter-from-table) into containers. Now the control appears directly above the table that it targets rather than on the left hand side of the page. The rearrangement here is purely visual to give a better user experience; `va.set_control` itself is configured exactly the same way and behaves identically while the dashboard is running.
+For example, let us rearrange the [cross-filter from a table example](#cross-filter-from-table) into containers. Now the control appears directly above the table that it targets rather than on the left hand side of the page. The rearrangement here is purely visual to give a better user experience; `va.set_control` itself is configured exactly the same way and behaves identically while the dashboard is running.
 
 !!! example "Cross-filter between containers"
 
@@ -614,13 +628,15 @@ For example, let us rearrange the above example of a [cross-filter from a table]
 
     === "Result"
 
+        The dashboard renders the "Cross-filter between containers" example.
+
         ![](../../assets/user_guides/graph_table_actions/cross_filter_between_containers.gif)
 
 ### Cross-filter between pages
 
 You can perform a cross-filter where the target components are on a different page from the source. The use of [`va.set_control`][vizro.actions.set_control] is identical, but the intermediate filter must have [`show_in_url=True`](run-deploy.md#shareable-url).
 
-For example, let us rearrange the above example of a [cross-filter from a table](#cross-filter-from-table) so that the source table is on a different page from the target graph (and hence filter). When you click or press ++space++ on a row in the table, you are taken to the target page with the graph cross-filtered to show data only for one sex.
+For example, let us rearrange the [cross-filter from a table example](#cross-filter-from-table) so that the source table is on a different page from the target graph (and hence filter). When you click or press ++space++ on a row in the table, you are taken to the target page with the graph cross-filtered to show data only for one sex.
 
 !!! example "Cross filter between pages"
 
@@ -691,6 +707,8 @@ For example, let us rearrange the above example of a [cross-filter from a table]
         ```
 
     === "Result"
+
+        The dashboard renders the "Cross filter between pages" example.
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_between_pages.gif)
 
@@ -792,6 +810,8 @@ To perform multiple cross-filters, each dimension that is filtered must have its
         ```
 
     === "Result"
+
+        The dashboard renders the "Cross-filter over 2 dimensions - from a graph" example.
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_pivoted.gif)
 
@@ -909,6 +929,8 @@ vm.AgGrid(
 
     === "Result"
 
+        The dashboard renders the "Cross-filter over 2 dimensions - from a table" example.
+
         ![](../../assets/user_guides/graph_table_actions/cross_filter_pivoted_table.gif)
 
 ### Cross-filter with non-categorical selectors
@@ -1005,6 +1027,8 @@ The examples above use categorical selectors such as [`Dropdown`][vizro.models.D
 
     === "Result"
 
+        The dashboard renders the "Cross-filter from table with non-categorical selector" example.
+
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_4.gif)
 
 ## Cross-parameter
@@ -1038,10 +1062,7 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
 
 ### Cross-highlight
 
-A cross-highlight is an example of a cross-parameter where the effect of the intermediate parameter is to highlight data. When a user clicks on one _source_ graph or table, the corresponding data is highlighted in a _target_ graph or table (typically a [custom graph](custom-charts.md)). The highlighting can occur in two ways:
-
-- _Target highlighting_: The highlighting appears in a target graph that is distinct from the source that was clicked. Below we give examples of highlighting a target graph [from a source table](#cross-highlight-from-table) and [from a source graph](#cross-highlight-from-graph).
-- _Source highlighting_ or _self-highlighting_: The highlighting appears in the same source graph that was clicked. Below we give an example of [self-highlighting a graph](#self-highlight-a-graph).
+A cross-highlight is an example of a cross-parameter where the effect of the intermediate parameter is to highlight data. When a user clicks on one _source_ graph or table, the corresponding data is highlighted in a _target_ graph or table (typically a [custom graph](custom-charts.md)).
 
 In Vizro, cross-highlighting operates through an intermediate [parameter](parameters.md). Often this parameter is hidden from view with `visible=False` since the highlighting effect itself provides sufficient visual feedback about the selected data. Remember that the cross-highlight can be cleared with the ["Reset controls" button](controls.md#reset-controls).
 
@@ -1229,6 +1250,8 @@ The full code is given below. This shows a slightly more complicated highlightin
         ```
 
     === "Result"
+
+        The dashboard renders the "Cross-highlight from table" example.
 
         ![](../../assets/user_guides/graph_table_actions/cross_highlight_from_table.gif)
 
@@ -1434,6 +1457,8 @@ The full code is given below. This includes the complete code for a bump chart w
 
     === "Result"
 
+        The dashboard renders the "Cross-highlight from graph" example.
+
         ![](../../assets/user_guides/graph_table_actions/cross_highlight_from_graph.gif)
 
 When you click on a bar in the bar chart, the corresponding line is highlighted in the bump chart with full opacity and a thicker line. Clicking the "Reset controls" button resets the parameter to its original value and hence clears the highlighting.
@@ -1446,163 +1471,3 @@ When you click on a bar in the bar chart, the corresponding line is highlighted 
     1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to update the `highlight_country` argument of the target component `bump_chart` so that a highlighted graph is shown.
 
     The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
-
-#### Self-highlight a graph
-
-In a self-highlight, the same component is both the source _and_ the target of a cross-highlight. For example, when a user clicks on a graph, part of the graph can remain highlighted to show where they clicked. Since it is just a special type of cross-highlighting, the configuration works exactly the same way as a [cross-highlight from a graph](#cross-highlight-from-graph).
-
-A self-highlight is often part of an [actions chain](actions.md#multiple-actions) that includes another action like a [cross-filter](#cross-filter). The example below shows how clicking a graph can perform a self-highlight and [cross-filter a table](#cross-filter-from-graph).
-
-!!! example "Self-highlight a graph and cross-filter"
-
-    === "app.py"
-
-        ```{.python pycafe-link hl_lines="44-47"}
-        import vizro.plotly.express as px
-        import vizro.models as vm
-        import vizro.actions as va
-        from vizro.models.types import capture
-        from vizro import Vizro
-        from vizro.tables import dash_ag_grid
-
-        selected_countries = [
-            "Singapore",
-            "Malaysia",
-            "Thailand",
-            "Indonesia",
-            "Philippines",
-            "Vietnam",
-            "Cambodia",
-            "Myanmar",
-        ]
-
-        gapminder = px.data.gapminder().query("country.isin(@selected_countries)")
-
-
-        @capture("graph")
-        def bar_with_highlight(data_frame, highlight_country=None):  # (1)!
-            country_is_highlighted = data_frame["country"] == highlight_country  # (2)!
-            fig = px.bar(
-                data_frame,
-                x="lifeExp",
-                y="country",
-                labels={"lifeExp": "lifeExp in 2007"},
-                color=country_is_highlighted,
-                category_orders={"country": sorted(data_frame["country"]), "color": [False, True]},  # (3)!
-            )
-            fig.update_layout(showlegend=False)
-            return fig
-
-
-        page = vm.Page(
-            title="Self-highlight a graph and cross-filter",
-            components=[
-                vm.Graph(
-                    id="bar_chart",   # (4)!
-                    figure=bar_with_highlight(gapminder.query("year == 2007")),
-                    header="💡 Click on a bar to highlight the selected country and filter the table below",
-                    actions=[
-                        va.set_control(control="highlight_parameter", value="y"),   # (5)!
-                        va.set_control(control="country_filter", value="y"),   # (6)!
-                    ],
-                ),
-                vm.AgGrid(id="gapminder_table", figure=dash_ag_grid(data_frame=gapminder)),   # (7)!
-            ],
-            controls=[
-                vm.Parameter(
-                    id="highlight_parameter",  # (8)!
-                    targets=["bar_chart.highlight_country"],  # (9)!
-                    selector=vm.RadioItems(options=["NONE", *gapminder["country"]]),  # (10)!
-                    visible=False,  # (11)!
-                ),
-                vm.Filter(id="country_filter", column="country", targets=["gapminder_table"], visible=False),  # (12)!
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-        1. The `highlight_country` argument receives the selected country name from `highlight_parameter`.
-        1. `country_is_highlighted` is a pandas Series that contains `True` for the highlighted country and `False` for all others. We use this to change the color of the highlighted bar.
-        1. Order the bars according to the country alphabetically. We also make sure that the colors are always ordered the same way to ensure that the highlighted bar always has the same color.
-        1. We give the `vm.Graph` an `id` so that it can be targeted by `highlight_parameter`.
-        1. This `va.set_control` sets `higlight_parameter` to the country from the clicked bar.
-        1. This `va.set_control` sets `country_filter` to the country from the clicked bar.
-        1. We give the `vm.AgGrid` an `id` so that it can be targeted by `country_filter`.
-        1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
-        1. The parameter targets the argument `highlight_country` of `vm.Graph(id="bar_chart")`.
-        1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the bar chart is initially unhighlighted.
-        1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
-        1. Filter `gapminder_table` to show rows for only the selected country.
-
-    === "app.yaml"
-
-        ```
-        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
-        # More explanation in the docs on `Dashboard` and extensions.
-        pages:
-          - components:
-              - type: graph
-                id: bar_chart
-                figure:
-                  _target_: __main__.bar_with_highlight
-                  data_frame: gapminder_2007
-                header: 💡 Click on a bar to highlight the selected country and filter the table below
-                actions:
-                  - type: set_control
-                    control: highlight_parameter
-                    value: y
-                  - type: set_control
-                    control: country_filter
-                    value: y
-              - type: ag_grid
-                id: gapminder_table
-                figure:
-                  _target_: dash_ag_grid
-                  data_frame: gapminder
-            controls:
-              - id: highlight_parameter
-                selector:
-                  options:
-                    - NONE
-                    - Cambodia
-                    - Indonesia
-                    - Malaysia
-                    - Myanmar
-                    - Philippines
-                    - Singapore
-                    - Thailand
-                    - Vietnam
-                  type: radio_items
-                targets:
-                  - bar_chart.highlight_country
-                type: parameter
-                visible: false
-              - column: country
-                id: country_filter
-                targets:
-                  - gapminder_table
-                type: filter
-                visible: false
-            title: Self-highlight a graph and cross-filter
-        ```
-
-    === "Result"
-
-        ![](../../assets/user_guides/graph_table_actions/cross_highlight_self.gif)
-
-When you click on a bar in the chart, that bar is highlighted in orange and the table below is filtered to show only data for the selected country. Clicking the "Reset controls" button resets the parameter and the filter to their original values and hence clears the highlighting and filtering.
-
-??? details "Behind the scenes mechanism"
-
-    In full, what happens is as follows:
-
-    1. Clicking on a bar triggers the `va.set_control` action. This uses the value of `y` (in other words, the country) taken from the source graph to set the value of the `vm.Parameter(id="highlight_parameter")`.
-    1. When the `highlight_parameter` has been set, the second `va.set_control` action runs. This also uses the value of `y` (in other words, the country) to set the selector underlying `vm.Filter(id="country_filter")`.
-    1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to update the `highlight_country` argument of the target component `bar_chart` so that a highlighted graph is shown.
-    1. The change in value of `vm.Filter(id="country_filter")` triggers the filter on its `targets=["gapminder_table"]` so that a filtered table is shown.
-
-    The mechanism for triggering the parameter and filter when their values are set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain), while the sequence of applying the two `va.set_control` is an [explicit actions chain](../tutorials/custom-actions-tutorial.md#explicit-actions-chain). In general, steps 2 and 3 above will execute in [parallel](../tutorials/custom-actions-tutorial.md#parallel-actions).
-
-    When performing multiple filters with [dynamic data](data.md#dynamic-data), you should consider [configuring a cache](data.md#configure-cache) so that steps 3 and 4 above do not repeatedly perform a slow data load.

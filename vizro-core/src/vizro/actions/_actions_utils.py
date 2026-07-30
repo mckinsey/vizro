@@ -71,7 +71,8 @@ def _apply_filter_controls(
             continue
 
         selector_value = ctd["value"]
-        selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
+        # TODO PP NOW: Check whether it works without the line below
+        # selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
 
         mask = parent_filter._filter_function(data_frame[parent_filter.column], selector_value)
         data_frame = data_frame[mask]

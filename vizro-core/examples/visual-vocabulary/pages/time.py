@@ -7,7 +7,7 @@ from pages._pages_utils import (
     PAGE_GRID,
     make_code_clipboard_from_py_file,
 )
-from pages.examples import area, gantt, heatmap, line, sparkline, stepped_line, time_column
+from pages.examples import area, bubble_timeline, gantt, heatmap, line, sparkline, stepped_line, time_column
 
 line_page = vm.Page(
     title="Line",
@@ -282,6 +282,41 @@ sparkline_page = vm.Page(
 )
 slope_page = slope_factory("time")
 
+bubble_timeline_page = vm.Page(
+    title="Bubble timeline",
+    path="time/bubble-timeline",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a bubble timeline chart?
+
+            A bubble timeline displays data points over time across horizontal lanes, where each lane
+            represents a category and bubble size encodes magnitude.
+
+            #### When should I use it?
+
+            Use a bubble timeline to compare how multiple categories evolve over time while conveying
+            magnitude through bubble size, such as population changes or market growth.
+        """
+        ),
+        vm.Graph(figure=bubble_timeline.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("bubble_timeline.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("bubble_timeline.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
 pages = [
     line_page,
     column_page,
@@ -293,4 +328,5 @@ pages = [
     gantt_page,
     sparkline_page,
     slope_page,
+    bubble_timeline_page,
 ]

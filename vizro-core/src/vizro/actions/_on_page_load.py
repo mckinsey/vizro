@@ -41,3 +41,11 @@ class _on_page_load(_AbstractAction):
             target: f"{target}.selector" if isinstance(model_manager[target], vm.Filter) else target
             for target in self.targets
         }
+
+    @property
+    def _log_header(self) -> str:
+        # Prepended to this action's DevTools log entry so a page (re)load stands out above the action line. Note this
+        # also fires on refresh and after a control reset, since both re-run the on-page-load action - hence "loaded"
+        # rather than "opened".
+        page = model_manager._get_model_page(self)
+        return f'\n=== Page "{page.title}" loaded ===\n'

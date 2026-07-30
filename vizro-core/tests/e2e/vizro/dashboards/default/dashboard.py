@@ -7,6 +7,7 @@ from pages.actions_properties_shortcut_page import (
 from pages.ag_grid_interactions_page import ag_grid_interactions_page
 from pages.ag_grid_page import ag_grid_page
 from pages.collapsible_containers_pages import collapsible_containers_flex, collapsible_containers_grid
+from pages.conditional_notifications import conditional_notifications_page
 from pages.container_pages import container_variants_page
 from pages.custom_components_page import custom_components_page
 from pages.datepicker_page import datepicker_page
@@ -64,6 +65,7 @@ from pages.set_control_non_categorical_controls_page import (
 from pages.switch_control_page import switch_control_page
 from pages.table_interactions_page import table_interactions_page
 from pages.table_page import table_page
+from pages.timepicker_pages import timepicker_parameter, timepicker_range, timepicker_single
 from pages.vizro_url_and_download_page import vizro_url_and_download_page
 
 import vizro.models as vm
@@ -119,6 +121,7 @@ dashboard = vm.Dashboard(
         action_ag_grid_underlying_id_shortcut_page,
         action_control_shortcut_page,
         static_notifications_page,
+        conditional_notifications_page,
         cross_filter_multi_select_page,
         button_card_trigger_set_control,
         filtered_graph_aggrid_trigger_set_control,
@@ -126,6 +129,9 @@ dashboard = vm.Dashboard(
         set_control_ag_grid_cellclicked,
         set_control_non_categorical_graph,
         set_control_non_categorical_ag_grid,
+        timepicker_range,
+        timepicker_single,
+        timepicker_parameter,
     ],
     navigation=vm.Navigation(
         pages={
@@ -146,6 +152,9 @@ dashboard = vm.Dashboard(
             cnst.DATEPICKER_ACCORDION: [
                 cnst.DATEPICKER_PAGE,
                 cnst.DATEPICKER_PARAMS_PAGE,
+                cnst.TIMEPICKER_RANGE_PAGE,
+                cnst.TIMEPICKER_SINGLE_PAGE,
+                cnst.TIMEPICKER_PARAMETER_PAGE,
             ],
             cnst.AG_GRID_ACCORDION: [
                 cnst.TABLE_PAGE,
@@ -187,6 +196,7 @@ dashboard = vm.Dashboard(
                 cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
                 cnst.ACTION_CONTROL_SHORTCUT_PAGE,
                 cnst.STATIC_NOTIFICATIONS_PAGE,
+                cnst.CONDITIONAL_NOTIFICATIONS_PAGE,
                 cnst.SET_CONTROL_MULTI_SELECT_PAGE,
                 cnst.SET_CONTROL_BUTTON_CARD_PAGE,
                 cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE,

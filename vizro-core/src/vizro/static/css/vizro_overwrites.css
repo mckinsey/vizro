@@ -411,11 +411,15 @@ legend {
 }
 
 .mantine-Input-input {
-  --input-bd: var(--bs-primary-bg-subtle);
-  --input-bg: var(--bs-primary-bg-subtle);
+  --input-bd: var(--input-field-bg);
+  --input-bg: var(--input-field-bg);
   --input-bd-focus: var(--bs-focus-ring-color);
 
   box-shadow: var(--bs-box-shadow-sm);
+}
+
+.mantine-Input-input:focus {
+  border: 1px solid var(--bs-focus-ring-color);
 }
 
 .mantine-Input-input .mantine-Pill-root[data-variant="default"] {

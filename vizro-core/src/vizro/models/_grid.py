@@ -39,7 +39,7 @@ def set_layout(layout, info: ValidationInfo):
     if isinstance(layout, Flex):
         return layout
 
-    # This exists only to eagerly raise the error, otherwise obscure error message on eg Page()
+    # This exists only to eagerly raise the error, otherwise obscure error message on Page(), for example
     # Same for similar code in other places
     # TODO[MS]: find another solution that clashes less with typing
     if "components" not in info.data:
@@ -169,7 +169,7 @@ class Grid(VizroBaseModel):
     """Grid layout for components on a [`Page`][vizro.models.Page] or in a [`Container`][vizro.models.Container].
 
     Abstract: Usage documentation
-        [How to use the Grid layout](user-guides/layouts.md#grid-layout)
+        [How to use the Grid layout](../user-guides/layouts.md#grid-layout)
 
     """
 

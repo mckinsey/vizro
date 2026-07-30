@@ -1,3 +1,7 @@
+---
+description: "Extend an existing Vizro model or subclass `VizroBaseModel` to wrap any Dash component, wire it to actions, and enable persistence."
+---
+
 # How to create custom components
 
 The number of [built-in Vizro models][vizro.models] is deliberately kept quite small to enable quick and easy configuration of a dashboard. However, Vizro is also extensible, so that you can modify any model or create an entirely new one. This guide shows you how to do so.
@@ -147,6 +151,9 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "Example based on existing component" example.
+
         [![CustomComponent1]][CustomComponent1]
 
     [CustomComponent1]: ../../assets/user_guides/custom_components/custom-components0.png
@@ -189,7 +196,7 @@ class Rating(vm.VizroBaseModel):
             )
     ```
 
-    1. In this example, for simplicity we use [`html.Div`](https://dash.plotly.com/dash-html-components/Div) to provide the outer container. You could also use [`html.Fieldset`](https://dash.plotly.com/dash-html-components/fieldset), which is specifically designed for grouping a form legend with a set of controls.
+    1. In this example, for simplicity we use [`html.Div`](https://dash.plotly.com/dash-html-components/div) to provide the outer container. You could also use [`html.Fieldset`](https://dash.plotly.com/dash-html-components/fieldset), which is specifically designed for grouping a form legend with a set of controls.
     1. This is not the core component but we will later [address it with an action](#model-fields-as-input-and-output), so it must have an `id` set. We prefix its `id` with `self.id`.
     1. This is the core component, and so it has `id=self.id`.
 
@@ -259,6 +266,8 @@ Here is the full code for `Rating` and a simple app containing it.
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "New component creation" example.
 
         ![](../../assets/user_guides/custom_components/custom-components1.png)
 
@@ -333,6 +342,8 @@ It is then immediately possible to [address the properties of Dash components](c
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "Use custom component Dash properties as an action output" example.
 
         ![](../../assets/user_guides/custom_components/custom-components2.png)
 
@@ -430,6 +441,8 @@ This enables you to replace in your dashboard configuration all action input and
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "Use custom component model ID as an action output" example.
 
         ![](../../assets/user_guides/custom_components/custom-components2.png)
 
@@ -542,6 +555,8 @@ This enables you to replace in your dashboard configuration all references to `o
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "Use custom component model field as an action output" example.
 
         ![](../../assets/user_guides/custom_components/custom-components3.png)
 
@@ -689,6 +704,8 @@ A full example is given below.
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "Trigger actions with a custom component" example.
 
         ![](../../assets/user_guides/custom_components/custom-components4.png)
 

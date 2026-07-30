@@ -1,3 +1,7 @@
+---
+description: "Configure basic and hierarchical `Filter`s, target specific components, swap the selector widget, and customize title, tooltip, and label."
+---
+
 # How to use filters
 
 This guide shows you how to add filters to your dashboard. A filter selects a subset of rows of a component's data to alter the appearance of that component. The following [components](components.md) are reactive to filters:
@@ -71,13 +75,15 @@ You can also set `targets` to specify which components on the page the filter sh
 
     === "Result"
 
+        The dashboard renders the "Basic Filter" example.
+
         [![Filter]][filter]
 
 The selector is configured automatically based on the target column type data as follows:
 
 - Categorical data uses [`vm.Dropdown(multi=True)`][vizro.models.Dropdown] where `options` is the set of unique values found in `column` across all the data sources of components in `targets`.
 - [Numerical data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_numeric_dtype.html) uses [`vm.RangeSlider`][vizro.models.RangeSlider] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`.
-- [Temporal data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_datetime64_any_dtype.html) uses [`vm.DatePicker(range=True)`][vizro.models.DatePicker] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`. A column can be converted to this type with [pandas.to_datetime](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html).
+- [Temporal data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_datetime64_any_dtype.html) (`date` or `datetime` columns) uses [`vm.DatePicker(range=True)`][vizro.models.DatePicker] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`. A column can be converted to this type with [`pandas.to_datetime`](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html). For `time` columns (containing `datetime.time` objects), [`vm.TimePicker(range=True)`][vizro.models.TimePicker] is used instead; a column can be converted to this type with [`pandas.to_datetime`](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html) followed by `.time` (for example, `df["t"] = pd.to_datetime(df["t"]).time`). To filter a `datetime` column by both date and time, pass [`vm.DateTimePicker`][vizro.models.DateTimePicker] as the `selector` explicitly.
 - [Boolean data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_bool_dtype.html) uses [`vm.Switch`][vizro.models.Switch] which provides a toggle interface for True/False values. The Switch also works with binary numerical columns containing 0/1 values.
 
 The following example demonstrates these default selector types.
@@ -150,16 +156,25 @@ The following example demonstrates these default selector types.
 
     === "Result"
 
+        The dashboard renders the "Default Filter selectors" example.
+
         [![FilterDefault]][filterdefault]
 
 ## Hierarchical filters
 
-A hierarchical filter is a filter where the user chooses values from a _tree_ of grouped value. For example, cities around the world could be grouped into a hierarchy by continent and then by country. Rows of the data are filtered using the finest-grained (most "zoomed in") value (the _leaves_ of the tree). In the continent/country/city example, this would be city.
+A hierarchical filter is a filter where the user chooses values from a _tree_ of grouped values. For example, cities around the world could be grouped into a hierarchy by continent and then by country. Rows of the data are filtered down to the finest-grained (most "zoomed in") level (the _leaves_ of the tree). In the continent/country/city example, this would be city.
+
+By default (leaf mode), rows are matched on the finest-grained column alone, so a hierarchical filter behaves like a flat filter on the leaf column and leaf labels must be unique across the tree. If you set `full_path=True` on the [`Cascader`][vizro.models.Cascader] selector (path mode), each selection is instead matched by its full path through the tree, so the same leaf label appearing under different branches (for example a city name shared by two countries) is filtered independently; clearing a multi-select path-mode filter (removing every selection) then matches no rows, because there is no path left to filter on. See [hierarchical selectors](selectors.md#hierarchical-selectors) for how to choose between the two modes.
 
 To add a hierarchical filter to your page:
 
 1. add a [`Filter`][vizro.models.Filter] to `controls`, the same as for a basic filter
 1. set `column` to a list of at least two columns' names from the top level of the hierarchy down to the column you want to filter on
+
+!!! note "Path mode (`full_path=True`) constraints"
+
+    - The number of columns in `Filter.column` must equal the number of levels in the `options` hierarchy, because every level of a selected path is matched against the corresponding column. (Leaf mode has no such restriction: it matches on the last column only, so `options` may be arbitrarily deep.)
+    - Path mode does not support [`set_control`](graph-table-actions.md) yet, because a single click cannot reconstruct a full root-to-leaf path. Use leaf mode (`full_path=False`) for filters that are targets of `set_control`.
 
 !!! example "Hierarchical Filter"
 
@@ -219,11 +234,13 @@ To add a hierarchical filter to your page:
 
     === "Result"
 
+        The dashboard renders the "Hierarchical Filter" example.
+
         ![](../../assets/user_guides/filters/hierarchical_filter.gif)
 
 ## Change selector
 
-Use a different `selector` argument for the [`Filter`][vizro.models.Filter] model for a different selector model. For a **single** `column` string, available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker] and [`Switch`][vizro.models.Switch]. For a **hierarchical** filter (`column` as a list), use [`Cascader`][vizro.models.Cascader] as in the [section above](#hierarchical-filters).
+Use a different `selector` argument for the [`Filter`][vizro.models.Filter] model for a different selector model. For a **single** `column` string, available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker], [`TimePicker`][vizro.models.TimePicker], [`DateTimePicker`][vizro.models.DateTimePicker] and [`Switch`][vizro.models.Switch]. For a **hierarchical** filter (`column` as a list), use [`Cascader`][vizro.models.Cascader] as in the [section above](#hierarchical-filters).
 
 You can explore and test all available selectors interactively on our [feature demo dashboard](https://vizro-demo-features.hf.space/selectors).
 
@@ -274,6 +291,8 @@ You can explore and test all available selectors interactively on our [feature d
         ```
 
     === "Result"
+
+        The dashboard renders the "Filter with different selector" example.
 
         [![Selector]][selector]
 
@@ -347,6 +366,8 @@ Below is an example where we only target one page component, and where we furthe
         ```
 
     === "Result"
+
+        The dashboard renders the "Customized Filter" example.
 
         [![Advanced]][advanced]
 

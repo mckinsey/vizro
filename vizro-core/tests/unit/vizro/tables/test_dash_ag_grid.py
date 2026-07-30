@@ -21,9 +21,9 @@ column_defs = [
     {"field": "date"},
 ]
 row_data_date_converted = [
-    {"cat": "a", "int": 4, "float": 7.3, "date": "2021-01-01"},
-    {"cat": "b", "int": 5, "float": 8.2, "date": "2021-01-02"},
-    {"cat": "c", "int": 6, "float": 9.1, "date": "2021-01-03"},
+    {"cat": "a", "int": 4, "float": 7.3, "date": "2021-01-01T00:00:00"},
+    {"cat": "b", "int": 5, "float": 8.2, "date": "2021-01-02T00:00:00"},
+    {"cat": "c", "int": 6, "float": 9.1, "date": "2021-01-03T00:00:00"},
 ]
 row_data_date_raw = [
     {"cat": "a", "date": Timestamp("2021-01-01 00:00:00"), "float": 7.3, "int": 4},

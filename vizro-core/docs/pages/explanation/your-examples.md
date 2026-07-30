@@ -1,3 +1,7 @@
+---
+description: "Curated gallery of external Vizro material: community videos, blog posts, and dashboards published on GitHub or PyCafe."
+---
+
 # Examples from Vizro users
 
 This page lists videos, blog posts, and examples of Vizro usage in repositories on GitHub. We've curated the list so it is a snapshot of the best projects and content that Vizro users have created.

@@ -53,7 +53,7 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
     """Implementation of `dash_ag_grid.AgGrid` with sensible defaults to be used in [`AgGrid`][vizro.models.AgGrid].
 
     Abstract: Usage documentation
-        [How to use AG Grid](user-guides/table.md#ag-grid)
+        [How to use AG Grid](../user-guides/table.md#ag-grid)
 
     Args:
         data_frame: DataFrame containing the data to be displayed.
@@ -75,13 +75,7 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
     defaults = {
         "className": "ag-theme-vizro",
         "columnDefs": [{"field": col} for col in data_frame.columns],
-        "rowData": data_frame.apply(
-            lambda x: (
-                x.dt.strftime("%Y-%m-%d")  # set date columns to `dateString` for AG Grid filtering to function
-                if pd.api.types.is_datetime64_any_dtype(x)
-                else x
-            )
-        ).to_dict("records"),
+        "rowData": data_frame.to_dict(orient="records"),
         "defaultColDef": {
             "resizable": True,
             "sortable": True,

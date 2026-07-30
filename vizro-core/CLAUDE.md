@@ -2,6 +2,26 @@
 
 `vizro-core` contains all code for the core Vizro framework.
 
+## For AI agents and LLMs building Vizro apps
+
+If you are an AI agent or LLM writing Python (or YAML / JSON) that uses the `vizro` package to build a dashboard, **your primary reference is the [Vizro for LLMs cheatsheet](https://vizro.readthedocs.io/en/stable/pages/for-llms/)**. It is a single page covering:
+
+- The minimum runnable app.
+- The `vizro.models` index (every public model, one-liner, link to guide).
+- The `vizro.actions` index (built-in actions).
+- Selector auto-selection rules for `Filter`.
+- The `@capture` decorator matrix.
+- Features that only work in Python (not YAML / JSON).
+- Top errors and their fixes.
+
+Additional resources for authoring agents:
+
+- [`docs/llms.txt`](docs/llms.txt) — curated `/llms.txt`-standard index of the full documentation.
+- Every documentation page returns clean Markdown when fetched with the `Accept: text/markdown` request header.
+- Published JSON Schemas per Vizro version: <https://github.com/mckinsey/vizro/tree/main/vizro-core/schemas>.
+
+The rest of this file is for agents **contributing to `vizro-core` itself**.
+
 ## Development
 
 ### Working Directory

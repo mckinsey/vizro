@@ -34,7 +34,7 @@ class Container(VizroBaseModel):
     """Container to group together a set of components on a page.
 
     Abstract: Usage documentation
-        [How to use containers](user-guides/container.md)
+        [How to use containers](../user-guides/container.md)
 
     """
 
@@ -57,7 +57,7 @@ class Container(VizroBaseModel):
         AfterValidator(set_variant),
         Field(
             default=None,
-            description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
+            description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`. "
             "Defaults to `plain` (or `outlined` for collapsible container). ",
             validate_default=True,
         ),
