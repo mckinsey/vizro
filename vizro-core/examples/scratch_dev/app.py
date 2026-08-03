@@ -37,7 +37,6 @@ page_0_1 = vm.Page(
     ],
 )
 
-
 # ====== **FIX** vm.Filter vs _filter_action ======
 
 page_1_1 = vm.Page(
