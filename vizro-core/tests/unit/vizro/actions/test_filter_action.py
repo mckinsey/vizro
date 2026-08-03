@@ -139,6 +139,49 @@ class TestFilter:
 
         assert result == expected
 
+    @pytest.mark.parametrize("selected_countries", [["Nigeria"], ["Nigeria", "Egypt"]])
+    def test_one_leaf_mode_hierarchical_filter_one_target(self, selected_countries, gapminder_2007, scatter_params):
+        # Regression test for a leaf-mode (full_path=False) hierarchical Cascader filter. It must filter on its
+        # leaf column ("country"), not on the full path. `_apply_filter_controls` previously read the Filter's
+        # public `column` (the ["continent", "country"] list) instead of the resolved `_filter_column`, which fed
+        # a DataFrame into `_filter_isin` and produced NaN-masked garbage rather than row selection.
+        country_filter = vm.Filter(
+            id="test_filter",
+            column=["continent", "country"],
+            targets=["scatter_chart"],
+            selector=vm.Cascader(id="country_filter", multi=True),
+        )
+        model_manager["test_page"].controls = [country_filter]
+        country_filter.pre_build()
+
+        mock_ctx = {
+            "args_grouping": {
+                "external": {
+                    "_controls": {
+                        "filter_interaction": [],
+                        "filters": [
+                            CallbackTriggerDict(
+                                id="country_filter",
+                                property="value",
+                                value=selected_countries,
+                                str_id="country_filter",
+                                triggered=False,
+                            )
+                        ],
+                        "parameters": [],
+                    }
+                }
+            }
+        }
+        context_value.set(AttributeDict(**mock_ctx))
+
+        result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function(_controls=None)
+
+        expected_fig = px.scatter(gapminder_2007[gapminder_2007["country"].isin(selected_countries)], **scatter_params)
+        expected_fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+
+        assert result == {"scatter_chart": expected_fig}
+
     @pytest.mark.parametrize(
         "ctx_filter_continent,target_scatter_filtered_continent,target_box_filtered_continent",
         [(["Africa"], ["Africa"], ["Africa"]), (["Africa", "Europe"], ["Africa", "Europe"], ["Africa", "Europe"])],
