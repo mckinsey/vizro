@@ -46,7 +46,6 @@ _regions = {
         "Mozambique",
         "Zimbabwe",
         "Botswana",
-        "Namibia",
         "South Africa",
         "Lesotho",
         "Swaziland",
