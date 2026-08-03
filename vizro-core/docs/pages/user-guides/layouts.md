@@ -1,3 +1,7 @@
+---
+description: "Choose between `Grid` (row/column) and `Flex` (flexible box) on a `Page` or `Container`, and see alternative approaches like tabs and containers."
+---
+
 # How to change the layout of your page
 
 The [`Page`][vizro.models.Page] and [`Container`][vizro.models.Container] models accept a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the `layout` with:
@@ -54,6 +58,8 @@ The `layout` argument enables you to choose between two layout models: [`Grid`][
         ```
 
     === "Result"
+
+        The dashboard renders the default layout.
 
         [![Layout]][layout]
 
@@ -146,6 +152,8 @@ This defines a single row that occupies the entire width and height, divided int
         ```
 
     === "Result"
+
+        The dashboard renders the "Grid Arrangement - Basic Example" example.
 
         [![Grid]][grid]
 
@@ -282,6 +290,8 @@ The `Grid` provides full control over the arrangement of top-level components wi
 
     === "Result"
 
+        The dashboard renders the "Grid Arrangement - Advanced Example" example.
+
         [![GridAdv]][gridadv]
 
 ### Cheatsheet - grid examples
@@ -294,18 +304,18 @@ one row with one component, second row with two components stacked horizontally
 
 | Grid needed                                                                                                                                                                                                             | Grid                                                                                                                      | Code                                                        |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| <img src="../../../assets/user_guides/layout/one_left_color.png" alt="one component" width="400"/>                                                                                                                      | <img src="../../../assets/user_guides/layout/1l_grid.png" alt="layout=vm.Grid(grid=[[0]])" width="100"/>                  | `layout=vm.Grid(grid=[[0]])`                                |
-| <img src="../../../assets/user_guides/layout/two_left_color.png" alt="two horizontally stacked rows, each with one component" width="400"/>                                                                             | <img src="../../../assets/user_guides/layout/2l_grid.png" width="100"/>                                                   | `layout=vm.Grid(grid=[[0],[1]])`                            |
-| <img src="../../../assets/user_guides/layout/two_top_color.png" alt="one row with two components set horizontally" width="400"/>                                                                                        | <img src="../../../assets/user_guides/layout/2t_grid.png" alt="layout=vm.Grid(grid=[[0],[1]])" width="100"/>              | `layout=vm.Grid(grid=[[0,1]])`                              |
-| <img src="../../../assets/user_guides/layout/three_left_color.png" alt="three horizontally stacked rows, each with one component" width="400"/>                                                                         | <img src="../../../assets/user_guides/layout/3l_grid.png" alt="layout=vm.Grid(grid=[[0],[1],[2]]" width="100"/>           | `layout=vm.Grid(grid=[[0],[1],[2]])` or <br/> `layout=None` |
-| <img src="../../../assets/user_guides/layout/one_left_two_right_color.png" alt="one row divided into two separate columns where the left column is one component and the right is two stacked components" width="400"/> | <img src="../../../assets/user_guides/layout/1l_2r_grid.png" alt="layout=vm.Grid(grid=[[0,1],[0,2]])"  width="100"/>      | `layout=vm.Grid(grid=[[0,1],[0,2]])`                        |
-| <img src="../../../assets/user_guides/layout/one_top_two_bottom_color.png" alt="two rows with the top as a single component and the bottom divided into two components" width="400"/>                                   | <img src="../../../assets/user_guides/layout/1t_2b_grid.png" alt="layout=vm.Grid(grid=[[0,0],[1,2]])" width="100"/>       | `layout=vm.Grid(grid=[[0,0],[1,2]])`                        |
-| <img src="../../../assets/user_guides/layout/two_top_one_bottom_color.png" alt="two rows with the top divided into two columns where each holds one component, and the bottom as a single component" width="400"/>      | <img src="../../../assets/user_guides/layout/2t_1b_grid.png" alt="layout=vm.Grid(grid=[[0,1],[2,2]])" width="100"/>       | `layout=vm.Grid(grid=[[0,1],[2,2]])`                        |
-| <img src="../../../assets/user_guides/layout/one_left_three_right_color.png" alt="two columns where the left is a single component and the right is a set of three horizontally stacked components" width="400"/>       | <img src="../../../assets/user_guides/layout/1l_3r_grid.png" alt="layout=vm.Grid(grid=[[0,1],[0,2],[0,3]])" width="100"/> | `layout=vm.Grid(grid=[[0,1],[0,2],[0,3]])`                  |
-| <img src="../../../assets/user_guides/layout/two_left_two_right_color.png" alt="two rows where each row is two components" width="400"/>                                                                                | <img src="../../../assets/user_guides/layout/2t_2b_grid.png" alt="layout=vm.Grid(grid=[[0,1],[2,3]])" width="100"/>       | `layout=vm.Grid(grid=[[0,1],[2,3]])`                        |
-| <img src="../../../assets/user_guides/layout/three_left_one_right_color.png" alt="two columns where the left is a set of three horizontally stacked components and the right is a single component" width="400"/>       | <img src="../../../assets/user_guides/layout/3l_1r_grid.png" alt="layout=vm.Grid(grid=[[0,3],[1,3],[2,3]])" width="100"/> | `layout=vm.Grid(grid=[[0,3],[1,3],[2,3]])`                  |
-| <img src="../../../assets/user_guides/layout/one_top_three_bottom_color.png" alt="two rows where the top is a single component and the bottom is three separate components" width="400"/>                               | <img src="../../../assets/user_guides/layout/1t_3b_grid.png" alt="layout=vm.Grid(grid=[[0,0,0],[1,2,3]])" width="100"/>   | `layout=vm.Grid(grid=[[0,0,0],[1,2,3]])`                    |
-| <img src="../../../assets/user_guides/layout/three_top_one_bottom_color.png" alt="two rows where the top is three separate components and the bottom is a single component" width="400"/>                               | <img src="../../../assets/user_guides/layout/3t_1b_grid.png" alt="layout=vm.Grid(grid=[[0,1,2],[3,3,3]])" width="100"/>   | `layout=vm.Grid(grid=[[0,1,2],[3,3,3]])`                    |
+| <img src="../../assets/user_guides/layout/one_left_color.png" alt="one component" width="400"/>                                                                                                                      | <img src="../../assets/user_guides/layout/1l_grid.png" alt="layout=vm.Grid(grid=[[0]])" width="100"/>                  | `layout=vm.Grid(grid=[[0]])`                                |
+| <img src="../../assets/user_guides/layout/two_left_color.png" alt="two horizontally stacked rows, each with one component" width="400"/>                                                                             | <img src="../../assets/user_guides/layout/2l_grid.png" width="100"/>                                                   | `layout=vm.Grid(grid=[[0],[1]])`                            |
+| <img src="../../assets/user_guides/layout/two_top_color.png" alt="one row with two components set horizontally" width="400"/>                                                                                        | <img src="../../assets/user_guides/layout/2t_grid.png" alt="layout=vm.Grid(grid=[[0],[1]])" width="100"/>              | `layout=vm.Grid(grid=[[0,1]])`                              |
+| <img src="../../assets/user_guides/layout/three_left_color.png" alt="three horizontally stacked rows, each with one component" width="400"/>                                                                         | <img src="../../assets/user_guides/layout/3l_grid.png" alt="layout=vm.Grid(grid=[[0],[1],[2]]" width="100"/>           | `layout=vm.Grid(grid=[[0],[1],[2]])` or <br/> `layout=None` |
+| <img src="../../assets/user_guides/layout/one_left_two_right_color.png" alt="one row divided into two separate columns where the left column is one component and the right is two stacked components" width="400"/> | <img src="../../assets/user_guides/layout/1l_2r_grid.png" alt="layout=vm.Grid(grid=[[0,1],[0,2]])"  width="100"/>      | `layout=vm.Grid(grid=[[0,1],[0,2]])`                        |
+| <img src="../../assets/user_guides/layout/one_top_two_bottom_color.png" alt="two rows with the top as a single component and the bottom divided into two components" width="400"/>                                   | <img src="../../assets/user_guides/layout/1t_2b_grid.png" alt="layout=vm.Grid(grid=[[0,0],[1,2]])" width="100"/>       | `layout=vm.Grid(grid=[[0,0],[1,2]])`                        |
+| <img src="../../assets/user_guides/layout/two_top_one_bottom_color.png" alt="two rows with the top divided into two columns where each holds one component, and the bottom as a single component" width="400"/>      | <img src="../../assets/user_guides/layout/2t_1b_grid.png" alt="layout=vm.Grid(grid=[[0,1],[2,2]])" width="100"/>       | `layout=vm.Grid(grid=[[0,1],[2,2]])`                        |
+| <img src="../../assets/user_guides/layout/one_left_three_right_color.png" alt="two columns where the left is a single component and the right is a set of three horizontally stacked components" width="400"/>       | <img src="../../assets/user_guides/layout/1l_3r_grid.png" alt="layout=vm.Grid(grid=[[0,1],[0,2],[0,3]])" width="100"/> | `layout=vm.Grid(grid=[[0,1],[0,2],[0,3]])`                  |
+| <img src="../../assets/user_guides/layout/two_left_two_right_color.png" alt="two rows where each row is two components" width="400"/>                                                                                | <img src="../../assets/user_guides/layout/2t_2b_grid.png" alt="layout=vm.Grid(grid=[[0,1],[2,3]])" width="100"/>       | `layout=vm.Grid(grid=[[0,1],[2,3]])`                        |
+| <img src="../../assets/user_guides/layout/three_left_one_right_color.png" alt="two columns where the left is a set of three horizontally stacked components and the right is a single component" width="400"/>       | <img src="../../assets/user_guides/layout/3l_1r_grid.png" alt="layout=vm.Grid(grid=[[0,3],[1,3],[2,3]])" width="100"/> | `layout=vm.Grid(grid=[[0,3],[1,3],[2,3]])`                  |
+| <img src="../../assets/user_guides/layout/one_top_three_bottom_color.png" alt="two rows where the top is a single component and the bottom is three separate components" width="400"/>                               | <img src="../../assets/user_guides/layout/1t_3b_grid.png" alt="layout=vm.Grid(grid=[[0,0,0],[1,2,3]])" width="100"/>   | `layout=vm.Grid(grid=[[0,0,0],[1,2,3]])`                    |
+| <img src="../../assets/user_guides/layout/three_top_one_bottom_color.png" alt="two rows where the top is three separate components and the bottom is a single component" width="400"/>                               | <img src="../../assets/user_guides/layout/3t_1b_grid.png" alt="layout=vm.Grid(grid=[[0,1,2],[3,3,3]])" width="100"/>   | `layout=vm.Grid(grid=[[0,1,2],[3,3,3]])`                    |
 
 <!--vale on -->
 
@@ -362,6 +372,8 @@ grid = [[0, 1, -1], [0, 2, -1]]
         ```
 
     === "Result"
+
+        The dashboard renders the "Adding Empty Spaces" example.
 
         [![GridEmpty]][gridempty]
 
@@ -440,6 +452,8 @@ By default, the grid fits all charts/components on the screen. This can lead to 
         ```
 
     === "Result"
+
+        The dashboard renders the "Activate Scrolling" example.
 
         [![GridScroll]][gridscroll]
 
@@ -606,6 +620,8 @@ In this example, there isn’t enough space to fit all three graphs in a single 
 
     === "Result"
 
+        The dashboard renders the "Flex - advanced example" example.
+
         [![FlexAdvanced]][flexadvanced]
 
 ### Align and position flex items
@@ -672,6 +688,8 @@ Common properties you can pass through `extra` include:
         ```
 
     === "Result"
+
+        The dashboard renders the "Flex with justify and align" example.
 
         [![FlexExtra]][flexextra]
 
@@ -775,6 +793,8 @@ We will reuse the example from the previous section, but this time we set `width
 
     === "Result"
 
+        The dashboard renders the "Change the width for Graph" example.
+
         [![FlexItemSizeArg]][flexitemsizearg]
 
 #### Change size via CSS
@@ -824,6 +844,8 @@ Each item within the `Flex` layout is wrapped in a `<div class="flex-item">`, wh
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/flex-items-cards-width">Run and edit this code in PyCafe</a></b>
 
     === "Result"
+
+        The dashboard renders the "Change the width of all flex items with CSS" example.
 
         [![FlexItemSizeCSS]][flexitemsizecss]
 
@@ -875,6 +897,8 @@ For example, in the layout below, we use the [`Grid`](#grid-layout) layout to ar
         ```
 
     === "Result"
+
+        The dashboard renders the "Grid with Flex container" example.
 
         [![FlexGridCombined]][flexgridcombined]
 

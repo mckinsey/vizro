@@ -49,7 +49,7 @@ class Flex(VizroBaseModel):
 
     @_log_call
     def build(self):
-        """Creates empty flex container to later position components in."""
+        """Creates an empty flex container to later position components in."""
         wrap_value = "wrap" if self.wrap else "nowrap"
 
         defaults = {

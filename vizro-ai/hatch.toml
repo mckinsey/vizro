@@ -64,9 +64,9 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
-  "zensical",
+  "zensical>=0.0.36",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
-  "mkdocstrings[python]",
+  "mkdocstrings[python]>=1.0.6",
   "linkchecker",
   "mkdocs-pycafe",
   "PyGithub",
@@ -77,17 +77,24 @@ detached = true
 installer = "uv"
 
 [envs.docs.scripts]
-build = "zensical build --clean"
+build = [
+  "zensical build --clean",
+  "python ../tools/stamp_llms_txt.py --placeholder=https://vizro.readthedocs.io/projects/vizro-ai/en/latest/ --site-dir=site"
+]
 # Disable warnings on the linkcheck so that HTTP redirects are accepted. We could ignore only that warning and specify
 # more advanced settings using a linkcheckerrc config file. openai.com doesn't seem to work well with linkchecking,
 # throwing 403 errors, but these are not real errors.
-link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.openai.com/docs/models --ignore-url=openai.com --ignore-url=https://openai.com/"
+# --ignore-url=overrides/ skips the raw Jinja template overrides (e.g.
+# main.html, partials/tabs-item.html) that zensical copies into site/.
+# Linkchecker would otherwise try to resolve their {{ ... }} expressions
+# as relative URLs.
+link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=overrides/ --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.openai.com/docs/models --ignore-url=openai.com --ignore-url=https://openai.com/"
 pip = '"{env:HATCH_UV}" pip {args}'
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
 serve = "zensical serve --open {args}"
 
 [envs.lower-bounds]
-extra-dependencies = ["pydantic-ai-slim==1.39.0"]
+extra-dependencies = ["pydantic-ai-slim==1.56.0"]
 python = "3.10"
 
 [version]

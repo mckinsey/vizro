@@ -71,7 +71,8 @@ def _apply_filter_controls(
             continue
 
         selector_value = ctd["value"]
-        selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
+        # TODO PP NOW: Check whether it works without the line below
+        # selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
 
         mask = parent_filter._filter_function(data_frame[parent_filter.column], selector_value)
         data_frame = data_frame[mask]
@@ -190,9 +191,10 @@ def _get_parametrized_config(
 
     for ctd in ctds_parameter:
         selector_id = ctd["id"]
+        selector_value = _validate_selector_value_none(ctd["value"])  # type: ignore[arg-type]
+
         parent_parameter = cast(Parameter, get_selector_parent_control(selector=model_manager[selector_id]))
 
-        selector_value = _validate_selector_value_none(ctd["value"])  # type: ignore[arg-type]
         for dot_separated_string in _get_target_dot_separated_strings(parent_parameter.targets, target, data_frame):
             config = _update_nested_figure_properties(
                 figure_config=config, dot_separated_string=dot_separated_string, value=selector_value

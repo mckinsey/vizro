@@ -1,6 +1,6 @@
 ---
 name: selecting-vizro-charts
-description: Use this skill when choosing chart types, applying Plotly Express conventions, configuring colors, or building KPI cards for Vizro dashboards. Activate when the user asks which chart fits their data, needs custom chart functions, wants to set colors or palettes, or is creating KPI metric cards.
+description: Use this skill when choosing chart types, applying Plotly Express conventions, configuring colors, building KPI cards, or adding tables (AG Grid) to Vizro dashboards. Activate when the user asks which chart fits their data, needs custom chart functions, wants to set colors or palettes, is creating KPI metric cards, or needs a tabular detail view.
 ---
 
 # Vizro Chart Best Practices
@@ -42,6 +42,13 @@ Use when: aggregation/sorting needed, `update_layout()`/`update_traces()` calls,
 - Use built-in `kpi_card` / `kpi_card_reference` from `vizro.figures` in `Figure` model.
 - **Never** rebuild KPI cards as custom charts. Exception: strictly impossible with built-in (e.g. dynamic text).
 - Titles go in figure args (`_target_: kpi_card` → `title:`), not on the component.
+
+## Tables
+
+- Use `vm.AgGrid` with `figure=dash_ag_grid(data_frame=...)` from `vizro.tables`. AG Grid is the only table component you should write.
+- **Never** use `vm.Table` / Dash DataTable. **Never** fake a table with Plotly (heatmap-with-text, `px.imshow` annotated as a table, scatter-with-text). Even small tables go in AG Grid; KPI cards or a horizontal bar chart are the only acceptable lighter alternatives.
+- For custom column logic, write `@capture("ag_grid")` with `data_frame` as the exact DataFrame argument name (not `df`, not `data`).
+- See the **dashboard-build** skill's [example_ag_grid.py](../dashboard-build/references/examples/example_ag_grid.py) for the two canonical patterns (drop-in factory + `@capture("ag_grid")` for runtime-parameterized grids) and the Dash AG Grid / JS AG Grid knowledge-mapping notes.
 
 ## Deep Dive
 

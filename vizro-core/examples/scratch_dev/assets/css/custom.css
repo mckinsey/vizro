@@ -1,5 +1,14 @@
 /* Custom CSS  */
+
 #logo-dark,
 #logo-light {
   height: 28px;
+}
+
+.cond-notification-slider {
+  width: 240px;
+}
+
+#p4-exit-path-slider {
+  display: none;
 }

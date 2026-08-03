@@ -342,17 +342,17 @@ For more details, see the [Pydantic AI Web Chat UI documentation](https://ai.pyd
 
 ### Agent2Agent (A2A) protocol
 
-The `chart_agent` can participate in agent-to-agent workflows using [the A2A protocol](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/). You will need to install `pip install "pydantic-ai-slim[a2a]"` to use this feature.
+Since `chart_agent` is a standard Pydantic AI agent, you can expose it over the [A2A protocol](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/) with [FastA2A](https://github.com/datalayer/fasta2a) (`pip install "fasta2a[pydantic-ai]"`):
 
 !!! example "Use chart_agent in an A2A workflow"
 
     ```py
+    from fasta2a.pydantic_ai import agent_to_a2a
+
     from vizro_ai.agents import chart_agent
 
-    app = chart_agent.to_a2a()
+    app = agent_to_a2a(chart_agent)
     ```
-
-For more details, see the [Pydantic AI A2A protocol documentation](https://ai.pydantic.dev/a2a/).
 
 ## Learn more
 

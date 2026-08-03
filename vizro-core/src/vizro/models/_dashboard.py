@@ -214,7 +214,7 @@ class Dashboard(VizroBaseModel):
         """Adds custom content that will appear to the left of the theme switch.
 
         Returns:
-             A Dash component of list of components for the dashboard header's custom content area.
+             A Dash component or list of components for the dashboard header's custom content area.
 
         Example:
             ```python

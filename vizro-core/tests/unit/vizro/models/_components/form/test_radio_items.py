@@ -72,6 +72,10 @@ class TestRadioItemsInstantiation:
                 [{"label": "True", "value": True}, {"label": "False", "value": False}],
                 [{"label": "True", "value": True}, {"label": "False", "value": False}],
             ),
+            (
+                ["A", 1, {"label": "B", "value": "B"}],
+                ["A", 1, {"label": "B", "value": "B"}],
+            ),
         ],
     )
     def test_create_radio_items_valid_options(self, test_options, expected):
@@ -84,22 +88,17 @@ class TestRadioItemsInstantiation:
         assert radio_items.title == ""
         assert radio_items.actions == []
 
-    @pytest.mark.parametrize("test_options", [1, "A", True, 1.0, [True, 2.0, 1.0, "A", "B"]])
+    @pytest.mark.parametrize("test_options", [1, "A", True, 1.0])
     def test_create_radio_items_invalid_options_type(self, test_options):
         with pytest.raises(ValidationError, match="Input should be a valid"):
             RadioItems(options=test_options)
 
     def test_create_radio_items_invalid_options_dict(self):
-        with pytest.raises(ValidationError, match="Field required"):
+        with pytest.raises(ValidationError, match="Field required") as exc:
             RadioItems(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
-
-    def test_validate_options_dict_produces_clean_errors(self):
-        """Test that _validate_options produces 2 clean errors instead of 8 messy ones."""
-        with pytest.raises(ValidationError) as exc_info:
-            RadioItems(options=[{"hello": "A", "world": "A"}])
-
-        # With validator: 2 errors (label, value). Without: 8 errors with nested paths.
-        assert len(exc_info.value.errors()) == 2
+        assert exc.value.error_count() == 2
+        assert exc.value.errors()[0]["msg"] == "Field required" and exc.value.errors()[0]["loc"] == ("label",)
+        assert exc.value.errors()[1]["msg"] == "Field required" and exc.value.errors()[1]["loc"] == ("value",)
 
     @pytest.mark.parametrize(
         "test_value, options",
@@ -109,6 +108,7 @@ class TestRadioItemsInstantiation:
             (2.0, [1.0, 2.0, 3.0]),
             (True, [True, False]),
             ("B", [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}]),
+            (True, ["A", 1, {"label": "B", "value": "B"}, {"label": "True", "value": True}]),
         ],
     )
     def test_create_radio_items_valid_value(self, test_value, options):

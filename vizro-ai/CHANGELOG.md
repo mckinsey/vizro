@@ -11,6 +11,18 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.4.1'></a>
+# 0.4.1 — 2026-07-02
+
+## Added
+
+- Added an `llms.txt` index of the documentation, advertised from the docs home page and via a machine-readable `<link>` tag in every page's `<head>`. ([#1762](https://github.com/mckinsey/vizro/pull/1762))
+
+## Fixed
+
+- Closed a dynamic-code safeguard bypass where whitelisted-package methods that reach the filesystem (`numpy.memmap`, `numpy.fromfile`) could be used for arbitrary file read/write. Thanks to b3rt1ng ([@b3rt1ng](https://github.com/b3rt1ng)) for the responsible disclosure. ([#1786](https://github.com/mckinsey/vizro/pull/1786))
+- Surfaced the code-execution safeguard's best-effort nature at the API: executing generated chart code now emits a `VizroAICodeExecutionWarning`, and the relevant public docstrings carry an explicit security note. ([#1786](https://github.com/mckinsey/vizro/pull/1786))
+
 <a id='changelog-0.4.0'></a>
 
 # 0.4.0 — 2026-01-26

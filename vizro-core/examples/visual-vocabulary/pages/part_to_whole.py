@@ -2,9 +2,9 @@
 
 import vizro.models as vm
 
-from pages._factories import waterfall_factory
+from pages._factories import marimekko_factory, waterfall_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import donut, funnel, pie, stacked_bar, stacked_column, treemap, venn
+from pages.examples import arc, donut, funnel, gridplot, pie, stacked_bar, stacked_column, treemap, venn
 
 pie_page = vm.Page(
     title="Pie",
@@ -104,7 +104,7 @@ treemap_page = vm.Page(
 
                 It's helpful to use a treemap when you wish to display hierarchical part-to-whole relationships. You can
                 compare groups and single elements nested within them. Consider using them instead of Pie charts when
-                you have a higher number of categories. Treemaps are very compact and allow audiences to get a quick
+                you have a higher number of categories. Treemaps are very compact and enable audiences to get a quick
                 overview of the data.
             """
         ),
@@ -135,7 +135,7 @@ stacked_bar_page = vm.Page(
 
             A stacked bar chart displays bars divided into segments, with each segment's length proportional to the
             value it represents. One axis shows the categories being compared, while the other provides a value scale
-            starting from zero. The segments within each bar are stacked on top of each other, allowing for a cumulative
+            starting from zero. The segments within each bar are stacked on top of each other, enabling a cumulative
             comparison.
 
             &nbsp;
@@ -177,7 +177,7 @@ stacked_column_page = vm.Page(
 
             A stacked column chart displays columns divided into segments, with each segment's height proportional to
             the value it represents. One axis shows the categories being compared, while the other provides a value
-            scale starting from zero. The segments within each column are stacked on top of each other, allowing for a
+            scale starting from zero. The segments within each column are stacked on top of each other, enabling a
             cumulative comparison.
 
             &nbsp;
@@ -288,13 +288,96 @@ venn_page = vm.Page(
 
 waterfall_page = waterfall_factory("part-to-whole")
 
+arc_page = vm.Page(
+    title="Arc",
+    path="part-to-whole/arc",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+            #### What is an arc diagram?
+
+            An arc diagram displays relationships between nodes using curved arcs that connect them on a horizontal
+            baseline. It's effective for visualizing networks, flows, and connections between entities.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use an arc diagram to show relationships, flows, or connections between nodes. It's particularly useful
+            for comparing multiple connections across a linear arrangement. Avoid using it with too many overlapping
+            arcs as they can become difficult to read.
+        """
+        ),
+        vm.Graph(figure=arc.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("arc.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("arc.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
+marimekko_page = marimekko_factory("part-to-whole")
+gridplot_page = vm.Page(
+    title="Grid plot",
+    path="part-to-whole/grid-plot",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a grid plot?
+
+            A grid plot (also known as small multiples or a trellis chart) displays the same chart type across
+            multiple subsets of a dataset, enabling side-by-side comparison while preserving a consistent visual
+            structure. In this example, the grid is arranged by meal time (rows) and sex (columns), with each
+            donut showing how tips are distributed across days of the week.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a grid plot when you need to compare distributions, trends, or relationships across multiple
+            groups while preserving a consistent visual structure. The grid layout makes it easy to spot patterns
+            that would be difficult to see in a single aggregated chart. Grid plots are particularly effective
+            when faceting by two dimensions (e.g., time and category), as the row and column arrangement guides
+            the viewer's eye toward meaningful comparisons.
+        """
+        ),
+        vm.Graph(figure=gridplot.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("gridplot.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("gridplot.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
 pages = [
     donut_page,
     pie_page,
+    arc_page,
     treemap_page,
     stacked_bar_page,
     stacked_column_page,
     funnel_page,
     venn_page,
     waterfall_page,
+    marimekko_page,
+    gridplot_page,
 ]

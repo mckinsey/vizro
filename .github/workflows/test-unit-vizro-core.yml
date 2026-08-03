@@ -65,7 +65,7 @@ jobs:
               label: Windows
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Set up Python ${{ matrix.config.python-version }}
         uses: actions/setup-python@v6

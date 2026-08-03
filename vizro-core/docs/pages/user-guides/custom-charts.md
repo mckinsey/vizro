@@ -1,3 +1,7 @@
+---
+description: "Wrap a Plotly function with `@capture('graph')` for post-update calls, reference lines, or `go.Figure` charts like waterfalls that Express cannot express."
+---
+
 # How to create custom charts
 
 This guide shows you how to create custom charts and how to add them to your dashboard. The [`Graph`][vizro.models.Graph] model accepts the `figure` argument, where you can enter _any_ [`plotly.express`](https://plotly.com/python/plotly-express/) chart as explained in the [user guide on graphs](graph.md).
@@ -29,7 +33,7 @@ def minimal_example(data_frame:pd.DataFrame=None):
     return go.Figure()
 ```
 
-Building on the above, there are several routes one can take. The following examples are guides on the most common custom requests, but also serve as an illustration of more general principles.
+Building on this minimal example, there are several routes one can take. The following examples are guides on the most common custom requests, but also serve as an illustration of more general principles.
 
 To alter the data in the `data_frame` argument, consider using a [Filter](filters.md) or [parametrized data loading](./data/#parametrize-data-loading) and [dynamic data](./data/#dynamic-data). The `data_frame` argument input to a custom chart contains the data **after** filters and parameters have been applied.
 
@@ -129,6 +133,8 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
 
     === "Result"
 
+        The dashboard renders the "Custom `plotly.express` scatter chart with a `Parameter`" example.
+
         [![Graph2]][graph2]
 
 ## New Waterfall chart based on `go.Figure()`
@@ -222,6 +228,8 @@ The below examples shows a more involved use-case. We create and style a waterfa
         ```
 
     === "Result"
+
+        The dashboard renders the "Custom `go.Figure()` waterfall chart with a `Parameter`" example.
 
         [![Graph3]][graph3]
 

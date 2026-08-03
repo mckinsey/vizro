@@ -207,9 +207,7 @@ self_filter_set_control_page = vm.Page(
                 color="species",
                 custom_data=["species"],
             ),
-            actions=[
-                set_control(control="chl_self_filter", value="species"),
-            ],
+            actions=set_control(control="chl_self_filter", value="species"),
         ),
     ],
     controls=[

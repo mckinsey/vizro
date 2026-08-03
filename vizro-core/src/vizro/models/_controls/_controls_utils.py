@@ -13,14 +13,16 @@ from vizro.models import (
     Checklist,
     Container,
     DatePicker,
+    DateTimePicker,
     Dropdown,
     RadioItems,
     RangeSlider,
     Slider,
     Switch,
+    TimePicker,
     VizroBaseModel,
 )
-from vizro.models._components.form._form_utils import get_dict_options_and_default
+from vizro.models._components.form._form_utils import get_dict_options_and_value
 from vizro.models._components.form.cascader import get_cascader_default_value
 from vizro.models.types import ControlType, SelectorType
 
@@ -30,15 +32,21 @@ if TYPE_CHECKING:
 SELECTORS: dict[str, tuple[type, ...]] = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Checklist, Dropdown, RadioItems),
-    "temporal": (DatePicker,),
+    "date": (DatePicker,),
+    "datetime": (DateTimePicker,),
+    "time": (TimePicker,),
     "boolean": (Switch,),
     "hierarchical": (Cascader,),
 }
 
 
 # Type-narrowing functions to avoid needing to cast every time we do isinstance for a selector.
-def _is_numerical_temporal_selector(x: object) -> TypeIs[RangeSlider | Slider | DatePicker]:
-    return isinstance(x, SELECTORS["numerical"] + SELECTORS["temporal"])
+def _is_numerical_or_date_selector(x: object) -> TypeIs[RangeSlider | Slider | DatePicker]:
+    return isinstance(x, SELECTORS["numerical"] + SELECTORS["date"])
+
+
+def _is_datetime_selector(x: object) -> TypeIs[DateTimePicker]:
+    return isinstance(x, SELECTORS["datetime"])
 
 
 def _is_categorical_selector(x: object) -> TypeIs[Checklist | Dropdown | RadioItems]:
@@ -101,7 +109,7 @@ def warn_missing_id_for_url_control(control: ControlType) -> None:
         )
 
 
-def get_selector_default_value(selector: SelectorType) -> Any:
+def get_selector_default_value(selector: SelectorType) -> Any:  # noqa: PLR0911
     """Get default value for a selector if not explicitly provided.
 
     This is used to set selector.value in controls so that the "Reset controls" button works. Ideally it would be
@@ -111,17 +119,37 @@ def get_selector_default_value(selector: SelectorType) -> Any:
     if selector.value is not None:
         return selector.value
 
-    if _is_numerical_temporal_selector(selector):
+    if _is_numerical_or_date_selector(selector):
         is_range = isinstance(selector, RangeSlider) or getattr(selector, "range", False)
         return [selector.min, selector.max] if is_range else selector.min
     elif _is_categorical_selector(selector):
         is_multi = isinstance(selector, Checklist) or getattr(selector, "multi", False)
-        _, default_value = get_dict_options_and_default(options=selector.options, multi=is_multi)
+        _, default_value = get_dict_options_and_value(options=selector.options, value=None, multi=is_multi)
         return default_value
     elif _is_hierarchical_selector(selector):
         is_multi = getattr(selector, "multi", False)
-        return get_cascader_default_value(selector.options, multi=is_multi)
+        return get_cascader_default_value(
+            selector.options, multi=is_multi, full_path=getattr(selector, "full_path", False)
+        )
+    elif isinstance(selector, TimePicker):
+        # dmc.TimePicker needs "" rather than None to properly set originalValue for resetting control.
+        return ["", ""] if selector.range else ""
+    elif isinstance(selector, DateTimePicker):
+        # Initial value uses date-only ISO strings (no time component) so the inline TimePicker
+        # shows as cleared (--:--). The filter logic pads date-only ranges to start-of-day / end-of-day,
+        # so the dashboard still shows the full date range by default — exactly matches DatePicker's
+        # default behavior with the added "time can be set later" affordance.
+        if selector.range:
+            datetime_default: Any = (
+                [f"{selector.min}", f"{selector.max}"]
+                if (selector.min is not None and selector.max is not None)
+                else ["", ""]
+            )
+        else:
+            datetime_default = f"{selector.min}" if selector.min is not None else ""
+        return datetime_default
     # Boolean selectors always have a default value specified so no need to handle them here.
+    return None
 
 
 def get_selector_parent_control(selector: SelectorType) -> ControlType:

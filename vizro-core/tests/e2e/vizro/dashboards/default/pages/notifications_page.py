@@ -17,7 +17,7 @@ static_notifications_page = vm.Page(
             actions=[
                 va.show_notification(
                     id=cnst.SUCCESS_NOTIFICATION_ID,
-                    text=cnst.SUCCESS_NOTIFICATION_MESSAGE,
+                    text=cnst.SUCCESS_NOTIFICATION_MSG,
                     variant="success",
                     auto_close=False,
                 )
@@ -30,7 +30,7 @@ static_notifications_page = vm.Page(
             actions=[
                 va.show_notification(
                     id=cnst.WARNING_NOTIFICATION_ID,
-                    text=cnst.WARNING_NOTIFICATION_MESSAGE,
+                    text=cnst.WARNING_NOTIFICATION_MSG,
                     variant="warning",
                     auto_close=False,
                 )
@@ -43,7 +43,7 @@ static_notifications_page = vm.Page(
             actions=[
                 va.show_notification(
                     id=cnst.ERROR_NOTIFICATION_ID,
-                    text=cnst.ERROR_NOTIFICATION_MESSAGE,
+                    text=cnst.ERROR_NOTIFICATION_MSG,
                     variant="error",
                     auto_close=False,
                 )
@@ -56,7 +56,7 @@ static_notifications_page = vm.Page(
             actions=[
                 va.show_notification(
                     id=cnst.INFO_NOTIFICATION_ID,
-                    text=cnst.INFO_NOTIFICATION_MESSAGE,
+                    text=cnst.INFO_NOTIFICATION_MSG,
                     variant="info",
                     auto_close=False,
                 )
@@ -69,7 +69,7 @@ static_notifications_page = vm.Page(
             actions=[
                 va.show_notification(
                     id=cnst.CUSTOM_NOTIFICATION_ID,
-                    text=cnst.CUSTOM_NOTIFICATION_MESSAGE,
+                    text=cnst.CUSTOM_NOTIFICATION_MSG,
                     title=cnst.CUSTOM_NOTIFICATION_TITLE,
                     variant="success",
                     icon=cnst.CUSTOM_NOTIFICATION_ICON,
@@ -84,8 +84,7 @@ static_notifications_page = vm.Page(
             actions=[
                 va.show_notification(
                     id=cnst.UPDATE_NOTIFICATION_ID,
-                    text=cnst.PROGRESS_NOTIFICATION_MESSAGE,
-                    title=cnst.PROGRESS_NOTIFICATION_TITLE,
+                    text=cnst.PROGRESS_NOTIFICATION_MSG,
                     variant="progress",
                 )
             ],
@@ -97,7 +96,7 @@ static_notifications_page = vm.Page(
             actions=[
                 va.update_notification(
                     notification=cnst.UPDATE_NOTIFICATION_ID,
-                    text=cnst.UPDATE_NOTIFICATION_MESSAGE,
+                    text=cnst.UPDATE_NOTIFICATION_MSG,
                     title=cnst.UPDATE_NOTIFICATION_TITLE,
                     variant="success",
                     auto_close=False,
@@ -111,7 +110,7 @@ static_notifications_page = vm.Page(
             actions=[
                 va.show_notification(
                     id=cnst.LINK_NOTIFICATION_ID,
-                    text=cnst.LINK_NOTIFICATION_MESSAGE,
+                    text=cnst.LINK_NOTIFICATION_MSG,
                     title=cnst.LINK_NOTIFICATION_TITLE,
                     auto_close=False,
                 )
@@ -124,7 +123,7 @@ static_notifications_page = vm.Page(
             actions=[
                 va.show_notification(
                     id=cnst.AUTO_CLOSE_NOTIFICATION_ID,
-                    text=cnst.AUTO_CLOSE_NOTIFICATION_MESSAGE,
+                    text=cnst.AUTO_CLOSE_NOTIFICATION_MSG,
                     title=cnst.AUTO_CLOSE_NOTIFICATION_TITLE,
                     variant="info",
                 )

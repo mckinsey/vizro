@@ -193,53 +193,57 @@ Information Architecture Checklist:
 
 ## Example: E-Commerce Dashboard IA
 
-```yaml
-dashboard:
-  name: E-Commerce Performance
-  purpose: Monitor sales performance and identify growth opportunities
-  users: [Sales Manager, Marketing Director]
+```markdown
+# Information Architecture
 
-pages:
-  - name: Executive Summary
-    purpose: Are we hitting targets? What needs attention?
-    kpis:
-      - Total Revenue (vs target)
-      - Orders This Month
-      - Conversion Rate
-      - Customer Acquisition Cost
-    supporting:
-      - Revenue trend (sparkline)
-      - Top performing category
+## Dashboard
+- **Name:** E-Commerce Performance
+- **Purpose:** Monitor sales performance and identify growth opportunities
+- **Users:** Sales Manager, Marketing Director
 
-  - name: Sales Analysis
-    purpose: Where are sales coming from? What's trending?
-    kpis:
-      - Revenue by Region
-      - Revenue by Category
-      - Sales Pipeline Value
-    interactions:
-      - Filter by date range
-      - Filter by region
-      - Drill to product detail
+## Pages
 
-  - name: Customer Insights
-    purpose: Who are our customers? How do we retain them?
-    kpis:
-      - New vs Returning Customers
-      - Customer Lifetime Value
-      - Churn Rate
-    interactions:
-      - Filter by segment
-      - Drill to customer detail
+### Executive Summary
+- Purpose: Are we hitting targets? What needs attention?
+- KPIs:
+  - Total Revenue (vs target)
+  - Orders This Month
+  - Conversion Rate
+  - Customer Acquisition Cost
+- Supporting:
+  - Revenue trend (sparkline)
+  - Top performing category
 
-data_sources:
-  - name: orders_db
-    type: PostgreSQL
-    refresh: Hourly
-    tables: [orders, order_items, customers]
+### Sales Analysis
+- Purpose: Where are sales coming from? What's trending?
+- KPIs:
+  - Revenue by Region
+  - Revenue by Category
+  - Sales Pipeline Value
+- Interactions:
+  - Filter by date range
+  - Filter by region
+  - Drill to product detail
 
-  - name: marketing_metrics
-    type: API
-    refresh: Daily
-    metrics: [ad_spend, impressions, clicks]
+### Customer Insights
+- Purpose: Who are our customers? How do we retain them?
+- KPIs:
+  - New vs Returning Customers
+  - Customer Lifetime Value
+  - Churn Rate
+- Interactions:
+  - Filter by segment
+  - Drill to customer detail
+
+## Data sources
+
+### orders_db
+- Type: PostgreSQL
+- Refresh: Hourly
+- Tables: orders, order_items, customers
+
+### marketing_metrics
+- Type: API
+- Refresh: Daily
+- Metrics: ad_spend, impressions, clicks
 ```

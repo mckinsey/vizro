@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import functools
+import re
 from collections.abc import Callable, Iterable
 from contextlib import suppress
+from datetime import time as dt_time
 from typing import Any, Literal, cast
 
 import pandas as pd
@@ -15,14 +18,26 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
-from vizro.models._components.form import Checklist, DatePicker, Dropdown, RangeSlider, Switch
-from vizro.models._components.form.cascader import Cascader
+from vizro.models._components.form import (
+    Checklist,
+    DatePicker,
+    DateTimePicker,
+    Dropdown,
+    RangeSlider,
+    Switch,
+    TimePicker,
+)
+from vizro.models._components.form.cascader import (
+    Cascader,
+    _iter_cascader_paths_depth_first,
+    _normalize_cascader_path,
+)
 from vizro.models._controls._controls_utils import (
     SELECTORS,
-    _is_boolean_selector,
     _is_categorical_selector,
+    _is_datetime_selector,
     _is_hierarchical_selector,
-    _is_numerical_temporal_selector,
+    _is_numerical_or_date_selector,
     check_control_targets,
     get_control_parent,
     get_selector_default_value,
@@ -34,7 +49,9 @@ from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType
 DEFAULT_SELECTORS = {
     "numerical": RangeSlider,
     "categorical": Dropdown,
-    "temporal": DatePicker,
+    "date": DatePicker,
+    "datetime": DatePicker,
+    "time": TimePicker,
     "boolean": Switch,
     "hierarchical": Cascader,
 }
@@ -47,21 +64,248 @@ DEFAULT_SELECTORS = {
 # something we should avoid at least until we have moved to narwhals since maybe it's an unnecessary
 # performance hit.
 DISALLOWED_SELECTORS = {
-    "numerical": SELECTORS["temporal"],
-    "temporal": SELECTORS["numerical"] + SELECTORS["boolean"],
-    "categorical": SELECTORS["numerical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
-    "boolean": SELECTORS["numerical"] + SELECTORS["temporal"],
-    "hierarchical": SELECTORS["numerical"] + SELECTORS["categorical"] + SELECTORS["temporal"] + SELECTORS["boolean"],
+    "numerical": SELECTORS["date"] + SELECTORS["datetime"] + SELECTORS["time"],
+    "date": SELECTORS["numerical"] + SELECTORS["boolean"] + SELECTORS["datetime"] + SELECTORS["time"],
+    # DatePicker, DateTimePicker, and TimePicker are all allowed on "datetime" columns
+    "datetime": SELECTORS["numerical"] + SELECTORS["boolean"],
+    "time": SELECTORS["numerical"] + SELECTORS["boolean"] + SELECTORS["date"] + SELECTORS["datetime"],
+    "categorical": SELECTORS["numerical"]
+    + SELECTORS["date"]
+    + SELECTORS["datetime"]
+    + SELECTORS["time"]
+    + SELECTORS["boolean"],
+    "boolean": SELECTORS["numerical"] + SELECTORS["date"] + SELECTORS["datetime"] + SELECTORS["time"],
+    "hierarchical": SELECTORS["numerical"]
+    + SELECTORS["categorical"]
+    + SELECTORS["date"]
+    + SELECTORS["datetime"]
+    + SELECTORS["time"]
+    + SELECTORS["boolean"],
 }
 
+# Accepts "HH:MM" and "HH:MM:SS" formats. These are the only that the underlying dmc.TimePicker selector can produce.
+_TIME_REGEX = re.compile(r"^\d{2}:\d{2}(:\d{2})?$")
+# Accepts "YYYY-MM-DD<sep>HH:MM" and "YYYY-MM-DD<sep>HH:MM:SS" formats produced by dmc.DateTimePicker.
+# Mantine accepts "T" as a separator on input but emits values with a space separator after user
+# interaction — the regex (and the precision detection below) must tolerate both.
+_DATETIME_REGEX = re.compile(r"^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(:\d{2})?$")
+# Pure ISO date — emitted by DateTimePicker when the time portion is cleared.
+_DATE_ONLY_REGEX = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+_TIME_PARTS_HH_MM = 2  # "HH:MM".split(":") → 2 parts, i.e. no seconds in format
+_RANGE_VALUE_LEN = 2  # Range filters always carry exactly [start, end].
 
-def _filter_between(series: pd.Series, value: list[float] | list[str]) -> pd.Series:
-    if is_datetime64_any_dtype(series):
-        # Each value will always have time 00:00:00. In order for the filter to include all times during
-        # the end date value[1] we need to remove the time part of every value in series so that it's 00:00:00.
-        value = pd.to_datetime(value)
-        series = pd.to_datetime(series.dt.date)
+# Column types whose filter options/bounds can update when the underlying data source is dynamic.
+# "time" and "boolean" are always static.
+# The TimePicker on a "datetime" column is also always static (no min/max concept to derive dynamically).
+_DYNAMIC_COLUMN_TYPES = {"numerical", "categorical", "date", "datetime", "hierarchical"}
+
+
+def _coerce_temporal(
+    series: pd.Series, value: list[Any], normalize_precision: bool = False
+) -> tuple[pd.Series, list[Any]]:
+    """If needed, coerce `series` and `value` to comparable temporal objects.
+
+    Handles three input shapes:
+      - "HH:MM[:SS]" time-of-day strings (from TimePicker) -> compare as `datetime.time`.
+      - "YYYY-MM-DDTHH:MM[:SS]" ISO datetime strings (from DateTimePicker) -> compare as `pd.Timestamp`.
+      - Date strings on a datetime64 series (from DatePicker) -> compare as `datetime.date`.
+
+    `normalize_precision=True` strips microseconds (and optionally seconds) from the series to make
+    comparisons consistent with the user-provided string format.
+    """
+    # Mixed-precision range filter (DateTimePicker with one end's time cleared): if at least one
+    # value is a full datetime and at least one is date-only, pad the date-only entries to full
+    # datetimes position-wise so they can be compared on equal footing — index 0 is start-of-day,
+    # index 1 is end-of-day. (Both-date-only and both-full-datetime cases fall through to the
+    # existing _is_date / _is_datetime branches unchanged.)
+    if len(value) == _RANGE_VALUE_LEN:
+        has_full_datetime = any(_DATETIME_REGEX.match(str(v)) for v in value)
+        has_date_only = any(_DATE_ONLY_REGEX.match(str(v)) for v in value)
+        if has_full_datetime and has_date_only:
+            value = [
+                f"{v}T00:00:00"
+                if (i == 0 and isinstance(v, str) and _DATE_ONLY_REGEX.match(v))
+                else f"{v}T23:59:59"
+                if (i == 1 and isinstance(v, str) and _DATE_ONLY_REGEX.match(v))
+                else v
+                for i, v in enumerate(value)
+            ]
+
+    _is_time = value and all(_TIME_REGEX.match(str(v)) for v in value)
+    # IMPORTANT: check _is_datetime before _is_date so that an ISO datetime string is not collapsed to a date.
+    _is_datetime = not _is_time and value and all(_DATETIME_REGEX.match(str(v)) for v in value)
+    _is_date = not _is_time and not _is_datetime and is_datetime64_any_dtype(series)
+
+    if _is_time:
+        if is_datetime64_any_dtype(series):
+            # Converting Timestamp to datetime.time
+            series = series.dt.time
+
+        if normalize_precision:
+            series = series.map(lambda v: v.replace(microsecond=0))
+            # If no `value` has seconds defined, strip seconds from the input series as well to ensure comparability.
+            if all(len(str(v).split(":")) == _TIME_PARTS_HH_MM for v in value):
+                series = series.map(lambda v: v.replace(second=0))
+
+        # Time selector: convert "HH:MM" or "HH:MM:SS" input value strings to datetime.time objects.
+        value = pd.to_datetime(value, format="mixed").time
+
+    elif _is_datetime:
+        # DateTimePicker selector: convert ISO datetime strings to Timestamps and compare against the datetime series.
+        # Use format="ISO8601" so a mix of "YYYY-MM-DDTHH:MM" and "YYYY-MM-DDTHH:MM:SS" parses correctly.
+        value_strs = [str(v) for v in value]
+        value = list(pd.to_datetime(value_strs, format="ISO8601"))
+
+        # If the series is tz-aware, localize the (naive) parsed values to its tz so comparisons don't raise.
+        # Convention: the typed wall-clock time represents a moment in the series's own timezone.
+        # nonexistent/ambiguous guard against DST-transition wall-clock times (e.g. the spring-forward gap
+        # or the fall-back overlap), which would otherwise raise instead of filtering.
+        if is_datetime64_any_dtype(series) and getattr(series.dt, "tz", None) is not None:
+            value = [
+                pd.Timestamp(v).tz_localize(series.dt.tz, nonexistent="shift_forward", ambiguous=True) for v in value
+            ]
+
+        if normalize_precision and is_datetime64_any_dtype(series):
+            # Strip sub-second precision from the series.
+            series = series.dt.floor("s")
+            # If no `value` has seconds defined, also strip seconds from the series.
+            # The separator is "T" on input or " " after Mantine round-trips the value — normalize both.
+            if all(len(v.replace(" ", "T").split("T")[1].split(":")) == _TIME_PARTS_HH_MM for v in value_strs):
+                series = series.dt.floor("min")
+
+    elif _is_date:
+        # Date selector: convert date strings to datetime.date objects.
+        value = pd.to_datetime(value).date
+        # Converting Timestamp to datetime.date
+        series = series.dt.date
+
+    return series, value
+
+
+def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
+    """Filter using .isin() - works with boolean/categorical data.
+
+    Switch selectors work with 0/1 columns due to pandas automatic type conversion:
+    >>> pd.Series([0, 1]).isin([False])  # [True, False]
+    >>> pd.Series([False, True]).isin([1])  # [False, True]
+    """
+    # A single-select selector supplies a scalar; wrap it so `.isin` always receives a list of selected values.
+    value = value if isinstance(value, list) else [value]
+
+    # Skip filtering if any value is missing — both pickers must be set for a range filter.
+    if any(v in [None, ""] for v in value):
+        return pd.Series(True, index=series.index)
+
+    # If needed, coerce series and value to comparable time or date objects based on value format.
+    series, value = _coerce_temporal(series=series, value=value, normalize_precision=True)
+    return series.isin(value)
+
+
+def _filter_between(series: pd.Series, value: list[float] | list[str | None]) -> pd.Series:
+    """Filter using .between() - works with numerical/date/time range data.
+
+    Time-of-day ranges that cross midnight are handled with an OR condition:
+    >>> _filter_between(pd.Series([dt_time(23, 0)]), [dt_time(21, 0), dt_time(6, 0)])  # [True]
+    >>> _filter_between(pd.Series([dt_time(12, 0)]), [dt_time(21, 0), dt_time(6, 0)])  # [False]
+    """
+    # Skip filtering if any value is missing — both pickers must be set for a range filter.
+    if any(v in [None, ""] for v in value):
+        return pd.Series(True, index=series.index)
+
+    # If needed, coerce series and value to comparable time or date objects based on value format.
+    series, value = _coerce_temporal(series=series, value=value, normalize_precision=False)
+
+    # Handle time-of-day ranges that cross midnight: e.g. [21:00, 06:00] means time >= 21:00 OR time <= 06:00.
+    if isinstance(value[0], dt_time) and value[0] > value[1]:
+        return (series >= value[0]) | (series <= value[1])
     return series.between(value[0], value[1], inclusive="both")
+
+
+def _filter_hierarchical_isin(df: pd.DataFrame, value: Any, *, multi: bool) -> pd.Series:
+    """Filter rows whose ordered path columns match any selected root-to-leaf path.
+
+    `df` holds the hierarchical filter's path columns in root-to-leaf order (branch columns first, the leaf
+    column last). Each selected entry is either a full path (a list of node values from root to leaf) or a
+    legacy leaf-only value. A path is matched across all its columns, so duplicate leaf labels in different
+    branches filter independently.
+
+    `multi` disambiguates the value shape (the Cascader emits one entry when `multi=False`, a list of entries
+    when `multi=True`): a flat list of scalars is a single path under `multi=False`, but a list of separate
+    legacy leaves under `multi=True`.
+
+    A legacy leaf-only value (from a pre-full-path Cascader, e.g. restored from session persistence after an
+    upgrade) carries no branch context, so it can only be matched against the leaf column alone, mirroring the
+    old behavior. Fresh selections always arrive as full paths.
+
+    Branch labels are compared as strings, because `_dataframe_path_to_cascader_options` builds the option tree
+    with stringified branch keys. The leaf reuses `_filter_isin` so that temporal/boolean leaves which arrive
+    as strings still coerce and match the underlying column.
+
+    An empty/None selection matches no rows (returns an empty result), because a hierarchical filter with
+    nothing selected has no path to match against.
+    """
+    if not value:
+        return pd.Series(False, index=df.index)
+    # multi=False: `value` is a single entry (one path or one legacy leaf).
+    # multi=True: `value` is a list of entries (paths and/or legacy leaves).
+    entries = (value if isinstance(value, (list, tuple)) else [value]) if multi else [value]
+    leaf_column = df.columns[-1]
+    mask = pd.Series(False, index=df.index)
+    for entry in entries:
+        if entry is None or (isinstance(entry, (list, tuple)) and not len(entry)):
+            continue
+        if not isinstance(entry, (list, tuple)):
+            # Legacy leaf-only value: no branch context, so match the leaf column alone.
+            mask |= _filter_isin(df[leaf_column], [entry])
+            continue
+        row_matches = pd.Series(True, index=df.index)
+        for position, (column, segment) in enumerate(zip(df.columns, entry)):
+            is_leaf = position == len(entry) - 1
+            row_matches &= _filter_isin(df[column], [segment]) if is_leaf else df[column].astype(str) == str(segment)
+        mask |= row_matches
+    return mask
+
+
+def _paths_in_tree(tree: dict[str, Any]) -> set[tuple[Any, ...]]:
+    """Set of all full root-to-leaf paths present in `tree` (branch labels as `str`, leaf kept typed)."""
+    return {_normalize_cascader_path(path) for path in _iter_cascader_paths_depth_first(tree)}
+
+
+def _ensure_path_in_tree(tree: dict[str, Any], path: list[Any]) -> None:
+    """Insert a full root-to-leaf `path` into `tree`, creating any missing branch dicts on the way.
+
+    `path` is `[*branch_labels, leaf]`. Branch labels are stringified to match the option tree built by
+    `_dataframe_path_to_cascader_options`; the leaf keeps its scalar type. Used to re-insert a currently
+    selected path that a data reload dropped, so the selection stays valid even if it now matches no rows.
+    Because the path carries its own branch context, no lookup of previous options is needed.
+
+    Example:
+        >>> tree = {"Eu": ["DE"]}
+        >>> _ensure_path_in_tree(tree, ["Eu", "FR"])
+        >>> tree
+        {'Eu': ['DE', 'FR']}
+        >>> _ensure_path_in_tree(tree, ["As", "East", "JP"])
+        >>> tree
+        {'Eu': ['DE', 'FR'], 'As': {'East': ['JP']}}
+    """
+    *branch, leaf = path
+    if not branch:
+        return  # a valid path has at least one branch label above the leaf
+    node = tree
+    for key in map(str, branch[:-1]):
+        child = node.get(key)
+        if child is None:
+            child = {}
+            node[key] = child
+        elif not isinstance(child, dict):
+            return  # shape mismatch — a leaf list already lives where we'd need a branch dict
+        node = child
+    terminal = str(branch[-1])
+    existing = node.get(terminal)
+    if existing is None:
+        node[terminal] = [leaf]
+    elif isinstance(existing, list) and leaf not in existing:
+        existing.append(leaf)
 
 
 def _dataframe_path_to_cascader_options(df: pd.DataFrame, path_columns: list[str]) -> dict[str, Any]:
@@ -92,21 +336,6 @@ def _dataframe_path_to_cascader_options(df: pd.DataFrame, path_columns: list[str
     for branch_key, leaves in leaves_by_branch.items():
         _assign_nested(out, branch_key, leaves)
     return out
-
-
-def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
-    """Filter using .isin() - works with boolean/categorical data.
-
-    Switch selectors work with 0/1 columns due to pandas automatic type conversion:
-    >>> pd.Series([0, 1]).isin([False])  # [True, False]
-    >>> pd.Series([False, True]).isin([1])  # [False, True]
-    """
-    if is_datetime64_any_dtype(series):
-        # Value will always have time 00:00:00. In order for the filter to include all times during
-        # the end date value we need to remove the time part of every value in series so that it's 00:00:00.
-        value = pd.to_datetime(value)
-        series = pd.to_datetime(series.dt.date)
-    return series.isin(value)
 
 
 class Filter(VizroBaseModel):
@@ -149,7 +378,9 @@ class Filter(VizroBaseModel):
     _dynamic: bool = PrivateAttr(False)
     _filter_function: Callable[[pd.Series, Any], pd.Series] = PrivateAttr()
     _selector_properties: set[str] = PrivateAttr(set())
-    _column_type: Literal["numerical", "categorical", "temporal", "boolean"] = PrivateAttr()
+    _column_type: Literal["hierarchical", "numerical", "categorical", "date", "datetime", "time", "boolean"] = (
+        PrivateAttr()
+    )
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
@@ -227,11 +458,13 @@ class Filter(VizroBaseModel):
 
         if _is_categorical_selector(selector):
             selector_call_obj = selector(options=self._get_options(targeted_data, current_value))
-        elif _is_numerical_temporal_selector(selector):
+        elif _is_numerical_or_date_selector(selector):
             _min, _max = self._get_min_max(targeted_data, current_value)
             selector_call_obj = selector(min=_min, max=_max)
+        elif _is_hierarchical_selector(selector):
+            selector_call_obj = selector(options=self._get_hierarchical_options(target_to_data_frame, current_value))
         else:
-            # Hierarchical filters cannot yet be dynamic.
+            # Time and boolean filters cannot yet be dynamic.
             selector_call_obj = selector.build()
 
         # The filter is dynamic, so a guard component (data=True) needs to be added to prevent unexpected action firing.
@@ -246,16 +479,16 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):  # noqa: PLR0912
-        # If page filter validate that targets present on the page where the filter is defined.
-        # If container filter validate that targets present in the container where the filter is defined.
+        # If it's a page filter, validate that targets are present on the page where the filter is defined.
+        # If it's a container filter, validate that targets are present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
         check_control_targets(control=self)
 
         # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
         # This is the case when bool(self.targets) is False.
-        # If filter used within container and if targets aren't explicitly provided it will target all figures within
-        # that container. Possibly in future this will change (which would be breaking change).
+        # If a filter is used within a container and if targets aren't explicitly provided it will target all figures
+        # within that container. Possibly in future this will change (which would be a breaking change).
         proposed_targets = self.targets or [
             model.id
             for model in cast(
@@ -283,27 +516,20 @@ class Filter(VizroBaseModel):
 
         # Set default selector according to column type and whether it's a hierarchical filter.
         self._column_type = self._validate_column_type(targeted_data)
-        is_hierarchical_column = isinstance(self.column, list)
-        selector_kind: Literal["hierarchical", "numerical", "categorical", "temporal", "boolean"] = (
-            "hierarchical" if is_hierarchical_column else self._column_type
-        )
-        self.selector = self.selector or DEFAULT_SELECTORS[selector_kind]()
+        self.selector = self.selector or DEFAULT_SELECTORS[self._column_type]()
         self.selector.title = self.selector.title or self._single_filter_column.title()
 
-        if isinstance(self.selector, DISALLOWED_SELECTORS[selector_kind]):
+        if isinstance(self.selector, DISALLOWED_SELECTORS[self._column_type]):
             raise ValueError(
-                f"Chosen selector {type(self.selector).__name__} is not compatible with {selector_kind} column "
+                f"Chosen selector {type(self.selector).__name__} is not compatible with {self._column_type} column "
                 f"'{self._single_filter_column}'."
             )
 
-        # Check if the filter is dynamic. Dynamic filter means that the filter is updated when the page is refreshed
-        # which causes "options" for categorical or "min" and "max" for numerical/temporal selectors to be updated.
-        # The filter is dynamic if mentioned attributes ("options"/"min"/"max") are not explicitly provided and
-        # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
-        # but should still count as manually set. Hierarchical and boolean filters are always static.
+        # A filter is dynamic if its options/bounds are not manually set and at least one target uses dynamic data.
+        # Note: min or max = 0 are falsey but must not be treated as "not set".
         if (
-            not _is_hierarchical_selector(self.selector)
-            and not _is_boolean_selector(self.selector)
+            self._column_type in _DYNAMIC_COLUMN_TYPES
+            and not isinstance(self.selector, (TimePicker, DateTimePicker))
             and not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None
@@ -315,7 +541,8 @@ class Filter(VizroBaseModel):
                     self.selector._dynamic = True
                     break
 
-        if _is_numerical_temporal_selector(self.selector):
+        # TimePicker always has a default min/max specified so no need to handle it here.
+        if _is_numerical_or_date_selector(self.selector) or _is_datetime_selector(self.selector):
             _min, _max = self._get_min_max(targeted_data)
             # Note that manually set self.selector.min/max = 0 are Falsey and should not be overwritten.
             if self.selector.min is None:
@@ -325,28 +552,47 @@ class Filter(VizroBaseModel):
         elif _is_categorical_selector(self.selector):
             self.selector.options = self.selector.options or self._get_options(targeted_data)
         elif _is_hierarchical_selector(self.selector):
-            if not self.selector.options and any(
-                isinstance(data_manager[cast(FigureType, model_manager[target])["data_frame"]], _DynamicData)
-                for target in self.targets
-            ):
-                raise ValueError(
-                    "Hierarchical filters cannot derive Cascader options from dynamic data. "
-                    "Set explicit `selector=vm.Cascader(options=...)` or use a static `data_frame`. "
-                )
             self.selector.options = self.selector.options or self._get_hierarchical_options(target_to_data_frame)
+            if self.selector.full_path:
+                self._validate_hierarchical_options_depth(self.selector.options)
 
         # Set default value for the selector if not explicitly provided.
         self.selector.value = get_selector_default_value(self.selector)
 
-        # Set the filter function according to the selector type.
-        if isinstance(self.selector, RangeSlider) or (isinstance(self.selector, DatePicker) and self.selector.range):
-            self._filter_function = _filter_between
+        # set self._filter_function and self.column
+        filter_function: Callable[[pd.Series | pd.DataFrame, Any], pd.Series]
+        column: str | list[str]
+        if isinstance(self.selector, RangeSlider) or (
+                isinstance(self.selector, (DatePicker, TimePicker, DateTimePicker)) and self.selector.range
+        ):
+            filter_function = _filter_between
+            column = self._single_filter_column
+        elif _is_hierarchical_selector(self.selector) and self.selector.full_path:
+            # Path-mode hierarchical filters (full_path=True) match the full root-to-leaf path, so the action
+            # needs every path column (in order) and the path-aware filter function. `multi` is bound in so the
+            # function can disambiguate a flat scalar list (one path vs. separate entries).
+            filter_function = functools.partial(_filter_hierarchical_isin, multi=self.selector.multi)
+            column = self.column
         else:
-            self._filter_function = _filter_isin
+            # Leaf-mode hierarchical filters (full_path=False) behave like a flat categorical filter on the
+            # last (leaf) column, matching by bare leaf value with `_filter_isin`.
+            filter_function = _filter_isin
+            column = self._single_filter_column
+
+        self.column = column
+        self._filter_function = filter_function
 
         # TODO AM-PP: If [] or None is set make that the actions are not overwritten. Could be tricky, but doable.
         if not self.selector.actions:
             self.selector.actions = update_figures(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets)
+            # self.selector.actions = [
+            #     _filter(
+            #         id=f"{FILTER_ACTION_PREFIX}_{self.id}",
+            #         column=column,
+            #         filter_function=filter_function,
+            #         targets=self.targets,
+            #     ),
+            # ]
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
@@ -426,25 +672,32 @@ class Filter(VizroBaseModel):
 
     def _validate_column_type(
         self, targeted_data: pd.DataFrame
-    ) -> Literal["numerical", "categorical", "temporal", "boolean"]:
+    ) -> Literal["hierarchical", "numerical", "categorical", "date", "datetime", "time", "boolean"]:
         is_boolean = targeted_data.apply(is_bool_dtype)
         is_numerical = targeted_data.apply(is_numeric_dtype)
-        is_temporal = targeted_data.apply(is_datetime64_any_dtype)
-        is_categorical = ~(is_boolean | is_numerical | is_temporal)
+        is_date = targeted_data.apply(is_datetime64_any_dtype)
+        is_time = targeted_data.apply(lambda x: pd.api.types.infer_dtype(x, skipna=True) == "time")
+        is_categorical = ~(is_boolean | is_numerical | is_date | is_time)
 
+        if isinstance(self.column, list):
+            return "hierarchical"
         if is_boolean.all():
             return "boolean"
-        elif is_numerical.all():
+        if is_numerical.all():
             return "numerical"
-        elif is_temporal.all():
-            return "temporal"
-        elif is_categorical.all():
+        if is_date.all():
+            # Pure-date columns are all at midnight while datetime columns have at least one non-midnight time-of-day.
+            has_time_component = targeted_data.apply(lambda col: (col.dropna().dt.time != dt_time.min).any()).any()
+            return "datetime" if has_time_component else "date"
+        if is_time.all():
+            return "time"
+        if is_categorical.all():
             return "categorical"
-        else:
-            raise ValueError(
-                f"Inconsistent types detected in column {self._single_filter_column}. "
-                "This column must have the same type for all targets."
-            )
+
+        raise ValueError(
+            f"Inconsistent types detected in column {self._single_filter_column}. "
+            "This column must have the same type for all targets."
+        )
 
     @staticmethod
     def _get_min_max(
@@ -489,11 +742,75 @@ class Filter(VizroBaseModel):
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
         return sorted(set(targeted_data))
 
-    def _get_hierarchical_options(self, target_to_data_frame: dict[ModelID, pd.DataFrame]) -> dict[str, Any]:
-        """Build Cascader options from path columns; needs full dataframes (not the leaf-only `targeted_data`)."""
+    def _validate_hierarchical_options_depth(self, options: dict[str, Any]) -> None:
+        """Path mode only: every path in `options` must be exactly as deep as `column` is long.
+
+        A full-path selection identifies a row across all `column` columns, so a ragged tree (a branch shorter or
+        deeper than `len(column)`) cannot be addressed. Leaf mode (full_path=False) has no such restriction and
+        supports arbitrary-depth trees. No-op for empty options (dynamically built options are always uniform).
+        """
+        expected = len(cast(list[str], self.column))
+        for path in _iter_cascader_paths_depth_first(options):
+            if len(path) != expected:
+                raise ValueError(
+                    f"For a hierarchical filter with full_path=True, every path in `options` must have exactly "
+                    f"{expected} levels to match column={self.column!r}, but found path {path} with "
+                    f"{len(path)} level(s). Use full_path=False to allow arbitrary-depth options."
+                )
+
+    def _get_hierarchical_options(
+        self,
+        target_to_data_frame: dict[ModelID, pd.DataFrame],
+        current_value: Any = None,
+    ) -> dict[str, Any]:
+        """Build Cascader options from path columns; needs full dataframes (not the leaf-only `targeted_data`).
+
+        When `current_value` is provided, any selection absent from the new tree is re-inserted so it stays valid
+        after a data reload (mirroring the categorical dynamic-filter contract: the filter still applies, even if
+        it now matches zero rows). The re-insertion strategy depends on the selector mode:
+
+        * Path mode (full_path=True): `current_value` is a single path (`multi=False`) or a list of paths
+          (`multi=True`). Each path carries its own branch context, so it is inserted directly where it belongs
+          with no lookup of previous options.
+        * Leaf mode (full_path=False): `current_value` is a single leaf (`multi=False`) or a list of leaves
+          (`multi=True`). A bare leaf carries no branch context, so its previous path is looked up in the
+          selector's current `options` and the leaf is restored there.
+        """
         path_cols = list(cast(list[str], self.column))
         combined = pd.concat(
             [target_to_data_frame[target_id][path_cols] for target_id in self.targets],
             ignore_index=True,
         ).drop_duplicates()
-        return _dataframe_path_to_cascader_options(combined, path_cols)
+        new_options = _dataframe_path_to_cascader_options(combined, path_cols)
+
+        # None and an empty list mean "no selection"; a falsy leaf (0, False, "") is a real selection.
+        if current_value is None or (isinstance(current_value, list) and not current_value):
+            return new_options
+
+        selector = cast(Cascader, self.selector)
+        if selector.full_path:
+            entries = (
+                (current_value if isinstance(current_value, (list, tuple)) else [current_value])
+                if selector.multi
+                else [current_value]
+            )
+            present = _paths_in_tree(new_options)
+            for entry in entries:
+                if not isinstance(entry, (list, tuple)) or not entry:
+                    continue
+                if _normalize_cascader_path(entry) not in present:
+                    _ensure_path_in_tree(new_options, list(entry))
+            return new_options
+
+        # Leaf mode: a bare leaf carries no branch context, so look up its previous path in the selector's prior
+        # options and re-insert it (via `_ensure_path_in_tree`) so the selection survives a data reload.
+        selected_leaves = current_value if isinstance(current_value, list) else [current_value]
+        new_leaves = {path[-1] for path in _iter_cascader_paths_depth_first(new_options)}
+        stale_leaves = {leaf for leaf in selected_leaves if leaf is not None and leaf not in new_leaves}
+        if not stale_leaves:
+            return new_options
+        prev_options = getattr(self.selector, "options", None) or {}
+        for path in _iter_cascader_paths_depth_first(prev_options):
+            if path[-1] in stale_leaves:
+                _ensure_path_in_tree(new_options, path)
+        return new_options

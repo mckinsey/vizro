@@ -1,3 +1,7 @@
+---
+description: "Half-hour tutorial that builds a three-page Iris and Gapminder dashboard, adding charts, controls, filters, parameters, and navigation step by step."
+---
+
 # Explore Vizro
 
 In this tutorial, you'll learn how to build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components. You can follow along using the written guide below or join in with the accompanying video tutorial.
@@ -29,13 +33,17 @@ This tutorial uses the [tips dataset](https://plotly.com/python-api-reference/ge
 
 ![](../../assets/tutorials/dashboard/vizro-tutorial.gif)
 
+!!! tip "Complete final code"
+
+    Prefer to read the final dashboard code in one place rather than step by step? See [`vizro-core/examples/tutorial/app.py`](https://github.com/mckinsey/vizro/blob/main/vizro-core/examples/tutorial/app.py) for the complete, runnable end state of this tutorial.
+
 ## 1. Install Vizro or run on PyCafe
 
 There's no need to install Vizro locally because you can experiment with the complete code for the tutorial directly on [PyCafe](https://py.cafe/vizro-official/vizro-tips-analysis-tutorial) in your browser. We recommend starting with a [blank Vizro project on PyCafe](https://py.cafe/snippet/vizro/v1) and copying the code snippets from this tutorial into it, to build it up from scratch and see how it fits together.
 
 For more information about working with Vizro on PyCafe, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
 
-??? note "If you prefer working in a Notebook or Python script"
+!!! note "If you prefer working in a Notebook or Python script"
 
     To work in a Notebook or locally using a Python script, you need to [install Vizro](../user-guides/install.md).
 
@@ -52,7 +60,7 @@ For more information about working with Vizro on PyCafe, check out the [PyCafe d
     1. Navigate to the directory where `app.py` file is located using your terminal.
     1. Run the script by executing the command `python app.py`.
 
-    Once the script is running, open your web browser and navigate to `localhost:8050` to view the dashboard. To enable debug mode for hot reloading, add `debug=True` inside the run() method at the end of your `app.py` file:
+    Once the script is running, open your web browser and navigate to `localhost:8050` to view the dashboard. To enable debug mode for hot reloading, add `debug=True` inside the `run()` method at the end of your `app.py` file:
 
     `Vizro().build(dashboard).run(debug=True)`
 
@@ -122,6 +130,8 @@ To start, let's get an overview of the data by displaying it in a table using [`
 
     === "Result"
 
+        The dashboard renders the "First Page" example.
+
         [![FirstPage]][firstpage]
 
 After running your code (either locally or on PyCafe), you can now view the dashboard (on `localhost:8050` if you ran it locally, or on the right part of the screen if you are using PyCafe).
@@ -181,6 +191,8 @@ These steps add an export data button:
 
     === "Result"
 
+        The dashboard renders the "Export Data Button" example.
+
         [![FirstPageButton]][firstpagebutton]
 
 **Click on the Button and see what happens! 📂**
@@ -238,6 +250,8 @@ To achieve this, we'll switch to the `Flex` layout and set a `height` for the `A
         ```
 
     === "Result"
+
+        The dashboard renders the "Use Flex layout" example.
 
         [![FirstPageLayout]][firstpagelayout]
 
@@ -313,6 +327,8 @@ These steps add a histogram to the page:
 
     === "Result"
 
+        The dashboard renders the "Second Page" example.
+
         [![SecondPage]][secondpage]
 
 Notice that the charts are automatically stacked vertically in the order specified under `components`, each taking up equal space. This is the default behavior in Vizro, but you'll learn how to customize the layout later!
@@ -330,7 +346,7 @@ These steps add two KPI cards to the second page:
 1. Add a [`Figure`][vizro.models.Figure] model to the list of `components`.
 1. Inside the `figure` argument of the `Figure`, use the [`kpi_card`][vizro.figures.kpi_card] function.
 1. Configure your `kpi_card` by setting the `value_column`, `agg_func`, `value_format`, and `title`. To learn more about configuring KPI cards, check out our [guide to KPI cards](../user-guides/figure.md#key-performance-indicator-kpi-cards).
-1. Repeat the above steps to add another KPI card to the page.
+1. Add a second `Figure` model with its own `kpi_card` and configure it the same way, to place another KPI card on the page.
 
 !!! example "Add KPI Cards"
 
@@ -419,6 +435,8 @@ These steps add two KPI cards to the second page:
         ```
 
     === "Result"
+
+        The dashboard renders the "Add KPI Cards" example.
 
         [![SecondPage2]][secondpage2]
 
@@ -527,6 +545,8 @@ These steps place the two histograms in separate tabs:
         ```
 
     === "Result"
+
+        The dashboard renders the "Add Tabs" example.
 
         [![SecondPage3]][secondpage3]
 
@@ -642,6 +662,8 @@ Run the code below to apply the layout to the dashboard page:
 
     === "Result"
 
+        The dashboard renders the "Code - Layout" example.
+
         [![SecondPage4]][secondpage4]
 
 **Much better, don't you think? The layout now provides sufficient space for the charts!**
@@ -737,6 +759,8 @@ These steps add a filter to the dashboard:
         ```
 
     === "Result"
+
+        The dashboard renders the "Add a filter" example.
 
         [![SecondPage5]][secondpage5]
 
@@ -897,6 +921,8 @@ These steps should feel familiar, as they add three charts to the new page.
 
     === "Result"
 
+        The dashboard renders the "Third page" example.
+
         [![ThirdPage]][thirdpage]
 
 Depending on your screen size, you may notice that the third chart is not visible. This issue can occur with Plotly charts when there isn't enough space to display them properly. Let's revise the layout to allocate more space for the heatmap.
@@ -1019,6 +1045,8 @@ Run the code below to apply the layout to the dashboard page:
         ```
 
     === "Result"
+
+        The dashboard renders the "Code - Layout" example.
 
         [![ThirdPage2]][thirdpage2]
 
@@ -1157,6 +1185,8 @@ These steps add a parameter to the dashboard:
 
     === "Result"
 
+        The dashboard renders the "Add a parameter" example.
+
         [![ThirdPage3]][thirdpage3]
 
 Take a moment to interact with the parameter. Notice how the x-axis of all charts updates dynamically based on your selection.
@@ -1165,7 +1195,7 @@ Take a moment to interact with the parameter. Notice how the x-axis of all chart
 
 ### 5.4. Add a custom chart
 
-You may notice that the `bar` chart has many inner lines. This happens because each line represents a unique data point when an unaggregated dataset is provided to `px.bar`. To avoid this, you can aggregate the data before plotting. However, the aggregation needs to be dynamic, based on the parameter you added in the previous step. The following steps create a custom chart:
+You may notice that the `bar` chart has many inner lines. This happens because each line represents a unique data point when an unaggregated dataset is provided to `px.bar`. To avoid this, you can aggregate the data before plotting. However, the aggregation needs to be dynamic, based on the parameter added in [Step 5.3](#53-add-a-parameter). The following steps create a custom chart:
 
 1. Create a function that takes the `data_frame` as input and returns a Plotly figure.
 1. Decorate the function with the `@capture(graph)` decorator.
@@ -1299,6 +1329,8 @@ For more information on when to create a custom chart, check out [How to create 
         ```
 
     === "Result"
+
+        The dashboard renders the "Add custom chart" example.
 
         [![ThirdPage4]][thirdpage4]
 
@@ -1451,6 +1483,8 @@ Your directory structure should look like this:
         ```
 
     === "Result"
+
+        The dashboard renders the "Add a dashboard title and logo" example.
 
         [![Dashboard]][dashboard]
 
@@ -1610,6 +1644,8 @@ The following steps create a navigation bar:
         ```
 
     === "Result"
+
+        The dashboard renders the "Customize navigation" example.
 
         [![DashboardFinal]][dashboardfinal]
 

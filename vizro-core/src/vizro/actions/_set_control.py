@@ -41,19 +41,19 @@ class set_control(_AbstractAction):
 
         * `"cell"`, `"column"`, or `"row"` to use the clicked cell's value, column id, or row id respectively.
         * Any other string to treat as a column name, taking values from the selected row(s).
-    * [`Graph`][vizro.models.Graph]: triggers `set_control` when user clicks on data in the graph. `value` is string
-    that can be used in two ways to specify how to set `control`:
+    * [`Graph`][vizro.models.Graph]: triggers `set_control` when the user clicks on data in the graph. `value` is a
+    string that can be used in two ways to specify how to set `control`:
 
         * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.
         * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the
         trigger data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing). This is typically
         useful for a positional variable, for example `"x"`, and does not require setting `custom_data`.
 
-    * [`Figure`][vizro.models.Figure]: triggers `set_control` when user clicks on the figure. `value` specifies a
+    * [`Figure`][vizro.models.Figure]: triggers `set_control` when the user clicks on the figure. `value` specifies a
     literal value to set `control` to.
-    * [`Button`][vizro.models.Button]: triggers `set_control` when user clicks on the button. `value` specifies a
+    * [`Button`][vizro.models.Button]: triggers `set_control` when the user clicks on the button. `value` specifies a
     literal value to set `control` to.
-    * [`Card`][vizro.models.Card]: triggers `set_control` when user clicks on the card. `value` specifies a
+    * [`Card`][vizro.models.Card]: triggers `set_control` when the user clicks on the card. `value` specifies a
     literal value to set `control` to.
 
     Example: `AgGrid` as trigger
@@ -120,8 +120,8 @@ class set_control(_AbstractAction):
 
     type: Literal["set_control"] = "set_control"
     control: ModelID = Field(
-        description="Filter or Parameter component id to be affected by the trigger."
-        "If the control is on a different page to the trigger then it must have `show_in_url=True`."
+        description="Filter or Parameter component id to be affected by the trigger. "
+        "If the control is on a different page to the trigger, then it must have `show_in_url=True`."
     )
     value: JsonValue = Field(
         description="Value to take from trigger and send to the `target`. Format depends on the model "
@@ -134,7 +134,8 @@ class set_control(_AbstractAction):
         if not isinstance(self._parent_model, _SupportsSetControl):
             raise ValueError(
                 f"`set_control` action was added to the model with ID `{self._parent_model.id}`, "
-                "but this action can only be used with models that support it (e.g. Graph, AgGrid, Figure etc). "
+                "but this action can only be used with models that support it "
+                "(for example, Graph, AgGrid, Figure, and so on). "
                 "See all models that can source a `set_control` at "
                 "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_control"
             )
@@ -152,7 +153,20 @@ class set_control(_AbstractAction):
         if not hasattr(control_model, "selector"):
             raise TypeError(
                 f"Model with ID `{self.control}` used as a `control` in `set_control` action must be a control model "
-                f"(e.g. Filter, Parameter)."
+                f"(for example, Filter, Parameter)."
+            )
+
+        # A path-mode Cascader (full_path=True) identifies a selection by its full root-to-leaf path. A trigger
+        # (Graph/AgGrid) only supplies a single column value, which cannot reconstruct a path, so `set_control`
+        # is disabled for it. Leaf mode (full_path=False) works like a flat selector and is supported.
+        from vizro.models._controls._controls_utils import _is_hierarchical_selector
+
+        selector = getattr(control_model, "selector", None)
+        if _is_hierarchical_selector(selector) and getattr(selector, "full_path", False):
+            raise ValueError(
+                f"`set_control` cannot target control `{self.control}` because its Cascader selector uses "
+                f"full_path=True. A trigger supplies a single leaf value that cannot be resolved to a full "
+                f"root-to-leaf path. Use a Cascader with full_path=False (leaf mode) to enable `set_control`."
             )
 
         if control_model_page == model_manager._get_model_page(self):
@@ -184,6 +198,8 @@ class set_control(_AbstractAction):
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
         is_range = getattr(selector, "range", isinstance(selector, RangeSlider))
 
+        # A leaf-mode Cascader (the only kind that reaches here — path mode is rejected at pre_build) reshapes
+        # like a flat categorical selector: a multi-select value is a list of leaves, a single-select a scalar.
         if is_multi:
             value = value if isinstance(value, list) else [value]
         elif is_range:

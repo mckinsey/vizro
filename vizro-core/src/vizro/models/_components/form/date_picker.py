@@ -1,4 +1,5 @@
-from datetime import date
+from contextlib import suppress
+from datetime import date, datetime
 from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
@@ -8,7 +9,11 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._components.form._form_utils import validate_date_picker_range, validate_max, validate_range_value
+from vizro.models._components.form._form_utils import (
+    validate_date_time_range_picker,
+    validate_max,
+    validate_range_value,
+)
 from vizro.models._models_utils import (
     _log_call,
     make_actions_chain,
@@ -16,6 +21,22 @@ from vizro.models._models_utils import (
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionsType, _IdProperty
+
+
+def _coerce_datetime_to_date(value: Any) -> Any:
+    """Coerce a datetime to a date, keeping only the date portion.
+
+    Accepts both datetime objects and ISO datetime strings that include a time part (``T`` or space
+    separator, with or without seconds), e.g. ``"2024-01-01T10:00"`` -> ``date(2024, 1, 1)``. Date-only
+    strings and unparsable strings are passed through unchanged for pydantic's own date validation.
+    """
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, str):
+        for fmt in ("%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"):
+            with suppress(ValueError):
+                return datetime.strptime(value, fmt).date()
+    return value
 
 
 class DatePicker(VizroBaseModel):
@@ -26,12 +47,29 @@ class DatePicker(VizroBaseModel):
     Abstract: Usage documentation
         [How to use temporal selectors](../user-guides/selectors.md#temporal-selectors)
 
+    Example:
+        ```python
+        import pandas as pd
+        import vizro.models as vm
+
+        # Convert a string column to datetime64 so DatePicker can filter it:
+        df = pd.DataFrame({"date_column": ["2026-01-01", "2026-06-15", "2026-12-31"]})
+        df["date_column"] = pd.to_datetime(df["date_column"])
+
+        vm.Filter(column="date_column", selector=vm.DatePicker())
+        ```
+
     """
 
     type: Literal["date_picker"] = "date_picker"
-    min: date | None = Field(default=None, description="Start date for date picker.")
+    min: Annotated[date | None, BeforeValidator(_coerce_datetime_to_date)] = Field(
+        default=None, description="Start date for date picker."
+    )
     max: Annotated[
-        date | None, AfterValidator(validate_max), Field(default=None, description="End date for date picker.")
+        date | None,
+        BeforeValidator(_coerce_datetime_to_date),
+        AfterValidator(validate_max),
+        Field(default=None, description="End date for date picker."),
     ]
     value: Annotated[
         list[date] | date | None,
@@ -43,7 +81,7 @@ class DatePicker(VizroBaseModel):
     title: str = Field(default="", description="Title to be displayed.")
     range: Annotated[
         bool,
-        AfterValidator(validate_date_picker_range),
+        AfterValidator(validate_date_time_range_picker),
         Field(default=True, description="Boolean flag for displaying range picker.", validate_default=True),
     ]
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,

@@ -13,7 +13,7 @@ exclude_dirs = ["tests"]
 
 [tool.codespell]
 builtin = "clear,rare,en-GB_to_en-US"
-ignore-words-list = "grey,ned,sav,Thur"
+ignore-words-list = "grey,ned,sav,Thur,COO"
 skip = "*.min.css.map,*.min.css,.vale/*, *assets/*,.github/*,*/package-lock.json"
 
 [tool.mypy]
@@ -91,8 +91,10 @@ select = [
 "__init__.py" = ["E402", "F401"]
 # Ignore secutiy violations in tools.
 "tools/**" = ["S"]
+# AG Grid example splits imports across pattern sections by design
+"vizro-e2e-flow/skills/dashboard-build/references/examples/example_ag_grid.py" = ["E402"]
 # Example app is read by LLM, keep it clean
-"vizro-e2e-flow/skills/dashboard-build/references/example_app.py" = ["D100"]
+"vizro-e2e-flow/skills/dashboard-build/references/examples/example_app.py" = ["D100"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
