@@ -58,17 +58,7 @@
 }
 
 .bg-container {
-  background: var(--bs-body-bg);
-}
-
-/* If a filled container is detected, then the right-bg color will change to
-the lighter shade, both in dark and light theme. */
-#right-side:has(.bg-container) {
-  background: var(--bs-tertiary-bg);
-}
-
-#right-side:has(.bg-container) .card {
-  background: var(--bs-tertiary-bg);
+  background: var(--bs-container-bg);
 }
 
 .inner-container-title {
