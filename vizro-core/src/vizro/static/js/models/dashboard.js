@@ -111,14 +111,14 @@ function collapse_nav_panel(n_clicks, is_open) {
   if (!n_clicks) {
     /* Automatically collapses left-side if xs, s and m-devices are detected*/
     if (window.innerWidth < 768 || window.innerHeight < 768) {
-      return [false, "Show Menu"];
+      return [false, "Show Menu", "right_panel_close"];
     }
     throw dash_clientside.PreventUpdate;
   }
   if (is_open) {
-    return [false, "Show Menu"];
+    return [false, "Show Menu", "right_panel_close"];
   } else {
-    return [true, "Hide Menu"];
+    return [true, "Hide Menu", "left_panel_close"];
   }
 }
 

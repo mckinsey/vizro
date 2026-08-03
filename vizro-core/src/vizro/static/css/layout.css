@@ -194,7 +194,7 @@ a:has(#logo-dark),
 }
 
 #collapse-icon.material-symbols-outlined {
-  color: var(--bs-tertiary-color);
+  color: var(--bs-body-color);
   cursor: pointer;
   font-size: 24px;
   position: absolute;

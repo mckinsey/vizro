@@ -185,6 +185,7 @@ class Dashboard(VizroBaseModel):
                 [
                     Output("collapse-left-side", "is_open"),
                     Output("collapse-tooltip", "children"),
+                    Output("collapse-icon", "children"),
                 ],
                 Input("collapse-icon", "n_clicks"),
                 State("collapse-left-side", "is_open"),
