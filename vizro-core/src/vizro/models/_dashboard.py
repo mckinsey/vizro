@@ -354,7 +354,7 @@ class Dashboard(VizroBaseModel):
                         html.Span("sync", className="material-symbols-outlined tooltip-icon"),
                         html.Span("Reset all", className="btn-text"),
                     ],
-                    className="btn-reset",
+                    color="link",
                 )
             ],
             hidden=not has_page_controls or control_panel_hidden,

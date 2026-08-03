@@ -170,7 +170,8 @@ a:has(#logo-dark),
 #logo,
 #logo-light,
 #logo-dark {
-  height: 100%;
+  height: 24px;
+  width: 24px;
 }
 
 a:has(#logo-light),
