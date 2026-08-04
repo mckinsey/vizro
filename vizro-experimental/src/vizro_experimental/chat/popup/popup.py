@@ -55,7 +55,7 @@ from ..actions.streaming_chat_action import (
 from ..models.types import _parse_store_messages
 
 
-def add_chat_popup(  # noqa: PLR0913
+def add_chat_popup(  # noqa: PLR0913,PLR0917
     generate_response: Callable | None = None,
     model=None,
     streaming: bool = True,
