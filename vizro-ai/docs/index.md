@@ -1,10 +1,10 @@
 # Vizro-AI
 
-!!! warning "Vizro-MCP has replaced the dashboard generation functionality of Vizro-AI"
+!!! warning "Vizro-AI is deprecated"
 
-    Vizro-AI dashboard generation is no longer actively developed and is superseded by [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/). Vizro-AI supports only chart generation from version `0.4.0`.
+    Vizro-AI is deprecated. Version `0.4.2` is the final release; no further development or releases are planned. Use [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) instead for AI-assisted chart and dashboard creation. See the [deprecation notice](https://github.com/mckinsey/vizro/blob/main/vizro-ai/DEPRECATION.md) for details.
 
-Vizro-AI uses generative AI to extend [Vizro](https://vizro.readthedocs.io) so you can use instructions in English, or other languages, to effortlessly create interactive charts.
+Vizro-AI used generative AI to extend [Vizro](https://vizro.readthedocs.io) so you could use instructions in English, or other languages, to effortlessly create interactive charts.
 
 Built on [Pydantic AI](https://ai.pydantic.dev/), Vizro-AI provides a flexible agent-based architecture that supports async runs, streaming, dependency injection, and integration with [the A2A protocol](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/). The `chart_agent` can be customized and extended just like any Pydantic AI agent.
 
