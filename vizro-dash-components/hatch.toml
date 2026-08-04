@@ -8,12 +8,7 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-
 dependencies = [
   "pre-commit",
   "dash[dev,testing]>=4,<5",  # provides dash-generate-components + dash_duo fixture
-  # dash[testing] constrains selenium to >=3.141.0,<=4.2.0. selenium 4.2.0 requires urllib3~=1.26,
-  # while the ancient 3.141.0 allows urllib3 2.x but is incompatible with it (its remote_connection
-  # raises "Timeout value connect was <object object>"). Once a transitive dep started preferring
-  # urllib3 2.x, the resolver backtracked off 4.2.0 down to the broken 3.141.0. Pinning selenium>=4
-  # forces 4.2.0, which pulls the compatible urllib3 1.26.x.
-  "selenium>=4",
+  "selenium>=4",  # Pinning selenium>=4 forces 4.2.0, which pulls the compatible urllib3 1.26.x.
   "chromedriver-autoinstaller>=0.6.4",
   "pytest"
 ]
