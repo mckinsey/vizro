@@ -5,7 +5,7 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models.types import capture
 from vizro.managers import data_manager
-from vizro.actions import update_figures
+from vizro.actions import update_targets
 
 
 df = px.data.iris()
@@ -38,7 +38,7 @@ page_0_1 = vm.Page(
     ],
 )
 
-# ====== **FIX** vm.Filter vs _filter_action ======
+# ====== **FIX** vm.Filter/vm.Parameter always applied when targets refresh ======
 
 page_1_1 = vm.Page(
     id="page_1_1",
@@ -99,7 +99,7 @@ page_2_1 = vm.Page(
                 actions=vm.Action(function=capture("action")(lambda _trigger: _trigger)(), outputs="p21_text"),
             ),
         ),
-        vm.Button(text="Apply controls", actions=update_figures()),
+        vm.Button(text="Apply controls", actions=update_targets()),
     ],
 )
 

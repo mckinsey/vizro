@@ -26,6 +26,7 @@ from pydantic import (
     ValidationError,
     ValidationInfo,
 )
+from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
@@ -741,17 +742,17 @@ LayoutType = Annotated[
 """Discriminated union. Type of layout to place components on the page:
 [`Grid`][vizro.models.Grid] or [`Flex`][vizro.models.Flex]."""
 
-# JSONSchema should be skipped for private actions that are not part of the public API.
-# In addition, `_filter` doesn't have a well defined schema due the Callables,
-# so if we were to include it, the JSONSchema would need to be defined.
+# JSONSchema should be skipped for private actions that are not part of the public API. `_on_page_load` is the
+# internal default action attached to every `Page`; it subclasses the public `update_targets`.
 ActionType = Annotated[
     Annotated["Action", Tag("action")]
     | Annotated["export_data", Tag("export_data")]
     | Annotated["filter_interaction", Tag("filter_interaction")]
     | Annotated["set_control", Tag("set_control")]
     | Annotated["show_notification", Tag("show_notification")]
-    | Annotated["update_figures", Tag("update_figures")]
-    | Annotated["update_notification", Tag("update_notification")],
+    | Annotated["update_notification", Tag("update_notification")]
+    | Annotated["update_targets", Tag("update_targets")]
+    | SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
     Field(discriminator=Discriminator(_get_action_discriminator), description="Action."),
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [

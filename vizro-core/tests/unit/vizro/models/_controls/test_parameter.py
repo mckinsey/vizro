@@ -3,7 +3,7 @@ from asserts import assert_component_equal
 from dash import dcc, html
 
 import vizro.models as vm
-from vizro.actions._update_figures import update_figures
+from vizro.actions._update_targets import update_targets
 from vizro.managers import data_manager, model_manager
 from vizro.models._controls.parameter import Parameter
 
@@ -225,7 +225,7 @@ class TestPreBuildMethod:
 
         [default_action] = parameter.selector.actions
 
-        assert isinstance(default_action, update_figures)
+        assert isinstance(default_action, update_targets)
         assert default_action.id == f"__parameter_action_{parameter.id}"
         assert default_action.targets == ["scatter_chart"]
 

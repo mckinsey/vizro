@@ -13,37 +13,35 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, _Controls
 
 
-# TODO AM QQ: Should we rename "update_figures"? It updates controls too.
-#  Consider combining words update/recreate/refresh with figures/models/controls.
-class update_figures(_AbstractAction):
-    """Exports data of target charts, tables and figures.
+class update_targets(_AbstractAction):
+    """Refreshes target figures on the page by re-applying the page's controls.
+
+    Re-runs the targeted charts, tables and figures against the current values of the page's filters and parameters.
+    This is the shared mechanism behind `Filter`, `Parameter` and on-page-load, and can also be used directly (for
+    example on a `Button`) to refresh figures on demand.
 
     Args:
-        targets (list[ModelID]): List of target component ids that will be rebuilt. If none are given then target
-            all components on the page.
+        targets (list[ModelID]): Component ids to refresh. If none are given then all figures on the page are targeted.
+            Defaults to `[]`.
 
     Example:
         ```python
         import vizro.actions as va
+        import vizro.models as vm
 
-        vm.Button(
-            text="Recreate first graph",
-            actions=va.update_figures(targets=["graph_id_1"]),
-        )
+        vm.Button(text="Apply controls", actions=va.update_targets(targets=["my_graph"]))
         ```
     """
 
-    type: Literal["update_figures"] = "update_figures"
+    type: Literal["update_targets"] = "update_targets"
 
-    targets: list[ModelID] = Field(default=[], description="Target component IDs.")
+    targets: list[ModelID] = Field(default=[], description="Component ids to refresh. Defaults to all figures on page.")
 
     @_log_call
     def pre_build(self):
-        # Set targets to all figures on the page if not already set.
-
-        # TODO AM-PP OQ: This implementation enables users to manually specify filter targets outside the container.
+        # Default to every figure on the page. Dynamic filters are not figures but are still valid explicit targets,
+        # since their selector options are recalculated when their underlying data changes.
         # TODO-AV2 A 4: work out where this duplicated get_all_targets_on_page logic should live.
-
         root_model = model_manager._get_model_page(self)
 
         figure_ids_on_page = [
@@ -61,7 +59,7 @@ class update_figures(_AbstractAction):
             raise ValueError(f"targets {invalid_targets} are not valid figures on the page.")
 
     def function(self, _controls: _Controls) -> dict[ModelID, Any]:
-        """Recreates targeted charts by applying controls.
+        """Recreates the targeted figures by applying the page's controls.
 
         Returns:
             Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
@@ -79,8 +77,9 @@ class update_figures(_AbstractAction):
 
     @property
     def outputs(self):  # type: ignore[override]
-        # Special handling for controls as otherwise the control's default action output would alter the selector value.
+        # Special handling for vm.Filter (dynamic filters can be targets) as otherwise the filter's default action
+        # output would alter the selector value.
         return {
-            target: f"{target}.selector" if isinstance(model_manager[target], (vm.Filter, vm.Parameter)) else target
+            target: f"{target}.selector" if isinstance(model_manager[target], vm.Filter) else target
             for target in self.targets
         }

@@ -11,7 +11,7 @@ from dash import dcc, html
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions._update_figures import update_figures
+from vizro.actions._update_targets import update_targets
 from vizro.managers import data_manager, model_manager
 from vizro.models._controls.filter import (
     Filter,
@@ -1591,16 +1591,17 @@ class TestFilterPreBuildMethod:
 
         [default_action] = filter.selector.actions
 
-        assert isinstance(default_action, _filter)
+        # The default action just refreshes the targets; the filtering logic (function + column) lives on the model.
+        assert isinstance(default_action, update_targets)
         assert default_action.id == f"__filter_action_{filter.id}"
+        assert default_action.targets == expected_targets
         # The hierarchical filter binds `multi` into its filter function via functools.partial, so unwrap it.
-        actual_filter_function = default_action.filter_function
+        actual_filter_function = filter._filter_function
         if isinstance(actual_filter_function, functools.partial):
             actual_filter_function = actual_filter_function.func
         assert actual_filter_function == filter_function
-        # Hierarchical filters match the full path, so the action carries every path column (in order).
-        assert default_action.column == filtered_column
-        assert default_action.targets == expected_targets
+        # Hierarchical filters match the full path, so the model carries every path column (in order).
+        assert filter._filter_column == filtered_column
 
     # TODO: Add tests for custom temporal and categorical selectors too. Probably inside the conftest file and reused in
     #       all other tests. Also add tests for the custom selector that is an entirely new component and adjust docs.
@@ -1633,7 +1634,7 @@ class TestFilterPreBuildMethod:
 
         [default_action] = filter.selector.actions
 
-        assert isinstance(default_action, update_figures)
+        assert isinstance(default_action, update_targets)
         assert default_action.id == f"__filter_action_{filter.id}"
         assert default_action.targets == ["scatter_chart", "bar_chart"]
 
@@ -1857,12 +1858,13 @@ class TestFilterHierarchicalColumn:
         assert not f._dynamic
         assert not getattr(f.selector, "_dynamic", False)
         [default_action] = f.selector.actions
-        assert isinstance(default_action, _filter)
-        # Path mode: the action carries every path column (in order) and the path-aware filter function.
-        assert default_action.column == ["continent", "country"]
-        assert isinstance(default_action.filter_function, functools.partial)
-        assert default_action.filter_function.func == _filter_hierarchical_isin
-        assert default_action.filter_function.keywords == {"multi": True}
+        assert isinstance(default_action, update_targets)
+        assert default_action.targets == ["hier_graph"]
+        # Path mode: the model carries every path column (in order) and the path-aware filter function.
+        assert f._filter_column == ["continent", "country"]
+        assert isinstance(f._filter_function, functools.partial)
+        assert f._filter_function.func == _filter_hierarchical_isin
+        assert f._filter_function.keywords == {"multi": True}
 
     def test_hierarchical_pre_build_populates_options_and_action_leaf_mode(self, managers_hierarchical_page):
         # Leaf mode (default): the hierarchical filter behaves like a flat categorical filter on the last column.
@@ -1879,10 +1881,11 @@ class TestFilterHierarchicalColumn:
         # Default value is the first branch's leaves (multi=True): the "As" branch.
         assert f.selector.value == ["JP"]
         [default_action] = f.selector.actions
-        assert isinstance(default_action, _filter)
+        assert isinstance(default_action, update_targets)
+        assert default_action.targets == ["hier_graph"]
         # Leaf mode filters by bare leaf value on the last (leaf) column.
-        assert default_action.column == "country"
-        assert default_action.filter_function is _filter_isin
+        assert f._filter_column == "country"
+        assert f._filter_function is _filter_isin
 
     def test_hierarchical_pre_build_path_mode_depth_mismatch_raises(self, managers_hierarchical_page):
         # Path mode: every options path must be exactly as deep as `column` is long. Here `column` has two

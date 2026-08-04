@@ -13,7 +13,7 @@ from pandas.api.types import is_bool_dtype, is_datetime64_any_dtype, is_numeric_
 from pydantic import Field, PrivateAttr, model_validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
-from vizro.actions import update_figures
+from vizro.actions import update_targets
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
@@ -584,18 +584,11 @@ class Filter(VizroBaseModel):
             self._filter_function = _filter_isin
             self._filter_column = self._single_filter_column
 
-        # TODO PP NOW: If [] or None is set make that the actions are not overwritten. Could be tricky, but doable.
+        # The default action refreshes the filter's targets. The filtering logic itself (self._filter_function applied
+        # to self._filter_column) is reapplied whenever the targets are refreshed, independently of this action, so
+        # overwriting selector.actions changes what happens on selector change without disabling the filtering.
         if not self.selector.actions:
-            self.selector.actions = update_figures(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets)
-            # TODO PP NOW: Remove below after checking
-            # self.selector.actions = [
-            #     _filter(
-            #         id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-            #         column=self._filter_column,
-            #         filter_function=self._filter_function,
-            #         targets=self.targets,
-            #     ),
-            # ]
+            self.selector.actions = [update_targets(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.

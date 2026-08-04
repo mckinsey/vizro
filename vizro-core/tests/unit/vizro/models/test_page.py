@@ -5,7 +5,7 @@ from pydantic import ValidationError
 
 import vizro.models as vm
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
-from vizro.actions._update_figures import update_figures
+from vizro.actions._on_page_load import _on_page_load
 
 
 class TestPageInstantiation:
@@ -109,7 +109,7 @@ class TestPagePreBuildMethod:
         page.pre_build()
         [default_action] = page.actions
 
-        assert isinstance(default_action, update_figures)
+        assert isinstance(default_action, _on_page_load)
         assert default_action.id == f"{ON_PAGE_LOAD_ACTION_PREFIX}_{page.id}"
         assert default_action.targets == ["scatter_chart"]
         assert default_action._trigger == f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{page.id}.data"

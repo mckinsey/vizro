@@ -5,7 +5,7 @@ from dash import dcc, html
 from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
-from vizro.actions import update_figures
+from vizro.actions import update_targets
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._controls._controls_utils import (
@@ -182,10 +182,10 @@ class Parameter(VizroBaseModel):
 
             # Extending `self.targets` with `filter_targets` instead of redefining it to avoid triggering the
             # pydantic validator like `check_dot_notation` on the `self.targets` again.
-            # We do the update to ensure that `self.targets` is consistent with the target ids passed to `_parameter`.
+            # We do the update to ensure that `self.targets` is consistent with the target ids passed to update_targets.
             self.targets.extend(list(filter_targets))
-            targets_ids = [target.partition(".")[0] for target in self.targets]
-            self.selector.actions = update_figures(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=targets_ids)
+            target_ids = [target.partition(".")[0] for target in self.targets]
+            self.selector.actions = [update_targets(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=target_ids)]
 
     @_log_call
     def build(self):
