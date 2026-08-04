@@ -8,6 +8,7 @@ scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-
 dependencies = [
   "pre-commit",
   "dash[dev,testing]>=4,<5",  # provides dash-generate-components + dash_duo fixture
+  "selenium>=4",  # Pinning selenium>=4 forces 4.2.0, which pulls the compatible urllib3 1.26.x.
   "chromedriver-autoinstaller>=0.6.4",
   "pytest"
 ]

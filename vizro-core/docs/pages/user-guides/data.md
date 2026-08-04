@@ -216,7 +216,7 @@ The Vizro data manager has a server-side caching mechanism to help solve this. V
 
 <!-- vale off -->
 
-In a development environment the easiest way to enable caching is to use a [simple memory cache](https://cachelib.readthedocs.io/en/stable/simple/) with the default configuration options. This is achieved by adding one line to the [dynamic data example](#dynamic-data) to set `data_manager.cache`:
+In a development environment the easiest way to enable caching is to use a [simple memory cache](https://cachelib.readthedocs.io/en/stable/api/simple/) with the default configuration options. This is achieved by adding one line to the [dynamic data example](#dynamic-data) to set `data_manager.cache`:
 
 !!! example "Simple cache with default timeout of 5 minutes"
 
@@ -257,7 +257,7 @@ data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_T
 
 !!! warning
 
-    Simple cache exists purely for single-process development purposes and is not intended to be used in production. If you deploy with multiple workers, [for example with Gunicorn](./run-deploy/#gunicorn), then you should use a production-ready cache backend. All of Flask-Caching's [built-in backends](https://flask-caching.readthedocs.io/en/latest/#built-in-cache-backends) other than `SimpleCache` are suitable for production. In particular, you might like to use [`FileSystemCache`](https://cachelib.readthedocs.io/en/stable/file/) or [`RedisCache`](https://cachelib.readthedocs.io/en/stable/redis/):
+    Simple cache exists purely for single-process development purposes and is not intended to be used in production. If you deploy with multiple workers, [for example with Gunicorn](./run-deploy/#gunicorn), then you should use a production-ready cache backend. All of Flask-Caching's [built-in backends](https://flask-caching.readthedocs.io/en/latest/#built-in-cache-backends) other than `SimpleCache` are suitable for production. In particular, you might like to use [`FileSystemCache`](https://cachelib.readthedocs.io/en/stable/api/file/) or [`RedisCache`](https://cachelib.readthedocs.io/en/stable/api/redis/):
 
     ```py title="Production-ready caches"
     # Store cached data in CACHE_DIR
