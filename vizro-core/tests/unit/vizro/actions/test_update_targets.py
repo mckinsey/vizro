@@ -46,7 +46,7 @@ class TestUpdateTargetsPreBuild:
     def test_invalid_targets_raise(self, managers_page_two_graphs_button):
         action = model_manager["update_targets_action"]
         action.targets = ["invalid_target"]
-        with pytest.raises(ValueError, match="targets {'invalid_target'} are not valid figures on the page."):
+        with pytest.raises(ValueError, match=r"targets {'invalid_target'} are not valid figures on the page."):
             action.pre_build()
 
 
