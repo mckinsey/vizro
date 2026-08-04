@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
@@ -48,7 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
@@ -67,7 +67,7 @@ jobs:
           ${{needs.check-version.outputs.package_version}} release_body.txt
       - name: Set up Node.js for vizro-dash-components
         if: needs.check-version.outputs.package_name == 'vizro-dash-components'
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 20
       - name: Generate Python components for vizro-dash-components
@@ -102,7 +102,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.VIZRO_SVC_PAT }}
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies

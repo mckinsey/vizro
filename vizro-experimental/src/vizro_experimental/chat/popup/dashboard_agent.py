@@ -193,7 +193,7 @@ def _run_inline_op(df: pd.DataFrame, op: str, *, n: int, ascending: bool, value:
     return _INLINE_OPS[op](df, n, ascending, value)
 
 
-def _query_dataframe(  # noqa: PLR0913 — flat kwargs let the LLM tool schema stay flat (no nested params object)
+def _query_dataframe(  # noqa: PLR0913,PLR0917 — flat kwargs let the LLM tool schema stay flat (no nested params object)
     dataset_name: str,
     operation: str,
     by: str | None = None,
