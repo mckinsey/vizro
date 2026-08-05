@@ -3,7 +3,7 @@ from asserts import assert_component_equal
 from dash import dcc, html
 
 import vizro.models as vm
-from vizro.actions._parameter_action import _parameter
+from vizro.actions._update_targets import update_targets
 from vizro.managers import data_manager, model_manager
 from vizro.models._controls.parameter import Parameter
 
@@ -222,11 +222,12 @@ class TestPreBuildMethod:
         page = model_manager["test_page"]
         page.controls = [parameter]
         parameter.pre_build()
+
         [default_action] = parameter.selector.actions
 
-        assert isinstance(default_action, _parameter)
+        assert isinstance(default_action, update_targets)
         assert default_action.id == f"__parameter_action_{parameter.id}"
-        assert default_action.targets == ["scatter_chart.x"]
+        assert default_action.targets == ["scatter_chart"]
 
     def test_set_custom_action(self, managers_one_page_two_graphs, identity_action_function):
         action_function = identity_action_function()
@@ -242,20 +243,50 @@ class TestPreBuildMethod:
         parameter.pre_build()
         assert parameter.selector.actions == [custom_action]
 
+    def test_set_empty_actions(self, managers_one_page_two_graphs):
+        # Explicitly empty actions opts out of the default "refresh on change" action, so it must not be overwritten
+        # with the default update_targets action.
+        parameter = vm.Parameter(
+            targets=["scatter_chart.x"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"], actions=[]),
+        )
+        model_manager["test_page"].controls = [parameter]
+        parameter.pre_build()
+        assert parameter.selector.actions == []
+
+    def test_set_empty_actions_from_dict(self, managers_one_page_two_graphs):
+        # The same opt-out must be honored through dict/YAML config where `actions: []` is given explicitly.
+        parameter = vm.Parameter(
+            targets=["scatter_chart.x"],
+            selector={"type": "radio_items", "options": ["lifeExp", "gdpPercap", "pop"], "actions": []},
+        )
+        model_manager["test_page"].controls = [parameter]
+        parameter.pre_build()
+        assert parameter.selector.actions == []
+
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
-        "filter_targets, expected_parameter_targets",
+        "filter_targets, expected_parameter_targets, expected_parameter_action_argument",
         [
-            ([], {"scatter_chart.data_frame.first_n"}),
-            (["scatter_chart"], {"scatter_chart.data_frame.first_n", "filter_id", "scatter_chart"}),
+            ([], {"scatter_chart.data_frame.first_n"}, {"scatter_chart"}),
+            (
+                ["scatter_chart"],
+                {"scatter_chart.data_frame.first_n", "filter_id", "scatter_chart"},
+                {"scatter_chart", "filter_id"},
+            ),
             (
                 ["scatter_chart", "box_chart"],
                 {"scatter_chart.data_frame.first_n", "filter_id", "scatter_chart", "box_chart"},
+                {"scatter_chart", "filter_id", "box_chart"},
             ),
         ],
     )
     def test_targets_argument_for_data_frame_parameter_action(
-        self, filter_targets, expected_parameter_targets, gapminder_dynamic_first_n_last_n_function
+        self,
+        filter_targets,
+        expected_parameter_targets,
+        expected_parameter_action_argument,
+        gapminder_dynamic_first_n_last_n_function,
     ):
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
 
@@ -273,7 +304,8 @@ class TestPreBuildMethod:
         data_frame_parameter.pre_build()
 
         [default_action] = data_frame_parameter.selector.actions
-        assert set(default_action.targets) == expected_parameter_targets
+        assert set(data_frame_parameter.targets) == expected_parameter_targets
+        assert set(default_action.targets) == expected_parameter_action_argument
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
     def test_parameter_action_properties(self):
