@@ -218,6 +218,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-nav-link-highlight: #1f222e;
   --bs-dropdown-bg-color: #10121b;
   --bs-border-color: #141721;
+  --border-stroke-tertiary: rgba(255, 255, 255, 0.16);
 }
 
 [data-bs-theme="light"] {
@@ -237,6 +238,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-nav-link-highlight: #fafafb;
   --bs-dropdown-bg-color: #ffffff;
   --bs-border-color: #ebedee;
+  --border-stroke-tertiary: rgba(20, 23, 33, 0.16);
 
   /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white. */
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
@@ -466,4 +468,8 @@ legend {
 
 .accordion-item {
   border-bottom: none;
+}
+
+.border {
+  border: 1px solid var(--border-stroke-tertiary) !important;
 }
