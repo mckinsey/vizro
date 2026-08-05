@@ -52,7 +52,7 @@
 }
 
 #header:not(:empty) {
-  border-bottom: 1px solid var(--bs-header-border-color);
+  border-bottom: 1px solid var(--bs-border-color);
 }
 
 #header.no-left {
@@ -226,7 +226,7 @@ a:has(#logo-dark),
 /* Side nav: wrapper that holds dbc.Navbar + the collapse icon below it. */
 #nav-bar-wrapper {
   background: var(--bs-left-side-bg);
-  border-right: 1px solid var(--bs-right-side-bg);
+  border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex-direction: column;
 }
