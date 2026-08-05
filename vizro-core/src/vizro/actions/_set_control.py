@@ -156,6 +156,19 @@ class set_control(_AbstractAction):
                 f"(for example, Filter, Parameter)."
             )
 
+        # A path-mode Cascader (full_path=True) identifies a selection by its full root-to-leaf path. A trigger
+        # (Graph/AgGrid) only supplies a single column value, which cannot reconstruct a path, so `set_control`
+        # is disabled for it. Leaf mode (full_path=False) works like a flat selector and is supported.
+        from vizro.models._controls._controls_utils import _is_hierarchical_selector
+
+        selector = getattr(control_model, "selector", None)
+        if _is_hierarchical_selector(selector) and getattr(selector, "full_path", False):
+            raise ValueError(
+                f"`set_control` cannot target control `{self.control}` because its Cascader selector uses "
+                f"full_path=True. A trigger supplies a single leaf value that cannot be resolved to a full "
+                f"root-to-leaf path. Use a Cascader with full_path=False (leaf mode) to enable `set_control`."
+            )
+
         if control_model_page == model_manager._get_model_page(self):
             self._same_page = True
         else:
@@ -185,6 +198,8 @@ class set_control(_AbstractAction):
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
         is_range = getattr(selector, "range", isinstance(selector, RangeSlider))
 
+        # A leaf-mode Cascader (the only kind that reaches here — path mode is rejected at pre_build) reshapes
+        # like a flat categorical selector: a multi-select value is a list of leaves, a single-select a scalar.
         if is_multi:
             value = value if isinstance(value, list) else [value]
         elif is_range:

@@ -1,322 +1,441 @@
-"""Scratch demo app"""
+"""Scratch demo: hierarchical Cascader filter with dynamic data."""
 
 import pandas as pd
-import numpy as np
-
-import vizro.models as vm
-import vizro.plotly.express as px
-
 from vizro import Vizro
+import vizro.actions as va
+import vizro.plotly.express as px
+import vizro.models as vm
+from vizro.managers import data_manager
+from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
+_gapminder = px.data.gapminder().query("year == 2007").copy()
+_regions = {
+    "North": {
+        "Canada",
+        "United States",
+        "Denmark",
+        "Finland",
+        "Norway",
+        "Sweden",
+        "Iceland",
+        "Ireland",
+        "United Kingdom",
+        "Morocco",
+        "Algeria",
+        "Tunisia",
+        "Libya",
+        "Egypt",
+        "Sudan",
+        "Mongolia",
+    },
+    "South": {
+        "Argentina",
+        "Uruguay",
+        "Paraguay",
+        "Bolivia",
+        "Chile",
+        "Peru",
+        "Italy",
+        "Greece",
+        "Spain",
+        "Portugal",
+        "Angola",
+        "Zambia",
+        "Malawi",
+        "Mozambique",
+        "Zimbabwe",
+        "Botswana",
+        "Namibia",
+        "South Africa",
+        "Lesotho",
+        "Swaziland",
+        "Madagascar",
+        "Mauritius",
+        "Reunion",
+        "Comoros",
+        "Bangladesh",
+        "India",
+        "Nepal",
+        "Pakistan",
+        "Sri Lanka",
+        "Australia",
+        "New Zealand",
+    },
+    "West": {
+        "Mexico",
+        "Costa Rica",
+        "El Salvador",
+        "Guatemala",
+        "Honduras",
+        "Nicaragua",
+        "Panama",
+        "Colombia",
+        "Ecuador",
+        "Venezuela",
+        "France",
+        "Belgium",
+        "Netherlands",
+        "Germany",
+        "Switzerland",
+        "Austria",
+        "Senegal",
+        "Gambia",
+        "Guinea",
+        "Guinea-Bissau",
+        "Sierra Leone",
+        "Liberia",
+        "Cote d'Ivoire",
+        "Ghana",
+        "Togo",
+        "Benin",
+        "Nigeria",
+        "Niger",
+        "Burkina Faso",
+        "Mali",
+        "Mauritania",
+        "Cameroon",
+        "Central African Republic",
+        "Chad",
+        "Congo, Rep.",
+        "Congo, Dem. Rep.",
+        "Gabon",
+        "Equatorial Guinea",
+        "Sao Tome and Principe",
+        "Afghanistan",
+        "Iran",
+        "Iraq",
+        "Israel",
+        "Jordan",
+        "Lebanon",
+        "Syria",
+        "Turkey",
+        "Saudi Arabia",
+        "Kuwait",
+        "Bahrain",
+        "Oman",
+        "Yemen, Rep.",
+        "West Bank and Gaza",
+    },
+    "East": {
+        "Brazil",
+        "Cuba",
+        "Dominican Republic",
+        "Haiti",
+        "Jamaica",
+        "Puerto Rico",
+        "Trinidad and Tobago",
+        "Poland",
+        "Czech Republic",
+        "Slovak Republic",
+        "Hungary",
+        "Romania",
+        "Bulgaria",
+        "Serbia",
+        "Montenegro",
+        "Croatia",
+        "Bosnia and Herzegovina",
+        "Slovenia",
+        "Albania",
+        "Ethiopia",
+        "Eritrea",
+        "Djibouti",
+        "Somalia",
+        "Kenya",
+        "Uganda",
+        "Tanzania",
+        "Rwanda",
+        "Burundi",
+        "China",
+        "Hong Kong, China",
+        "Japan",
+        "Korea, Dem. Rep.",
+        "Korea, Rep.",
+        "Taiwan",
+        "Cambodia",
+        "Indonesia",
+        "Malaysia",
+        "Myanmar",
+        "Philippines",
+        "Singapore",
+        "Thailand",
+        "Vietnam",
+    },
+}
+_gapminder["region"] = _gapminder["country"].map({c: r for r, cs in _regions.items() for c in cs})
 
-_rng = np.random.default_rng(42)
-_n = 365
 
-_datetime_utc = pd.Series(
-    pd.to_datetime(
-        _rng.integers(
-            pd.Timestamp("2026-01-01", tz="UTC").value,
-            pd.Timestamp("2026-12-31 23:59:59", tz="UTC").value,
-            size=_n,
-        ),
-        utc=True,
+def load_gapminder(top_n_per_continent: int = 5):
+    """Return the top-N countries by population within each continent."""
+    return (
+        _gapminder.sort_values("pop", ascending=False)
+        .groupby("continent", as_index=False, group_keys=False)
+        .head(top_n_per_continent)
     )
-)
-_rand_time_base = pd.Series(pd.to_datetime(_rng.integers(0, 24 * 60 * 60, size=_n), unit="s"))
-_date_range_2026 = pd.date_range("2026-01-01", "2026-12-31", freq="D")
 
-dff = pd.DataFrame(
+
+data_manager["gapminder_dynamic"] = load_gapminder
+
+
+# ===================================================================================================
+# vm.Cascader has two modes, set by `full_path` (default False):
+#   * LEAF MODE  (full_path=False): a selection is a bare leaf value; leaf labels must be unique across
+#     the tree; a hierarchical Filter matches the LAST column; `set_control` is supported.
+#   * PATH MODE  (full_path=True):  a selection is a full root-to-leaf path; duplicate leaf labels are
+#     allowed and addressed unambiguously; a Filter matches EVERY column; `set_control` is disabled.
+# Gapminder countries are globally unique → used for leaf-mode pages. The cities dataset has duplicate
+# city names across states (two "Portland"s, two "Springfield"s) → used for path-mode pages.
+# ===================================================================================================
+
+# ---- LEAF MODE (default): gapminder, unique country leaves --------------------------------------
+
+page_leaf_dynamic = vm.Page(
+    title="Leaf mode - dynamic filter",
+    components=[
+        vm.Graph(
+            id="scatter_leaf_single",
+            figure=px.scatter(
+                "gapminder_dynamic", x="gdpPercap", y="lifeExp", size="pop", color="continent", hover_name="country"
+            ),
+        ),
+        vm.Graph(
+            id="scatter_leaf_multi",
+            figure=px.scatter(
+                "gapminder_dynamic", x="gdpPercap", y="lifeExp", size="pop", color="continent", hover_name="country"
+            ),
+        ),
+    ],
+    controls=[
+        # Leaf mode: options can be arbitrarily deep, rows match on the last column (`country`).
+        # Single-select Cascader → its own graph.
+        vm.Filter(
+            id="leaf_dyn_single_filter",
+            column=["continent", "region", "country"],
+            targets=["scatter_leaf_single"],
+            selector=vm.Cascader(multi=False, title="Country (single, leaf)"),
+        ),
+        # Multi-select Cascader → its own graph.
+        vm.Filter(
+            id="leaf_dyn_multi_filter",
+            column=["continent", "region", "country"],
+            targets=["scatter_leaf_multi"],
+            selector=vm.Cascader(multi=True, title="Countries (multi, leaf)"),
+        ),
+        vm.Parameter(
+            targets=[
+                "scatter_leaf_single.data_frame.top_n_per_continent",
+                "scatter_leaf_multi.data_frame.top_n_per_continent",
+            ],
+            selector=vm.Slider(min=1, max=20, step=1, value=5, title="Top N per continent"),
+        ),
+    ],
+)
+
+page_leaf_static = vm.Page(
+    title="Leaf mode - static filter (URL)",
+    components=[
+        vm.Graph(
+            id="leaf_static_single_graph",
+            figure=px.scatter(
+                load_gapminder(), x="gdpPercap", y="lifeExp", size="pop", color="continent", hover_name="country"
+            ),
+        ),
+        vm.Graph(
+            id="leaf_static_multi_graph",
+            figure=px.scatter(
+                load_gapminder(), x="gdpPercap", y="lifeExp", size="pop", color="continent", hover_name="country"
+            ),
+        ),
+    ],
+    controls=[
+        # Single-select leaf value ("United States" is a unique country), shown in the URL as a scalar.
+        vm.Filter(
+            id="leaf_static_single_filter",
+            column=["continent", "region", "country"],
+            targets=["leaf_static_single_graph"],
+            selector=vm.Cascader(multi=False, value="United States", title="Country (single, leaf)"),
+            show_in_url=True,
+        ),
+        # Multi-select leaf values, shown in the URL as a list.
+        vm.Filter(
+            id="leaf_static_multi_filter",
+            column=["continent", "region", "country"],
+            targets=["leaf_static_multi_graph"],
+            selector=vm.Cascader(multi=True, value=["United States", "China"], title="Countries (multi, leaf)"),
+            show_in_url=True,
+        ),
+    ],
+)
+
+# ---- PATH MODE (full_path=True): cities, duplicate leaf labels ----------------------------------
+
+# "Portland" appears under both Oregon and Maine, "Springfield" under both Oregon and Illinois.
+_cities = pd.DataFrame(
     {
-        "datetime_utc": _datetime_utc,
-        # Same data, tz-naive — exercises DateTimePicker without hitting tz-localization in _coerce_temporal
-        "datetime_naive": _datetime_utc.dt.tz_localize(None),
-        # Pure-date columns (all midnight — "date" type, DatePicker only)
-        "date_yyyy_mm_dd": pd.Series(_date_range_2026[_rng.integers(0, len(_date_range_2026), size=_n)]),
-        # Time-of-day columns ("time" type, TimePicker only)
-        "time_iso": _datetime_utc.dt.time,  # hh:mm:ss.xxxxxx (microsecond precision)
-        "time_hh_mm_ss": _rand_time_base.dt.time,  # hh:mm:ss
-        "time_hh_mm": _rand_time_base.dt.floor("min").dt.time,  # hh:mm (second=0)
+        "state": ["Oregon", "Oregon", "Oregon", "Maine", "Maine", "Illinois", "Illinois"],
+        "city": ["Portland", "Salem", "Springfield", "Portland", "Augusta", "Chicago", "Springfield"],
+        "population": [652503, 175535, 62607, 66215, 18899, 2716000, 114230],
     }
 )
 
-page_0 = vm.Page(
-    title="TLDR: Range Pickers",
-    components=[vm.AgGrid(figure=dash_ag_grid(data_frame=dff))],
-    controls=[
-        vm.Filter(
-            column="datetime_utc",
-            selector=vm.DatePicker(title="range DatePicker", value=["2026-01-03", "2026-12-29"]),
-        ),
-        vm.Filter(
-            column="time_hh_mm_ss",
-            selector=vm.TimePicker(title="range TimePicker", value=["00:00", "23:59"]),
-        ),
-        vm.Filter(column="datetime_utc", selector=vm.DateTimePicker(title="range DateTimePicker")),
-    ],
-)
+# Static tree reused by the path-mode Parameter (Parameter selectors need explicit options).
+_city_tree: dict[str, list[str]] = {}
+for _state, _city in zip(_cities["state"], _cities["city"]):
+    _city_tree.setdefault(_state, [])
+    if _city not in _city_tree[_state]:
+        _city_tree[_state].append(_city)
 
-page_1 = vm.Page(
-    title="TLDR: Single Pickers",
-    components=[vm.AgGrid(figure=dash_ag_grid(data_frame=dff))],
-    controls=[
-        vm.Filter(column="datetime_utc", selector=vm.DatePicker(title="single DatePicker", range=False)),
-        vm.Filter(column="datetime_utc", selector=vm.TimePicker(title="single TimePicker", range=False)),
-        vm.Filter(column="datetime_utc", selector=vm.DateTimePicker(title="single DateTimePicker", range=False)),
-    ],
-)
-
-page_2 = vm.Page(
-    title="Detailed: Range Pickers",
-    components=[vm.AgGrid(figure=dash_ag_grid(data_frame=dff))],
-    controls=[
-        # datetime_utc — "datetime" type: tested as date (DatePicker), time-of-day (TimePicker), and datetime (DateTimePicker)
-        vm.Filter(column="datetime_utc"),
-        vm.Filter(
-            column="datetime_utc",
-            selector=vm.DatePicker(title="range DatePicker", value=["2026-01-03", "2026-12-29"]),
-        ),
-        vm.Filter(
-            column="time_hh_mm_ss",
-            selector=vm.TimePicker(title="range TimePicker", value=["00:00", "23:59"]),
-        ),
-        vm.Filter(column="datetime_utc", selector=vm.TimePicker(title="datetime_utc time")),
-        vm.Filter(
-            column="datetime_utc", selector=vm.TimePicker(title="datetime_utc time + value", value=["00:00", "23:59"])
-        ),
-        vm.Filter(column="datetime_utc", selector=vm.DateTimePicker(title="range DateTimePicker")),
-        vm.Filter(
-            column="datetime_utc",
-            selector=vm.DateTimePicker(
-                title="datetime_utc datetime + value",
-                value=["2026-01-03T08:00", "2026-12-29T20:00"],
-            ),
-        ),
-        vm.Filter(
-            column="datetime_utc",
-            selector=vm.DateTimePicker(
-                title="datetime_utc datetime + min/max",
-                min="2026-01-01",
-                max="2026-12-31",
-            ),
-        ),
-        # datetime_naive — "datetime" type (tz-naive variant for the simpler coercion path)
-        vm.Filter(column="datetime_naive", selector=vm.DateTimePicker(title="datetime_naive datetime")),
-        # date columns — DatePicker only
-        vm.Filter(column="date_yyyy_mm_dd"),
-        vm.Filter(
-            column="date_yyyy_mm_dd",
-            selector=vm.DatePicker(title="date_yyyy_mm_dd date + value", value=["2026-01-03", "2026-12-29"]),
-        ),
-        # time columns — TimePicker only
-        vm.Filter(column="time_iso"),
-        vm.Filter(
-            column="time_hh_mm_ss",
-            selector=vm.TimePicker(title="time_hh_mm_ss time-picker + value", value=["00:00", "23:59"]),
-        ),
-        vm.Filter(column="time_hh_mm"),
-    ],
-)
-
-page_3 = vm.Page(
-    title="Detailed: Single Pickers",
-    components=[vm.AgGrid(figure=dash_ag_grid(data_frame=dff))],
-    controls=[
-        # datetime_utc — tested as date (DatePicker), time-of-day (TimePicker), and datetime (DateTimePicker)
-        vm.Filter(column="datetime_utc", selector=vm.DatePicker(title="single DatePicker", range=False)),
-        vm.Filter(
-            column="datetime_utc",
-            selector=vm.DatePicker(title="datetime_utc date + value", range=False, value="2026-03-01"),
-        ),
-        vm.Filter(column="datetime_utc", selector=vm.TimePicker(title="single TimePicker", range=False)),
-        vm.Filter(
-            column="datetime_utc", selector=vm.TimePicker(title="datetime_utc time + value", range=False, value="00:00")
-        ),
-        vm.Filter(column="datetime_utc", selector=vm.DateTimePicker(title="single DateTimePicker", range=False)),
-        vm.Filter(
-            column="datetime_utc",
-            selector=vm.DateTimePicker(title="datetime_utc datetime + value", range=False, value="2026-03-01T08:00"),
-        ),
-        # datetime_naive — tz-naive single DateTimePicker
-        vm.Filter(
-            column="datetime_naive",
-            selector=vm.DateTimePicker(title="datetime_naive datetime", range=False),
-        ),
-        # date columns
-        vm.Filter(column="date_yyyy_mm_dd", selector=vm.DatePicker(title="date_yyyy_mm_dd", range=False)),
-        vm.Filter(
-            column="date_yyyy_mm_dd",
-            selector=vm.DatePicker(title="date_yyyy_mm_dd + value", range=False, value="2026-03-01"),
-        ),
-        # time columns
-        vm.Filter(column="time_iso", selector=vm.TimePicker(title="time_iso", range=False)),
-        vm.Filter(
-            column="time_hh_mm_ss", selector=vm.TimePicker(title="time_hh_mm_ss + value", range=False, value="00:00")
-        ),
-        vm.Filter(column="time_hh_mm", selector=vm.TimePicker(title="time_hh_mm", range=False)),
-    ],
-)
-
-page_4 = vm.Page(
-    title="Filters in URL",
-    components=[vm.AgGrid(figure=dash_ag_grid(data_frame=dff))],
-    controls=[
-        # Range filters (from page_0)
-        vm.Filter(
-            column="datetime_utc",
-            id="filter_dt_date_range",
-            selector=vm.DatePicker(id="dp_dt_range", title="datetime_utc date range"),
-            show_in_url=True,
-        ),
-        vm.Filter(
-            column="datetime_utc",
-            id="filter_dt_time_range",
-            selector=vm.TimePicker(id="tp_dt_range", title="datetime_utc time range + value", value=["08:00", "20:00"]),
-            show_in_url=True,
-        ),
-        vm.Filter(
-            column="time_iso",
-            id="filter_time_iso_range",
-            selector=vm.TimePicker(id="tp_time_iso", title="time_iso range"),
-            show_in_url=True,
-        ),
-        vm.Filter(
-            column="datetime_utc",
-            id="filter_dt_datetime_range",
-            selector=vm.DateTimePicker(
-                id="dtp_dt_range",
-                title="datetime_utc datetime range + value",
-                value=["2026-03-01T08:00", "2026-09-30T20:00"],
-            ),
-            show_in_url=True,
-        ),
-        # Single filters (from page_1)
-        vm.Filter(
-            column="datetime_utc",
-            id="filter_dt_time_single",
-            selector=vm.TimePicker(id="tp_dt_single", title="datetime_utc time single", range=False),
-            show_in_url=True,
-        ),
-        vm.Filter(
-            column="date_yyyy_mm_dd",
-            id="filter_date_yyyy_single",
-            selector=vm.DatePicker(
-                id="dp_date_yyyy", title="date_yyyy_mm_dd single + value", range=False, value="2026-03-01"
-            ),
-            show_in_url=True,
-        ),
-        vm.Filter(
-            column="time_hh_mm",
-            id="filter_time_hh_mm_single",
-            selector=vm.TimePicker(id="tp_hh_mm", title="time_hh_mm single", range=False),
-            show_in_url=True,
-        ),
-        vm.Filter(
-            column="datetime_utc",
-            id="filter_dt_datetime_single",
-            selector=vm.DateTimePicker(id="dtp_dt_single", title="datetime_utc datetime single", range=False),
-            show_in_url=True,
-        ),
-    ],
-)
-
-page_5 = vm.Page(
-    title="DateTime as Parameter",
+page_path_duplicate = vm.Page(
+    title="Path mode - duplicate leaves",
     components=[
-        vm.Graph(
-            id="scatter_chart",
-            figure=px.scatter(
-                px.data.iris(), title="My scatter chart", x="sepal_length", y="petal_width", color="species"
-            ),
-        ),
+        vm.Graph(id="path_dup_single_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
+        vm.Graph(id="path_dup_multi_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
     ],
     controls=[
+        # Single-select path Cascader → its own graph: one full path, so a specific "Portland" is unambiguous.
+        vm.Filter(
+            id="path_dup_single_filter",
+            column=["state", "city"],
+            targets=["path_dup_single_graph"],
+            selector=vm.Cascader(
+                multi=False, full_path=True, value=["Oregon", "Portland"], title="City (single, path)"
+            ),
+        ),
+        # Multi-select path Cascader → its own graph: the two "Portland"s filter independently.
+        vm.Filter(
+            id="path_dup_multi_filter",
+            column=["state", "city"],
+            targets=["path_dup_multi_graph"],
+            selector=vm.Cascader(multi=True, full_path=True, title="Cities (multi, path)"),
+        ),
+    ],
+)
+
+page_path_url = vm.Page(
+    title="Path mode - URL persistence",
+    components=[
+        vm.Graph(id="url_single_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
+        vm.Graph(id="url_multi_graph", figure=px.bar(_cities, x="city", y="population", color="state")),
+    ],
+    controls=[
+        vm.Filter(
+            id="url_single_filter",
+            column=["state", "city"],
+            targets=["url_single_graph"],
+            selector=vm.Cascader(multi=False, full_path=True, value=["Oregon", "Salem"], title="Single (in URL)"),
+            show_in_url=True,
+        ),
+        vm.Filter(
+            id="url_multi_filter",
+            column=["state", "city"],
+            targets=["url_multi_graph"],
+            selector=vm.Cascader(
+                multi=True,
+                full_path=True,
+                value=[["Illinois", "Chicago"], ["Maine", "Augusta"]],
+                title="Multi (in URL)",
+            ),
+            show_in_url=True,
+        ),
+    ],
+)
+
+
+@capture("graph")
+def city_bar(data_frame, path=None):
+    """Bar of city populations, optionally narrowed to a selected root-to-leaf path (state[/city])."""
+    df = data_frame
+    if path:
+        for column, segment in zip(["state", "city"], path):
+            df = df[df[column] == segment]
+    label = " › ".join(map(str, path)) if path else "All"
+    return px.bar(df, x="city", y="population", color="state", title=f"Selected path: {label}")
+
+
+@capture("graph")
+def metric_bar(data_frame, y="lifeExp"):
+    """Bar of a chosen (leaf) metric column — driven by a leaf-mode Cascader parameter."""
+    return px.bar(data_frame.head(15), x="country", y=y, title=f"Metric: {y}")
+
+
+# Cascader inside a Parameter: a leaf-mode metric picker and a path-mode city picker.
+page_parameter = vm.Page(
+    title="Parameter - leaf & path",
+    components=[
+        vm.Graph(id="param_leaf_graph", figure=metric_bar(load_gapminder())),
+        vm.Graph(id="param_path_graph", figure=city_bar(_cities)),
+    ],
+    controls=[
+        # Leaf mode: forwards the chosen leaf ("pop") to the target argument.
         vm.Parameter(
-            targets=["scatter_chart.title"],
-            selector=vm.DateTimePicker(min="2026-01-01", max="2026-02-02", range=False),
-        ),
-    ],
-)
-
-
-# Build a clock_time per row inside the Lunch/Dinner window of the original "time" (Lunch/Dinner) column.
-tips = px.data.tips()
-# Assign random clock_time to match Lunch and Dinner "time" column
-windows = {"Lunch": (12 * 3600, 17 * 3600), "Dinner": (17 * 3600, 24 * 3600)}
-starts = tips["time"].map(lambda x: windows[x][0])
-ends = tips["time"].map(lambda x: windows[x][1])
-clock = pd.to_datetime(_rng.integers(starts, ends), unit="s")
-
-# "clock_time" is in format HH:MM:SS
-tips["clock_time"] = clock.time
-tips = tips.sort_values("clock_time").reset_index(drop=True)
-
-page_8 = vm.Page(
-    title="DateTime Pickers",
-    components=[
-        vm.Graph(
-            figure=px.histogram(
-                dff,
-                x="datetime_naive",
-                title="Records by datetime",
-                labels={"datetime_naive": "Datetime"},
+            targets=["param_leaf_graph.y"],
+            selector=vm.Cascader(
+                options={"Metrics": ["lifeExp", "pop", "gdpPercap"]}, multi=False, value="lifeExp", title="Metric"
             ),
         ),
-        vm.AgGrid(title="Row Data", figure=dash_ag_grid(data_frame=dff)),
-    ],
-    controls=[
-        vm.Filter(column="datetime_naive", selector=vm.DateTimePicker(title="Datetime range")),
-        vm.Filter(column="datetime_naive", selector=vm.DateTimePicker(title="Datetime single", range=False)),
-    ],
-)
-
-# Build a full "order_datetime" per row: spread orders across a two-week window and attach the
-# clock time-of-day, so the newly added column is a real "datetime" (date + time) type.
-_order_date = pd.Series(
-    pd.to_datetime("2026-06-01") + pd.to_timedelta(_rng.integers(0, 14, size=len(tips)), unit="D")
-).dt.normalize()
-# "order_datetime" is a datetime64 column (date + time), filterable with DateTimePicker.
-# Drop the helper "size"/"clock_time" columns so the page shows a clean datetime-focused table.
-tips_orders = tips.drop(columns=["size", "clock_time"])
-tips_orders["order_datetime"] = pd.to_datetime(
-    _order_date.dt.strftime("%Y-%m-%d") + " " + tips["clock_time"].astype(str)
-)
-tips_orders = tips_orders.sort_values("order_datetime").reset_index(drop=True)
-
-page_9 = vm.Page(
-    title="DateTime Pickers (orders)",
-    components=[
-        vm.Graph(
-            figure=px.histogram(
-                tips_orders,
-                x="order_datetime",
-                y="tip",
-                color="time",
-                histfunc="sum",
-                title="Summarized tip by order date-time",
-                labels={"order_datetime": "Order date-time", "tip": "Summarized tip ($)", "time": "Meal"},
+        # Path mode: forwards the full path (e.g. ["Oregon", "Salem"]) to the target argument.
+        vm.Parameter(
+            targets=["param_path_graph.path"],
+            selector=vm.Cascader(
+                options=_city_tree, multi=False, full_path=True, value=["Oregon", "Salem"], title="City path"
             ),
         ),
-        vm.AgGrid(title="Row Data", figure=dash_ag_grid(data_frame=tips_orders)),
+    ],
+)
+
+# ---- set_control (leaf mode only; path mode raises at build) ------------------------------------
+# A leaf-mode hierarchical Cascader behaves like a flat selector, so a trigger's single column value sets
+# it directly. (A path-mode Cascader as a set_control target raises at build, because a trigger cannot
+# reconstruct a full path — hence this demo uses leaf mode on the unique-country gapminder data.)
+
+_gapminder_top = load_gapminder()
+
+page_set_control_leaf = vm.Page(
+    title="set_control - leaf mode",
+    components=[
+        # SOURCE: clicking a bar sends the clicked country (`x`), a leaf value.
+        vm.Graph(
+            id="sc_graph",
+            figure=px.bar(_gapminder_top, x="country", y="pop", color="continent"),
+            actions=[va.set_control(control="sc_filter", value="x")],
+        ),
+        # SOURCE: clicking a cell sends that row's `country`, a leaf value.
+        vm.AgGrid(
+            id="sc_grid_source",
+            figure=dash_ag_grid(data_frame=_gapminder_top),
+            actions=[va.set_control(control="sc_filter", value="country")],
+        ),
+        vm.Container(
+            title="Buttons",
+            layout=vm.Flex(direction="row"),
+            components=[
+                vm.Button(text="Show China", actions=[va.set_control(control="sc_filter", value="China")]),
+                vm.Button(text="Show Brazil", actions=[va.set_control(control="sc_filter", value="Brazil")]),
+                vm.Button(text="Reset filter", actions=[va.set_control(control="sc_filter", value=None)]),
+            ],
+        ),
+        # TARGET: filtered by the cascader, so it reflects the current selection.
+        vm.AgGrid(id="sc_grid_target", figure=dash_ag_grid(data_frame=_gapminder_top)),
     ],
     controls=[
-        vm.Filter(column="order_datetime", selector=vm.DateTimePicker(title="Lunch/Dinner - date-time range")),
-        vm.Filter(column="order_datetime", selector=vm.DateTimePicker(title="Lunch/Dinner - date-time", range=False)),
+        vm.Filter(
+            id="sc_filter",
+            column=["continent", "region", "country"],
+            targets=["sc_grid_target"],
+            selector=vm.Cascader(multi=True, value="China", title="Country (single, leaf mode)"),
+        ),
     ],
 )
 
 dashboard = vm.Dashboard(
     pages=[
-        page_0,
-        page_1,
-        page_2,
-        page_3,
-        page_4,
-        page_5,
-        page_8,
-        page_9,
-    ],
+        page_leaf_dynamic,
+        page_leaf_static,
+        page_path_duplicate,
+        page_path_url,
+        page_parameter,
+        page_set_control_leaf,
+    ]
 )
-
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

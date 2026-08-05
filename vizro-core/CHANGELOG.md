@@ -11,6 +11,26 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.60'></a>
+# 0.1.60 — 2026-07-30
+
+## Highlights ✨
+
+- Introduce `DateTimePicker` as a new selector for `Filter` and `Parameter`. See the [user guide on selectors](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/) for more details. ([#1805](https://github.com/mckinsey/vizro/pull/1805))
+
+## Added
+
+- Add Vizro actions log to Dash DevTools debug panel when `debug=True`. ([#1782](https://github.com/mckinsey/vizro/pull/1782))
+
+- `Cascader` filters update automatically when underlying dynamic data changes. ([#1788](https://github.com/mckinsey/vizro/pull/1788))
+
+- `Cascader` gains a `full_path` attribute (default `full_path=False`, leaf mode). Set `full_path=True` on `Cascader` to enable path mode: a selection becomes a full root-to-leaf path (single-select) or a list of paths (multi-select), allowing duplicate leaf labels across branches. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
+
+
+## Changed
+
+- Update vizro-bootstrap stylesheet based on QBDS token updates. ([#1779](https://github.com/mckinsey/vizro/pull/1779))
+
 <a id='changelog-0.1.59'></a>
 # 0.1.59 — 2026-06-18
 
