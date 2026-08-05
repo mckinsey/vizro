@@ -217,8 +217,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-container-bg: #181b26;
   --bs-nav-link-highlight: #1f222e;
   --bs-dropdown-bg-color: #10121b;
-  --bg-card: #181b26;
-  --bs-header-border-color: #141721;
+  --bs-border-color: #141721;
 }
 
 [data-bs-theme="light"] {
@@ -237,8 +236,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-container-bg: #ffffff;
   --bs-nav-link-highlight: #fafafb;
   --bs-dropdown-bg-color: #ffffff;
-  --bg-card: #ffffff;
-  --bs-header-border-color: #ebedee;
+  --bs-border-color: #ebedee;
 
   /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white. */
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
@@ -266,7 +264,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 /* CARDS */
 .card {
-  background-color: var(--bg-card);
+  background-color: var(--bs-card-bg);
   margin: 4px;
   overflow: scroll;
   padding: 0.75rem;
