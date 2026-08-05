@@ -21,8 +21,8 @@ class update_targets(_AbstractAction):
     example on a `Button`) to refresh figures on demand.
 
     Args:
-        targets (list[ModelID]): Component ids to refresh. If none are given then all figures on the page are targeted.
-            Defaults to `[]`.
+        targets (list[ModelID]): Component ids to refresh. Figures and dynamic filters on the page are valid targets.
+            If none are given then all figures and dynamic filters on the page are targeted. Defaults to `[]`.
 
     Example:
         ```python
@@ -39,24 +39,26 @@ class update_targets(_AbstractAction):
 
     @_log_call
     def pre_build(self):
-        # Default to every figure on the page. Dynamic filters are not figures but are still valid explicit targets,
-        # since their selector options are recalculated when their underlying data changes.
+        # A bare update_targets() refreshes the whole page: every figure plus every dynamic filter (whose selector
+        # options are recalculated from their targets' data). This mirrors an on-page-load / page reload.
         # TODO-AV2 A 4: work out where this duplicated get_all_targets_on_page logic should live.
-        root_model = model_manager._get_model_page(self)
+        page = model_manager._get_model_page(self)
+        if page is None:
+            raise ValueError(f"update_targets action '{self.id}' must be placed on a component within a Page.")
 
         figure_ids_on_page = [
-            model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, root_model))
+            model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, root_model=page))
         ]
         dynamic_filter_ids_on_page = [
             filter.id
-            for filter in cast(Iterable[vm.Filter], model_manager._get_models(vm.Filter, root_model=root_model))
+            for filter in cast(Iterable[vm.Filter], model_manager._get_models(vm.Filter, root_model=page))
             if filter._dynamic
         ]
 
         if not self.targets:
-            self.targets = figure_ids_on_page
+            self.targets = figure_ids_on_page + dynamic_filter_ids_on_page
         elif invalid_targets := set(self.targets) - set(figure_ids_on_page + dynamic_filter_ids_on_page):
-            raise ValueError(f"targets {invalid_targets} are not valid figures on the page.")
+            raise ValueError(f"targets {invalid_targets} are not valid targets on the page.")
 
     def function(self, _controls: _Controls) -> dict[ModelID, Any]:
         """Recreates the targeted figures by applying the page's controls.

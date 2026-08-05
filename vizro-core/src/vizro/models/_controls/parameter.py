@@ -156,7 +156,10 @@ class Parameter(VizroBaseModel):
         if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
             self._selector_properties = set(selector_inner_component_properties) - set(html.Div().available_properties)
 
-        if not self.selector.actions:
+        # Check model_fields_set (not falsiness) so an explicit `selector=X(actions=[])` is honored as "do nothing
+        # on selector change" rather than being replaced by the default. The parameter value is still applied whenever
+        # its targets are refreshed by something else (e.g. a Button running update_targets).
+        if "actions" not in self.selector.model_fields_set:
             from vizro.models import Filter
 
             page_dynamic_filters = [

@@ -376,7 +376,8 @@ class Filter(VizroBaseModel):
     )
 
     _dynamic: bool = PrivateAttr(False)
-    _filter_function: Callable[[pd.Series, Any], pd.Series] = PrivateAttr()
+    # Accepts a Series for flat/leaf-mode filters and a DataFrame for path-mode hierarchical filters (column is a list).
+    _filter_function: Callable[[pd.Series | pd.DataFrame, Any], pd.Series] = PrivateAttr()
     # The column(s) the filter function operates on: the leaf column for flat/leaf-mode filters, or the full
     # ordered path for path-mode hierarchical filters. Kept separate from the public `column` field (which
     # retains the user-provided config) so runtime code and validators still see the original value.
@@ -587,7 +588,10 @@ class Filter(VizroBaseModel):
         # The default action refreshes the filter's targets. The filtering logic itself (self._filter_function applied
         # to self._filter_column) is reapplied whenever the targets are refreshed, independently of this action, so
         # overwriting selector.actions changes what happens on selector change without disabling the filtering.
-        if not self.selector.actions:
+        # We check model_fields_set (not falsiness) so that an explicit `selector=X(actions=[])` is honored as "do
+        # nothing on selector change" rather than being replaced by the default. The filter value is still applied
+        # whenever its targets are refreshed by something else (e.g. a Button running update_targets).
+        if "actions" not in self.selector.model_fields_set:
             self.selector.actions = [update_targets(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).

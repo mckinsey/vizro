@@ -1677,6 +1677,23 @@ class TestFilterPreBuildMethod:
 
         assert filter.selector.actions == [custom_action]
 
+    def test_set_empty_actions(self, managers_one_page_two_graphs):
+        # Explicitly empty actions opts out of the default "refresh on change" action, so it must not be overwritten
+        # with the default update_targets action. The filter value is still applied whenever its targets are refreshed.
+        filter = vm.Filter(column="country", selector=vm.RadioItems(actions=[]))
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        assert filter.selector.actions == []
+
+    def test_set_empty_actions_from_dict(self, managers_one_page_two_graphs):
+        # The same opt-out must be honored through dict/YAML config where `actions: []` is given explicitly.
+        filter = vm.Filter(column="country", selector={"type": "radio_items", "actions": []})
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        assert filter.selector.actions == []
+
     def test_filter_action_properties(self, managers_column_only_exists_in_some):
         filter = Filter(
             id="filter_id",

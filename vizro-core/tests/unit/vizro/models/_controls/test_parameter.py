@@ -243,6 +243,27 @@ class TestPreBuildMethod:
         parameter.pre_build()
         assert parameter.selector.actions == [custom_action]
 
+    def test_set_empty_actions(self, managers_one_page_two_graphs):
+        # Explicitly empty actions opts out of the default "refresh on change" action, so it must not be overwritten
+        # with the default update_targets action.
+        parameter = vm.Parameter(
+            targets=["scatter_chart.x"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"], actions=[]),
+        )
+        model_manager["test_page"].controls = [parameter]
+        parameter.pre_build()
+        assert parameter.selector.actions == []
+
+    def test_set_empty_actions_from_dict(self, managers_one_page_two_graphs):
+        # The same opt-out must be honored through dict/YAML config where `actions: []` is given explicitly.
+        parameter = vm.Parameter(
+            targets=["scatter_chart.x"],
+            selector={"type": "radio_items", "options": ["lifeExp", "gdpPercap", "pop"], "actions": []},
+        )
+        model_manager["test_page"].controls = [parameter]
+        parameter.pre_build()
+        assert parameter.selector.actions == []
+
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
         "filter_targets, expected_parameter_targets, expected_parameter_action_argument",
