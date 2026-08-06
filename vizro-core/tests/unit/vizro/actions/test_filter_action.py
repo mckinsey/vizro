@@ -12,10 +12,13 @@ from vizro.managers import model_manager
 @pytest.fixture
 def target_scatter_filtered_continent_and_pop(request, gapminder_2007, scatter_params):
     continent, pop = request.param
-    data = gapminder_2007[
-        gapminder_2007["continent"].isin(continent) & gapminder_2007["pop"].between(pop[0], pop[1], inclusive="both")
-    ]
-    fig = px.scatter(data, **scatter_params)
+
+    if continent:
+        gapminder_2007 = gapminder_2007[gapminder_2007["continent"].isin(continent)]
+    if pop:
+        gapminder_2007 = gapminder_2007[gapminder_2007["pop"].between(pop[0], pop[1], inclusive="both")]
+
+    fig = px.scatter(gapminder_2007, **scatter_params)
     fig.update_layout(modebar_remove=["select2d", "lasso2d"])
     return fig
 
@@ -135,6 +138,49 @@ class TestFilter:
         expected = {"scatter_chart": target_scatter_filtered_continent}
 
         assert result == expected
+
+    @pytest.mark.parametrize("selected_countries", [["Nigeria"], ["Nigeria", "Egypt"]])
+    def test_one_leaf_mode_hierarchical_filter_one_target(self, selected_countries, gapminder_2007, scatter_params):
+        # Regression test for a leaf-mode (full_path=False) hierarchical Cascader filter. It must filter on its
+        # leaf column ("country"), not on the full path. `_apply_filter_controls` previously read the Filter's
+        # public `column` (the ["continent", "country"] list) instead of the resolved `_filter_column`, which fed
+        # a DataFrame into `_filter_isin` and produced NaN-masked garbage rather than row selection.
+        country_filter = vm.Filter(
+            id="test_filter",
+            column=["continent", "country"],
+            targets=["scatter_chart"],
+            selector=vm.Cascader(id="country_filter", multi=True),
+        )
+        model_manager["test_page"].controls = [country_filter]
+        country_filter.pre_build()
+
+        mock_ctx = {
+            "args_grouping": {
+                "external": {
+                    "_controls": {
+                        "filter_interaction": [],
+                        "filters": [
+                            CallbackTriggerDict(
+                                id="country_filter",
+                                property="value",
+                                value=selected_countries,
+                                str_id="country_filter",
+                                triggered=False,
+                            )
+                        ],
+                        "parameters": [],
+                    }
+                }
+            }
+        }
+        context_value.set(AttributeDict(**mock_ctx))
+
+        result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function(_controls=None)
+
+        expected_fig = px.scatter(gapminder_2007[gapminder_2007["country"].isin(selected_countries)], **scatter_params)
+        expected_fig.update_layout(modebar_remove=["select2d", "lasso2d"])
+
+        assert result == {"scatter_chart": expected_fig}
 
     @pytest.mark.parametrize(
         "ctx_filter_continent,target_scatter_filtered_continent,target_box_filtered_continent",
@@ -272,5 +318,45 @@ class TestFilter:
             "scatter_chart": target_scatter_filtered_continent_and_pop,
             "box_chart": target_box_filtered_continent_and_pop,
         }
+
+        assert result == expected
+
+    @pytest.mark.parametrize(
+        "ctx_filter_continent_and_pop,target_scatter_filtered_continent_and_pop",
+        [
+            ([["Africa"], [10**6, 10**7]], [["Africa"], [10**6, 10**7]]),
+            ([["Africa", "Europe"], [10**6, 10**7]], [["Africa", "Europe"], [10**6, 10**7]]),
+        ],
+        indirect=True,
+    )
+    def test_one_default_filter_one_filter_with_custom_action_one_target(
+        self,
+        identity_action_function,
+        ctx_filter_continent_and_pop,
+        target_scatter_filtered_continent_and_pop,
+    ):
+        # Creating and adding a Filter objects to the existing Page
+        # Filter with the default action:
+        continent_filter = vm.Filter(
+            column="continent",
+            targets=["scatter_chart"],
+            selector=vm.Dropdown(id="continent_filter"),
+        )
+        # pop_filter has a custom action defined, and it does **not** trigger the filtering process when changed.
+        # However, it is taken into account whenever its target is updated (e.g. when continent value changes).
+        pop_filter = vm.Filter(
+            column="pop",
+            targets=["scatter_chart"],
+            selector=vm.RangeSlider(id="pop_filter", actions=[vm.Action(function=identity_action_function())]),
+        )
+        model_manager["test_page"].controls = [continent_filter, pop_filter]
+
+        # Adds a default _filter Action to the filter selector objects
+        continent_filter.pre_build()
+        pop_filter.pre_build()
+
+        # Run action by picking the above added action function and executing it with ()
+        result = model_manager["continent_filter"].actions[0].function(_controls=None)
+        expected = {"scatter_chart": target_scatter_filtered_continent_and_pop}
 
         assert result == expected
