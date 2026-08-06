@@ -14,7 +14,8 @@ class VizroAIDeprecationWarning(DeprecationWarning):
 
 warnings.warn(
     "vizro-ai is deprecated: 0.4.2 is its final release and no further development or releases are planned. "
-    "Use Vizro-e2e-flow instead (https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow/). See "
+    "Use [Vizro-e2e-flow](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow/) "
+    "or [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) instead. See "
     "https://github.com/mckinsey/vizro/blob/main/vizro-ai/DEPRECATION.md for details.",
     category=VizroAIDeprecationWarning,
     stacklevel=2,

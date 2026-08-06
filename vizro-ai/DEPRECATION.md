@@ -11,7 +11,7 @@
 
 ## What to use instead
 
-Use **[Vizro-e2e-flow](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow/)** to create Vizro charts and dashboards.
+Use **[Vizro-e2e-flow](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow/)** or **[Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/)** to create Vizro charts and dashboards.
 
 
 ## Questions or issues

@@ -1,7 +1,7 @@
 <h1 align="center">Vizro-AI</h1>
 
 > [!WARNING]
-> **Vizro-AI is deprecated.** Version 0.4.2 is the final release; no further development or releases are planned. Use [Vizro-MCP](https://github.com/mckinsey/vizro/tree/main/vizro-mcp) instead for AI-assisted chart and dashboard creation. See [DEPRECATION.md](./DEPRECATION.md) for details.
+> **Vizro-AI is deprecated.** Version 0.4.2 is the final release; no further development or releases are planned. Use [Vizro-e2e-flow](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow/) or [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) instead for AI-assisted chart and dashboard creation. See [DEPRECATION.md](./DEPRECATION.md) for details.
 
 <div align="center" markdown="1">
 

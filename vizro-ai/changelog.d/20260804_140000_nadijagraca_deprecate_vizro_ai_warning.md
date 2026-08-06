@@ -30,7 +30,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Deprecated
 
-- `vizro-ai` is deprecated. Version `0.4.2` is the final release, and `import vizro_ai` now emits a `DeprecationWarning` pointing to [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/). See [DEPRECATION.md](https://github.com/mckinsey/vizro/blob/main/vizro-ai/DEPRECATION.md) for details.
+- `vizro-ai` is deprecated. Version `0.4.2` is the final release, and `import vizro_ai` now emits a `DeprecationWarning` pointing to [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) and [Vizro-e2e-flow](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow/). See [DEPRECATION.md](https://github.com/mckinsey/vizro/blob/main/vizro-ai/DEPRECATION.md) for details.
 
 <!--
 ### Fixed
