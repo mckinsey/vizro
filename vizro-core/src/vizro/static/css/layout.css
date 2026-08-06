@@ -72,7 +72,7 @@
 #header-controls {
   align-items: center;
   display: flex;
-  gap: 2rem;
+  gap: 24px;
   height: 100%;
 }
 

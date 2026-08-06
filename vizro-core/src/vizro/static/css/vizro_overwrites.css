@@ -352,6 +352,10 @@ legend {
   background: var(--bs-highlight-bg) !important;
 }
 
+.accordion-item {
+  border-bottom: none;
+}
+
 /* Line height is fixed by QBDS, but can lead to misalignment in mobile due to zoom out in browser. */
 .btn {
   line-height: inherit;
