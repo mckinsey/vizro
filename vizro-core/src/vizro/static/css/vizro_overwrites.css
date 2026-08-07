@@ -211,6 +211,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --input-field-bg: var(--bs-primary-bg-subtle);
   --bs-card-bg-inverted: #f5f6f6;
   --fill-content-step-markers-track: #333640;
+  --hover-bg-btn: rgba(255, 255, 255, 0.16);
 }
 
 [data-bs-theme="light"] {
@@ -224,6 +225,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --left-side-bg: var(--bs-body-bg);
   --Dash-Fill-Interactive-Weak: var(--bs-light-bg-subtle);
   --bs-card-bg-inverted: #272a35;
+  --hover-bg-btn: #14172114;
 
   /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white. */
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
@@ -350,6 +352,10 @@ legend {
   background: var(--bs-highlight-bg) !important;
 }
 
+.accordion-item {
+  border-bottom: none;
+}
+
 /* Line height is fixed by QBDS, but can lead to misalignment in mobile due to zoom out in browser. */
 .btn {
   line-height: inherit;
@@ -440,4 +446,9 @@ legend {
   --checkbox-icon-color: var(--bs-primary) !important;
 
   width: 50%;
+}
+
+.btn-tertiary:focus:not(:focus-visible, :disabled, .disabled):hover,
+.btn-link:focus:not(:focus-visible, :disabled, .disabled):hover {
+  background: var(--states-layer-overlay-hover);
 }
