@@ -14,8 +14,7 @@
 }
 
 #left-side {
-  background-color: var(--bs-tertiary-bg);
-  border-right: 1px solid var(--bs-border-color);
+  background-color: var(--bs-left-side-bg);
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
@@ -26,7 +25,7 @@
 }
 
 #right-side {
-  background: var(--bs-body-bg);
+  background: var(--bs-right-side-bg);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -44,7 +43,7 @@
 }
 
 #header {
-  background-color: var(--bs-tertiary-bg);
+  background-color: var(--bs-left-side-bg);
   display: flex;
   height: 64px;
   justify-content: space-between;
@@ -206,7 +205,6 @@ a:has(#logo-dark),
 }
 
 #collapse-icon-outer {
-  background: var(--bs-tertiary-bg);
   display: flex;
   flex-shrink: 0;
   justify-content: center;
@@ -216,7 +214,7 @@ a:has(#logo-dark),
 
 /* Side nav: wrapper that holds dbc.Navbar + the collapse icon below it. */
 #nav-bar-wrapper {
-  background: var(--bs-tertiary-bg);
+  background: var(--bs-left-side-bg);
   border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex-direction: column;

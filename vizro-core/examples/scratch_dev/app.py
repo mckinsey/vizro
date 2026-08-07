@@ -236,11 +236,36 @@ page_5 = vm.Page(
     ],
 )
 
+page_6 = vm.Page(
+    title="Simple filled container",
+    components=[
+        vm.Container(
+            title="Filled",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"), id="graph_8"),
+            ],
+            variant="filled",
+        )
+    ],
+)
+
+page_7 = vm.Page(
+    title="Simple outlined container",
+    components=[
+        vm.Container(
+            title="Outlined",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"), id="graph_9"),
+            ],
+            variant="outlined",
+        )
+    ],
+)
+
 
 dashboard = vm.Dashboard(
     title="Vizro",
-    pages=[page_1, page_2, page_3, page_4, page_5],
-    # pages=[page_1],
+    pages=[page_1, page_2, page_6, page_7, page_3, page_4, page_5],
     # navigation=vm.Navigation(nav_selector=vm.NavBar()),
 )
 
