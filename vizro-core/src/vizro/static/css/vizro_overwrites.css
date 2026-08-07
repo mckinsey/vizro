@@ -447,3 +447,8 @@ legend {
 
   width: 50%;
 }
+
+.btn-tertiary:focus:not(:focus-visible, :disabled, .disabled):hover,
+.btn-link:focus:not(:focus-visible, :disabled, .disabled):hover {
+  background: var(--states-layer-overlay-hover);
+}
