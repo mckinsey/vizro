@@ -9,6 +9,7 @@
   display: flex;
   flex-shrink: 0;
   justify-content: center;
+  padding-bottom: 24px;
   width: 100%;
 }
 
