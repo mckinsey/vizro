@@ -2,7 +2,7 @@ import logging
 import os
 import warnings
 
-__version__ = "0.4.2.dev0"
+__version__ = "0.4.2"
 
 # TODO: I think this collides with the VIZRO_LOG_LEVEL setting, as basicConfig can only be set once
 logging.basicConfig(level=os.getenv("VIZRO_AI_LOG_LEVEL", "INFO"))
