@@ -93,7 +93,6 @@ distribution_chart_group = ChartGroup(
     pages=pages.distribution.pages,
     incomplete_pages=[
         IncompletePage("Barcode"),
-        IncompletePage("Beeswarm"),
     ],
     icon="Waterfall Chart",
     intro_text=distribution_intro_text,
