@@ -4,7 +4,8 @@ import vizro.models as vm
 
 from pages._factories import butterfly_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import barcode, boxplot, cumulative_curve, dumbbell, histogram, violin
+from pages.examples import barcode, beeswarm, boxplot, cumulative_curve, dumbbell, histogram, violin
+
 
 barcode_page = vm.Page(
     title="Barcode",
@@ -119,6 +120,40 @@ boxplot_page = vm.Page(
 )
 
 butterfly_page = butterfly_factory("distribution")
+
+beeswarm_page = vm.Page(
+    title="Beeswarm",
+    path="distribution/beeswarm",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+#### What is a beeswarm chart?
+
+A beeswarm chart displays individual observations as points while spreading overlapping points apart so that the distribution of the data remains visible.
+
+&nbsp;
+
+#### When should I use it?
+
+Use a beeswarm chart when you want to show individual data points and compare their distribution across categories. It is especially useful for relatively small datasets where you want to see both the values and how densely they are distributed.
+"""
+        ),
+        vm.Graph(figure=beeswarm.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("beeswarm.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("beeswarm.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
 
 histogram_page = vm.Page(
     title="Histogram",
@@ -235,5 +270,13 @@ cumulative_curve_page = vm.Page(
         ),
     ],
 )
-
-pages = [barcode_page, violin_page, boxplot_page, butterfly_page, cumulative_curve_page, dumbbell_page, histogram_page]
+pages = [
+    barcode_page,
+    violin_page,
+    boxplot_page,
+    beeswarm_page,
+    butterfly_page,
+    cumulative_curve_page,
+    dumbbell_page,
+    histogram_page,
+]
