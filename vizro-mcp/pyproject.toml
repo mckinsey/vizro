@@ -21,7 +21,7 @@ dependencies = [
   "click>=8.1.7",
   "pandas[html,parquet,excel]",
   "mcp<2",
-  "pydantic-settings<2.15"
+  "pydantic-settings<2.15"  # newer versions emit a warning that breaks tests; remove once we upgrade to mcp>=2.0
 ]
 description = "MCP server to help create Vizro dashboards and charts"
 dynamic = ["version"]
