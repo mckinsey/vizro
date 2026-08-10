@@ -295,7 +295,20 @@ page_7 = vm.Page(
 dashboard = vm.Dashboard(
     title="Vizro",
     pages=[page_1, page_2, page_6, page_7, page_3, page_4, page_5],
-    # navigation=vm.Navigation(nav_selector=vm.NavBar()),
+    navigation=vm.Navigation(
+        nav_selector=vm.NavBar(
+            items=[
+                vm.NavLink(
+                    pages=["Regular page", "Plain containers", "Simple filled container", "Simple outlined container"],
+                    label="First icon",
+                ),
+                vm.NavLink(
+                    pages=["Filled containers", "Containers nested mixed", "Containers nested filled"],
+                    label="Second icon",
+                ),
+            ]
+        )
+    ),
 )
 
 if __name__ == "__main__":
