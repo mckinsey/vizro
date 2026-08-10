@@ -112,9 +112,8 @@
 }
 
 #nav-panel {
-  flex: 1;
+  flex: 0 0 auto;
   margin-top: -4px;
-  overflow: auto;
   padding: 20px 20px 0;
   width: 100%;
 }
@@ -123,12 +122,16 @@
   align-self: stretch;
   border-top: 1px solid var(--bs-border-color);
   display: flex;
+  flex: 1 1 0%;
   flex-direction: column;
-  flex-shrink: 0;
   gap: 1.5rem;
-  margin-top: auto;
-  overflow: auto;
+  min-height: 0;
+  overflow: hidden auto;
   padding: 24px 20px 4px;
+}
+
+#control-panel > * {
+  flex-shrink: 0;
 }
 
 #left-side.no-nav #control-panel {

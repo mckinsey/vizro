@@ -16,6 +16,35 @@ page_1 = vm.Page(
     ],
     controls=[
         vm.Filter(column="species", visible=True),
+        vm.Filter(column="sepal_length"),
+        vm.ControlGroup(
+            title="Control group 1",
+            controls=[
+                vm.Filter(column="sepal_length"),
+            ],
+            description="control group info",
+        ),
+        vm.ControlGroup(
+            title="Control group 2",
+            controls=[
+                vm.Filter(column="petal_width"),
+            ],
+            description="control group info",
+        ),
+        vm.ControlGroup(
+            title="Control group 3",
+            controls=[
+                vm.Filter(column="sepal_length"),
+            ],
+            description="control group info",
+        ),
+        vm.ControlGroup(
+            title="Control group 4",
+            controls=[
+                vm.Filter(column="petal_width"),
+            ],
+            description="control group info",
+        ),
     ],
 )
 

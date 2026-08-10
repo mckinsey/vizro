@@ -100,6 +100,7 @@ the lighter shade, both in dark and light theme. */
   border-bottom: 1px solid var(--bs-border-color);
   gap: 12px;
   height: fit-content;
+  min-width: 240px;
 }
 
 .control-group-panel:last-child {
