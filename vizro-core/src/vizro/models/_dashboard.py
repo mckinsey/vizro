@@ -423,12 +423,14 @@ class Dashboard(VizroBaseModel):
         right_side = html.Div(id="right-side", children=[page_header, page_components])
         reset_button = inner_page["reset-button-container"]
 
+        left_side_inner = html.Div(id="left-side-inner", children=[nav_panel, control_panel])
+
         collapse_left_side = dbc.Collapse(
             id="collapse-left-side",
             children=html.Div(
                 id="left-side",
                 className="no-nav" if _all_hidden([nav_panel]) else "",
-                children=[nav_panel, control_panel, reset_button],
+                children=[left_side_inner, reset_button],
                 hidden=_all_hidden([nav_panel, control_panel]),
             ),
             is_open=True,

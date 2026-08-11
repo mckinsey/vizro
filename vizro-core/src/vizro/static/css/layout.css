@@ -111,6 +111,16 @@
   width: 100%;
 }
 
+#left-side-inner {
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: space-between;
+  min-height: 0;
+  overflow: hidden auto;
+}
+
 #nav-panel {
   flex: 0 0 auto;
   margin-top: -4px;
@@ -122,11 +132,9 @@
   align-self: stretch;
   border-top: 1px solid var(--bs-border-color);
   display: flex;
-  flex: 1 1 0%;
+  flex: 0 0 auto;
   flex-direction: column;
   gap: 1.5rem;
-  min-height: 0;
-  overflow: hidden auto;
   padding: 24px 20px 4px;
 }
 
