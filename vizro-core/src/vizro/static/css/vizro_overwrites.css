@@ -215,9 +215,10 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-right-side-bg: #141721;
   --bs-left-side-bg: #181b26;
   --bs-container-bg: #181b26;
+  --bs-container-nested-bg: #1f222e;
   --bs-nav-link-highlight: #1f222e;
   --bs-dropdown-bg-color: #10121b;
-  --bs-border-color: #141721;
+  --bs-outer-border-color: #141721;
   --border-stroke-tertiary: rgba(255, 255, 255, 0.16);
 }
 
@@ -235,9 +236,10 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-right-side-bg: #ebedee;
   --bs-left-side-bg: #ffffff;
   --bs-container-bg: #ffffff;
+  --bs-container-nested-bg: #f2f3f4;
   --bs-nav-link-highlight: #fafafb;
   --bs-dropdown-bg-color: #ffffff;
-  --bs-border-color: #ebedee;
+  --bs-outer-border-color: #ebedee;
   --border-stroke-tertiary: rgba(20, 23, 33, 0.16);
 
   /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white. */
@@ -464,10 +466,6 @@ legend {
 .btn-tertiary:focus:not(:focus-visible, :disabled, .disabled):hover,
 .btn-link:focus:not(:focus-visible, :disabled, .disabled):hover {
   background: var(--states-layer-overlay-hover);
-}
-
-.accordion-item {
-  border-bottom: none;
 }
 
 .border {
