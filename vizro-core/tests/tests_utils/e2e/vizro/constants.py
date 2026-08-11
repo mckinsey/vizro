@@ -130,6 +130,27 @@ TIMEPICKER_PARAMETER_PAGE_PATH = "/timepicker-parameter"
 TIMEPICKER_PARAMETER_SCATTER_ID = "scatter_chart"
 TIMEPICKER_PARAMETER_ID = "timepicker_parameter"
 
+DATETIMEPICKER_RANGE_PAGE = "datetimepicker range"
+DATETIMEPICKER_RANGE_PAGE_PATH = "/datetimepicker-range"
+DATETIMEPICKER_RANGE_AG_GRID_ID = "datetimepicker range ag grid"
+DATETIMEPICKER_DATETIME_UTC_RANGE_ID = "datetimepicker datetime utc range"
+DATETIMEPICKER_DATETIME_UTC_RANGE_URL_ID = "datetimepicker datetime utc range url"
+DATETIMEPICKER_DATETIME_UTC_RANGE_FILTER_CONTROL_ID = "datetimepicker_datetime_utc_range_filter_control_id"
+
+DATETIMEPICKER_RANGE_URL_PAGE = "datetimepicker range url"
+DATETIMEPICKER_RANGE_URL_PAGE_PATH = "/datetimepicker-range-url"
+DATETIMEPICKER_RANGE_URL_AG_GRID_ID = "datetimepicker range url ag grid"
+
+DATETIMEPICKER_SINGLE_PAGE = "datetimepicker single"
+DATETIMEPICKER_SINGLE_PAGE_PATH = "/datetimepicker-single"
+DATETIMEPICKER_SINGLE_AG_GRID_ID = "datetimepicker single ag grid"
+DATETIMEPICKER_DATETIME_UTC_SINGLE_ID = "datetimepicker datetime utc single"
+
+DATETIMEPICKER_PARAMETER_PAGE = "datetimepicker parameter"
+DATETIMEPICKER_PARAMETER_PAGE_PATH = "/datetimepicker-parameter"
+DATETIMEPICKER_PARAMETER_SCATTER_ID = "scatter_chart_datetimepicker"
+DATETIMEPICKER_PARAMETER_ID = "datetimepicker_parameter"
+
 TABLE_AG_GRID_PAGE = "table-ag-grid-page"
 TABLE_AG_GRID_ID = "123_ag_grid_table"
 BOX_AG_GRID_PAGE_ID = "B@x on ag grid page"
