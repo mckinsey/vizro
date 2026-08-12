@@ -15,6 +15,7 @@
 
 #left-side {
   background-color: var(--bs-left-side-bg);
+  border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
@@ -25,7 +26,7 @@
 }
 
 #right-side {
-  background: var(--bs-right-side-bg);
+  background: var(--bs-body-bg);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -52,7 +53,7 @@
 }
 
 #header:not(:empty) {
-  border-bottom: 1px solid var(--bs-outer-border-color);
+  border-bottom: 1px solid var(--bs-border-color);
 }
 
 #header.no-left {
@@ -226,7 +227,7 @@ a:has(#logo-dark),
 /* Side nav: wrapper that holds dbc.Navbar + the collapse icon below it. */
 #nav-bar-wrapper {
   background: var(--bs-left-side-bg);
-  border-right: 1px solid var(--bs-outer-border-color);
+  border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex-direction: column;
 }
