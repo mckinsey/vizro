@@ -376,6 +376,11 @@ class Filter(VizroBaseModel):
     )
 
     _dynamic: bool = PrivateAttr(False)
+    _filter_function: Callable[[pd.Series, Any], pd.Series] = PrivateAttr()
+    # The column(s) the filter function operates on: the leaf column for flat/leaf-mode filters, or the full
+    # ordered path for path-mode hierarchical filters. Kept separate from the public `column` field (which
+    # retains the user-provided config) so runtime code and validators still see the original value.
+    _filter_column: str | list[str] = PrivateAttr()
     _selector_properties: set[str] = PrivateAttr(set())
     _column_type: Literal["hierarchical", "numerical", "categorical", "date", "datetime", "time", "boolean"] = (
         PrivateAttr()
@@ -558,31 +563,33 @@ class Filter(VizroBaseModel):
         # Set default value for the selector if not explicitly provided.
         self.selector.value = get_selector_default_value(self.selector)
 
-        if not self.selector.actions:
-            filter_function: Callable[[pd.Series | pd.DataFrame, Any], pd.Series]
-            column: str | list[str]
-            if isinstance(self.selector, RangeSlider) or (
-                isinstance(self.selector, (DatePicker, TimePicker, DateTimePicker)) and self.selector.range
-            ):
-                filter_function = _filter_between
-                column = self._single_filter_column
-            elif _is_hierarchical_selector(self.selector) and self.selector.full_path:
-                # Path-mode hierarchical filters (full_path=True) match the full root-to-leaf path, so the action
-                # needs every path column (in order) and the path-aware filter function. `multi` is bound in so the
-                # function can disambiguate a flat scalar list (one path vs. separate entries).
-                filter_function = functools.partial(_filter_hierarchical_isin, multi=self.selector.multi)
-                column = self.column
-            else:
-                # Leaf-mode hierarchical filters (full_path=False) behave like a flat categorical filter on the
-                # last (leaf) column, matching by bare leaf value with `_filter_isin`.
-                filter_function = _filter_isin
-                column = self._single_filter_column
+        # Set self._filter_function and self._filter_column. These are stored on the model (rather than kept as
+        # locals) so the filtering logic can always be reapplied when the targets are refreshed, independently of
+        # the selector's actions. Note self.column is deliberately left untouched: it holds the user-provided config
+        # and is relied on elsewhere (e.g. _validate_column_type, _get_options) to detect hierarchical filters.
+        if isinstance(self.selector, RangeSlider) or (
+            isinstance(self.selector, (DatePicker, TimePicker, DateTimePicker)) and self.selector.range
+        ):
+            self._filter_function = _filter_between
+            self._filter_column = self._single_filter_column
+        elif _is_hierarchical_selector(self.selector) and self.selector.full_path:
+            # Path-mode hierarchical filters (full_path=True) match the full root-to-leaf path, so the action
+            # needs every path column (in order) and the path-aware filter function. `multi` is bound in so the
+            # function can disambiguate a flat scalar list (one path vs. separate entries).
+            self._filter_function = functools.partial(_filter_hierarchical_isin, multi=self.selector.multi)
+            self._filter_column = self.column
+        else:
+            # Leaf-mode hierarchical filters (full_path=False) behave like a flat categorical filter on the
+            # last (leaf) column, matching by bare leaf value with `_filter_isin`.
+            self._filter_function = _filter_isin
+            self._filter_column = self._single_filter_column
 
+        if not self.selector.actions:
             self.selector.actions = [
                 _filter(
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                    column=column,
-                    filter_function=filter_function,
+                    column=self._filter_column,
+                    filter_function=self._filter_function,
                     targets=self.targets,
                 ),
             ]
