@@ -15,7 +15,7 @@ page_1 = vm.Page(
         vm.Graph(id="graph_1", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
     ],
     controls=[
-        vm.Filter(column="species", visible=True),
+        vm.Filter(column="species", visible=False),
         vm.Filter(column="sepal_length"),
         vm.ControlGroup(
             title="Control group 1",
@@ -289,6 +289,7 @@ page_7 = vm.Page(
             variant="outlined",
         )
     ],
+    controls=[vm.Filter(column="species", visible=False)],
 )
 
 

@@ -357,6 +357,8 @@ class Dashboard(VizroBaseModel):
                     ],
                     color="link",
                 )
+                if has_page_controls and not control_panel_hidden
+                else None
             ],
             hidden=not has_page_controls or control_panel_hidden,
         )
