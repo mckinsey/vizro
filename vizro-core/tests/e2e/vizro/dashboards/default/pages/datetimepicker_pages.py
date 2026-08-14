@@ -23,7 +23,7 @@ _datetime_utc = pd.Series(
 
 dff = pd.DataFrame(
     {
-        # "datetime" type — filterable by DatePicker (date) or DateTimePicker (date + time)
+        # "datetime" type - filterable by DatePicker (date) (default), DateTimePicker (date + time) or TimePicker (time)
         "datetime_utc": _datetime_utc,
     }
 )
@@ -38,7 +38,6 @@ datetimepicker_range = vm.Page(
             selector=vm.DateTimePicker(
                 id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_ID,
                 title="datetime_utc datetime",
-                value=["", ""],
             ),
         ),
     ],
@@ -56,7 +55,6 @@ datetimepicker_range_url = vm.Page(
             selector=vm.DateTimePicker(
                 id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_URL_ID,
                 title="datetime_utc datetime url",
-                value=["", ""],
             ),
         ),
     ],

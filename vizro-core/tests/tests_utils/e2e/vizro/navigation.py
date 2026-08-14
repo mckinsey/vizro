@@ -210,10 +210,10 @@ def select_single_datetime_picker_value(driver, elem_id, iso_date, hour, minute)
 
 
 def select_range_datetime_picker_value(driver, elem_id, start, end):
-    """Set a range DateTimePicker value (date + HH:MM for both ends).
+    """Set a range DateTimePicker value (date + optional HH:MM for both ends).
 
-    Fills both "From" and "To" date/time inputs before blurring once so the dcc.Store receives a complete
-    [start, end] tuple.
+    Dates are always required. Pass ``None`` for hour/minute on either side to leave that time cleared;
+    the filter then treats the date-only value as start-of-day (From) or end-of-day (To).
 
     Args:
         driver: dash_br fixture.
@@ -225,8 +225,10 @@ def select_range_datetime_picker_value(driver, elem_id, start, end):
     end_iso_date, end_hour, end_minute = end
     _select_date_picker_input_date(driver, f"{elem_id}-date-start", start_iso_date)
     _select_date_picker_input_date(driver, f"{elem_id}-date-end", end_iso_date)
-    _set_time_picker_fields(driver, f"{elem_id}-time-start", start_hour, start_minute)
-    _set_time_picker_fields(driver, f"{elem_id}-time-end", end_hour, end_minute)
+    if start_hour is not None and start_minute is not None:
+        _set_time_picker_fields(driver, f"{elem_id}-time-start", start_hour, start_minute)
+    if end_hour is not None and end_minute is not None:
+        _set_time_picker_fields(driver, f"{elem_id}-time-end", end_hour, end_minute)
     time.sleep(0.5)  # allow debounced TimePicker values to flush into the proxy dcc.Store
     driver.find_element("body").click()
     callbacks_finish_waiter(driver)
@@ -296,13 +298,15 @@ def _select_date_picker_input_date_playwright(page, date_elem_id, iso_date):
 
 
 def select_range_datetime_picker_value_playwright(page, elem_id, start, end):
-    """Set a range DateTimePicker value (date + HH:MM for both ends) using Playwright."""
+    """Set a range DateTimePicker value (date + optional HH:MM for both ends) using Playwright."""
     start_iso_date, start_hour, start_minute = start
     end_iso_date, end_hour, end_minute = end
     _select_date_picker_input_date_playwright(page, f"{elem_id}-date-start", start_iso_date)
     _select_date_picker_input_date_playwright(page, f"{elem_id}-date-end", end_iso_date)
-    _set_time_picker_fields_playwright(page, f"{elem_id}-time-start", start_hour, start_minute)
-    _set_time_picker_fields_playwright(page, f"{elem_id}-time-end", end_hour, end_minute)
+    if start_hour is not None and start_minute is not None:
+        _set_time_picker_fields_playwright(page, f"{elem_id}-time-start", start_hour, start_minute)
+    if end_hour is not None and end_minute is not None:
+        _set_time_picker_fields_playwright(page, f"{elem_id}-time-end", end_hour, end_minute)
     page.wait_for_timeout(500)
     page.locator("body").click()
 

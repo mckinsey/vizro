@@ -134,6 +134,20 @@ def check_single_time_picker_value(driver, elem_id, expected_hour, expected_minu
     )
 
 
+def check_empty_time_picker_value(driver, elem_id):
+    """Checks that a dmc.TimePicker has no hour or minute entered."""
+    timeout = cnst.SELENIUM_WAITERS_TIMEOUT
+    poll_interval = 0.2
+    elapsed = 0
+    while elapsed < timeout:
+        fields = driver.find_elements(f"div[id='{elem_id}'] input.mantine-TimePicker-field")
+        if len(fields) >= 2 and fields[0].get_attribute("value") == "" and fields[1].get_attribute("value") == "":
+            return
+        time.sleep(poll_interval)
+        elapsed += poll_interval
+    raise TimeoutError(f"TimePicker '{elem_id}' was not empty within {timeout}s")
+
+
 def check_range_time_picker_value(driver, elem_id, start_hour, start_minute, end_hour, end_minute):
     """Checks that a range TimePicker displays the expected start and end times.
 
@@ -169,15 +183,21 @@ def check_range_datetime_picker_value(driver, elem_id, start, end):
     Args:
         driver: dash_br fixture.
         elem_id: id of the range DateTimePicker proxy dcc.Store.
-        start: tuple of (formatted date, hour, minute) for the "From" inputs.
-        end: tuple of (formatted date, hour, minute) for the "To" inputs.
+        start: tuple of (formatted date, hour, minute) for the "From" inputs; hour/minute may be None.
+        end: tuple of (formatted date, hour, minute) for the "To" inputs; hour/minute may be None.
     """
     start_date_value, start_hour, start_minute = start
     end_date_value, end_hour, end_minute = end
     check_date_picker_value(driver, f"{elem_id}-date-start", start_date_value)
-    check_single_time_picker_value(driver, f"{elem_id}-time-start", start_hour, start_minute)
     check_date_picker_value(driver, f"{elem_id}-date-end", end_date_value)
-    check_single_time_picker_value(driver, f"{elem_id}-time-end", end_hour, end_minute)
+    if start_hour is None or start_minute is None:
+        check_empty_time_picker_value(driver, f"{elem_id}-time-start")
+    else:
+        check_single_time_picker_value(driver, f"{elem_id}-time-start", start_hour, start_minute)
+    if end_hour is None or end_minute is None:
+        check_empty_time_picker_value(driver, f"{elem_id}-time-end")
+    else:
+        check_single_time_picker_value(driver, f"{elem_id}-time-end", end_hour, end_minute)
 
 
 def check_accordion_active(driver, accordion_name):

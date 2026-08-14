@@ -1,4 +1,5 @@
 import e2e.vizro.constants as cnst
+import pytest
 from e2e.vizro.checkers import (
     check_range_datetime_picker_value,
     check_single_datetime_picker_value,
@@ -24,20 +25,22 @@ def test_datetimepicker_range_datetime_utc(dash_br):
         graph_check=False,
     )
 
-    # set datetime range 2026-06-10T04:34-05:00 on datetime_utc (2 matching rows in seeded dff;
-    # end must extend past 04:51 because filter compares full timestamps, not floored minutes)
+    # set datetime range 2026-06-10T04:34-2026-06-11T20:18 on datetime_utc (2 matching rows in seeded dff;
+    # end must extend past 2026-06-10T04:51 because filter compares full timestamps, not floored minutes)
+    # also checking that value 2026-06-11T20:18:29.730804 is not included
+    # because it is after the end of the range (2026-06-11T20:18:00)
     select_range_datetime_picker_value(
         dash_br,
         elem_id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_ID,
         start=("2026-06-10", "04", "34"),
-        end=("2026-06-10", "05", "00"),
+        end=("2026-06-11", "20", "18"),
     )
 
     check_range_datetime_picker_value(
         dash_br,
         elem_id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_ID,
         start=("Jun 10, 2026", "04", "34"),
-        end=("Jun 10, 2026", "05", "00"),
+        end=("Jun 11, 2026", "20", "18"),
     )
     check_table_ag_grid_rows_number(dash_br, table_id=cnst.DATETIMEPICKER_RANGE_AG_GRID_ID, expected_rows_num=2)
     check_table_ag_grid_datetime_values_in_range(
@@ -45,7 +48,7 @@ def test_datetimepicker_range_datetime_utc(dash_br):
         table_id=cnst.DATETIMEPICKER_RANGE_AG_GRID_ID,
         col_id="datetime_utc",
         start_datetime="2026-06-10T04:34",
-        end_datetime="2026-06-10T05:00",
+        end_datetime="2026-06-11T20:18",
     )
 
 
@@ -59,20 +62,22 @@ def test_datetimepicker_range_datetime_utc_three_rows(dash_br):
         graph_check=False,
     )
 
-    # set datetime range 2026-10-14T02:56-22:00 on datetime_utc (3 matching rows in seeded dff;
-    # end must extend past 21:55 because filter compares full timestamps, not floored minutes)
+    # set datetime range 2026-10-14T02:56-2026-10-15T05:27 on datetime_utc (3 matching rows in seeded dff;
+    # end must extend past 2026-10-14T21:55 because filter compares full timestamps, not floored minutes)
+    # also checking that value 2026-10-15T05:27:26.381983 is not included
+    # because it is after the end of the range (2026-10-15T05:27:00)
     select_range_datetime_picker_value(
         dash_br,
         elem_id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_ID,
         start=("2026-10-14", "02", "56"),
-        end=("2026-10-14", "22", "00"),
+        end=("2026-10-15", "05", "27"),
     )
 
     check_range_datetime_picker_value(
         dash_br,
         elem_id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_ID,
         start=("Oct 14, 2026", "02", "56"),
-        end=("Oct 14, 2026", "22", "00"),
+        end=("Oct 15, 2026", "05", "27"),
     )
     check_table_ag_grid_rows_number(dash_br, table_id=cnst.DATETIMEPICKER_RANGE_AG_GRID_ID, expected_rows_num=3)
     check_table_ag_grid_datetime_values_in_range(
@@ -80,7 +85,79 @@ def test_datetimepicker_range_datetime_utc_three_rows(dash_br):
         table_id=cnst.DATETIMEPICKER_RANGE_AG_GRID_ID,
         col_id="datetime_utc",
         start_datetime="2026-10-14T02:56",
-        end_datetime="2026-10-14T22:00",
+        end_datetime="2026-10-15T05:27",
+    )
+
+
+@pytest.mark.parametrize(
+    ("start", "end", "expected_start", "expected_end", "expected_rows", "start_datetime", "end_datetime"),
+    [
+        pytest.param(
+            ("2026-06-10", None, None),
+            ("2026-06-11", "20", "18"),
+            ("Jun 10, 2026", None, None),
+            ("Jun 11, 2026", "20", "18"),
+            2,
+            "2026-06-10T00:00",
+            "2026-06-11T20:18",
+            id="without_start_time",
+        ),
+        pytest.param(
+            ("2026-06-10", "04", "34"),
+            ("2026-06-11", None, None),
+            ("Jun 10, 2026", "04", "34"),
+            ("Jun 11, 2026", None, None),
+            3,
+            "2026-06-10T04:34",
+            "2026-06-11T23:59",
+            id="without_end_time",
+        ),
+        pytest.param(
+            ("2026-06-10", None, None),
+            ("2026-06-11", None, None),
+            ("Jun 10, 2026", None, None),
+            ("Jun 11, 2026", None, None),
+            3,
+            "2026-06-10T00:00",
+            "2026-06-11T23:59",
+            id="without_start_and_end_time",
+        ),
+    ],
+)
+def test_datetimepicker_range_date_only_time_filters_datetime_utc(  # noqa: PLR0917, PLR0913
+    dash_br, start, end, expected_start, expected_end, expected_rows, start_datetime, end_datetime
+):
+    """Tests that cleared times widen the range to start/end of day while dates stay set."""
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.DATETIMEPICKER_RANGE_PAGE,
+        page_path=cnst.DATETIMEPICKER_RANGE_PAGE_PATH,
+        graph_check=False,
+    )
+
+    select_range_datetime_picker_value(
+        dash_br,
+        elem_id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_ID,
+        start=start,
+        end=end,
+    )
+
+    check_range_datetime_picker_value(
+        dash_br,
+        elem_id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_ID,
+        start=expected_start,
+        end=expected_end,
+    )
+    check_table_ag_grid_rows_number(
+        dash_br, table_id=cnst.DATETIMEPICKER_RANGE_AG_GRID_ID, expected_rows_num=expected_rows
+    )
+    check_table_ag_grid_datetime_values_in_range(
+        dash_br,
+        table_id=cnst.DATETIMEPICKER_RANGE_AG_GRID_ID,
+        col_id="datetime_utc",
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
     )
 
 
