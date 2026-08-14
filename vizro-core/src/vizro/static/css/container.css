@@ -58,7 +58,11 @@
 }
 
 .bg-container {
-  background: var(--bs-body-bg);
+  background: var(--bs-container-bg);
+}
+
+.bg-container .bg-container {
+  background: var(--bs-container-nested-bg);
 }
 
 /* If a filled container is detected, then the right-bg color will change to
@@ -89,6 +93,7 @@ the lighter shade, both in dark and light theme. */
 .container-controls-panel {
   border-bottom: 1px solid var(--bs-border-color);
   gap: 24px;
+  padding: 4px 4px 16px;
 }
 
 .tab-content .container-controls-panel {
@@ -100,6 +105,11 @@ the lighter shade, both in dark and light theme. */
   border-bottom: 1px solid var(--bs-border-color);
   gap: 12px;
   height: fit-content;
+  min-width: 240px;
+}
+
+.control-group-panel:last-child {
+  border-bottom: none;
 }
 
 .control-group {
