@@ -93,6 +93,7 @@ the lighter shade, both in dark and light theme. */
 .container-controls-panel {
   border-bottom: 1px solid var(--bs-border-color);
   gap: 24px;
+  padding: 4px 4px 16px;
 }
 
 .tab-content .container-controls-panel {
