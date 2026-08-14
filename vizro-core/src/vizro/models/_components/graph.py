@@ -306,7 +306,7 @@ underlying component may change in the future.""",
             output=[Output(self.id, "figure"), Output(self.id, "style")],
             inputs=[
                 Input(self.id, "figure"),
-                Input("theme-selector", "value"),
+                Input("theme-selector", "data"),
                 State("vizro_themes", "data"),
             ],
             prevent_initial_call=True,

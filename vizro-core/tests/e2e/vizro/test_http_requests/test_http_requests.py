@@ -334,7 +334,7 @@ def test_reset_controls_page(page, http_requests_paths):
     check_http_requests_count(page, http_requests_paths, 2)
 
     # click on the reset_controls button (1 http)
-    page.locator("button[id$='reset-button']").click()
+    page.locator("button[id='reset-button'][class='btn-circular btn btn-link']").click()
     check_http_requests_count(page, http_requests_paths, 3, sleep=3000)
 
     # checking that no additional http has occurred

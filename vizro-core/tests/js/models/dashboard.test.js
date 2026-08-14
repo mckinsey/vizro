@@ -277,15 +277,7 @@ describe("dashboard.js functions", () => {
         1,
         true,
       );
-      const expected = [
-        false,
-        {
-          transform: "rotate(180deg)",
-          transition: "transform 0.35s ease-in-out",
-          marginLeft: "8px",
-        },
-        "Show Menu",
-      ];
+      const expected = [false, "Show Menu", "right_panel_close"];
       expect(result).toEqual(expected);
     });
 
@@ -294,14 +286,7 @@ describe("dashboard.js functions", () => {
         1,
         false,
       );
-      const expected = [
-        true,
-        {
-          transform: "rotate(0deg)",
-          transition: "transform 0.35s ease-in-out",
-        },
-        "Hide Menu",
-      ];
+      const expected = [true, "Hide Menu", "left_panel_close"];
       expect(result).toEqual(expected);
     });
 
@@ -313,15 +298,7 @@ describe("dashboard.js functions", () => {
         0,
         true,
       );
-      const expected = [
-        false,
-        {
-          transform: "rotate(180deg)",
-          transition: "transform 0.35s ease-in-out",
-          marginLeft: "8px",
-        },
-        "Show Menu",
-      ];
+      const expected = [false, "Show Menu", "right_panel_close"];
       expect(result).toEqual(expected);
     });
 
@@ -333,15 +310,7 @@ describe("dashboard.js functions", () => {
         0,
         false,
       );
-      const expected = [
-        false,
-        {
-          transform: "rotate(180deg)",
-          transition: "transform 0.35s ease-in-out",
-          marginLeft: "8px",
-        },
-        "Show Menu",
-      ];
+      const expected = [false, "Show Menu", "right_panel_close"];
       expect(result).toEqual(expected);
     });
 
@@ -401,14 +370,7 @@ describe("dashboard.js functions", () => {
         null,
       );
 
-      const expected = [
-        true,
-        {
-          transform: "rotate(0deg)",
-          transition: "transform 0.35s ease-in-out",
-        },
-        "Hide Menu",
-      ];
+      const expected = [true, "Hide Menu", "left_panel_close"];
 
       expect(result1).toEqual(expected);
       expect(result2).toEqual(expected);
@@ -426,15 +388,7 @@ describe("dashboard.js functions", () => {
         {},
       );
 
-      const expected = [
-        false,
-        {
-          transform: "rotate(180deg)",
-          transition: "transform 0.35s ease-in-out",
-          marginLeft: "8px",
-        },
-        "Show Menu",
-      ];
+      const expected = [false, "Show Menu", "right_panel_close"];
 
       expect(result1).toEqual(expected);
       expect(result2).toEqual(expected);
@@ -446,15 +400,7 @@ describe("dashboard.js functions", () => {
         5,
         true,
       );
-      const expected = [
-        false,
-        {
-          transform: "rotate(180deg)",
-          transition: "transform 0.35s ease-in-out",
-          marginLeft: "8px",
-        },
-        "Show Menu",
-      ];
+      const expected = [false, "Show Menu", "right_panel_close"];
       expect(result).toEqual(expected);
     });
 
@@ -463,14 +409,7 @@ describe("dashboard.js functions", () => {
         -1,
         false,
       );
-      const expected = [
-        true,
-        {
-          transform: "rotate(0deg)",
-          transition: "transform 0.35s ease-in-out",
-        },
-        "Hide Menu",
-      ];
+      const expected = [true, "Hide Menu", "left_panel_close"];
       expect(result).toEqual(expected);
     });
 
@@ -482,15 +421,7 @@ describe("dashboard.js functions", () => {
         0,
         true,
       );
-      const expected = [
-        false,
-        {
-          transform: "rotate(180deg)",
-          transition: "transform 0.35s ease-in-out",
-          marginLeft: "8px",
-        },
-        "Show Menu",
-      ];
+      const expected = [false, "Show Menu", "right_panel_close"];
       expect(result).toEqual(expected);
     });
 
@@ -502,15 +433,7 @@ describe("dashboard.js functions", () => {
         0,
         false,
       );
-      const expected = [
-        false,
-        {
-          transform: "rotate(180deg)",
-          transition: "transform 0.35s ease-in-out",
-          marginLeft: "8px",
-        },
-        "Show Menu",
-      ];
+      const expected = [false, "Show Menu", "right_panel_close"];
       expect(result).toEqual(expected);
     });
   });

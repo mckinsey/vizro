@@ -345,6 +345,9 @@ def select_dropdown_value(driver, dropdown_id, value):
     if driver.find_elements(f"{dropdown_id_path(dropdown_id)}[aria-expanded='true']"):
         driver.multiple_click(dropdown_id_path(dropdown_id), 1)
     driver.select_dcc_dropdown(dropdown_id_path(dropdown_id), value)
+    # if dropdown is open, close it to avoid errors with selecting other controls
+    if driver.find_elements(f"{dropdown_id_path(dropdown_id)}[aria-expanded='true']"):
+        driver.multiple_click(dropdown_id_path(dropdown_id), 1)
 
 
 def select_dropdown_select_all(driver, dropdown_id):

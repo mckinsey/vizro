@@ -5,23 +5,25 @@
   width: 100vw;
 }
 
-#nav-control-panel {
-  align-items: flex-start;
+#reset-button-container {
+  display: flex;
+  flex-shrink: 0;
+  height: 24px;
+  justify-content: center;
+  width: 100%;
+}
+
+#left-side {
+  background-color: var(--bs-left-side-bg);
   border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
-  gap: 1.5rem;
-  overflow: auto;
-  padding: 20px 20px 0;
-  width: 280px;
-}
-
-#left-side {
-  background-color: var(--bs-tertiary-bg);
-  display: flex;
-  flex-direction: row;
+  gap: 24px;
   height: 100%;
+  overflow: hidden;
+  padding-bottom: 24px;
+  width: 280px;
 }
 
 #right-side {
@@ -43,9 +45,9 @@
 }
 
 #header {
-  background-color: var(--bs-tertiary-bg);
+  background-color: var(--bs-left-side-bg);
   display: flex;
-  height: 60px;
+  height: 64px;
   justify-content: space-between;
   min-height: 0;
   padding: 0 20px;
@@ -64,7 +66,7 @@
 #header-custom {
   align-items: center;
   display: flex;
-  gap: 8px;
+  gap: 24px;
   height: 100%;
   width: max-content;
 }
@@ -72,7 +74,7 @@
 #header-controls {
   align-items: center;
   display: flex;
-  gap: 0.5rem;
+  gap: 24px;
   height: 100%;
 }
 
@@ -110,22 +112,40 @@
   width: 100%;
 }
 
+#left-side-inner {
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: space-between;
+  min-height: 0;
+  overflow: hidden auto;
+}
+
 #nav-panel {
+  flex: 0 0 auto;
   margin-top: -4px;
+  padding: 20px 20px 0;
   width: 100%;
 }
 
 #control-panel {
   align-self: stretch;
+  border-top: 1px solid var(--bs-border-color);
   display: flex;
+  flex: 0 0 auto;
   flex-direction: column;
   gap: 1.5rem;
-  padding-bottom: 1.5rem;
-  padding-top: 0.5rem;
+  padding: 24px 20px 4px;
 }
 
-#control-panel:not(:empty) {
-  border-bottom: 1px solid var(--bs-border-color);
+#control-panel > * {
+  flex-shrink: 0;
+}
+
+#left-side.no-nav #control-panel {
+  border-top: none;
+  margin-top: 0;
 }
 
 .dashboard_title {
@@ -135,12 +155,10 @@
 }
 
 #nav-bar {
-  border-right: 1px solid var(--bs-border-color);
   display: flex;
   justify-content: flex-start;
-  max-width: 60px;
-  min-width: 60px;
-  padding-top: 4px;
+  max-width: 64px;
+  min-width: 64px;
 }
 
 #dashboard-container div[hidden] {
@@ -165,7 +183,8 @@ a:has(#logo-dark),
 #logo,
 #logo-light,
 #logo-dark {
-  height: 100%;
+  height: 24px;
+  width: 24px;
 }
 
 a:has(#logo-light),
@@ -188,12 +207,9 @@ a:has(#logo-dark),
 }
 
 #collapse-icon.material-symbols-outlined {
-  background-color: var(--bs-tertiary-bg);
-  border: 1px solid var(--bs-border-color);
-  border-radius: 50%;
-  color: var(--bs-tertiary-color);
+  color: var(--bs-body-color);
   cursor: pointer;
-  font-size: 26px;
+  font-size: 24px;
   position: absolute;
 }
 
@@ -203,9 +219,38 @@ a:has(#logo-dark),
 
 #collapse-icon-outer {
   display: flex;
+  flex-shrink: 0;
   justify-content: center;
-  padding-top: 22px;
-  width: 0;
+  margin-top: auto;
+  padding-bottom: 28px;
+}
+
+/* Side nav: wrapper that holds dbc.Navbar + the collapse icon below it. */
+#nav-bar-wrapper {
+  background: var(--bs-left-side-bg);
+  border-right: 1px solid var(--bs-border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Remove the redundant border from the navbar itself when it sits inside the wrapper. */
+#nav-bar-wrapper #nav-bar {
+  border-right: none;
+}
+
+#nav-bar-wrapper #collapse-icon.material-symbols-outlined {
+  position: static;
+}
+
+/* Collapse icon inside header-controls (no side nav-bar): flows next to the theme switch. */
+#header-controls #collapse-icon-outer {
+  margin-top: 0;
+  padding-bottom: 0;
+}
+
+#header-controls #collapse-icon.material-symbols-outlined {
+  font-size: 24px;
+  position: static;
 }
 
 /*
@@ -240,11 +285,7 @@ Current logic:
 
 /* Apply zoom-out on small screen sizes */
 @media screen and (width <= 576px), screen and (height <= 576px) {
-  #collapse-icon-outer {
-    padding-top: 16px;
-  }
-
-  #nav-control-panel {
+  #nav-panel {
     padding-top: 16px;
   }
 
@@ -261,26 +302,30 @@ Current logic:
 
 /* Apply specific styles for landscape orientation on small screen heights */
 @media screen and (height <= 576px) and (orientation: landscape) {
-  #nav-control-panel {
-    font-size: 12px;
+  #left-side {
     width: 260px;
   }
 
-  #nav-control-panel .accordion-button,
-  #nav-control-panel .form-label,
-  #nav-control-panel .form-check-label,
-  #nav-control-panel .mantine-DatePickerInput-input,
-  #nav-control-panel .slider-text-input-field,
-  #nav-control-panel div.Select--multi .Select-value {
+  #nav-panel,
+  #control-panel {
     font-size: 12px;
   }
 
-  #nav-control-panel .rc-slider-tooltip-inner,
-  #nav-control-panel .rc-slider-mark-text {
+  #left-side .accordion-button,
+  #left-side .form-label,
+  #left-side .form-check-label,
+  #left-side .mantine-DatePickerInput-input,
+  #left-side .slider-text-input-field,
+  #left-side div.Select--multi .Select-value {
+    font-size: 12px;
+  }
+
+  #left-side .rc-slider-tooltip-inner,
+  #left-side .rc-slider-mark-text {
     font-size: 10px;
   }
 
-  #nav-control-panel .mantine-DatePickerInput-input {
+  #left-side .mantine-DatePickerInput-input {
     min-height: 40px;
   }
 }
@@ -290,33 +335,20 @@ Current logic:
     overflow: hidden;
   }
 
-  #nav-control-panel {
+  #nav-panel {
     padding-top: 12px;
-    width: 280px;
-  }
-
-  #collapse-left-side.show:has(#nav-control-panel:not([hidden]))
-    ~ #collapse-icon-outer
-    #collapse-icon {
-    right: -7px;
-    z-index: 10;
   }
 
   #nav-bar {
     padding-top: 0;
   }
 
-  #left-side:has(#nav-control-panel:not([hidden])) {
+  #collapse-left-side.show #left-side {
     height: calc(100vh - 40px);
     position: absolute;
     width: 100vw;
     z-index: 5;
     zoom: 100%;
-  }
-
-  /* If #nav-control-panel is NOT hidden, apply this rule */
-  #nav-control-panel:not([hidden]) {
-    flex: 1;
   }
 }
 
@@ -336,6 +368,23 @@ Current logic:
   border-radius: 50%;
   height: 24px;
   width: 24px;
+}
+
+.btn-theme-toggle {
+  background: none;
+  border: none;
+  color: var(--bs-body-color);
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-theme-toggle .material-symbols-outlined {
+  font-size: 24px;
+  vertical-align: middle;
+}
+
+.btn-theme-toggle:hover .material-symbols-outlined {
+  color: var(--bs-primary-text-emphasis);
 }
 
 .card-wrapper {
