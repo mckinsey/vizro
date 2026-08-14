@@ -204,14 +204,23 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-primary-bg-subtle: #272a35; /* QBDS: --fill-onsurface-ui-3  */
   --bs-highlight-bg: #ffffff14; /* QBDS: --stateslayer-overlay-hover */
   --bs-focus-ring-color: #00a9f4; /* QBDS: --brand-accent */
-  --bs-card-bg: var(--bs-primary-bg-subtle);
-  --bs-dropdown-bg: var(--bs-primary-bg-subtle); /* Dropdown bg on left-side */
+  --bs-card-bg: #181b26;
+  --bs-dropdown-bg: #272a35; /* Dropdown bg on left-side */
   --hover-bg-subtle: var(--bs-gray-900);
   --Dash-Fill-Interactive-Weak: var(--bs-dark-bg-subtle);
   --input-field-bg: var(--bs-primary-bg-subtle);
   --bs-card-bg-inverted: #f5f6f6;
   --fill-content-step-markers-track: #333640;
   --hover-bg-btn: rgba(255, 255, 255, 0.16);
+  --bs-right-side-bg: #141721;
+  --bs-left-side-bg: #181b26;
+  --bs-container-bg: #141721;
+  --bs-container-nested-bg: #1f222e;
+  --bs-nav-link-highlight: #1f222e;
+  --bs-dropdown-bg-color: #10121b;
+  --bs-outer-border-color: #141721;
+  --border-stroke-tertiary: rgba(255, 255, 255, 0.16);
+  --border-stroke-divider: rgba(255, 255, 255, 0.08);
 }
 
 [data-bs-theme="light"] {
@@ -220,12 +229,19 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-primary-bg-subtle: #f5f6f6;
   --bs-highlight-bg: #14172114;
   --bs-focus-ring-color: #00a9f4;
-  --bs-card-bg: var(--bs-primary-bg-subtle);
-  --bs-dropdown-bg: var(--bs-body-bg); /* Dropdown bg on left-side */
-  --left-side-bg: var(--bs-body-bg);
+  --bs-card-bg: #ffffff;
+  --bs-dropdown-bg: #f5f6f6; /* Dropdown bg on left-side */
   --Dash-Fill-Interactive-Weak: var(--bs-light-bg-subtle);
   --bs-card-bg-inverted: #272a35;
   --hover-bg-btn: #14172114;
+  --bs-right-side-bg: #ebedee;
+  --bs-left-side-bg: #ffffff;
+  --bs-container-bg: #ffffff;
+  --bs-container-nested-bg: #f2f3f4;
+  --bs-nav-link-highlight: #fafafb;
+  --bs-dropdown-bg-color: #ffffff;
+  --bs-outer-border-color: #d8dadd;
+  --border-stroke-tertiary: rgba(20, 23, 33, 0.16);
 
   /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white. */
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
@@ -237,7 +253,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
 `bg-light`, which come with an important tag from bootstrap. So we need below to overwrite these properties again. */
 .navbar {
-  background: var(--bs-tertiary-bg) !important;
+  background: var(--bs-left-side-bg) !important;
   border: none;
   flex-wrap: nowrap;
 }
@@ -344,12 +360,12 @@ legend {
 
 .accordion-item .nav-link:active,
 .accordion-item .nav-link.active {
-  background: var(--bs-highlight-bg) !important;
+  background: var(--bs-nav-link-highlight) !important;
 }
 
 .accordion-item .nav-link:hover,
 .accordion-item .nav-link.hover {
-  background: var(--bs-highlight-bg) !important;
+  background: var(--bs-nav-link-highlight) !important;
 }
 
 .accordion-item {
@@ -451,4 +467,8 @@ legend {
 .btn-tertiary:focus:not(:focus-visible, :disabled, .disabled):hover,
 .btn-link:focus:not(:focus-visible, :disabled, .disabled):hover {
   background: var(--states-layer-overlay-hover);
+}
+
+.border {
+  border: 1px solid var(--border-stroke-tertiary) !important;
 }
