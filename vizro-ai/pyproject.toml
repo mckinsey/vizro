@@ -55,6 +55,11 @@ source_pkgs = ["vizro_ai"]
 [tool.pytest.ini_options]
 filterwarnings = [
   "error",
+  # Package deprecation notice emitted on every `import vizro_ai`. Must use a message pattern
+  # (not `::vizro_ai.VizroAIDeprecationWarning`) and stay above the safeguard ignore below: resolving
+  # a dotted warning class imports vizro_ai, which re-triggers this warning before its own filter is
+  # in place, erroring out under the "error" filter above.
+  "ignore:vizro-ai is deprecated:DeprecationWarning",
   # Ignore until pandas 3 is released:
   "ignore:(?s).*Pyarrow will become a required dependency of pandas:DeprecationWarning",
   # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590:
