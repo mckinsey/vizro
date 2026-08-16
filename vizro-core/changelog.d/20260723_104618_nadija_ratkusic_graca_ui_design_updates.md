@@ -22,16 +22,18 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Changed
 
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Redesigned dashboard navigation UI with updated positions for the reset controls, collapse, and theme toggle buttons. ([#1806](https://github.com/mckinsey/vizro/pull/1806))
 
--->
+
+<!--
 ### Deprecated
 
-- `vizro-ai` is deprecated. Version `0.4.2` is the final release, and `import vizro_ai` now emits a `DeprecationWarning` pointing to [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) and [Vizro-e2e-flow](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow/). See [DEPRECATION.md](https://github.com/mckinsey/vizro/blob/main/vizro-ai/DEPRECATION.md) for details.
+- A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Fixed
 

@@ -1,5 +1,5 @@
 def theme_toggle_path():
-    return "#theme-selector"
+    return "#theme-toggle"
 
 
 def switch_path_using_filter_control_id(filter_control_id):
