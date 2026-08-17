@@ -47,7 +47,9 @@ class TestUpdateTargetsPreBuild:
     def test_invalid_targets_raise(self, managers_page_two_graphs_button):
         action = model_manager["update_targets_action"]
         action.targets = ["invalid_target"]
-        with pytest.raises(ValueError, match=r"targets {'invalid_target'} are not valid targets on the page."):
+        with pytest.raises(
+            ValueError, match=r"update_targets action targets {'invalid_target'} are not valid targets on the page."
+        ):
             action.pre_build()
 
     def test_default_targets_include_dynamic_filters(self, gapminder_dynamic_first_n_last_n_function):

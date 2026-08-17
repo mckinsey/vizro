@@ -58,7 +58,7 @@ class update_targets(_AbstractAction):
         if not self.targets:
             self.targets = figure_ids_on_page + dynamic_filter_ids_on_page
         elif invalid_targets := set(self.targets) - set(figure_ids_on_page + dynamic_filter_ids_on_page):
-            raise ValueError(f"targets {invalid_targets} are not valid targets on the page.")
+            raise ValueError(f"update_targets action targets {invalid_targets} are not valid targets on the page.")
 
     def function(self, _controls: _Controls) -> dict[ModelID, Any]:
         """Recreates the targeted figures by applying the page's controls.
