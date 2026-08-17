@@ -193,7 +193,9 @@ page_4_1 = vm.Page(
                 actions=[],
             ),
         ),
-        vm.Button(text="Apply (refresh page)", actions=update_targets(targets=["p41_filter"])),
+        vm.Button(text="Refresh Filter", actions=update_targets(targets=["p41_filter"])),
+        vm.Button(text="Refresh Parameter", actions=update_targets(targets=["p41_parameter"])),
+        vm.Button(text="Refresh Graph", actions=update_targets(targets=["p41_graph"])),
     ],
 )
 

@@ -288,11 +288,10 @@ class TestDashboardPreBuild:
         # vizro_app fixture is needed to avoid mocking out get_relative_path.
         expected = html.Div(
             [
-                dbc.Switch(
+                dcc.Store(
                     id="theme-selector",
-                    value=False,
-                    persistence=True,
-                    persistence_type="session",
+                    data=False,
+                    storage_type="session",
                 ),
                 html.Img(),
                 html.H3("This page could not be found."),
