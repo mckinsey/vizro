@@ -93,13 +93,25 @@ beeswarm_page = vm.Page(
             text="""
 #### What is a beeswarm chart?
 
-A beeswarm chart displays individual observations as points while spreading overlapping points apart so that the distribution of the data remains visible.
+A beeswarm chart displays individual
+observations as points while
+spreading overlapping
+points apart so that the
+distribution of the data remains
+visible.
 
 &nbsp;
 
 #### When should I use it?
 
-Use a beeswarm chart when you want to show individual data points and compare their distribution across categories. It is especially useful for relatively small datasets where you want to see both the values and how densely they are distributed.
+Use a beeswarm chart when you want
+to show individual data points and
+compare their
+distribution across categories. It
+is especially useful for identifying
+dense clusters
+while still making individual
+observations visible.
 """
         ),
         vm.Graph(figure=beeswarm.fig),
