@@ -6,7 +6,10 @@ It gives the model a consistent framework, validated configuration output, a liv
 Vizro-MCP can be used with any MCP host, with first-class setup guides for Claude Desktop, Cursor, and VS Code.
 For agent-driven design and build workflows, Vizro also ships [Agent skills](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow) that pair with Vizro-MCP.
 
-All documentation pages return clean markdown when fetched with the `Accept: text/markdown` request header.
+All documentation pages return clean markdown when fetched with the
+`Accept: text/markdown, text/html;q=0.9` request header. Always include the `text/html;q=0.9`
+fallback: pages that exceed the upstream HTML-to-markdown conversion size limit
+answer a markdown-only request with HTTP 406 instead of falling back to HTML.
 
 ## GET STARTED
 

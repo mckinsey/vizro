@@ -216,7 +216,7 @@ The [get started documentation](https://vizro.readthedocs.io/en/stable/pages/tut
 
 ## For AI agents and LLMs
 
-If you are an AI agent or LLM building Vizro apps, start with the [Vizro for LLMs cheatsheet](https://vizro.readthedocs.io/en/stable/pages/for-llms/) — a single-page reference covering the minimum runnable app, model index, action index, `@capture` decorator matrix, and top errors with fixes. The [llms.txt](https://vizro.readthedocs.io/en/stable/llms.txt) file provides a machine-readable index of the full documentation, and every documentation page returns clean Markdown when fetched with the `Accept: text/markdown` request header.
+If you are an AI agent or LLM building Vizro apps, start with the [Vizro for LLMs cheatsheet](https://vizro.readthedocs.io/en/stable/pages/for-llms/) — a single-page reference covering the minimum runnable app, model index, action index, `@capture` decorator matrix, and top errors with fixes. The [llms.txt](https://vizro.readthedocs.io/en/stable/llms.txt) file provides a machine-readable index of the full documentation, and every documentation page returns clean Markdown when fetched with the `Accept: text/markdown, text/html;q=0.9` request header.
 
 ## Packages
 
