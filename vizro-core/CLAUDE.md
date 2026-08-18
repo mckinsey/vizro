@@ -17,10 +17,10 @@ If you are an AI agent or LLM writing Python (or YAML / JSON) that uses the `viz
 Additional resources for authoring agents:
 
 - [`docs/llms.txt`](docs/llms.txt) — curated `/llms.txt`-standard index of the full documentation.
-- Every documentation page returns clean Markdown when fetched with the `Accept: text/markdown, text/html;q=0.9` request
-  header. Always send the `text/html;q=0.9` fallback: pages over the upstream 2 MB conversion limit
-  (currently the Models API reference) answer a markdown-only request with HTTP 406 rather than
-  falling back to HTML.
+- Documentation pages return clean Markdown when fetched with the `Accept: text/markdown, text/html;q=0.9` request
+  header. Always send the `text/html;q=0.9` fallback: the Models API reference is over the upstream 2 MB
+  conversion limit and is served as HTML instead, and a markdown-only request for it returns HTTP 406
+  rather than falling back.
 - Published JSON Schemas per Vizro version: <https://github.com/mckinsey/vizro/tree/main/vizro-core/schemas>.
 
 The rest of this file is for agents **contributing to `vizro-core` itself**.

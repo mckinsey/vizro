@@ -6,10 +6,10 @@ APIs in this package may change or be removed between releases. Once a feature s
 Users install with `pip install vizro-experimental` and import per feature, for example:
 `from vizro_experimental.chat import Chat, ChatAction, StreamingChatAction` or `from vizro_experimental.chat.popup import add_chat_popup`.
 
-All documentation pages return clean markdown when fetched with the
+Documentation pages return clean markdown when fetched with the
 `Accept: text/markdown, text/html;q=0.9` request header. Always include the `text/html;q=0.9`
-fallback: pages that exceed the upstream HTML-to-markdown conversion size limit
-answer a markdown-only request with HTTP 406 instead of falling back to HTML.
+fallback: any page exceeding the upstream HTML-to-markdown conversion size limit is served as
+HTML instead, and a markdown-only request for it would return HTTP 406.
 
 ## CHAT COMPONENT - HOW-TO GUIDES
 
