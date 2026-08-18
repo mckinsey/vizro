@@ -101,6 +101,19 @@ def _coerce_to_list(value: Any) -> Any:
     return [value]
 
 
+def _coerce_actions_to_list(value: Any) -> Any:
+    """Like `_coerce_to_list` but also treats `None` as "no actions" rather than wrapping it in a list.
+
+    `None` and `[]` are equivalent ways to explicitly opt out of a model's default action (e.g. a `Filter` or
+    `Parameter` selector's auto-attached `update_targets`); see the `model_fields_set` check in
+    `Filter.pre_build`/`Parameter.pre_build`. Kept separate from `_coerce_to_list` so `OutputsType` (which shares
+    that function) is unaffected.
+    """
+    if value is None:
+        return []
+    return _coerce_to_list(value)
+
+
 def _normalize_action_notifications(value: Any) -> Any:
     """Normalize action notifications dict.
 
@@ -760,10 +773,10 @@ ActionType = Annotated[
 
 # TODO: ideally actions would have json_schema_input_type=list[ActionType] | ActionType attached to
 # the BeforeValidator, but this requires pydantic >= 2.9.
-ActionsType = Annotated[list[ActionType], BeforeValidator(_coerce_to_list), Field(default=[])]
-"""List of actions that can be triggered by a component. Accepts either a single
-[`ActionType`][vizro.models.types.ActionType] or a list of [`ActionType`][vizro.models.types.ActionType].
-Defaults to `[]`."""
+ActionsType = Annotated[list[ActionType], BeforeValidator(_coerce_actions_to_list), Field(default=[])]
+"""List of actions that can be triggered by a component. Accepts a single
+[`ActionType`][vizro.models.types.ActionType], a list of [`ActionType`][vizro.models.types.ActionType], or `None`
+(equivalent to `[]`). Defaults to `[]`."""
 
 # TODO: ideally outputs would have json_schema_input_type=list[str] | dict[str, str] | str attached to
 # the BeforeValidator, but this requires pydantic >= 2.9.

@@ -58,8 +58,8 @@ page_1_1 = vm.Page(
             targets=["p11_graph"],
             selector=vm.RadioItems(
                 title="Filter that does NOT auto-apply, but is taken into account when its target Graph is updated.",
-                # An empty actions list opts out of the default "refresh on change" behavior.
-                actions=[],
+                # actions=None (or actions=[]) opts out of the default "refresh on change" behavior.
+                actions=None,
             ),
         ),
         vm.Parameter(targets=["p11_graph.x"], selector=vm.RadioItems(options=["sepal_width", "sepal_length"])),
@@ -87,7 +87,7 @@ page_2_1 = vm.Page(
             targets=["p21_graph"],
             selector=vm.RadioItems(
                 title="Filter that does NOT auto-apply, but is taken into account when its target Graph is updated.",
-                actions=[],
+                actions=None,
             ),
         ),
         vm.Parameter(
@@ -138,7 +138,7 @@ page_3_1 = vm.Page(
             targets=["p31_graph"],
             selector=vm.RadioItems(
                 title="Options refreshed by the slider; does NOT auto-apply.",
-                actions=[],
+                actions=None,
             ),
         ),
         vm.Filter(
@@ -155,7 +155,7 @@ page_3_1 = vm.Page(
 )
 
 # ====== **NEW** A deferred data_frame Parameter is still applied when its targets are refreshed ======
-# The Parameter (Slider) resizes the graph's data but has `actions=[]`, so changing it does nothing on its own. The
+# The Parameter (Slider) resizes the graph's data but has `actions=None`, so changing it does nothing on its own. The
 # Filter is likewise deferred (`actions=[]`). Clicking the Button refreshes the whole page (bare `update_targets()`):
 # the graph reloads with the new data size AND the filter's options recompute to match - proving the deferred
 # parameter's value is counted even though it never triggered a refresh itself.
@@ -181,7 +181,7 @@ page_4_1 = vm.Page(
                 step=10,
                 value=10,
                 title="Resizes the data but does NOT auto-apply; its value is honored on the next refresh.",
-                actions=[],
+                actions=None,
             ),
         ),
         vm.Filter(
@@ -195,6 +195,7 @@ page_4_1 = vm.Page(
         ),
         vm.Button(text="Refresh Filter", actions=update_targets(targets=["p41_filter"])),
         vm.Button(text="Refresh Graph", actions=update_targets(targets=["p41_graph"])),
+        vm.Button(text="Refresh everything on the page", actions=update_targets()),
     ],
 )
 

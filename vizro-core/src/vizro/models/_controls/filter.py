@@ -586,11 +586,12 @@ class Filter(VizroBaseModel):
             self._filter_column = self._single_filter_column
 
         # The default action refreshes the filter's targets. The filtering logic itself (self._filter_function applied
-        # to self._filter_column) is reapplied whenever the targets are refreshed, independently of this action, so
-        # overwriting selector.actions changes what happens on selector change without disabling the filtering.
-        # We check model_fields_set (not falsiness) so that an explicit `selector=X(actions=[])` is honored as "do
-        # nothing on selector change" rather than being replaced by the default. The filter value is still applied
-        # whenever its targets are refreshed by something else (e.g. a Button running update_targets).
+        # to self._filter_column) is reapplied whenever the targets are refreshed, independently of this action.
+        # So, overwriting selector.actions changes what happens on selector change without disabling the filtering.
+        # We check model_fields_set (not falsiness) so that an explicit `selector=X(actions=None)` or
+        # `selector=X(actions=[])` is honored as "do nothing on selector change" rather than being replaced by the
+        # default. The filter value is still applied whenever its targets are refreshed by something else (e.g. a
+        # Button running update_targets).
         if "actions" not in self.selector.model_fields_set:
             self.selector.actions = [update_targets(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
 

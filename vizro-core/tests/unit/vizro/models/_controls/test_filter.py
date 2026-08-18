@@ -1694,6 +1694,22 @@ class TestFilterPreBuildMethod:
 
         assert filter.selector.actions == []
 
+    def test_set_none_actions(self, managers_one_page_two_graphs):
+        # actions=None is equivalent to actions=[]: it also opts out of the default "refresh on change" action.
+        filter = vm.Filter(column="country", selector=vm.RadioItems(actions=None))
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        assert filter.selector.actions == []
+
+    def test_set_none_actions_from_dict(self, managers_one_page_two_graphs):
+        # The same opt-out must be honored through dict/YAML config where `actions: null` is given explicitly.
+        filter = vm.Filter(column="country", selector={"type": "radio_items", "actions": None})
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        assert filter.selector.actions == []
+
     def test_filter_action_properties(self, managers_column_only_exists_in_some):
         filter = Filter(
             id="filter_id",

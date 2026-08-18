@@ -20,9 +20,8 @@ class update_targets(_AbstractAction):
     This is the shared mechanism behind `Filter`, `Parameter` and on-page-load, and can also be used directly (for
     example on a `Button`) to refresh figures on demand.
 
-    Args:
-        targets (list[ModelID]): Component ids to refresh. Figures and dynamic filters on the page are valid targets.
-            If none are given then all figures and dynamic filters on the page are targeted. Defaults to `[]`.
+    Abstract: Usage documentation
+        [How to apply controls with a button](../user-guides/controls.md#apply-controls-with-a-button)
 
     Example:
         ```python
@@ -35,7 +34,11 @@ class update_targets(_AbstractAction):
 
     type: Literal["update_targets"] = "update_targets"
 
-    targets: list[ModelID] = Field(default=[], description="Component ids to refresh. Defaults to all figures on page.")
+    targets: list[ModelID] = Field(
+        default=[],
+        description="Component ids to refresh. Figures and dynamic filters on the page are valid targets. "
+        "If none are given then all figures and dynamic filters on the page are targeted.",
+    )
 
     @_log_call
     def pre_build(self):

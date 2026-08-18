@@ -3068,7 +3068,7 @@
     },
     "update_targets": {
       "additionalProperties": false,
-      "description": "Refreshes target figures on the page by re-applying the page's controls.\n\nRe-runs the targeted charts, tables and figures against the current values of the page's filters and parameters.\nThis is the shared mechanism behind `Filter`, `Parameter` and on-page-load, and can also be used directly (for\nexample on a `Button`) to refresh figures on demand.\n\nArgs:\n    targets (list[ModelID]): Component ids to refresh. Figures and dynamic filters on the page are valid targets.\n        If none are given then all figures and dynamic filters on the page are targeted. Defaults to `[]`.\n\nExample:\n    ```python\n    import vizro.actions as va\n    import vizro.models as vm\n\n    vm.Button(text=\"Apply controls\", actions=va.update_targets(targets=[\"my_graph\"]))\n    ```",
+      "description": "Refreshes target figures on the page by re-applying the page's controls.\n\nRe-runs the targeted charts, tables and figures against the current values of the page's filters and parameters.\nThis is the shared mechanism behind `Filter`, `Parameter` and on-page-load, and can also be used directly (for\nexample on a `Button`) to refresh figures on demand.\n\nAbstract: Usage documentation\n    [How to apply controls with a button](../user-guides/controls.md#apply-controls-with-a-button)\n\nExample:\n    ```python\n    import vizro.actions as va\n    import vizro.models as vm\n\n    vm.Button(text=\"Apply controls\", actions=va.update_targets(targets=[\"my_graph\"]))\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -3083,7 +3083,7 @@
         },
         "targets": {
           "default": [],
-          "description": "Component ids to refresh. Defaults to all figures on page.",
+          "description": "Component ids to refresh. Figures and dynamic filters on the page are valid targets. If none are given then all figures and dynamic filters on the page are targeted.",
           "items": {
             "type": "string"
           },

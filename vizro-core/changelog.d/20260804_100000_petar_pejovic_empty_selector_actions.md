@@ -24,7 +24,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Changed
 
-- Setting a `Filter` / `Parameter` selector's `actions=[]` now opts out of the default "refresh on change" behavior instead of being overwritten with it. The control's value is still applied whenever its targets are refreshed by something else (for example a `Button` running `update_targets`). ([#1538](https://github.com/mckinsey/vizro/pull/1538))
+- Setting a `Filter` / `Parameter` selector's `actions=None` now opts out of the default "refresh on change" behavior instead of being overwritten with it. The control's value is still applied whenever its targets are refreshed by something else (for example a `Button` running `update_targets`). ([#1538](https://github.com/mckinsey/vizro/pull/1538))
 
 <!--
 ### Deprecated
