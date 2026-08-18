@@ -55,11 +55,14 @@ def strip_leading_whitespace(site_dir: Path) -> int:
         content = path.read_text(encoding="utf-8")
         if not content.startswith((" ", "\t", "\n", "\r")):
             continue
+        # Strip once and reuse: the API reference page is several MB, so computing this twice
+        # would allocate a second copy of it for nothing.
+        trimmed = content.lstrip()
         # Only touch pages whose sole problem is whitespace before the doctype, so that a
         # future template change (or an unrelated file) is left alone rather than mangled.
-        if content.lstrip()[: len(DOCTYPE)].lower() != DOCTYPE:
+        if trimmed[: len(DOCTYPE)].lower() != DOCTYPE:
             continue
-        path.write_text(content.lstrip(), encoding="utf-8")
+        path.write_text(trimmed, encoding="utf-8")
         stripped += 1
 
     print(f"Stripped leading whitespace from {stripped} of {len(html_files)} HTML files in {site_dir}.")
