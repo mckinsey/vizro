@@ -24,5 +24,5 @@ The following automation is already approved and is not covered by the restricti
 ## Everything else
 
 Repository layout, Hatch commands, testing, changelog requirements and coding conventions live in
-`AGENTS.md` (a symlink to `CLAUDE.md`) at the repository root, and in the per-package `CLAUDE.md`
-files. Follow those rather than duplicating them here.
+`CLAUDE.md` at the repository root, and in the per-package `CLAUDE.md` files (also available as
+`AGENTS.md` symlinks). Follow those rather than duplicating them here.
