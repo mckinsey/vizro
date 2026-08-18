@@ -28,6 +28,7 @@ def http_requests(func):
 
             def on_request(request):
                 if any(r in request.url for r in ["_dash-update-component"]):
+                    print("REQUEST:", request.post_data)
                     http_requests_paths.append(request.url.split("/")[3])
 
             page.on("request", on_request)
@@ -515,14 +516,14 @@ def test_datetimepicker_range_filters_ag_grid(page, http_requests_paths):
     page.locator(f"a[href='{cnst.DATETIMEPICKER_RANGE_PAGE_PATH}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # filter ag grid with range datetimepicker (3 http: setting end date, start time, and end time)
+    # filter ag grid with range datetimepicker (4 http: setting start(1) and end(2) date, start and end time(2))
     select_range_datetime_picker_value_playwright(
         page,
         elem_id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_ID,
         start=("2026-06-10", "04", "34"),
         end=("2026-06-10", "05", "00"),
     )
-    check_http_requests_count(page, http_requests_paths, 5)
+    check_http_requests_count(page, http_requests_paths, 6)
 
     # checking that no additional http has occurred
-    check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(page, http_requests_paths, 6, sleep=cnst.HTTP_TIMEOUT_LONG)
