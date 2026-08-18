@@ -264,9 +264,11 @@ def _parse_calendar_month_year_playwright(page):
         for calendar in reversed(page.locator('div[data-calendar="true"]').all()):
             if not calendar.is_visible():
                 continue
-            level_text = calendar.locator(".mantine-DatePickerInput-calendarHeaderLevel").first.inner_text().strip()
-            if level_text:
-                return datetime.strptime(level_text, "%B %Y")
+            level = calendar.locator(".mantine-DatePickerInput-calendarHeaderLevel").first
+            if level.count():
+                level_text = level.inner_text(timeout=200).strip()
+                if level_text:
+                    return datetime.strptime(level_text, "%B %Y")
         page.wait_for_timeout(200)
     raise TimeoutError("Calendar header did not populate")
 
