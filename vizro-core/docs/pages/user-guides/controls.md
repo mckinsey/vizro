@@ -81,7 +81,7 @@ To refresh the targets on demand, add a [`Button`][vizro.models.Button] that run
 
         1. The [`update_targets`][vizro.actions.update_targets] action refreshes the page's figures using the current control values. Called with no arguments it refreshes every figure on the page; pass `targets` to refresh only specific components.
         1. Setting the selector's `actions=None` stops the filter from applying as soon as its value changes. Its value is still used whenever the graph is refreshed, here when the button is clicked.
-        1. The same opt-out applies to parameters.
+        1. Setting the selector's `actions=None` stops the parameter from applying as soon as its value changes. Its value is still used whenever the graph is refreshed, here when the button is clicked.
 
     === "app.yaml"
 
@@ -108,7 +108,7 @@ To refresh the targets on demand, add a [`Button`][vizro.models.Button] that run
                 type: filter
                 selector:
                   type: checklist
-                  actions: null
+                  actions: []
               - type: parameter
                 targets:
                   - scatter_chart.x
@@ -120,7 +120,7 @@ To refresh the targets on demand, add a [`Button`][vizro.models.Button] that run
 
     === "Result"
 
-        The dashboard renders the "Apply controls with a button" example. Changing the species checklist or the x-axis radio buttons does not update the chart on its own; the chart refreshes only when you click "Apply controls", at which point both control values are applied together.
+        [![ApplyControlsWithAButton]][applycontrolswithabutton]
 
 ## Group controls
 
@@ -216,6 +216,7 @@ To organize the control panel on a page into sections, you can group [filters](f
 
     === "Result"
 
-        \[![ControlGroup]\][controlgroup]
+        [![ControlGroup]][controlgroup]
 
 [controlgroup]: ../../assets/user_guides/control/control_group.png
+[applycontrolswithabutton]: ../../assets/user_guides/control/apply_controls_with_a_button.gif

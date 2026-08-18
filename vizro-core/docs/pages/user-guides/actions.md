@@ -177,7 +177,7 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
 
 ## Refresh figures on demand
 
-The [`update_targets`][vizro.actions.update_targets] action re-runs the charts, tables and figures on a page against the current values of the page's [filters and parameters](controls.md). It is the same mechanism Vizro uses to refresh a page when it loads or when a control changes, exposed so that you can trigger it yourself, for example from a [`Button`][vizro.models.Button].
+The [`update_targets`][vizro.actions.update_targets] action re-runs the charts, tables, figures and dynamic filters on a page against the current values of the page's [filters and parameters](controls.md). It is the same mechanism Vizro uses to refresh a page when it loads or when a control changes, exposed so that you can trigger it yourself, for example from a [`Button`][vizro.models.Button].
 
 Call it with no arguments to refresh every figure on the page (and recompute the options of any [dynamic filters](data.md#filters)), or pass `targets` to refresh only specific components:
 
