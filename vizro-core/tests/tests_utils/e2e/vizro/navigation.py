@@ -125,7 +125,8 @@ def _set_time_picker_fields(driver, elem_id, hour, minute):
 
 def _iso_date_to_aria_label(iso_date):
     """Convert an ISO date string to the dmc calendar day button aria-label."""
-    return datetime.strptime(iso_date, "%Y-%m-%d").strftime("%d %B %Y")
+    dt = datetime.strptime(iso_date, "%Y-%m-%d")
+    return f"{dt.day} {dt.strftime('%B')} {dt.year}"
 
 
 def _click_displayed_calendar_control(driver, css_selector_within_calendar):
