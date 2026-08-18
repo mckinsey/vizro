@@ -28,7 +28,6 @@ def http_requests(func):
 
             def on_request(request):
                 if any(r in request.url for r in ["_dash-update-component"]):
-                    print("REQUEST:", request.post_data)
                     http_requests_paths.append(request.url.split("/")[3])
 
             page.on("request", on_request)
