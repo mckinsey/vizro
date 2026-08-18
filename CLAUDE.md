@@ -11,7 +11,6 @@ This is a monorepo containing multiple Vizro packages. The main packages are:
   APIs in this package may change or be removed between releases.
   Once a feature is ready, it graduates to `vizro-core`.
 
-
 ## Development Setup (across all packages)
 
 ### Only Dependency: Hatch
