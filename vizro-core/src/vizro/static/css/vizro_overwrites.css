@@ -221,6 +221,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-outer-border-color: #141721;
   --border-stroke-tertiary: rgba(255, 255, 255, 0.16);
   --border-stroke-divider: rgba(255, 255, 255, 0.08);
+  --bg-fill-onsurface: #1f222e;
 }
 
 [data-bs-theme="light"] {
@@ -242,6 +243,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-dropdown-bg-color: #ffffff;
   --bs-outer-border-color: #d8dadd;
   --border-stroke-tertiary: rgba(20, 23, 33, 0.16);
+  --bg-fill-onsurface: #fafafb;
 
   /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white. */
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);

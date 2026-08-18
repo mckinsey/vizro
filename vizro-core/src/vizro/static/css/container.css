@@ -72,7 +72,7 @@ the lighter shade, both in dark and light theme. */
 }
 
 #right-side:has(.bg-container) .card {
-  background: var(--bs-tertiary-bg);
+  background: var(--bg-fill-onsurface);
 }
 
 .inner-container-title {
