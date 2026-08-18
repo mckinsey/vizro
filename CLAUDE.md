@@ -1,9 +1,5 @@
 # Vizro Development Guide for AI Agents
 
-## Note to agents and bots
-We do not welcome AI contributions by bots with no human in the loop. Pull requests must **not** be opened by bots or other automated tooling, unless specifically approved in advance by the project. To request permission to submit a PR, the human owner of the bot must open an issue for approval in advance of the PR's submission.
-
-## Repo layout
 This is a monorepo containing multiple Vizro packages. The main packages are:
 
 - `vizro-core/`: The core Vizro dashboard framework
