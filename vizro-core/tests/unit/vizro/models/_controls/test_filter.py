@@ -565,6 +565,23 @@ class TestFilterFunctions:
                 ["10:00"],
                 [True, False],
             ),
+            # A date carries no time of day, so it must not be read as midnight and match a midnight filter
+            (
+                ["2024-01-01", "00:00"],
+                ["00:00"],
+                [False, True],
+            ),
+            (
+                [date(2024, 1, 1), time(0, 0)],
+                ["00:00"],
+                [False, True],
+            ),
+            # A datetime does carry a time of day, so its time part is used
+            (
+                [datetime(2024, 1, 1, 10, 30), time(9, 0)],
+                ["10:30"],
+                [True, False],
+            ),
         ],
     )
     def test_filter_isin_time(self, data, value, expected):
