@@ -60,6 +60,9 @@ EXCLUDED_MODELS = {
 EXCLUDED_ACTIONS = {
     "filter_interaction",  # implicit framework action, not directly user-invoked
     "update_notification",  # paired with show_notification, covered in the same entry
+    # Shared low-level "refresh figures" mechanism behind Filter, Parameter and on-page-load; those user-facing
+    # patterns are already showcased. A dedicated carousel entry (with demo gif) is deferred to the docs pass.
+    "update_targets",
 }
 
 # Maps public API name → expected HTML id, for items whose id doesn't follow simple lowercasing.
