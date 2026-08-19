@@ -72,6 +72,7 @@ Use these instead of writing a custom action wherever the built-in fits.
 | [`va.filter_interaction()`][vizro.actions.filter_interaction] | Legacy alias for cross-filter behavior. Prefer `va.set_control` in new code.                                                   | [Graph and table interactions](user-guides/graph-table-actions.md) |
 | [`va.show_notification()`][vizro.actions.show_notification] | Show a toast notification.                                                                                                        | [Notifications](user-guides/notification-actions.md)              |
 | [`va.update_notification()`][vizro.actions.update_notification] | Update an already-visible toast (progress, success, error).                                                                   | [Notifications](user-guides/notification-actions.md)              |
+| [`va.update_targets()`][vizro.actions.update_targets]     | Refresh a page's figures on demand (e.g. on a `Button` click), re-applying the current filters and parameters.                      | [Actions](user-guides/actions.md)                                |
 
 ## Selector auto-selection
 

@@ -125,7 +125,8 @@ def _set_time_picker_fields(driver, elem_id, hour, minute):
 
 def _iso_date_to_aria_label(iso_date):
     """Convert an ISO date string to the dmc calendar day button aria-label."""
-    return datetime.strptime(iso_date, "%Y-%m-%d").strftime("%d %B %Y")
+    dt = datetime.strptime(iso_date, "%Y-%m-%d")
+    return f"{dt.day} {dt.strftime('%B')} {dt.year}"
 
 
 def _click_displayed_calendar_control(driver, css_selector_within_calendar):
@@ -263,9 +264,11 @@ def _parse_calendar_month_year_playwright(page):
         for calendar in reversed(page.locator('div[data-calendar="true"]').all()):
             if not calendar.is_visible():
                 continue
-            level_text = calendar.locator(".mantine-DatePickerInput-calendarHeaderLevel").first.inner_text().strip()
-            if level_text:
-                return datetime.strptime(level_text, "%B %Y")
+            level = calendar.locator(".mantine-DatePickerInput-calendarHeaderLevel").first
+            if level.count():
+                level_text = level.inner_text(timeout=200).strip()
+                if level_text:
+                    return datetime.strptime(level_text, "%B %Y")
         page.wait_for_timeout(200)
     raise TimeoutError("Calendar header did not populate")
 

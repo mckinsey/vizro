@@ -1,316 +1,214 @@
-"""Scratch demo app."""
+"""This is a test app to test the dashboard layout."""
 
 import vizro.models as vm
-import vizro.actions as va
 import vizro.plotly.express as px
-
 from vizro import Vizro
+from vizro.managers import data_manager
+from vizro.actions import update_targets
 
-iris = px.data.iris()
+
+df = px.data.iris()
+data_manager["dynamic_iris"] = lambda number_of_points=10: df.head(number_of_points)
 
 
-page_1 = vm.Page(
-    title="Regular page",
+SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
+
+vm.Page.add_type("controls", vm.Button)
+
+
+page_0_1 = vm.Page(
+    id="page_0_1",
+    title="Smoke test Page",
     components=[
-        vm.Graph(id="graph_1", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(
+            id="p01_graph",
+            figure=px.scatter(
+                "dynamic_iris", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
+        vm.Text(id="p01_text", text="Placeholder"),
     ],
     controls=[
-        vm.Filter(column="species", visible=False),
-        vm.Filter(column="sepal_length"),
-        vm.ControlGroup(
-            title="Control group 1",
-            controls=[
-                vm.Filter(column="sepal_length"),
-            ],
-            description="control group info",
-        ),
-        vm.ControlGroup(
-            title="Control group 2",
-            controls=[
-                vm.Filter(column="petal_width"),
-            ],
-            description="control group info",
-        ),
-        vm.ControlGroup(
-            title="Control group 3",
-            controls=[
-                vm.Filter(column="sepal_length"),
-            ],
-            description="control group info",
-        ),
-        vm.ControlGroup(
-            title="Control group 4",
-            controls=[
-                vm.Filter(column="petal_width"),
-            ],
-            description="control group info",
+        vm.Filter(id="p01_filter", column="species", selector=vm.RadioItems(), show_in_url=True),
+        vm.Parameter(
+            id="p01_parameter",
+            targets=["p01_graph.data_frame.number_of_points"],
+            selector=vm.Slider(min=10, max=150, step=10, value=10),
+            show_in_url=True,
         ),
     ],
 )
 
-page_2 = vm.Page(
-    title="Plain containers",
+# ====== **FIX** vm.Filter/vm.Parameter always applied when targets refresh ======
+
+page_1_1 = vm.Page(
+    id="page_1_1",
+    title="Apply the filter on the parameter change",
     components=[
-        vm.Container(
-            title="",
-            components=[
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Container(
-                    title="",
-                    components=[
-                        vm.Graph(
-                            figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"), id="graph_4"
-                        ),
-                        vm.Container(
-                            title="",
-                            components=[
-                                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
-                            ],
-                        ),
-                    ],
-                    layout=vm.Grid(grid=[[0, 0, 1]]),
-                ),
-                vm.Button(text="Export", actions=[va.export_data(targets=["graph_4"])], icon="download"),
-            ],
-            layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 4, 4, 4], [4, 4, 4, 4], [4, 4, 4, 4], [5, -1, -1, -1]]),
-            controls=[
-                vm.Filter(column="species"),
-                vm.Filter(column="species"),
-                vm.Filter(column="species"),
-                vm.Filter(column="species"),
-            ],
-        )
+        vm.Graph(
+            id="p11_graph",
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
     ],
     controls=[
-        vm.ControlGroup(
-            title="Control group 1",
-            controls=[
-                vm.Filter(column="sepal_length"),
-            ],
-            description="control group info",
+        vm.Filter(
+            column="species",
+            targets=["p11_graph"],
+            selector=vm.RadioItems(
+                title="Filter that does NOT auto-apply, but is taken into account when its target Graph is updated.",
+                # actions=None (or actions=[]) opts out of the default "refresh on change" behavior.
+                actions=None,
+            ),
         ),
-        vm.ControlGroup(
-            title="Control group 2",
-            controls=[
-                vm.Filter(column="petal_width"),
-            ],
-            description="control group info",
-        ),
+        vm.Parameter(targets=["p11_graph.x"], selector=vm.RadioItems(options=["sepal_width", "sepal_length"])),
     ],
 )
 
-page_3 = vm.Page(
-    title="Filled containers",
+
+# ====== **NEW** Apply controls on button click ======
+
+
+page_2_1 = vm.Page(
+    id="page_2_1",
+    title="Apply controls on button click",
     components=[
-        vm.Container(
-            title="Outer container plain",
-            components=[
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Container(
-                    title="Inner container filled",
-                    components=[
-                        vm.Graph(
-                            figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"), id="graph_5"
-                        ),
-                    ],
-                    variant="filled",
-                    controls=[
-                        vm.Filter(column="species"),
-                        vm.Filter(column="species"),
-                        vm.Filter(column="species"),
-                        vm.Filter(column="species"),
-                    ],
-                ),
-                vm.Button(text="Export", actions=[va.export_data(targets=["graph_5"])], icon="download"),
-            ],
-            layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 4, 4, 4], [4, 4, 4, 4], [4, 4, 4, 4], [5, -1, -1, -1]]),
-            controls=[
-                vm.Filter(column="species"),
-                vm.Filter(column="species"),
-                vm.Filter(column="species"),
-                vm.Filter(column="species"),
-            ],
-        )
+        vm.Graph(
+            id="p21_graph",
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
     ],
     controls=[
-        vm.ControlGroup(
-            title="Control group 1",
-            controls=[
-                vm.Filter(column="sepal_length"),
-            ],
-            description="control group info",
+        vm.Filter(
+            column="species",
+            targets=["p21_graph"],
+            selector=vm.RadioItems(
+                title="Filter that does NOT auto-apply, but is taken into account when its target Graph is updated.",
+                actions=None,
+            ),
         ),
-        vm.ControlGroup(
-            title="Control group 2",
-            controls=[
-                vm.Filter(column="petal_width"),
-            ],
-            description="control group info",
+        vm.Parameter(
+            targets=["p21_graph.x"],
+            selector=vm.RadioItems(
+                title="Parameter that does NOT auto-apply, but is taken into account when its target Graph is updated.",
+                options=["sepal_width", "sepal_length"],
+                actions=[],
+            ),
         ),
+        vm.Button(text="Apply controls", actions=update_targets()),
     ],
 )
 
-page_4 = vm.Page(
-    title="Containers nested mixed",
+# ====== **NEW** A Slider resizes the data and refreshes two filters; Button then applies them ======
+# The Slider is a data_frame Parameter, so its value resizes the graph's data. Its `update_targets` refreshes the two
+# dynamic filters below on value change - recomputing the RadioItems options and the Slider min/max from the resized
+# data - WITHOUT redrawing the graph (only the filters are targeted). The filters do NOT auto-apply; the Button
+# applies them to the graph on click. The slider->filters step targets only filters (no figure), exercising the fix.
+
+page_3_1 = vm.Page(
+    id="page_3_1",
+    title="Refresh filters with a slider, apply them with a button",
     components=[
-        vm.Container(
-            title="Outer container filled",
-            components=[
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Container(
-                    title="Inner container plain",
-                    components=[
-                        vm.Graph(
-                            figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"), id="graph_6"
-                        ),
-                    ],
-                    controls=[
-                        vm.Filter(column="species"),
-                        vm.Filter(column="species"),
-                        vm.Filter(column="species"),
-                        vm.Filter(column="species"),
-                    ],
-                ),
-                vm.Button(text="Export", actions=[va.export_data(targets=["graph_6"])], icon="download"),
-            ],
-            layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 4, 4, 4], [4, 4, 4, 4], [4, 4, 4, 4], [5, -1, -1, -1]]),
-            controls=[
-                vm.Filter(column="species"),
-                vm.Filter(column="species"),
-                vm.Filter(column="species"),
-                vm.Filter(column="species"),
-            ],
-            variant="filled",
-        )
+        vm.Graph(
+            id="p31_graph",
+            figure=px.scatter(
+                "dynamic_iris", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
     ],
     controls=[
-        vm.ControlGroup(
-            title="Control group 1",
-            controls=[
-                vm.Filter(column="sepal_length"),
-            ],
-            description="control group info",
+        vm.Parameter(
+            id="p31_master_slider",
+            targets=["p31_graph.data_frame.number_of_points"],
+            selector=vm.Slider(
+                min=10,
+                max=150,
+                step=10,
+                value=10,
+                title="Change me to resize the data and refresh the two filters below (graph is not redrawn).",
+                actions=update_targets(targets=["p31_radio_filter", "p31_range_filter"]),
+            ),
         ),
-        vm.ControlGroup(
-            title="Control group 2",
-            controls=[
-                vm.Filter(column="petal_width"),
-            ],
-            description="control group info",
+        vm.Filter(
+            id="p31_radio_filter",
+            column="species",
+            targets=["p31_graph"],
+            selector=vm.RadioItems(
+                title="Options refreshed by the slider; does NOT auto-apply.",
+                actions=None,
+            ),
         ),
+        vm.Filter(
+            id="p31_range_filter",
+            column="petal_length",
+            targets=["p31_graph"],
+            selector=vm.RangeSlider(
+                title="min/max refreshed by the slider; does NOT auto-apply.",
+                actions=[],
+            ),
+        ),
+        vm.Button(text="Apply filters", actions=update_targets(targets=["p31_graph"])),
     ],
 )
 
-page_5 = vm.Page(
-    title="Containers nested filled",
+# ====== **NEW** A deferred data_frame Parameter is still applied when its targets are refreshed ======
+# The Parameter (Slider) resizes the graph's data but has `actions=None`, so changing it does nothing on its own. The
+# Filter is likewise deferred (`actions=[]`). Clicking the Button refreshes the whole page (bare `update_targets()`):
+# the graph reloads with the new data size AND the filter's options recompute to match - proving the deferred
+# parameter's value is counted even though it never triggered a refresh itself.
+
+page_4_1 = vm.Page(
+    id="page_4_1",
+    title="Deferred parameter is still applied on refresh",
     components=[
-        vm.Container(
-            title="Outer container filled",
-            components=[
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Container(
-                    title="Inner container filled",
-                    components=[
-                        vm.Graph(
-                            figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"), id="graph_7"
-                        ),
-                    ],
-                    controls=[
-                        vm.Filter(column="species"),
-                        vm.Filter(column="species"),
-                        vm.Filter(column="species"),
-                        vm.Filter(column="species"),
-                    ],
-                    variant="filled",
-                ),
-                vm.Button(text="Export", actions=[va.export_data(targets=["graph_7"])], icon="download"),
-            ],
-            layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 4, 4, 4], [4, 4, 4, 4], [4, 4, 4, 4], [5, -1, -1, -1]]),
-            controls=[
-                vm.Filter(column="species"),
-                vm.Filter(column="species"),
-                vm.Filter(column="species"),
-                vm.Filter(column="species"),
-            ],
-            variant="filled",
-        )
+        vm.Graph(
+            id="p41_graph",
+            figure=px.scatter(
+                "dynamic_iris", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
     ],
     controls=[
-        vm.ControlGroup(
-            title="Control group 1",
-            controls=[
-                vm.Filter(column="sepal_length"),
-            ],
-            description="control group info",
+        vm.Parameter(
+            id="p41_parameter",
+            targets=["p41_graph.data_frame.number_of_points"],
+            selector=vm.Slider(
+                min=10,
+                max=150,
+                step=10,
+                value=10,
+                title="Resizes the data but does NOT auto-apply; its value is honored on the next refresh.",
+                actions=None,
+            ),
         ),
-        vm.ControlGroup(
-            title="Control group 2",
-            controls=[
-                vm.Filter(column="petal_width"),
-            ],
-            description="control group info",
+        vm.Filter(
+            id="p41_filter",
+            column="species",
+            targets=["p41_graph"],
+            selector=vm.RadioItems(
+                title="Dynamic filter; options recompute from the resized data on refresh.",
+                actions=[],
+            ),
         ),
+        vm.Button(text="Refresh Filter", actions=update_targets(targets=["p41_filter"])),
+        vm.Button(text="Refresh Graph", actions=update_targets(targets=["p41_graph"])),
+        vm.Button(text="Refresh everything on the page", actions=update_targets()),
     ],
-)
-
-page_6 = vm.Page(
-    title="Simple filled container",
-    components=[
-        vm.Container(
-            title="Filled",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"), id="graph_8"),
-            ],
-            variant="filled",
-        )
-    ],
-)
-
-page_7 = vm.Page(
-    title="Simple outlined container",
-    components=[
-        vm.Container(
-            title="Outlined",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"), id="graph_9"),
-            ],
-            variant="outlined",
-        )
-    ],
-    controls=[vm.Filter(column="species", visible=False)],
 )
 
 
 dashboard = vm.Dashboard(
-    title="Vizro",
-    pages=[page_1, page_2, page_6, page_7, page_3, page_4, page_5],
-    navigation=vm.Navigation(
-        nav_selector=vm.NavBar(
-            items=[
-                vm.NavLink(
-                    pages=["Regular page", "Plain containers", "Simple filled container", "Simple outlined container"],
-                    label="First icon",
-                ),
-                vm.NavLink(
-                    pages=["Filled containers", "Containers nested mixed", "Containers nested filled"],
-                    label="Second icon",
-                ),
-            ]
-        )
-    ),
+    pages=[
+        page_0_1,
+        page_1_1,
+        page_2_1,
+        page_3_1,
+        page_4_1,
+    ]
 )
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+    Vizro().build(dashboard).run()
