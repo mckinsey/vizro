@@ -12,6 +12,12 @@ from pages.container_pages import container_variants_page
 from pages.custom_components_page import custom_components_page
 from pages.datepicker_page import datepicker_page
 from pages.datepicker_parameters_page import datepicker_parameters_page
+from pages.datetimepicker_pages import (
+    datetimepicker_parameter,
+    datetimepicker_range,
+    datetimepicker_range_url,
+    datetimepicker_single,
+)
 from pages.dynamic_data_page import dynamic_data_df_parameter_page, dynamic_data_page
 from pages.dynamic_filters_pages import (
     dynamic_filters_categorical_page,
@@ -132,6 +138,10 @@ dashboard = vm.Dashboard(
         timepicker_range,
         timepicker_single,
         timepicker_parameter,
+        datetimepicker_range,
+        datetimepicker_single,
+        datetimepicker_parameter,
+        datetimepicker_range_url,
     ],
     navigation=vm.Navigation(
         pages={
@@ -155,6 +165,10 @@ dashboard = vm.Dashboard(
                 cnst.TIMEPICKER_RANGE_PAGE,
                 cnst.TIMEPICKER_SINGLE_PAGE,
                 cnst.TIMEPICKER_PARAMETER_PAGE,
+                cnst.DATETIMEPICKER_RANGE_PAGE,
+                cnst.DATETIMEPICKER_SINGLE_PAGE,
+                cnst.DATETIMEPICKER_PARAMETER_PAGE,
+                cnst.DATETIMEPICKER_RANGE_URL_PAGE,
             ],
             cnst.AG_GRID_ACCORDION: [
                 cnst.TABLE_PAGE,
