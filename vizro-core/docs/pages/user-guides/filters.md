@@ -303,6 +303,7 @@ For further customizations, refer to the [guide to selectors](selectors.md) and 
 - Select which components the filter applies to by using `targets`.
 - Customize the `selector`, for example `multi` to switch between a multi-option and single-option selector, `options` for a categorical filter or `min` and `max` for a numerical filter.
 - Make the filter's selector invisible by setting `visible=False`.
+- Stop the filter from applying as soon as its value changes by setting its selector's `actions=None`, then apply it on demand with a button. See [apply controls with a button](controls.md#apply-controls-with-a-button).
 
 Below is an example where we only target one page component, and where we further customize the chosen `selector`.
 
