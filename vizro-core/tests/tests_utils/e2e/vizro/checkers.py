@@ -134,6 +134,20 @@ def check_single_time_picker_value(driver, elem_id, expected_hour, expected_minu
     )
 
 
+def check_empty_time_picker_value(driver, elem_id):
+    """Checks that a dmc.TimePicker has no hour or minute entered."""
+    timeout = cnst.SELENIUM_WAITERS_TIMEOUT
+    poll_interval = 0.2
+    elapsed = 0
+    while elapsed < timeout:
+        fields = driver.find_elements(f"div[id='{elem_id}'] input.mantine-TimePicker-field")
+        if len(fields) >= 2 and fields[0].get_attribute("value") == "" and fields[1].get_attribute("value") == "":
+            return
+        time.sleep(poll_interval)
+        elapsed += poll_interval
+    raise TimeoutError(f"TimePicker '{elem_id}' was not empty within {timeout}s")
+
+
 def check_range_time_picker_value(driver, elem_id, start_hour, start_minute, end_hour, end_minute):
     """Checks that a range TimePicker displays the expected start and end times.
 
@@ -147,6 +161,43 @@ def check_range_time_picker_value(driver, elem_id, start_hour, start_minute, end
     """
     check_single_time_picker_value(driver, f"{elem_id}-start", start_hour, start_minute)
     check_single_time_picker_value(driver, f"{elem_id}-end", end_hour, end_minute)
+
+
+def check_single_datetime_picker_value(driver, elem_id, expected_date_value, expected_hour, expected_minute):
+    """Checks that a single DateTimePicker displays the expected date and time.
+
+    Args:
+        driver: dash_br fixture.
+        elem_id: id of the DateTimePicker proxy dcc.Store (without -date/-time suffix).
+        expected_date_value: formatted date shown on the DatePickerInput button (e.g. "Mar 14, 2026").
+        expected_hour: two-digit hour string shown in the time input.
+        expected_minute: two-digit minute string shown in the time input.
+    """
+    check_date_picker_value(driver, f"{elem_id}-date", expected_date_value)
+    check_single_time_picker_value(driver, f"{elem_id}-time", expected_hour, expected_minute)
+
+
+def check_range_datetime_picker_value(driver, elem_id, start, end):
+    """Checks that a range DateTimePicker displays the expected start and end dates and times.
+
+    Args:
+        driver: dash_br fixture.
+        elem_id: id of the range DateTimePicker proxy dcc.Store.
+        start: tuple of (formatted date, hour, minute) for the "From" inputs; hour/minute may be None.
+        end: tuple of (formatted date, hour, minute) for the "To" inputs; hour/minute may be None.
+    """
+    start_date_value, start_hour, start_minute = start
+    end_date_value, end_hour, end_minute = end
+    check_date_picker_value(driver, f"{elem_id}-date-start", start_date_value)
+    check_date_picker_value(driver, f"{elem_id}-date-end", end_date_value)
+    if start_hour is None or start_minute is None:
+        check_empty_time_picker_value(driver, f"{elem_id}-time-start")
+    else:
+        check_single_time_picker_value(driver, f"{elem_id}-time-start", start_hour, start_minute)
+    if end_hour is None or end_minute is None:
+        check_empty_time_picker_value(driver, f"{elem_id}-time-end")
+    else:
+        check_single_time_picker_value(driver, f"{elem_id}-time-end", end_hour, end_minute)
 
 
 def check_accordion_active(driver, accordion_name):
@@ -338,6 +389,71 @@ def check_table_ag_grid_time_values_in_range(driver, table_id, col_id, start_tim
             cell_seconds,
             less_than_or_equal_to(end_seconds),
             reason=f"Row {row_index} value '{cell_text}' is after {end_time}",
+        )
+
+
+def _parse_datetime_hh_mm(datetime_str):
+    """Parse a 'YYYY-MM-DDTHH:MM' string into a timezone-naive datetime floored to minutes."""
+    return datetime.fromisoformat(datetime_str).replace(second=0, microsecond=0)
+
+
+def _parse_ag_grid_cell_datetime(text):
+    """Parse a datetime from an AgGrid cell display string."""
+    return datetime.fromisoformat(text.replace("Z", "+00:00")).replace(second=0, microsecond=0)
+
+
+def check_table_ag_grid_datetime_values_in_range(driver, table_id, col_id, start_datetime, end_datetime):
+    """Checks that all visible AgGrid rows have datetime values within the given range (inclusive).
+
+    Args:
+        driver: dash_br fixture.
+        table_id: id of the AgGrid component.
+        col_id: column id to read from each row.
+        start_datetime: range lower bound as "YYYY-MM-DDTHH:MM".
+        end_datetime: range upper bound as "YYYY-MM-DDTHH:MM".
+    """
+    rows = driver.find_elements(f"div[id='{table_id}'] div[class='ag-center-cols-container'] div[row-index]")
+    start = _parse_datetime_hh_mm(start_datetime)
+    end = _parse_datetime_hh_mm(end_datetime)
+    for row in rows:
+        row_index = row.get_attribute("row-index")
+        cell_text = driver.find_element(
+            table_ag_grid_cell_path_by_row(table_id, row_index=row_index, col_id=col_id)
+        ).text
+        cell_datetime = _parse_ag_grid_cell_datetime(cell_text).replace(tzinfo=None)
+        assert_that(
+            cell_datetime,
+            greater_than_or_equal_to(start),
+            reason=f"Row {row_index} value '{cell_text}' is before {start_datetime}",
+        )
+        assert_that(
+            cell_datetime,
+            less_than_or_equal_to(end),
+            reason=f"Row {row_index} value '{cell_text}' is after {end_datetime}",
+        )
+
+
+def check_table_ag_grid_datetime_values_equal(driver, table_id, col_id, datetime_str):
+    """Checks that all visible AgGrid rows match the given datetime at minute precision.
+
+    Args:
+        driver: dash_br fixture.
+        table_id: id of the AgGrid component.
+        col_id: column id to read from each row.
+        datetime_str: expected datetime as "YYYY-MM-DDTHH:MM".
+    """
+    rows = driver.find_elements(f"div[id='{table_id}'] div[class='ag-center-cols-container'] div[row-index]")
+    expected = _parse_datetime_hh_mm(datetime_str)
+    for row in rows:
+        row_index = row.get_attribute("row-index")
+        cell_text = driver.find_element(
+            table_ag_grid_cell_path_by_row(table_id, row_index=row_index, col_id=col_id)
+        ).text
+        cell_datetime = _parse_ag_grid_cell_datetime(cell_text).replace(tzinfo=None)
+        assert_that(
+            cell_datetime,
+            equal_to(expected),
+            reason=f"Row {row_index} value '{cell_text}' does not match {datetime_str}",
         )
 
 
