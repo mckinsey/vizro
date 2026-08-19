@@ -15,6 +15,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro.managers import data_manager
 from vizro.models._action._action import Action
+from vizro.models.types import capture
 
 
 @pytest.fixture
@@ -254,6 +255,12 @@ class TestDunderMethodsGraph:
         graph = vm.Graph(figure=standard_px_chart).__call__()
 
         standard_px_chart.update_layout(modebar_remove=["select2d", "lasso2d"])
+        # standard_px_chart is colored by "continent", so Graph.__call__ automatically applies a
+        # color_discrete_map (see vizro.themes._consistent_colors) that standard_px_chart itself never had
+        # applied. Align the colors here so this test only asserts on the layout optimizations it's meant to
+        # cover; the color assignment itself is tested separately.
+        consistent_colors = {trace.name: trace.marker.color for trace in graph.data}
+        standard_px_chart.for_each_trace(lambda trace: trace.update(marker_color=consistent_colors[trace.name]))
 
         assert graph == standard_px_chart
 
@@ -269,6 +276,53 @@ class TestAttributesGraph:
         graph = vm.Graph(figure=standard_px_chart)
         assert hasattr(graph, "_filter_interaction_input")
         assert "modelID" in graph._filter_interaction_input
+
+
+class TestConsistentColors:
+    """Tests for the automatic color_discrete_map injection in Graph.__call__."""
+
+    def test_same_category_gets_same_color_across_graphs(self, gapminder, mocker):
+        mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
+        df_1 = gapminder[gapminder["country"].isin(["France", "Germany"])]
+        df_2 = gapminder[gapminder["country"].isin(["France", "Belgium"])]
+
+        graph_1 = vm.Graph(figure=px.bar(df_1, x="country", y="lifeExp", color="country")).__call__()
+        graph_2 = vm.Graph(figure=px.bar(df_2, x="country", y="lifeExp", color="country")).__call__()
+
+        colors_1 = {trace.name: trace.marker.color for trace in graph_1.data}
+        colors_2 = {trace.name: trace.marker.color for trace in graph_2.data}
+
+        assert colors_1["France"] == colors_2["France"]
+        assert colors_2["Belgium"] not in colors_1.values()
+
+    def test_explicit_color_discrete_map_is_respected(self, gapminder, mocker):
+        mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
+        df = gapminder[gapminder["country"] == "France"]
+        graph = vm.Graph(
+            figure=px.bar(df, x="country", y="lifeExp", color="country", color_discrete_map={"France": "#000000"})
+        ).__call__()
+
+        assert graph.data[0].marker.color == "#000000"
+
+    def test_numeric_color_column_untouched(self, gapminder, mocker):
+        mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
+        df = gapminder[gapminder["country"] == "France"]
+        graph = vm.Graph(figure=px.scatter(df, x="year", y="lifeExp", color="lifeExp")).__call__()
+
+        # A continuous color column is assigned a coloraxis rather than a discrete per-point color.
+        assert graph.data[0].marker.coloraxis is not None
+
+    def test_custom_chart_untouched(self, gapminder, mocker):
+        mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
+
+        @capture("graph")
+        def custom_chart(data_frame, x, y):
+            return go.Figure(go.Bar(x=data_frame[x], y=data_frame[y]))
+
+        df = gapminder[gapminder["country"] == "France"]
+        graph = vm.Graph(figure=custom_chart(df, x="country", y="lifeExp")).__call__()
+
+        assert len(graph.data) == 1
 
 
 class TestProcessGraphDataFrame:

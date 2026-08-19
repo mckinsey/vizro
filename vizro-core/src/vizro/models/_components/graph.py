@@ -32,8 +32,39 @@ from vizro.models.types import (
     _IdProperty,
     _validate_captured_callable,
 )
+from vizro.themes._consistent_colors import _consistent_color_discrete_map
 
 logger = logging.getLogger(__name__)
+
+
+def _apply_consistent_colors(figure: CapturedCallable, kwargs: dict) -> dict:
+    """Injects a color_discrete_map into kwargs so the same category always renders in the same color.
+
+    Only applies to genuine plotly.express chart functions colored by a categorical column, and only when
+    the user hasn't already specified color_discrete_map/color_discrete_sequence themselves.
+    """
+    function = figure._function
+    if getattr(function, "__module__", None) != "plotly.express._chart_types":
+        return kwargs
+
+    bound_arguments = figure._arguments
+    if "color_discrete_map" in bound_arguments or "color_discrete_sequence" in bound_arguments:
+        return kwargs
+
+    color_column = bound_arguments.get("color")
+    if not isinstance(color_column, str):
+        return kwargs
+
+    data_frame = kwargs.get("data_frame")
+    if data_frame is None or color_column not in getattr(data_frame, "columns", []):
+        return kwargs
+
+    categories = data_frame[color_column].dropna().unique()
+    if pd.api.types.is_numeric_dtype(categories):
+        return kwargs
+
+    kwargs["color_discrete_map"] = _consistent_color_discrete_map(categories)
+    return kwargs
 
 
 class Graph(VizroBaseModel):
@@ -181,6 +212,7 @@ underlying component may change in the future.""",
         # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
         if "data_frame" not in kwargs:
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
+        kwargs = _apply_consistent_colors(self.figure, kwargs)
         fig = self.figure(**kwargs)
         fig = self._optimise_fig_layout_for_dashboard(fig)
 

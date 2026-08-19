@@ -22,6 +22,7 @@ from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Dashboard, Filter
 from vizro.models.types import FigureType
+from vizro.themes import _consistent_colors as consistent_colors
 
 logger = logging.getLogger(__name__)
 
@@ -343,6 +344,7 @@ Provide a valid import path for these in your dashboard configuration."""
         """
         data_manager._clear()
         model_manager._clear()
+        consistent_colors._clear()
         dash._callback.GLOBAL_CALLBACK_LIST = []
         dash._callback.GLOBAL_CALLBACK_MAP = {}
         dash._callback.GLOBAL_INLINE_SCRIPTS = []
