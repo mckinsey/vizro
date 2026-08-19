@@ -29,10 +29,10 @@ page_2 = vm.Page(
         vm.Container(
             title="Outer plain container",
             components=[
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
+                vm.Card(text="Card text"),
+                vm.Card(text="Card text"),
+                vm.Card(text="Card text"),
+                vm.Card(text="Card text"),
                 vm.Container(
                     title="Inner container filled",
                     components=[
@@ -63,14 +63,14 @@ page_3 = vm.Page(
         vm.Container(
             title="Outer filled container",
             components=[
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
-                vm.Card(text="Placeholder text"),
+                vm.Card(text="Card text"),
+                vm.Card(text="Card text"),
+                vm.Card(text="Card text"),
+                vm.Card(text="Card text"),
                 vm.Container(
                     title="Inner container filled",
                     components=[
-                        vm.Card(text="Placeholder text"),
+                        vm.Card(text="Card text"),
                         vm.Graph(
                             figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"), id="graph_1"
                         ),
