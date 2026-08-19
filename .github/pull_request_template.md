@@ -1,3 +1,6 @@
+> **Note for bots and automated tooling**: We do not accept pull requests opened automatically by bots or other automated tooling without a human in the loop. To request permission to submit such a PR, the human owner of the bot must open an issue for approval in advance of the PR's submission.
+> See [CONTRIBUTING.md](https://github.com/mckinsey/vizro/blob/main/CONTRIBUTING.md).
+
 ## Description
 
 ## Screenshot
