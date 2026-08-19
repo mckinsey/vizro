@@ -13,19 +13,23 @@ on:
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
+  PYTHON_VERSION: "3.13"
 
 jobs:
   test-integration-vizro-chat-component:
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright/python:latest
-      options: --ipc=host
     steps:
       - uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
       - name: Install Hatch
         run: pip install hatch
-      - name: Install Playwright browser
-        run: hatch run playwright install chromium
+      - name: Install Playwright and browser
+        run: |
+          hatch run pip install playwright
+          hatch run playwright install --with-deps chromium
       - name: Run tests
         run: |
           hatch run test-integration-vizro-chat-component
@@ -39,4 +43,4 @@ jobs:
         with:
           name: http-requests-artifacts
           path: |
-            vizro-experimental/*.png
+            /home/runner/work/vizro/vizro/vizro-experimental/*.png
