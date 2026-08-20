@@ -5,7 +5,7 @@ from dash import dcc, html
 from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
-from vizro.actions._parameter_action import _parameter
+from vizro.actions import update_targets
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._controls._controls_utils import (
@@ -156,7 +156,11 @@ class Parameter(VizroBaseModel):
         if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
             self._selector_properties = set(selector_inner_component_properties) - set(html.Div().available_properties)
 
-        if not self.selector.actions:
+        # Check model_fields_set (not falsiness) so an explicit `selector=X(actions=None)` or `selector=X(actions=[])`
+        # is honored as "do nothing on selector change" rather than being replaced by the default. The parameter
+        # value is still applied whenever its targets are refreshed by something else (e.g. a Button running
+        # update_targets).
+        if "actions" not in self.selector.model_fields_set:
             from vizro.models import Filter
 
             page_dynamic_filters = [
@@ -182,9 +186,10 @@ class Parameter(VizroBaseModel):
 
             # Extending `self.targets` with `filter_targets` instead of redefining it to avoid triggering the
             # pydantic validator like `check_dot_notation` on the `self.targets` again.
-            # We do the update to ensure that `self.targets` is consistent with the targets passed to `_parameter`.
+            # We do the update to ensure that `self.targets` is consistent with the target ids passed to update_targets.
             self.targets.extend(list(filter_targets))
-            self.selector.actions = [_parameter(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
+            target_ids = [target.partition(".")[0] for target in self.targets]
+            self.selector.actions = [update_targets(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=target_ids)]
 
     @_log_call
     def build(self):

@@ -34,6 +34,8 @@ jobs:
         run: |
           hatch run pip install playwright
           hatch run playwright install --with-deps chromium
+      - name: Show dependency tree
+        run: hatch run pip tree
       - name: Run tests
         run: |
           hatch run test-e2e-vizro-http-requests

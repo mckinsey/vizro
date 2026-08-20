@@ -212,6 +212,7 @@ For further customizations, refer to the [guide to selectors](selectors.md) and 
 
 - Customize the `selector`. For example: `multi`, to switch between a multi-option and single-option selector; `options` for a categorical parameter; or `min` and `max` for a numerical parameter.
 - Make the parameter's selector invisible by setting `visible=False`. This is particularly useful for graph interactions to hide the selector from the user interface while keeping the functionality active. Cross-highlighting is a common example of this pattern. For a complete code example, see the [cross-highlighting section](graph-table-actions.md#cross-highlight) in the graph and table interactions guide.
+- Stop the parameter from applying as soon as its value changes by setting its selector's `actions=None`, then apply it on demand with a button. See [apply controls with a button](controls.md#apply-controls-with-a-button).
 
 [nested]: ../../assets/user_guides/control/control5.png
 [parameter]: ../../assets/user_guides/control/control4.png
