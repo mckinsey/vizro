@@ -3,6 +3,8 @@
 import re
 
 import dash_bootstrap_components as dbc
+import pandas as pd
+import plotly.express
 import plotly.graph_objects as go
 import pytest
 import vizro_dash_components as vdc
@@ -16,6 +18,7 @@ import vizro.plotly.express as px
 from vizro.managers import data_manager
 from vizro.models._action._action import Action
 from vizro.models.types import capture
+from vizro.themes._palettes import qualitative
 
 
 @pytest.fixture
@@ -279,18 +282,48 @@ class TestAttributesGraph:
 
 
 class TestConsistentColors:
-    """Tests for the automatic color_discrete_map injection in Graph.__call__."""
+    """Tests for the opt-in color_discrete_map injection in Graph.__call__ (vm.Dashboard(consistent_colors=True))."""
+
+    _dashboard_count = 0
+
+    @classmethod
+    def _build_dashboard(cls, *graphs, consistent_colors=True):
+        # Registering a vm.Dashboard(consistent_colors=...) in model_manager is what Graph.__call__ checks -
+        # calling .build() isn't necessary for that. Each page needs a distinct title/path since Page path
+        # uniqueness is enforced across the whole model_manager, not scoped to one Dashboard.
+        cls._dashboard_count += 1
+        vm.Dashboard(
+            pages=[vm.Page(title=f"Test {cls._dashboard_count}", components=list(graphs))],
+            consistent_colors=consistent_colors,
+        )
+
+    def test_disabled_when_not_opted_in(self, gapminder, mocker):
+        mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
+        df_1 = gapminder[gapminder["country"].isin(["France", "Germany"])]
+        df_2 = gapminder[gapminder["country"].isin(["France", "Belgium"])]
+
+        graph_1 = vm.Graph(figure=px.bar(df_1, x="country", y="lifeExp", color="country"))
+        graph_2 = vm.Graph(figure=px.bar(df_2, x="country", y="lifeExp", color="country"))
+        self._build_dashboard(graph_1, graph_2, consistent_colors=False)
+
+        colors_1 = {trace.name: trace.marker.color for trace in graph_1.__call__().data}
+        colors_2 = {trace.name: trace.marker.color for trace in graph_2.__call__().data}
+
+        # Without opting in, France gets Plotly's default per-figure colorway assignment in each chart, which
+        # differs here because the two charts have different category orderings (see the bug this feature fixes).
+        assert colors_1["France"] != colors_2["France"]
 
     def test_same_category_gets_same_color_across_graphs(self, gapminder, mocker):
         mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
         df_1 = gapminder[gapminder["country"].isin(["France", "Germany"])]
         df_2 = gapminder[gapminder["country"].isin(["France", "Belgium"])]
 
-        graph_1 = vm.Graph(figure=px.bar(df_1, x="country", y="lifeExp", color="country")).__call__()
-        graph_2 = vm.Graph(figure=px.bar(df_2, x="country", y="lifeExp", color="country")).__call__()
+        graph_1 = vm.Graph(figure=px.bar(df_1, x="country", y="lifeExp", color="country"))
+        graph_2 = vm.Graph(figure=px.bar(df_2, x="country", y="lifeExp", color="country"))
+        self._build_dashboard(graph_1, graph_2)
 
-        colors_1 = {trace.name: trace.marker.color for trace in graph_1.data}
-        colors_2 = {trace.name: trace.marker.color for trace in graph_2.data}
+        colors_1 = {trace.name: trace.marker.color for trace in graph_1.__call__().data}
+        colors_2 = {trace.name: trace.marker.color for trace in graph_2.__call__().data}
 
         assert colors_1["France"] == colors_2["France"]
         assert colors_2["Belgium"] not in colors_1.values()
@@ -300,17 +333,19 @@ class TestConsistentColors:
         df = gapminder[gapminder["country"] == "France"]
         graph = vm.Graph(
             figure=px.bar(df, x="country", y="lifeExp", color="country", color_discrete_map={"France": "#000000"})
-        ).__call__()
+        )
+        self._build_dashboard(graph)
 
-        assert graph.data[0].marker.color == "#000000"
+        assert graph.__call__().data[0].marker.color == "#000000"
 
     def test_numeric_color_column_untouched(self, gapminder, mocker):
         mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
         df = gapminder[gapminder["country"] == "France"]
-        graph = vm.Graph(figure=px.scatter(df, x="year", y="lifeExp", color="lifeExp")).__call__()
+        graph = vm.Graph(figure=px.scatter(df, x="year", y="lifeExp", color="lifeExp"))
+        self._build_dashboard(graph)
 
         # A continuous color column is assigned a coloraxis rather than a discrete per-point color.
-        assert graph.data[0].marker.coloraxis is not None
+        assert graph.__call__().data[0].marker.coloraxis is not None
 
     def test_custom_chart_untouched(self, gapminder, mocker):
         mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
@@ -320,9 +355,52 @@ class TestConsistentColors:
             return go.Figure(go.Bar(x=data_frame[x], y=data_frame[y]))
 
         df = gapminder[gapminder["country"] == "France"]
-        graph = vm.Graph(figure=custom_chart(df, x="country", y="lifeExp")).__call__()
+        graph = vm.Graph(figure=custom_chart(df, x="country", y="lifeExp"))
+        self._build_dashboard(graph)
 
-        assert len(graph.data) == 1
+        assert len(graph.__call__().data) == 1
+
+    def test_scoped_to_owning_dashboard_only(self, gapminder, mocker):
+        """A Dashboard with consistent_colors=False must not be affected by another Dashboard with it True."""
+        mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
+        df = gapminder[gapminder["country"].isin(["France", "Germany"])]
+
+        graph_off = vm.Graph(figure=px.bar(df, x="country", y="lifeExp", color="country"))
+        self._build_dashboard(graph_off, consistent_colors=False)
+
+        graph_on = vm.Graph(figure=px.bar(df, x="country", y="lifeExp", color="country"))
+        self._build_dashboard(graph_on, consistent_colors=True)
+
+        colors_off = {trace.name: trace.marker.color for trace in graph_off.__call__().data}
+        colors_on = {trace.name: trace.marker.color for trace in graph_on.__call__().data}
+
+        # graph_off's own dashboard opted out, so it must render exactly as plain (unwrapped) plotly.express
+        # would - i.e. no color_discrete_map got injected - even though a sibling dashboard in the same
+        # process has consistent_colors=True.
+        expected_off_colors = {
+            trace.name: trace.marker.color
+            for trace in plotly.express.bar(df, x="country", y="lifeExp", color="country").data
+        }
+        assert colors_off == expected_off_colors
+        assert colors_on["France"] in qualitative
+
+    def test_boolean_color_column_treated_as_categorical(self, gapminder, mocker):
+        mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
+        df = gapminder[gapminder["country"].isin(["France", "Japan"])]
+        df = df.assign(is_europe=df["continent"] == "Europe")
+        graph = vm.Graph(figure=px.bar(df, x="country", y="lifeExp", color="is_europe"))
+        self._build_dashboard(graph)
+
+        colors = {trace.name: trace.marker.color for trace in graph.__call__().data}
+        assert all(color in qualitative for color in colors.values())
+
+    def test_mixed_type_category_column_does_not_raise(self, mocker):
+        mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
+        df = pd.DataFrame({"x": [1, 2, 3], "y": [10, 20, 30], "category": ["a", 1, "b"]})
+        graph = vm.Graph(figure=px.bar(df, x="x", y="y", color="category"))
+        self._build_dashboard(graph)
+
+        assert len(graph.__call__().data) == 3
 
 
 class TestProcessGraphDataFrame:

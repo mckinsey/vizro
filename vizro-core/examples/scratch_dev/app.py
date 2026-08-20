@@ -1,9 +1,18 @@
-"""Showcase dashboard for Vizro's automatic consistent-color feature.
+"""Showcase dashboard for Vizro's opt-in consistent-color feature (vm.Dashboard(consistent_colors=True)).
 
-Every chart below is colored by "continent" or "country". None of them passes an explicit
-`color_discrete_map`, yet a given continent/country always renders in the same color everywhere it
-appears - across chart types, across pages, and as filters change what data a chart shows. That's the
-new default behavior implemented in `vizro.models._components.graph._apply_consistent_colors`.
+Every country-colored chart below draws from the same fixed pool of exactly 10 European countries
+(EUROPEAN_COUNTRIES) - one per color in the qualitative palette, so nothing ever collides. None of them
+passes an explicit `color_discrete_map`, yet a given country always renders in the same color everywhere it
+appears - across chart types, across pages, and as a filter changes which countries a chart shows. This
+only happens because the dashboard below opts in with `consistent_colors=True`; without it, each chart
+would fall back to Plotly's normal per-figure color assignment (see
+`vizro.models._components.graph._apply_consistent_colors`).
+
+Page 4 additionally shows how to opt a custom `@capture("graph")` chart into the same colors, since that
+automatic behavior only covers genuine plotly.express charts.
+
+Note: with more distinct categories in a dashboard than colors in the qualitative palette (10), colors
+will start to repeat - see the "Consistent categorical colors across charts" section of themes.md.
 """
 
 import plotly.graph_objects as go
@@ -11,17 +20,27 @@ import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.managers import color_manager
 from vizro.models.types import capture
-
-# Colors assigned to categories are cached process-wide (see vizro.themes._consistent_colors), so a custom
-# chart can look up the exact same color Vizro would assign automatically to a plotly.express chart.
-from vizro.themes._consistent_colors import _consistent_color_discrete_map
 
 df = px.data.gapminder()
 
-# Countries that appear across several of the pages below (rankings differ by year/metric, but the
-# overlapping names - e.g. United States, Japan - are exactly what should keep a stable color).
-featured_countries = ["United States", "China", "India", "Japan", "Germany", "Brazil", "Norway"]
+# Exactly 10 countries - one per color in the qualitative palette - reused across every country-colored
+# chart in this dashboard, so no two countries are ever forced to share a color (continents, on the other
+# hand, are a different categorical column entirely and never appear in the same legend as a country).
+EUROPEAN_COUNTRIES = [
+    "France",
+    "Germany",
+    "Italy",
+    "Netherlands",
+    "Spain",
+    "Sweden",
+    "Belgium",
+    "Norway",
+    "Ireland",
+    "Portugal",
+]
+df_europe = df[df["country"].isin(EUROPEAN_COUNTRIES)]
 
 
 # --- Page 1: continents, several chart types and aggregations, one shared color per continent -------------
@@ -75,49 +94,46 @@ page_continents = vm.Page(
 )
 
 
-# --- Page 2: country rankings (Africa only), deliberately using different country subsets per chart --------
-df_europe = df[df["continent"] == "Europe"]
-
-top_population_2007 = df_europe[df_europe["year"] == 2007].nlargest(10, "lifeExp").sort_values("lifeExp")
-bar_population = px.bar(
-    top_population_2007,
+# --- Page 2: country rankings, deliberately using different years/metrics/subsets per chart ----------------
+top_lifeexp_2007 = df_europe[df_europe["year"] == 2007].nlargest(6, "lifeExp").sort_values("lifeExp")
+bar_lifeexp = px.bar(
+    top_lifeexp_2007,
     x="lifeExp",
     y="country",
     color="country",
     orientation="h",
-    title="Top 10 Countries by life expectancy",
-    labels={"pop": "Population", "country": "Country"},
+    title="Top 6 Countries by Life Expectancy (2007)",
+    labels={"lifeExp": "Life expectancy", "country": "Country"},
 )
 
-top_gdp_2007 = df_europe[df_europe["year"] == 2007].nlargest(10, "gdpPercap").sort_values("gdpPercap")
+top_gdp_1992 = df_europe[df_europe["year"] == 1992].nlargest(6, "gdpPercap").sort_values("gdpPercap")
 bar_gdp = px.bar(
-    top_gdp_2007,
+    top_gdp_1992,
     x="gdpPercap",
     y="country",
     color="country",
     orientation="h",
-    title="Top 10 Countries by GDP per Capita (2007)",
+    title="Top 6 Countries by GDP per Capita (1992)",
     labels={"gdpPercap": "GDP per capita", "country": "Country"},
 )
 
-featured_countries_1 = ["Italy", "France", "Ireland", "Greece", "Iceland", "Norway", "Portugal"]
 line_trend = px.line(
-    df_europe[df_europe["country"].isin(featured_countries_1)],
+    df_europe,
     x="year",
     y="lifeExp",
     color="country",
     markers=True,
-    title="Life Expectancy Trend for Major Economies",
+    title="Life Expectancy Trend (1952-2007)",
     labels={"lifeExp": "Life expectancy", "year": "Year", "country": "Country"},
 )
 
 page_rankings = vm.Page(
     title="Country Rankings",
-    description="These three charts each rank a different, non-overlapping-by-design set of African "
-    "countries (top population in 2007, top GDP per capita in 2007, a fixed watchlist across all years). "
-    "Countries that show up more than once - e.g. Norway, Iceland - keep the exact same color everywhere.",
+    description="Three different rankings of the same 10 European countries - different years, different "
+    "metrics, different subsets of 6 - yet any country that shows up in more than one chart keeps exactly "
+    "the same color throughout.",
     components=[
-        vm.Graph(figure=bar_population),
+        vm.Graph(figure=bar_lifeexp),
         vm.Graph(figure=bar_gdp),
         vm.Graph(figure=line_trend),
     ],
@@ -125,24 +141,23 @@ page_rankings = vm.Page(
 )
 
 
-# --- Page 3: filtering a chart changes which countries it shows, colors still don't move -------------------
-df_2007 = df[df["year"] == 2007]
+# --- Page 3: filtering shrinks which countries a chart shows, but colors never move ------------------------
+df_europe_2007 = df_europe[df_europe["year"] == 2007]
 
 scatter_filtered = px.scatter(
-    df_2007,
+    df_europe_2007,
     x="gdpPercap",
     y="lifeExp",
     size="pop",
     color="country",
     hover_name="country",
-    log_x=True,
-    size_max=40,
+    size_max=50,
     title="GDP vs. Life Expectancy (2007)",
     labels={"gdpPercap": "GDP per capita", "lifeExp": "Life expectancy"},
 )
 
 bar_filtered = px.bar(
-    df_2007.sort_values("lifeExp"),
+    df_europe_2007.sort_values("lifeExp"),
     x="lifeExp",
     y="country",
     color="country",
@@ -151,18 +166,32 @@ bar_filtered = px.bar(
     labels={"lifeExp": "Life expectancy", "country": "Country"},
 )
 
+page_interactive = vm.Page(
+    title="Interactive Explorer",
+    description="Use the filter to remove countries from both charts below. Vizro re-renders them on every "
+    "filter change, but any country that's still shown keeps the exact color it had before filtering - "
+    "colors are re-resolved from the same dashboard-wide registry on every render, not baked in once.",
+    components=[
+        vm.Graph(figure=scatter_filtered),
+        vm.Graph(figure=bar_filtered),
+    ],
+    controls=[vm.Filter(column="country")],
+    layout=vm.Grid(grid=[[0, 1]]),
+)
+
 
 # --- Page 4: a custom chart, manually reusing Vizro's internal color registry -------------------------------
 @capture("graph")
 def life_expectancy_slopechart(data_frame, start_year, end_year, category_column="country"):
     """Custom slopechart comparing a metric between two years, one line per category.
 
-    Custom `@capture("graph")` charts aren't covered by Vizro's automatic color-syncing (that only applies
-    to genuine plotly.express charts), so this reaches into `vizro.themes._consistent_colors` - the same
-    registry Vizro itself uses - to color each country exactly as it's colored everywhere else in this
-    dashboard.
+    Custom `@capture("graph")` charts aren't covered by `vm.Dashboard(consistent_colors=True)` automatically
+    - that only applies to genuine plotly.express charts - so this reaches into
+    `vizro.managers.color_manager` (currently a private API) directly, to color each country exactly as
+    it's colored everywhere else in this dashboard.
     """
     categories = data_frame[category_column].unique()
+    color_map = color_manager._get_color_discrete_map(categories)
 
     fig = go.Figure()
     for category in categories:
@@ -172,11 +201,14 @@ def life_expectancy_slopechart(data_frame, start_year, end_year, category_column
         if start.empty or end.empty:
             continue
 
+        color = color_map[category]
         fig.add_trace(
             go.Scatter(
                 x=[str(start_year), str(end_year)],
                 y=[start.iloc[0], end.iloc[0]],
                 mode="lines+markers+text",
+                line={"color": color, "width": 3},
+                marker={"color": color, "size": 10},
                 text=[category, ""],
                 textposition="middle left",
                 name=category,
@@ -193,12 +225,12 @@ def life_expectancy_slopechart(data_frame, start_year, end_year, category_column
 
 page_custom = vm.Page(
     title="Custom Chart: Slopechart",
-    description="A hand-built go.Figure slopechart for the same 'major economies' watchlist from Country "
-    "Rankings, colored to match by reusing Vizro's color registry directly.",
+    description="A hand-built go.Figure slopechart for the same 10 European countries, colored to match "
+    "the rest of the dashboard by reaching into Vizro's internal color registry directly.",
     components=[
         vm.Graph(
             figure=life_expectancy_slopechart(
-                df[df["country"].isin(featured_countries)],
+                df_europe,
                 start_year=1952,
                 end_year=2007,
             )
@@ -209,7 +241,8 @@ page_custom = vm.Page(
 
 dashboard = vm.Dashboard(
     title="Gapminder: Consistent Colors Showcase",
-    pages=[page_continents, page_rankings, page_custom],
+    pages=[page_continents, page_rankings, page_interactive, page_custom],
+    consistent_colors=True,
 )
 
 if __name__ == "__main__":

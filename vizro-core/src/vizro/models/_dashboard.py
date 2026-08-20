@@ -102,6 +102,13 @@ class Dashboard(VizroBaseModel):
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         default="vizro_dark", description="Theme to be applied across dashboard."
     )
+    consistent_colors: bool = Field(
+        default=False,
+        description="""Whether a given category (e.g. a country name) should always render in the same color
+        across every chart in this dashboard, rather than each chart assigning colors independently. Colors
+        are still limited to the qualitative palette's size, so dashboards with many distinct categories may
+        see colors reused once that limit is exceeded.""",
+    )
     navigation: Annotated[
         Navigation | None, AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
     ]
