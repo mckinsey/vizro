@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_accordion_active
@@ -122,10 +123,194 @@ def _set_time_picker_fields(driver, elem_id, hour, minute):
         time.sleep(0.3)
 
 
+def _iso_date_to_aria_label(iso_date):
+    """Convert an ISO date string to the dmc calendar day button aria-label."""
+    dt = datetime.strptime(iso_date, "%Y-%m-%d")
+    return f"{dt.day} {dt.strftime('%B')} {dt.year}"
+
+
+def _click_displayed_calendar_control(driver, css_selector_within_calendar):
+    """Click a control inside the topmost visible calendar popover."""
+    timeout = cnst.SELENIUM_WAITERS_TIMEOUT
+    poll_interval = 0.2
+    elapsed = 0
+    while elapsed < timeout:
+        for calendar in reversed(driver.driver.find_elements(By.CSS_SELECTOR, 'div[data-calendar="true"]')):
+            if not calendar.is_displayed():
+                continue
+            controls = calendar.find_elements(By.CSS_SELECTOR, css_selector_within_calendar)
+            if controls:
+                driver.driver.execute_script("arguments[0].click();", controls[0])
+                return
+        time.sleep(poll_interval)
+        elapsed += poll_interval
+    raise TimeoutError(f"Displayed calendar control not found: {css_selector_within_calendar}")
+
+
+def _parse_calendar_month_year(driver):
+    """Read the month currently shown in an open dmc.DatePickerInput calendar."""
+    timeout = cnst.SELENIUM_WAITERS_TIMEOUT
+    poll_interval = 0.2
+    elapsed = 0
+    while elapsed < timeout:
+        for calendar in reversed(driver.driver.find_elements(By.CSS_SELECTOR, 'div[data-calendar="true"]')):
+            if not calendar.is_displayed():
+                continue
+            for level in calendar.find_elements(By.CSS_SELECTOR, ".mantine-DatePickerInput-calendarHeaderLevel"):
+                level_text = level.text.strip()
+                if level_text:
+                    return datetime.strptime(level_text, "%B %Y")
+        time.sleep(poll_interval)
+        elapsed += poll_interval
+    raise TimeoutError("Calendar header did not populate")
+
+
+def _navigate_calendar_to_month(driver, year, month):
+    """Navigate an open calendar to the requested month."""
+    for _ in range(24):
+        displayed = _parse_calendar_month_year(driver)
+        if displayed.year == year and displayed.month == month:
+            return
+        diff = (year - displayed.year) * 12 + (month - displayed.month)
+        direction = "next" if diff > 0 else "previous"
+        _click_displayed_calendar_control(
+            driver,
+            f'button.mantine-DatePickerInput-calendarHeaderControl[data-direction="{direction}"]',
+        )
+        time.sleep(0.2)
+    raise TimeoutError(f"Could not navigate calendar to {year}-{month:02d}")
+
+
+def _select_date_picker_input_date(driver, date_elem_id, iso_date):
+    """Open a dmc.DatePickerInput calendar, navigate to the target month, and select the date."""
+    target = datetime.strptime(iso_date, "%Y-%m-%d")
+    driver.multiple_click(f'button[id="{date_elem_id}"]', 1)
+    driver.wait_for_element('div[data-calendar="true"]')
+    time.sleep(0.3)
+    _navigate_calendar_to_month(driver, target.year, target.month)
+    _click_displayed_calendar_control(driver, f'button[aria-label="{_iso_date_to_aria_label(iso_date)}"]')
+    time.sleep(0.2)
+
+
+def select_single_datetime_picker_value(driver, elem_id, iso_date, hour, minute):
+    """Set a single DateTimePicker value (date + HH:MM).
+
+    Clicks outside the control after entry to trigger debounce and waits for Dash callbacks to finish.
+
+    Args:
+        driver: dash_br fixture.
+        elem_id: id of the DateTimePicker proxy dcc.Store (without -date/-time suffix).
+        iso_date: target date as "YYYY-MM-DD".
+        hour: two-digit hour string.
+        minute: two-digit minute string.
+    """
+    _select_date_picker_input_date(driver, f"{elem_id}-date", iso_date)
+    _set_time_picker_fields(driver, f"{elem_id}-time", hour, minute)
+    driver.find_element("body").click()
+    callbacks_finish_waiter(driver)
+
+
+def select_range_datetime_picker_value(driver, elem_id, start, end):
+    """Set a range DateTimePicker value (date + optional HH:MM for both ends).
+
+    Dates are always required. Pass ``None`` for hour/minute on either side to leave that time cleared;
+    the filter then treats the date-only value as start-of-day (From) or end-of-day (To).
+
+    Args:
+        driver: dash_br fixture.
+        elem_id: id of the range DateTimePicker proxy dcc.Store.
+        start: tuple of (ISO date "YYYY-MM-DD", hour, minute) for the "From" inputs.
+        end: tuple of (ISO date "YYYY-MM-DD", hour, minute) for the "To" inputs.
+    """
+    start_iso_date, start_hour, start_minute = start
+    end_iso_date, end_hour, end_minute = end
+    _select_date_picker_input_date(driver, f"{elem_id}-date-start", start_iso_date)
+    _select_date_picker_input_date(driver, f"{elem_id}-date-end", end_iso_date)
+    if start_hour is not None and start_minute is not None:
+        _set_time_picker_fields(driver, f"{elem_id}-time-start", start_hour, start_minute)
+    if end_hour is not None and end_minute is not None:
+        _set_time_picker_fields(driver, f"{elem_id}-time-end", end_hour, end_minute)
+    time.sleep(0.5)  # allow debounced TimePicker values to flush into the proxy dcc.Store
+    driver.find_element("body").click()
+    callbacks_finish_waiter(driver)
+
+
 def select_range_time_picker_value_playwright(page, elem_id, start_hour, start_minute, end_hour, end_minute):
     """Set a range TimePicker value (HH:MM) using Playwright."""
     _set_time_picker_fields_playwright(page, f"{elem_id}-start", start_hour, start_minute)
     _set_time_picker_fields_playwright(page, f"{elem_id}-end", end_hour, end_minute)
+    page.locator("body").click()
+
+
+def _click_displayed_calendar_control_playwright(page, css_selector_within_calendar):
+    """Click a control inside the topmost visible calendar popover using Playwright."""
+    deadline = time.time() + cnst.SELENIUM_WAITERS_TIMEOUT
+    while time.time() < deadline:
+        for calendar in reversed(page.locator('div[data-calendar="true"]').all()):
+            if not calendar.is_visible():
+                continue
+            control = calendar.locator(css_selector_within_calendar).first
+            if control.count():
+                control.click(force=True)
+                return
+        page.wait_for_timeout(200)
+    raise TimeoutError(f"Displayed calendar control not found: {css_selector_within_calendar}")
+
+
+def _parse_calendar_month_year_playwright(page):
+    """Read the month currently shown in an open dmc.DatePickerInput calendar using Playwright."""
+    deadline = time.time() + cnst.SELENIUM_WAITERS_TIMEOUT
+    while time.time() < deadline:
+        for calendar in reversed(page.locator('div[data-calendar="true"]').all()):
+            if not calendar.is_visible():
+                continue
+            level = calendar.locator(".mantine-DatePickerInput-calendarHeaderLevel").first
+            if level.count():
+                level_text = level.inner_text(timeout=200).strip()
+                if level_text:
+                    return datetime.strptime(level_text, "%B %Y")
+        page.wait_for_timeout(200)
+    raise TimeoutError("Calendar header did not populate")
+
+
+def _navigate_calendar_to_month_playwright(page, year, month):
+    """Navigate an open calendar to the requested month using Playwright."""
+    for _ in range(24):
+        displayed = _parse_calendar_month_year_playwright(page)
+        if displayed.year == year and displayed.month == month:
+            return
+        diff = (year - displayed.year) * 12 + (month - displayed.month)
+        direction = "next" if diff > 0 else "previous"
+        _click_displayed_calendar_control_playwright(
+            page,
+            f'button.mantine-DatePickerInput-calendarHeaderControl[data-direction="{direction}"]',
+        )
+        page.wait_for_timeout(200)
+    raise TimeoutError(f"Could not navigate calendar to {year}-{month:02d}")
+
+
+def _select_date_picker_input_date_playwright(page, date_elem_id, iso_date):
+    """Open a dmc.DatePickerInput calendar, navigate to the target month, and select the date."""
+    target = datetime.strptime(iso_date, "%Y-%m-%d")
+    page.locator(f'button[id="{date_elem_id}"]').click()
+    page.wait_for_selector('div[data-calendar="true"]')
+    page.wait_for_timeout(300)
+    _navigate_calendar_to_month_playwright(page, target.year, target.month)
+    _click_displayed_calendar_control_playwright(page, f'button[aria-label="{_iso_date_to_aria_label(iso_date)}"]')
+    page.wait_for_timeout(200)
+
+
+def select_range_datetime_picker_value_playwright(page, elem_id, start, end):
+    """Set a range DateTimePicker value (date + optional HH:MM for both ends) using Playwright."""
+    start_iso_date, start_hour, start_minute = start
+    end_iso_date, end_hour, end_minute = end
+    _select_date_picker_input_date_playwright(page, f"{elem_id}-date-start", start_iso_date)
+    _select_date_picker_input_date_playwright(page, f"{elem_id}-date-end", end_iso_date)
+    if start_hour is not None and start_minute is not None:
+        _set_time_picker_fields_playwright(page, f"{elem_id}-time-start", start_hour, start_minute)
+    if end_hour is not None and end_minute is not None:
+        _set_time_picker_fields_playwright(page, f"{elem_id}-time-end", end_hour, end_minute)
+    page.wait_for_timeout(500)
     page.locator("body").click()
 
 

@@ -182,6 +182,13 @@ class TestSliderInstantiation:
 
         assert slider.step == expected
 
+    @pytest.mark.parametrize("min, max", [(None, 10), (0, None), (None, None)])
+    def test_validate_step_without_min_or_max(self, min, max):
+        # There is nothing to compare the step against unless both bounds are given.
+        slider = vm.Slider(min=min, max=max, step=1)
+
+        assert slider.step == 1
+
     def test_validate_step_invalid(self):
         with pytest.raises(
             ValidationError,

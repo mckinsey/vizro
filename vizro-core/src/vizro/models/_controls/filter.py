@@ -4,6 +4,7 @@ import functools
 import re
 from collections.abc import Callable, Iterable
 from contextlib import suppress
+from datetime import datetime as dt_datetime
 from datetime import time as dt_time
 from typing import Any, Literal, cast
 
@@ -100,6 +101,31 @@ _RANGE_VALUE_LEN = 2  # Range filters always carry exactly [start, end].
 _DYNAMIC_COLUMN_TYPES = {"numerical", "categorical", "date", "datetime", "hierarchical"}
 
 
+def _to_dt_time(entry: Any) -> Any:
+    """Convert a single series entry to a `datetime.time`, leaving nulls untouched.
+
+    A time-of-day column is not necessarily datetime64: it is just as likely to hold `datetime.time`
+    objects or "HH:MM[:SS]" strings, and it may contain nulls.
+
+    Only values that genuinely carry a time of day are converted: `datetime.time`, `datetime.datetime`
+    (including `pd.Timestamp`) and "HH:MM[:SS]" strings. Anything else, a date-only value included,
+    becomes null so that it simply doesn't match, rather than raising when it's compared later on.
+    A date carries no time of day, so reading it as midnight would silently match early-morning
+    filters instead.
+    """
+    if pd.isna(entry):
+        return entry
+    if isinstance(entry, dt_time):
+        return entry
+    # Checked before dt_date because dt_datetime subclasses it, and only the former has a time of day.
+    if isinstance(entry, dt_datetime):
+        return entry.time()
+    if isinstance(entry, str) and _TIME_REGEX.match(entry):
+        with suppress(ValueError, TypeError):
+            return pd.Timestamp(entry).time()
+    return None
+
+
 def _coerce_temporal(
     series: pd.Series, value: list[Any], normalize_precision: bool = False
 ) -> tuple[pd.Series, list[Any]]:
@@ -140,12 +166,25 @@ def _coerce_temporal(
         if is_datetime64_any_dtype(series):
             # Converting Timestamp to datetime.time
             series = series.dt.time
+        else:
+            # The column isn't guaranteed to be datetime64, so coerce entry by entry to make sure we end up
+            # comparing datetime.time against datetime.time rather than against strings or nulls.
+            series = series.map(_to_dt_time)
 
         if normalize_precision:
-            series = series.map(lambda v: v.replace(microsecond=0))
             # If no `value` has seconds defined, strip seconds from the input series as well to ensure comparability.
-            if all(len(str(v).split(":")) == _TIME_PARTS_HH_MM for v in value):
-                series = series.map(lambda v: v.replace(second=0))
+            strip_seconds = all(len(str(v).split(":")) == _TIME_PARTS_HH_MM for v in value)
+            # Nulls have no precision to strip and must stay null so that they don't match anything.
+            # Both levels of precision are stripped in a single pass to keep this to one traversal.
+            series = series.map(
+                lambda v: (
+                    v.replace(microsecond=0, second=0)
+                    if isinstance(v, dt_time) and strip_seconds
+                    else v.replace(microsecond=0)
+                    if isinstance(v, dt_time)
+                    else v
+                )
+            )
 
         # Time selector: convert "HH:MM" or "HH:MM:SS" input value strings to datetime.time objects.
         value = pd.to_datetime(value, format="mixed").time
