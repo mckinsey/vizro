@@ -8,7 +8,7 @@ from typing import Any, Literal
 
 import vizro
 import vizro.models as vm
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 from pydantic import Field, ValidationError
 from vizro import Vizro
 
@@ -71,7 +71,7 @@ class ModelJsonSchemaResults:
 
 
 # TODO: check on https://github.com/modelcontextprotocol/python-sdk what new things are possible to do here
-mcp = FastMCP(
+mcp = MCPServer(
     name=f"MCP server to help create Vizro dashboards and charts. Server Vizro version: {vizro.__version__}",
 )
 
