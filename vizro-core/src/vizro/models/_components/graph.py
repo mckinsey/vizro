@@ -15,7 +15,7 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro._vizro_utils import _set_defaults_nested
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict
-from vizro.managers import data_manager, model_manager
+from vizro.managers import color_manager, data_manager, model_manager
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import (
@@ -32,8 +32,67 @@ from vizro.models.types import (
     _IdProperty,
     _validate_captured_callable,
 )
+from vizro.plotly.express import _is_plotly_express_chart_function
 
 logger = logging.getLogger(__name__)
+
+
+def _consistent_colors_enabled(graph: "Graph") -> bool:
+    """Whether the dashboard containing `graph` has opted in to vm.Dashboard(consistent_colors=True).
+
+    Looks up the specific Dashboard that owns `graph` (via its Page), rather than any Dashboard that
+    happens to be registered in model_manager - multiple Dashboards can coexist in one process (e.g. in a
+    notebook or test suite) without an intervening Vizro._reset().
+    """
+    from vizro.models import Dashboard
+
+    page = model_manager._get_model_page(graph)
+    for dashboard in model_manager._get_models(Dashboard):
+        if any(candidate_page is page for candidate_page in dashboard.pages):
+            return dashboard.consistent_colors
+    return False
+
+
+def _categories_to_sync(graph: "Graph", kwargs: dict[str, Any]):
+    """Returns the categories to build a consistent color_discrete_map for, or None if not applicable.
+
+    Only applicable when the dashboard has opted in via `vm.Dashboard(consistent_colors=True)`, to genuine
+    plotly.express chart functions colored by a categorical column, and only when the user hasn't already
+    specified color_discrete_map/color_discrete_sequence themselves.
+    """
+    if not _consistent_colors_enabled(graph):
+        return None
+
+    figure = graph.figure
+    if not _is_plotly_express_chart_function(figure._function):
+        return None
+
+    bound_arguments = figure._arguments
+    if "color_discrete_map" in bound_arguments or "color_discrete_sequence" in bound_arguments:
+        return None
+
+    color_column = bound_arguments.get("color")
+    data_frame = kwargs.get("data_frame")
+    if (
+        not isinstance(color_column, str)
+        or data_frame is None
+        or color_column not in getattr(data_frame, "columns", [])
+    ):
+        return None
+
+    categories = data_frame[color_column].dropna().unique()
+    if pd.api.types.is_numeric_dtype(categories) and not pd.api.types.is_bool_dtype(categories):
+        return None
+
+    return categories
+
+
+def _apply_consistent_colors(graph: "Graph", kwargs: dict[str, Any]) -> dict[str, Any]:
+    """Injects a color_discrete_map into kwargs so the same category always renders in the same color."""
+    categories = _categories_to_sync(graph, kwargs)
+    if categories is not None:
+        kwargs["color_discrete_map"] = color_manager._get_color_discrete_map(categories)
+    return kwargs
 
 
 class Graph(VizroBaseModel):
@@ -181,6 +240,7 @@ underlying component may change in the future.""",
         # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
         if "data_frame" not in kwargs:
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
+        kwargs = _apply_consistent_colors(self, kwargs)
         fig = self.figure(**kwargs)
         fig = self._optimise_fig_layout_for_dashboard(fig)
 

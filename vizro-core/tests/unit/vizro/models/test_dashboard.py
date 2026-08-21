@@ -24,6 +24,7 @@ class TestDashboardInstantiation:
         assert dashboard.pages == [page_1, page_2]
         assert dashboard.theme == "vizro_dark"
         assert dashboard.title == ""
+        assert dashboard.consistent_colors is False
         assert isinstance(dashboard.navigation, vm.Navigation)
         assert dashboard.navigation.pages == [page_1.id, page_2.id]
 

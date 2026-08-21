@@ -18,7 +18,7 @@ from typing_extensions import Self
 
 import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
-from vizro.managers import data_manager, model_manager
+from vizro.managers import color_manager, data_manager, model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Dashboard, Filter
 from vizro.models.types import FigureType
@@ -343,6 +343,7 @@ Provide a valid import path for these in your dashboard configuration."""
         """
         data_manager._clear()
         model_manager._clear()
+        color_manager._clear()
         dash._callback.GLOBAL_CALLBACK_LIST = []
         dash._callback.GLOBAL_CALLBACK_MAP = {}
         dash._callback.GLOBAL_INLINE_SCRIPTS = []
