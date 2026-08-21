@@ -227,11 +227,11 @@ dashboard = vm.Dashboard(
             items=[
                 vm.NavLink(
                     pages=["Simple filled container", "Nested mixed containers", "Nested filled containers"],
-                    label="First icon",
+                    label="Icon 1",
                 ),
                 vm.NavLink(
                     pages=["Plain containers", "Simple outlined container", "Containers and vm.Card"],
-                    label="Second icon",
+                    label="Icon 2",
                 ),
             ]
         )
