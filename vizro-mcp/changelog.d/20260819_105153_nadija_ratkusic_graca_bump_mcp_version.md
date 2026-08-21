@@ -24,7 +24,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Changed
 
-- Bump `mcp` dependency to `>=2.0.0`.
+- Bump `mcp` dependency to `>=2.0.0`. ([#1842](https://github.com/mckinsey/vizro/pull/1842))
 <!--
 ### Deprecated
 
