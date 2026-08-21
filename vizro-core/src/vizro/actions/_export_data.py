@@ -1,5 +1,6 @@
 import importlib.util
 from collections.abc import Iterable
+from functools import cached_property
 from typing import Any, Literal, cast
 
 from dash import Output, ctx, dcc
@@ -10,7 +11,7 @@ from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, ModelID, _Controls
+from vizro.models.types import FigureType, ModelID, _Controls, _normalize_action_notifications
 
 
 class export_data(_AbstractAction):
@@ -114,3 +115,11 @@ class export_data(_AbstractAction):
             dcc.Download(id={"type": "download_dataframe", "action_id": self.id, "target_id": target})
             for target in self.targets
         ]
+
+    @cached_property
+    def notifications(self):  # type: ignore[override]
+        # cached_property used because the progress/success/error notifications carry auto-generated ids,
+        # and the success/error `update_notification` replaces the progress notification by matching that id.
+        return _normalize_action_notifications(
+            {"progress": "Exporting data...", "success": "Data exported.", "error": "Exporting data failed."}
+        )
