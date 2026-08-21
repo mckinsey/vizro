@@ -16,12 +16,10 @@ classifiers = [
 ]
 dependencies = [
   "httpx>=0.28.1",
-  "mcp[cli]>=1.6.0",
+  "mcp[cli]>=2.0.0",
   "vizro>=0.1.46",
   "click>=8.1.7",
-  "pandas[html,parquet,excel]",
-  "mcp<2",
-  "pydantic-settings<2.15"  # newer versions emit a warning that breaks tests; remove once we upgrade to mcp>=2.0
+  "pandas[html,parquet,excel]"
 ]
 description = "MCP server to help create Vizro dashboards and charts"
 dynamic = ["version"]
