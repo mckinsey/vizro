@@ -349,6 +349,36 @@ class TestFilterFunctions:
                 ["10:00", "10:00"],
                 [False, True],
             ),
+            # Time-of-day column stored as "HH:MM" strings rather than datetime64
+            (
+                ["08:00", "10:00", "12:00"],
+                ["09:00", "11:00"],
+                [False, True, False],
+            ),
+            # Time-of-day column stored as "HH:MM:SS" strings
+            (
+                ["08:00:00", "10:00:30", "12:00:00"],
+                ["09:00", "11:00"],
+                [False, True, False],
+            ),
+            # Midnight-crossing range on a string column
+            (
+                ["22:00", "02:00", "12:00"],
+                ["21:00", "03:00"],
+                [True, True, False],
+            ),
+            # Nulls in a string column do not match and do not raise
+            (
+                ["08:00", None, "10:00"],
+                ["09:00", "11:00"],
+                [False, False, True],
+            ),
+            # Nulls in a time column do not match and do not raise
+            (
+                [time(8, 0), None, time(10, 0)],
+                ["09:00", "11:00"],
+                [False, False, True],
+            ),
         ],
     )
     def test_filter_between_time(self, data, value, expected):
@@ -493,6 +523,65 @@ class TestFilterFunctions:
                 ["10:00:00"],
                 [True, False, True],
             ),
+            # Time-of-day column stored as "HH:MM" strings rather than datetime64
+            (
+                ["09:00", "10:00", "11:00"],
+                ["10:00"],
+                [False, True, False],
+            ),
+            # Time-of-day column stored as "HH:MM:SS" strings
+            (
+                ["09:00:00", "10:00:00", "11:00:00"],
+                ["10:00:00"],
+                [False, True, False],
+            ),
+            # HH:MM input strips seconds from a string column too
+            (
+                ["10:30:15", "10:30:45", "11:00:00"],
+                ["10:30"],
+                [True, True, False],
+            ),
+            # Seconds are kept when the input has them, so a differing second does not match
+            (
+                ["10:30:15", "10:30:45"],
+                ["10:30:15"],
+                [True, False],
+            ),
+            # Nulls in a time column do not match and do not raise
+            (
+                [time(9, 0), None, time(10, 0)],
+                ["10:00"],
+                [False, False, True],
+            ),
+            # Nulls in a string column do not match and do not raise
+            (
+                ["09:00", None, "10:00"],
+                ["10:00"],
+                [False, False, True],
+            ),
+            # Values that cannot be read as a time of day simply do not match
+            (
+                ["10:00", "not a time"],
+                ["10:00"],
+                [True, False],
+            ),
+            # A date carries no time of day, so it must not be read as midnight and match a midnight filter
+            (
+                ["2024-01-01", "00:00"],
+                ["00:00"],
+                [False, True],
+            ),
+            (
+                [date(2024, 1, 1), time(0, 0)],
+                ["00:00"],
+                [False, True],
+            ),
+            # A datetime does carry a time of day, so its time part is used
+            (
+                [datetime(2024, 1, 1, 10, 30), time(9, 0)],
+                ["10:30"],
+                [True, False],
+            ),
         ],
     )
     def test_filter_isin_time(self, data, value, expected):
@@ -536,6 +625,38 @@ class TestFilterFunctions:
                 ["10:30"],
                 False,
                 [time(10, 30, 15, 123), time(11, 0, 45)],
+                [time(10, 30)],
+            ),
+            # Time value + string series: the series is parsed into datetime.time objects.
+            (
+                ["10:30:15", "11:00:45"],
+                ["10:30"],
+                True,
+                [time(10, 30), time(11, 0)],
+                [time(10, 30)],
+            ),
+            # Time value + string series + normalize_precision=False: still parsed, precision kept.
+            (
+                ["10:30:15", "11:00:45"],
+                ["10:30"],
+                False,
+                [time(10, 30, 15), time(11, 0, 45)],
+                [time(10, 30)],
+            ),
+            # Time value + time series containing a null: the null is preserved rather than raising.
+            (
+                [time(10, 30, 15), None, time(11, 0)],
+                ["10:30"],
+                True,
+                [time(10, 30), None, time(11, 0)],
+                [time(10, 30)],
+            ),
+            # Time value + string series containing an entry that is not a time: that entry becomes null.
+            (
+                ["10:30", "not a time"],
+                ["10:30"],
+                True,
+                [time(10, 30), None],
                 [time(10, 30)],
             ),
             # Date string value + datetime series: both coerced to datetime.date objects.
@@ -611,6 +732,13 @@ class TestFilterFunctions:
         result_series, result_value = _coerce_temporal(series, value, normalize_precision=normalize_precision)
         assert list(result_series) == expected_series
         assert list(result_value) == expected_value
+
+    def test_coerce_temporal_time_object_dtype_datetimes(self):
+        """Datetimes sitting in an object column are coerced to datetime.time, like a datetime64 column."""
+        series = pd.Series([datetime(2024, 1, 1, 10, 0), datetime(2024, 1, 2, 11, 30)], dtype=object)
+        result_series, result_value = _coerce_temporal(series, ["10:00", "11:30"])
+        assert list(result_series) == [time(10, 0), time(11, 30)]
+        assert list(result_value) == [time(10, 0), time(11, 30)]
 
     def test_coerce_temporal_datetime_tz_aware(self):
         """A tz-aware datetime series localizes the (naive) typed values to the series's timezone."""

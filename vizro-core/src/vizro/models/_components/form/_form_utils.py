@@ -101,7 +101,7 @@ def validate_step(step, info: ValidationInfo):
     if step is None:
         return step
 
-    if info.data["max"] is not None and step > (info.data["max"] - info.data["min"]):
+    if info.data["min"] is not None and info.data["max"] is not None and step > (info.data["max"] - info.data["min"]):
         raise ValueError(
             "The step value of the slider must be less than or equal to the difference between max and min."
         )
