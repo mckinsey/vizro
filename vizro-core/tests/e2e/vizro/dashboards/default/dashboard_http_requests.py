@@ -4,6 +4,7 @@ import e2e.vizro.constants as cnst
 import pandas as pd
 from pages.ag_grid_interactions_page import ag_grid_interactions_page
 from pages.conditional_notifications import conditional_notifications_page
+from pages.datetimepicker_pages import datetimepicker_range
 from pages.filters_inside_containters_page import filters_inside_containers_page
 from pages.set_control_cross_filter_page import (
     cross_filter_ag_grid_page,
@@ -308,6 +309,7 @@ dashboard = vm.Dashboard(
         self_filter_set_control_page,
         conditional_notifications_page,
         timepicker_range,
+        datetimepicker_range,
     ]
 )
 
