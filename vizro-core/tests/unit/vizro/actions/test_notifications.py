@@ -7,14 +7,9 @@ from pydantic import ValidationError
 import vizro.models as vm
 from vizro import Vizro
 from vizro.actions import (
-    export_data,
-    filter_interaction,
-    set_control,
     show_notification,
     update_notification,
-    update_targets,
 )
-from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 
 
