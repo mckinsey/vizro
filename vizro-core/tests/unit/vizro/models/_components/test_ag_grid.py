@@ -18,6 +18,7 @@ from vizro.managers import data_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models._action._action import Action
 from vizro.models._components.ag_grid import DAG_AG_GRID_PROPERTIES
+from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
 
@@ -308,6 +309,26 @@ class TestDunderMethodsAgGrid:
         result_ag_grid_table = result_ag_grid.children[0]
 
         assert result_ag_grid_table.dashGridOptions.get("rowSelection") == expected_row_selection
+
+    def test_call_default_dash_grid_options_for_custom_ag_grid(self, standard_ag_grid):
+        @capture("ag_grid")
+        def custom_dash_ag_grid(data_frame):
+            return dag.AgGrid(
+                # Keep configuration concise: AgGrid model code must not depend on assumed config input.
+                columnDefs=[{"field": col} for col in data_frame.columns],
+                rowData=data_frame.to_dict("records"),
+            )
+
+        ag_grid = vm.AgGrid(figure=custom_dash_ag_grid(data_frame=px.data.gapminder()))
+        ag_grid.pre_build()
+
+        # ag_grid() is the same as ag_grid.__call__()
+        result_ag_grid = ag_grid()
+
+        # Extract dag.AgGrid
+        result_ag_grid_table = result_ag_grid.children[0]
+
+        assert result_ag_grid_table.dashGridOptions.get("theme") == {"function": "vizroTheme(themeQuartz, agGrid)"}
 
 
 class TestProcessAgGridDataFrame:

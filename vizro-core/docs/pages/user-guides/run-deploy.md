@@ -1,3 +1,7 @@
+---
+description: "Run Vizro from a script, notebook, or PyCafe with hot reload, then deploy via Hugging Face, Dash Enterprise, Gunicorn, or Docker."
+---
+
 # How to run and/or deploy your dashboard
 
 Typically when you create a dashboard, there are two distinct stages:
@@ -69,7 +73,7 @@ The `run` method wraps [Dash's run method](https://dash.plotly.com/reference#app
 
 ### Develop in a Notebook
 
-If you develop in a Jupyter Notebook or JupyterLab then you should use exactly the [same code as above](#develop-in-python-script):
+If you develop in a Jupyter Notebook or JupyterLab then you should use exactly the [same code as in the Python script example](#develop-in-python-script):
 
 ```python
 from vizro import Vizro
@@ -275,7 +279,7 @@ Although this process for handling dependencies is sufficient to get started wit
 gunicorn app:app --workers 4
 ```
 
-The Gunicorn documentation gives [commonly used arguments](https://gunicorn.org/run/#commands) and advice for setting them. Other than `workers`, the most common argument to specify is `bind`, which makes your app accessible. This is often set as `--bind 0.0.0.0:<port>`. Your hosting provider needs to tell you what the correct port to use is. For example, on Hugging Face it is 7860.
+The Gunicorn documentation gives [commonly used arguments](https://gunicorn.org/run/#commands) and advice for setting them. Other than `workers`, the most common argument to specify is `bind`, which makes your app accessible. This is often set as `--bind 0.0.0.0:7860` (substituting whichever port your hosting provider tells you to use; for example, Hugging Face uses `7860`).
 
 #### Dockerfile
 
@@ -385,6 +389,8 @@ When sharing your dashboard, it can be useful to share or bookmark a link to a p
         ```
 
     === "Result"
+
+        The dashboard renders the "Shareable URL that includes filter" example.
 
         [![filterInUrl]][filterinurl]
 

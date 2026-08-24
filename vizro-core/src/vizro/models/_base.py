@@ -237,7 +237,7 @@ class VizroBaseModel(BaseModel):
     # if called in the correct context.
     # In addition, it was possible to exclude fields specified in __vizro_exclude_fields__.
     # This was like pydantic's own __exclude_fields__ but this is not possible in V2 due to the non-recursive nature of
-    # the model_dump method. Now this serializer allows to add the model name to the dictionary when serializing the
+    # the model_dump method. Now this serializer enables us to add the model name to the dictionary when serializing the
     # model if called with context {"add_name": True}.
     # Excluding specific fields could be done via overwriting this serializer, but we don't currently do this anywhere.
     # Useful threads that were started:

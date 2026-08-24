@@ -1,6 +1,16 @@
+---
+description: "Add Markdown paragraphs, notes, images, and links to a page with `Text`, and use the `extra` argument to pass options through to `dcc.Markdown`."
+---
+
 # How to add text to your page
 
 This guide shows you how to display text in your dashboard with the [`Text` component][vizro.models.Text] model.
+
+!!! tip "When to use this"
+
+    Choose `Text` for plain Markdown text without styling — introductory paragraphs, page-level descriptions, or inline explanatory notes. For text that should stand out inside a bordered callout, or that acts as a navigation tile, use [`Card`](card.md) instead. To trigger an action or navigate, use [`Button`](button.md).
+
+**API reference:** [`Text`][vizro.models.Text]
 
 !!! note "Card and Text components"
 
@@ -46,6 +56,8 @@ You can add a [`Text`][vizro.models.Text] model to your dashboard by inserting [
         ```
 
     === "Result"
+
+        The dashboard renders the "Text" example.
 
         [![Text]][text]
 
@@ -167,6 +179,8 @@ The [`Text`][vizro.models.Text] model uses the[`vdc.Markdown` component](https:/
 
     === "Result"
 
+        The dashboard renders the "Text using markdown" example.
+
         [![TextMarkdown]][textmarkdown]
 
 ## The `extra` argument
@@ -229,6 +243,8 @@ An example use would be to set `mathjax=True` (defaults to `False`) to display m
         ```
 
     === "Result"
+
+        The dashboard renders the "Text with extra argument" example.
 
         [![TextExtra]][textextra]
 

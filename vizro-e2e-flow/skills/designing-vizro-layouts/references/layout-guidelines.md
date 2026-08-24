@@ -147,7 +147,7 @@ Use component **size to indicate importance** — larger cells signal higher pri
 1. **Layouts**: Grid or Flex only (no absolute positioning)
 1. **Components**: Graph, AgGrid, Card, Figure
 1. **Containers**: Can use Tabs for organizing content
-1. **Actions**: `export_data` and `set_control` actions only
+1. **Actions**: Two built-in actions — `va.export_data()` (Button-triggered CSV download) and `va.set_control()` (Graph/AgGrid-triggered cross-filter, cross-highlight, cross-parameter). All advanced interactions follow Source → Control → Target. Load the **wiring-vizro-actions** skill for named patterns. Cross-page drill-through targets MUST use `layout=vm.Flex(direction="column")` so the back button takes natural height — a Grid would waste a 140px+ row.
 
 ## References
 

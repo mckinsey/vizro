@@ -280,29 +280,39 @@ class TestParameter:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "ctx_parameter_y, target_scatter_parameter_y",
-        [("pop", "pop"), ("gdpPercap", "gdpPercap"), ("NONE", None)],
-        indirect=True,
+        "ctx_parameter_y, expected_y",
+        [
+            (["Metrics", "pop"], ["Metrics", "pop"]),
+            (["Metrics", "gdpPercap"], ["Metrics", "gdpPercap"]),
+            ("NONE", None),
+        ],
+        indirect=["ctx_parameter_y"],
     )
-    def test_one_parameter_one_target_cascader(self, ctx_parameter_y, target_scatter_parameter_y):
+    def test_one_parameter_one_target_cascader(self, ctx_parameter_y, expected_y):
+        # A Cascader value is a full root-to-leaf path. Inside a Parameter it is passed through to the target
+        # argument verbatim (no unwrap to leaf), so we assert on the injected config value rather than a
+        # rendered figure (a path is not a valid plotly `y`).
+        from vizro.actions._actions_utils import _get_parametrized_config
+
         y_parameter = vm.Parameter(
             id="test_parameter",
             targets=["scatter_chart.y"],
             selector=vm.Cascader(
                 id="y_parameter",
                 options={"Metrics": ["lifeExp", "pop", "gdpPercap"]},
-                value="lifeExp",
+                value=["Metrics", "lifeExp"],
                 multi=False,
+                full_path=True,
             ),
         )
         model_manager["test_page"].controls = [y_parameter]
 
         y_parameter.pre_build()
 
-        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function(_controls=None)
-        expected = {"scatter_chart": target_scatter_parameter_y}
+        ctds_parameter = context_value.get()["args_grouping"]["external"]["_controls"]["parameters"]
+        config = _get_parametrized_config(ctds_parameter=ctds_parameter, target="scatter_chart", data_frame=False)
 
-        assert result == expected
+        assert config["y"] == expected_y
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
@@ -664,5 +674,48 @@ class TestParameter:
         # Run action by picking the above added action function and executing it with ()
         result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_dimensions"].function(_controls=None)
         expected = {"scatter_matrix_chart": target_scatter_matrix_parameter_dimensions}
+
+        assert result == expected
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
+    @pytest.mark.parametrize(
+        "ctx_parameter_y_and_x, target_scatter_parameter_y_and_x",
+        [(["pop", "continent"], ["pop", "continent"]), (["gdpPercap", "country"], ["gdpPercap", "country"])],
+        indirect=True,
+    )
+    def test_one_default_parameter_one_parameter_with_custom_action_one_target(
+        self,
+        identity_action_function,
+        ctx_parameter_y_and_x,
+        target_scatter_parameter_y_and_x,
+    ):
+        # Creating and adding a Parameter object to the existing Page
+        # Parameter with a default action:
+        y_parameter = vm.Parameter(
+            id="test_parameter_x",
+            targets=["scatter_chart.y"],
+            selector=vm.RadioItems(id="y_parameter", options=["lifeExp", "pop", "gdpPercap"], value="lifeExp"),
+        )
+        # x_parameter has a custom action defined, and it does **not** trigger the parametrization process when changed.
+        # However, it is taken into account whenever its target is updated (e.g. when y_parameter value changes).
+        x_parameter = vm.Parameter(
+            id="test_parameter_y",
+            targets=["scatter_chart.x"],
+            selector=vm.RadioItems(
+                id="x_parameter",
+                options=["continent", "country"],
+                value="continent",
+                actions=[vm.Action(function=identity_action_function())],
+            ),
+        )
+        model_manager["test_page"].controls = [y_parameter, x_parameter]
+
+        # Adds a default _parameter Action to the "y_parameter" selector object
+        y_parameter.pre_build()
+        x_parameter.pre_build()
+
+        # Run action by picking the above added action function and executing it with ()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function(_controls=None)
+        expected = {"scatter_chart": target_scatter_parameter_y_and_x}
 
         assert result == expected

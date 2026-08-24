@@ -1,0 +1,44 @@
+"""Floating chat popup subpackage for Vizro dashboards.
+
+Provides a self-contained, data-aware chat popup that can be added to any Vizro dashboard.
+When called without a custom ``generate_response``, the popup auto-discovers datasets
+from ``data_manager`` and uses an LLM agent to answer questions.
+
+Example usage::
+
+    from vizro_experimental.chat.popup import add_chat_popup
+
+    app = Vizro()
+    app.build(dashboard)
+
+    add_chat_popup(title="Analytics Assistant")
+    app.run()
+"""
+
+
+# Lazy submodule access keeps the optional-dependency boundary at the package level:
+# users of `add_chat_popup` who bring their own `generate_response` never trigger an
+# import of `dashboard_agent`, so they don't need pydantic-ai (the `[agent]` extra)
+# installed. If `dashboard_agent` ever promotes a pydantic-ai import to module scope,
+# BYO users stay safe because we only load it on explicit attribute access.
+def __getattr__(name):
+    if name == "add_chat_popup":
+        from vizro_experimental.chat.popup.popup import add_chat_popup
+
+        return add_chat_popup
+    if name == "create_dashboard_agent":
+        from vizro_experimental.chat.popup.dashboard_agent import create_dashboard_agent
+
+        return create_dashboard_agent
+    if name == "make_generate_response":
+        from vizro_experimental.chat.popup.dashboard_agent import make_generate_response
+
+        return make_generate_response
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+__all__ = [
+    "add_chat_popup",
+    "create_dashboard_agent",
+    "make_generate_response",
+]

@@ -76,11 +76,7 @@ highlighting or labels to ensure the reader understands what matters most.
 ranking_chart_group = ChartGroup(
     name="Ranking",
     pages=pages.ranking.pages,
-    incomplete_pages=[
-        IncompletePage("Ordered bubble"),
-        IncompletePage("Slope"),
-        IncompletePage("Bump"),
-    ],
+    incomplete_pages=[],
     icon="Stacked Bar Chart",
     intro_text=ranking_intro_text,
 )
@@ -97,7 +93,6 @@ distribution_chart_group = ChartGroup(
     pages=pages.distribution.pages,
     incomplete_pages=[
         IncompletePage("Barcode"),
-        IncompletePage("Cumulative curve"),
         IncompletePage("Beeswarm"),
     ],
     icon="Waterfall Chart",
@@ -105,19 +100,14 @@ distribution_chart_group = ChartGroup(
 )
 
 magnitude_intro_text = """
-#### Magnitude allows you to emphasize size comparisons of **counted** items in your data set. You can show relative \
+#### Magnitude enables you to emphasize size comparisons of **counted** items in your data set. You can show relative \
 comparisons (whether something is larger or smaller) or absolute differences (where the nuances are most interesting). \
 Typically, you will use magnitude for actual numbers versus calculated rates or percentages.
 """
 magnitude_chart_group = ChartGroup(
     name="Magnitude",
     pages=pages.magnitude.pages,
-    incomplete_pages=[
-        IncompletePage("Marimekko"),
-        IncompletePage("Pictogram"),
-        IncompletePage("Bullet"),
-        IncompletePage("Radial"),
-    ],
+    incomplete_pages=[],
     icon="Bar Chart",
     intro_text=magnitude_intro_text,
 )
@@ -131,9 +121,7 @@ time_chart_group = ChartGroup(
     name="Time",
     pages=pages.time.pages,
     incomplete_pages=[
-        IncompletePage("Slope"),
         IncompletePage("Fan"),
-        IncompletePage("Bubble timeline"),
     ],
     icon="Timeline",
     intro_text=time_intro_text,
@@ -147,11 +135,7 @@ the parts to be most important, a magnitude chart may be more appropriate.
 part_to_whole_chart_group = ChartGroup(
     name="Part-to-whole",
     pages=pages.part_to_whole.pages,
-    incomplete_pages=[
-        IncompletePage("Marimekko"),
-        IncompletePage("Arc"),
-        IncompletePage("Gridplot"),
-    ],
+    incomplete_pages=[],
     icon="Donut Small",
     intro_text=part_to_whole_intro_text,
 )
@@ -164,7 +148,6 @@ flow_chart_group = ChartGroup(
     name="Flow",
     pages=pages.flow.pages,
     incomplete_pages=[
-        IncompletePage("Chord"),
         IncompletePage("Network"),
     ],
     icon="Air",
@@ -172,7 +155,7 @@ flow_chart_group = ChartGroup(
 )
 
 spatial_intro_text = """
-#### Spatial charts allow you to demonstrate precise locations or geographical patterns in your data.
+#### Spatial charts enable you to demonstrate precise locations or geographical patterns in your data.
 """
 spatial_chart_group = ChartGroup(
     name="Spatial",

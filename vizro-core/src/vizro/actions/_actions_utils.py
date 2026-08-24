@@ -71,9 +71,7 @@ def _apply_filter_controls(
             continue
 
         selector_value = ctd["value"]
-        selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
-
-        mask = parent_filter._filter_function(data_frame[parent_filter.column], selector_value)
+        mask = parent_filter._filter_function(data_frame[parent_filter._filter_column], selector_value)
         data_frame = data_frame[mask]
 
     return data_frame
@@ -190,9 +188,10 @@ def _get_parametrized_config(
 
     for ctd in ctds_parameter:
         selector_id = ctd["id"]
+        selector_value = _validate_selector_value_none(ctd["value"])  # type: ignore[arg-type]
+
         parent_parameter = cast(Parameter, get_selector_parent_control(selector=model_manager[selector_id]))
 
-        selector_value = _validate_selector_value_none(ctd["value"])  # type: ignore[arg-type]
         for dot_separated_string in _get_target_dot_separated_strings(parent_parameter.targets, target, data_frame):
             config = _update_nested_figure_properties(
                 figure_config=config, dot_separated_string=dot_separated_string, value=selector_value
@@ -252,19 +251,31 @@ def _get_modified_page_figures(
 
     control_targets = []
     figure_targets = []
-    for target in targets:
+    # dict.fromkeys dedupes while preserving order. A Parameter targeting several arguments of the same figure
+    # (e.g. Parameter(targets=["g.x", "g.y"])) produces update_targets(targets=["g", "g"]), and the dynamic-filter
+    # linkage can repeat a figure too; each figure must be rebuilt only once.
+    for target in dict.fromkeys(targets):
         if isinstance(model_manager[target], Filter):
             control_targets.append(target)
         else:
             figure_targets.append(target)
 
-    target_to_data_frame = _get_unfiltered_data(ctds_parameter=ctds_parameter, targets=figure_targets)
+    # A dynamic filter target recalculates its selector options from its own targets' (figures') data, so that data
+    # must be loaded even when those figures aren't themselves being refreshed (e.g. a Button that targets only the
+    # filter). We load data for those figures but only emit them as outputs when they're figure_targets.
+    data_targets = list(figure_targets)
+    for control_target in control_targets:
+        for filter_figure_target in cast(Filter, model_manager[control_target]).targets:
+            if filter_figure_target not in data_targets:
+                data_targets.append(filter_figure_target)
+
+    target_to_data_frame = _get_unfiltered_data(ctds_parameter=ctds_parameter, targets=data_targets)
 
     # TODO: the structure here would be nicer if we could get just the ctds for a single target at one time,
     #  so you could do apply_filters on a target a pass only the ctds relevant for that target.
     #  Consider restructuring ctds to a more convenient form to make this possible.
-    for target, unfiltered_data in target_to_data_frame.items():
-        filtered_data = _apply_filters(unfiltered_data, ctds_filter, ctds_filter_interaction, target)
+    for target in figure_targets:
+        filtered_data = _apply_filters(target_to_data_frame[target], ctds_filter, ctds_filter_interaction, target)
         outputs[target] = cast(FigureType, model_manager[target])(
             data_frame=filtered_data,
             **_get_parametrized_config(ctds_parameter=ctds_parameter, target=target, data_frame=False),

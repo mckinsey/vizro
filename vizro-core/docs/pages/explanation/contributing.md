@@ -1,3 +1,7 @@
+---
+description: "Contribute to Vizro: GitHub Codespaces setup, local development with Hatch, PR review requirements, and the code of conduct."
+---
+
 # Contributing
 
 Contributions of all experience levels are welcome! There are many ways to contribute, and we appreciate any help: it doesn't have to be a pull request (PR) on our code. You can also [report a bug](faq.md#how-can-i-report-a-bug), [request a feature](faq.md#how-can-i-request-a-feature), or [ask and answer community questions](faq.md#i-still-have-a-question-where-can-i-ask-it). Before making significant changes to Vizro code, you should first use [GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution.
@@ -79,7 +83,7 @@ This enables you to run, for example, `hr lint` instead of `hatch run lint`. On 
 
 By default, this command runs the dashboard configured in `vizro-core/examples/scratch_dev/app.py`. This dashboard is used as a temporary "scratch" playground during development. It's the perfect place to show, or test out, a new feature you're developing.
 
-You can run any example in `vizro-core/examples` or its subdirectories by running `hatch run example <example_path>`, where `<example_path>` is the path to the directory containing the `app.py` file relative to `vizro-core/examples`. For example, `hatch run example dev` runs a dashboard located at `vizro-core/examples/dev/app.py`. This dashboard demonstrates a full set of Vizro features and is also [hosted on Hugging Face](https://huggingface.co/spaces/vizro/demo-features).
+You can run any example in `vizro-core/examples` or its subdirectories by passing its path (relative to `vizro-core/examples`) as an argument. For example, `hatch run example dev` runs the dashboard located at `vizro-core/examples/dev/app.py`. This dashboard demonstrates a full set of Vizro features and is also [hosted on Hugging Face](https://huggingface.co/spaces/vizro/demo-features).
 
 Examples are run with the following settings:
 

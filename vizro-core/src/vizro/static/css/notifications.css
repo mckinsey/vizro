@@ -9,7 +9,7 @@
 .alert-warning,
 .alert-error {
   align-items: flex-start;
-  background: var(--surfaces-bg-card-inverted);
+  background: var(--bs-card-bg-inverted);
   box-shadow: var(--bs-box-shadow);
   display: flex;
   padding: 12px 8px;

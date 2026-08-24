@@ -1,3 +1,7 @@
+---
+description: "Write reactive Dash figure functions with `@capture('figure')`, with examples of custom KPI cards, dynamic HTML headers, and a dynamic number of cards."
+---
+
 # How to create custom figures
 
 This guide explains how to create custom figures, which is useful when you need a component that reacts to [filter](filters.md) and [parameter](parameters.md) controls.
@@ -137,6 +141,8 @@ For instance, to make a KPI card with the icon positioned on the right side of t
 
     === "Result"
 
+        The dashboard renders the "Custom KPI card" example.
+
         [![CustomKPI]][customkpi]
 
 <!-- vale on -->
@@ -163,7 +169,7 @@ You can create a custom figure for any [Dash component](https://dash.plotly.com/
 
         @capture("figure")  # (1)!
         def dynamic_html_header(data_frame: pd.DataFrame, column: str) -> html.H2:  # (2)!
-            """Creates a HTML header that dynamically updates based on controls."""
+            """Creates an HTML header that dynamically updates based on controls."""
             return html.H2(f"Good morning, {data_frame[column].iloc[0]}! ☕ ⛅")  # (3)!
 
 
@@ -203,6 +209,8 @@ You can create a custom figure for any [Dash component](https://dash.plotly.com/
         ```
 
     === "Result"
+
+        The dashboard renders the "Dynamic HTML header" example.
 
         [![CustomHTML]][customhtml]
 
@@ -328,6 +336,8 @@ The example below shows how to create multiple cards created from a `pandas.Data
         ```
 
     === "Result"
+
+        The dashboard renders the "Dynamic number of cards" example.
 
         [![CustomFigure]][customfigure]
 

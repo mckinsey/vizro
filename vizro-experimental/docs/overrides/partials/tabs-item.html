@@ -1,0 +1,80 @@
+{#-
+  Override of zensical/templates/partials/tabs-item.html.
+
+  Adds a third rendering mode: when a top-level nav section's title matches
+  this docset's site_name and the section has children, it renders as a
+  click/hover dropdown listing the children as cross-docset links, instead of
+  the upstream behavior of redirecting to the first child's URL. The pattern
+  turns the brand tab itself into a project switcher (Vizro / Vizro-AI /
+  Vizro-MCP / Vizro-Experimental). All other nav items fall back to the
+  upstream behavior byte-for-byte.
+
+  The trigger pairs with a specific nav shape in zensical.toml: the first
+  top-level entry is named after the docset (e.g. `{"Vizro" = [ ... ]}`) and
+  contains a list of cross-docset links, the first of which is the docset's
+  own index.md. Any other nav section happens to share that title would also
+  become a dropdown -- not a realistic collision.
+
+  Styling lives in docs/stylesheets/extra.css under the section marked
+  "Top-nav project-switcher dropdown".
+
+  Maintenance: this file is duplicated byte-for-byte across all four docsets
+  (vizro-core, vizro-ai, vizro-mcp, vizro-experimental). When this template
+  is updated upstream in Zensical, re-sync the non-dropdown branches in all
+  four copies; the dropdown branch is the only Vizro-specific addition.
+-#}
+{% macro render_content(nav_item, ref) %}
+  {% set ref = ref or nav_item %}
+  {{ ref.title }}
+{% endmacro %}
+{% macro render(nav_item, ref) %}
+  {% set ref = ref or nav_item %}
+  {% set class = "md-tabs__item" %}
+  {% if ref.active %}
+    {% set class = class ~ " md-tabs__item--active" %}
+  {% endif %}
+  {% if nav_item.title == config.site_name and nav_item.children %}
+    <li class="{{ class }} md-tabs__item--dropdown">
+      <details class="md-tabs__details">
+        <summary class="md-tabs__link md-tabs__link--dropdown">
+          {{ nav_item.title }}
+        </summary>
+        <ul class="md-tabs__dropdown">
+          {%- for child in nav_item.children -%}
+            <li class="md-tabs__dropdown-item">
+              {#- A child whose title matches this docset's site_name is the
+                  current docset; mark it visually with aria-current="page"
+                  but keep it clickable so users can navigate to its index. -#}
+              {%- if child.title == config.site_name -%}
+                <a class="md-tabs__dropdown-link md-tabs__dropdown-link--current" href="{{ child.url | url }}" aria-current="page">
+                  {{ child.title }}
+                </a>
+              {%- else -%}
+                <a class="md-tabs__dropdown-link" href="{{ child.url | url }}">
+                  {{ child.title }}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </details>
+    </li>
+  {% elif nav_item.children %}
+    {% set first = nav_item.children | first %}
+    {% if first.children %}
+      {{ render(first, ref) }}
+    {% else %}
+      <li class="{{ class }}">
+        <a href="{{ first.url | url }}" class="md-tabs__link">
+          {{ render_content(first, ref) }}
+        </a>
+      </li>
+    {% endif %}
+  {% else %}
+    <li class="{{ class }}">
+      <a href="{{ nav_item.url | url }}" class="md-tabs__link">
+        {{ render_content(nav_item) }}
+      </a>
+    </li>
+  {% endif %}
+{% endmacro %}

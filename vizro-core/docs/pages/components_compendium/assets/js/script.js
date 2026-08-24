@@ -292,6 +292,7 @@
         element: el,
         name:
           el.querySelector(".component__name")?.textContent.toLowerCase() || "",
+        aliases: (el.dataset.aliases || "").toLowerCase(),
       })),
       selectors: selectorCards.map((el) => ({
         element: el,
@@ -299,6 +300,7 @@
           el
             .querySelector(".component_card_title")
             ?.textContent.toLowerCase() || "",
+        aliases: (el.dataset.aliases || "").toLowerCase(),
       })),
     };
   };
@@ -346,7 +348,8 @@
     let matchCount = 0;
 
     items.forEach((item) => {
-      const isMatch = item.name.includes(searchTerm);
+      const isMatch =
+        item.name.includes(searchTerm) || item.aliases.includes(searchTerm);
 
       item.element.classList.toggle("search-match", isMatch);
 

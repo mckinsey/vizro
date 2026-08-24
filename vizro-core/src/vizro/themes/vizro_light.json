@@ -12,7 +12,7 @@
         "connector": {
           "line": {
             "width": 1,
-            "color": "rgba(20, 23, 33, 0.3019607843)"
+            "color": "rgba(20, 23, 33, 0.3803921569)"
           }
         },
         "decreasing": {
@@ -50,7 +50,7 @@
     "sankey": [
       {
         "link": {
-          "color": "rgba(20, 23, 33, 0.3019607843)"
+          "color": "rgba(20, 23, 33, 0.3803921569)"
         },
         "type": "sankey"
       }
@@ -85,7 +85,7 @@
             "color": "rgba(20, 23, 33, 0.6)"
           }
         },
-        "tickcolor": "rgba(20, 23, 33, 0.3019607843)"
+        "tickcolor": "rgba(20, 23, 33, 0.3803921569)"
       }
     },
     "colorscale": {
@@ -218,8 +218,8 @@
       "visible": true,
       "zeroline": false,
       "gridcolor": "rgba(20, 23, 33, 0.1019607843)",
-      "linecolor": "rgba(20, 23, 33, 0.3019607843)",
-      "tickcolor": "rgba(20, 23, 33, 0.3019607843)"
+      "linecolor": "rgba(20, 23, 33, 0.3803921569)",
+      "tickcolor": "rgba(20, 23, 33, 0.3803921569)"
     },
     "yaxis": {
       "automargin": true,
@@ -245,8 +245,8 @@
       "visible": true,
       "zeroline": false,
       "gridcolor": "rgba(20, 23, 33, 0.1019607843)",
-      "linecolor": "rgba(20, 23, 33, 0.3019607843)",
-      "tickcolor": "rgba(20, 23, 33, 0.3019607843)"
+      "linecolor": "rgba(20, 23, 33, 0.3803921569)",
+      "tickcolor": "rgba(20, 23, 33, 0.3803921569)"
     },
     "geo": {
       "bgcolor": "white",
@@ -258,27 +258,27 @@
     "polar": {
       "angularaxis": {
         "gridcolor": "rgba(20, 23, 33, 0.1019607843)",
-        "linecolor": "rgba(20, 23, 33, 0.3019607843)"
+        "linecolor": "rgba(20, 23, 33, 0.3803921569)"
       },
       "bgcolor": "white",
       "radialaxis": {
         "gridcolor": "rgba(20, 23, 33, 0.1019607843)",
-        "linecolor": "rgba(20, 23, 33, 0.3019607843)"
+        "linecolor": "rgba(20, 23, 33, 0.3803921569)"
       }
     },
     "ternary": {
       "aaxis": {
         "gridcolor": "rgba(20, 23, 33, 0.1019607843)",
-        "linecolor": "rgba(20, 23, 33, 0.3019607843)"
+        "linecolor": "rgba(20, 23, 33, 0.3803921569)"
       },
       "baxis": {
         "gridcolor": "rgba(20, 23, 33, 0.1019607843)",
-        "linecolor": "rgba(20, 23, 33, 0.3019607843)"
+        "linecolor": "rgba(20, 23, 33, 0.3803921569)"
       },
       "bgcolor": "white",
       "caxis": {
         "gridcolor": "rgba(20, 23, 33, 0.1019607843)",
-        "linecolor": "rgba(20, 23, 33, 0.3019607843)"
+        "linecolor": "rgba(20, 23, 33, 0.3803921569)"
       }
     }
   }

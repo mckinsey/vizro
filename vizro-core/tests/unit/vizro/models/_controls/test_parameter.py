@@ -3,7 +3,7 @@ from asserts import assert_component_equal
 from dash import dcc, html
 
 import vizro.models as vm
-from vizro.actions._update_figures import update_figures
+from vizro.actions._update_targets import update_targets
 from vizro.managers import data_manager, model_manager
 from vizro.models._controls.parameter import Parameter
 
@@ -64,12 +64,13 @@ class TestParameterInstantiation:
             "__default__": "selector_id.value",
         }
 
-    def test_check_figure_as_target_argument_failed(self):
+    def test_check_dot_notation_failed(self):
         with pytest.raises(
             ValueError,
-            match=r"Invalid target scatter_chart.*Arguments of the CapturedCallable function can be targeted directly",
+            match=r"Invalid target scatter_chart. "
+            "Targets must be supplied in the form <target_component>.<target_argument>",
         ):
-            Parameter(targets=["scatter_chart.figure"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
+            Parameter(targets=["scatter_chart"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
     @pytest.mark.parametrize("target", ["scatter_chart.data_frame", "scatter_chart.data_frame.argument.nested_arg"])
     def test_check_data_frame_as_target_argument_failed(self, target):
@@ -159,7 +160,16 @@ class TestPreBuildMethod:
             parameter.pre_build()
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
-    @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider(), vm.DatePicker()])
+    @pytest.mark.parametrize(
+        "test_input",
+        [
+            vm.Slider(),
+            vm.RangeSlider(),
+            vm.DatePicker(),
+            vm.DateTimePicker(),
+            vm.DateTimePicker(range=False),
+        ],
+    )
     def test_numerical_and_temporal_selectors_missing_values(self, test_input):
         parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
         page = model_manager["test_page"]
@@ -168,6 +178,24 @@ class TestPreBuildMethod:
             TypeError, match=f"{test_input.type} requires the arguments 'min' and 'max' when used within Parameter."
         ):
             parameter.pre_build()
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs")
+    @pytest.mark.parametrize(
+        "test_input, expected_value",
+        [
+            # Range default is date-only ISO strings derived from min/max (time portion cleared).
+            (vm.DateTimePicker(min="2024-01-01", max="2024-12-31"), ["2024-01-01", "2024-12-31"]),
+            (vm.DateTimePicker(min="2024-01-01", max="2024-12-31", range=False), "2024-01-01"),
+        ],
+    )
+    def test_datetime_selector_with_min_max_valid(self, test_input, expected_value):
+        """DateTimePicker with min/max is accepted in a Parameter and gets a date-only default value."""
+        parameter = Parameter(targets=["scatter_chart.x"], selector=test_input)
+        page = model_manager["test_page"]
+        page.controls = [parameter]
+        parameter.pre_build()
+        assert parameter.targets == ["scatter_chart.x"]
+        assert parameter.selector.value == expected_value
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
     @pytest.mark.parametrize("test_input", [vm.Checklist(), vm.Dropdown(), vm.RadioItems()])
@@ -197,7 +225,7 @@ class TestPreBuildMethod:
 
         [default_action] = parameter.selector.actions
 
-        assert isinstance(default_action, update_figures)
+        assert isinstance(default_action, update_targets)
         assert default_action.id == f"__parameter_action_{parameter.id}"
         assert default_action.targets == ["scatter_chart"]
 
@@ -214,6 +242,47 @@ class TestPreBuildMethod:
         model_manager["test_page"].controls = [parameter]
         parameter.pre_build()
         assert parameter.selector.actions == [custom_action]
+
+    def test_set_empty_actions(self, managers_one_page_two_graphs):
+        # Explicitly empty actions opts out of the default "refresh on change" action, so it must not be overwritten
+        # with the default update_targets action.
+        parameter = vm.Parameter(
+            targets=["scatter_chart.x"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"], actions=[]),
+        )
+        model_manager["test_page"].controls = [parameter]
+        parameter.pre_build()
+        assert parameter.selector.actions == []
+
+    def test_set_empty_actions_from_dict(self, managers_one_page_two_graphs):
+        # The same opt-out must be honored through dict/YAML config where `actions: []` is given explicitly.
+        parameter = vm.Parameter(
+            targets=["scatter_chart.x"],
+            selector={"type": "radio_items", "options": ["lifeExp", "gdpPercap", "pop"], "actions": []},
+        )
+        model_manager["test_page"].controls = [parameter]
+        parameter.pre_build()
+        assert parameter.selector.actions == []
+
+    def test_set_none_actions(self, managers_one_page_two_graphs):
+        # actions=None is equivalent to actions=[]: it also opts out of the default "refresh on change" action.
+        parameter = vm.Parameter(
+            targets=["scatter_chart.x"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"], actions=None),
+        )
+        model_manager["test_page"].controls = [parameter]
+        parameter.pre_build()
+        assert parameter.selector.actions == []
+
+    def test_set_none_actions_from_dict(self, managers_one_page_two_graphs):
+        # The same opt-out must be honored through dict/YAML config where `actions: null` is given explicitly.
+        parameter = vm.Parameter(
+            targets=["scatter_chart.x"],
+            selector={"type": "radio_items", "options": ["lifeExp", "gdpPercap", "pop"], "actions": None},
+        )
+        model_manager["test_page"].controls = [parameter]
+        parameter.pre_build()
+        assert parameter.selector.actions == []
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(

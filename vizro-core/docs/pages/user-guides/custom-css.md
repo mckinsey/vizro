@@ -1,3 +1,7 @@
+---
+description: "Identify Vizro CSS selectors, override styles globally or per page or per component, with worked examples for fonts, cards, logo, and theme switching."
+---
+
 # How to customize dashboard CSS
 
 Vizro is opinionated about visual formatting, and some elements, such as the layout of the navigation and controls, are fixed. You can customize some settings such as background colors, fonts, and other styles via CSS overrides.
@@ -144,6 +148,8 @@ To overwrite any global CSS property, you need to target the element selector an
 
     === "Result"
 
+        The dashboard renders the "Overwrite CSS globally" example.
+
         [![AssetsCSS]][assetscss]
 
 ### Overwrite CSS for selected pages
@@ -212,6 +218,8 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
         ```
 
     === "Result"
+
+        The dashboard renders the "Hide page title on selected pages" example.
 
         [![PageTitle]][pagetitle]
 
@@ -301,6 +309,8 @@ It's essential to understand the relationship between the targeted CSS class or 
         ```
 
     === "Result"
+
+        The dashboard renders the "Customizing CSS properties in selective components" example.
 
         [![CardCSS]][cardcss]
 

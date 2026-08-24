@@ -56,26 +56,9 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 - **Persona-based**: Different users may need different views
 - **Decision-focused**: Every metric should inform a decision
 
-### REQUIRED OUTPUT: spec/1_information_architecture.yaml
+### REQUIRED OUTPUT: spec/1_information_architecture.md
 
-Save this file BEFORE proceeding to Step 2:
-
-```yaml
-# spec/1_information_architecture.yaml
-dashboard:
-  name: [Name]
-  purpose: [One sentence goal]
-pages:
-  - name: [Page Name]
-    purpose: [What question does this answer?]
-    kpis: [List of 3-5 key metrics]
-data_sources:
-  - name: [Source Name]
-    type: [csv/database/api]
-decisions:
-  - decision: [What was decided]
-    reasoning: [Why this choice was made]
-```
+Copy the template from [assets/1_information_architecture.md](assets/1_information_architecture.md) to `spec/1_information_architecture.md` at the project root, fill in the placeholders, and save it BEFORE proceeding to Step 2.
 
 ### Validation Checklist
 
@@ -114,30 +97,30 @@ Tier 3: Component-level
 
 Load the **designing-vizro-layouts** skill for grid system, component sizing, filter placement, and selector rules. Use the [wireframe templates](references/wireframe_templates.md) when building ASCII wireframes for user approval.
 
-### REQUIRED OUTPUT: spec/2_interaction_ux.yaml
+### Interaction Design
 
-Save this file BEFORE proceeding to Step 3:
+Beyond standard sidebar filters, Vizro supports advanced interactions where clicking a chart or table affects other components. Load the **wiring-vizro-actions** skill for the 6 named interaction patterns (Hierarchical Drill-Down, Single-Page Drill-Down, Comparison Spotlight, Multi-Dimensional Slice, Select & Explore, Data Export) with wireframes, spec entries, and code.
 
-```yaml
-# spec/2_interaction_ux.yaml
-pages:
-  - name: [Must match Step 1]
-    layout_type: grid  # or flex
-    grid_columns: 12
-    grid_pattern: [[0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3]] # Component placement
+All advanced interactions follow **Source → Control → Target**: a source component (Graph or AgGrid — the components that carry click-data) sets an intermediate control (Filter or Parameter, always with an explicit `id`), which updates data-bearing target components (Graph, AgGrid, Figure, Table).
 
-    containers:
-      - name: [Container Name]
-        has_own_filters: true/false
-    filter_placement:
-      page_level: [columns with selector types]
-      container_level: [columns with selector types]
-wireframe: |
-  [ASCII wireframe for ALL pages and tab views]
-decisions:
-  - decision: [What was decided]
-    reasoning: [Why this choice was made]
+**Decision flow** — match data shape + user need to a pattern:
+
 ```
+Hierarchy where detail needs its own page?    → Pattern 1 (Hierarchical Drill-Down)
+Hierarchy where detail fits in a container?   → Pattern 2 (Single-Page Drill-Down)
+Compare one entity vs many, keep context?     → Pattern 3 (Comparison Spotlight)
+2+ categorical dimensions, click one cell?    → Pattern 4 (Multi-Dimensional Slice)
+Users need to download data?                  → Pattern 5 (Data Export)
+Otherwise → standard filters/parameters are sufficient
+```
+
+**When NOT to use advanced interactions**: view-only / executive dashboards, simple filtering needs (sidebar dropdown covers it), fewer than ~5 groups, or when you'd end up with more than 2 interaction patterns on a single page (becomes confusing).
+
+For each interaction, document: source component, source value (column or `"x"`/`"y"`), control id + type (Filter/Parameter), targets, visibility (`visible=False` for highlight patterns), and whether it crosses pages (`show_in_url=True`). See the **wiring-vizro-actions** skill for full templates.
+
+### REQUIRED OUTPUT: spec/2_interaction_ux.md
+
+Copy the template from [assets/2_interaction_ux.md](assets/2_interaction_ux.md) to `spec/2_interaction_ux.md` at the project root, fill in the placeholders (including one ASCII wireframe per page), and save it BEFORE proceeding to Step 3. Delete the entire `## Interactions` section if standard filters/parameters suffice.
 
 ### Validation Checklist
 
@@ -146,8 +129,10 @@ Before proceeding to Step 3:
 - [ ] Layout follows Vizro constraints
 - [ ] Filter placement is intentional and documented
 - [ ] User has been presented ASCII wireframes for every page and approved them
+- [ ] Each entry in `interactions:` maps to a named pattern from **wiring-vizro-actions** (or the absence of interactions is intentional)
+- [ ] User has confirmed the interaction flow
 
-**Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 2: Layout Mistakes"
+**Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 2: Layout & Interaction Mistakes"
 
 ---
 
@@ -160,33 +145,12 @@ Before proceeding to Step 3:
 Load the **selecting-vizro-charts** skill for chart selection, color strategy, anti-patterns, and KPI card rules. Key design decisions:
 
 - Match chart type to data question (bar for comparison, line for trends, pie only for 2–5 slices)
-- **Colors**: Do NOT include `color_decisions` in the spec. Vizro assigns palettes automatically. Only include if the user explicitly requested custom colors in their message.
+- **Colors**: Do NOT include a `## Colors` section in the spec. Vizro assigns palettes automatically. Only include if the user explicitly requested custom colors in their message.
 - Use built-in `kpi_card` / `kpi_card_reference`; never rebuild as custom charts
 
-### REQUIRED OUTPUT: spec/3_visual_design.yaml
+### REQUIRED OUTPUT: spec/3_visual_design.md
 
-Save this file BEFORE proceeding to implementation (dashboard-build skill).
-
-```yaml
-# spec/3_visual_design.yaml
-visualizations:
-  - name: [Chart Name]
-    type: [bar/line/scatter/etc]
-    needs_custom_implementation: true/false
-    reason: [if custom: has_reference_line/needs_data_processing/etc]
-
-# DO NOT include color_decisions unless the user explicitly asked for custom colors in their message.
-
-kpi_cards:
-  - name: [KPI Name]
-    value_column: [column]
-    format: [e.g., '${value:,.0f}']
-    has_reference: true/false
-
-decisions:
-  - decision: [What was decided]
-    reasoning: [Why this choice was made]
-```
+Copy the template from [assets/3_visual_design.md](assets/3_visual_design.md) to `spec/3_visual_design.md` at the project root, fill in the placeholders, and save it BEFORE proceeding to implementation (dashboard-build skill). Do **not** add a `## Colors` section unless the user explicitly asked for custom colors — Vizro assigns palettes automatically.
 
 ### Validation Checklist
 
@@ -195,7 +159,7 @@ Before proceeding to implementation (dashboard-build skill):
 - [ ] Chart types match data types (no pie charts for time series)
 - [ ] No anti-patterns used
 - [ ] Custom chart needs are identified
-- [ ] `color_decisions` is **absent** unless the user explicitly requested custom colors
+- [ ] A `## Colors` section is **absent** unless the user explicitly requested custom colors
 
 **Anti-patterns**: See [common_mistakes.md](references/common_mistakes.md) section "Step 3: Visualization Mistakes"
 
@@ -206,5 +170,6 @@ Before proceeding to implementation (dashboard-build skill):
 | [information_architecture.md](references/information_architecture.md) | Step 1: Deep dive on requirements                  |
 | **designing-vizro-layouts** skill                                     | Step 2: Grid system, component sizing, filters     |
 | [wireframe_templates.md](references/wireframe_templates.md)           | Step 2: Wireframe templates and interaction labels |
+| **wiring-vizro-actions** skill                                        | Step 2: Cross-filter / cross-highlight / drill-through / export patterns |
 | **selecting-vizro-charts** skill                                      | Step 3: Chart types, anti-patterns                 |
 | [common_mistakes.md](references/common_mistakes.md)                   | All steps: Anti-patterns to avoid                  |

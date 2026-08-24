@@ -1,3 +1,7 @@
+---
+description: "Walkthrough of writing a custom action: runtime inputs, multiple inputs and outputs, action chains, parallel actions, error handling, and security."
+---
+
 # Write your own actions
 
 Actions control how your app responds to user input such as clicking a button or a point on a graph. Vizro provides [built-in actions](../user-guides/actions.md) and also enables you to write your own [custom actions](../user-guides/custom-actions.md). In this tutorial you will learn how to write your own custom actions.
@@ -11,6 +15,10 @@ Vizro's actions are built on top of [Dash callbacks](https://dash.plotly.com/bas
 This tutorial should take **about an hour to finish**. You will gradually build a single-page app of a simple form that uses custom actions to show the current time, date and weather in Washington, D.C. or Berlin. Here's the final app in action:
 
 [![CustAction8]][custaction8]
+
+!!! tip "Complete final code"
+
+    Prefer to read the final dashboard code in one place rather than step by step? See [`vizro-core/examples/tutorial-custom-actions/app.py`](https://github.com/mckinsey/vizro/blob/main/vizro-core/examples/tutorial-custom-actions/app.py) for the complete, runnable end state of this tutorial (with a working Open-Meteo URL wrapped in `try`/`except`).
 
 ## A simple action
 
@@ -39,6 +47,8 @@ Let's start by making a very simple single-page app that tells us the current ti
         ```
 
     === "Result"
+
+        The dashboard renders the "App layout" example.
 
         [![CustAction1]][custaction1]
 
@@ -89,6 +99,8 @@ We have specified that a button should be included in the page layout but haven'
         1. To use the `vm.Card` as an output, we supply `id="time_card"` that matches onto the action's `outputs`. It does not matter that this component is defined after the `vm.Action` that uses it.
 
     === "Result"
+
+        The dashboard renders the "A simple action" example.
 
         [![CustAction2]][custaction2]
 
@@ -159,6 +171,8 @@ Let's extend our action to depend on an _input_ from the user's screen. As befor
 
     === "Result"
 
+        The dashboard renders the "Add `Switch` to layout" example.
+
         [![CustAction3]][custaction3]
 
 Now we need to connect `vm.Switch(id="clock_switch")` to our `update_card` action. We add an argument `use_24_hour_clock` to the `update_card` function and configure the function call in `vm.Action` to use the `clock_switch` component as the input value of this argument.
@@ -215,6 +229,8 @@ Now we need to connect `vm.Switch(id="clock_switch")` to our `update_card` actio
         1. The argument `use_24_hour_clock` is set at runtime to the value of the `clock_switch` component. This will be `True` or `False` depending on whether the switch is toggled on or off. Here we use a keyword argument but, just like a normal Python function call, we could also use a positional argument as `update_card("clock_switch")`.
 
     === "Result"
+
+        The dashboard renders the "Connect `Switch` to `update_card`" example.
 
         [![CustAction4]][custaction4]
 
@@ -297,6 +313,8 @@ Let's extend our example to handle multiple inputs and outputs. We add another c
         1. There are now two outputs: `time_card` and `date_card`.
 
     === "Result"
+
+        The dashboard renders the "Multiple inputs and outputs" example.
 
         [![CustAction5]][custaction5]
 
@@ -445,6 +463,8 @@ The full code is shown below.
 
     === "Result"
 
+        The dashboard renders the "Explicit actions chain" example.
+
         [![CustAction6]][custaction6]
 
 When you click the button, the `update_cards` action executes and sets the placeholder message "Fetching current weather...". When this action completes, the `fetch_weather` action executes to find the actual weather and update the message. The Open-Meteo API request generally completes very quickly and so "Fetching current weather..." will only flash on your screen very briefly. If you'd like to artificially slow down the `fetch_weather` action to see it more clearly then you can add `from time import sleep; sleep(3)` to the function body to add a delay of 3 seconds.
@@ -569,6 +589,8 @@ When the city is selected in the dropdown, we want to immediately update the car
         1. `update_time_date_formats` sets the `clock_switch` and `date_radio_items` form fields and also updates `submit_button`. This update of `submit_button` triggers the actions chain associated with the submit button.
 
     === "Result"
+
+        The dashboard renders the "Implicit actions chain" example.
 
         [![CustAction7]][custaction7]
 
@@ -726,6 +748,8 @@ As an additional enhancement we add `location_dropdown` as an input to these act
 
     === "Result"
 
+        The dashboard renders the "Parallel actions" example.
+
         [![CustAction8]][custaction8]
 
 Play around with the app for a while to make sure you understand its behavior:
@@ -765,7 +789,7 @@ We still have an explicit actions chain `[update_time_date_formats, fetch_weathe
 
 In terms of execution order, we know that `fetch_weather` can only execute once `update_time_date_formats` has completed since these are in an explicit actions chain. But when `update_time_date_formats` completes, as well as triggering `fetch_weather`, it also implicitly triggers `update_time_card` and `update_date_card` simultaneously. Looking at the flowchart, we can see that all three of these actions can run in parallel and, in general, will do so. Each action will update its outputs on screen as soon as it has completed.
 
-??? details "Parallel execution is not guaranteed"
+!!! warning "Parallel execution is not guaranteed"
 
     The reason we say that the actions will _in general_ run in parallel wherever possible is that, as [explained in the Dash documentation](https://dash.plotly.com/advanced-callbacks#as-a-direct-result-of-user-interaction), execution depends on the server environment. If you [use the Flask development server](../user-guides/run-deploy.md#develop-in-python-script), it is by default set to run multi-threaded and so actions can execute in parallel. In production, if you [use gunicorn](../user-guides/run-deploy.md#gunicorn) with multiple workers then multiple actions can run in parallel.
 
@@ -892,6 +916,8 @@ For a better user experience, we can wrap the relevant code in `try/except` so t
         1. Fetching `temperature` from the response is another potential source of an exception, for example if the structure of the Open-Meteo response changes, so we also put this line inside the `try`.
 
     === "Result"
+
+        The dashboard renders the "Handle errors" example.
 
         [![CustAction9]][custaction9]
 

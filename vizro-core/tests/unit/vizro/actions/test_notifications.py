@@ -31,11 +31,17 @@ class TestShowNotificationInstantiation:
         assert notification.icon == "info"
         assert notification.auto_close == 4000
         assert notification.outputs == "vizro-notifications.sendNotifications"
+        assert notification._is_conditional is False
 
     @pytest.mark.parametrize("field", ["title", "icon", "auto_close"])
     def test_none_value_raises_validation_error(self, field):
         with pytest.raises(ValidationError, match=field):
             show_notification(text="Test message", **{field: None})
+
+    def test_dash_components_for_conditional_notification(self):
+        conditional_notification = show_notification(text="Test message")
+        conditional_notification._is_conditional = True
+        assert conditional_notification._dash_components == []
 
 
 @pytest.mark.usefixtures("managers_one_page_one_button")
@@ -111,6 +117,7 @@ class TestUpdateNotificationInstantiation:
         assert notification.notification == "test_notification"
         assert notification.text == "Updated message"
         assert notification.variant == "info"
+        assert notification._is_conditional is False
 
 
 @pytest.mark.usefixtures("managers_one_page_one_button")

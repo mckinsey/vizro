@@ -73,6 +73,10 @@ class TestChecklistInstantiation:
                 [{"label": "True", "value": True}, {"label": "False", "value": False}],
                 [{"label": "True", "value": True}, {"label": "False", "value": False}],
             ),
+            (
+                ["A", 1, {"label": "B", "value": "B"}],
+                ["A", 1, {"label": "B", "value": "B"}],
+            ),
         ],
     )
     def test_create_checklist_valid_options(self, test_options, expected):
@@ -85,22 +89,17 @@ class TestChecklistInstantiation:
         assert checklist.title == ""
         assert checklist.actions == []
 
-    @pytest.mark.parametrize("test_options", [1, "A", True, 1.0, [True, 2.0, 1.0, "A", "B"]])
+    @pytest.mark.parametrize("test_options", [1, "A", True, 1.0])
     def test_create_checklist_invalid_options_type(self, test_options):
         with pytest.raises(ValidationError, match="Input should be a valid"):
             Checklist(options=test_options)
 
     def test_create_checklist_invalid_options_dict(self):
-        with pytest.raises(ValidationError, match="Field required"):
+        with pytest.raises(ValidationError, match="Field required") as exc:
             Checklist(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
-
-    def test_validate_options_dict_produces_clean_errors(self):
-        """Test that _validate_options produces 2 clean errors instead of 8 messy ones."""
-        with pytest.raises(ValidationError) as exc_info:
-            Checklist(options=[{"hello": "A", "world": "A"}])
-
-        # With validator: 2 errors (label, value). Without: 8 errors with nested paths.
-        assert len(exc_info.value.errors()) == 2
+        assert exc.value.error_count() == 2
+        assert exc.value.errors()[0]["msg"] == "Field required" and exc.value.errors()[0]["loc"] == ("label",)
+        assert exc.value.errors()[1]["msg"] == "Field required" and exc.value.errors()[1]["loc"] == ("value",)
 
     @pytest.mark.parametrize(
         "test_value, options",
@@ -110,6 +109,7 @@ class TestChecklistInstantiation:
             ([1.0, 2.0], [1.0, 2.0, 3.0]),
             ([False, True], [True, False]),
             (["A", "B"], [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}]),
+            (["1", 2, "B", True], ["1", 2, {"label": "3.0", "value": 3}, "B", {"label": "True", "value": True}]),
         ],
     )
     def test_create_checklist_valid_value(self, test_value, options):
@@ -130,6 +130,7 @@ class TestChecklistInstantiation:
             (["D"], [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}]),
             ([True], ["A", "B", "C"]),
             ([True], [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}]),
+            (["True"], ["1", 2, {"label": "True", "value": True}]),
         ],
     )
     def test_create_checklist_invalid_value_non_existing(self, test_value, options):

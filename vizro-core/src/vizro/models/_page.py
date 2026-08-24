@@ -16,7 +16,7 @@ from pydantic import (
 from typing_extensions import TypedDict
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
-from vizro.actions import update_figures
+from vizro.actions import update_targets
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import ControlGroup, Filter, Parameter, Tooltip, VizroBaseModel
@@ -120,7 +120,7 @@ class Page(VizroBaseModel):
     @_log_call
     def pre_build(self):
         # TODO-AV2 A 4: work out the best place to put this logic. It could feasibly go in _on_page_load instead.
-        #  Probably it's better where it is now since it avoid navigating up the model hierarchy
+        #  Probably it's better where it is now since it avoids navigating up the model hierarchy
         #  (action -> page -> figures) and instead just looks down (page -> figures).
         #  Should there be validation inside _on_page_load to check that targets exist and are
         #  on the page and target-able components (that is, are dynamic and hence have _action_outputs)?
@@ -140,15 +140,15 @@ class Page(VizroBaseModel):
         targets = figure_targets + filter_targets
 
         if targets:
-            # TODO AM-PP OQ: Why mypy raises an issue here if a single update_figures object is assigned?
+            # TODO AM-PP OQ: Why mypy raises an issue here if a single update_targets object is assigned?
             # This doesn't happen in other places where we assign a single action to self.actions.
-            self.actions = [update_figures(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
+            self.actions = [update_targets(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
             # TODO AM-MS-PP OQ: Here's an interesting situation: Implementation like this below relies on that the
-            # update_figures.pre_build would calculate its targets. However, that's not the case as this update_figure
+            # update_targets.pre_build would calculate its targets. However, that's not the case as this update_figure
             # object is added to the model_manager after Vizro._pre_build creates the set(model_managers).
             # So, with the current implementation, objects that are created as a result of other models' pre_build
             # methods will never have their pre_build called. Is there any specific reason for this design decision?
-            # self.actions = update_figures(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}")
+            # self.actions = update_targets(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}")
 
         # Convert generator to list as it's going to be iterated multiple times.
         # Use "root_model=self" as controls can be defined inside a "Container.controls" under the "Page.components".
@@ -156,8 +156,11 @@ class Page(VizroBaseModel):
 
         if controls:
             # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.
-            # Selector values as outputs to be reset.
-            selector_outputs = [Output(control.selector.id, "value", allow_duplicate=True) for control in controls]
+            # Selector values as outputs to be reset. Use "__default__" as the key to get the main selector output prop.
+            selector_outputs = [
+                Output(*control.selector._action_outputs["__default__"].split("."), allow_duplicate=True)
+                for control in controls
+            ]
 
             # Selector guard is set to True when selector value is reset to prevent actions chain from running.
             selector_guard_outputs = [
@@ -181,7 +184,10 @@ class Page(VizroBaseModel):
         url_controls = [control for control in controls if control.show_in_url]
 
         if url_controls:
-            selector_values_inputs = [Input(control.selector.id, "value") for control in url_controls]
+            # Selector values as inputs. Use "__default__" as the key to get the main selector input prop.
+            selector_values_inputs = [
+                Input(*control.selector._action_triggers["__default__"].split(".")) for control in url_controls
+            ]
             # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
             # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True.
             control_ids_states = [State(control.id, "id") for control in url_controls]
@@ -232,6 +238,7 @@ class Page(VizroBaseModel):
         components_container.children.extend(
             [
                 *action_components,
+                dcc.Store(id="vizro_logs_store", data=[], storage_type="session"),
                 dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
                 dcc.Download(id="vizro_download"),
                 dcc.Location(id="vizro_url", refresh="callback-nav"),

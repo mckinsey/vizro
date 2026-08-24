@@ -1,0 +1,37 @@
+# Vizro-Experimental
+
+Vizro-Experimental is the incubation home for [Vizro](https://vizro.readthedocs.io) features that aren't yet ready for `vizro-core`.
+APIs in this package may change or be removed between releases. Once a feature stabilises, it graduates to `vizro-core`.
+
+Users install with `pip install vizro-experimental` and import per feature, for example:
+`from vizro_experimental.chat import Chat, ChatAction, StreamingChatAction` or `from vizro_experimental.chat.popup import add_chat_popup`.
+
+All documentation pages return clean markdown when fetched with the `Accept: text/markdown` request header.
+
+## CHAT COMPONENT - HOW-TO GUIDES
+
+- [Chat component](https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/pages/chat/chat-component/): Add a Chat to a page and back it with an action
+- [Use a real LLM](https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/pages/chat/use-llm/): Wire the Chat to a real LLM by subclassing `ChatAction`
+- [Stream text responses](https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/pages/chat/streaming-chat/): Stream model responses by subclassing `StreamingChatAction`
+- [Render Dash components](https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/pages/chat/mixed-content/): Return rich Dash components from the Chat instead of plain text
+- [Add example questions](https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/pages/chat/example-questions/): Show suggested starter prompts in the Chat
+- [Add file upload](https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/pages/chat/file-upload/): Let users attach files to Chat messages
+- [Combine features](https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/pages/chat/combine-features/): Combine streaming, mixed content, examples, and file uploads in one Chat
+
+## CHAT COMPONENT - API REFERENCE
+
+- [Chat component API reference](https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/pages/chat/api-reference/): API reference for `Chat`, `ChatAction`, and `StreamingChatAction`
+
+## CHAT POPUP - HOW-TO GUIDES
+
+- [Add a chat popup](https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/pages/chat/chat-popup/): Drop a floating chatbot onto any dashboard with `add_chat_popup`
+
+## CHAT POPUP - API REFERENCE
+
+- [Chat popup API reference](https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/pages/chat/popup-api-reference/): API reference for `add_chat_popup` and its supporting models
+
+## RELATED PROJECTS
+
+- [Vizro](https://vizro.readthedocs.io/en/stable/): The core Vizro dashboarding framework; see its [llms.txt](https://vizro.readthedocs.io/llms.txt)
+- [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/): Generative-AI chart creation; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-ai/llms.txt)
+- [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/): MCP server for AI-assisted Vizro dashboard creation; see its [llms.txt](https://vizro.readthedocs.io/projects/vizro-mcp/llms.txt)

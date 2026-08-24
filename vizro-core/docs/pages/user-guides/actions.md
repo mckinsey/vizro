@@ -1,3 +1,7 @@
+---
+description: "Attach built-in actions with `import vizro.actions as va`, trigger them from buttons or graphs, and chain multiple actions on a single trigger."
+---
+
 # How to use actions
 
 Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not built into Vizro then you can [write your own custom action](custom-actions.md). In these guides we show how to use built-in actions across a range of areas:
@@ -5,6 +9,7 @@ Actions control how your app responds to user input such as clicking a button or
 - [Handle data](data-actions.md), for example to export data.
 - [Graph and table interactions](graph-table-actions.md), for example to cross-filter.
 - [Show notifications](notification-actions.md), for example to provide user feedback.
+- [Refresh figures on demand](#refresh-figures-on-demand), for example to apply controls on a button click.
 
 A complete list of built-in actions in given in the [API documentation][vizro.actions]. We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions-tutorial.md) and an [explanation of how Vizro actions work](../explanation/actions-explanation.md).
 
@@ -85,6 +90,8 @@ Here is an example action that uses the [`export_data` action](data-actions.md#e
 
     === "Result"
 
+        The dashboard renders the "Action triggered by button" example.
+
         [![ExportData]][exportdata]
 
 When you click the "Export data" button, the data for all graphs, tables and figures on the page is downloaded. In this example, this will produce a csv file for the graph's source data `px.data.iris()`.
@@ -164,7 +171,28 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
 
     === "Result"
 
+        The dashboard renders the "Cross-filter from graph to table" example.
+
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif)
+
+## Refresh figures on demand
+
+The [`update_targets`][vizro.actions.update_targets] action re-runs the charts, tables, figures and dynamic filters on a page against the current values of the page's [filters and parameters](controls.md). It is the same mechanism Vizro uses to refresh a page when it loads or when a control changes, exposed so that you can trigger it yourself, for example from a [`Button`][vizro.models.Button].
+
+Call it with no arguments to refresh every figure on the page (and recompute the options of any [dynamic filters](data.md#filters)), or pass `targets` to refresh only specific components:
+
+```python
+import vizro.actions as va
+import vizro.models as vm
+
+# Refresh every figure on the page
+vm.Button(text="Refresh", actions=va.update_targets())
+
+# Refresh only the chosen components
+vm.Button(text="Refresh chart", actions=va.update_targets(targets=["my_graph"]))
+```
+
+A common use is to let a user adjust several controls and apply them all at once: set each control's selector `actions=None` so it does not refresh on change, then apply them together with an `update_targets` button. See [apply controls with a button](controls.md#apply-controls-with-a-button) for a complete example.
 
 ## Multiple actions
 

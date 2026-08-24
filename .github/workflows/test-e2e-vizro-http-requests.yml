@@ -23,9 +23,9 @@ jobs:
   test-e2e-vizro-http-requests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install Hatch
@@ -34,6 +34,8 @@ jobs:
         run: |
           hatch run pip install playwright
           hatch run playwright install --with-deps chromium
+      - name: Show dependency tree
+        run: hatch run pip tree
       - name: Run tests
         run: |
           hatch run test-e2e-vizro-http-requests

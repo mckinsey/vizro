@@ -6,7 +6,19 @@ from ._tooltip import Tooltip
 from ._action import Action
 from ._components import Card, Container, Graph, Text, Table, Tabs, Figure, ControlGroup
 from ._components import AgGrid
-from ._components.form import Button, Cascader, Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider, Switch
+from ._components.form import (
+    Button,
+    Cascader,
+    Checklist,
+    DatePicker,
+    DateTimePicker,
+    Dropdown,
+    RadioItems,
+    RangeSlider,
+    Slider,
+    Switch,
+    TimePicker,
+)
 from ._controls import Filter, Parameter
 from ._navigation.accordion import Accordion
 from ._navigation.navigation import Navigation
@@ -29,6 +41,7 @@ __all__ = [
     "ControlGroup",
     "Dashboard",
     "DatePicker",
+    "DateTimePicker",
     "Dropdown",
     "Figure",
     "Filter",
@@ -48,6 +61,7 @@ __all__ = [
     "Table",
     "Tabs",
     "Text",
+    "TimePicker",
     "Tooltip",
     "VizroBaseModel",
 ]
@@ -61,9 +75,10 @@ from vizro.actions import (
     filter_interaction,
     set_control,
     show_notification,
-    update_figures,
     update_notification,
+    update_targets,
 )
+from vizro.actions._on_page_load import _on_page_load
 
 from ._components.form._text_area import TextArea
 from ._components.form._user_input import UserInput

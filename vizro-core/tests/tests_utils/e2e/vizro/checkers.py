@@ -1,6 +1,7 @@
 import os
 import time
 from collections import Counter
+from datetime import datetime
 
 import e2e.vizro.constants as cnst
 from e2e.vizro.paths import (
@@ -9,9 +10,10 @@ from e2e.vizro.paths import (
     dropdown_id_path,
     graph_axis_value_path,
     select_all_path,
+    table_ag_grid_cell_path_by_row,
 )
 from e2e.vizro.waiters import graph_load_waiter_selenium
-from hamcrest import any_of, assert_that, contains_string, equal_to
+from hamcrest import any_of, assert_that, contains_string, equal_to, greater_than_or_equal_to, less_than_or_equal_to
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.color import Color
@@ -103,6 +105,99 @@ def check_range_date_picker_value(driver, elem_id, expected_min_date_value=None,
         f'button[id="{elem_id}"]',
         f"{expected_min_date_value} – {expected_max_date_value}",  # noqa: RUF001
     )
+
+
+def check_single_time_picker_value(driver, elem_id, expected_hour, expected_minute):
+    """Checks that a single dmc.TimePicker displays the expected hour and minute.
+
+    Args:
+        driver: dash_br fixture.
+        elem_id: id of the TimePicker wrapper (without -start/-end suffix).
+        expected_hour: two-digit hour string shown in the first input field.
+        expected_minute: two-digit minute string shown in the second input field.
+    """
+    timeout = cnst.SELENIUM_WAITERS_TIMEOUT
+    poll_interval = 0.2
+    elapsed = 0
+    while elapsed < timeout:
+        fields = driver.find_elements(f"div[id='{elem_id}'] input.mantine-TimePicker-field")
+        if (
+            len(fields) >= 2
+            and fields[0].get_attribute("value") == expected_hour
+            and fields[1].get_attribute("value") == expected_minute
+        ):
+            return
+        time.sleep(poll_interval)
+        elapsed += poll_interval
+    raise TimeoutError(
+        f"TimePicker '{elem_id}' value did not become {expected_hour}:{expected_minute} within {timeout}s"
+    )
+
+
+def check_empty_time_picker_value(driver, elem_id):
+    """Checks that a dmc.TimePicker has no hour or minute entered."""
+    timeout = cnst.SELENIUM_WAITERS_TIMEOUT
+    poll_interval = 0.2
+    elapsed = 0
+    while elapsed < timeout:
+        fields = driver.find_elements(f"div[id='{elem_id}'] input.mantine-TimePicker-field")
+        if len(fields) >= 2 and fields[0].get_attribute("value") == "" and fields[1].get_attribute("value") == "":
+            return
+        time.sleep(poll_interval)
+        elapsed += poll_interval
+    raise TimeoutError(f"TimePicker '{elem_id}' was not empty within {timeout}s")
+
+
+def check_range_time_picker_value(driver, elem_id, start_hour, start_minute, end_hour, end_minute):
+    """Checks that a range TimePicker displays the expected start and end times.
+
+    Args:
+        driver: dash_br fixture.
+        elem_id: id of the range TimePicker (dcc.Store id, without -start/-end suffix).
+        start_hour: two-digit hour string for the "From" input.
+        start_minute: two-digit minute string for the "From" input.
+        end_hour: two-digit hour string for the "To" input.
+        end_minute: two-digit minute string for the "To" input.
+    """
+    check_single_time_picker_value(driver, f"{elem_id}-start", start_hour, start_minute)
+    check_single_time_picker_value(driver, f"{elem_id}-end", end_hour, end_minute)
+
+
+def check_single_datetime_picker_value(driver, elem_id, expected_date_value, expected_hour, expected_minute):
+    """Checks that a single DateTimePicker displays the expected date and time.
+
+    Args:
+        driver: dash_br fixture.
+        elem_id: id of the DateTimePicker proxy dcc.Store (without -date/-time suffix).
+        expected_date_value: formatted date shown on the DatePickerInput button (e.g. "Mar 14, 2026").
+        expected_hour: two-digit hour string shown in the time input.
+        expected_minute: two-digit minute string shown in the time input.
+    """
+    check_date_picker_value(driver, f"{elem_id}-date", expected_date_value)
+    check_single_time_picker_value(driver, f"{elem_id}-time", expected_hour, expected_minute)
+
+
+def check_range_datetime_picker_value(driver, elem_id, start, end):
+    """Checks that a range DateTimePicker displays the expected start and end dates and times.
+
+    Args:
+        driver: dash_br fixture.
+        elem_id: id of the range DateTimePicker proxy dcc.Store.
+        start: tuple of (formatted date, hour, minute) for the "From" inputs; hour/minute may be None.
+        end: tuple of (formatted date, hour, minute) for the "To" inputs; hour/minute may be None.
+    """
+    start_date_value, start_hour, start_minute = start
+    end_date_value, end_hour, end_minute = end
+    check_date_picker_value(driver, f"{elem_id}-date-start", start_date_value)
+    check_date_picker_value(driver, f"{elem_id}-date-end", end_date_value)
+    if start_hour is None or start_minute is None:
+        check_empty_time_picker_value(driver, f"{elem_id}-time-start")
+    else:
+        check_single_time_picker_value(driver, f"{elem_id}-time-start", start_hour, start_minute)
+    if end_hour is None or end_minute is None:
+        check_empty_time_picker_value(driver, f"{elem_id}-time-end")
+    else:
+        check_single_time_picker_value(driver, f"{elem_id}-time-end", end_hour, end_minute)
 
 
 def check_accordion_active(driver, accordion_name):
@@ -237,13 +332,163 @@ def check_table_ag_grid_rows_number(driver, table_id, expected_rows_num):
     )
 
 
-# Current http_requests_paths contains only "_dash-update-component", but the Counter is used to
-# simplify scaling of this code if we start observing and counting other http requests
+def _parse_ag_grid_cell_time(text, col_id):
+    """Parse a time-of-day from an AgGrid cell display string.
+
+    datetime_utc cells contain full ISO timestamps; time columns use hh:mm:ss[.ffffff].
+    """
+    if col_id == "datetime_utc":
+        cell_time = datetime.fromisoformat(text)
+        return cell_time.hour, cell_time.minute, cell_time.second
+    time_str = text.split(".")[0]
+    hour, minute, second = (int(part) for part in time_str.split(":"))
+    return hour, minute, second
+
+
+def _time_to_seconds(hour, minute, second=0):
+    """Convert hour, minute, and second to total seconds since midnight."""
+    return hour * 3600 + minute * 60 + second
+
+
+def _parse_time_hh_mm(time_str):
+    """Parse an 'HH:MM' string into hour and minute integers."""
+    hour, minute = (int(part) for part in time_str.split(":"))
+    return hour, minute
+
+
+def check_table_ag_grid_time_values_in_range(driver, table_id, col_id, start_time, end_time):
+    """Checks that all visible AgGrid rows have time values within the given range (inclusive).
+
+    The end minute is treated as inclusive up to :59 seconds (e.g. 10:44 means <= 10:44:59).
+
+    Args:
+        driver: dash_br fixture.
+        table_id: id of the AgGrid component.
+        col_id: column id to read from each row (e.g. "time_hh_mm_ss", "datetime_utc").
+        start_time: range lower bound as "HH:MM".
+        end_time: range upper bound as "HH:MM".
+    """
+    rows = driver.find_elements(f"div[id='{table_id}'] div[class='ag-center-cols-container'] div[row-index]")
+    start_hour, start_minute = _parse_time_hh_mm(start_time)
+    end_hour, end_minute = _parse_time_hh_mm(end_time)
+    start_seconds = _time_to_seconds(start_hour, start_minute)
+    end_seconds = _time_to_seconds(end_hour, end_minute, 59)
+    for row in rows:
+        row_index = row.get_attribute("row-index")
+        cell_text = driver.find_element(
+            table_ag_grid_cell_path_by_row(table_id, row_index=row_index, col_id=col_id)
+        ).text
+        hour, minute, second = _parse_ag_grid_cell_time(cell_text, col_id)
+        cell_seconds = _time_to_seconds(hour, minute, second)
+        assert_that(
+            cell_seconds,
+            greater_than_or_equal_to(start_seconds),
+            reason=f"Row {row_index} value '{cell_text}' is before {start_time}",
+        )
+        assert_that(
+            cell_seconds,
+            less_than_or_equal_to(end_seconds),
+            reason=f"Row {row_index} value '{cell_text}' is after {end_time}",
+        )
+
+
+def _parse_datetime_hh_mm(datetime_str):
+    """Parse a 'YYYY-MM-DDTHH:MM' string into a timezone-naive datetime floored to minutes."""
+    return datetime.fromisoformat(datetime_str).replace(second=0, microsecond=0)
+
+
+def _parse_ag_grid_cell_datetime(text):
+    """Parse a datetime from an AgGrid cell display string."""
+    return datetime.fromisoformat(text.replace("Z", "+00:00")).replace(second=0, microsecond=0)
+
+
+def check_table_ag_grid_datetime_values_in_range(driver, table_id, col_id, start_datetime, end_datetime):
+    """Checks that all visible AgGrid rows have datetime values within the given range (inclusive).
+
+    Args:
+        driver: dash_br fixture.
+        table_id: id of the AgGrid component.
+        col_id: column id to read from each row.
+        start_datetime: range lower bound as "YYYY-MM-DDTHH:MM".
+        end_datetime: range upper bound as "YYYY-MM-DDTHH:MM".
+    """
+    rows = driver.find_elements(f"div[id='{table_id}'] div[class='ag-center-cols-container'] div[row-index]")
+    start = _parse_datetime_hh_mm(start_datetime)
+    end = _parse_datetime_hh_mm(end_datetime)
+    for row in rows:
+        row_index = row.get_attribute("row-index")
+        cell_text = driver.find_element(
+            table_ag_grid_cell_path_by_row(table_id, row_index=row_index, col_id=col_id)
+        ).text
+        cell_datetime = _parse_ag_grid_cell_datetime(cell_text).replace(tzinfo=None)
+        assert_that(
+            cell_datetime,
+            greater_than_or_equal_to(start),
+            reason=f"Row {row_index} value '{cell_text}' is before {start_datetime}",
+        )
+        assert_that(
+            cell_datetime,
+            less_than_or_equal_to(end),
+            reason=f"Row {row_index} value '{cell_text}' is after {end_datetime}",
+        )
+
+
+def check_table_ag_grid_datetime_values_equal(driver, table_id, col_id, datetime_str):
+    """Checks that all visible AgGrid rows match the given datetime at minute precision.
+
+    Args:
+        driver: dash_br fixture.
+        table_id: id of the AgGrid component.
+        col_id: column id to read from each row.
+        datetime_str: expected datetime as "YYYY-MM-DDTHH:MM".
+    """
+    rows = driver.find_elements(f"div[id='{table_id}'] div[class='ag-center-cols-container'] div[row-index]")
+    expected = _parse_datetime_hh_mm(datetime_str)
+    for row in rows:
+        row_index = row.get_attribute("row-index")
+        cell_text = driver.find_element(
+            table_ag_grid_cell_path_by_row(table_id, row_index=row_index, col_id=col_id)
+        ).text
+        cell_datetime = _parse_ag_grid_cell_datetime(cell_text).replace(tzinfo=None)
+        assert_that(
+            cell_datetime,
+            equal_to(expected),
+            reason=f"Row {row_index} value '{cell_text}' does not match {datetime_str}",
+        )
+
+
+def check_table_ag_grid_time_values_equal(driver, table_id, col_id, time):
+    """Checks that all visible AgGrid rows match the given hour and minute (seconds may differ).
+
+    Args:
+        driver: dash_br fixture.
+        table_id: id of the AgGrid component.
+        col_id: column id to read from each row.
+        time: expected time as "HH:MM".
+    """
+    rows = driver.find_elements(f"div[id='{table_id}'] div[class='ag-center-cols-container'] div[row-index]")
+    expected_hour, expected_minute = _parse_time_hh_mm(time)
+    for row in rows:
+        row_index = row.get_attribute("row-index")
+        cell_text = driver.find_element(
+            table_ag_grid_cell_path_by_row(table_id, row_index=row_index, col_id=col_id)
+        ).text
+        cell_hour, cell_minute, _ = _parse_ag_grid_cell_time(cell_text, col_id)
+        assert_that(
+            (cell_hour, cell_minute),
+            equal_to((expected_hour, expected_minute)),
+            reason=f"Row {row_index} value '{cell_text}' does not match {time}",
+        )
+
+
 def check_http_requests_count(
     page, http_requests_paths, requests_number, sleep=cnst.HTTP_TIMEOUT_SHORT, url_path="_dash-update-component"
 ):
     page.wait_for_timeout(sleep)
-    counts = Counter(http_requests_paths)
+    # http_requests_paths now contains "_dash-update-component" paths with query parameters such as "?endId=..."
+    counts = Counter(path.split("?")[0] for path in http_requests_paths)
     assert_that(
-        counts[url_path], equal_to(requests_number), reason=f"'{url_path}' should be equal to {requests_number}"
+        counts[url_path],
+        equal_to(requests_number),
+        reason=f"'{url_path}' requests should be equal to {requests_number}",
     )

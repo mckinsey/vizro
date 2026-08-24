@@ -5,13 +5,14 @@ from dash import dcc, html
 from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
-from vizro.actions import set_control, update_figures
+from vizro.actions import set_control, update_targets
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._controls._controls_utils import (
     _is_categorical_selector,
+    _is_datetime_selector,
     _is_hierarchical_selector,
-    _is_numerical_temporal_selector,
+    _is_numerical_or_date_selector,
     check_control_targets,
     get_selector_default_value,
     warn_missing_id_for_url_control,
@@ -31,7 +32,14 @@ def check_dot_notation(target):
             f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>. "
             "Arguments of the CapturedCallable function can be targeted directly, and not via <.figure.>."
         )
+    return target
 
+
+def check_data_frame_as_target_argument(target):
+    if "." not in target:
+        return target
+
+    targeted_argument = target.split(".", 1)[1]
     if targeted_argument.startswith("data_frame") and targeted_argument.count(".") != 1:
         raise ValueError(
             f"Invalid target {target}. 'data_frame' target must be supplied in the form "
@@ -73,6 +81,7 @@ class Parameter(VizroBaseModel):
             Annotated[
                 str,
                 AfterValidator(check_dot_notation),
+                AfterValidator(check_data_frame_as_target_argument),
                 Field(description="Targets in the form of `<target_component>.<target_argument>`."),
             ]
         ],
@@ -147,7 +156,9 @@ class Parameter(VizroBaseModel):
 
         check_control_targets(control=self)
 
-        if _is_numerical_temporal_selector(self.selector) and (self.selector.min is None or self.selector.max is None):
+        if (_is_numerical_or_date_selector(self.selector) or _is_datetime_selector(self.selector)) and (
+            self.selector.min is None or self.selector.max is None
+        ):
             raise TypeError(f"{self.selector.type} requires the arguments 'min' and 'max' when used within Parameter.")
         elif (
             _is_categorical_selector(self.selector) or _is_hierarchical_selector(self.selector)
@@ -166,7 +177,11 @@ class Parameter(VizroBaseModel):
         if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
             self._selector_properties = set(selector_inner_component_properties) - set(html.Div().available_properties)
 
-        if not self.selector.actions:
+        # Check model_fields_set (not falsiness) so an explicit `selector=X(actions=None)` or `selector=X(actions=[])`
+        # is honored as "do nothing on selector change" rather than being replaced by the default. The parameter
+        # value is still applied whenever its targets are refreshed by something else (e.g. a Button running
+        # update_targets).
+        if "actions" not in self.selector.model_fields_set:
             from vizro.models import Filter
 
             page_dynamic_filters = [
@@ -192,18 +207,22 @@ class Parameter(VizroBaseModel):
 
             # Extending `self.targets` with `filter_targets` instead of redefining it to avoid triggering the
             # pydantic validator like `check_dot_notation` on the `self.targets` again.
-            # We do the update to ensure that `self.targets` is consistent with the target ids passed to `_parameter`.
+            # We do the update to ensure that `self.targets` is consistent with the target ids passed to update_targets.
             self.targets.extend(list(filter_targets))
             targets_ids = [target.partition(".")[0] for target in self.targets]
 
-            # Ensure set_control actions run before update_figures so the latest control value is applied.
+            # TODO PP NOW: Check below!
+
+            # Ensure set_control actions run before update_targets so the latest control value is applied.
             self.selector.actions = [
                 *[set_control(control=control_id, value=None) for control_id in targeted_controls],
-                update_figures(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=targets_ids),
+                update_targets(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=targets_ids),
             ]
             # Run pre_build for each action to run validations and compute internal attributes.
             for selector_action in self.selector.actions:
                 selector_action.pre_build()
+
+            # self.selector.actions = [update_targets(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=target_ids)]
 
     @_log_call
     def build(self):

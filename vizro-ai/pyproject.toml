@@ -19,7 +19,7 @@ dependencies = [
   "plotly",
   "black",
   "autoflake",
-  "pydantic-ai-slim>=1.39.0"
+  "pydantic-ai-slim>=1.56.0"
 ]
 description = "Vizro-AI provides pre-configured agents that help with data visualizations"
 dynamic = ["version"]
@@ -55,6 +55,11 @@ source_pkgs = ["vizro_ai"]
 [tool.pytest.ini_options]
 filterwarnings = [
   "error",
+  # Package deprecation notice emitted on every `import vizro_ai`. Must use a message pattern
+  # (not `::vizro_ai.VizroAIDeprecationWarning`) and stay above the safeguard ignore below: resolving
+  # a dotted warning class imports vizro_ai, which re-triggers this warning before its own filter is
+  # in place, erroring out under the "error" filter above.
+  "ignore:vizro-ai is deprecated:DeprecationWarning",
   # Ignore until pandas 3 is released:
   "ignore:(?s).*Pyarrow will become a required dependency of pandas:DeprecationWarning",
   # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590:
@@ -66,7 +71,9 @@ filterwarnings = [
   "ignore:The `Layout` model has been renamed `Grid`:FutureWarning",
   "ignore:The `Layout` model has been renamed",
   # Ignore asyncio event loop deprecation warning from pydantic_ai in Python 3.13+
-  "ignore:There is no current event loop:DeprecationWarning"
+  "ignore:There is no current event loop:DeprecationWarning",
+  # Best-effort code-execution security notice emitted on every exec of generated code.
+  "ignore::vizro_ai.agents._utils._safeguard.VizroAICodeExecutionWarning"
 ]
 pythonpath = ["../tools/tests"]
 

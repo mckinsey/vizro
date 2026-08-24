@@ -11,6 +11,79 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.60'></a>
+# 0.1.60 — 2026-07-30
+
+## Highlights ✨
+
+- Introduce `DateTimePicker` as a new selector for `Filter` and `Parameter`. See the [user guide on selectors](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/) for more details. ([#1805](https://github.com/mckinsey/vizro/pull/1805))
+
+## Added
+
+- Add Vizro actions log to Dash DevTools debug panel when `debug=True`. ([#1782](https://github.com/mckinsey/vizro/pull/1782))
+
+- `Cascader` filters update automatically when underlying dynamic data changes. ([#1788](https://github.com/mckinsey/vizro/pull/1788))
+
+- `Cascader` gains a `full_path` attribute (default `full_path=False`, leaf mode). Set `full_path=True` on `Cascader` to enable path mode: a selection becomes a full root-to-leaf path (single-select) or a list of paths (multi-select), allowing duplicate leaf labels across branches. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
+
+
+## Changed
+
+- Update vizro-bootstrap stylesheet based on QBDS token updates. ([#1779](https://github.com/mckinsey/vizro/pull/1779))
+
+<a id='changelog-0.1.59'></a>
+# 0.1.59 — 2026-06-18
+
+## Highlights ✨
+
+- Introduce `TimePicker` as a new selector for `Filter` and `Parameter`. See the [user guide on selectors](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/) for more details. ([#1746](https://github.com/mckinsey/vizro/pull/1746))
+
+<a id='changelog-0.1.58'></a>
+# 0.1.58 — 2026-06-12
+
+## Fixed
+
+- Fix `AgGrid` raising an exception when the `dashGridOptions` is not specified. ([#1759](https://github.com/mckinsey/vizro/pull/1759))
+
+<a id='changelog-0.1.57'></a>
+# 0.1.57 — 2026-06-05
+
+## Changed
+
+- Allow mixed-type `options` and `value` in `vm.Checklist`, `vm.Dropdown` and `vm.RadioItems` selectors. ([#1733](https://github.com/mckinsey/vizro/pull/1733))
+
+## Fixed
+
+- Fix tab content not rendering on first load. ([#1752](https://github.com/mckinsey/vizro/pull/1752))
+
+<a id='changelog-0.1.56'></a>
+# 0.1.56 — 2026-05-18
+
+## Highlights ✨
+
+- The components compendium showcases all Vizro components and features in a single page, with graphics, GIFs and code to copy. See the [components compendium](https://vizro.readthedocs.io/en/stable/pages/components_compendium/). ([#1734](https://github.com/mckinsey/vizro/pull/1734))
+
+<a id='changelog-0.1.55'></a>
+# 0.1.55 — 2026-05-15
+
+## Highlights ✨
+
+- Custom actions can have notifications to show their status: in progress, success, error, and custom notifications based on action outcomes. See the [user guide on custom action notifications](https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-actions/#notifications). ([#1574](https://github.com/mckinsey/vizro/pull/1574))
+
+- Hierarchical/cascading filters: set `vm.Filter(column=["continent", "country"])` to filter by groups of options. See the [user guide on hierarchical filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/#hierarchical-filters). ([#1683](https://github.com/mckinsey/vizro/pull/1683))
+
+## Added
+
+- Introduce new `set_control` value options (`"cell"`, `"column"`, `"row"`) for accessing clicked cell data in AgGrid. See the [user guide on clicked cell AgGrid interactions](https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions/#cross-filter-from-table). ([#1670](https://github.com/mckinsey/vizro/pull/1670))
+
+- Add `vm.Cascader` hierarchical selector for `Filter` and `Parameter` controls. ([#1683](https://github.com/mckinsey/vizro/pull/1683))
+
+- Enable use of `set_control` action with non-categorical selectors. ([#1684](https://github.com/mckinsey/vizro/pull/1684))
+
+## Changed
+
+- Align bundled Bootstrap CSS, Vizro CSS overrides, and default Plotly themes with updated design tokens. ([#1694](https://github.com/mckinsey/vizro/pull/1694))
+
 <a id='changelog-0.1.54'></a>
 
 # 0.1.54 — 2026-04-07

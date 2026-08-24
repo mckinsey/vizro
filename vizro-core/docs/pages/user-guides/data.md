@@ -1,3 +1,7 @@
+---
+description: "Choose between static pandas data and dynamic data-loading functions, control caching, refresh at runtime, and drive parameters from dynamic data."
+---
+
 # How to connect your dashboard to data
 
 Vizro supports two different types of data:
@@ -92,9 +96,11 @@ The below example uses the Iris data saved to a file `iris.csv` in the same dire
 
     === "Result"
 
+        The dashboard renders the "Static data supplied directly" example.
+
         [![DataBasic]][databasic]
 
-The [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid] and [`Table`][vizro.models.Table] models all have an argument called `figure`. This accepts a function (in the above example, `px.scatter`) that takes a pandas DataFrame as its first argument. The name of this argument is always `data_frame`. When configuring the dashboard using Python, it is optional to give the name of the argument: if you like, you could write `data_frame=iris` instead of `iris`.
+The [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid] and [`Table`][vizro.models.Table] models all have an argument called `figure`. This accepts a function (in the [supply directly example](#supply-directly), `px.scatter`) that takes a pandas DataFrame as its first argument. The name of this argument is always `data_frame`. When configuring the dashboard using Python, it is optional to give the name of the argument: if you like, you could write `data_frame=iris` instead of `iris`.
 
 !!! note
 
@@ -146,6 +152,8 @@ If you would like to specify your dashboard configuration through YAML then you 
 
     === "Result"
 
+        The dashboard renders the "Static data referenced by name" example.
+
         [![DataBasic]][databasic]
 
 It is also possible to refer to a named data source using the Python API: `px.scatter("iris", ...)` or `px.scatter(data_frame="iris", ...)` would work if the `"iris"` data source has been registered in the data manager.
@@ -194,6 +202,8 @@ The example below shows how data is fetched dynamically every time the page is r
 
     === "Result"
 
+        The dashboard renders the "Dynamic data" example.
+
         [![DynamicData]][dynamicdata]
 
 Since dynamic data sources must always be added to the data manager and referenced by name, they may be used in YAML configuration [exactly the same way as for static data sources](#reference-by-name).
@@ -206,7 +216,7 @@ The Vizro data manager has a server-side caching mechanism to help solve this. V
 
 <!-- vale off -->
 
-In a development environment the easiest way to enable caching is to use a [simple memory cache](https://cachelib.readthedocs.io/en/stable/simple/) with the default configuration options. This is achieved by adding one line to the above example to set `data_manager.cache`:
+In a development environment the easiest way to enable caching is to use a [simple memory cache](https://cachelib.readthedocs.io/en/stable/api/simple/) with the default configuration options. This is achieved by adding one line to the [dynamic data example](#dynamic-data) to set `data_manager.cache`:
 
 !!! example "Simple cache with default timeout of 5 minutes"
 
@@ -247,7 +257,7 @@ data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_T
 
 !!! warning
 
-    Simple cache exists purely for single-process development purposes and is not intended to be used in production. If you deploy with multiple workers, [for example with Gunicorn](./run-deploy/#gunicorn), then you should use a production-ready cache backend. All of Flask-Caching's [built-in backends](https://flask-caching.readthedocs.io/en/latest/#built-in-cache-backends) other than `SimpleCache` are suitable for production. In particular, you might like to use [`FileSystemCache`](https://cachelib.readthedocs.io/en/stable/file/) or [`RedisCache`](https://cachelib.readthedocs.io/en/stable/redis/):
+    Simple cache exists purely for single-process development purposes and is not intended to be used in production. If you deploy with multiple workers, [for example with Gunicorn](./run-deploy/#gunicorn), then you should use a production-ready cache backend. All of Flask-Caching's [built-in backends](https://flask-caching.readthedocs.io/en/latest/#built-in-cache-backends) other than `SimpleCache` are suitable for production. In particular, you might like to use [`FileSystemCache`](https://cachelib.readthedocs.io/en/stable/api/file/) or [`RedisCache`](https://cachelib.readthedocs.io/en/stable/api/redis/):
 
     ```py title="Production-ready caches"
     # Store cached data in CACHE_DIR
@@ -302,7 +312,7 @@ To add a parameter to control a dynamic data source, do the following:
 
 1. add the appropriate argument to your dynamic data function and specify a default value for the argument.
 1. give an `id` to all components that have the data source you wish to alter through a parameter.
-1. [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md).
+1. [add a parameter](parameters.md) with `targets` that combine the component's `id`, the literal `data_frame`, and the argument of your dynamic data function, all joined by dots. For example, `my_graph.data_frame.number_of_points` targets the `number_of_points` argument of the dynamic data function used by the component with `id="my_graph"`. Use a suitable [selector](selectors.md).
 
 For example, let us extend the [dynamic data example](#dynamic-data) above into an example of how parametrized dynamic data works. The `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
 
@@ -350,6 +360,8 @@ For example, let us extend the [dynamic data example](#dynamic-data) above into 
 
     === "Result"
 
+        The dashboard renders the "Parametrized dynamic data" example.
+
         [![ParametrizedDynamicData]][parametrizeddynamicdata]
 
 Parametrized data loading is compatible with [caching](#configure-cache). The cache uses [memoization](https://flask-caching.readthedocs.io/en/latest/#memoization), so that the dynamic data function's arguments are included in the cache key. This means that `load_iris_data(number_of_points=10)` is cached independently of `load_iris_data(number_of_points=20)`.
@@ -371,6 +383,7 @@ A dynamic filter behaves as follows when updated:
 - The filter's selector updates its available values:
     - For [categorical selectors](selectors.md#categorical-selectors), `options` updates to give all unique values found in `column` across all the data sources of components in `targets`.
     - For [numerical selectors](selectors.md#numerical-selectors) and [temporal selectors](selectors.md#temporal-selectors), `min` and `max` update to give the overall minimum and maximum values found in `column` across all the data sources of components in `targets`.
+    - For [hierarchical selectors](selectors.md#hierarchical-selectors), `options` updates to give the nested tree of values found in the columns across all the data sources of components in `targets`.
 - The value selected on screen by a dashboard user _does not_ change. If the selected value is not already present in the new set of available values then the `options` or `min` and `max` are modified to include it. In this case, the filtering operation might result in an empty DataFrame.
 - Even though the values present in a data source can change, the schema should not: `column` should remain present and of the same type in the data sources. The `targets` of the filter and selector type cannot change while the dashboard is running. For example, a `vm.Dropdown` selector cannot turn into `vm.RadioItems`.
 
@@ -416,9 +429,11 @@ For example, let us extend the [parametrized dynamic data example](#parametrize-
 
     === "Result"
 
+        The dashboard renders the "Dynamic filters" example.
+
         [![DynamicFilter]][dynamicfilter]
 
-Consider a filter that depends on dynamic data, where you do **not** want the available values to change when the dynamic data changes. You should manually specify the `selector`'s `options` field (categorical selector) or `min` and `max` fields (numerical and temporal selector). In the above example, this could be achieved as follows:
+Consider a filter that depends on dynamic data, where you do **not** want the available values to change when the dynamic data changes. You should manually specify the `selector`'s `options` field (categorical selector) or `min` and `max` fields (numerical and temporal selector). In the [dynamic filter example above](#filters), this could be achieved as follows:
 
 ```python title="Override selector options to make a dynamic filter static"
 controls = [

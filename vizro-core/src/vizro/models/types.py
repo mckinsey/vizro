@@ -15,6 +15,7 @@ from typing import Annotated, Any, Literal, Protocol, TypeAlias, cast, runtime_c
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import (
+    AfterValidator,
     BeforeValidator,
     Discriminator,
     Field,
@@ -25,6 +26,7 @@ from pydantic import (
     ValidationError,
     ValidationInfo,
 )
+from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
@@ -99,6 +101,62 @@ def _coerce_to_list(value: Any) -> Any:
     return [value]
 
 
+def _coerce_actions_to_list(value: Any) -> Any:
+    """Like `_coerce_to_list` but also treats `None` as "no actions" rather than wrapping it in a list.
+
+    `None` and `[]` are equivalent ways to explicitly opt out of a model's default action (e.g. a `Filter` or
+    `Parameter` selector's auto-attached `update_targets`); see the `model_fields_set` check in
+    `Filter.pre_build`/`Parameter.pre_build`. Kept separate from `_coerce_to_list` so `OutputsType` (which shares
+    that function) is unaffected.
+    """
+    if value is None:
+        return []
+    return _coerce_to_list(value)
+
+
+def _normalize_action_notifications(value: Any) -> Any:
+    """Normalize action notifications dict.
+
+    Input value: dict[str, str | show_notification | update_notification | None]
+    Return value: dict[str, show_notification | update_notification | None] with the following transformations:
+
+    - If "error" missing, default to "Action failed." (show vs update depends on presence of a "progress" notification).
+    - Convert existing string dict values to show_notification or update_notification:
+        * "progress" string key -> show_notification(variant="progress")
+        * other string keys -> update_notification(...) if progress exists, else show_notification(...)
+    - Mark all non-None notifications as conditional.
+    """
+    from vizro.actions import show_notification, update_notification
+
+    # Default "error" to string first. It will be converted to notification action below.
+    value.setdefault("error", "Action failed.")
+
+    # If present, ensure that the "progress" is a notification action and not a string to extract its ID.
+    if isinstance(progress := value.get("progress"), str):
+        progress = value["progress"] = show_notification(text=progress, variant="progress")
+
+    # Convert all string notifications to actions and set _is_conditional=True.
+    for notif_key, notif_value in value.items():
+        if isinstance(notif_value, str):
+            defaults = {
+                "text": notif_value,
+                "variant": notif_key if notif_key in {"progress", "success", "error"} else "info",
+            }
+
+            notification_action: show_notification | update_notification = (
+                update_notification(**defaults, notification=progress.id)  # type: ignore[arg-type]
+                if notif_key != "progress" and progress is not None
+                else show_notification(**defaults)  # type: ignore[arg-type]
+            )
+
+            value[notif_key] = notification_action
+
+        if value[notif_key] is not None:
+            value[notif_key]._is_conditional = True
+
+    return value
+
+
 # Used to describe _DashboardReadyFigure, so we can keep CapturedCallable generic rather than referring to
 # _DashboardReadyFigure explicitly.
 @runtime_checkable
@@ -139,8 +197,8 @@ def _validate_captured_callable(cls, value: Any, info: ValidationInfo):
     )
 
 
-# CapturedCallable now allows instantiation via string, which will instantiate an object with ._prevent_run = True.
-# This allows us to instantiate dashboard objects without needing to execute/import the function definition.
+# CapturedCallable now enables instantiation via string, which will instantiate an object with ._prevent_run = True.
+# This enables us to instantiate dashboard objects without needing to execute/import the function definition.
 # Useful in the context of untrusted code generation (e.g. by LLMs).
 class CapturedCallable:
     """Stores a captured function call to use in a dashboard.
@@ -326,7 +384,7 @@ class CapturedCallable:
 
         This uses the hydra syntax for _target_ but none of the other bits and we don't actually use hydra
         to implement it. In future, we might like to switch to using hydra's actual implementation
-        which would allow nested functions (e.g. for transformers?) and to specify the path to a _target_ that lives
+        which would enable nested functions (e.g. for transformers?) and to specify the path to a _target_ that lives
         outside of vizro.plotly_express. See https://hydra.cc/docs/advanced/instantiate_objects/overview/.
         """
         if not isinstance(captured_callable_config, dict):
@@ -445,7 +503,7 @@ def _pio_templates_default():
     This works even if users have tweaked the templates, so long as pio.templates has been updated correctly and you
     refer to template by name rather than trying to take from vizro.themes.
 
-    If pio.templates.default has already been set to vizro_dark or vizro_light then no change is made to allow a user
+    If pio.templates.default has already been set to vizro_dark or vizro_light then no change is made to enable a user
     to set these without it being overridden.
     """
     old_default = pio.templates.default
@@ -625,7 +683,7 @@ _IdOrIdProperty: TypeAlias = ModelID | _IdProperty
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
 SingleValueType: TypeAlias = StrictBool | float | str | date
 """Permissible value types for single-value selectors. Values are displayed as default."""
-MultiValueType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date]
+MultiValueType: TypeAlias = list[SingleValueType]
 """Permissible value types for multi-value selectors. Values are displayed as default."""
 
 
@@ -636,19 +694,20 @@ class _OptionsDictType(TypedDict):
     value: SingleValueType
 
 
-OptionsType: TypeAlias = list[StrictBool] | list[float] | list[str] | list[date] | list[_OptionsDictType]
+OptionsType: TypeAlias = list[SingleValueType | _OptionsDictType]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
 # All the below types rely on models and so must use ForwardRef (that is, "Checklist" rather than actual
 # Checklist class).
 SelectorType = Annotated[
-    "Cascader | Checklist | DatePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch",
+    "Cascader | Checklist | DatePicker | DateTimePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch | TimePicker",  # noqa: E501
     Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Cascader`][vizro.models.Cascader],
-[`Checklist`][vizro.models.Checklist],
-[`DatePicker`][vizro.models.DatePicker], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems],
-[`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider] or [`Switch`][vizro.models.Switch]."""
+[`Checklist`][vizro.models.Checklist], [`DatePicker`][vizro.models.DatePicker],
+[`DateTimePicker`][vizro.models.DateTimePicker], [`Dropdown`][vizro.models.Dropdown],
+[`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider],
+[`Switch`][vizro.models.Switch] or [`TimePicker`][vizro.models.TimePicker]."""
 
 _FormComponentType = Annotated[
     "SelectorType | Button | UserInput",
@@ -696,17 +755,17 @@ LayoutType = Annotated[
 """Discriminated union. Type of layout to place components on the page:
 [`Grid`][vizro.models.Grid] or [`Flex`][vizro.models.Flex]."""
 
-# JSONSchema should be skipped for private actions that are not part of the public API.
-# In addition, `_filter` doesn't have a well defined schema due the Callables,
-# so if we were to include it, the JSONSchema would need to be defined.
+# JSONSchema should be skipped for private actions that are not part of the public API. `_on_page_load` is the
+# internal default action attached to every `Page`; it subclasses the public `update_targets`.
 ActionType = Annotated[
     Annotated["Action", Tag("action")]
     | Annotated["export_data", Tag("export_data")]
     | Annotated["filter_interaction", Tag("filter_interaction")]
     | Annotated["set_control", Tag("set_control")]
     | Annotated["show_notification", Tag("show_notification")]
-    | Annotated["update_figures", Tag("update_figures")]
-    | Annotated["update_notification", Tag("update_notification")],
+    | Annotated["update_notification", Tag("update_notification")]
+    | Annotated["update_targets", Tag("update_targets")]
+    | SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
     Field(discriminator=Discriminator(_get_action_discriminator), description="Action."),
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
@@ -714,10 +773,10 @@ ActionType = Annotated[
 
 # TODO: ideally actions would have json_schema_input_type=list[ActionType] | ActionType attached to
 # the BeforeValidator, but this requires pydantic >= 2.9.
-ActionsType = Annotated[list[ActionType], BeforeValidator(_coerce_to_list), Field(default=[])]
-"""List of actions that can be triggered by a component. Accepts either a single
-[`ActionType`][vizro.models.types.ActionType] or a list of [`ActionType`][vizro.models.types.ActionType].
-Defaults to `[]`."""
+ActionsType = Annotated[list[ActionType], BeforeValidator(_coerce_actions_to_list), Field(default=[])]
+"""List of actions that can be triggered by a component. Accepts a single
+[`ActionType`][vizro.models.types.ActionType], a list of [`ActionType`][vizro.models.types.ActionType], or `None`
+(equivalent to `[]`). Defaults to `[]`."""
 
 # TODO: ideally outputs would have json_schema_input_type=list[str] | dict[str, str] | str attached to
 # the BeforeValidator, but this requires pydantic >= 2.9.
@@ -725,6 +784,18 @@ OutputsType = Annotated[list[str] | dict[str, str], BeforeValidator(_coerce_to_l
 """List or dictionary of outputs modified by the action function. Accepts either a single string,
 a list of strings, or a dictionary mapping strings to strings. Each output can be specified as
 `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`."""
+
+
+ActionNotificationType = Annotated[
+    "dict[str, str | show_notification | update_notification | None]",
+    AfterValidator(_normalize_action_notifications),
+    Field(
+        default_factory=dict,
+        validate_default=True,
+        description="Notifications for when an action is in progress, completes successfully or fails",
+    ),
+]
+
 
 # Extra type groups used only for static type checking, not at runtime.
 FigureWithFilterInteractionType: TypeAlias = "Graph | Table | AgGrid"

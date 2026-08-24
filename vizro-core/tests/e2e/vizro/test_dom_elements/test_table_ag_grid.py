@@ -62,4 +62,4 @@ def test_interactions(dash_br):
         table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_INTERACTIONS_ID, row_index=3, col_id="country"),
         1,
     )
-    check_graph_y_axis_value(dash_br, graph_id=cnst.LINE_AG_GRID_INTERACTIONS_ID, tick_index="7", value="7000")
+    check_graph_y_axis_value(dash_br, graph_id=cnst.LINE_AG_GRID_INTERACTIONS_ID, tick_index="3", value="6000")

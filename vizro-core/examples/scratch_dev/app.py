@@ -3,9 +3,8 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import set_control, update_figures
 from vizro.managers import data_manager
-from vizro.models.types import capture
+from vizro.actions import set_control, update_targets
 
 
 df = px.data.iris()
@@ -14,8 +13,8 @@ data_manager["dynamic_iris"] = lambda number_of_points=10: df.head(number_of_poi
 
 SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
 
+vm.Page.add_type("controls", vm.Button)
 
-# ====== Playground - Smoke test page ======
 
 page_0_1 = vm.Page(
     id="page_0_1",
@@ -40,8 +39,7 @@ page_0_1 = vm.Page(
     ],
 )
 
-
-# ====== **FIX** vm.Filter vs _filter_action ======
+# ====== **FIX** vm.Filter/vm.Parameter always applied when targets refresh ======
 
 page_1_1 = vm.Page(
     id="page_1_1",
@@ -53,7 +51,6 @@ page_1_1 = vm.Page(
                 df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
             ),
         ),
-        vm.Text(id="p11_text", text="Placeholder"),
     ],
     controls=[
         vm.Filter(
@@ -61,7 +58,8 @@ page_1_1 = vm.Page(
             targets=["p11_graph"],
             selector=vm.RadioItems(
                 title="Filter that does NOT auto-apply, but is taken into account when its target Graph is updated.",
-                actions=vm.Action(function=capture("action")(lambda _trigger: _trigger)(), outputs="p11_text"),
+                # actions=None (or actions=[]) opts out of the default "refresh on change" behavior.
+                actions=None,
             ),
         ),
         vm.Parameter(targets=["p11_graph.x"], selector=vm.RadioItems(options=["sepal_width", "sepal_length"])),
@@ -71,7 +69,6 @@ page_1_1 = vm.Page(
 
 # ====== **NEW** Apply controls on button click ======
 
-vm.Page.add_type("controls", vm.Button)
 
 page_2_1 = vm.Page(
     id="page_2_1",
@@ -83,7 +80,6 @@ page_2_1 = vm.Page(
                 df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
             ),
         ),
-        vm.Text(id="p21_text", text="Placeholder"),
     ],
     controls=[
         vm.Filter(
@@ -91,7 +87,7 @@ page_2_1 = vm.Page(
             targets=["p21_graph"],
             selector=vm.RadioItems(
                 title="Filter that does NOT auto-apply, but is taken into account when its target Graph is updated.",
-                actions=vm.Action(function=capture("action")(lambda _trigger: _trigger)(), outputs="p21_text"),
+                actions=None,
             ),
         ),
         vm.Parameter(
@@ -99,10 +95,107 @@ page_2_1 = vm.Page(
             selector=vm.RadioItems(
                 title="Parameter that does NOT auto-apply, but is taken into account when its target Graph is updated.",
                 options=["sepal_width", "sepal_length"],
-                actions=vm.Action(function=capture("action")(lambda _trigger: _trigger)(), outputs="p21_text"),
+                actions=[],
             ),
         ),
-        vm.Button(text="Apply controls", actions=update_figures()),
+        vm.Button(text="Apply controls", actions=update_targets()),
+    ],
+)
+
+# ====== **NEW** A Slider resizes the data and refreshes two filters; Button then applies them ======
+# The Slider is a data_frame Parameter, so its value resizes the graph's data. Its `update_targets` refreshes the two
+# dynamic filters below on value change - recomputing the RadioItems options and the Slider min/max from the resized
+# data - WITHOUT redrawing the graph (only the filters are targeted). The filters do NOT auto-apply; the Button
+# applies them to the graph on click. The slider->filters step targets only filters (no figure), exercising the fix.
+
+page_2_2 = vm.Page(
+    id="page_2_2",
+    title="Refresh filters with a slider, apply them with a button",
+    components=[
+        vm.Graph(
+            id="p22_graph",
+            figure=px.scatter(
+                "dynamic_iris", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            id="p22_master_slider",
+            targets=["p22_graph.data_frame.number_of_points"],
+            selector=vm.Slider(
+                min=10,
+                max=150,
+                step=10,
+                value=10,
+                title="Change me to resize the data and refresh the two filters below (graph is not redrawn).",
+                actions=update_targets(targets=["p22_radio_filter", "p22_range_filter"]),
+            ),
+        ),
+        vm.Filter(
+            id="p22_radio_filter",
+            column="species",
+            targets=["p22_graph"],
+            selector=vm.RadioItems(
+                title="Options refreshed by the slider; does NOT auto-apply.",
+                actions=None,
+            ),
+        ),
+        vm.Filter(
+            id="p22_range_filter",
+            column="petal_length",
+            targets=["p22_graph"],
+            selector=vm.RangeSlider(
+                title="min/max refreshed by the slider; does NOT auto-apply.",
+                actions=[],
+            ),
+        ),
+        vm.Button(text="Apply filters", actions=update_targets(targets=["p22_graph"])),
+    ],
+)
+
+# ====== **NEW** A deferred data_frame Parameter is still applied when its targets are refreshed ======
+# The Parameter (Slider) resizes the graph's data but has `actions=None`, so changing it does nothing on its own. The
+# Filter is likewise deferred (`actions=[]`). Clicking the Button refreshes the whole page (bare `update_targets()`):
+# the graph reloads with the new data size AND the filter's options recompute to match - proving the deferred
+# parameter's value is counted even though it never triggered a refresh itself.
+
+page_2_3 = vm.Page(
+    id="page_2_3",
+    title="Deferred parameter is still applied on refresh",
+    components=[
+        vm.Graph(
+            id="p23_graph",
+            figure=px.scatter(
+                "dynamic_iris", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            id="p23_parameter",
+            targets=["p23_graph.data_frame.number_of_points"],
+            selector=vm.Slider(
+                min=10,
+                max=150,
+                step=10,
+                value=10,
+                title="Resizes the data but does NOT auto-apply; its value is honored on the next refresh.",
+                actions=None,
+            ),
+        ),
+        vm.Filter(
+            id="p23_filter",
+            column="species",
+            targets=["p23_graph"],
+            selector=vm.RadioItems(
+                title="Dynamic filter; options recompute from the resized data on refresh.",
+                actions=[],
+            ),
+        ),
+        vm.Button(text="Refresh Filter", actions=update_targets(targets=["p23_filter"])),
+        vm.Button(text="Refresh Graph", actions=update_targets(targets=["p23_graph"])),
+        vm.Button(text="Refresh everything on the page", actions=update_targets()),
     ],
 )
 
@@ -121,7 +214,7 @@ page_3_1 = vm.Page(
                     column="species",
                     selector=vm.Dropdown(
                         actions=[
-                            update_figures(targets=["p31_graph_1"]),
+                            update_targets(targets=["p31_graph_1"]),
                             set_control(control="p31_filter_2", value=None),
                         ]
                     ),
@@ -138,7 +231,7 @@ page_3_1 = vm.Page(
                     column="species",
                     selector=vm.Checklist(
                         actions=[
-                            update_figures(targets=["p31_graph_2"]),
+                            update_targets(targets=["p31_graph_2"]),
                             set_control(control="p31_filter_1", value=None),
                         ]
                     ),
@@ -368,10 +461,11 @@ dashboard = vm.Dashboard(
         page_0_1,
         page_1_1,
         page_2_1,
+        page_2_2,
+        page_2_3,
         page_3_1,
         page_3_2,
         page_3_3,
-        page_3_3_2,
         page_3_4,
         page_3_5,
         page_3_6,
@@ -380,12 +474,11 @@ dashboard = vm.Dashboard(
         pages={
             "Playgrounds": ["page_0_1"],
             "Apply filter on parameter change": ["page_1_1"],
-            "Apply controls on button click": ["page_2_1"],
+            "Apply controls on button click": ["page_2_1", "page_2_2", "page_2_3"],
             "Syncing controls": [
                 "page_3_1",
                 "page_3_2",
                 "page_3_3",
-                "page_3_3_2",
                 "page_3_4",
                 "page_3_5",
                 "page_3_6",
@@ -393,6 +486,7 @@ dashboard = vm.Dashboard(
         }
     ),
 )
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

@@ -45,3 +45,156 @@ td:not([class]):not(:last-child) {
 .md-source__fact--version {
   display: none;
 }
+
+/* -------------------------------------------------------------------------- */
+
+/* Top-nav project-switcher dropdown                                          */
+
+/* Rendered by docs/overrides/partials/tabs-item.html when a top-level nav    */
+
+/* section's title matches this docset's site_name (e.g. "Vizro" in          */
+
+/* vizro-core). The brand tab itself opens a dropdown listing the four       */
+
+/* sibling docsets. Uses a native <details>/<summary> for reliable           */
+
+/* click-to-toggle (Safari/Firefox don't focus <span> on click), and layers  */
+
+/* :hover on top so desktop users get hover-open behavior too.              */
+
+/* -------------------------------------------------------------------------- */
+
+/* The tab bar uses overflow:auto + contain:content for horizontal scrolling, */
+
+/* both of which clip absolutely-positioned children. Lift the clipping only  */
+
+/* on tab bars that actually contain a project-switcher dropdown, and only at */
+
+/* the viewport size where tabs render (below ~76.25em the tab bar is hidden  */
+
+/* in favor of the drawer, so nothing to do there).                          */
+@media screen and (width >= 76.25em) {
+  .md-tabs:has(.md-tabs__item--dropdown),
+  .md-tabs__list:has(.md-tabs__item--dropdown) {
+    contain: none;
+    overflow: visible;
+  }
+}
+
+.md-tabs__item--dropdown {
+  position: relative;
+}
+
+.md-tabs__details {
+  display: inline;
+}
+
+.md-tabs__link--dropdown {
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.md-tabs__link--dropdown::-webkit-details-marker {
+  display: none;
+}
+
+/* Static down chevron after the brand label so users see this is a dropdown.
+   Doesn't rotate when [open] -- the panel sliding in is the open-state cue.
+   translateY puts the flat top at the visual bottom of "Vizro"; tuned by eye
+   because vertical-align is anchored to the line-box baseline, not the visible
+   glyph baseline, when line-height differs from font-size (it does here). */
+.md-tabs__link--dropdown::after {
+  border-left: 0.25rem solid transparent;
+  border-right: 0.25rem solid transparent;
+  border-top: 0.25rem solid currentcolor;
+  content: "";
+  display: inline-block;
+  margin-left: 0.35rem;
+  transform: translateY(0.45rem);
+}
+
+/* Keep the dropdown trigger bright while it's open, even after hover ends. */
+.md-tabs__details[open] .md-tabs__link--dropdown {
+  opacity: 1;
+}
+
+/* While the dropdown is open, dim whichever top tab Zensical has marked as
+   active so the open dropdown reads as the current selection (mirrors how
+   Material's own tab bar shows only one active tab at a time). Requires
+   :has(); supported in all evergreen browsers since 2022/2023.            */
+.md-tabs__list:has(.md-tabs__details[open]) .md-tabs__item--active
+  .md-tabs__link {
+  opacity: 0.7;
+}
+
+.md-tabs__dropdown {
+  background-color: var(--md-primary-fg-color);
+  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
+
+  /* Anchor on the left edge of the brand tab so the dropdown grows rightward
+     into the page; the brand tab sits at the far-left of the tab bar. */
+  left: 0;
+  list-style: none;
+  margin: 0;
+  min-width: 12rem;
+  opacity: 0;
+  padding: 0.4rem 0;
+  position: absolute;
+  top: 2.4rem;
+  transform: translateY(-0.25rem);
+  transition:
+    opacity 150ms,
+    transform 150ms,
+    visibility 150ms;
+  visibility: hidden;
+
+  /* Sit above sibling tabs (default stacking) but below the header (which   */
+
+  /* the Material theme places at z-index 5+) and modal/dialog overlays.    */
+
+  /* If z-indices in the theme change, also revisit this value.             */
+  z-index: 4;
+}
+
+.md-tabs__details[open] > .md-tabs__dropdown,
+.md-tabs__item--dropdown:hover .md-tabs__dropdown,
+.md-tabs__item--dropdown:focus-within .md-tabs__dropdown {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.md-tabs__dropdown-item {
+  margin: 0;
+  padding: 0;
+}
+
+.md-tabs__dropdown-link {
+  color: var(--md-primary-bg-color);
+  display: block;
+  font-size: 0.7rem;
+  opacity: 0.7;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  transition: opacity 250ms;
+  white-space: nowrap;
+}
+
+.md-tabs__dropdown-link:hover,
+.md-tabs__dropdown-link:focus {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: var(--md-primary-bg-color);
+  opacity: 1;
+  outline: none;
+}
+
+/* The "you are here" item is a real link to its own index.md (so users can */
+
+/* always click home from any cross-project dropdown), but visually marked  */
+
+/* with full opacity and a heavier weight so the current docset stands out. */
+.md-tabs__dropdown-link--current {
+  font-weight: 700;
+  opacity: 1;
+}

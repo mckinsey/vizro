@@ -1,3 +1,7 @@
+---
+description: "Cross-cutting control patterns: set a control's value programmatically via `set_control`, reset controls to defaults, and group controls in the panel."
+---
+
 # Controls
 
 Vizro supports _controls_ to perform common business intelligence (BI) operations. This guide gives an overview of the different ways you can configure controls.
@@ -32,6 +36,91 @@ When the dashboard is running there are two ways for a user to set a control:
 ## Reset controls
 
 You can reset all controls on the page to their original values with the "Reset controls" button at the bottom of the control panel on the left side of the page. This applies to all controls on the page, regardless of whether they are visible. When all controls on a page have `visible=False` and hence no control panel is shown, the "Reset controls" button appears next to the theme switch on the top right of the page.
+
+## Apply controls with a button
+
+By default, changing a control immediately refreshes the components it targets. Sometimes you would rather let a user adjust several controls first and apply them all at once, for example to avoid recomputing an expensive figure on every change.
+
+To stop a control from refreshing its targets as soon as its value changes, set its [`selector`](selectors.md)'s `actions=None`. The control still contributes its value whenever its targets are refreshed by something else; it just no longer triggers a refresh on its own.
+
+To refresh the targets on demand, add a [`Button`][vizro.models.Button] that runs the [`update_targets`][vizro.actions.update_targets] action. A bare `va.update_targets()` refreshes every figure on the page (and recomputes the options of any [dynamic filters](data.md#filters)); pass `targets` to refresh only specific components. See the [actions guide](actions.md#refresh-figures-on-demand) for more on `update_targets`.
+
+!!! example "Apply controls with a button"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="15 18 21"}
+        import vizro.actions as va
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Apply controls with a button",
+            components=[
+                vm.Graph(
+                    id="scatter_chart",
+                    figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"),
+                ),
+                vm.Button(text="Apply controls", actions=va.update_targets()),  # (1)!
+            ],
+            controls=[
+                vm.Filter(column="species", selector=vm.Checklist(actions=None)),  # (2)!
+                vm.Parameter(
+                    targets=["scatter_chart.x"],
+                    selector=vm.RadioItems(options=["sepal_length", "petal_length"], actions=None),  # (3)!
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. The [`update_targets`][vizro.actions.update_targets] action refreshes the page's figures using the current control values. Called with no arguments it refreshes every figure on the page; pass `targets` to refresh only specific components.
+        1. Setting the selector's `actions=None` stops the filter from applying as soon as its value changes. Its value is still used whenever the graph is refreshed, here when the button is clicked.
+        1. Setting the selector's `actions=None` stops the parameter from applying as soon as its value changes. Its value is still used whenever the graph is refreshed, here when the button is clicked.
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: Apply controls with a button
+            components:
+              - id: scatter_chart
+                figure:
+                  _target_: scatter
+                  data_frame: iris
+                  x: sepal_length
+                  y: petal_width
+                  color: species
+                type: graph
+              - type: button
+                text: Apply controls
+                actions:
+                  - type: update_targets
+            controls:
+              - column: species
+                type: filter
+                selector:
+                  type: checklist
+                  actions: []
+              - type: parameter
+                targets:
+                  - scatter_chart.x
+                selector:
+                  type: radio_items
+                  options: [sepal_length, petal_length]
+                  actions: null
+        ```
+
+    === "Result"
+
+        [![ApplyControlsWithAButton]][applycontrolswithabutton]
 
 ## Group controls
 
@@ -127,6 +216,7 @@ To organize the control panel on a page into sections, you can group [filters](f
 
     === "Result"
 
-        \[![ControlGroup]\][controlgroup]
+        [![ControlGroup]][controlgroup]
 
 [controlgroup]: ../../assets/user_guides/control/control_group.png
+[applycontrolswithabutton]: ../../assets/user_guides/control/apply_controls_with_a_button.gif

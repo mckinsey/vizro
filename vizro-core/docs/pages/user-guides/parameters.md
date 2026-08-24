@@ -1,3 +1,7 @@
+---
+description: "Basic, nested, and dynamic-data `Parameter`s that update non-data arguments of a component's `figure`, plus title, tooltip, and selector customization."
+---
+
 # How to use parameters
 
 This guide shows you how to add parameters to your dashboard. A parameter sets any argument other than `data_frame` in the `figure` function of a component. For example, a user could select using a dropdown which variable is plotted on the x-axis of a graph. Parameters can also be used to set [dynamic data parameters](parameters.md#dynamic-data-parameters). The following [components](components.md) are reactive to parameters:
@@ -21,7 +25,7 @@ To add a parameter to your page, do the following:
 1. add the `targets` argument
 1. add a selector model to the `selector` argument.
 
-In the `targets` argument, you can specify the component and function argument that the parameter should be applied to in the form of `<target_component_id>.<target_argument>` (for example, `scatter_chart.title`).
+In the `targets` argument, specify the component and the argument you want to parametrize by joining the component's `id` and the argument name with a dot. For example, `scatter_chart.title` parametrizes the `title` argument of the component with `id="scatter_chart"`.
 
 Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure the `selector` argument, by providing it with an appropriate model and the desired options/numeric ranges.
 
@@ -87,13 +91,15 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
 
     === "Result"
 
+        The dashboard renders the "Basic Parameter" example.
+
         [![Parameter]][parameter]
 
 If you would like to pass `None` as a parameter and make a parameter optional, you can specify the string `"NONE"` in the `options` or `value` field.
 
 ## Nested parameters
 
-If you want to change nested parameters, you can specify the `targets` argument with a dot separated string like `<target_component_id>.<target_argument>.<first_hierarchy>`.
+If you want to change nested parameters, extend the `targets` argument with another dot and the nested key. For example, `scatter_chart.color_discrete_map.virginica` parametrizes the `virginica` key of the `color_discrete_map` argument of the component with `id="scatter_chart"`.
 
 !!! example "Nested Parameters for multiple targets"
 
@@ -188,11 +194,13 @@ If you want to change nested parameters, you can specify the `targets` argument 
 
     === "Result"
 
+        The dashboard renders the "Nested Parameters for multiple targets" example.
+
         [![Nested]][nested]
 
-In the above example, the object passed to the function argument `color_discrete_map` is a dictionary which maps the different flower species to fixed colors (for example, `{"virginica":"blue"}`). In this case, only the value `blue` should be changed instead of the entire dictionary. This can be achieved by specifying a target as `scatter.color_discrete_map.virginica`.
+In the [Nested parameters](#nested-parameters) example, the object passed to the function argument `color_discrete_map` is a dictionary which maps the different flower species to fixed colors (for example, `{"virginica":"blue"}`). In this case, only the value `blue` should be changed instead of the entire dictionary. This can be achieved by specifying a target as `scatter.color_discrete_map.virginica`.
 
-Note that in the above example, one parameter affects multiple targets.
+Note that in the [Nested parameters](#nested-parameters) example, one parameter affects multiple targets.
 
 ## Dynamic data parameters
 
@@ -204,6 +212,7 @@ For further customizations, refer to the [guide to selectors](selectors.md) and 
 
 - Customize the `selector`. For example: `multi`, to switch between a multi-option and single-option selector; `options` for a categorical parameter; or `min` and `max` for a numerical parameter.
 - Make the parameter's selector invisible by setting `visible=False`. This is particularly useful for graph interactions to hide the selector from the user interface while keeping the functionality active. Cross-highlighting is a common example of this pattern. For a complete code example, see the [cross-highlighting section](graph-table-actions.md#cross-highlight) in the graph and table interactions guide.
+- Stop the parameter from applying as soon as its value changes by setting its selector's `actions=None`, then apply it on demand with a button. See [apply controls with a button](controls.md#apply-controls-with-a-button).
 
 [nested]: ../../assets/user_guides/control/control5.png
 [parameter]: ../../assets/user_guides/control/control4.png

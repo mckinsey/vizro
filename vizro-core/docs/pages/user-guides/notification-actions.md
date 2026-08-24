@@ -1,6 +1,14 @@
+---
+description: "Show toast notifications with `show_notification` (variants, custom title/icon, auto-close, chaining) and modify them in place with `update_notification`."
+---
+
 # How to use actions to show notifications
 
 This guide shows you how to display notifications and alerts in your dashboard to provide feedback to users about their interactions with the UI.
+
+!!! tip "Looking for outcome-driven notifications?"
+
+    If you want notifications that fire automatically based on a custom action's success, failure, or progress, see the guide on [notifications for custom actions](custom-actions.md#notifications).
 
 ## Show a notification
 
@@ -63,6 +71,8 @@ To display a notification, call [`show_notification`][vizro.actions.show_notific
         ```
 
     === "Result"
+
+        The dashboard renders the "Basic notification" example.
 
         [![BasicNotification]][basicnotification]
 
@@ -129,6 +139,8 @@ By default, notifications use the capitalized variant name as the title (e.g., "
         ```
 
     === "Result"
+
+        The dashboard renders the "Custom content" example.
 
         [![CustomNotification]][customnotification]
 
@@ -220,6 +232,8 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
 
     === "Result"
 
+        The dashboard renders the "Auto-close settings" example.
+
         [![AutoCloseNotification]][autoclosenotification]
 
 ### Chain with other actions
@@ -286,6 +300,8 @@ Notifications can be chained with other actions to provide user feedback. For ex
         ```
 
     === "Result"
+
+        The dashboard renders the "Notification with export" example.
 
         [![ExportNotification]][exportnotification]
 
@@ -364,6 +380,8 @@ You can update an existing notification with the [`update_notification`][vizro.a
         ```
 
     === "Result"
+
+        The dashboard renders the "Update notification" example.
 
         [![UpdateNotification]][updatenotification]
 

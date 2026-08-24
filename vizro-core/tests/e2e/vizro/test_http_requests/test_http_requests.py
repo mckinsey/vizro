@@ -1,5 +1,9 @@
 import e2e.vizro.constants as cnst
 from e2e.vizro.checkers import check_http_requests_count
+from e2e.vizro.navigation import (
+    select_range_datetime_picker_value_playwright,
+    select_range_time_picker_value_playwright,
+)
 from playwright.sync_api import sync_playwright
 
 
@@ -330,7 +334,7 @@ def test_reset_controls_page(page, http_requests_paths):
     check_http_requests_count(page, http_requests_paths, 2)
 
     # click on the reset_controls button (1 http)
-    page.locator("button[id$='reset-button']").click()
+    page.locator("button[id='reset-button'][class='btn-circular btn btn-link']").click()
     check_http_requests_count(page, http_requests_paths, 3, sleep=3000)
 
     # checking that no additional http has occurred
@@ -393,3 +397,132 @@ def test_self_filtered_graph(page, http_requests_paths):
 
     # checking that no additional http has occurred
     check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_notification_with_no_update_actions_chain(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.CONDITIONAL_NOTIFICATIONS_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click on the button that triggers 2 no_update actions with success notifications (2 http)
+    page.locator(f"#{cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_NO_UPDATE_BUTTON}").click()
+    check_http_requests_count(page, http_requests_paths, 4, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_notification_with_prevent_update_actions_chain(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.CONDITIONAL_NOTIFICATIONS_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click on the button that triggers 2 PreventUpdate actions (1 http)
+    page.locator(f"#{cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_PREVENT_UPDATE_BUTTON}").click()
+    check_http_requests_count(page, http_requests_paths, 3, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_notification_with_value_error_actions_chain(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.CONDITIONAL_NOTIFICATIONS_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click on the button that triggers 2 ValueError actions (1 http)
+    page.locator(f"#{cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_VALUE_ERROR_BUTTON}").click()
+    check_http_requests_count(page, http_requests_paths, 3, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_progess_success_notifications_button_clicked_once(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.CONDITIONAL_NOTIFICATIONS_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click on the button that triggers progress and success notifications (1 http)
+    page.locator(f"#{cnst.CONDITIONAL_NOTIFICATION_PROGRESS_AND_SUCCESS_BUTTON}").click()
+    check_http_requests_count(page, http_requests_paths, 3, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_progess_success_notifications_button_clicked_twice(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.CONDITIONAL_NOTIFICATIONS_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click on the button that triggers progress and success notifications (1 http)
+    page.locator(f"#{cnst.CONDITIONAL_NOTIFICATION_PROGRESS_AND_SUCCESS_BUTTON}").click()
+    check_http_requests_count(page, http_requests_paths, 3, sleep=3000)
+
+    # click on the button that triggers progress and success notifications (1 http)
+    page.locator(f"#{cnst.CONDITIONAL_NOTIFICATION_PROGRESS_AND_SUCCESS_BUTTON}").click()
+    check_http_requests_count(page, http_requests_paths, 4, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_three_success_notifications_in_a_chain(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.CONDITIONAL_NOTIFICATIONS_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click on the button that triggers 3 success notifications in a chain (3 http)
+    page.locator('div[class*="dash-slider-mark with-dots"]').nth(1).click(force=True)
+    page.locator(f"#{cnst.CONDITIONAL_NOTIFICATION_MULTIPLE_SUCCESS_BUTTON}").click()
+    check_http_requests_count(page, http_requests_paths, 5, sleep=3000)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_timepicker_range_filters_ag_grid(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='{cnst.TIMEPICKER_RANGE_PAGE_PATH}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # filter ag grid with range timepicker (2 http: setting start time and setting end time)
+    select_range_time_picker_value_playwright(
+        page,
+        elem_id=cnst.TIMEPICKER_TIME_ISO_RANGE_ID,
+        start_hour="05",
+        start_minute="54",
+        end_hour="06",
+        end_minute="00",
+    )
+    check_http_requests_count(page, http_requests_paths, 4)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_datetimepicker_range_filters_ag_grid(page, http_requests_paths):
+    # open the page (2 http)
+    page.locator(f"a[href='{cnst.DATETIMEPICKER_RANGE_PAGE_PATH}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # filter ag grid with range datetimepicker (4 http: setting start(1) and end(2) date, start and end time(2))
+    select_range_datetime_picker_value_playwright(
+        page,
+        elem_id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_ID,
+        start=("2026-06-10", "04", "34"),
+        end=("2026-06-10", "05", "00"),
+    )
+    check_http_requests_count(page, http_requests_paths, 6)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 6, sleep=cnst.HTTP_TIMEOUT_LONG)
