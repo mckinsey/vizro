@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable
 import functools
 import re
 from collections.abc import Callable, Iterable
@@ -41,6 +40,7 @@ from vizro.models._controls._controls_utils import (
     _is_hierarchical_selector,
     _is_numerical_or_date_selector,
     check_control_targets,
+    extract_control_targets,
     get_control_parent,
     get_selector_default_value,
     warn_missing_id_for_url_control,
@@ -524,16 +524,9 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):  # noqa: PLR0912
-        from vizro.models._controls import Parameter
-
-        # Extract control targets from self.targets in a separate variable as they are validated differently.
-        targeted_controls = []
-        for target in self.targets.copy():
-            if target in model_manager and isinstance(model_manager[target], (Filter, Parameter)):
-                # TODO PP NOW: Add validation to ensure that the control target is on the same page
-                # TODO PP NOW: Add validation to forbid self-targeting.
-                self.targets.remove(target)
-                targeted_controls.append(target)
+        # Split control targets (used to sync this filter with another control) out of self.targets; they are
+        # validated and handled differently to the figure targets that remain.
+        targeted_controls = extract_control_targets(control=self)
 
         # If it's a page filter, validate that targets are present on the page where the filter is defined.
         # If it's a container filter, validate that targets are present in the container where the filter is defined.
@@ -561,10 +554,7 @@ class Filter(VizroBaseModel):
         #  Find more about the mentioned limitation at: https://github.com/mckinsey/vizro/pull/879/files#r1846609956
         # Even if the solution changes for dynamic data, static data should still use {} as the arguments here.
         multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [
-            (cast(FigureType, model_manager[target])["data_frame"], {})
-            for target in proposed_targets
-            # TODO PP NOW: Check why this
-            if hasattr(model_manager[target], "figure")
+            (cast(FigureType, model_manager[target])["data_frame"], {}) for target in proposed_targets
         ]
 
         target_to_data_frame = dict(zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
@@ -638,11 +628,6 @@ class Filter(VizroBaseModel):
             # last (leaf) column, matching by bare leaf value with `_filter_isin`.
             self._filter_function = _filter_isin
             self._filter_column = self._single_filter_column
-        # Set the filter function according to the selector type.
-        if isinstance(self.selector, RangeSlider) or (isinstance(self.selector, DatePicker) and self.selector.range):
-            self._filter_function = _filter_between
-        else:
-            self._filter_function = _filter_isin
 
         # The default action refreshes the filter's targets. The filtering logic itself (self._filter_function applied
         # to self._filter_column) is reapplied whenever the targets are refreshed, independently of this action.
@@ -652,7 +637,6 @@ class Filter(VizroBaseModel):
         # default. The filter value is still applied whenever its targets are refreshed by something else (e.g. a
         # Button running update_targets).
         if "actions" not in self.selector.model_fields_set:
-            # TODO PP NOW: Check this and the last line comment under the IF
             # Ensure set_control actions run before update_targets so the latest control value is applied.
             self.selector.actions = [
                 *[set_control(control=control_id, value=None) for control_id in targeted_controls],
@@ -661,8 +645,6 @@ class Filter(VizroBaseModel):
             # Run pre_build for each action to run validations and compute internal attributes.
             for selector_action in self.selector.actions:
                 selector_action.pre_build()
-
-            # self.selector.actions = [update_targets(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.

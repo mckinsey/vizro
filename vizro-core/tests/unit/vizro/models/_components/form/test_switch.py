@@ -104,3 +104,14 @@ class TestSwitchBuild:
             persistence_type="session",
         )
         assert_component_equal(switch, expected_switch, keys_to_strip={"id"})
+
+
+class TestSwitchGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""
+
+    @pytest.mark.parametrize("trigger", [True, False])
+    def test_get_value_from_trigger_returns_trigger(self, trigger):
+        # A selector already holds the value to propagate, so _get_value_from_trigger ignores `value` and returns the
+        # raw trigger value unchanged (this is what powers syncing controls that target another control).
+        switch = vm.Switch()
+        assert switch._get_value_from_trigger(value="ignored", trigger=trigger) == trigger

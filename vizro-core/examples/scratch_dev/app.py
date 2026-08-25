@@ -251,22 +251,22 @@ page_3_2 = vm.Page(
     layout=vm.Grid(grid=[[0, 1]]),
     components=[
         vm.Container(
-            controls=[vm.Filter(id="p22_filter_1", column="species", targets=["p22_graph_1", "p22_filter_2"])],
+            controls=[vm.Filter(id="p32_filter_1", column="species", targets=["p32_graph_1", "p32_filter_2"])],
             components=[
-                vm.Graph(id="p22_graph_1", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+                vm.Graph(id="p32_graph_1", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
             ],
         ),
         vm.Container(
             controls=[
                 vm.Filter(
-                    id="p22_filter_2",
+                    id="p32_filter_2",
                     column="species",
-                    targets=["p22_graph_2", "p22_filter_1"],
+                    targets=["p32_graph_2", "p32_filter_1"],
                     selector=vm.Checklist(),
                 ),
             ],
             components=[
-                vm.Graph(id="p22_graph_2", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+                vm.Graph(id="p32_graph_2", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
             ],
         ),
     ],
@@ -277,17 +277,17 @@ page_3_3 = vm.Page(
     title="Sync: By targeting a hidden parameter",
     components=[
         vm.Graph(
-            id="p23_graph_1",
+            id="p33_graph_1",
             figure=px.scatter(
                 df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
             ),
         )
     ],
     controls=[
-        vm.Filter(column="species", targets=["p23_graph_1", "p23_parameter_1"], selector=vm.RadioItems()),
+        vm.Filter(column="species", targets=["p33_graph_1", "p33_parameter_1"], selector=vm.RadioItems()),
         vm.Parameter(
-            id="p23_parameter_1",
-            targets=["p23_graph_1.title"],
+            id="p33_parameter_1",
+            targets=["p33_graph_1.title"],
             selector=vm.RadioItems(options=["setosa", "versicolor", "virginica"], value="setosa"),
             visible=False,
         ),
@@ -302,48 +302,48 @@ page_3_4 = vm.Page(
     layout=vm.Grid(grid=[[0, 1], [2, 3]]),
     components=[
         vm.Container(
-            controls=[vm.Filter(id="p24_filter_1", column="species", targets=["p24_graph_1", "p24_filter_2"])],
+            controls=[vm.Filter(id="p34_filter_1", column="species", targets=["p34_graph_1", "p34_filter_2"])],
             components=[
-                vm.Graph(id="p24_graph_1", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+                vm.Graph(id="p34_graph_1", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
             ],
         ),
         vm.Container(
             controls=[
                 vm.Filter(
-                    id="p24_filter_2",
+                    id="p34_filter_2",
                     column="species",
-                    targets=["p24_graph_2", "p24_filter_3"],
+                    targets=["p34_graph_2", "p34_filter_3"],
                     selector=vm.Checklist(),
                 ),
             ],
             components=[
-                vm.Graph(id="p24_graph_2", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+                vm.Graph(id="p34_graph_2", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
             ],
         ),
         vm.Container(
             controls=[
                 vm.Filter(
-                    id="p24_filter_3",
+                    id="p34_filter_3",
                     column="species",
-                    targets=["p24_graph_3", "p24_filter_4"],
+                    targets=["p34_graph_3", "p34_filter_4"],
                     selector=vm.Checklist(),
                 ),
             ],
             components=[
-                vm.Graph(id="p24_graph_3", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+                vm.Graph(id="p34_graph_3", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
             ],
         ),
         vm.Container(
             controls=[
                 vm.Filter(
-                    id="p24_filter_4",
+                    id="p34_filter_4",
                     column="species",
-                    targets=["p24_graph_4", "p24_filter_1"],
+                    targets=["p34_graph_4", "p34_filter_1"],
                     selector=vm.Checklist(),
                 ),
             ],
             components=[
-                vm.Graph(id="p24_graph_4", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+                vm.Graph(id="p34_graph_4", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
             ],
         ),
     ],
@@ -359,52 +359,52 @@ page_3_5 = vm.Page(
         vm.Container(
             controls=[
                 vm.Filter(
-                    id="p25_filter_1",
+                    id="p35_filter_1",
                     column="species",
-                    targets=["p25_graph_1", "p25_filter_2", "p25_filter_3", "p25_filter_4"],
+                    targets=["p35_graph_1", "p35_filter_2", "p35_filter_3", "p35_filter_4"],
                 )
             ],
             components=[
-                vm.Graph(id="p25_graph_1", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+                vm.Graph(id="p35_graph_1", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
             ],
         ),
         vm.Container(
             controls=[
                 vm.Filter(
-                    id="p25_filter_2",
+                    id="p35_filter_2",
                     column="species",
-                    targets=["p25_graph_2", "p25_filter_1", "p25_filter_3", "p25_filter_4"],
+                    targets=["p35_graph_2", "p35_filter_1", "p35_filter_3", "p35_filter_4"],
                     selector=vm.Checklist(),
                 ),
             ],
             components=[
-                vm.Graph(id="p25_graph_2", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+                vm.Graph(id="p35_graph_2", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
             ],
         ),
         vm.Container(
             controls=[
                 vm.Filter(
-                    id="p25_filter_3",
+                    id="p35_filter_3",
                     column="species",
-                    targets=["p25_graph_3", "p25_filter_1", "p25_filter_2", "p25_filter_4"],
+                    targets=["p35_graph_3", "p35_filter_1", "p35_filter_2", "p35_filter_4"],
                     selector=vm.Checklist(),
                 ),
             ],
             components=[
-                vm.Graph(id="p25_graph_3", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+                vm.Graph(id="p35_graph_3", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
             ],
         ),
         vm.Container(
             controls=[
                 vm.Filter(
-                    id="p25_filter_4",
+                    id="p35_filter_4",
                     column="species",
-                    targets=["p25_graph_4", "p25_filter_1", "p25_filter_2", "p25_filter_3"],
+                    targets=["p35_graph_4", "p35_filter_1", "p35_filter_2", "p35_filter_3"],
                     selector=vm.Checklist(),
                 ),
             ],
             components=[
-                vm.Graph(id="p25_graph_4", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+                vm.Graph(id="p35_graph_4", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
             ],
         ),
     ],
@@ -416,7 +416,7 @@ page_3_6 = vm.Page(
     title="Sync: Parameter targets Filter and Parameter",
     components=[
         vm.Graph(
-            id="p26_graph_1",
+            id="p36_graph_1",
             figure=px.scatter(
                 df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
             ),
@@ -424,33 +424,161 @@ page_3_6 = vm.Page(
     ],
     controls=[
         vm.Filter(
-            id="p26_filter_1",
+            id="p36_filter_1",
             column="species",
-            targets=["p26_graph_1", "p26_parameter_1"],
+            targets=["p36_graph_1", "p36_parameter_1"],
             selector=vm.RadioItems(title="Filter that targets parameter below"),
         ),
         vm.Parameter(
-            id="p26_parameter_1",
-            targets=["p26_graph_1.title", "p26_filter_1"],
+            id="p36_parameter_1",
+            targets=["p36_graph_1.title", "p36_filter_1"],
             selector=vm.RadioItems(
                 title="Parameter that targets filter above", options=["setosa", "versicolor", "virginica"]
             ),
         ),
         vm.Parameter(
-            id="p26_parameter_2",
-            targets=["p26_graph_1.x", "p26_parameter_3"],
+            id="p36_parameter_2",
+            targets=["p36_graph_1.x", "p36_parameter_3"],
             selector=vm.RadioItems(
                 title="Parameter that targets parameter below",
                 options=["sepal_length", "petal_length"],
             ),
         ),
         vm.Parameter(
-            id="p26_parameter_3",
-            targets=["p26_graph_1.y", "p26_parameter_2"],
+            id="p36_parameter_3",
+            targets=["p36_graph_1.y", "p36_parameter_2"],
             selector=vm.RadioItems(
                 title="Parameter that targets parameter above",
                 options=["sepal_length", "petal_length"],
             ),
+        ),
+    ],
+)
+
+
+# ====== **NEW** Synced controls, applied to the graph on button click ======
+# Like page_3_6 (F<->P and P<->P sync) but with an extra F<->F pair, so all three sync kinds are present:
+#   F<->F: p37_filter_1    <-> p37_filter_2
+#   F<->P: p37_filter_3    <-> p37_parameter_1
+#   P<->P: p37_parameter_2 <-> p37_parameter_3
+# Each control only targets *other controls* (never the graph). The pairs stay in sync on change via `set_control`,
+# but because the selectors carry explicit actions (no auto `update_targets`), the graph is NOT redrawn on change.
+# The "Apply to graph" button runs `update_targets()` to refresh the graph, re-applying the current (synced) filters.
+page_3_7 = vm.Page(
+    id="page_3_7",
+    title="Sync: Controls sync each other; graph applied on button click",
+    components=[
+        vm.Graph(
+            id="p37_graph_1",
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        )
+    ],
+    controls=[
+        # F <-> F
+        vm.Filter(
+            id="p37_filter_1",
+            column="species",
+            targets=["p37_filter_2"],
+            selector=vm.RadioItems(
+                title="F1 <-> F2 (syncs filter below; graph applied on button click)",
+                actions=[set_control(control="p37_filter_2", value=None)],
+            ),
+        ),
+        vm.Filter(
+            id="p37_filter_2",
+            column="species",
+            targets=["p37_filter_1"],
+            selector=vm.Checklist(
+                title="F2 <-> F1 (syncs filter above; graph applied on button click)",
+                actions=[set_control(control="p37_filter_1", value=None)],
+            ),
+        ),
+        # F <-> P
+        vm.Filter(
+            id="p37_filter_3",
+            column="species",
+            targets=["p37_parameter_1"],
+            selector=vm.RadioItems(
+                title="F3 <-> P1 (syncs parameter below)",
+                actions=[set_control(control="p37_parameter_1", value=None)],
+            ),
+        ),
+        vm.Parameter(
+            id="p37_parameter_1",
+            targets=["p37_filter_3"],
+            selector=vm.RadioItems(
+                title="P1 <-> F3 (syncs filter above)",
+                options=["setosa", "versicolor", "virginica"],
+                actions=[set_control(control="p37_filter_3", value=None)],
+            ),
+        ),
+        # P <-> P
+        vm.Parameter(
+            id="p37_parameter_2",
+            targets=["p37_parameter_3"],
+            selector=vm.RadioItems(
+                title="P2 <-> P3 (syncs parameter below)",
+                options=["sepal_length", "petal_length"],
+                actions=[set_control(control="p37_parameter_3", value=None)],
+            ),
+        ),
+        vm.Parameter(
+            id="p37_parameter_3",
+            targets=["p37_parameter_2"],
+            selector=vm.RadioItems(
+                title="P3 <-> P2 (syncs parameter above)",
+                options=["sepal_length", "petal_length"],
+                actions=[set_control(control="p37_parameter_2", value=None)],
+            ),
+        ),
+        vm.Button(text="Apply to graph", actions=update_targets()),
+    ],
+)
+
+
+page_3_8 = vm.Page(
+    id="page_3_8",
+    title="[Example from the PR description] Sync: Filters cross-target two graphs and each other",
+    # Schema (F-filter, G-graph):
+    #   F1 --> F2, F1 --> G1
+    #   F2 --> F1, F2 --> G2, F2 --> F3
+    #   F3 --> G2
+    # F1.targets=[F2, G1]; F2.targets=[F1, G2, F3]; F3.targets=[G2]
+    layout=vm.Grid(grid=[[0, 1]]),
+    components=[
+        vm.Graph(
+            id="p38_graph_1",
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
+        vm.Graph(
+            id="p38_graph_2",
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            id="p38_filter_1",
+            column="species",
+            targets=["p38_filter_2", "p38_graph_1"],
+            selector=vm.RadioItems(title="F1 -> [F2, G1]"),
+        ),
+        vm.Filter(
+            id="p38_filter_2",
+            column="species",
+            targets=["p38_filter_1", "p38_graph_2", "p38_filter_3"],
+            selector=vm.Checklist(title="F2 -> [F1, G2, F3]"),
+        ),
+        vm.Filter(
+            id="p38_filter_3",
+            column="species",
+            targets=["p38_graph_2"],
+            selector=vm.Checklist(title="F3 -> [G2]"),
         ),
     ],
 )
@@ -469,6 +597,8 @@ dashboard = vm.Dashboard(
         page_3_4,
         page_3_5,
         page_3_6,
+        page_3_7,
+        page_3_8,
     ],
     navigation=vm.Navigation(
         pages={
@@ -482,6 +612,8 @@ dashboard = vm.Dashboard(
                 "page_3_4",
                 "page_3_5",
                 "page_3_6",
+                "page_3_7",
+                "page_3_8",
             ],
         }
     ),

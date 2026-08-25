@@ -11,6 +11,7 @@ from dash import dcc, html
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.actions._set_control import set_control
 from vizro.actions._update_targets import update_targets
 from vizro.managers import data_manager, model_manager
 from vizro.models._controls.filter import (
@@ -1837,6 +1838,69 @@ class TestFilterPreBuildMethod:
         filter.pre_build()
 
         assert filter.selector.actions == []
+
+    def test_target_control_sync_actions(self, managers_one_page_two_graphs):
+        # A Filter can target another control (a Filter or Parameter) to keep it in sync. The control target is
+        # extracted out of self.targets and turned into a `set_control` action that runs *before* the default
+        # `update_targets` action so the synced value is applied first.
+        target_filter = vm.Filter(id="target_filter", column="continent", selector=vm.Checklist())
+        source_filter = vm.Filter(id="source_filter", column="continent", targets=["target_filter", "scatter_chart"])
+        model_manager["test_page"].controls = [target_filter, source_filter]
+        target_filter.pre_build()
+        source_filter.pre_build()
+
+        # The control target is removed from self.targets, leaving only the figure target.
+        assert source_filter.targets == ["scatter_chart"]
+
+        set_control_action, update_targets_action = source_filter.selector.actions
+        assert isinstance(set_control_action, set_control)
+        assert set_control_action.control == "target_filter"
+        assert set_control_action.value is None
+        assert isinstance(update_targets_action, update_targets)
+        assert update_targets_action.id == "__filter_action_source_filter"
+        assert update_targets_action.targets == ["scatter_chart"]
+
+    def test_target_control_only_falls_back_to_all_figures(self, managers_one_page_two_graphs):
+        # When a Filter targets *only* another control, the figure targets fall back to all figures on the page that
+        # contain the column, exactly as if no targets were provided - but the sync set_control action is still added.
+        target_filter = vm.Filter(id="target_filter", column="continent", selector=vm.Checklist())
+        source_filter = vm.Filter(id="source_filter", column="continent", targets=["target_filter"])
+        model_manager["test_page"].controls = [target_filter, source_filter]
+        target_filter.pre_build()
+        source_filter.pre_build()
+
+        assert source_filter.targets == ["scatter_chart", "bar_chart"]
+        set_control_action, update_targets_action = source_filter.selector.actions
+        assert isinstance(set_control_action, set_control)
+        assert set_control_action.control == "target_filter"
+        assert isinstance(update_targets_action, update_targets)
+        assert update_targets_action.targets == ["scatter_chart", "bar_chart"]
+
+    def test_target_control_self_target_invalid(self, managers_one_page_two_graphs):
+        # A control targeting itself would create a self-referential sync loop and is rejected.
+        source_filter = vm.Filter(id="self_filter", column="continent", targets=["self_filter"])
+        model_manager["test_page"].controls = [source_filter]
+        with pytest.raises(ValueError, match=r"Control 'self_filter' cannot target itself. Remove 'self_filter' from"):
+            source_filter.pre_build()
+
+    def test_target_control_different_page_invalid(self, gapminder):
+        # A control can only target other controls on the same page (the underlying set_control sync is per-page).
+        vm.Page(
+            id="page_a",
+            title="Page A",
+            components=[vm.Graph(id="graph_a", figure=px.scatter(gapminder, x="lifeExp", y="gdpPercap"))],
+            controls=[vm.Filter(id="filter_a", column="continent", targets=["filter_b"])],
+        )
+        vm.Page(
+            id="page_b",
+            title="Page B",
+            components=[vm.Graph(id="graph_b", figure=px.scatter(gapminder, x="lifeExp", y="gdpPercap"))],
+            controls=[vm.Filter(id="filter_b", column="continent")],
+        )
+        with pytest.raises(
+            ValueError, match=r"Control 'filter_a' cannot target control 'filter_b' because they are on different pages"
+        ):
+            model_manager["filter_a"].pre_build()
 
     def test_filter_action_properties(self, managers_column_only_exists_in_some):
         filter = Filter(

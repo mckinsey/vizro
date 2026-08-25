@@ -14,6 +14,7 @@ from vizro.models._controls._controls_utils import (
     _is_hierarchical_selector,
     _is_numerical_or_date_selector,
     check_control_targets,
+    extract_control_targets,
     get_selector_default_value,
     warn_missing_id_for_url_control,
 )
@@ -137,18 +138,16 @@ class Parameter(VizroBaseModel):
         }
 
     @_log_call
-    def pre_build(self):  # noqa: PLR0912
-        from vizro.models._controls import Filter
+    def pre_build(self):
+        # Split control targets (used to sync this parameter with another control) out of self.targets; they are
+        # validated and handled differently to the figure-argument targets that remain.
+        targeted_controls = extract_control_targets(control=self)
 
-        # Extract control targets from self.targets in a separate variable as they are validated differently.
-        targeted_controls = []
-        for target in self.targets.copy():
-            if target in model_manager and isinstance(model_manager[target], (Filter, Parameter)):
-                # TODO PP NOW: Add validation to ensure that the control target is on the same page
-                # TODO PP NOW: Add validation to forbid self-targeting.
-                self.targets.remove(target)
-                targeted_controls.append(target)
-            elif "." not in target:
+        # Every remaining (figure) target must use the "<target_component>.<target_argument>" dot notation. This is
+        # only checked now (not in the check_dot_notation validator) because that validator has to let bare control
+        # ids through so they can be recognized as control targets above.
+        for target in self.targets:
+            if "." not in target:
                 raise ValueError(
                     f"Invalid target {target}. Targets must be supplied in the form "
                     f"<target_component>.<target_argument>"
@@ -211,8 +210,6 @@ class Parameter(VizroBaseModel):
             self.targets.extend(list(filter_targets))
             targets_ids = [target.partition(".")[0] for target in self.targets]
 
-            # TODO PP NOW: Check below!
-
             # Ensure set_control actions run before update_targets so the latest control value is applied.
             self.selector.actions = [
                 *[set_control(control=control_id, value=None) for control_id in targeted_controls],
@@ -221,8 +218,6 @@ class Parameter(VizroBaseModel):
             # Run pre_build for each action to run validations and compute internal attributes.
             for selector_action in self.selector.actions:
                 selector_action.pre_build()
-
-            # self.selector.actions = [update_targets(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=target_ids)]
 
     @_log_call
     def build(self):

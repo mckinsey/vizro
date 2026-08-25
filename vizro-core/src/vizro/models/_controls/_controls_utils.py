@@ -24,7 +24,7 @@ from vizro.models import (
 )
 from vizro.models._components.form._form_utils import get_dict_options_and_value
 from vizro.models._components.form.cascader import get_cascader_default_value
-from vizro.models.types import ControlType, SelectorType
+from vizro.models.types import ControlType, ModelID, SelectorType
 
 if TYPE_CHECKING:
     from vizro.models import Page
@@ -87,6 +87,41 @@ def get_control_parent(control: ControlType) -> Page | Container | None:
 
     # Fallback to the page if not nested inside any container.
     return nearest_ancestor_container or page
+
+
+def extract_control_targets(control: ControlType) -> list[ModelID]:
+    """Split control (Filter/Parameter) targets out of ``control.targets``, validating and returning them.
+
+    A Filter/Parameter can target another control to keep the two in sync (see the `set_control` action). Such
+    "control targets" are validated and semantically different from "figure targets", so this removes them from
+    ``control.targets`` in place and returns them separately. The remaining figure targets are validated later by
+    `check_control_targets`.
+
+    A control target must be a *different* control on the *same page*: self-targeting would create a self-referential
+    sync loop, and the underlying `set_control` sync runs within a single page.
+    """
+    from vizro.models._controls import Filter, Parameter
+
+    targeted_controls: list[ModelID] = []
+    for target in control.targets.copy():
+        if not (target in model_manager and isinstance(model_manager[target], (Filter, Parameter))):
+            continue
+
+        # Forbid self-targeting: a control targeting itself would create a self-referential sync loop.
+        if target == control.id:
+            raise ValueError(f"Control '{control.id}' cannot target itself. Remove '{target}' from its `targets`.")
+
+        # Control targets must be on the same page as the control that targets them.
+        if model_manager._get_model_page(control) is not model_manager._get_model_page(model_manager[target]):
+            raise ValueError(
+                f"Control '{control.id}' cannot target control '{target}' because they are on different pages. "
+                f"A control can only target other controls on the same page."
+            )
+
+        control.targets.remove(target)
+        targeted_controls.append(target)
+
+    return targeted_controls
 
 
 def check_control_targets(control: ControlType) -> None:
