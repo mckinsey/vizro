@@ -6,7 +6,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Keep controls in sync on the same page: a `Filter` or `Parameter` can now list another control's `id` in its `targets` so that changing one control automatically applies the same value to the other. ([#1723](https://github.com/mckinsey/vizro/pull/1723))
+- Keep controls in sync on the same page: a `Filter` or `Parameter` can now list another control's `id` in its `targets` so that changing one control automatically applies the same value to the other. See the [user guide on syncing controls](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls/#sync-controls) for more details. ([#1723](https://github.com/mckinsey/vizro/pull/1723))
 
 <!--
 ### Removed

@@ -35,14 +35,9 @@ When the dashboard is running there are two ways for a user to set a control:
 
 ## Sync controls
 
-You can keep two controls in sync so that changing one automatically applies the same value to the other. This is useful when you have linked views, for example two graphs side by side that should always share the same filter, or when one control should drive both a figure and another control.
+You can keep two controls in sync so that changing one automatically applies the same value to the other. This is useful, for example, when you need to both filter and parametrize a chart from the same user selection, such as filtering a chart down to one species and also using that species to set the chart's title.
 
-To sync controls, add another control's `id` to the `targets` of a [filter](filters.md) or [parameter](parameters.md). Whenever the control changes, Vizro sets the targeted control to the same value (using the [`set_control` action][vizro.actions.set_control] behind the scenes) and then refreshes that control's own targets. Syncing works between any combination of controls:
-
-- **Filter and Filter**: two filters mirror each other's selection.
-- **Filter and Parameter**, and **Parameter and Parameter**: one control's value drives another control's value.
-
-Syncing works with every [selector](selectors.md), and the two controls do not need to use the same selector type: for example, a [`Dropdown`][vizro.models.Dropdown] filter can sync a [`Checklist`][vizro.models.Checklist] filter on the same column.
+To sync controls, add another control's `id` to the `targets` of a [filter](filters.md) or [parameter](parameters.md). Whenever the control changes, Vizro sets the targeted control to the same value (using the [`set_control` action][vizro.actions.set_control] behind the scenes) and then refreshes that control's own targets. All combinations work: filter and filter, parameter and parameter, and filter and parameter, and any [selector](selectors.md) can be used, so the two controls do not even need to share the same selector type.
 
 !!! note "Controls can only sync on the same page (for now)"
 
@@ -52,11 +47,11 @@ Syncing works with every [selector](selectors.md), and the two controls do not n
 
     A [filter](filters.md) that targets only other controls still applies to the page's figures: it falls back to every figure whose data includes its `column`, exactly as if no `targets` were given. A [parameter](parameters.md) has no such fallback, because it applies its value through its `<component>.<argument>` targets. A parameter must therefore always target at least one figure argument in addition to any controls it syncs.
 
-!!! example "Sync two filters"
+!!! example "Sync a filter with a hidden parameter"
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="14 19"}
+        ```{.python pycafe-link hl_lines="13 15"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -65,17 +60,16 @@ Syncing works with every [selector](selectors.md), and the two controls do not n
 
         page = vm.Page(
             title="Sync controls",
-            layout=vm.Grid(grid=[[0, 1]]),
             components=[
-                vm.Container(
-                    title="Sepal",
-                    components=[vm.Graph(id="sepal_chart", figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species"))],
-                    controls=[vm.Filter(id="sepal_filter", column="species", targets=["sepal_chart", "petal_filter"])],  # (1)!
-                ),
-                vm.Container(
-                    title="Petal",
-                    components=[vm.Graph(id="petal_chart", figure=px.scatter(iris, x="petal_length", y="petal_width", color="species"))],
-                    controls=[vm.Filter(id="petal_filter", column="species", targets=["petal_chart", "sepal_filter"])],  # (2)!
+                vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species")),
+            ],
+            controls=[
+                vm.Filter(column="species", targets=["scatter_chart", "title_parameter"]),  # (1)!
+                vm.Parameter(
+                    id="title_parameter",
+                    targets=["scatter_chart.title"],
+                    selector=vm.RadioItems(options=["setosa", "versicolor", "virginica"], value="setosa"),
+                    visible=False,  # (2)!
                 ),
             ],
         )
@@ -84,8 +78,8 @@ Syncing works with every [selector](selectors.md), and the two controls do not n
         Vizro().build(dashboard).run()
         ```
 
-        1. `sepal_filter` targets its own graph (`sepal_chart`) and the other filter (`petal_filter`). Changing it filters the sepal chart and sets `petal_filter` to the same selection.
-        1. `petal_filter` mirrors it in the other direction, so changing either filter keeps both filters in sync and filters both charts.
+        1. The filter targets its own graph as usual, plus `title_parameter`. Changing the filter filters the chart and sets `title_parameter` to the same species.
+        1. `title_parameter` sets the chart's title to the selected species. Its selector is hidden with `visible=False` because the user only interacts with the filter; the parameter's value is driven entirely by the sync.
 
     === "app.yaml"
 
@@ -94,42 +88,27 @@ Syncing works with every [selector](selectors.md), and the two controls do not n
         # See yaml_version example
         pages:
           - title: Sync controls
-            layout:
-              type: grid
-              grid: [[0, 1]]
             components:
-              - type: container
-                title: Sepal
-                components:
-                  - id: sepal_chart
-                    type: graph
-                    figure:
-                      _target_: scatter
-                      data_frame: iris
-                      x: sepal_length
-                      y: sepal_width
-                      color: species
-                controls:
-                  - id: sepal_filter
-                    type: filter
-                    column: species
-                    targets: [sepal_chart, petal_filter]
-              - type: container
-                title: Petal
-                components:
-                  - id: petal_chart
-                    type: graph
-                    figure:
-                      _target_: scatter
-                      data_frame: iris
-                      x: petal_length
-                      y: petal_width
-                      color: species
-                controls:
-                  - id: petal_filter
-                    type: filter
-                    column: species
-                    targets: [petal_chart, sepal_filter]
+              - id: scatter_chart
+                type: graph
+                figure:
+                  _target_: scatter
+                  data_frame: iris
+                  x: sepal_length
+                  y: sepal_width
+                  color: species
+            controls:
+              - type: filter
+                column: species
+                targets: [scatter_chart, title_parameter]
+              - id: title_parameter
+                type: parameter
+                targets: [scatter_chart.title]
+                selector:
+                  type: radio_items
+                  options: [setosa, versicolor, virginica]
+                  value: setosa
+                visible: false
         ```
 
     === "Result"

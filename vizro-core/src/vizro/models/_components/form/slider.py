@@ -101,7 +101,7 @@ underlying component may change in the future.""",
         return {"__default__": f"{self.id}.value"}
 
     @staticmethod
-    def _get_value_from_trigger(value: JsonValue, trigger: int) -> JsonValue:
+    def _get_value_from_trigger(value: JsonValue, trigger: JsonValue) -> JsonValue:
         """Return the given `trigger` without modification."""
         return trigger
 
