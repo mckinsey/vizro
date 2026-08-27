@@ -15,7 +15,7 @@ def beeswarm(
     y_tolerance_fraction: float = 0.02,
 ) -> go.Figure:
     y_range = data_frame[y].max() - data_frame[y].min()
-    y_tolerance = y_range * y_tolerance_fraction
+    y_tolerance = max(y_range * y_tolerance_fraction, 1e-9)
     max_offset = 0.5 - point_spacing
 
     def offset_candidates():
