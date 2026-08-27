@@ -5,7 +5,6 @@ from dash import dcc, html
 from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
-from vizro.actions import set_control, update_targets
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._controls._controls_utils import (
@@ -13,6 +12,7 @@ from vizro.models._controls._controls_utils import (
     _is_datetime_selector,
     _is_hierarchical_selector,
     _is_numerical_or_date_selector,
+    build_control_sync_actions,
     check_control_targets,
     extract_control_targets,
     get_selector_default_value,
@@ -26,7 +26,9 @@ def check_dot_notation(target):
     if "." not in target:
         return target
 
-    targeted_argument = target.split(".", 1)[1]
+    # Use the first argument segment (not the full remainder) so that nested addressing like
+    # "<component>.figure.<arg>" is rejected too, not only the exact "<component>.figure".
+    targeted_argument = target.split(".")[1]
 
     if targeted_argument == "figure":
         raise ValueError(
@@ -52,9 +54,12 @@ def check_data_frame_as_target_argument(target):
 
 
 def check_duplicate_parameter_target(targets):
-    all_targets = targets.copy()
+    # Only figure-argument targets (in "<component>.<argument>" dot notation) must be unique across parameters. Bare
+    # ids are control-sync targets (another control kept in sync) that multiple parameters may legitimately share, so
+    # they are excluded from the duplicate check.
+    all_targets = [target for target in targets if "." in target]
     for param in cast(Iterable[Parameter], model_manager._get_models(Parameter)):
-        all_targets.extend(param.targets)
+        all_targets.extend(target for target in param.targets if "." in target)
     duplicate_targets = {item for item in all_targets if all_targets.count(item) > 1}
     if duplicate_targets:
         raise ValueError(f"Duplicate parameter targets {duplicate_targets} found.")
@@ -153,6 +158,18 @@ class Parameter(VizroBaseModel):
                     f"<target_component>.<target_argument>"
                 )
 
+        # A Parameter must have at least one figure target: its value is applied to figures only through its
+        # "<target_component>.<target_argument>" targets, so a Parameter with no figure target has no argument to
+        # apply its value to and cannot work. This mirrors the pre-syncing behavior where such a target was rejected
+        # by check_dot_notation; it is enforced here because control targets (which are now allowed and extracted
+        # above) could otherwise leave a Parameter with only control targets and no figure target.
+        if not self.targets:
+            raise ValueError(
+                f"Parameter '{self.id}' must have at least one target in the form "
+                f"<target_component>.<target_argument>. A Parameter that targets only other controls has no argument "
+                f"to apply its value to."
+            )
+
         check_control_targets(control=self)
 
         if (_is_numerical_or_date_selector(self.selector) or _is_datetime_selector(self.selector)) and (
@@ -210,14 +227,12 @@ class Parameter(VizroBaseModel):
             self.targets.extend(list(filter_targets))
             targets_ids = [target.partition(".")[0] for target in self.targets]
 
-            # Ensure set_control actions run before update_targets so the latest control value is applied.
-            self.selector.actions = [
-                *[set_control(control=control_id, value=None) for control_id in targeted_controls],
-                update_targets(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=targets_ids),
-            ]
-            # Run pre_build for each action to run validations and compute internal attributes.
-            for selector_action in self.selector.actions:
-                selector_action.pre_build()
+            build_control_sync_actions(
+                selector=self.selector,
+                targeted_controls=targeted_controls,
+                update_targets_id=f"{PARAMETER_ACTION_PREFIX}_{self.id}",
+                update_targets=targets_ids,
+            )
 
     @_log_call
     def build(self):

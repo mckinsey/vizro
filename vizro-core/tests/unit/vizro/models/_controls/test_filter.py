@@ -1860,6 +1860,22 @@ class TestFilterPreBuildMethod:
         assert update_targets_action.id == "__filter_action_source_filter"
         assert update_targets_action.targets == ["scatter_chart"]
 
+    def test_target_control_duplicate_ids_deduplicated(self, managers_one_page_two_graphs):
+        # A control listed more than once as a target must only generate a single set_control sync action (the
+        # duplicate is redundant), while the figure target is preserved.
+        target_filter = vm.Filter(id="target_filter", column="continent", selector=vm.Checklist())
+        source_filter = vm.Filter(
+            id="source_filter", column="continent", targets=["target_filter", "target_filter", "scatter_chart"]
+        )
+        model_manager["test_page"].controls = [target_filter, source_filter]
+        target_filter.pre_build()
+        source_filter.pre_build()
+
+        assert source_filter.targets == ["scatter_chart"]
+        set_control_actions = [action for action in source_filter.selector.actions if isinstance(action, set_control)]
+        assert len(set_control_actions) == 1
+        assert set_control_actions[0].control == "target_filter"
+
     def test_target_control_only_falls_back_to_all_figures(self, managers_one_page_two_graphs):
         # When a Filter targets *only* another control, the figure targets fall back to all figures on the page that
         # contain the column, exactly as if no targets were provided - but the sync set_control action is still added.

@@ -119,9 +119,35 @@ def extract_control_targets(control: ControlType) -> list[ModelID]:
             )
 
         control.targets.remove(target)
-        targeted_controls.append(target)
+        # Deduplicate so a control listed more than once does not generate duplicate set_control sync actions.
+        if target not in targeted_controls:
+            targeted_controls.append(target)
 
     return targeted_controls
+
+
+def build_control_sync_actions(
+    selector: SelectorType, targeted_controls: list[ModelID], update_targets_id: str, update_targets: list[str]
+) -> None:
+    """Set a control selector's default action chain: sync each targeted control, then refresh its targets.
+
+    Filter and Parameter share this: on selector change they first push the new value to every control they keep in
+    sync (via `set_control`), then refresh their own targets (via `update_targets`). The `set_control` actions run
+    first so the latest value is applied before the refresh.
+
+    The actions are assigned to ``selector.actions`` first (which wires each action's parent model) and only then
+    pre-built, so their `pre_build` validations and internal attributes resolve correctly.
+    """
+    # Local import to avoid a circular import between this module and vizro.actions.
+    from vizro.actions import set_control
+    from vizro.actions import update_targets as update_targets_action
+
+    selector.actions = [
+        *[set_control(control=control_id, value=None) for control_id in targeted_controls],
+        update_targets_action(id=update_targets_id, targets=update_targets),
+    ]
+    for action in selector.actions:
+        action.pre_build()
 
 
 def check_control_targets(control: ControlType) -> None:

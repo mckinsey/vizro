@@ -79,15 +79,17 @@ class TestParameterInstantiation:
         ):
             parameter.pre_build()
 
-    def test_check_dot_notation_figure_argument_failed(self):
-        # A dotted target that addresses the CapturedCallable via `.figure` is still rejected at construction time.
+    @pytest.mark.parametrize("target", ["scatter_chart.figure", "scatter_chart.figure.color"])
+    def test_check_dot_notation_figure_argument_failed(self, target):
+        # A dotted target that addresses the CapturedCallable via `.figure` is still rejected at construction time,
+        # both as the exact `<component>.figure` and as a nested `<component>.figure.<arg>`.
         with pytest.raises(
             ValueError,
-            match=r"Invalid target scatter_chart.figure. Targets must be supplied in the form "
+            match=rf"Invalid target {target}. Targets must be supplied in the form "
             "<target_component>.<target_argument>. Arguments of the CapturedCallable function can be targeted "
             "directly, and not via <.figure.>.",
         ):
-            Parameter(targets=["scatter_chart.figure"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
+            Parameter(targets=[target], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
     @pytest.mark.parametrize("target", ["scatter_chart.data_frame", "scatter_chart.data_frame.argument.nested_arg"])
     def test_check_data_frame_as_target_argument_failed(self, target):
@@ -352,6 +354,29 @@ class TestPreBuildMethod:
         assert isinstance(update_targets_action, update_targets)
         assert update_targets_action.targets == ["scatter_chart"]
 
+    def test_two_parameters_target_same_control_allowed(self, managers_one_page_two_graphs):
+        # Two parameters may keep the same control in sync. The shared bare control id is a control-sync target, not a
+        # figure-argument target, so it must not trip the duplicate-parameter-target check (which only guards figure
+        # arguments, since two parameters writing the same figure argument would conflict).
+        target_filter = vm.Filter(id="shared_filter", column="continent")
+        parameter_1 = vm.Parameter(
+            id="parameter_1",
+            targets=["scatter_chart.x", "shared_filter"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        )
+        parameter_2 = vm.Parameter(
+            id="parameter_2",
+            targets=["bar_chart.x", "shared_filter"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        )
+        model_manager["test_page"].controls = [target_filter, parameter_1, parameter_2]
+        target_filter.pre_build()
+        parameter_1.pre_build()
+        parameter_2.pre_build()
+
+        assert parameter_1.selector.actions[0].control == "shared_filter"
+        assert parameter_2.selector.actions[0].control == "shared_filter"
+
     def test_target_control_self_target_invalid(self, managers_one_page_two_graphs):
         # A control targeting itself would create a self-referential sync loop and is rejected.
         parameter = vm.Parameter(
@@ -389,6 +414,44 @@ class TestPreBuildMethod:
             ValueError, match=r"Control 'param_a' cannot target control 'filter_b' because they are on different pages"
         ):
             model_manager["param_a"].pre_build()
+
+    def test_target_only_controls_invalid(self, managers_one_page_two_graphs):
+        # A Parameter must have at least one figure target: its value is applied to figures only through its
+        # "<component>.<argument>" targets, so targeting only other controls leaves nothing to apply the value to.
+        # This restores the pre-syncing behavior where such a (non-dotted) target was rejected by check_dot_notation.
+        target_parameter = vm.Parameter(
+            id="target_parameter",
+            targets=["scatter_chart.x"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        )
+        parameter = vm.Parameter(
+            id="source_parameter",
+            targets=["target_parameter"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        )
+        model_manager["test_page"].controls = [target_parameter, parameter]
+        target_parameter.pre_build()
+        with pytest.raises(
+            ValueError,
+            match=r"Parameter 'source_parameter' must have at least one target in the form "
+            r"<target_component>.<target_argument>",
+        ):
+            parameter.pre_build()
+
+    def test_target_empty_invalid(self, managers_one_page_two_graphs):
+        # A Parameter with no targets at all likewise has no figure argument to apply its value to and is rejected.
+        parameter = vm.Parameter(
+            id="empty_parameter",
+            targets=[],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        )
+        model_manager["test_page"].controls = [parameter]
+        with pytest.raises(
+            ValueError,
+            match=r"Parameter 'empty_parameter' must have at least one target in the form "
+            r"<target_component>.<target_argument>",
+        ):
+            parameter.pre_build()
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(

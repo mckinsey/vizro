@@ -1,5 +1,9 @@
 """This is a test app to test the dashboard layout."""
 
+import datetime as dt
+
+import pandas as pd
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
@@ -9,6 +13,39 @@ from vizro.actions import set_control, update_targets
 
 df = px.data.iris()
 data_manager["dynamic_iris"] = lambda number_of_points=10: df.head(number_of_points)
+
+
+# A synthetic dataset with a column of every type, so page_3_9 can exercise syncing for *every* selector.
+_SYNC_N = 60
+_SYNC_HIER = [("North", "New York"), ("North", "Boston"), ("South", "Miami"), ("South", "Austin")]
+
+
+def _cyc(values):
+    """Cycle ``values`` deterministically to length ``_SYNC_N`` (keeps the dataset reproducible)."""
+    return [values[i % len(values)] for i in range(_SYNC_N)]
+
+
+sync_df = pd.DataFrame(
+    {
+        "x": [i % 10 for i in range(_SYNC_N)],
+        "y": [(i * 3) % 10 for i in range(_SYNC_N)],
+        "cat_dropdown": _cyc(["A", "B", "C"]),  # categorical -> Dropdown
+        "cat_checklist": _cyc(["X", "Y", "Z"]),  # categorical -> Checklist
+        "cat_radio": _cyc(["P", "Q", "R"]),  # categorical -> RadioItems
+        "num_slider": _cyc([0, 1, 2, 3, 4, 5]),  # numerical -> Slider
+        "num_range": _cyc([0, 20, 40, 60, 80, 100]),  # numerical -> RangeSlider
+        "date_col": pd.to_datetime(
+            _cyc(["2024-01-01", "2024-01-02", "2024-01-03", "2024-01-04"])
+        ),  # date -> DatePicker
+        "datetime_col": pd.to_datetime(  # datetime -> DateTimePicker
+            _cyc(["2024-01-01 06:00", "2024-01-01 09:00", "2024-01-01 12:00", "2024-01-01 15:00"])
+        ),
+        "time_col": _cyc([dt.time(8, 0), dt.time(10, 30), dt.time(13, 0), dt.time(16, 30)]),  # time -> TimePicker
+        "bool_col": _cyc([True, False]),  # boolean -> Switch
+        "region": [_SYNC_HIER[i % 4][0] for i in range(_SYNC_N)],  # hierarchical parent -> Cascader
+        "city": [_SYNC_HIER[i % 4][1] for i in range(_SYNC_N)],  # hierarchical leaf   -> Cascader
+    }
+)
 
 
 SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
@@ -461,9 +498,11 @@ page_3_6 = vm.Page(
 #   F<->F: p37_filter_1    <-> p37_filter_2
 #   F<->P: p37_filter_3    <-> p37_parameter_1
 #   P<->P: p37_parameter_2 <-> p37_parameter_3
-# Each control only targets *other controls* (never the graph). The pairs stay in sync on change via `set_control`,
-# but because the selectors carry explicit actions (no auto `update_targets`), the graph is NOT redrawn on change.
-# The "Apply to graph" button runs `update_targets()` to refresh the graph, re-applying the current (synced) filters.
+# Each selector carries an explicit `set_control` action (and no auto `update_targets`), so changing a control syncs
+# its partner but does NOT redraw the graph. A Filter needs no figure target here - it falls back to the page graph -
+# but a Parameter must have a figure target, so each parameter also targets a `p37_graph_1` argument. The pairs stay
+# in sync on change via `set_control`; the "Apply to graph" button runs `update_targets()` to refresh the graph with
+# the current (synced) control values.
 page_3_7 = vm.Page(
     id="page_3_7",
     title="Sync: Controls sync each other; graph applied on button click",
@@ -507,9 +546,9 @@ page_3_7 = vm.Page(
         ),
         vm.Parameter(
             id="p37_parameter_1",
-            targets=["p37_filter_3"],
+            targets=["p37_graph_1.title"],
             selector=vm.RadioItems(
-                title="P1 <-> F3 (syncs filter above)",
+                title="P1 <-> F3 (syncs filter above; graph title applied on button click)",
                 options=["setosa", "versicolor", "virginica"],
                 actions=[set_control(control="p37_filter_3", value=None)],
             ),
@@ -517,18 +556,18 @@ page_3_7 = vm.Page(
         # P <-> P
         vm.Parameter(
             id="p37_parameter_2",
-            targets=["p37_parameter_3"],
+            targets=["p37_graph_1.x"],
             selector=vm.RadioItems(
-                title="P2 <-> P3 (syncs parameter below)",
+                title="P2 <-> P3 (syncs parameter below; graph x applied on button click)",
                 options=["sepal_length", "petal_length"],
                 actions=[set_control(control="p37_parameter_3", value=None)],
             ),
         ),
         vm.Parameter(
             id="p37_parameter_3",
-            targets=["p37_parameter_2"],
+            targets=["p37_graph_1.y"],
             selector=vm.RadioItems(
-                title="P3 <-> P2 (syncs parameter above)",
+                title="P3 <-> P2 (syncs parameter above; graph y applied on button click)",
                 options=["sepal_length", "petal_length"],
                 actions=[set_control(control="p37_parameter_2", value=None)],
             ),
@@ -584,6 +623,150 @@ page_3_8 = vm.Page(
 )
 
 
+# ====== **NEW** Every selector type syncing (manual test bench) ======
+# One pair of filters per selector type, each filter targeting its twin so the two stay in sync. Filters need no
+# figure target here - a control-only filter falls back to the page graph - so changing one selector both syncs its
+# twin and refreshes the graph. This is the page to eyeball that syncing works for *every* selector, including the
+# TimePicker / DateTimePicker / Cascader that only recently gained `_get_value_from_trigger`.
+page_3_9 = vm.Page(
+    id="page_3_9",
+    title="Sync: Every selector type (manual test bench)",
+    components=[vm.Graph(id="p39_graph_1", figure=px.scatter(sync_df, x="x", y="y"))],
+    controls=[
+        # Dropdown <-> Dropdown
+        vm.Filter(
+            id="p39_dropdown_1",
+            column="cat_dropdown",
+            targets=["p39_dropdown_2"],
+            selector=vm.Dropdown(title="Dropdown 1 (syncs Dropdown 2)"),
+        ),
+        vm.Filter(
+            id="p39_dropdown_2",
+            column="cat_dropdown",
+            targets=["p39_dropdown_1"],
+            selector=vm.Dropdown(title="Dropdown 2 (syncs Dropdown 1)"),
+        ),
+        # Checklist <-> Checklist
+        vm.Filter(
+            id="p39_checklist_1",
+            column="cat_checklist",
+            targets=["p39_checklist_2"],
+            selector=vm.Checklist(title="Checklist 1 (syncs Checklist 2)"),
+        ),
+        vm.Filter(
+            id="p39_checklist_2",
+            column="cat_checklist",
+            targets=["p39_checklist_1"],
+            selector=vm.Checklist(title="Checklist 2 (syncs Checklist 1)"),
+        ),
+        # RadioItems <-> RadioItems
+        vm.Filter(
+            id="p39_radio_1",
+            column="cat_radio",
+            targets=["p39_radio_2"],
+            selector=vm.RadioItems(title="RadioItems 1 (syncs RadioItems 2)"),
+        ),
+        vm.Filter(
+            id="p39_radio_2",
+            column="cat_radio",
+            targets=["p39_radio_1"],
+            selector=vm.RadioItems(title="RadioItems 2 (syncs RadioItems 1)"),
+        ),
+        # Slider <-> Slider
+        vm.Filter(
+            id="p39_slider_1",
+            column="num_slider",
+            targets=["p39_slider_2"],
+            selector=vm.Slider(title="Slider 1 (syncs Slider 2)"),
+        ),
+        vm.Filter(
+            id="p39_slider_2",
+            column="num_slider",
+            targets=["p39_slider_1"],
+            selector=vm.Slider(title="Slider 2 (syncs Slider 1)"),
+        ),
+        # RangeSlider <-> RangeSlider
+        vm.Filter(
+            id="p39_range_1",
+            column="num_range",
+            targets=["p39_range_2"],
+            selector=vm.RangeSlider(title="RangeSlider 1 (syncs RangeSlider 2)"),
+        ),
+        vm.Filter(
+            id="p39_range_2",
+            column="num_range",
+            targets=["p39_range_1"],
+            selector=vm.RangeSlider(title="RangeSlider 2 (syncs RangeSlider 1)"),
+        ),
+        # DatePicker <-> DatePicker
+        vm.Filter(
+            id="p39_date_1",
+            column="date_col",
+            targets=["p39_date_2"],
+            selector=vm.DatePicker(title="DatePicker 1 (syncs DatePicker 2)"),
+        ),
+        vm.Filter(
+            id="p39_date_2",
+            column="date_col",
+            targets=["p39_date_1"],
+            selector=vm.DatePicker(title="DatePicker 2 (syncs DatePicker 1)"),
+        ),
+        # DateTimePicker <-> DateTimePicker
+        vm.Filter(
+            id="p39_datetime_1",
+            column="datetime_col",
+            targets=["p39_datetime_2"],
+            selector=vm.DateTimePicker(title="DateTimePicker 1 (syncs DateTimePicker 2)"),
+        ),
+        vm.Filter(
+            id="p39_datetime_2",
+            column="datetime_col",
+            targets=["p39_datetime_1"],
+            selector=vm.DateTimePicker(title="DateTimePicker 2 (syncs DateTimePicker 1)"),
+        ),
+        # TimePicker <-> TimePicker
+        vm.Filter(
+            id="p39_time_1",
+            column="time_col",
+            targets=["p39_time_2"],
+            selector=vm.TimePicker(title="TimePicker 1 (syncs TimePicker 2)"),
+        ),
+        vm.Filter(
+            id="p39_time_2",
+            column="time_col",
+            targets=["p39_time_1"],
+            selector=vm.TimePicker(title="TimePicker 2 (syncs TimePicker 1)"),
+        ),
+        # Switch <-> Switch
+        vm.Filter(
+            id="p39_switch_1",
+            column="bool_col",
+            targets=["p39_switch_2"],
+            selector=vm.Switch(title="Switch 1 (syncs Switch 2)"),
+        ),
+        vm.Filter(
+            id="p39_switch_2",
+            column="bool_col",
+            targets=["p39_switch_1"],
+            selector=vm.Switch(title="Switch 2 (syncs Switch 1)"),
+        ),
+        # Cascader <-> Cascader (hierarchical: column is an ordered list of columns)
+        vm.Filter(
+            id="p39_cascader_1",
+            column=["region", "city"],
+            targets=["p39_cascader_2"],
+            selector=vm.Cascader(title="Cascader 1 (syncs Cascader 2)"),
+        ),
+        vm.Filter(
+            id="p39_cascader_2",
+            column=["region", "city"],
+            targets=["p39_cascader_1"],
+            selector=vm.Cascader(title="Cascader 2 (syncs Cascader 1)"),
+        ),
+    ],
+)
+
+
 dashboard = vm.Dashboard(
     pages=[
         page_0_1,
@@ -599,6 +782,7 @@ dashboard = vm.Dashboard(
         page_3_6,
         page_3_7,
         page_3_8,
+        page_3_9,
     ],
     navigation=vm.Navigation(
         pages={
@@ -614,6 +798,7 @@ dashboard = vm.Dashboard(
                 "page_3_6",
                 "page_3_7",
                 "page_3_8",
+                "page_3_9",
             ],
         }
     ),

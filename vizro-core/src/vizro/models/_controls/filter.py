@@ -14,7 +14,6 @@ from pandas.api.types import is_bool_dtype, is_datetime64_any_dtype, is_numeric_
 from pydantic import Field, PrivateAttr, model_validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
-from vizro.actions import set_control, update_targets
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
@@ -39,6 +38,7 @@ from vizro.models._controls._controls_utils import (
     _is_datetime_selector,
     _is_hierarchical_selector,
     _is_numerical_or_date_selector,
+    build_control_sync_actions,
     check_control_targets,
     extract_control_targets,
     get_control_parent,
@@ -637,14 +637,12 @@ class Filter(VizroBaseModel):
         # default. The filter value is still applied whenever its targets are refreshed by something else (e.g. a
         # Button running update_targets).
         if "actions" not in self.selector.model_fields_set:
-            # Ensure set_control actions run before update_targets so the latest control value is applied.
-            self.selector.actions = [
-                *[set_control(control=control_id, value=None) for control_id in targeted_controls],
-                update_targets(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets),
-            ]
-            # Run pre_build for each action to run validations and compute internal attributes.
-            for selector_action in self.selector.actions:
-                selector_action.pre_build()
+            build_control_sync_actions(
+                selector=self.selector,
+                targeted_controls=targeted_controls,
+                update_targets_id=f"{FILTER_ACTION_PREFIX}_{self.id}",
+                update_targets=self.targets,
+            )
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
