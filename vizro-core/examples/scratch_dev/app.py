@@ -13,8 +13,6 @@ tips = px.data.tips()
 fig = px.pie(tips, values="tip", names="day", hole=0.4)
 
 page = vm.Page(title="My page", components=[vm.Graph(figure=fig)])
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
 
 """
 
