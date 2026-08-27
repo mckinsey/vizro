@@ -25,7 +25,7 @@ To add a parameter to your page, do the following:
 1. add the `targets` argument
 1. add a selector model to the `selector` argument.
 
-In the `targets` argument, specify the component and the argument you want to parametrize by joining the component's `id` and the argument name with a dot. For example, `scatter_chart.title` parametrizes the `title` argument of the component with `id="scatter_chart"`.
+In the `targets` argument, specify the component and the argument you want to parametrize by joining the component's `id` and the argument name with a dot. For example, `scatter_chart.title` parametrizes the `title` argument of the component with `id="scatter_chart"`. You can additionally include another control's `id` in `targets` to [keep the two controls in sync](controls.md#sync-controls); a parameter must still target at least one component argument as well.
 
 Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure the `selector` argument, by providing it with an appropriate model and the desired options/numeric ranges.
 

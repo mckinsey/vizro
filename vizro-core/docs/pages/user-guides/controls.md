@@ -33,6 +33,111 @@ When the dashboard is running there are two ways for a user to set a control:
 
     The state of any control that has [`show_in_url=True`](run-deploy.md#shareable-url) is included when you share the URL of your app.
 
+## Sync controls
+
+You can keep two controls in sync so that changing one automatically applies the same value to the other. This is useful when you have linked views, for example two graphs side by side that should always share the same filter, or when one control should drive both a figure and another control.
+
+To sync controls, add another control's `id` to the `targets` of a [filter](filters.md) or [parameter](parameters.md). Whenever the control changes, Vizro sets the targeted control to the same value (using the [`set_control` action][vizro.actions.set_control] behind the scenes) and then refreshes that control's own targets. Syncing works between any combination of controls:
+
+- **Filter and Filter**: two filters mirror each other's selection.
+- **Filter and Parameter**, and **Parameter and Parameter**: one control's value drives another control's value.
+
+Syncing works with every [selector](selectors.md), and the two controls do not need to use the same selector type: for example, a [`Dropdown`][vizro.models.Dropdown] filter can sync a [`Checklist`][vizro.models.Checklist] filter on the same column.
+
+!!! note "Controls can only sync on the same page (for now)"
+
+    A control can currently only target another control on the **same page**. Support for syncing controls **across pages** is coming soon, at which point this limitation is removed.
+
+!!! note "A parameter always needs a figure target"
+
+    A [filter](filters.md) that targets only other controls still applies to the page's figures: it falls back to every figure whose data includes its `column`, exactly as if no `targets` were given. A [parameter](parameters.md) has no such fallback, because it applies its value through its `<component>.<argument>` targets. A parameter must therefore always target at least one figure argument in addition to any controls it syncs.
+
+!!! example "Sync two filters"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="14 19"}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Sync controls",
+            layout=vm.Grid(grid=[[0, 1]]),
+            components=[
+                vm.Container(
+                    title="Sepal",
+                    components=[vm.Graph(id="sepal_chart", figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species"))],
+                    controls=[vm.Filter(id="sepal_filter", column="species", targets=["sepal_chart", "petal_filter"])],  # (1)!
+                ),
+                vm.Container(
+                    title="Petal",
+                    components=[vm.Graph(id="petal_chart", figure=px.scatter(iris, x="petal_length", y="petal_width", color="species"))],
+                    controls=[vm.Filter(id="petal_filter", column="species", targets=["petal_chart", "sepal_filter"])],  # (2)!
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. `sepal_filter` targets its own graph (`sepal_chart`) and the other filter (`petal_filter`). Changing it filters the sepal chart and sets `petal_filter` to the same selection.
+        1. `petal_filter` mirrors it in the other direction, so changing either filter keeps both filters in sync and filters both charts.
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: Sync controls
+            layout:
+              type: grid
+              grid: [[0, 1]]
+            components:
+              - type: container
+                title: Sepal
+                components:
+                  - id: sepal_chart
+                    type: graph
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_length
+                      y: sepal_width
+                      color: species
+                controls:
+                  - id: sepal_filter
+                    type: filter
+                    column: species
+                    targets: [sepal_chart, petal_filter]
+              - type: container
+                title: Petal
+                components:
+                  - id: petal_chart
+                    type: graph
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: petal_length
+                      y: petal_width
+                      color: species
+                controls:
+                  - id: petal_filter
+                    type: filter
+                    column: species
+                    targets: [petal_chart, sepal_filter]
+        ```
+
+    === "Result"
+
+        [![SyncControls]][synccontrols]
+
+You can combine syncing with [applying controls on a button click](#apply-controls-with-a-button): give a control's selector an explicit [`set_control`][vizro.actions.set_control] action to sync its partner without refreshing figures on change, then refresh the figures together with an [`update_targets`][vizro.actions.update_targets] button.
+
 ## Reset controls
 
 You can reset all controls on the page to their original values with the "Reset controls" button at the bottom of the control panel on the left side of the page. This applies to all controls on the page, regardless of whether they are visible. When all controls on a page have `visible=False` and hence no control panel is shown, the "Reset controls" button appears next to the theme switch on the top right of the page.
@@ -220,3 +325,4 @@ To organize the control panel on a page into sections, you can group [filters](f
 
 [controlgroup]: ../../assets/user_guides/control/control_group.png
 [applycontrolswithabutton]: ../../assets/user_guides/control/apply_controls_with_a_button.gif
+[synccontrols]: ../../assets/user_guides/control/sync_controls.gif

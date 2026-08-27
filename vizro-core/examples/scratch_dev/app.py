@@ -332,7 +332,6 @@ page_3_3 = vm.Page(
 )
 
 
-# TODO-REVIEWER: 8https
 page_3_4 = vm.Page(
     id="page_3_4",
     title="Sync: Filter targets a filter that targets a filter x4",
@@ -387,7 +386,6 @@ page_3_4 = vm.Page(
 )
 
 
-# TODO-REVIEWER: 16+https
 page_3_5 = vm.Page(
     id="page_3_5",
     title="Sync: Filter targets all filters x4",

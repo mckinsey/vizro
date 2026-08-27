@@ -340,6 +340,18 @@ class TestSetControlFunction:
                 ["1992-01-01", "1993-01-01", "1994-01-01"],
                 ["1992-01-01", "1994-01-01"],
             ),
+            # A two-element range value is kept in its [start, end] slot order (no min/max reorder). This preserves
+            # correctness for non-numeric ranges whose lexical order can differ from slot order - e.g. a
+            # DateTimePicker whose start carries a time but whose end does not (["...T06:00", "..."]): reordering
+            # would move the start into the end slot. Here a deliberately reversed pair is passed through unchanged.
+            ("filter_page_1_date_picker_range", ["1993-01-01", "1992-01-01"], ["1993-01-01", "1992-01-01"]),
+            # An incomplete range mid-selection is not synced (returns no_update), instead of crashing on None
+            # (a 500 error - the reported DatePicker bug) or dropping the set value into the wrong slot for ""
+            # (the reported Time/DateTime picker bug where selecting the start set the target's end).
+            ("filter_page_1_date_picker_range", ["1992-01-01", None], no_update),
+            ("filter_page_1_date_picker_range", [None, "1993-01-01"], no_update),
+            ("filter_page_1_date_picker_range", ["1992-01-01", ""], no_update),
+            ("filter_page_1_date_picker_range", ["", "1993-01-01"], no_update),
             # Leaf-mode hierarchical single-select behaves like a flat single-value selector: a bare leaf passes
             # through, and a 1-item list is unwrapped to its single leaf.
             ("cascade_param_single", "leaf_a", "leaf_a"),

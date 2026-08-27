@@ -26,7 +26,7 @@ To add a filter to your page, do the following:
 1. add the [`Filter`][vizro.models.Filter] model into the `controls` argument of the [`Page`][vizro.models.Page] model
 1. configure the `column` argument, which denotes the target column to be filtered
 
-You can also set `targets` to specify which components on the page the filter should apply to. If this is not explicitly set then `targets` defaults to all components on the page whose data source includes `column`.
+You can also set `targets` to specify which components on the page the filter should apply to. If this is not explicitly set then `targets` defaults to all components on the page whose data source includes `column`. You can additionally include another control's `id` in `targets` to [keep the two controls in sync](controls.md#sync-controls).
 
 !!! example "Basic Filter"
 

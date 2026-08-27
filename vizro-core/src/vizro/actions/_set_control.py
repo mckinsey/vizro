@@ -15,6 +15,9 @@ from vizro.models.types import ControlType, ModelID
 
 logger = logging.getLogger(__name__)
 
+# A complete range value has exactly two entries: [start, end].
+_RANGE_VALUE_LEN = 2
+
 
 # This defines what a model needs to implement for it to be capable of acting as the trigger of set_control.
 @runtime_checkable
@@ -205,12 +208,9 @@ class set_control(_AbstractAction):
         if is_multi:
             value = value if isinstance(value, list) else [value]
         elif is_range:
-            if not isinstance(value, list):
-                value = [value, value]
-            elif len(value) == 0:
+            value = self._normalize_range_value(value)
+            if value is None:
                 return self._get_no_update_response()
-            else:
-                value = [min(value), max(value)]  # type: ignore[type-var]
         elif isinstance(value, list):
             # Target is single-value selector but value is list.
             if len(value) == 1:
@@ -237,6 +237,30 @@ class set_control(_AbstractAction):
         if self._same_page:
             return self.control
         return ["vizro_url.pathname", "vizro_url.search"]
+
+    @staticmethod
+    def _normalize_range_value(value):
+        """Shape a trigger value into a range control's [start, end], or None if it must not be synced.
+
+        Returns None (meaning "do not sync") for an empty or incomplete selection. An incomplete range arrives
+        mid-edit as e.g. [date, None] from a DatePicker after its first click, or ["10:00", ""] from a Time/DateTime
+        picker before the second value is set. Such values must not be synced: min/max would raise on None (a 500
+        error) and, for "", would drop the single set value into the wrong slot (["10:00", ""] -> ["", "10:00"], so
+        the start lands in the end). The sync then happens once the second value is selected, exactly as the source.
+        """
+        if not isinstance(value, list):
+            return [value, value]
+        if len(value) == 0 or any(item is None or item == "" for item in value):
+            return None
+        if len(value) == 1:
+            return [value[0], value[0]]
+        if len(value) > _RANGE_VALUE_LEN:
+            # More than two values (e.g. a multi-point Graph/AgGrid selection) collapse to the spanning range.
+            return [min(value), max(value)]
+        # A two-element value is already a positional [start, end], so it is kept as-is. Range selectors emit
+        # start/end in slot order; reordering with min/max is unnecessary and would misplace non-numeric values
+        # (dates/times) whose lexical order can differ from their slot order.
+        return value
 
     def _get_no_update_response(self):
         return no_update if self._same_page else (no_update, no_update)
