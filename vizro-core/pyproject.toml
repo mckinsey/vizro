@@ -26,8 +26,8 @@ dependencies = [
   # TODO: When updating to `>=2.10`, search code for `pydantic>=2.10.0` or
   # `pydantic>=2.9` to find all occurrences ready for this change
   "pydantic>=2.7.0",
-  # >=2.5.0 fixes a memoize bug so each set of memoized arguments expires independently. See test_timeout_expires_independently.
-  "flask_caching>=2.5.0",
+  # Cap <2.5 for now: flask-caching 2.5.0 emits a spurious NullCache warning and requires Python>=3.11 (we support 3.10).
+  "flask_caching>=2,<2.5",
   "wrapt>=1",
   "black",
   "autoflake",

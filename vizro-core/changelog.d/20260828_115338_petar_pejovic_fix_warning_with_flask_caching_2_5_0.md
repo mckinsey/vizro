@@ -34,10 +34,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
+<!--
 ### Fixed
 
-- Require `flask-caching>=2.5.0`. This fixes a caching bug so that each set of memoized arguments of a dynamic data source now expires independently, rather than one expiry invalidating the whole data source's cache. ([#1848](https://github.com/mckinsey/vizro/pull/1848))
+- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Security
 

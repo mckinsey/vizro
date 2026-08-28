@@ -396,15 +396,17 @@ class TestCacheWithArguments:
         assert_frame_not_equal(loaded_data_x_1, loaded_data_y_1)
         assert_frame_not_equal(loaded_data_x_3, loaded_data_y_3)
 
-    def test_timeout_expires_independently(self, data_callable, freezer):
-        # Each set of memoized arguments expires independently of the others. flask-caching>=2.5.0 fixed a bug where
-        # expiring the cache for one set of memoized arguments would invalidate the cache for the whole data source.
+    def test_timeout_expires_all(self, data_callable, freezer):
+        # When the cache for one set of memoized arguments expires, the cache for the whole data source expires, even
+        # for other values of memoized arguments.
+        # This behavior is not particularly desirable (in fact it's maybe a bit annoying); the test is here just
+        # to document the current behavior. It's not easy to change this behavior within flask-caching.
         # Remember the default timeout is 300s.
         # Loading sequence of data sources is as follows:
         # t=0:      load x_1
         # t=200:    load x_2     y_1  -> x cache has not expired
-        # t=400:    load x_3     y_2  -> x cache has expired. y cache has not expired.
-        # t=600:    load         y_3  -> y cache has expired.
+        # t=400:    load x_3     y_2  -> x cache has expired. y cache might be expected to not expire but also has.
+        # t=600:    load         y_3
         data_manager["data"] = data_callable
 
         loaded_data_x_1 = data_manager["data"].load("x")
@@ -417,14 +419,15 @@ class TestCacheWithArguments:
         freezer.tick(150 + 50)
         loaded_data_y_3 = data_manager["data"].load("y")
 
-        # x cache is populated at t=0, still valid at t=200 (expires t=300), expired and reloaded at t=400.
+        # These are as you would expect.
         assert_frame_equal(loaded_data_x_1, loaded_data_x_2)
         assert_frame_not_equal(loaded_data_x_2, loaded_data_x_3)
 
-        # y cache is populated at t=200, still valid at t=400 (expires t=500), expired and reloaded at t=600.
-        # Note x expiring at t=400 no longer invalidates y's cache.
-        assert_frame_equal(loaded_data_y_1, loaded_data_y_2)
-        assert_frame_not_equal(loaded_data_y_2, loaded_data_y_3)
+        # These you might expect to be the other way round:
+        # assert_frame_equal(loaded_data_y_1, loaded_data_y_2)
+        # assert_frame_not_equal(loaded_data_y_2, loaded_data_y_3)
+        assert_frame_not_equal(loaded_data_y_1, loaded_data_y_2)
+        assert_frame_equal(loaded_data_y_2, loaded_data_y_3)
 
     def test_named_and_default_args(self, data_callable):
         data_manager["data"] = data_callable
