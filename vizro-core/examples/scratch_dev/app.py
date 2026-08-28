@@ -497,10 +497,11 @@ page_3_6 = vm.Page(
 #   F<->P: p37_filter_3    <-> p37_parameter_1
 #   P<->P: p37_parameter_2 <-> p37_parameter_3
 # Each selector carries an explicit `set_control` action (and no auto `update_targets`), so changing a control syncs
-# its partner but does NOT redraw the graph. A Filter needs no figure target here - it falls back to the page graph -
-# but a Parameter must have a figure target, so each parameter also targets a `p37_graph_1` argument. The pairs stay
-# in sync on change via `set_control`; the "Apply to graph" button runs `update_targets()` to refresh the graph with
-# the current (synced) control values.
+# its partner but does NOT redraw the graph. When the selector has explicit actions the sync is wired manually via
+# `set_control`, so the partner's id must NOT also be listed in `targets` (it would be stripped as dead config and
+# warn). A Filter needs no figure target here - it falls back to the page graph - but a Parameter must have a figure
+# target, so each parameter targets a `p37_graph_1` argument. The pairs stay in sync on change via `set_control`;
+# the "Apply to graph" button runs `update_targets()` to refresh the graph with the current (synced) control values.
 page_3_7 = vm.Page(
     id="page_3_7",
     title="Sync: Controls sync each other; graph applied on button click",
@@ -517,7 +518,6 @@ page_3_7 = vm.Page(
         vm.Filter(
             id="p37_filter_1",
             column="species",
-            targets=["p37_filter_2"],
             selector=vm.RadioItems(
                 title="F1 <-> F2 (syncs filter below; graph applied on button click)",
                 actions=[set_control(control="p37_filter_2", value=None)],
@@ -526,7 +526,6 @@ page_3_7 = vm.Page(
         vm.Filter(
             id="p37_filter_2",
             column="species",
-            targets=["p37_filter_1"],
             selector=vm.Checklist(
                 title="F2 <-> F1 (syncs filter above; graph applied on button click)",
                 actions=[set_control(control="p37_filter_1", value=None)],
@@ -536,7 +535,6 @@ page_3_7 = vm.Page(
         vm.Filter(
             id="p37_filter_3",
             column="species",
-            targets=["p37_parameter_1"],
             selector=vm.RadioItems(
                 title="F3 <-> P1 (syncs parameter below)",
                 actions=[set_control(control="p37_parameter_1", value=None)],

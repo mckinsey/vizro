@@ -51,25 +51,34 @@ To sync controls, add another control's `id` to the `targets` of a [filter](filt
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="13 15"}
+        ```{.python pycafe-link hl_lines="11 22 25"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
+        from vizro.models.types import capture
 
         iris = px.data.iris()
+
+
+        @capture("graph")
+        def scatter_with_title(data_frame, selected_species):
+            title=f"Sepal length vs. width for species: {selected_species}"  # (1)!             
+            fig = px.scatter(data_frame, x="sepal_length", y="sepal_width", color="species", title=title) 
+            return fig
+
 
         page = vm.Page(
             title="Sync controls",
             components=[
-                vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species")),
+                vm.Graph(id="scatter_chart", figure=scatter_with_title(data_frame=iris, selected_species="setosa")),
             ],
             controls=[
-                vm.Filter(column="species", targets=["scatter_chart", "title_parameter"]),  # (1)!
+                vm.Filter(column="species", targets=["scatter_chart", "title_parameter"], selector=vm.RadioItems()),  # (2)!
                 vm.Parameter(
                     id="title_parameter",
-                    targets=["scatter_chart.title"],
+                    targets=["scatter_chart.selected_species"],  # (3)!
                     selector=vm.RadioItems(options=["setosa", "versicolor", "virginica"], value="setosa"),
-                    visible=False,  # (2)!
+                    visible=False,
                 ),
             ],
         )
@@ -78,13 +87,14 @@ To sync controls, add another control's `id` to the `targets` of a [filter](filt
         Vizro().build(dashboard).run()
         ```
 
-        1. The filter targets its own graph as usual, plus `title_parameter`. Changing the filter filters the chart and sets `title_parameter` to the same species.
-        1. `title_parameter` sets the chart's title to the selected species. Its selector is hidden with `visible=False` because the user only interacts with the filter; the parameter's value is driven entirely by the sync.
+        1. The [custom chart](custom-charts.md) turns the raw `selected_species` value into a human-readable title (for example `"setosa"` becomes _"Sepal length vs. width — Iris setosa"_). Because the title is built inside the figure function, the parameter can drive any derived output, not just a literal string.
+        1. The filter targets its own graph as usual, plus `title_parameter`. Changing the filter filters the chart and sets `title_parameter` to the same species. The filter uses a single-select [`RadioItems`][vizro.models.RadioItems] selector so its value maps one-to-one onto the single-select parameter it syncs.
+        1. `title_parameter` feeds the selected species into the custom chart's `selected_species` argument, which composes the title from it. Its selector is hidden with `visible=False` because the user only interacts with the filter; the parameter's value is driven entirely by the sync.
 
     === "app.yaml"
 
         ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
         # See yaml_version example
         pages:
           - title: Sync controls
@@ -92,18 +102,18 @@ To sync controls, add another control's `id` to the `targets` of a [filter](filt
               - id: scatter_chart
                 type: graph
                 figure:
-                  _target_: scatter
+                  _target_: __main__.scatter_with_title
                   data_frame: iris
-                  x: sepal_length
-                  y: sepal_width
-                  color: species
+                  selected_species: setosa
             controls:
               - type: filter
                 column: species
                 targets: [scatter_chart, title_parameter]
+                selector:
+                  type: radio_items
               - id: title_parameter
                 type: parameter
-                targets: [scatter_chart.title]
+                targets: [scatter_chart.selected_species]
                 selector:
                   type: radio_items
                   options: [setosa, versicolor, virginica]

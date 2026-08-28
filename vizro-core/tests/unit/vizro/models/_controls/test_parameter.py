@@ -377,6 +377,30 @@ class TestPreBuildMethod:
         assert parameter_1.selector.actions[0].control == "shared_filter"
         assert parameter_2.selector.actions[0].control == "shared_filter"
 
+    def test_target_control_ignored_with_explicit_actions_warns(
+        self, managers_one_page_two_graphs, identity_action_function
+    ):
+        # A control target is synced by generating a default set_control action on the selector. When the selector
+        # has explicit actions, that default chain is skipped, so a control target listed in `targets` is stripped
+        # without being synced. This must warn rather than silently do nothing.
+        custom_action = vm.Action(function=identity_action_function())
+        target_filter = vm.Filter(id="target_filter", column="continent")
+        parameter = vm.Parameter(
+            id="source_parameter",
+            targets=["scatter_chart.x", "target_filter"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"], actions=[custom_action]),
+        )
+        model_manager["test_page"].controls = [target_filter, parameter]
+        target_filter.pre_build()
+        with pytest.warns(
+            UserWarning, match=r"Control 'source_parameter' lists control target\(s\) \['target_filter'\]"
+        ):
+            parameter.pre_build()
+
+        # The control target is still stripped from targets; the user's explicit actions are left untouched.
+        assert parameter.targets == ["scatter_chart.x"]
+        assert parameter.selector.actions == [custom_action]
+
     def test_target_control_self_target_invalid(self, managers_one_page_two_graphs):
         # A control targeting itself would create a self-referential sync loop and is rejected.
         parameter = vm.Parameter(

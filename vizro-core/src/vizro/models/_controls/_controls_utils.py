@@ -102,9 +102,15 @@ def extract_control_targets(control: ControlType) -> list[ModelID]:
     """
     from vizro.models._controls import Filter, Parameter
 
+    # `control` is loop-invariant, so resolve its page once rather than per target.
+    control_page = model_manager._get_model_page(control)
+
     targeted_controls: list[ModelID] = []
     for target in control.targets.copy():
-        if not (target in model_manager and isinstance(model_manager[target], (Filter, Parameter))):
+        if target not in model_manager:
+            continue
+        target_model = model_manager[target]
+        if not isinstance(target_model, (Filter, Parameter)):
             continue
 
         # Forbid self-targeting: a control targeting itself would create a self-referential sync loop.
@@ -112,7 +118,7 @@ def extract_control_targets(control: ControlType) -> list[ModelID]:
             raise ValueError(f"Control '{control.id}' cannot target itself. Remove '{target}' from its `targets`.")
 
         # Control targets must be on the same page as the control that targets them.
-        if model_manager._get_model_page(control) is not model_manager._get_model_page(model_manager[target]):
+        if control_page is not model_manager._get_model_page(target_model):
             raise ValueError(
                 f"Control '{control.id}' cannot target control '{target}' because they are on different pages. "
                 f"A control can only target other controls on the same page."
@@ -124,6 +130,23 @@ def extract_control_targets(control: ControlType) -> list[ModelID]:
             targeted_controls.append(target)
 
     return targeted_controls
+
+
+def warn_ignored_control_sync_targets(control: ControlType, targeted_controls: list[ModelID]) -> None:
+    """Warn when control-sync targets are dropped because the selector has explicit ``actions``.
+
+    A Filter/Parameter keeps a control target in sync by generating a default `set_control` action on its selector
+    (see `build_control_sync_actions`). When the selector's `actions` are set explicitly, that default chain is not
+    generated, so any control ids listed in `targets` are extracted and removed but never turned into a sync,
+    silently doing nothing. Warn so the user knows to wire the sync themselves.
+    """
+    if targeted_controls:
+        warnings.warn(
+            f"Control '{control.id}' lists control target(s) {targeted_controls} in `targets`, but its selector has "
+            f"explicit `actions`, so these targets are not kept in sync automatically. Add a `set_control` action to "
+            f"the selector's `actions` for each one to sync them, and remove them from `targets`.",
+            UserWarning,
+        )
 
 
 def build_control_sync_actions(

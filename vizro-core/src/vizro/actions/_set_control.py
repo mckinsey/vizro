@@ -254,12 +254,20 @@ class set_control(_AbstractAction):
             return None
         if len(value) == 1:
             return [value[0], value[0]]
-        if len(value) > _RANGE_VALUE_LEN:
-            # More than two values (e.g. a multi-point Graph/AgGrid selection) collapse to the spanning range.
+        # Numeric values are ordered by magnitude. A selection-order source (e.g. a multi-row AgGrid selection or a
+        # multi-point Graph selection) can emit values in the order they were clicked, so a bare pass-through could
+        # yield an inverted [start > end] range that filters to nothing. Ordering is a no-op for a range selector
+        # source (its start/end already satisfy start <= end), so this is safe for both source kinds. Covers both
+        # the 2-element and the >2-element cases.
+        if all(isinstance(item, (int, float)) and not isinstance(item, bool) for item in value):
             return [min(value), max(value)]
-        # A two-element value is already a positional [start, end], so it is kept as-is. Range selectors emit
-        # start/end in slot order; reordering with min/max is unnecessary and would misplace non-numeric values
-        # (dates/times) whose lexical order can differ from their slot order.
+        if len(value) > _RANGE_VALUE_LEN:
+            # More than two non-numeric values collapse to the spanning range. ISO date/time strings sort
+            # chronologically by lexical order, so min/max stays correct here.
+            return [min(value), max(value)]
+        # A two-element non-numeric value is a positional [start, end] and is kept in slot order. Range selectors
+        # emit start/end in slot order, and dates/times can have a lexical order that differs from their slot order
+        # (e.g. a DateTimePicker whose start carries a time but whose end does not), so reordering would misplace it.
         return value
 
     def _get_no_update_response(self):

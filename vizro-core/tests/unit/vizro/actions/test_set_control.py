@@ -318,6 +318,10 @@ class TestSetControlFunction:
             ("filter_page_1_range_slider", 1, [1, 1]),
             ("filter_page_1_range_slider", [1], [1, 1]),
             ("filter_page_1_range_slider", [1, 2, 3, 4], [1, 4]),
+            # A numeric two-element value arriving in selection order (e.g. an AgGrid 2-row selection clicked
+            # high-then-low) is ordered by magnitude so it doesn't become an inverted [start > end] range that
+            # filters to nothing. Contrast with the reversed date_picker_range case below, which is kept in slot order.
+            ("filter_page_1_range_slider", [2, 1], [1, 2]),
             # Single-value boolean control
             ("filter_page_1_boolean", [], no_update),
             ("filter_page_1_boolean", True, True),

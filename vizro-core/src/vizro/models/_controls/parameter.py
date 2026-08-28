@@ -16,6 +16,7 @@ from vizro.models._controls._controls_utils import (
     check_control_targets,
     extract_control_targets,
     get_selector_default_value,
+    warn_ignored_control_sync_targets,
     warn_missing_id_for_url_control,
 )
 from vizro.models._models_utils import _log_call
@@ -143,7 +144,7 @@ class Parameter(VizroBaseModel):
         }
 
     @_log_call
-    def pre_build(self):
+    def pre_build(self):  # noqa: PLR0912
         # Split control targets (used to sync this parameter with another control) out of self.targets; they are
         # validated and handled differently to the figure-argument targets that remain.
         targeted_controls = extract_control_targets(control=self)
@@ -233,6 +234,10 @@ class Parameter(VizroBaseModel):
                 update_targets_id=f"{PARAMETER_ACTION_PREFIX}_{self.id}",
                 update_targets=targets_ids,
             )
+        else:
+            # Explicit selector actions bypass the default sync chain, so any control targets were stripped without
+            # generating a set_control. Warn rather than silently drop them.
+            warn_ignored_control_sync_targets(self, targeted_controls)
 
     @_log_call
     def build(self):

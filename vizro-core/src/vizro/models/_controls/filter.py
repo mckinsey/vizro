@@ -43,6 +43,7 @@ from vizro.models._controls._controls_utils import (
     extract_control_targets,
     get_control_parent,
     get_selector_default_value,
+    warn_ignored_control_sync_targets,
     warn_missing_id_for_url_control,
 )
 from vizro.models._models_utils import _log_call
@@ -643,6 +644,10 @@ class Filter(VizroBaseModel):
                 update_targets_id=f"{FILTER_ACTION_PREFIX}_{self.id}",
                 update_targets=self.targets,
             )
+        else:
+            # Explicit selector actions bypass the default sync chain, so any control targets were stripped without
+            # generating a set_control. Warn rather than silently drop them.
+            warn_ignored_control_sync_targets(self, targeted_controls)
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
