@@ -142,7 +142,9 @@ class DataManager:
     def __init__(self):
         self.__data: dict[DataSourceName, _DynamicData | _StaticData] = {}
         self._frozen_state = False
-        self.cache = Cache(config={"CACHE_TYPE": "NullCache"})
+        # CACHE_NO_NULL_WARNING suppresses the flask-caching>=2.5.0 warning about NullCache: it's Vizro's intended
+        # default (caching off) so there's nothing for the user to act on. A user-supplied cache sets its own config.
+        self.cache = Cache(config={"CACHE_TYPE": "NullCache", "CACHE_NO_NULL_WARNING": True})
         # In future, possibly we will accept just a config dict. Would need to work out whether to handle merging with
         # default values though. We would do this with something like this:
         # def __set_cache(self, cache_config):
