@@ -73,7 +73,9 @@ filterwarnings = [
   # Python 3.13's deprecation of asyncio.get_event_loop() trips PydanticAI's
   # sync streaming helper (it catches RuntimeError but not the DeprecationWarning).
   # The fallback path still creates a fresh loop correctly; only the warning is noise.
-  "ignore:There is no current event loop:DeprecationWarning:pydantic_ai"
+  "ignore:There is no current event loop:DeprecationWarning:pydantic_ai",
+  # Ignore Flask-Caching warning about the default CACHE_TYPE changing in version 2.5.0
+  "ignore:(?s).*CACHE_TYPE is set to NullCache, caching is effectively disabled."
 ]
 markers = [
   "benchmark: agent perf/quality suite (on-demand)",

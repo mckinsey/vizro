@@ -93,7 +93,7 @@ filterwarnings = [
   "ignore:`DataCatalog` has been deprecated and will be replaced by `KedroDataCatalog`",
   "ignore:Kedro is not yet fully compatible with this Python version.",
   # Ignore Flask-Caching warning about the default CACHE_TYPE changing in version 2.5.0
-  "ignore:CACHE_TYPE is set to NullCache, caching is effectively disabled."
+  "ignore:(?s).*CACHE_TYPE is set to NullCache, caching is effectively disabled."
 ]
 markers = [
   "mobile_screenshots: marks tests for chrome mobile screenshots",
