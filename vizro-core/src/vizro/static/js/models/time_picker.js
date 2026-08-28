@@ -38,8 +38,12 @@ function update_range_time_picker_store(
     prop_id.endsWith(RANGE_PICKER_END_SUFFIX)
   ) {
     // A picker changed -> push both picker values into the Store; leave pickers alone.
-    // Skip until both pickers have a value, otherwise the Store would briefly hold [null, X].
-    if (start_val == null || end_val == null) return dash_clientside.no_update;
+    // Skip until both pickers have a value, otherwise the Store would briefly hold a half-range
+    // (e.g. ["10:00", ""]) that fires the actions chain — including any control sync — on an
+    // incomplete range while the user is still mid-edit. dmc.TimePicker represents "empty" as ""
+    // (not null), so a bare `== null` check would let the "" end through; guard on falsy instead.
+    // A set time is always a truthy "HH:MM[:SS]" string, so `!value` catches only empty/cleared ends.
+    if (!start_val || !end_val) return dash_clientside.no_update;
     return [
       [start_val, end_val],
       dash_clientside.no_update,

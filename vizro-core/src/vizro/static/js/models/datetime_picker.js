@@ -75,9 +75,11 @@ function update_range_datetime_picker_store(
 
   if (isComponentTrigger) {
     // Both ends of the range need a date for the filter to make sense. While the user is mid-selection
-    // keep the previous Store value to avoid action-chain churn.
-    if (date_start_value == null || date_end_value == null)
-      return dash_clientside.no_update;
+    // keep the previous Store value to avoid action-chain churn (which would otherwise fire the actions
+    // chain — including any control sync — on an incomplete range). dmc.DatePickerInput clears to null,
+    // but guard on "" too (as the single-mode callback below already does) so an empty string can never
+    // leak a half-range into the Store. A set date is always a truthy "YYYY-MM-DD" string.
+    if (!date_start_value || !date_end_value) return dash_clientside.no_update;
 
     const start_iso = _combine_date_time(date_start_value, time_start_value);
     const end_iso = _combine_date_time(date_end_value, time_end_value);
