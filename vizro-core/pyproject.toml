@@ -26,7 +26,7 @@ dependencies = [
   # TODO: When updating to `>=2.10`, search code for `pydantic>=2.10.0` or
   # `pydantic>=2.9` to find all occurrences ready for this change
   "pydantic>=2.7.0",
-  "flask_caching==2.4.1",
+  "flask_caching>=2",
   "wrapt>=1",
   "black",
   "autoflake",
