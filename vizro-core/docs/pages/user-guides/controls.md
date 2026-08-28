@@ -62,8 +62,8 @@ To sync controls, add another control's `id` to the `targets` of a [filter](filt
 
         @capture("graph")
         def scatter_with_title(data_frame, selected_species):
-            title=f"Sepal length vs. width for species: {selected_species}"  # (1)!             
-            fig = px.scatter(data_frame, x="sepal_length", y="sepal_width", color="species", title=title) 
+            title=f"Sepal length vs. width for species: {selected_species}"  # (1)!
+            fig = px.scatter(data_frame, x="sepal_length", y="sepal_width", color="species", title=title)
             return fig
 
 
