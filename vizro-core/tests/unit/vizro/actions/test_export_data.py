@@ -227,7 +227,15 @@ def expected_transformed_outputs(request):
 
 @pytest.fixture
 def expected_first_in_chain_dash_components(request):
-    return [dcc.Store(id="export_data_action_finished"), dcc.Store(id="export_data_action_guarded_trigger")] + [
+    # export_data shows a "progress" notification, so its dash_components also include the two stores that back the
+    # client-side progress toast (_progress_notification_object and _action_parameters). Their `data` payloads carry
+    # a generated notification id, so tests strip `data` when comparing.
+    return [
+        dcc.Store(id="export_data_action_finished"),
+        dcc.Store(id="export_data_action_guarded_trigger"),
+        dcc.Store(id="export_data_action_progress_notification_object"),
+        dcc.Store(id="export_data_action_action_parameters"),
+    ] + [
         dcc.Download(id={"type": "download_dataframe", "action_id": "export_data_action", "target_id": target})
         for target in request.param
     ]
@@ -237,6 +245,8 @@ def expected_first_in_chain_dash_components(request):
 def expected_not_first_in_chain_dash_components(request):
     return [
         dcc.Store(id="not_first_in_chain_export_data_action_finished"),
+        dcc.Store(id="not_first_in_chain_export_data_action_progress_notification_object"),
+        dcc.Store(id="not_first_in_chain_export_data_action_action_parameters"),
         dcc.Download(
             id={
                 "type": "download_dataframe",
@@ -290,13 +300,15 @@ class TestExportDataInstantiation:
         self, config_for_testing_all_components_with_actions, expected_first_in_chain_dash_components
     ):
         result_components = model_manager["export_data_action"]._dash_components
-        assert_component_equal(result_components, expected_first_in_chain_dash_components)
+        # Strip `data` as the progress notification store payload carries a generated notification id.
+        assert_component_equal(result_components, expected_first_in_chain_dash_components, keys_to_strip={"data"})
 
     def test_export_data_not_first_in_chain_dash_components(
         self, config_for_testing_all_components_with_actions, expected_not_first_in_chain_dash_components
     ):
         result_components = model_manager["not_first_in_chain_export_data_action"]._dash_components
-        assert_component_equal(result_components, expected_not_first_in_chain_dash_components)
+        # Strip `data` as the progress notification store payload carries a generated notification id.
+        assert_component_equal(result_components, expected_not_first_in_chain_dash_components, keys_to_strip={"data"})
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")

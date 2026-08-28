@@ -6,8 +6,16 @@ from pydantic import ValidationError
 
 import vizro.models as vm
 from vizro import Vizro
-from vizro.actions import show_notification, update_notification
+from vizro.actions import (
+    show_notification,
+    update_notification,
+)
 from vizro.managers import model_manager
+
+
+def _message(notification):
+    """Extracts the rendered text of a normalized notification action."""
+    return notification.function()[0]["message"].children
 
 
 @pytest.fixture

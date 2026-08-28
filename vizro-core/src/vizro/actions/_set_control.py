@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import json
 import logging
+from functools import cached_property
 from typing import Literal, Protocol, cast, runtime_checkable
 
 from dash import get_relative_path, no_update
@@ -11,7 +12,7 @@ from pydantic import Field, JsonValue
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ControlType, ModelID
+from vizro.models.types import ControlType, ModelID, _normalize_action_notifications
 
 logger = logging.getLogger(__name__)
 
@@ -238,3 +239,10 @@ class set_control(_AbstractAction):
 
     def _get_no_update_response(self):
         return no_update if self._same_page else (no_update, no_update)
+
+    @cached_property
+    def notifications(self):  # type: ignore[override]
+        # set_control has only a subtle visual cue (the control value changing), so show the success notification.
+        # cached_propert is used as the notification models are built once per action instead of being re-minted
+        # (with fresh model_manager entries) on every callback run.
+        return _normalize_action_notifications({"success": "Control updated.", "error": "Setting the control failed."})
