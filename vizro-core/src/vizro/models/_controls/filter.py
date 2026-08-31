@@ -38,7 +38,7 @@ from vizro.models._controls._controls_utils import (
     _is_datetime_selector,
     _is_hierarchical_selector,
     _is_numerical_or_date_selector,
-    build_control_sync_actions,
+    build_default_control_selector_actions,
     check_control_targets,
     extract_control_targets,
     get_control_parent,
@@ -638,7 +638,7 @@ class Filter(VizroBaseModel):
         # default. The filter value is still applied whenever its targets are refreshed by something else (e.g. a
         # Button running update_targets).
         if "actions" not in self.selector.model_fields_set:
-            build_control_sync_actions(
+            build_default_control_selector_actions(
                 selector=self.selector,
                 targeted_controls=targeted_controls,
                 update_targets_id=f"{FILTER_ACTION_PREFIX}_{self.id}",

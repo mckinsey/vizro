@@ -12,7 +12,7 @@ from vizro.models._controls._controls_utils import (
     _is_datetime_selector,
     _is_hierarchical_selector,
     _is_numerical_or_date_selector,
-    build_control_sync_actions,
+    build_default_control_selector_actions,
     check_control_targets,
     extract_control_targets,
     get_selector_default_value,
@@ -228,7 +228,7 @@ class Parameter(VizroBaseModel):
             self.targets.extend(list(filter_targets))
             targets_ids = [target.partition(".")[0] for target in self.targets]
 
-            build_control_sync_actions(
+            build_default_control_selector_actions(
                 selector=self.selector,
                 targeted_controls=targeted_controls,
                 update_targets_id=f"{PARAMETER_ACTION_PREFIX}_{self.id}",

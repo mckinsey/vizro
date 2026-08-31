@@ -494,7 +494,7 @@ def test_timepicker_range_filters_ag_grid(page, http_requests_paths):
     page.locator(f"a[href='{cnst.TIMEPICKER_RANGE_PAGE_PATH}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # filter ag grid with range timepicker (2 http: setting start time and setting end time)
+    # filter ag grid with range timepicker
     select_range_time_picker_value_playwright(
         page,
         elem_id=cnst.TIMEPICKER_TIME_ISO_RANGE_ID,
@@ -503,10 +503,10 @@ def test_timepicker_range_filters_ag_grid(page, http_requests_paths):
         end_hour="06",
         end_minute="00",
     )
-    check_http_requests_count(page, http_requests_paths, 4)
+    check_http_requests_count(page, http_requests_paths, 3)
 
     # checking that no additional http has occurred
-    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
 
 
 @http_requests

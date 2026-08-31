@@ -169,16 +169,15 @@ class TestNormalizeRangeValue:
             (["1992-01-01", ""], False, None),
             # Single-element list -> degenerate [v, v] range.
             ([1], True, [1, 1]),
-            (["1992-01-01"], False, ["1992-01-01"] * 2),
+            (["1992-01-01"], False, ["1992-01-01", "1992-01-01"]),
             # Selection-order source (reorder=True): two ends sorted into [min, max].
             ([2, 1], True, [1, 2]),
             (["1993-01-01", "1992-01-01"], True, ["1992-01-01", "1993-01-01"]),
+            # Important: This is incorrect, so we deliberately send reorder=False for such a case.
+            (["2024-01-01T06:00", "2024-01-01"], True, ["2024-01-01", "2024-01-01T06:00"]),
             # Range-selector source (reorder=False): authoritative [start, end] kept as-is...
             ([2, 1], False, [2, 1]),
             (["1993-01-01", "1992-01-01"], False, ["1993-01-01", "1992-01-01"]),
-            # ...which is what preserves a DateTimePicker whose start is timed and whose end is a date-only,
-            # whole-day value: lexically the date-only end sorts before the timed start, so a min/max reorder
-            # would wrongly swap them.
             (["2024-01-01T06:00", "2024-01-01"], False, ["2024-01-01T06:00", "2024-01-01"]),
             # More than two values always collapse to the spanning [min, max], for either source kind.
             ([1, 2, 3, 4], False, [1, 4]),

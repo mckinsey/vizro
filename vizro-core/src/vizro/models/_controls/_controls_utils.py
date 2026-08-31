@@ -136,8 +136,8 @@ def warn_ignored_control_sync_targets(control: ControlType, targeted_controls: l
     """Warn when control-sync targets are dropped because the selector has explicit ``actions``.
 
     A Filter/Parameter keeps a control target in sync by generating a default `set_control` action on its selector
-    (see `build_control_sync_actions`). When the selector's `actions` are set explicitly, that default chain is not
-    generated, so any control ids listed in `targets` are extracted and removed but never turned into a sync,
+    (see `build_default_control_selector_actions`). When the selector's `actions` are set explicitly, that default chain
+    is not generated, so any control ids listed in `targets` are extracted and removed but never turned into a sync,
     silently doing nothing. Warn so the user knows to wire the sync themselves.
     """
     if targeted_controls:
@@ -149,7 +149,7 @@ def warn_ignored_control_sync_targets(control: ControlType, targeted_controls: l
         )
 
 
-def build_control_sync_actions(
+def build_default_control_selector_actions(
     selector: SelectorType, targeted_controls: list[ModelID], update_targets_id: str, update_targets: list[str]
 ) -> None:
     """Set a control selector's default action chain: sync each targeted control, then refresh its targets.

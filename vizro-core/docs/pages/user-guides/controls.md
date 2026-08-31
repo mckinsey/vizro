@@ -49,7 +49,7 @@ To organize the control panel on a page into sections, you can group [filters](f
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="12-14"}
+        ```{.python pycafe-link hl_lines="16-22"}
         from vizro import Vizro
         import vizro.plotly.express as px
         import vizro.models as vm
@@ -84,8 +84,6 @@ To organize the control panel on a page into sections, you can group [filters](f
                         ),
                     ]
                 ),
-
-
             ],
         )
 
@@ -137,7 +135,7 @@ To organize the control panel on a page into sections, you can group [filters](f
 
 You can keep two controls in sync so that changing one automatically applies the same value to the other. This is useful, for example, when you need to both filter and parametrize a chart from the same user selection, such as filtering a chart down to one species and also using that species to set the chart's title.
 
-To sync controls, add another control's `id` to the `targets` of a [filter](filters.md) or [parameter](parameters.md). Whenever the control changes, Vizro sets the targeted control to the same value (using the [`set_control` action][vizro.actions.set_control] behind the scenes) and then refreshes that control's own targets. All combinations work: filter and filter, parameter and parameter, and filter and parameter, and any [selector](selectors.md) can be used, so the two controls do not even need to share the same selector type.
+To sync controls, add another control's `id` to the `targets` of a [filter](filters.md) or [parameter](parameters.md). Whenever the control changes, Vizro sets the targeted control to the same value (using the [`set_control` action][vizro.actions.set_control] behind the scenes) and then refreshes that both controls figure targets. All combinations work: filter and filter, parameter and parameter, and filter and parameter.
 
 !!! note "Controls can only sync on the same page (for now)"
 
