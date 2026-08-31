@@ -6,7 +6,6 @@ from pages._factories import butterfly_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
 from pages.examples import barcode, beeswarm, boxplot, cumulative_curve, dumbbell, histogram, violin
 
-
 barcode_page = vm.Page(
     title="Barcode",
     path="distribution/barcode",
