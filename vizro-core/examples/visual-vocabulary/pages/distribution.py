@@ -4,8 +4,44 @@ import vizro.models as vm
 
 from pages._factories import butterfly_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import boxplot, cumulative_curve, dumbbell, histogram, violin
+from pages.examples import barcode, boxplot, cumulative_curve, dumbbell, histogram, violin
 
+barcode_page = vm.Page(
+    title="Barcode",
+    path="distribution/barcode",
+    layout=vm.Grid(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a barcode chart?
+
+            A barcode chart (also known as a rug plot) places one vertical mark on a common axis for every observation.
+            Unlike a histogram, it preserves each value instead of grouping observations into bins.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a barcode chart to reveal clusters, gaps, repeated values, and outliers in a distribution. It works best
+            for small or medium datasets where individual observations remain visible. For dense datasets, consider a
+            histogram or violin chart instead.
+        """
+        ),
+        vm.Graph(figure=barcode.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("barcode.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("barcode.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
 violin_page = vm.Page(
     title="Violin",
     path="distribution/violin",
@@ -200,4 +236,4 @@ cumulative_curve_page = vm.Page(
     ],
 )
 
-pages = [violin_page, boxplot_page, butterfly_page, cumulative_curve_page, dumbbell_page, histogram_page]
+pages = [barcode_page, violin_page, boxplot_page, butterfly_page, cumulative_curve_page, dumbbell_page, histogram_page]
