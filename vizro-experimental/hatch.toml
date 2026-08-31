@@ -71,7 +71,8 @@ installer = "uv"
 [envs.docs.scripts]
 build = [
   "zensical build --clean",
-  "python ../tools/stamp_llms_txt.py --placeholder=https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/ --site-dir=site"
+  "python ../tools/stamp_llms_txt.py --placeholder=https://vizro.readthedocs.io/projects/vizro-experimental/en/latest/ --site-dir=site",
+  "python ../tools/strip_html_leading_whitespace.py --site-dir=site"
 ]
 # Disable warnings on the linkcheck so that HTTP redirects are accepted. We could ignore only that warning and specify
 # more advanced settings using a linkcheckerrc config file.
