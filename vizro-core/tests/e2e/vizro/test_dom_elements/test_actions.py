@@ -165,7 +165,7 @@ def test_set_control_cross_filter_graph_non_categorical(dash_br):
     assert_that(status.is_selected(), equal_to(False))
 
 
-# Will be fixed in https://github.com/McK-Internal/vizro-internal/issues/2963
+@pytest.mark.xfail(reason="Will be fixed by Petar")
 def test_set_control_cross_filter_graph_non_categorical_timepicker(dash_br):
     """Test set_control from graph to range TimePicker filtering a target AgGrid."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
@@ -200,7 +200,7 @@ def test_set_control_cross_filter_graph_non_categorical_timepicker(dash_br):
     )
 
 
-# Will be fixed in https://github.com/McK-Internal/vizro-internal/issues/2963
+@pytest.mark.xfail(reason="Will be fixed by Petar")
 def test_set_control_cross_filter_aggrid_non_categorical_datetimepicker(dash_br):
     """Test set_control from AgGrid to range DateTimePicker filtering a target AgGrid."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
