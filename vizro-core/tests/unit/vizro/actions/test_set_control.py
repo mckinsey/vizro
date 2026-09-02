@@ -203,13 +203,15 @@ class TestSetControlPreBuild:
         assert action._same_page is True
 
     def test_pre_build_control_model_on_different_page(self):
-        # Add action to relevant component and target a control on different page with show_in_url=True
+        # Target a control on a different page. The trigger (Button) is not a control selector, so this is a
+        # drill-through: it navigates to the target's page (see the function/outputs tests).
         action = set_control(control="filter_page_2_show_in_url_true", value="Europe")
         model_manager["button_1"].actions = action
 
         action.pre_build()
 
         assert action._same_page is False
+        assert action._is_drill_through is True
 
     def test_pre_build_parent_model_does_not_support_set_control(self):
         action = set_control(control="filter_page_1", value="Europe")
@@ -274,19 +276,17 @@ class TestSetControlPreBuild:
         ):
             action.pre_build()
 
-    def test_pre_build_control_model_on_different_page_show_in_url_false(self):
-        # Add action to relevant component and target a control on different page with show_in_url=False
+    def test_pre_build_control_model_on_different_page_show_in_url_not_required(self):
+        # Cross-page set_control no longer requires the target to have show_in_url=True: the value is carried through
+        # the internal controls store, not the URL. pre_build must succeed for a different-page target that has
+        # show_in_url=False.
         action = set_control(control="filter_page_2_show_in_url_false", value="Europe")
         model_manager["button_1"].actions = action
 
-        with pytest.raises(
-            ValueError,
-            match=re.escape(
-                "Model with ID `filter_page_2_show_in_url_false` used as a `control` in `set_control` action is on a "
-                "different page from the trigger and so must have `show_in_url=True`."
-            ),
-        ):
-            action.pre_build()
+        action.pre_build()
+
+        assert action._same_page is False
+        assert action._is_drill_through is True
 
 
 @pytest.mark.usefixtures("managers_two_pages_for_set_control")
@@ -316,7 +316,7 @@ class TestSetControlFunction:
 
         assert result == expected
 
-    @pytest.mark.parametrize("same_page, expected", [(True, no_update), (False, (no_update, no_update))])
+    @pytest.mark.parametrize("same_page, expected", [(True, no_update), (False, no_update)])
     def test_function_trigger_returns_no_update(self, same_page, expected):
         # Add action to an AgGrid as the AgGrid returns no_update if set_control value is a key from the
         # CELL_CLICKED_MAPPING (e.g. "column"), and trigger does not contain "cellClicked"
@@ -450,27 +450,45 @@ class TestSetControlFunction:
 
         assert result == expected
 
-    def test_function_control_model_on_different_page(self, mocker):
-        # Add action to relevant component and target a control on different page with show_in_url=True
+    def test_function_control_model_on_different_page_drill_through(self, mocker):
+        # A figure/component trigger (here a Button) targeting a control on another page is a drill-through: it writes
+        # the value into the controls store and navigates to the target control's page.
         action = set_control(control="filter_page_2_show_in_url_true", value="Europe")
-        # Any other model that supports set_control can be used here, but the Button used for the simplicity.
-        # Button._get_value_from_trigger returns "Europe" as set_control attribute value="Europe"
         model_manager["button_1"].actions = action
-        # Call pre_build to set _same_page attribute
         action.pre_build()
+        assert action._is_drill_through is True
 
-        # Mock dash.get_relative_path as it's used in set_control.function
+        # Mock dash.get_relative_path and dash.set_props as they are used in set_control.function.
         mocker.patch.object(set_control_module, "get_relative_path", return_value="/mocked_path")
+        set_props_mock = mocker.patch.object(set_control_module, "set_props")
 
-        # Call function method with a mock trigger value
-        result_relative_path, result_url_query_params = action.function(_trigger=None, _controls_store={})
-        # From mocked get_relative_path
-        expected_relative_path = "/mocked_path"
-        # Value ["Europe"] base64 encoded is b64_WyJFdXJvcGUiXQ
-        expected_url_query_params = "?filter_page_2_show_in_url_true=b64_WyJFdXJvcGUiXQ"
+        controls_store = {"filter_page_2_show_in_url_true": {"currentValue": None}}
+        result = action.function(_trigger=None, _controls_store=controls_store)
 
-        assert result_relative_path == expected_relative_path
-        assert result_url_query_params == expected_url_query_params
+        # Drill-through navigates: returns the (relative) path of the target control's page (single output).
+        assert result == "/mocked_path"
+        # The value is written into the store. The target selector is Dropdown(multi=True), so "Europe" -> ["Europe"].
+        assert controls_store["filter_page_2_show_in_url_true"]["currentValue"] == ["Europe"]
+        set_props_mock.assert_called_once_with("vizro_controls_store", {"data": controls_store})
+
+    def test_function_control_model_on_different_page_sync(self, mocker):
+        # A control-selector trigger targeting a control on another page is a sync (not a drill-through): it writes the
+        # value into the controls store and returns no_update so the page does not change.
+        action = set_control(control="filter_page_2_show_in_url_true", value="Europe")
+        model_manager["button_1"].actions = action
+        action.pre_build()
+        # Simulate a control-selector trigger (which does not navigate).
+        action._is_drill_through = False
+
+        set_props_mock = mocker.patch.object(set_control_module, "set_props")
+
+        controls_store = {"filter_page_2_show_in_url_true": {"currentValue": None}}
+        result = action.function(_trigger=None, _controls_store=controls_store)
+
+        # Syncing controls does not navigate.
+        assert result is no_update
+        assert controls_store["filter_page_2_show_in_url_true"]["currentValue"] == ["Europe"]
+        set_props_mock.assert_called_once_with("vizro_controls_store", {"data": controls_store})
 
 
 @pytest.mark.usefixtures("managers_two_pages_for_set_control")
@@ -487,13 +505,14 @@ class TestSetControlOutputs:
         assert action.outputs == "filter_page_1"
 
     def test_outputs_control_model_on_different_page(self):
-        # Add action to relevant component and target a control on different page with show_in_url=True
+        # Cross-page set_control writes to the controls store via set_props; the single callback output is
+        # vizro_url.pathname, used to navigate on drill-through (and returned as no_update for a control sync).
         action = set_control(control="filter_page_2_show_in_url_true", value="Europe")
         model_manager["button_1"].actions = action
 
         action.pre_build()
 
-        assert action.outputs == ["vizro_url.pathname", "vizro_url.search"]
+        assert action.outputs == ["vizro_url.pathname"]
 
 
 @pytest.mark.usefixtures("managers_page_hierarchical_filter_set_control")

@@ -1922,8 +1922,10 @@ class TestFilterPreBuildMethod:
         with pytest.raises(ValueError, match=r"Control 'self_filter' cannot target itself. Remove 'self_filter' from"):
             source_filter.pre_build()
 
-    def test_target_control_different_page_invalid(self, gapminder):
-        # A control can only target other controls on the same page (the underlying set_control sync is per-page).
+    def test_target_control_different_page_valid(self, gapminder):
+        # A control can target a control on a *different* page: the target is extracted and a set_control sync action
+        # is generated. The cross-page value is carried through vizro_controls_store and applied when the target's
+        # page is opened, so unlike a same-page target it does not need show_in_url.
         vm.Page(
             id="page_a",
             title="Page A",
@@ -1936,10 +1938,20 @@ class TestFilterPreBuildMethod:
             components=[vm.Graph(id="graph_b", figure=px.scatter(gapminder, x="lifeExp", y="gdpPercap"))],
             controls=[vm.Filter(id="filter_b", column="continent")],
         )
-        with pytest.raises(
-            ValueError, match=r"Control 'filter_a' cannot target control 'filter_b' because they are on different pages"
-        ):
-            model_manager["filter_a"].pre_build()
+        model_manager["filter_b"].pre_build()
+        model_manager["filter_a"].pre_build()
+
+        filter_a = model_manager["filter_a"]
+        # The cross-page control target is stripped from targets (which fall back to the page's figures).
+        assert "filter_b" not in filter_a.targets
+        # A single set_control sync action is generated for the cross-page target.
+        set_control_actions = [action for action in filter_a.selector.actions if isinstance(action, set_control)]
+        assert len(set_control_actions) == 1
+        assert set_control_actions[0].control == "filter_b"
+        # The target is on a different page, and the trigger is a control selector, so this is a sync (not a
+        # drill-through): it does not navigate.
+        assert set_control_actions[0]._same_page is False
+        assert set_control_actions[0]._is_drill_through is False
 
     def test_filter_action_properties(self, managers_column_only_exists_in_some):
         filter = Filter(
