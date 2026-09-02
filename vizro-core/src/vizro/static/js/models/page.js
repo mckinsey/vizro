@@ -81,20 +81,27 @@ function decodeUrlParams(encodedMap, applyOnKeys) {
   return decodedMap;
 }
 
-function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
-  // Control IDs are required due to Dash's limitations on clientside callback flexible signatures, so that we can:
-  //   1. Map url query parameters to control selector value outputs properly.
-  //   2. Map control selector value input to url query parameters properly.
-  // The solution relies on the fact that the order of control IDs matches the order of the
-  // control selector value inputs and their corresponding outputs.
 
-  // Split selector values, control IDs and selector IDs that are in format:
-  // [selector-1-value, selector-N-value, ..., control-1-id, control-N-id, ..., selector-1-id, selector-N-id, ...]
+/*
+Keeps controls in sync across pages through `vizro_controls_store` and mirrors show_in_url controls in the URL query
+string. Runs for every control on the page (not only show_in_url ones) so that:
+  - on page open, each control's selector is restored from the store's `currentValue`. This applies values that were
+    set while on another page (a cross-page `set_control` target) and values that persisted from an earlier visit;
+  - on control change, the store's `currentValue` is refreshed so the value is available to other pages and on the
+    next visit;
+  - show_in_url controls additionally have their value written into the URL query string.
+
+`vizro_controls_store` is passed as a State and is the LAST argument (popped off here). The remaining args follow the
+flexible-signature format, relying on control-id order matching selector value input/output order:
+  [selector-1-value, ..., selector-N-value, control-1-id, ..., control-N-id, selector-1-id, ..., selector-N-id]
+*/
+function sync_url_query_params_and_controls(opl_triggered, ...values_ids) {
+  const vizroControlsStore = values_ids.pop();
 
   if (values_ids.length % 3 !== 0) {
     throw new Error(
       `Invalid number of input parameters: received ${values_ids.length}.
-Expected format: [selector-1-value, selector-N-value, ..., control-1-id, control-N-id, ..., selector-1-id, selector-N-id, ...]
+Expected format (excluding the trailing vizro_controls_store): [selector-1-value, ..., control-1-id, ..., selector-1-id, ...]
 Received input: ${JSON.stringify(values_ids)}`,
     );
   }
@@ -127,45 +134,67 @@ Received input: ${JSON.stringify(values_ids)}`,
   if (isPageOpened) {
     console.debug("sync_url_query_params_and_controls: Page opened");
 
-    // When page is just opened, the URL can be partially defined (like the drill-through use case). In that case, only
-    // defined URL params take the precedence over the controlMap values, and for others the controlMap values are used.
-
-    // Decoded URL parameters in format: Map<controlId, controlSelectorValue>
-    const decodedParamMap = decodeUrlParams(
-      urlParams,
-      controlIds, // Apply decoding only to control IDs
-    );
-
-    // Values from the URL take precedence if page is just opened.
-    // Overwrite controlMap and prepare callback control outputs by setting the values from the URL.
-    Array.from(controlMap.keys()).forEach((id, index) => {
-      if (decodedParamMap.has(id)) {
-        const value = decodedParamMap.get(id);
+    // Restore from the store only the controls that are targets of a cross-page set_control (a synced control from
+    // another page, or a drill-through target). Other controls keep their usual per-page behavior (they reset on
+    // navigation) and are only restored from the URL below when they have show_in_url.
+    controlIds.forEach((id, index) => {
+      if (vizroControlsStore[id] !== undefined && vizroControlsStore[id]["crossPageTarget"]) {
+        const value = vizroControlsStore[id]["currentValue"];
         controlMap.set(id, value);
         outputSelectorValues[index] = value;
       }
     });
+
+    // When a page is opened the URL can be partially defined (e.g. a shared/bookmarked link or a drill-through). For
+    // controls on this page, defined URL params take precedence over the stored value; others keep the stored value.
+    const decodedParamMap = decodeUrlParams(urlParams, controlIds);
+    decodedParamMap.forEach((value, id) => {
+      const index = controlIds.indexOf(id);
+      controlMap.set(id, value);
+      outputSelectorValues[index] = value;
+      if (vizroControlsStore[id] !== undefined) {
+        vizroControlsStore[id]["currentValue"] = value;
+      }
+    });
+
+    // Persist any URL-derived values back to the store so it stays the single source of truth across pages.
+    if (decodedParamMap.size > 0) {
+      dash_clientside.set_props("vizro_controls_store", { data: vizroControlsStore });
+    }
   } else {
     console.debug("sync_url_query_params_and_controls: Control changed");
+
+    // A selector on this page changed. Refresh the store's currentValue for all controls on this page from their
+    // current selector values (only the changed one actually differs), so synced/persisted state stays up to date.
+    // Only current-page controls are in controlIds, so controls on other pages are left untouched.
+    controlIds.forEach((id) => {
+      if (vizroControlsStore[id] !== undefined) {
+        vizroControlsStore[id]["currentValue"] = controlMap.get(id);
+      }
+    });
+    dash_clientside.set_props("vizro_controls_store", { data: vizroControlsStore });
   }
 
-  // Encode controlMap to URL parameters.
+  // Encode this page's show_in_url controls into the URL query string.
   for (const [id, value] of encodeUrlParams(controlMap, controlIds)) {
-    urlParams.set(id, value);
+    if (vizroControlsStore[id] !== undefined && vizroControlsStore[id]["showInURL"] === true) {
+      urlParams.set(id, value);
+    }
   }
 
   // Directly `replace` the URL instead of using a dcc.Location as a callback Output. Do it because the dcc.Location
   // uses history.pushState under the hood which causes destroying the history. With replaceState, we partially
   // maintain the history.
+  const query = urlParams.toString();
   history.replaceState(
     null,
     "",
-    `${window.location.pathname}?${urlParams.toString()}`,
+    query ? `${window.location.pathname}?${query}` : window.location.pathname,
   );
 
   // After this clientside callback, the "guard_action_chain" callback may run.
-  // If the selector value is updated based on the URL parameters,
-  // set its values and the selector’s guard flag to **true**.
+  // If the selector value is updated (from the store or the URL parameters),
+  // set its value and the selector’s guard flag to **true**.
   // This ensures triggering the guard action chain callback
   // and prevents unnecessary actions from being triggered by the value change.
   selectorIds.forEach((selectorId, i) => {
@@ -200,7 +229,7 @@ function reset_controls(_, vizroControlsStore, pageId) {
   // For each control set all its guard to true to prevent triggering unnecessary actions.
   const outputSelectorGuards = pageControls.map(() => true);
 
-  // Trigger the OPL after resetting all controls.
+  // Trigger the OPL after resetting all controls by returning `null` to the OPL component.
   return [null, ...outputSelectorValues, ...outputSelectorGuards];
 }
 
