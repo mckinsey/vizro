@@ -490,6 +490,51 @@ class TestSetControlFunction:
         assert controls_store["filter_page_2_show_in_url_true"]["currentValue"] == ["Europe"]
         set_props_mock.assert_called_once_with("vizro_controls_store", {"data": controls_store})
 
+    def test_function_reset_with_stale_store_falls_back_to_selector_value(self):
+        # A persisted (storage_type="session") store can be stale after a control is added/renamed, so the control's
+        # key may be missing. Resetting (value=None) must fall back to the selector's build-time value instead of
+        # raising KeyError. The result with an empty store must match the result with an explicit originalValue entry.
+        action = set_control(control="filter_page_1", value=None)
+        model_manager["button_1"].actions = action
+        action.pre_build()
+
+        selector_value = model_manager["filter_page_1"].selector.value
+
+        result_missing = action.function(_trigger=None, _controls_store={})
+        result_with_store = action.function(
+            _trigger=None,
+            _controls_store={"filter_page_1": {"originalValue": selector_value}},
+        )
+
+        assert result_missing == result_with_store
+
+    def test_function_cross_page_with_stale_store_rebuilds_full_entry(self, mocker):
+        # Cross-page set_control must not raise if the target's key is missing from a stale persisted store. Rather than
+        # writing only `currentValue`, it rebuilds the *full* entry so cross-page syncing keeps working (the sync
+        # callback needs crossPageTarget/selectorId/etc.), i.e. the store self-heals.
+        action = set_control(control="filter_page_2_show_in_url_true", value="Europe")
+        model_manager["button_1"].actions = action
+        action.pre_build()
+        action._is_drill_through = False
+
+        set_props_mock = mocker.patch.object(set_control_module, "set_props")
+
+        control_model = model_manager["filter_page_2_show_in_url_true"]
+        controls_store = {}  # stale/empty store missing the target key
+        result = action.function(_trigger=None, _controls_store=controls_store)
+
+        assert result is no_update
+        # A complete entry is created (mirroring Dashboard._make_page_layout), not just currentValue.
+        assert controls_store["filter_page_2_show_in_url_true"] == {
+            "currentValue": ["Europe"],
+            "originalValue": control_model.selector.value,
+            "pageId": "test-page-2",
+            "selectorId": control_model.selector.id,
+            "showInURL": True,
+            "crossPageTarget": True,
+        }
+        set_props_mock.assert_called_once_with("vizro_controls_store", {"data": controls_store})
+
 
 @pytest.mark.usefixtures("managers_two_pages_for_set_control")
 class TestSetControlOutputs:

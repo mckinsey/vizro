@@ -778,7 +778,7 @@ page_40 = vm.Page(
             id="p40_species",
             column="species",
             # Target a control on ANOTHER page (page_41) as well as this page's graph.
-            targets=["p41_species", "p40_graph"],
+            targets=["p41_speciessss", "p40_graph"],
             selector=vm.Dropdown(title="Species (synced with Page B)"),
             # show_in_url is independent of cross-page syncing; here it also mirrors this control in the URL.
             show_in_url=True,
@@ -794,7 +794,7 @@ page_41 = vm.Page(
     ],
     controls=[
         vm.Filter(
-            id="p41_species",
+            id="p41_speciessss",
             column="species",
             # Sync back to Page A's control (two-way) as well as this page's graph.
             targets=["p41_graph"],

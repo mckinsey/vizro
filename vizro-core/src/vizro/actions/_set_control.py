@@ -190,9 +190,12 @@ class set_control(_AbstractAction):
         if value is no_update:
             return self._get_no_update_response()
 
-        # If value is None then reset control to original value.
+        # If value is None then reset control to original value. Fall back to the selector's build-time value if the
+        # store entry is missing/incomplete - a persisted (storage_type="session") store can be stale after a control
+        # was added or renamed, so we must not assume the key exists.
         if value is None:
-            value = _controls_store[self.control]["originalValue"]
+            control_store = _controls_store.get(self.control, {})
+            value = control_store.get("originalValue", cast(ControlType, model_manager[self.control]).selector.value)
 
         selector = cast(ControlType, model_manager[self.control]).selector
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
@@ -233,6 +236,21 @@ class set_control(_AbstractAction):
         # Different-page target: its selector is not mounted, so it cannot be a callback output. Instead persist the
         # new value into `vizro_controls_store` (via set_props, as the store is only a State here). The target page's
         # sync callback applies this `currentValue` to the selector when that page is opened.
+        #
+        # If the control's entry is missing (a persisted storage_type="session" store can be stale after a control was
+        # added/renamed), rebuild the full entry - mirroring Dashboard._make_page_layout - rather than writing only
+        # `currentValue`. A complete entry keeps cross-page syncing working (the sync callback needs `crossPageTarget`,
+        # `selectorId`, etc.) instead of merely avoiding a KeyError. `crossPageTarget` is True here by construction:
+        # this control is the target of a cross-page set_control.
+        if self.control not in _controls_store:
+            control_model = cast(ControlType, model_manager[self.control])
+            _controls_store[self.control] = {
+                "originalValue": control_model.selector.value,
+                "pageId": model_manager._get_model_page(control_model).id,
+                "selectorId": control_model.selector.id,
+                "showInURL": control_model.show_in_url,
+                "crossPageTarget": True,
+            }
         _controls_store[self.control]["currentValue"] = value
         set_props("vizro_controls_store", {"data": _controls_store})
 
