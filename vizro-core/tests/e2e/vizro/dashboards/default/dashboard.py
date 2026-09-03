@@ -66,7 +66,9 @@ from pages.set_control_multi_select_pages import (
 )
 from pages.set_control_non_categorical_controls_page import (
     set_control_non_categorical_ag_grid,
+    set_control_non_categorical_datetimepicker_ag_grid,
     set_control_non_categorical_graph,
+    set_control_non_categorical_timepicker_graph,
 )
 from pages.switch_control_page import switch_control_page
 from pages.table_interactions_page import table_interactions_page
@@ -135,6 +137,8 @@ dashboard = vm.Dashboard(
         set_control_ag_grid_cellclicked,
         set_control_non_categorical_graph,
         set_control_non_categorical_ag_grid,
+        set_control_non_categorical_timepicker_graph,
+        set_control_non_categorical_datetimepicker_ag_grid,
         timepicker_range,
         timepicker_single,
         timepicker_parameter,
@@ -218,6 +222,8 @@ dashboard = vm.Dashboard(
                 cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_PAGE,
                 cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_PAGE_TITLE,
                 cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_PAGE_TITLE,
+                cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_PAGE_TITLE,
+                cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_PAGE_TITLE,
             ],
         }
     ),
