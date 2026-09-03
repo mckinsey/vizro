@@ -91,9 +91,7 @@ You can organize the data to show the number or percentage of items in a specifi
 distribution_chart_group = ChartGroup(
     name="Distribution",
     pages=pages.distribution.pages,
-    incomplete_pages=[
-        IncompletePage("Beeswarm"),
-    ],
+    incomplete_pages=[],
     icon="Waterfall Chart",
     intro_text=distribution_intro_text,
 )
