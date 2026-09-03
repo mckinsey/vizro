@@ -13,14 +13,14 @@
 
 `show_in_url` currently has two meanings:
 
-| value   | behaviour |
+| value   | behavior |
 |---------|-----------|
 | `False` | control value never appears in the URL query string |
 | `True`  | control value appears in the URL **only while you are on that control's own page** |
 
 Global URL support adds a third meaning:
 
-| value      | behaviour |
+| value      | behavior |
 |------------|-----------|
 | `"global"` | control value appears in the URL query string on **every** page, not just its own |
 
@@ -42,7 +42,7 @@ does not have to reintroduce them:
 - **`vizro_controls_store`** (`_dashboard.py`) already stores per control:
   `currentValue`, `originalValue`, `pageId`, `selectorId`, and `showInURL`
   (`storage_type="session"`). The `showInURL` key is exactly the metadata the
-  clientside needs to decide URL behaviour, so it is *already there* — for global
+  clientside needs to decide URL behavior, so it is *already there* — for global
   support it would simply start carrying the string `"global"` as well as booleans.
 - **`set_control`** (`actions/_set_control.py`) already writes a cross-page target's
   new value into the store (`_controls_store[control]["currentValue"] = value` +

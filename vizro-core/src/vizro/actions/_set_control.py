@@ -117,7 +117,8 @@ class set_control(_AbstractAction):
     control: ModelID = Field(
         description="Filter or Parameter component id to be affected by the trigger. "
         "The control can be on the same page as the trigger or on a different page: a different-page control is "
-        "kept in sync through the internal `vizro_controls_store` and its new value is applied when that page is opened."
+        "kept in sync through the internal `vizro_controls_store`, and its new value is applied when that page "
+        "is opened."
     )
 
     # TODO AM-PP: How about making it optional with default=None.

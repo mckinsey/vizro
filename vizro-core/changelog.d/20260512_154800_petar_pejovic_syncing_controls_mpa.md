@@ -18,8 +18,8 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- `Filter` and `Parameter` can now sync a control on a **different page** by listing its id in `targets`. # TODO PP NOW: Link docs and PR 
-- Drill-through (a `set_control` triggered from a figure/component such as `Graph`, `AgGrid`, `Button` or `Card`) can now target a control on a different page **without that control needing `show_in_url=True`**. # TODO PP NOW: Link PR
+- `Filter` and `Parameter` can now sync a control on a **different page** by listing its id in `targets`, so a value set on one page is applied to the synced control when its page is opened. This makes it possible to build dashboard-wide "global controls". See the [user guide on syncing controls across pages](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls/#sync-controls-across-pages). ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- Drill-through (a `set_control` triggered from a figure or component such as `Graph`, `AgGrid`, `Button` or `Card`) can now target a control on a different page **without that control needing `show_in_url=True`**; Vizro navigates to the target page and applies the value there. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
 
 <!--
 ### Changed

@@ -184,7 +184,9 @@ describe("sync_url_query_params_and_controls", () => {
       encode: jest.fn(() => new Uint8Array([1, 2, 3])),
     }));
     global.atob = jest.fn((str) => str);
-    global.TextDecoder = jest.fn(() => ({ decode: jest.fn(() => '"decoded"') }));
+    global.TextDecoder = jest.fn(() => ({
+      decode: jest.fn(() => '"decoded"'),
+    }));
 
     // Setup history mock
     if (!global.window.history) {

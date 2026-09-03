@@ -66,7 +66,11 @@ def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
     component_figure_ids = [model.id for model in component_figures]
     for target in targets:
         if (target_id := target.split(".")[0]) not in component_figure_ids:
-            raise ValueError(f"Target {target_id} not found within the {root_model.id}.")
+            raise ValueError(
+                f"Target {target_id} not found within the {root_model.id}. A target must be a component on "
+                f"{root_model.id}, or the id of another Filter or Parameter to keep in sync (which may be on a "
+                f"different page). Check that '{target_id}' is spelled correctly and refers to an existing model."
+            )
 
 
 # TODO: Consider rewriting the model_manager._get_model_page to model_manager._get_model_parent()

@@ -81,7 +81,6 @@ function decodeUrlParams(encodedMap, applyOnKeys) {
   return decodedMap;
 }
 
-
 /*
 Keeps controls in sync across pages through `vizro_controls_store` and mirrors show_in_url controls in the URL query
 string. Runs for every control on the page (not only show_in_url ones) so that:
@@ -138,7 +137,10 @@ Received input: ${JSON.stringify(values_ids)}`,
     // another page, or a drill-through target). Other controls keep their usual per-page behavior (they reset on
     // navigation) and are only restored from the URL below when they have show_in_url.
     controlIds.forEach((id, index) => {
-      if (vizroControlsStore[id] !== undefined && vizroControlsStore[id]["crossPageTarget"]) {
+      if (
+        vizroControlsStore[id] !== undefined &&
+        vizroControlsStore[id]["crossPageTarget"]
+      ) {
         const value = vizroControlsStore[id]["currentValue"];
         controlMap.set(id, value);
         outputSelectorValues[index] = value;
@@ -159,7 +161,9 @@ Received input: ${JSON.stringify(values_ids)}`,
 
     // Persist any URL-derived values back to the store so it stays the single source of truth across pages.
     if (decodedParamMap.size > 0) {
-      dash_clientside.set_props("vizro_controls_store", { data: vizroControlsStore });
+      dash_clientside.set_props("vizro_controls_store", {
+        data: vizroControlsStore,
+      });
     }
   } else {
     console.debug("sync_url_query_params_and_controls: Control changed");
@@ -172,12 +176,17 @@ Received input: ${JSON.stringify(values_ids)}`,
         vizroControlsStore[id]["currentValue"] = controlMap.get(id);
       }
     });
-    dash_clientside.set_props("vizro_controls_store", { data: vizroControlsStore });
+    dash_clientside.set_props("vizro_controls_store", {
+      data: vizroControlsStore,
+    });
   }
 
   // Encode this page's show_in_url controls into the URL query string.
   for (const [id, value] of encodeUrlParams(controlMap, controlIds)) {
-    if (vizroControlsStore[id] !== undefined && vizroControlsStore[id]["showInURL"] === true) {
+    if (
+      vizroControlsStore[id] !== undefined &&
+      vizroControlsStore[id]["showInURL"] === true
+    ) {
       urlParams.set(id, value);
     }
   }
