@@ -163,6 +163,10 @@ class TestNormalizeRangeValue:
             (5, True, [5, 5]),
             (5, False, [5, 5]),
             ("1992-01-01", False, ["1992-01-01", "1992-01-01"]),
+            # A scalar empty value (None or "") is a cleared/incomplete selection and is never synced.
+            (None, True, None),
+            (None, False, None),
+            ("", False, None),
             # Empty / incomplete selections are never synced.
             ([], True, None),
             ([1, None], True, None),

@@ -121,7 +121,6 @@ class set_control(_AbstractAction):
         "is opened."
     )
 
-    # TODO AM-PP: How about making it optional with default=None.
     value: JsonValue = Field(
         description="Value to take from trigger and send to the `target`. Format depends on the model "
         "that triggers `set_control`."
@@ -292,6 +291,10 @@ class set_control(_AbstractAction):
         source, which has no positional start/end, so it always collapses to the spanning [min, max].
         """
         if not isinstance(value, list):
+            # A scalar empty value (None or "") is an incomplete/cleared selection, exactly like the list cases
+            # below: don't sync it (min/max would raise on None, and "" would seed a meaningless ["", ""] range).
+            if value is None or value == "":
+                return None
             return [value, value]
         if len(value) == 0 or any(item is None or item == "" for item in value):
             return None

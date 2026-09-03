@@ -147,9 +147,16 @@ Received input: ${JSON.stringify(values_ids)}`,
       }
     });
 
-    // When a page is opened the URL can be partially defined (e.g. a shared/bookmarked link or a drill-through). For
-    // controls on this page, defined URL params take precedence over the stored value; others keep the stored value.
-    const decodedParamMap = decodeUrlParams(urlParams, controlIds);
+    // When a page is opened the URL can be partially defined (e.g. a shared/bookmarked link or a drill-through). Only
+    // show_in_url controls are ever written to the URL (see the encode step below), so only those are decoded back
+    // from it - otherwise a crafted URL could set controls that are not meant to be URL-driven. For those controls a
+    // defined URL param takes precedence over the stored value; all other controls keep their stored value.
+    const urlControlIds = controlIds.filter(
+      (id) =>
+        vizroControlsStore[id] !== undefined &&
+        vizroControlsStore[id]["showInURL"] === true,
+    );
+    const decodedParamMap = decodeUrlParams(urlParams, urlControlIds);
     decodedParamMap.forEach((value, id) => {
       const index = controlIds.indexOf(id);
       controlMap.set(id, value);
