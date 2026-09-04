@@ -174,22 +174,22 @@ class Page(VizroBaseModel):
                 hidden=True,
             )
 
-        # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
-        url_controls = [control for control in controls if control.show_in_url]
-
-        if url_controls:
+            # Define a clientside callback that keeps controls in sync across pages through `vizro_controls_store` and,
+            # for controls with show_in_url=True, mirrors their values in the URL query string. It runs for ALL
+            # controls on the page (not only show_in_url ones): every control's value is tracked in the store on change
+            # so it can be restored on whichever page syncs it (via set_control) when that page is opened.
             # Selector values as inputs. Use "__default__" as the key to get the main selector input prop.
             selector_values_inputs = [
-                Input(*control.selector._action_triggers["__default__"].split(".")) for control in url_controls
+                Input(*control.selector._action_triggers["__default__"].split(".")) for control in controls
             ]
             # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
             # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True.
-            control_ids_states = [State(control.id, "id") for control in url_controls]
+            control_ids_states = [State(control.id, "id") for control in controls]
             # `control_selector_ids_states` holds metadata needed for setting selector values
             # and their selector guard component via a clientside callback (`dash_clientside.set_props`).
             # SetProps is used to avoid sending selector values as callback outputs, which can cause unpredictable
             # triggering of the guard-actions-chain callback.
-            control_selector_ids_states = [State(control.selector.id, "id") for control in url_controls]
+            control_selector_ids_states = [State(control.selector.id, "id") for control in controls]
 
             # The URL is updated in the clientside callback with the `history.replaceState`, instead of using a
             # dcc.Location as a callback Output. Do it because the dcc.Location uses `history.pushState` under the hood
@@ -197,6 +197,9 @@ class Page(VizroBaseModel):
             # Similarly, we read the URL query parameters in the clientside callback with the window.location.pathname,
             # instead of using dcc.Location as a callback Input. Do it to align the behavior with the outputs and to
             # simplify the function inputs handling.
+            # `vizro_controls_store` is passed as a State (kept last so it is popped off the flexible-signature args in
+            # JS). It is a State rather than an Input so cross-page set_control writes to the store do not re-trigger
+            # this callback; the store is only read here to restore synced values when the page is opened.
             clientside_callback(
                 ClientsideFunction(namespace="page", function_name="sync_url_query_params_and_controls"),
                 Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data"),
@@ -204,6 +207,7 @@ class Page(VizroBaseModel):
                 *selector_values_inputs,
                 *control_ids_states,
                 *control_selector_ids_states,
+                State("vizro_controls_store", "data"),
                 hidden=True,
             )
 

@@ -12,6 +12,7 @@ from pydantic import ValidationError
 import vizro
 import vizro.models as vm
 from vizro import Vizro
+from vizro.managers import model_manager
 from vizro.models._models_utils import _all_hidden
 
 
@@ -367,6 +368,7 @@ class TestDashboardBuild:
                         dcc.Store(
                             id="vizro_controls_store",
                             data={},
+                            storage_type="session",
                         ),
                         dash.page_container,
                     ],
@@ -374,6 +376,50 @@ class TestDashboardBuild:
             ],
         )
         assert_component_equal(dashboard.build(), expected_dashboard_container, keys_to_strip={"theme"})
+
+    def test_dashboard_build_controls_store_cross_page_flags(self, vizro_app, standard_px_chart):
+        # filter_a on Page A targets filter_b on Page B (cross-page sync). The built vizro_controls_store must flag only
+        # the cross-page *target* (filter_b) with crossPageTarget=True - that is the control restored from the store on
+        # page open - while carrying the per-control metadata the clientside sync callback relies on.
+        vm.Page(
+            id="page_a",
+            title="Page A",
+            components=[vm.Graph(id="graph_a", figure=standard_px_chart)],
+            controls=[vm.Filter(id="filter_a", column="continent", targets=["filter_b"], show_in_url=True)],
+        )
+        vm.Page(
+            id="page_b",
+            title="Page B",
+            components=[vm.Graph(id="graph_b", figure=standard_px_chart)],
+            controls=[vm.Filter(id="filter_b", column="continent")],
+        )
+        dashboard = vm.Dashboard(pages=[model_manager["page_a"], model_manager["page_b"]])
+        Vizro._pre_build()
+
+        store = dashboard.build()["vizro_controls_store"]
+        store_data = store.data
+
+        assert store.storage_type == "session"
+        assert set(store_data) == {"filter_a", "filter_b"}
+        # Every control carries the metadata the clientside sync callback needs.
+        for control_id in ("filter_a", "filter_b"):
+            assert set(store_data[control_id]) == {
+                "currentValue",
+                "originalValue",
+                "pageId",
+                "selectorId",
+                "showInURL",
+                "crossPageTarget",
+            }
+        # filter_b is the cross-page target -> restored from the store when Page B is opened.
+        assert store_data["filter_b"]["crossPageTarget"] is True
+        # filter_a is only the source (nothing targets it cross-page) -> keeps its usual per-page behavior.
+        assert store_data["filter_a"]["crossPageTarget"] is False
+        # show_in_url is mirrored into the store so the clientside knows which controls to write into the URL.
+        assert store_data["filter_a"]["showInURL"] is True
+        assert store_data["filter_b"]["showInURL"] is False
+        assert store_data["filter_a"]["pageId"] == "page_a"
+        assert store_data["filter_b"]["pageId"] == "page_b"
 
 
 @pytest.mark.parametrize(
