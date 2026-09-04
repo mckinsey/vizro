@@ -762,6 +762,88 @@ page_3_9 = vm.Page(
 )
 
 
+# ====== **NEW** Pure selectors (no Filter/Parameter) drive filters across tabs via explicit set_control ======
+# A Filter/Parameter that targets no figure "is not a Filter/Parameter". So instead of a control-only Filter, a
+# dashboard creator can drop a *bare selector* (RadioItems, RangeSlider, ...) straight into the layout and attach an
+# explicit `set_control` to it: the selector then acts purely as a driver - on change it pushes its value to the
+# target controls, which do the actual figure filtering. Bare selectors are normally only allowed inside a
+# Filter/Parameter, so they must be whitelisted as components via the `add_type` hack.
+#
+# Layout: tab 1 = pure driver selectors (no figure); tabs 2 & 3 = the real Filters (one per selector type), each
+# filtering that tab's own graph. Each tab-1 selector `set_control`s the matching Filter on BOTH tab 2 and tab 3.
+_p310_specs = [
+    ("radio", "cat_radio", vm.RadioItems, {"options": ["P", "Q", "R"], "value": "P"}),
+    ("dropdown", "cat_dropdown", vm.Dropdown, {"options": ["A", "B", "C"], "value": ["A"]}),
+    ("checklist", "cat_checklist", vm.Checklist, {"options": ["X", "Y", "Z"], "value": ["X"]}),
+    ("slider", "num_slider", vm.Slider, {"min": 0, "max": 5, "step": 1, "value": 2}),
+    ("range", "num_range", vm.RangeSlider, {"min": 0, "max": 100, "value": [20, 80]}),
+    (
+        "date",
+        "date_col",
+        vm.DatePicker,
+        {"min": "2024-01-01", "max": "2024-01-04", "value": ["2024-01-02", "2024-01-03"]},
+    ),
+    (
+        "datetime",
+        "datetime_col",
+        vm.DateTimePicker,
+        {"min": "2024-01-01", "max": "2024-01-01", "value": ["2024-01-01", "2024-01-01"]},
+    ),
+    ("time", "time_col", vm.TimePicker, {"value": ["08:00", "16:30"]}),
+    ("switch", "bool_col", vm.Switch, {"value": True}),
+    (
+        "cascader",
+        ["region", "city"],
+        vm.Cascader,
+        {
+            "options": {"North": ["New York", "Boston"], "South": ["Miami", "Austin"]},
+            "multi": False,
+            "value": "New York",
+        },
+    ),
+]
+
+# Whitelist each bare selector type as an allowed Container component (they are normally only allowed as selectors).
+for _sel_type in {spec[2] for spec in _p310_specs}:
+    vm.Container.add_type("components", _sel_type)
+
+_p310_tab1, _p310_tab2, _p310_tab3 = [], [], []
+for _key, _column, _sel_type, _cfg in _p310_specs:
+    _t2_id, _t3_id = f"p310_t2_{_key}", f"p310_t3_{_key}"
+    _p310_tab1.append(
+        _sel_type(
+            id=f"p310_t1_{_key}",
+            title=f"{_key}: pure selector -> sets {_t2_id} & {_t3_id}",
+            actions=[set_control(control=_t2_id, value=None), set_control(control=_t3_id, value=None)],
+            **_cfg,
+        )
+    )
+    _p310_tab2.append(vm.Filter(id=_t2_id, column=_column, selector=_sel_type()))
+    _p310_tab3.append(vm.Filter(id=_t3_id, column=_column, selector=_sel_type()))
+
+page_3_10 = vm.Page(
+    id="page_3_10",
+    title="Sync: Pure selectors drive filters across tabs",
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(title="Drivers (pure selectors, no Filter)", layout=vm.Flex(), components=_p310_tab1),
+                vm.Container(
+                    title="Target tab A",
+                    components=[vm.Graph(id="p310_graph_a", figure=px.scatter(sync_df, x="x", y="y"))],
+                    controls=_p310_tab2,
+                ),
+                vm.Container(
+                    title="Target tab B",
+                    components=[vm.Graph(id="p310_graph_b", figure=px.scatter(sync_df, x="x", y="y"))],
+                    controls=_p310_tab3,
+                ),
+            ]
+        )
+    ],
+)
+
+
 # ====== **NEW** Syncing controls across pages ======
 # A Filter/Parameter can now list a control on ANOTHER page in its `targets`. Changing it writes the new value into the
 # internal `vizro_controls_store`; the synced control picks that value up when its own page is opened. There is no page
@@ -869,6 +951,7 @@ dashboard = vm.Dashboard(
         page_3_7,
         page_3_8,
         page_3_9,
+        page_3_10,
         page_40,
         page_41,
         page_42,
@@ -889,9 +972,9 @@ dashboard = vm.Dashboard(
                 "page_3_7",
                 "page_3_8",
                 "page_3_9",
+                "page_3_10",
             ],
-            "Syncing controls across pages": ["page_40", "page_41"],
-            "Drill-through across pages": ["page_42", "page_43"],
+            "Syncing controls across pages": ["page_40", "page_41", "page_42", "page_43"],
         }
     ),
 )

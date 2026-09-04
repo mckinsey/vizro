@@ -141,6 +141,25 @@ To sync controls, add another control's `id` to the `targets` of a [filter](filt
 
     A [filter](filters.md) that targets only other controls still applies to the page's figures: it falls back to every figure whose data includes its `column`, exactly as if no `targets` were given. A [parameter](parameters.md) has no such fallback, because it applies its value through its `<component>.<argument>` targets. A parameter must therefore always target at least one figure argument in addition to any controls it syncs.
 
+!!! note "A control that only drives other controls is not a Filter or Parameter"
+
+    By design a [filter](filters.md) and [parameter](parameters.md) always act on figures, so above mean neither can exist purely to drive other controls. A filter with no figure target *is not a filter*, and a parameter with no figure target *is not a parameter*.
+
+    If a control that only sets other controls (and filters or parametrizes nothing itself) is exactly what you want, skip the filter/parameter wrapper: put a bare [selector](selectors.md) (for example a [`RadioItems`][vizro.models.RadioItems]) straight into the layout and give it an explicit [`set_control`][vizro.actions.set_control] action for each control it should drive. The targeted controls do the actual figure work when their value changes. A selector is normally only allowed inside a filter or parameter, so first whitelist it on its parent with the [`add_type`][vizro.models.VizroBaseModel.add_type] like:
+
+    ```python
+    import vizro.models as vm
+    from vizro.actions import set_control
+
+    vm.Page.add_type("components", vm.RadioItems)  # allow a bare selector as a component (Container.add_type also works)
+
+    # ...then, as a Page component:
+    vm.RadioItems(
+        options=["setosa", "versicolor", "virginica"],
+        actions=[set_control(control="species_filter_1", value=None), set_control(control="species_filter_2", value=None)],
+    )
+    ```
+
 !!! example "Sync a filter with a hidden parameter"
 
     === "app.py"

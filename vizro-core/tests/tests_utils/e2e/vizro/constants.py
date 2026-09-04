@@ -366,6 +366,24 @@ SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE = "set-control-non-categori
 SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE_ID = "set-control-non-categorical-ag-grid-datepicker-range-id"
 SET_CONTROL_NON_CATEGORICAL_AG_GRID_SWITCH = "set-control-non-categorical-ag-grid-switch"
 
+SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_PAGE_TITLE = "set-control-non-categorical-timepicker-graph-page-title"
+SCATTER_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER = "scatter-set-control-non-categorical-timepicker"
+AG_GRID_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_TARGET = (
+    "ag-grid-set-control-non-categorical-timepicker-graph-target"
+)
+SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_FILTER = "set-control-non-categorical-timepicker-graph-filter"
+SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_ID = "set-control-non-categorical-timepicker-graph-id"
+
+SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_PAGE_TITLE = (
+    "set-control-non-categorical-datetimepicker-ag-grid-page-title"
+)
+AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER = "aggrid-set-control-non-categorical-datetimepicker"
+AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_TARGET = (
+    "ag-grid-set-control-non-categorical-datetimepicker-ag-grid-target"
+)
+SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_FILTER = "set-control-non-categorical-datetimepicker-ag-grid-filter"
+SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_ID = "set-control-non-categorical-datetimepicker-ag-grid-id"
+
 SET_CONTROL_NON_CATEGORICAL_GRAPH_PAGE_TITLE = "set-control-non-categorical-graph-page-title"
 SCATTER_SET_CONTROL_NON_CATEGORICAL = "scatter-set-control-non-categorical"
 SCATTER_SET_CONTROL_NON_CATEGORICAL_TARGET = "scatter-set-control-non-categorical-target"

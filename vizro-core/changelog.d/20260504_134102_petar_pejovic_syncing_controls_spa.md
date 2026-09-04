@@ -32,12 +32,10 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
 ### Fixed
 
-- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Fixed `set_control` targeting a `TimePicker(range=True)` or `DateTimePicker(range=True)` control so it now triggers that control's actions (e.g. its `update_targets`), matching every other selector. ([#1723](https://github.com/mckinsey/vizro/pull/1723))
 
--->
 <!--
 ### Security
 
