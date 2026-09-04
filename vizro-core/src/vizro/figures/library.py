@@ -1,7 +1,8 @@
 """Contains unwrapped KPI card functions (suitable to use in pure Dash app)."""
 
+from typing import Literal
+
 import dash_bootstrap_components as dbc
-import numpy as np
 import pandas as pd
 from dash import html
 
@@ -9,8 +10,14 @@ from vizro.models._models_utils import validate_icon
 
 __all__ = ["kpi_card", "kpi_card_reference"]
 
+_SIZE_CLASSES = {"compact": "card-kpi-compact", "default": "", "large": "card-kpi-large"}
 
-def kpi_card(
+
+def _kpi_card_class_name(size: Literal["compact", "default", "large"]) -> str:
+    return f"card-kpi {_SIZE_CLASSES[size]}".strip()
+
+
+def kpi_card(  # noqa: PLR0913
     data_frame: pd.DataFrame,
     value_column: str,
     *,
@@ -18,6 +25,7 @@ def kpi_card(
     agg_func: str = "sum",
     title: str | None = None,
     icon: str | None = None,
+    size: Literal["compact", "default", "large"] = "default",
 ) -> dbc.Card:
     """Creates a styled KPI (Key Performance Indicator) card displaying a value.
 
@@ -48,6 +56,7 @@ def kpi_card(
             `value_column`.
         icon: Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons)
             to be displayed on the left side of the KPI title. If not provided, no icon is displayed.
+        size: Size of the card. Possible values are `"compact"`, `"default"` or `"large"`. Defaults to `"default"`.
 
     Returns:
          A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value.
@@ -70,7 +79,7 @@ def kpi_card(
         ]
     )
     body = dbc.CardBody(value_format.format(value=value))
-    return dbc.Card([header, body], class_name="card-kpi")
+    return dbc.Card([header, body], class_name=_kpi_card_class_name(size))
 
 
 def kpi_card_reference(  # noqa: PLR0913
@@ -79,11 +88,13 @@ def kpi_card_reference(  # noqa: PLR0913
     reference_column: str,
     *,
     value_format: str = "{value}",
-    reference_format: str = "{delta_relative:+.1%} vs. reference ({reference})",
+    delta_format: str = "{delta_relative:+.1%}",
+    reference_format: str = "vs. reference ({reference})",
     agg_func: str = "sum",
     title: str | None = None,
     icon: str | None = None,
     reverse_color: bool = False,
+    size: Literal["compact", "default", "large"] = "default",
 ) -> dbc.Card:
     """Creates a styled KPI (Key Performance Indicator) card displaying a value in comparison to a reference value.
 
@@ -111,8 +122,10 @@ def kpi_card_reference(  # noqa: PLR0913
              - `"{value:.0%}"`: Formats the value as a percentage without decimal places.
              - `"{value:,}"`: Formats the value with comma as a thousands separator.
 
-        reference_format: Format string to be applied to the reference. For more details on possible placeholders,
-            see docstring on `value_format`.
+        delta_format: Format string to be applied to the headline change indicator (the bold, colored figure in the
+            footer). For more details on possible placeholders, see docstring on `value_format`.
+        reference_format: Format string to be applied to the supporting reference text shown next to the change
+            indicator. For more details on possible placeholders, see docstring on `value_format`.
         agg_func: String function name to be used for aggregating the data. Common options include
             `"sum"`, `"mean"` or `"median"`. [More information on possible
             functions](https://stackoverflow.com/q/65877567).
@@ -123,6 +136,7 @@ def kpi_card_reference(  # noqa: PLR0913
         reverse_color: If `False`, a positive delta will be colored positively (for example, blue) and a negative delta
             negatively (for example, red). If `True`, the colors will be inverted: a positive delta will be colored
             negatively (for example, red) and a negative delta positively (for example, blue).
+        size: Size of the card. Possible values are `"compact"`, `"default"` or `"large"`. Defaults to `"default"`.
 
     Returns:
         A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value and reference.
@@ -138,7 +152,7 @@ def kpi_card_reference(  # noqa: PLR0913
     title = title or f"{agg_func} {value_column}".title()
     value, reference = data_frame[[value_column, reference_column]].agg(agg_func)
     delta = value - reference
-    delta_relative = delta / reference if reference else np.nan
+    delta_relative = delta / reference if reference else 0.0
     pos_color, neg_color = ("color-neg", "color-pos") if reverse_color else ("color-pos", "color-neg")
     footer_class = pos_color if delta > 0 else neg_color if delta < 0 else ""
 
@@ -154,13 +168,24 @@ def kpi_card_reference(  # noqa: PLR0913
     footer = dbc.CardFooter(
         [
             html.Span(
-                "arrow_circle_up" if delta > 0 else "arrow_circle_down" if delta < 0 else "arrow_circle_right",
-                className="material-symbols-outlined",
+                [
+                    html.Span(
+                        "arrow_upward_alt" if delta > 0 else "arrow_downward_alt" if delta < 0 else "arrow_right_alt",
+                        className="material-symbols-outlined",
+                    ),
+                    html.Span(
+                        delta_format.format(
+                            value=value, reference=reference, delta=delta, delta_relative=delta_relative
+                        )
+                    ),
+                ],
+                className="card-kpi-delta-chip",
             ),
             html.Span(
-                reference_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)
+                reference_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative),
+                className="card-kpi-reference-text",
             ),
         ],
         class_name=footer_class,
     )
-    return dbc.Card([header, body, footer], class_name="card-kpi")
+    return dbc.Card([header, body, footer], class_name=_kpi_card_class_name(size))

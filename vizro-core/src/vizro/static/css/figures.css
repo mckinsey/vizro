@@ -1,7 +1,15 @@
 .card-kpi {
+  background-color: inherit !important;
   border-left: 4px solid var(--bs-gray);
+  box-shadow: var(--bs-box-shadow);
   height: 100%;
-  padding: 0.75rem;
+  padding: 1rem;
+}
+
+/* `--bs-box-shadow` is a dark, low-opacity color with no dark-theme override anywhere in the codebase, so it's
+invisible against a dark background. Swap in a lighter, higher-opacity shadow so elevation still reads in dark mode. */
+[data-bs-theme="dark"] .card-kpi {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.6);
 }
 
 /* We currently ship this CSS file with the package, so the font definitions need to live here at the moment.
@@ -36,10 +44,18 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   margin: auto 0;
 }
 
+.card-kpi .card-header .material-symbols-outlined {
+  color: var(--bs-secondary-color);
+}
+
 /* This should be replaced, when the bootstrap theme is finalized. Currently our font tokens don't match with the
- bootstrap font tokens, leading to deviations which we need to overwrite. */
+ bootstrap font tokens, leading to deviations which we need to overwrite.
+ Title is intentionally de-emphasized (muted color, regular weight) so the KPI value remains the dominant element;
+ without this override it would inherit Bootstrap's `h4 { color: var(--bs-primary) }`. */
 .card-kpi-title {
-  font-size: 1rem;
+  color: var(--bs-secondary-color);
+  font-size: 0.875rem;
+  font-weight: 400;
   margin: 0;
 }
 
@@ -57,32 +73,57 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .card-kpi .card-body {
   align-items: center;
+  color: var(--bs-body-color);
   display: flex;
   flex-grow: 1;
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
 }
 
 .card-kpi .card-footer {
+  align-items: center;
+  color: var(--bs-secondary-color);
   display: flex;
+  flex-wrap: wrap;
+  font-size: 0.875rem;
+  font-weight: 400;
+  gap: 0.375rem;
+  width: fit-content;
+}
+
+/* The headline change (icon + delta) is the loud part of the footer — bold, colored, tinted. */
+.card-kpi .card-kpi-delta-chip {
+  align-items: center;
+  display: inline-flex;
   font-weight: 600;
   gap: 0.25rem;
+  padding: 0.125rem 0.375rem;
 }
 
-.card-kpi .card-footer .material-symbols-outlined {
-  font-size: 1.25rem;
+.card-kpi .card-kpi-delta-chip .material-symbols-outlined {
+  font-size: 1.1rem;
 }
 
-.card-kpi .color-pos.card-footer {
+.card-kpi .color-pos.card-footer .card-kpi-delta-chip {
+  background-color: var(--bs-success-bg-subtle);
   color: var(--bs-success);
 }
 
-.card-kpi .color-neg.card-footer {
+.card-kpi .color-neg.card-footer .card-kpi-delta-chip {
+  background-color: var(--bs-danger-bg-subtle);
   color: var(--bs-danger);
+}
+
+/* The supporting comparison text (e.g. "vs. reference (...)") stays muted, so it doesn't compete with the delta. */
+.card-kpi .card-kpi-reference-text {
+  color: var(--bs-secondary-color);
+  font-weight: 400;
 }
 
 .card-kpi:has(.color-pos) {
@@ -101,4 +142,37 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   border-bottom: 1px solid var(--bs-border-color);
   border-right: 1px solid var(--bs-border-color);
   border-top: 1px solid var(--bs-border-color);
+}
+
+.card-kpi-compact {
+  padding: 0.75rem;
+}
+
+.card-kpi-compact .card-kpi-title {
+  font-size: 0.75rem;
+}
+
+.card-kpi-compact .card-body {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-kpi-compact .card-footer {
+  font-size: 0.75rem;
+}
+
+.card-kpi-large {
+  padding: 1.25rem;
+}
+
+.card-kpi-large .card-kpi-title {
+  font-size: 1rem;
+}
+
+.card-kpi-large .card-body {
+  font-size: 2.5rem;
+}
+
+.card-kpi-large .card-footer {
+  font-size: 1rem;
 }
