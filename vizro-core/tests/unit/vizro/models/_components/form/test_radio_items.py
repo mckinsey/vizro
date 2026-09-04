@@ -166,6 +166,24 @@ class TestRadioItemsBuild:
 
         assert_component_equal(radio_items, expected_radio_items)
 
+    def test_radio_items_build_empty_options(self):
+        """A single-select selector with no options builds with value=None instead of crashing."""
+        radio_items = RadioItems(id="radio_items").build()
+        expected_radio_items = html.Fieldset(
+            [
+                None,
+                dbc.RadioItems(
+                    id="radio_items",
+                    options=[],
+                    value=None,
+                    inline=False,
+                    persistence=True,
+                    persistence_type="session",
+                ),
+            ]
+        )
+        assert_component_equal(radio_items, expected_radio_items)
+
     def test_radio_items_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
         radio_items = RadioItems(

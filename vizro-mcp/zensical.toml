@@ -95,7 +95,11 @@ repo = "fontawesome/brands/github"
 # markdown_extensions
 # -------------------------
 [project.markdown_extensions.pymdownx.highlight]
-anchor_linenums = true
+# Keep false: these anchors emit an empty <a id="__codelineno-..."> per code line, which becomes
+# `[](#__codelineno-0-1)` noise in the markdown that AI agents fetch - 651 of them on the Cursor
+# tutorial alone. Line numbers there (`linenums="1"`) still render; they are just no longer
+# deep-linkable, which nothing in the docs relies on.
+anchor_linenums = false
 
 [project.markdown_extensions.pymdownx.inlinehilite]
 

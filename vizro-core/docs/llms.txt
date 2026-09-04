@@ -11,7 +11,10 @@ Every Vizro app is defined by a simple configuration, using the high-level categ
 Configuration can be written in multiple formats including Pydantic models, JSON, YAML or Python dictionaries for added flexibility of implementation.
 Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
 
-All documentation pages return clean markdown when fetched with the `Accept: text/markdown` request header.
+Documentation pages return clean markdown when fetched with the
+`Accept: text/markdown, text/html;q=0.9` request header. Always include the `text/html;q=0.9`
+fallback. One page, the Models API reference, exceeds the upstream HTML-to-markdown conversion
+size limit and is served as HTML instead; a markdown-only request for it returns HTTP 406.
 
 ## AGENT QUICK START
 
