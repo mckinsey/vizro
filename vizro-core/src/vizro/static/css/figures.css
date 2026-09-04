@@ -3,7 +3,7 @@
   border-left: 4px solid var(--bs-gray);
   box-shadow: var(--bs-box-shadow);
   height: 100%;
-  padding: 1rem;
+  padding: 0.75rem;
 }
 
 /* `--bs-box-shadow` is a dark, low-opacity color with no dark-theme override anywhere in the codebase, so it's
@@ -73,7 +73,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.375rem;
 }
 
 .card-kpi .card-body {
@@ -83,7 +83,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   flex-grow: 1;
   font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .card-kpi .card-footer {
@@ -145,7 +145,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .card-kpi-compact {
-  padding: 0.75rem;
+  padding: 0.5rem;
 }
 
 .card-kpi-compact .card-kpi-title {
@@ -154,7 +154,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 
 .card-kpi-compact .card-body {
   font-size: 1.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.375rem;
 }
 
 .card-kpi-compact .card-footer {
@@ -162,7 +162,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .card-kpi-large {
-  padding: 1.25rem;
+  padding: 1rem;
 }
 
 .card-kpi-large .card-kpi-title {
