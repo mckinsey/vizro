@@ -3,6 +3,8 @@ from asserts import assert_component_equal
 from dash import dcc, html
 
 import vizro.models as vm
+import vizro.plotly.express as px
+from vizro.actions._set_control import set_control
 from vizro.actions._update_targets import update_targets
 from vizro.managers import data_manager, model_manager
 from vizro.models._controls.parameter import Parameter
@@ -65,12 +67,29 @@ class TestParameterInstantiation:
         }
 
     def test_check_dot_notation_failed(self):
+        # The model-level `check_dot_notation` validator now lets non-dotted targets through so that control ids
+        # (Filter/Parameter) can be used as targets. A non-dotted target that is *not* another control is therefore
+        # only rejected later, in pre_build.
+        parameter = Parameter(targets=["scatter_chart"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
+        model_manager["test_page"].controls = [parameter]
         with pytest.raises(
             ValueError,
             match=r"Invalid target scatter_chart. "
             "Targets must be supplied in the form <target_component>.<target_argument>",
         ):
-            Parameter(targets=["scatter_chart"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
+            parameter.pre_build()
+
+    @pytest.mark.parametrize("target", ["scatter_chart.figure", "scatter_chart.figure.color"])
+    def test_check_dot_notation_figure_argument_failed(self, target):
+        # A dotted target that addresses the CapturedCallable via `.figure` is still rejected at construction time,
+        # both as the exact `<component>.figure` and as a nested `<component>.figure.<arg>`.
+        with pytest.raises(
+            ValueError,
+            match=rf"Invalid target {target}. Targets must be supplied in the form "
+            "<target_component>.<target_argument>. Arguments of the CapturedCallable function can be targeted "
+            "directly, and not via <.figure.>.",
+        ):
+            Parameter(targets=[target], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
     @pytest.mark.parametrize("target", ["scatter_chart.data_frame", "scatter_chart.data_frame.argument.nested_arg"])
     def test_check_data_frame_as_target_argument_failed(self, target):
@@ -283,6 +302,180 @@ class TestPreBuildMethod:
         model_manager["test_page"].controls = [parameter]
         parameter.pre_build()
         assert parameter.selector.actions == []
+
+    def test_target_control_sync_actions(self, managers_one_page_two_graphs):
+        # A Parameter can target another control (a Filter or Parameter) to keep it in sync. The control target is
+        # extracted out of self.targets and turned into a `set_control` action that runs *before* the default
+        # `update_targets` action so the synced value is applied first.
+        target_filter = vm.Filter(id="target_filter", column="continent")
+        parameter = vm.Parameter(
+            id="source_parameter",
+            targets=["scatter_chart.x", "target_filter"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        )
+        model_manager["test_page"].controls = [target_filter, parameter]
+        target_filter.pre_build()
+        parameter.pre_build()
+
+        # The control target is removed from self.targets, leaving only the figure-argument target.
+        assert parameter.targets == ["scatter_chart.x"]
+
+        set_control_action, update_targets_action = parameter.selector.actions
+        assert isinstance(set_control_action, set_control)
+        assert set_control_action.control == "target_filter"
+        assert set_control_action.value is None
+        assert isinstance(update_targets_action, update_targets)
+        assert update_targets_action.id == "__parameter_action_source_parameter"
+        assert update_targets_action.targets == ["scatter_chart"]
+
+    def test_target_multiple_controls_sync_actions(self, managers_one_page_two_graphs):
+        # A Parameter can target several controls at once; one set_control action is generated per control target,
+        # in order, all before the single update_targets action.
+        target_filter = vm.Filter(id="target_filter", column="continent")
+        target_parameter = vm.Parameter(
+            id="target_parameter",
+            targets=["bar_chart.x"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        )
+        parameter = vm.Parameter(
+            id="source_parameter",
+            targets=["scatter_chart.x", "target_filter", "target_parameter"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        )
+        model_manager["test_page"].controls = [target_filter, target_parameter, parameter]
+        target_filter.pre_build()
+        target_parameter.pre_build()
+        parameter.pre_build()
+
+        assert parameter.targets == ["scatter_chart.x"]
+        first, second, update_targets_action = parameter.selector.actions
+        assert [a.control for a in (first, second)] == ["target_filter", "target_parameter"]
+        assert all(isinstance(a, set_control) and a.value is None for a in (first, second))
+        assert isinstance(update_targets_action, update_targets)
+        assert update_targets_action.targets == ["scatter_chart"]
+
+    def test_two_parameters_target_same_control_allowed(self, managers_one_page_two_graphs):
+        # Two parameters may keep the same control in sync. The shared bare control id is a control-sync target, not a
+        # figure-argument target, so it must not trip the duplicate-parameter-target check (which only guards figure
+        # arguments, since two parameters writing the same figure argument would conflict).
+        target_filter = vm.Filter(id="shared_filter", column="continent")
+        parameter_1 = vm.Parameter(
+            id="parameter_1",
+            targets=["scatter_chart.x", "shared_filter"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        )
+        parameter_2 = vm.Parameter(
+            id="parameter_2",
+            targets=["bar_chart.x", "shared_filter"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        )
+        model_manager["test_page"].controls = [target_filter, parameter_1, parameter_2]
+        target_filter.pre_build()
+        parameter_1.pre_build()
+        parameter_2.pre_build()
+
+        assert parameter_1.selector.actions[0].control == "shared_filter"
+        assert parameter_2.selector.actions[0].control == "shared_filter"
+
+    def test_target_control_ignored_with_explicit_actions_warns(
+        self, managers_one_page_two_graphs, identity_action_function
+    ):
+        # A control target is synced by generating a default set_control action on the selector. When the selector
+        # has explicit actions, that default chain is skipped, so a control target listed in `targets` is stripped
+        # without being synced. This must warn rather than silently do nothing.
+        custom_action = vm.Action(function=identity_action_function())
+        target_filter = vm.Filter(id="target_filter", column="continent")
+        parameter = vm.Parameter(
+            id="source_parameter",
+            targets=["scatter_chart.x", "target_filter"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"], actions=[custom_action]),
+        )
+        model_manager["test_page"].controls = [target_filter, parameter]
+        target_filter.pre_build()
+        with pytest.warns(
+            UserWarning, match=r"Control 'source_parameter' lists control target\(s\) \['target_filter'\]"
+        ):
+            parameter.pre_build()
+
+        # The control target is still stripped from targets; the user's explicit actions are left untouched.
+        assert parameter.targets == ["scatter_chart.x"]
+        assert parameter.selector.actions == [custom_action]
+
+    def test_target_control_self_target_invalid(self, managers_one_page_two_graphs):
+        # A control targeting itself would create a self-referential sync loop and is rejected.
+        parameter = vm.Parameter(
+            id="self_parameter",
+            targets=["scatter_chart.x", "self_parameter"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        )
+        model_manager["test_page"].controls = [parameter]
+        with pytest.raises(
+            ValueError, match=r"Control 'self_parameter' cannot target itself. Remove 'self_parameter' from"
+        ):
+            parameter.pre_build()
+
+    def test_target_control_different_page_invalid(self, gapminder):
+        # A control can only target other controls on the same page (the underlying set_control sync is per-page).
+        vm.Page(
+            id="page_a",
+            title="Page A",
+            components=[vm.Graph(id="graph_a", figure=px.scatter(gapminder, x="lifeExp", y="gdpPercap"))],
+            controls=[
+                vm.Parameter(
+                    id="param_a",
+                    targets=["graph_a.x", "filter_b"],
+                    selector=vm.RadioItems(options=["lifeExp", "gdpPercap"]),
+                )
+            ],
+        )
+        vm.Page(
+            id="page_b",
+            title="Page B",
+            components=[vm.Graph(id="graph_b", figure=px.scatter(gapminder, x="lifeExp", y="gdpPercap"))],
+            controls=[vm.Filter(id="filter_b", column="continent")],
+        )
+        with pytest.raises(
+            ValueError, match=r"Control 'param_a' cannot target control 'filter_b' because they are on different pages"
+        ):
+            model_manager["param_a"].pre_build()
+
+    def test_target_only_controls_invalid(self, managers_one_page_two_graphs):
+        # A Parameter must have at least one figure target: its value is applied to figures only through its
+        # "<component>.<argument>" targets, so targeting only other controls leaves nothing to apply the value to.
+        # This restores the pre-syncing behavior where such a (non-dotted) target was rejected by check_dot_notation.
+        target_parameter = vm.Parameter(
+            id="target_parameter",
+            targets=["scatter_chart.x"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        )
+        parameter = vm.Parameter(
+            id="source_parameter",
+            targets=["target_parameter"],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        )
+        model_manager["test_page"].controls = [target_parameter, parameter]
+        target_parameter.pre_build()
+        with pytest.raises(
+            ValueError,
+            match=r"Parameter 'source_parameter' must have at least one target in the form "
+            r"<target_component>.<target_argument>",
+        ):
+            parameter.pre_build()
+
+    def test_target_empty_invalid(self, managers_one_page_two_graphs):
+        # A Parameter with no targets at all likewise has no figure argument to apply its value to and is rejected.
+        parameter = vm.Parameter(
+            id="empty_parameter",
+            targets=[],
+            selector=vm.RadioItems(options=["lifeExp", "gdpPercap", "pop"]),
+        )
+        model_manager["test_page"].controls = [parameter]
+        with pytest.raises(
+            ValueError,
+            match=r"Parameter 'empty_parameter' must have at least one target in the form "
+            r"<target_component>.<target_argument>",
+        ):
+            parameter.pre_build()
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(

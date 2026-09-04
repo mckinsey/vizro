@@ -331,3 +331,14 @@ class TestBuildMethod:
             ]
         )
         assert_component_equal(time_picker, expected_timepicker)
+
+
+class TestTimePickerGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""
+
+    @pytest.mark.parametrize("trigger", ["10:30", ["10:30", "12:00"], None])
+    def test_get_value_from_trigger_returns_trigger(self, trigger):
+        # A selector already holds the value to propagate, so _get_value_from_trigger ignores `value` and returns the
+        # raw trigger value unchanged (this is what powers syncing controls that target another control).
+        time_picker = vm.TimePicker()
+        assert time_picker._get_value_from_trigger(value="ignored", trigger=trigger) == trigger

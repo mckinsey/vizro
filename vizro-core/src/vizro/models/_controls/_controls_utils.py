@@ -24,7 +24,7 @@ from vizro.models import (
 )
 from vizro.models._components.form._form_utils import get_dict_options_and_value
 from vizro.models._components.form.cascader import get_cascader_default_value
-from vizro.models.types import ControlType, SelectorType
+from vizro.models.types import ControlType, ModelID, SelectorType
 
 if TYPE_CHECKING:
     from vizro.models import Page
@@ -65,8 +65,7 @@ def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
     component_figures: Generator[VizroBaseModel] = model_manager._get_models(FIGURE_MODELS, root_model)
     component_figure_ids = [model.id for model in component_figures]
     for target in targets:
-        target_id = target.split(".")[0]
-        if target_id not in component_figure_ids:
+        if (target_id := target.split(".")[0]) not in component_figure_ids:
             raise ValueError(f"Target {target_id} not found within the {root_model.id}.")
 
 
@@ -88,6 +87,90 @@ def get_control_parent(control: ControlType) -> Page | Container | None:
 
     # Fallback to the page if not nested inside any container.
     return nearest_ancestor_container or page
+
+
+def extract_control_targets(control: ControlType) -> list[ModelID]:
+    """Split control (Filter/Parameter) targets out of ``control.targets``, validating and returning them.
+
+    A Filter/Parameter can target another control to keep the two in sync (see the `set_control` action). Such
+    "control targets" are validated and semantically different from "figure targets", so this removes them from
+    ``control.targets`` in place and returns them separately. The remaining figure targets are validated later by
+    `check_control_targets`.
+
+    A control target must be a *different* control on the *same page*: self-targeting would create a self-referential
+    sync loop, and the underlying `set_control` sync runs within a single page.
+    """
+    from vizro.models._controls import Filter, Parameter
+
+    # `control` is loop-invariant, so resolve its page once rather than per target.
+    control_page = model_manager._get_model_page(control)
+
+    targeted_controls: list[ModelID] = []
+    for target in control.targets.copy():
+        if target not in model_manager:
+            continue
+        target_model = model_manager[target]
+        if not isinstance(target_model, (Filter, Parameter)):
+            continue
+
+        # Forbid self-targeting: a control targeting itself would create a self-referential sync loop.
+        if target == control.id:
+            raise ValueError(f"Control '{control.id}' cannot target itself. Remove '{target}' from its `targets`.")
+
+        # Control targets must be on the same page as the control that targets them.
+        if control_page is not model_manager._get_model_page(target_model):
+            raise ValueError(
+                f"Control '{control.id}' cannot target control '{target}' because they are on different pages. "
+                f"A control can only target other controls on the same page."
+            )
+
+        control.targets.remove(target)
+        # Deduplicate so a control listed more than once does not generate duplicate set_control sync actions.
+        if target not in targeted_controls:
+            targeted_controls.append(target)
+
+    return targeted_controls
+
+
+def warn_ignored_control_sync_targets(control: ControlType, targeted_controls: list[ModelID]) -> None:
+    """Warn when control-sync targets are dropped because the selector has explicit ``actions``.
+
+    A Filter/Parameter keeps a control target in sync by generating a default `set_control` action on its selector
+    (see `build_default_control_selector_actions`). When the selector's `actions` are set explicitly, that default chain
+    is not generated, so any control ids listed in `targets` are extracted and removed but never turned into a sync,
+    silently doing nothing. Warn so the user knows to wire the sync themselves.
+    """
+    if targeted_controls:
+        warnings.warn(
+            f"Control '{control.id}' lists control target(s) {targeted_controls} in `targets`, but its selector has "
+            f"explicit `actions`, so these targets are not kept in sync automatically. Add a `set_control` action to "
+            f"the selector's `actions` for each one to sync them, and remove them from `targets`.",
+            UserWarning,
+        )
+
+
+def build_default_control_selector_actions(
+    selector: SelectorType, targeted_controls: list[ModelID], update_targets_id: str, update_targets: list[str]
+) -> None:
+    """Set a control selector's default action chain: sync each targeted control, then refresh its targets.
+
+    Filter and Parameter share this: on selector change they first push the new value to every control they keep in
+    sync (via `set_control`), then refresh their own targets (via `update_targets`). The `set_control` actions run
+    first so the latest value is applied before the refresh.
+
+    The actions are assigned to ``selector.actions`` first (which wires each action's parent model) and only then
+    pre-built, so their `pre_build` validations and internal attributes resolve correctly.
+    """
+    # Local import to avoid a circular import between this module and vizro.actions.
+    from vizro.actions import set_control
+    from vizro.actions import update_targets as update_targets_action
+
+    selector.actions = [
+        *[set_control(control=control_id, value=None) for control_id in targeted_controls],
+        update_targets_action(id=update_targets_id, targets=update_targets),
+    ]
+    for action in selector.actions:
+        action.pre_build()
 
 
 def check_control_targets(control: ControlType) -> None:

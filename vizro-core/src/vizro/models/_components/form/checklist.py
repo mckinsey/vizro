@@ -2,7 +2,7 @@ from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
@@ -92,6 +92,11 @@ underlying component may change in the future.""",
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.value"}
+
+    @staticmethod
+    def _get_value_from_trigger(value: JsonValue, trigger: JsonValue) -> JsonValue:
+        """Return the given `trigger` without modification."""
+        return trigger
 
     def __call__(self, options):
         dict_options, value = get_dict_options_and_value(options=options, value=self.value, multi=True)

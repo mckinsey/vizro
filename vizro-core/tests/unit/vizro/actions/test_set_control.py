@@ -153,6 +153,42 @@ class TestSetControlInstantiation:
         assert action.value == "some_value"
 
 
+class TestNormalizeRangeValue:
+    """Tests the range-value shaping helper directly, for both source kinds (`reorder` True/False)."""
+
+    @pytest.mark.parametrize(
+        "value, reorder, expected",
+        [
+            # Non-list scalar -> duplicated into a degenerate [v, v] range (independent of reorder).
+            (5, True, [5, 5]),
+            (5, False, [5, 5]),
+            ("1992-01-01", False, ["1992-01-01", "1992-01-01"]),
+            # Empty / incomplete selections are never synced.
+            ([], True, None),
+            ([1, None], True, None),
+            (["1992-01-01", ""], False, None),
+            # Single-element list -> degenerate [v, v] range.
+            ([1], True, [1, 1]),
+            (["1992-01-01"], False, ["1992-01-01", "1992-01-01"]),
+            # Selection-order source (reorder=True): two ends sorted into [min, max].
+            ([2, 1], True, [1, 2]),
+            (["1993-01-01", "1992-01-01"], True, ["1992-01-01", "1993-01-01"]),
+            # Important: This is incorrect, so we deliberately send reorder=False for such a case.
+            (["2024-01-01T06:00", "2024-01-01"], True, ["2024-01-01", "2024-01-01T06:00"]),
+            # Range-selector source (reorder=False): authoritative [start, end] kept as-is...
+            ([2, 1], False, [2, 1]),
+            (["1993-01-01", "1992-01-01"], False, ["1993-01-01", "1992-01-01"]),
+            (["2024-01-01T06:00", "2024-01-01"], False, ["2024-01-01T06:00", "2024-01-01"]),
+            # More than two values always collapse to the spanning [min, max], for either source kind.
+            ([1, 2, 3, 4], False, [1, 4]),
+            ([1, 2, 3, 4], True, [1, 4]),
+            (["1992-01-01", "1994-01-01", "1993-01-01"], False, ["1992-01-01", "1994-01-01"]),
+        ],
+    )
+    def test_normalize_range_value(self, value, reorder, expected):
+        assert set_control._normalize_range_value(value, reorder=reorder) == expected
+
+
 @pytest.mark.usefixtures("managers_two_pages_for_set_control")
 class TestSetControlPreBuild:
     """Tests set control pre_build method."""
@@ -317,7 +353,13 @@ class TestSetControlFunction:
             ("filter_page_1_range_slider", [], no_update),
             ("filter_page_1_range_slider", 1, [1, 1]),
             ("filter_page_1_range_slider", [1], [1, 1]),
+            # More than two values can only come from a multi-selection source, which has no positional start/end,
+            # so they always collapse to the spanning [min, max] regardless of the source kind.
             ("filter_page_1_range_slider", [1, 2, 3, 4], [1, 4]),
+            # A two-element value from a non-selection-order source (here a Button) is kept in its given [start, end]
+            # slot order. Only AgGrid/Graph selections are reordered by magnitude - see the direct reorder=True cases
+            # in test_normalize_range_value and the end-to-end test_function_range_reorders_for_selection_order_source.
+            ("filter_page_1_range_slider", [2, 1], [2, 1]),
             # Single-value boolean control
             ("filter_page_1_boolean", [], no_update),
             ("filter_page_1_boolean", True, True),
@@ -340,6 +382,19 @@ class TestSetControlFunction:
                 ["1992-01-01", "1993-01-01", "1994-01-01"],
                 ["1992-01-01", "1994-01-01"],
             ),
+            # A two-element range value from a non-selection-order source (here a Button) is kept in its given
+            # [start, end] slot order (no min/max reorder). This preserves correctness for a range selector whose
+            # ends are not lexically ordered - e.g. a DateTimePicker whose start carries a time but whose end is a
+            # date-only, whole-day value (["...T06:00", "..."]): reordering would move the start into the end slot.
+            # Here a deliberately reversed pair is passed through unchanged.
+            ("filter_page_1_date_picker_range", ["1993-01-01", "1992-01-01"], ["1993-01-01", "1992-01-01"]),
+            # An incomplete range mid-selection is not synced (returns no_update), instead of crashing on None
+            # (a 500 error - the reported DatePicker bug) or dropping the set value into the wrong slot for ""
+            # (the reported Time/DateTime picker bug where selecting the start set the target's end).
+            ("filter_page_1_date_picker_range", ["1992-01-01", None], no_update),
+            ("filter_page_1_date_picker_range", [None, "1993-01-01"], no_update),
+            ("filter_page_1_date_picker_range", ["1992-01-01", ""], no_update),
+            ("filter_page_1_date_picker_range", ["", "1993-01-01"], no_update),
             # Leaf-mode hierarchical single-select behaves like a flat single-value selector: a bare leaf passes
             # through, and a 1-item list is unwrapped to its single leaf.
             ("cascade_param_single", "leaf_a", "leaf_a"),
@@ -364,6 +419,21 @@ class TestSetControlFunction:
         result = action.function(_trigger=None, _controls_store={})
 
         assert result == expected_result
+
+    def test_function_range_reorders_for_selection_order_source(self):
+        # An AgGrid emits the selected rows' values in click order, so a reversed 2-row selection reaches a range
+        # control inverted. Because the source is a selection-order source (AgGrid), it must be reordered into
+        # [min, max] rather than kept in slot order (the DatePicker-range cross-filter regression).
+        action = set_control(control="filter_page_1_date_picker_range", value="year")
+        model_manager["ag_grid_1"].actions = action
+        action.pre_build()
+
+        result = action.function(
+            _trigger={"selectedRows": [{"year": "1993-01-01"}, {"year": "1992-01-01"}]},
+            _controls_store={},
+        )
+
+        assert result == ["1992-01-01", "1993-01-01"]
 
     def test_function_control_model_on_same_page(self):
         # Add action to relevant component and target a control on the same page

@@ -37,6 +37,213 @@ When the dashboard is running there are two ways for a user to set a control:
 
 You can reset all controls on the page to their original values with the "Reset controls" button at the bottom of the control panel on the left side of the page. This applies to all controls on the page, regardless of whether they are visible. When all controls on a page have `visible=False` and hence no control panel is shown, the "Reset controls" button appears next to the theme switch on the top right of the page.
 
+## Group controls
+
+To organize the control panel on a page into sections, you can group [filters](filters.md) and [parameters](parameters.md) under a title using a [`ControlGroup`][vizro.models.ControlGroup]. Control groups are only available for page-level controls. Use a control group when you want to:
+
+- Visually separate different sets of controls on the same page (for example, "Filters" and "Parameters").
+- Add a title or short description to a subset of controls so users understand what they affect.
+- Keep the page control panel organized when you have many controls.
+
+!!! example "Control Group"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="16-22"}
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        import vizro.models as vm
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="My first page",
+            components=[
+                vm.Graph(
+                    id="scatter_chart",
+                    figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")
+                ),
+            ],
+            controls=[
+                vm.ControlGroup(
+                    title="Filters",
+                    controls=[
+                        vm.Filter(column="species"),
+                        vm.Filter(column="sepal_length")
+                    ]
+                ),
+                vm.ControlGroup(
+                    title="Parameter",
+                    controls=[
+                        vm.Parameter(
+                            targets=["scatter_chart.title"],
+                            selector=vm.Dropdown(
+                                options=["My scatter chart", "A better title!", "Another title..."],
+                                multi=False,
+                            ),
+                        ),
+                    ]
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: My first page
+            components:
+              - id: scatter_chart
+                figure:
+                  _target_: scatter
+                  data_frame: iris
+                  x: sepal_length
+                  y: petal_width
+                  color: species
+                type: graph
+            controls:
+              - type: control_group
+                title: Filters
+                controls:
+                  - column: species
+                    type: filter
+                  - column: sepal_length
+                    type: filter
+              - type: control_group
+                title: Parameter
+                controls:
+                  - type: parameter
+                    targets:
+                      - scatter-chart.title
+                    selector:
+                      options: [My scatter chart, A better title!, Another title...]
+                      multi: false
+                      type: dropdown
+        ```
+
+    === "Result"
+
+        [![ControlGroup]][controlgroup]
+
+## Sync controls
+
+You can keep two controls in sync so that changing one automatically applies the same value to the other. This is useful, for example, when you need to both filter and parametrize a chart from the same user selection, such as filtering a chart down to one species and also using that species to set the chart's title.
+
+To sync controls, add another control's `id` to the `targets` of a [filter](filters.md) or [parameter](parameters.md). Whenever the control changes, Vizro sets the targeted control to the same value (using the [`set_control` action][vizro.actions.set_control] behind the scenes) and then refreshes that both controls figure targets. All combinations work: filter and filter, parameter and parameter, and filter and parameter.
+
+!!! note "Controls can only sync on the same page (for now)"
+
+    A control can currently only target another control on the **same page**. Support for syncing controls **across pages** is coming soon, at which point this limitation is removed.
+
+!!! note "A parameter always needs a figure target"
+
+    A [filter](filters.md) that targets only other controls still applies to the page's figures: it falls back to every figure whose data includes its `column`, exactly as if no `targets` were given. A [parameter](parameters.md) has no such fallback, because it applies its value through its `<component>.<argument>` targets. A parameter must therefore always target at least one figure argument in addition to any controls it syncs.
+
+!!! note "A control that only drives other controls is not a Filter or Parameter"
+
+    By design a [filter](filters.md) and [parameter](parameters.md) always act on figures, so above mean neither can exist purely to drive other controls. A filter with no figure target *is not a filter*, and a parameter with no figure target *is not a parameter*.
+
+    If a control that only sets other controls (and filters or parametrizes nothing itself) is exactly what you want, skip the filter/parameter wrapper: put a bare [selector](selectors.md) (for example a [`RadioItems`][vizro.models.RadioItems]) straight into the layout and give it an explicit [`set_control`][vizro.actions.set_control] action for each control it should drive. The targeted controls do the actual figure work when their value changes. A selector is normally only allowed inside a filter or parameter, so first whitelist it on its parent with the [`add_type`][vizro.models.VizroBaseModel.add_type] like:
+
+    ```python
+    import vizro.models as vm
+    from vizro.actions import set_control
+
+    vm.Page.add_type("components", vm.RadioItems)  # allow a bare selector as a component (Container.add_type also works)
+
+    # ...then, as a Page component:
+    vm.RadioItems(
+        options=["setosa", "versicolor", "virginica"],
+        actions=[set_control(control="species_filter_1", value=None), set_control(control="species_filter_2", value=None)],
+    )
+    ```
+
+!!! example "Sync a filter with a hidden parameter"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="11 22 25"}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.models.types import capture
+
+        iris = px.data.iris()
+
+
+        @capture("graph")
+        def scatter_with_title(data_frame, selected_species):
+            title=f"Species: {selected_species}"  # (1)!
+            fig = px.scatter(data_frame, x="sepal_length", y="sepal_width", color="species", title=title)
+            return fig
+
+
+        page = vm.Page(
+            title="Sync controls",
+            components=[
+                vm.Graph(id="scatter_chart", figure=scatter_with_title(data_frame=iris, selected_species="setosa")),
+            ],
+            controls=[
+                vm.Filter(column="species", targets=["scatter_chart", "title_parameter"], selector=vm.RadioItems()),  # (2)!
+                vm.Parameter(
+                    id="title_parameter",
+                    targets=["scatter_chart.selected_species"],  # (3)!
+                    selector=vm.RadioItems(options=["setosa", "versicolor", "virginica"], value="setosa"),
+                    visible=False,
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. The [custom chart](custom-charts.md) turns the raw `selected_species` value into a human-readable title (for example `"setosa"` becomes _"Species: setosa"_). Because the title is built inside the figure function, the parameter can drive any derived output, not just a literal string.
+        1. The filter targets its own graph as usual, plus `title_parameter`. Changing the filter filters the chart and sets `title_parameter` to the same species.
+        1. `title_parameter` feeds the selected species into the custom chart's `selected_species` argument, which composes the title from it. Its selector is hidden with `visible=False` because the user only interacts with the filter; the parameter's value is driven entirely by the sync.
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager, define CapturedCallables, and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: Sync controls
+            components:
+              - id: scatter_chart
+                type: graph
+                figure:
+                  _target_: __main__.scatter_with_title
+                  data_frame: iris
+                  selected_species: setosa
+            controls:
+              - type: filter
+                column: species
+                targets: [scatter_chart, title_parameter]
+                selector:
+                  type: radio_items
+              - id: title_parameter
+                type: parameter
+                targets: [scatter_chart.selected_species]
+                selector:
+                  type: radio_items
+                  options: [setosa, versicolor, virginica]
+                  value: setosa
+                visible: false
+        ```
+
+    === "Result"
+
+        [![SyncControls]][synccontrols]
+
+You can combine syncing with [applying controls on a button click](#apply-controls-with-a-button): give a control's selector an explicit [`set_control`][vizro.actions.set_control] action to sync its partner without refreshing figures on change, then refresh the figures together with an [`update_targets`][vizro.actions.update_targets] button.
+
 ## Apply controls with a button
 
 By default, changing a control immediately refreshes the components it targets. Sometimes you would rather let a user adjust several controls first and apply them all at once, for example to avoid recomputing an expensive figure on every change.
@@ -122,101 +329,6 @@ To refresh the targets on demand, add a [`Button`][vizro.models.Button] that run
 
         [![ApplyControlsWithAButton]][applycontrolswithabutton]
 
-## Group controls
-
-To organize the control panel on a page into sections, you can group [filters](filters.md) and [parameters](parameters.md) under a title using a [`ControlGroup`][vizro.models.ControlGroup]. Control groups are only available for page-level controls. Use a control group when you want to:
-
-- Visually separate different sets of controls on the same page (for example, "Filters" and "Parameters").
-- Add a title or short description to a subset of controls so users understand what they affect.
-- Keep the page control panel organized when you have many controls.
-
-!!! example "Control Group"
-
-    === "app.py"
-
-        ```{.python pycafe-link hl_lines="12-14"}
-        from vizro import Vizro
-        import vizro.plotly.express as px
-        import vizro.models as vm
-
-        iris = px.data.iris()
-
-        page = vm.Page(
-            title="My first page",
-            components=[
-                vm.Graph(
-                    id="scatter_chart",
-                    figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")
-                ),
-            ],
-            controls=[
-                vm.ControlGroup(
-                    title="Filters",
-                    controls=[
-                        vm.Filter(column="species"),
-                        vm.Filter(column="sepal_length")
-                    ]
-                ),
-                vm.ControlGroup(
-                    title="Parameter",
-                    controls=[
-                        vm.Parameter(
-                            targets=["scatter_chart.title"],
-                            selector=vm.Dropdown(
-                                options=["My scatter chart", "A better title!", "Another title..."],
-                                multi=False,
-                            ),
-                        ),
-                    ]
-                ),
-
-
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - title: My first page
-            components:
-              - id: scatter_chart
-                figure:
-                  _target_: scatter
-                  data_frame: iris
-                  x: sepal_length
-                  y: petal_width
-                  color: species
-                type: graph
-            controls:
-              - type: control_group
-                title: Filters
-                controls:
-                  - column: species
-                    type: filter
-                  - column: sepal_length
-                    type: filter
-              - type: control_group
-                title: Parameter
-                controls:
-                  - type: parameter
-                    targets:
-                      - scatter-chart.title
-                    selector:
-                      options: [My scatter chart, A better title!, Another title...]
-                      multi: false
-                      type: dropdown
-        ```
-
-    === "Result"
-
-        [![ControlGroup]][controlgroup]
-
 [controlgroup]: ../../assets/user_guides/control/control_group.png
 [applycontrolswithabutton]: ../../assets/user_guides/control/apply_controls_with_a_button.gif
+[synccontrols]: ../../assets/user_guides/control/sync_controls.gif

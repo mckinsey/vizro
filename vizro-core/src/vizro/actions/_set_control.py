@@ -15,6 +15,9 @@ from vizro.models.types import ControlType, ModelID
 
 logger = logging.getLogger(__name__)
 
+# A complete range value has exactly two entries: [start, end].
+_RANGE_VALUE_LEN = 2
+
 
 # This defines what a model needs to implement for it to be capable of acting as the trigger of set_control.
 @runtime_checkable
@@ -123,6 +126,8 @@ class set_control(_AbstractAction):
         description="Filter or Parameter component id to be affected by the trigger. "
         "If the control is on a different page to the trigger, then it must have `show_in_url=True`."
     )
+
+    # TODO AM-PP: How about making it optional with default=None.
     value: JsonValue = Field(
         description="Value to take from trigger and send to the `target`. Format depends on the model "
         "that triggers `set_control`."
@@ -181,7 +186,7 @@ class set_control(_AbstractAction):
             self._same_page = False
 
     def function(self, _trigger, _controls_store):
-        from vizro.models import Checklist, RangeSlider
+        from vizro.models import AgGrid, Checklist, Graph, RangeSlider
 
         value = cast(_SupportsSetControl, self._parent_model)._get_value_from_trigger(self.value, _trigger)
 
@@ -203,12 +208,15 @@ class set_control(_AbstractAction):
         if is_multi:
             value = value if isinstance(value, list) else [value]
         elif is_range:
-            if not isinstance(value, list):
-                value = [value, value]
-            elif len(value) == 0:
+            # AgGrid/Graph emit the picked values in selection (click) order, so a multi-value trigger can arrive
+            # with its ends out of order; reorder into [min, max] to form a valid range. A range *selector*
+            # (RangeSlider/DatePicker/DateTimePicker/TimePicker) instead emits an authoritative positional
+            # [start, end] that must be preserved as-is: its ends are not always lexically ordered (e.g. a
+            # DateTimePicker with a timed start and a date-only, whole-day end), so reordering would misplace them.
+            reorder_range = isinstance(self._parent_model, (AgGrid, Graph))
+            value = self._normalize_range_value(value, reorder=reorder_range)
+            if value is None:
                 return self._get_no_update_response()
-            else:
-                value = [min(value), max(value)]  # type: ignore[type-var]
         elif isinstance(value, list):
             # Target is single-value selector but value is list.
             if len(value) == 1:
@@ -235,6 +243,34 @@ class set_control(_AbstractAction):
         if self._same_page:
             return self.control
         return ["vizro_url.pathname", "vizro_url.search"]
+
+    @staticmethod
+    def _normalize_range_value(value, *, reorder):
+        """Shape a trigger value into a range control's [start, end], or None if it must not be synced.
+
+        Returns None (meaning "do not sync") for an empty or incomplete selection. An incomplete range arrives
+        mid-edit as e.g. [date, None] from a DatePicker after its first click, or ["10:00", ""] from a Time/DateTime
+        picker before the second value is set. Such values must not be synced: min/max would raise on None (a 500
+        error) and, for "", would drop the single set value into the wrong slot (["10:00", ""] -> ["", "10:00"], so
+        the start lands in the end). The sync then happens once the second value is selected, exactly as the source.
+
+        ``reorder`` controls the two-element case. A selection-order source (an AgGrid row selection or a Graph
+        point selection) can emit the two ends in the order they were clicked, so ``reorder=True`` sorts them into
+        [min, max] to avoid an inverted [start > end] range that filters to nothing. A range selector emits an
+        authoritative positional [start, end] (``reorder=False``) that is kept as-is, because its ends are not
+        always lexically ordered (e.g. a DateTimePicker whose start carries a time but whose end is a date-only,
+        whole-day value), so sorting would misplace them. More than two entries can only come from a multi-selection
+        source, which has no positional start/end, so it always collapses to the spanning [min, max].
+        """
+        if not isinstance(value, list):
+            return [value, value]
+        if len(value) == 0 or any(item is None or item == "" for item in value):
+            return None
+        if len(value) == 1:
+            return [value[0], value[0]]
+        if reorder or len(value) > _RANGE_VALUE_LEN:
+            return [min(value), max(value)]
+        return value
 
     def _get_no_update_response(self):
         return no_update if self._same_page else (no_update, no_update)
