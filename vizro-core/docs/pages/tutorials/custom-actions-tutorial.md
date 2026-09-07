@@ -346,11 +346,12 @@ def update_cards(use_24_hour_clock, date_format):
     ...
     return {"time_output": f"🕰️ The time is {time}", "date_output": f"📅 The date is {date}"}
 
+
 ...
 
 vm.Action(
-   function=update_cards(use_24_hour_clock="clock_switch", date_format="date_radio_items"),
-   outputs={"time_output": "time_card", "date_output": "date_card"},  # (1)!
+    function=update_cards(use_24_hour_clock="clock_switch", date_format="date_radio_items"),
+    outputs={"time_output": "time_card", "date_output": "date_card"},  # (1)!
 )
 ```
 
@@ -954,6 +955,7 @@ SECRET_TIMEZONE_DATABASE = {
     "Top secret bunker": "Europe/London",
 }
 
+
 @capture("action")
 def update_time_card(use_24_hour_clock, location):
     ...
@@ -964,6 +966,7 @@ Even though we have set `options=["Berlin", "Washington, D.C."]` in our `vm.Drop
 
 ```py
 from dash.exceptions import PreventUpdate
+
 
 @capture("action")
 def update_time_card(use_24_hour_clock, location):
