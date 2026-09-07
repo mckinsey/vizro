@@ -369,11 +369,7 @@ These steps add two KPI cards to the second page:
         ```py
         vm.Figure(
             figure=kpi_card(
-                data_frame=tips,
-                value_column="tip",
-                agg_func="mean",
-                value_format="${value:.2f}",
-                title="Average Tips"
+                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
             )
         )
         ```
@@ -581,12 +577,7 @@ Run the code below to apply the layout to the dashboard page:
     === "Snippet - Layout"
 
         ```py
-        layout = vm.Grid(
-            grid=[[0, 1, -1, -1],
-                  [2, 2, 2, 2],
-                  [2, 2, 2, 2],
-                  [2, 2, 2, 2]]
-        )
+        layout = vm.Grid(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]])
         ```
 
     === "Code - Dashboard"
@@ -950,7 +941,7 @@ Run the code below to apply the layout to the dashboard page:
     === "Snippet - Layout"
 
         ```py
-        layout=vm.Grid(grid=[[0, 1], [2, 2]]),
+        layout = (vm.Grid(grid=[[0, 1], [2, 2]]),)
         ```
 
     === "Code - dashboard"
@@ -1071,7 +1062,7 @@ These steps add a parameter to the dashboard:
     === "Snippet - parameter"
 
         ```py
-        controls=[
+        controls = [
             vm.Parameter(
                 targets=["violin.x", "violin.color", "heatmap.x", "bar.x"],
                 selector=vm.RadioItems(
@@ -1511,7 +1502,7 @@ The following steps create a navigation bar:
     === "Snippet - navigation"
 
         ```py
-        navigation=vm.Navigation(
+        navigation = vm.Navigation(
             nav_selector=vm.NavBar(
                 items=[
                     vm.NavLink(label="Data", pages=["Data"], icon="Database"),
