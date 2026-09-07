@@ -228,9 +228,7 @@ def test_set_control_cascader_path_ag_grid_filters_ag_grid(dash_br):
     _open_cascader_path_page(dash_br)
 
     dash_br.multiple_click(
-        table_ag_grid_cell_path_by_row(
-            cnst.CASCADER_PATH_SET_CONTROL_AG_GRID_SOURCE_ID, row_index=4, col_id="city"
-        ),
+        table_ag_grid_cell_path_by_row(cnst.CASCADER_PATH_SET_CONTROL_AG_GRID_SOURCE_ID, row_index=4, col_id="city"),
         1,
     )
 
