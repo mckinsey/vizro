@@ -1,9 +1,7 @@
-from functools import cached_property
-from typing import Literal, Any
+from typing import Literal
 
 from vizro.actions._update_targets import update_targets
 from vizro.managers import model_manager
-from vizro.models.types import _normalize_action_notifications, _Controls, ModelID
 
 
 class _on_page_load(update_targets):

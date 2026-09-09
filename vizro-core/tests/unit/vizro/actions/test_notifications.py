@@ -13,11 +13,6 @@ from vizro.actions import (
 from vizro.managers import model_manager
 
 
-def _message(notification):
-    """Extracts the rendered text of a normalized notification action."""
-    return notification.function()[0]["message"].children
-
-
 @pytest.fixture
 def managers_one_page_one_button():
     vm.Page(

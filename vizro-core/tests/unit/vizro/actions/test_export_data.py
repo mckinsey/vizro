@@ -228,8 +228,9 @@ def expected_transformed_outputs(request):
 @pytest.fixture
 def expected_first_in_chain_dash_components(request):
     # export_data shows a "progress" notification, so its dash_components also include the two stores that back the
-    # client-side progress toast (_progress_notification_object and _action_parameters). Their `data` payloads carry
-    # a generated notification id, so tests strip `data` when comparing.
+    # client-side progress toast (_progress_notification_object and _action_parameters). The
+    # _progress_notification_object `data` carries a generated notification id (the _action_parameters `data` holds
+    # parameter names), so tests strip `data` when comparing.
     return [
         dcc.Store(id="export_data_action_finished"),
         dcc.Store(id="export_data_action_guarded_trigger"),
