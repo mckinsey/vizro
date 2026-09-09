@@ -36,6 +36,7 @@ def test_html_to_markdown(tmp_path):
         make_html(
             body="""
 <p><a href="../other/" title="<span>tooltip</span>">Other page</a></p>
+<p><a href="../normal/" title="Useful title">Normal link</a></p>
 <a class="PyCafe-launch-button" href="https://py.cafe/">Run in PyCafe</a>
 <pre class="mermaid"><code>graph TD
   A --&gt; B</code></pre>
@@ -51,6 +52,7 @@ def test_html_to_markdown(tmp_path):
     assert 'source_url: "https://vizro.readthedocs.io/en/stable/pages/test/"' in markdown
     assert 'agent_docs: "Index: https://example.com/llms.txt"' in markdown
     assert "[Other page](https://vizro.readthedocs.io/en/stable/pages/other/)" in markdown
+    assert "Useful title" in markdown
     assert "```mermaid\ngraph TD\n  A --> B\n```" in markdown
     assert "Navigation must not leak" not in markdown
     assert "Run in PyCafe" not in markdown
@@ -142,6 +144,31 @@ def test_emit_bundle_and_split_models(tmp_path):
     assert "# Graph\n\nGraph documentation." in model_markdown
     assert "pydantic-model" not in model_markdown
     assert emit_agent_markdown.check_markdown(config, pages) == []
+
+    bundle_path.write_text(bundle.replace("/en/stable/", "/en/1.2.3/"), encoding="utf-8")
+    assert emit_agent_markdown.check_markdown(config, pages) == []
+
+    stale_model = models_page.parent / "removed-model.md"
+    stale_model.write_text("# Removed model", encoding="utf-8")
+    assert any(
+        "unexpected stale per-model Markdown" in failure for failure in emit_agent_markdown.check_markdown(config)
+    )
+
+
+def test_content_without_code_ignores_backticks_inside_fence():
+    markdown = """Before
+```
+{"description": "Example: ```python"}
+<div>HTML inside code</div>
+```
+<aside>HTML outside code</aside>
+"""
+
+    prose = emit_agent_markdown._content_without_code(markdown)
+
+    assert "Before" in prose
+    assert "HTML inside code" not in prose
+    assert "<aside>HTML outside code</aside>" in prose
 
 
 @pytest.mark.parametrize(

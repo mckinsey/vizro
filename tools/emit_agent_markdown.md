@@ -27,7 +27,8 @@ beautifulsoup4>=4.13.0
 markdownify>=1.2.0
 ```
 
-They are build-time dependencies only; they do not need to be added to Kedro's runtime package dependencies.
+The script requires Python 3.10 or newer. These are build-time dependencies only; they do not need to be added to
+Kedro's runtime package dependencies.
 
 ## Add the post-build step
 
@@ -138,17 +139,26 @@ Generation automatically runs all validation. To validate an existing build with
 ```shell
 python tools/emit_agent_markdown.py \
   --site-dir=site \
+  --exclude=reference/components/index.html \
   --canary=reference/api/index.html \
+  --agent-docs="Index: https://docs.kedro.org/en/stable/llms.txt; full documentation: https://docs.kedro.org/en/stable/llms-full.txt" \
+  --bundle=llms-full.txt \
+  --bundle-exclude-prefix=reference/api \
+  --split-models-page=reference/api/models/index.html \
+  --split-models-namespace=kedro.config \
   --check
 ```
 
-Use exactly the same `--exclude`, `--canary`, `--canary-min-chars`, and `--agent-docs` options for generation and checking.
+Use exactly the same options for generation and checking, adding only `--check`. The paths and model namespace above
+are examples; use the values selected for Kedro's documentation structure.
 
 The checks cover:
 
 - a Markdown twin for every detected documentation page;
 - no raw HTML, code-line anchors, or navigation text;
-- a non-empty canary page.
+- a non-empty canary page;
+- complete bundle coverage;
+- an exact, non-stale set of per-model files.
 
 ## Add a local Hatch preview command
 

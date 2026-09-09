@@ -47,16 +47,16 @@ REMOVE_SELECTORS = (
     ".PyCafe-launch-button",
 )
 RAW_HTML_RE = re.compile(
-    r"</?(?:a|article|aside|blockquote|br|button|code|details|div|em|figure|footer|form|h[1-6]|header|"
-    r"hr|i|iframe|img|input|label|li|main|nav|ol|p|pre|script|section|small|span|strong|style|summary|"
-    r"table|tbody|td|th|thead|tr|ul)\b[^>]*>",
+    r"</?[A-Za-z][A-Za-z0-9-]*(?:\s[^<>]*)?/?>",
     flags=re.IGNORECASE,
 )
-FENCED_CODE_RE = re.compile(r"```.*?```", flags=re.DOTALL)
+FENCE_START_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
 INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
 FRONTMATTER_RE = re.compile(r"\A---\n.*?\n---\n\n", flags=re.DOTALL)
 MODEL_ID_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+RTD_VERSION_SEGMENT_RE = re.compile(r"(?<=/en/)[^/]+(?=/)")
 MIN_MODEL_MARKDOWN_CHARS = 100
+MAX_FENCE_INDENT = 3
 
 
 @dataclass(frozen=True)
@@ -101,7 +101,9 @@ def _canonicalize_links(article: Tag, source_url: str) -> None:
     for element in article.select("[title]"):
         # Autorefs stores a large HTML tooltip in ``title``. Markdownify turns
         # that into a Markdown link title, leaking raw HTML into the result.
-        del element["title"]
+        title = str(element["title"])
+        if "<" in title or ">" in title:
+            del element["title"]
     for element, attribute in (
         *((element, "href") for element in article.select("[href]")),
         *((element, "src") for element in article.select("[src]")),
@@ -273,7 +275,30 @@ def emit_model_markdown(config: Config) -> list[Path]:
 
 
 def _content_without_code(markdown: str) -> str:
-    return INLINE_CODE_RE.sub("", FENCED_CODE_RE.sub("", markdown))
+    prose_lines = []
+    fence_character = ""
+    fence_length = 0
+    for line in markdown.splitlines():
+        if fence_character:
+            closing_fence = line.lstrip(" ")
+            indentation = len(line) - len(closing_fence)
+            closing_candidate = closing_fence.strip()
+            if (
+                indentation <= MAX_FENCE_INDENT
+                and len(closing_candidate) >= fence_length
+                and set(closing_candidate) == {fence_character}
+            ):
+                fence_character = ""
+                fence_length = 0
+            continue
+
+        match = FENCE_START_RE.match(line)
+        if match:
+            fence_character = match.group(1)[0]
+            fence_length = len(match.group(1))
+            continue
+        prose_lines.append(line)
+    return INLINE_CODE_RE.sub("", "\n".join(prose_lines))
 
 
 def _check_page_twins(config: Config, documentation: list[Path]) -> list[str]:
@@ -312,16 +337,17 @@ def _check_bundle(config: Config, documentation: list[Path]) -> list[str]:
 
     failures = []
     bundle = bundle_path.read_text(encoding="utf-8")
+    normalized_bundle = RTD_VERSION_SEGMENT_RE.sub("{version}", bundle)
     if RAW_HTML_RE.search(_content_without_code(bundle)):
         failures.append(f"raw HTML outside code: {bundle_path}")
     for html_path in documentation:
         relative_path = html_path.relative_to(config.site_dir)
         source_url = _page_source_url(html_path)
-        source_marker = f"Source: {source_url}"
+        source_marker = RTD_VERSION_SEGMENT_RE.sub("{version}", f"Source: {source_url}")
         is_excluded = _is_excluded_from_bundle(relative_path, config.bundle_excluded_prefixes)
-        if is_excluded and source_marker in bundle:
+        if is_excluded and source_marker in normalized_bundle:
             failures.append(f"excluded page leaked into bundle: {source_url}")
-        elif not is_excluded and source_marker not in bundle:
+        elif not is_excluded and source_marker not in normalized_bundle:
             failures.append(f"page missing from bundle: {source_url}")
     return failures
 
@@ -334,8 +360,16 @@ def _check_model_markdown(config: Config) -> list[str]:
 
     failures = []
     models_html = config.site_dir / config.split_models_page
-    for model_name, anchor, _ in _model_sections(models_html, config.split_models_namespace):
-        model_path = models_html.parent / f"{_model_slug(model_name)}.md"
+    expected = {
+        models_html.parent / f"{_model_slug(model_name)}.md": anchor
+        for model_name, anchor, _ in _model_sections(models_html, config.split_models_namespace)
+    }
+    actual = set(models_html.parent.glob("*.md")) - {models_html.with_suffix(".md")}
+    failures.extend(
+        f"unexpected stale per-model Markdown: {unexpected_path}"
+        for unexpected_path in sorted(actual - expected.keys())
+    )
+    for model_path, anchor in expected.items():
         if not model_path.is_file():
             failures.append(f"missing per-model Markdown: {model_path}")
             continue

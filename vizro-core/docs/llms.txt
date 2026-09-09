@@ -1,6 +1,7 @@
 # Vizro
 
-Vizro is an open-source Python-based toolkit to build data visualization apps.
+> Vizro is an open-source Python-based toolkit to build data visualization apps.
+
 Every Vizro app is defined by a simple configuration, using the high-level categories:
 - Components (charts, tables, cards, KPI indicators, forms and more)
 - Controls (filters and parameters, using a range of selectors such as drop-down menus and sliders)
@@ -11,10 +12,12 @@ Every Vizro app is defined by a simple configuration, using the high-level categ
 Configuration can be written in multiple formats including Pydantic models, JSON, YAML or Python dictionaries for added flexibility of implementation.
 Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke visual formatting and custom components.
 
-Documentation pages return clean markdown when fetched with the
-`Accept: text/markdown, text/html;q=0.9` request header. Always include the `text/html;q=0.9`
-fallback. One page, the Models API reference, exceeds the upstream HTML-to-markdown conversion
-size limit and is served as HTML instead; a markdown-only request for it returns HTTP 406.
+To fetch any documentation page as clean Markdown without a custom header, remove the trailing `/`
+from its canonical URL and append `.md`; use `/index.md` for the documentation root. Content
+negotiation is also available with `Accept: text/markdown, text/html;q=0.9`. The
+[full documentation bundle](https://vizro.readthedocs.io/en/stable/llms-full.txt) provides narrative
+documentation in one request, excluding the API reference. For targeted model API documentation,
+use the per-model files listed below.
 
 ## AGENT QUICK START
 
@@ -95,6 +98,43 @@ size limit and is served as HTML instead; a markdown-only request for it returns
 - [Figure functions](https://vizro.readthedocs.io/en/stable/pages/API-reference/figure-callables/): Figure callable functions API reference
 - [Kedro integration](https://vizro.readthedocs.io/en/stable/pages/API-reference/kedro-integration/): Kedro integration API reference
 - [Deprecations](https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/): Deprecations
+
+## PER-MODEL API REFERENCE
+
+- [Accordion](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/accordion.md): `vizro.models.Accordion` API reference
+- [Action](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/action.md): `vizro.models.Action` API reference
+- [AgGrid](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/ag-grid.md): `vizro.models.AgGrid` API reference
+- [Button](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/button.md): `vizro.models.Button` API reference
+- [Card](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/card.md): `vizro.models.Card` API reference
+- [Cascader](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/cascader.md): `vizro.models.Cascader` API reference
+- [Checklist](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/checklist.md): `vizro.models.Checklist` API reference
+- [Container](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/container.md): `vizro.models.Container` API reference
+- [ControlGroup](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/control-group.md): `vizro.models.ControlGroup` API reference
+- [Dashboard](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/dashboard.md): `vizro.models.Dashboard` API reference
+- [DatePicker](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/date-picker.md): `vizro.models.DatePicker` API reference
+- [DateTimePicker](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/date-time-picker.md): `vizro.models.DateTimePicker` API reference
+- [Dropdown](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/dropdown.md): `vizro.models.Dropdown` API reference
+- [Figure](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/figure.md): `vizro.models.Figure` API reference
+- [Filter](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/filter.md): `vizro.models.Filter` API reference
+- [Flex](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/flex.md): `vizro.models.Flex` API reference
+- [Graph](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/graph.md): `vizro.models.Graph` API reference
+- [Grid](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/grid.md): `vizro.models.Grid` API reference
+- [Layout](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/layout.md): `vizro.models.Layout` API reference
+- [NavBar](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/nav-bar.md): `vizro.models.NavBar` API reference
+- [NavLink](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/nav-link.md): `vizro.models.NavLink` API reference
+- [Navigation](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/navigation.md): `vizro.models.Navigation` API reference
+- [Page](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/page.md): `vizro.models.Page` API reference
+- [Parameter](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/parameter.md): `vizro.models.Parameter` API reference
+- [RadioItems](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/radio-items.md): `vizro.models.RadioItems` API reference
+- [RangeSlider](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/range-slider.md): `vizro.models.RangeSlider` API reference
+- [Slider](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/slider.md): `vizro.models.Slider` API reference
+- [Switch](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/switch.md): `vizro.models.Switch` API reference
+- [Table](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/table.md): `vizro.models.Table` API reference
+- [Tabs](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/tabs.md): `vizro.models.Tabs` API reference
+- [Text](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/text.md): `vizro.models.Text` API reference
+- [TimePicker](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/time-picker.md): `vizro.models.TimePicker` API reference
+- [Tooltip](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/tooltip.md): `vizro.models.Tooltip` API reference
+- [VizroBaseModel](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/vizro-base-model.md): `vizro.models.VizroBaseModel` API reference
 
 ## EXPLANATION AND REFERENCE
 
