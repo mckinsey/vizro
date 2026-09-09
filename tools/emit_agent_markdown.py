@@ -15,6 +15,10 @@ Usage::
     python emit_agent_markdown.py --site-dir=site \
         --exclude=pages/visual-only/index.html \
         --canary=pages/API-reference/models/index.html \
+        --bundle=llms-full.txt \
+        --bundle-exclude-prefix=pages/API-reference \
+        --split-models-page=pages/API-reference/models/index.html \
+        --split-models-namespace=vizro.models \
         --agent-docs="Index: https://example.com/llms.txt"
 
     python emit_agent_markdown.py --site-dir=site --check [same options]
@@ -50,6 +54,9 @@ RAW_HTML_RE = re.compile(
 )
 FENCED_CODE_RE = re.compile(r"```.*?```", flags=re.DOTALL)
 INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
+FRONTMATTER_RE = re.compile(r"\A---\n.*?\n---\n\n", flags=re.DOTALL)
+MODEL_ID_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+MIN_MODEL_MARKDOWN_CHARS = 100
 
 
 @dataclass(frozen=True)
@@ -61,12 +68,17 @@ class Config:
     canary_page: Path | None = None
     canary_min_chars: int = 10_000
     agent_docs: str | None = None
+    bundle_filename: Path | None = None
+    bundle_excluded_prefixes: tuple[Path, ...] = ()
+    split_models_page: Path | None = None
+    split_models_namespace: str | None = None
 
 
 class AgentMarkdownConverter(MarkdownConverter):
     """Markdown converter that retains Mermaid's language marker."""
 
     def convert_pre(self, el: Tag, text: str, parent_tags: set[str]) -> str:
+        """Convert Mermaid ``pre`` elements to explicitly typed code fences."""
         if "mermaid" in el.get("class", []):
             return f"\n```mermaid\n{el.get_text().strip()}\n```\n"
         return super().convert_pre(el, text, parent_tags)
@@ -99,20 +111,15 @@ def _canonicalize_links(article: Tag, source_url: str) -> None:
             element[attribute] = urljoin(source_url, value)
 
 
-def html_to_markdown(html_path: Path, agent_docs: str | None = None) -> str:
-    """Convert one built HTML documentation page to agent-facing Markdown."""
-    soup = BeautifulSoup(html_path.read_text(encoding="utf-8"), "html.parser")
-    title, description, source_url = _metadata(soup, html_path)
-    article = soup.select_one(ARTICLE_SELECTOR)
-    if not isinstance(article, Tag):  # Kept separate from _metadata for type narrowing.
-        raise ValueError(f"{html_path}: expected exactly one documentation article")
-
+def _convert_tag(tag: Tag, source_url: str) -> str:
     for selector in REMOVE_SELECTORS:
-        for element in article.select(selector):
+        for element in tag.select(selector):
             element.decompose()
-    _canonicalize_links(article, source_url)
+    _canonicalize_links(tag, source_url)
+    return AgentMarkdownConverter(heading_style=ATX, bullets="-").convert_soup(tag).strip()
 
-    body = AgentMarkdownConverter(heading_style=ATX, bullets="-").convert_soup(article).strip()
+
+def _frontmatter(title: str, description: str, source_url: str, agent_docs: str | None) -> str:
     frontmatter = (
         "---\n"
         f"title: {json.dumps(title, ensure_ascii=False)}\n"
@@ -121,7 +128,19 @@ def html_to_markdown(html_path: Path, agent_docs: str | None = None) -> str:
     )
     if agent_docs:
         frontmatter += f"agent_docs: {json.dumps(agent_docs)}\n"
-    frontmatter += "---"
+    return f"{frontmatter}---"
+
+
+def html_to_markdown(html_path: Path, agent_docs: str | None = None) -> str:
+    """Convert one built HTML documentation page to agent-facing Markdown."""
+    soup = BeautifulSoup(html_path.read_text(encoding="utf-8"), "html.parser")
+    title, description, source_url = _metadata(soup, html_path)
+    article = soup.select_one(ARTICLE_SELECTOR)
+    if not isinstance(article, Tag):  # Kept separate from _metadata for type narrowing.
+        raise ValueError(f"{html_path}: expected exactly one documentation article")
+
+    body = _convert_tag(article, source_url)
+    frontmatter = _frontmatter(title, description, source_url, agent_docs)
     return f"{frontmatter}\n\n{body}\n"
 
 
@@ -157,14 +176,109 @@ def emit_markdown(config: Config, pages: list[Path] | None = None) -> list[Path]
     return written
 
 
+def _page_source_url(html_path: Path) -> str:
+    soup = BeautifulSoup(html_path.read_text(encoding="utf-8"), "html.parser")
+    canonical = soup.select_one('link[rel="canonical"]')
+    if not canonical or not canonical.get("href"):
+        raise ValueError(f"{html_path}: expected a canonical URL")
+    return str(canonical["href"])
+
+
+def _is_excluded_from_bundle(relative_path: Path, prefixes: tuple[Path, ...]) -> bool:
+    return any(relative_path.is_relative_to(prefix) for prefix in prefixes)
+
+
+def emit_bundle(config: Config, pages: list[Path]) -> Path | None:
+    """Concatenate selected generated pages into an ``llms-full.txt``-style bundle."""
+    if not config.bundle_filename:
+        return None
+
+    bundled_pages = []
+    for html_path in pages:
+        relative_path = html_path.relative_to(config.site_dir)
+        if _is_excluded_from_bundle(relative_path, config.bundle_excluded_prefixes):
+            continue
+        markdown_path = markdown_paths(html_path, config.site_dir)[0]
+        markdown = FRONTMATTER_RE.sub("", markdown_path.read_text(encoding="utf-8"), count=1).strip()
+        heading, separator, remainder = markdown.partition("\n")
+        source_url = _page_source_url(html_path)
+        bundled_pages.append(f"{heading}\n\nSource: {source_url}{separator}{remainder}".strip())
+
+    if not bundled_pages:
+        raise ValueError("No documentation pages remain after applying bundle exclusions")
+
+    output_path = config.site_dir / config.bundle_filename
+    header = (
+        "# Full documentation\n\n"
+        "> Consolidated documentation content. See llms.txt for the curated index and API reference links."
+    )
+    output_path.write_text(f"{header}\n\n---\n\n" + "\n\n---\n\n".join(bundled_pages) + "\n", encoding="utf-8")
+    return output_path
+
+
+def _model_slug(name: str) -> str:
+    first_pass = re.sub(r"(.)([A-Z][a-z]+)", r"\1-\2", name)
+    return re.sub(r"([a-z0-9])([A-Z])", r"\1-\2", first_pass).lower()
+
+
+def _model_sections(html_path: Path, namespace: str) -> list[tuple[str, str, Tag]]:
+    soup = BeautifulSoup(html_path.read_text(encoding="utf-8"), "html.parser")
+    sections = []
+    for section in soup.select("div.doc.doc-object.doc-class"):
+        heading = section.find(["h2", "h3"], class_="doc-heading", recursive=False)
+        anchor = str(heading.get("id", "")) if isinstance(heading, Tag) else ""
+        prefix = f"{namespace}."
+        qualified_name = anchor.removeprefix(prefix)
+        if not anchor.startswith(prefix) or "." in qualified_name or not MODEL_ID_RE.fullmatch(qualified_name):
+            continue
+        sections.append((qualified_name, anchor, section))
+    if not sections:
+        raise ValueError(f"{html_path}: no top-level {namespace} classes found")
+    return sections
+
+
+def emit_model_markdown(config: Config) -> list[Path]:
+    """Split the rendered Models API page into one Markdown file per model."""
+    if not config.split_models_page:
+        return []
+    if not config.split_models_namespace:
+        raise ValueError("split_models_namespace is required when split_models_page is configured")
+
+    html_path = config.site_dir / config.split_models_page
+    page_url = _page_source_url(html_path)
+    output_dir = html_path.parent
+    written = []
+    seen_slugs = set()
+    for model_name, anchor, section in _model_sections(html_path, config.split_models_namespace):
+        slug = _model_slug(model_name)
+        if slug in seen_slugs:
+            raise ValueError(f"{html_path}: duplicate model filename '{slug}.md'")
+        seen_slugs.add(slug)
+
+        heading = section.find(["h2", "h3"], class_="doc-heading", recursive=False)
+        if not isinstance(heading, Tag):
+            raise ValueError(f"{html_path}: model {model_name} has no heading")
+        heading.name = "h1"
+        for label in heading.select(".doc-labels"):
+            label.decompose()
+        source_url = f"{page_url}#{anchor}"
+        body = _convert_tag(section, source_url)
+        first_paragraph = section.find("p")
+        description = first_paragraph.get_text(" ", strip=True) if isinstance(first_paragraph, Tag) else ""
+        markdown = f"{_frontmatter(model_name, description, source_url, config.agent_docs)}\n\n{body}\n"
+        output_path = output_dir / f"{slug}.md"
+        output_path.write_text(markdown, encoding="utf-8")
+        written.append(output_path)
+    return written
+
+
 def _content_without_code(markdown: str) -> str:
     return INLINE_CODE_RE.sub("", FENCED_CODE_RE.sub("", markdown))
 
 
-def check_markdown(config: Config, pages: list[Path] | None = None) -> list[str]:
-    """Return validation failures for generated Markdown twins."""
+def _check_page_twins(config: Config, documentation: list[Path]) -> list[str]:
     failures = []
-    for html_path in pages if pages is not None else documentation_pages(config):
+    for html_path in documentation:
         for markdown_path in markdown_paths(html_path, config.site_dir):
             if not markdown_path.is_file():
                 failures.append(f"missing Markdown twin: {markdown_path}")
@@ -177,15 +291,73 @@ def check_markdown(config: Config, pages: list[Path] | None = None) -> list[str]
                 failures.append(f"code-line anchor leaked into: {markdown_path}")
             if "Skip to content" in prose:
                 failures.append(f"navigation text leaked into: {markdown_path}")
-
-    if config.canary_page:
-        canary_markdown = config.site_dir / config.canary_page.with_suffix(".md")
-        if (
-            not canary_markdown.is_file()
-            or len(canary_markdown.read_text(encoding="utf-8")) < config.canary_min_chars
-        ):
-            failures.append(f"Canary page is missing or unexpectedly empty: {canary_markdown}")
     return failures
+
+
+def _check_canary(config: Config) -> list[str]:
+    if not config.canary_page:
+        return []
+    canary_markdown = config.site_dir / config.canary_page.with_suffix(".md")
+    if not canary_markdown.is_file() or len(canary_markdown.read_text(encoding="utf-8")) < config.canary_min_chars:
+        return [f"Canary page is missing or unexpectedly empty: {canary_markdown}"]
+    return []
+
+
+def _check_bundle(config: Config, documentation: list[Path]) -> list[str]:
+    if not config.bundle_filename:
+        return []
+    bundle_path = config.site_dir / config.bundle_filename
+    if not bundle_path.is_file():
+        return [f"missing documentation bundle: {bundle_path}"]
+
+    failures = []
+    bundle = bundle_path.read_text(encoding="utf-8")
+    if RAW_HTML_RE.search(_content_without_code(bundle)):
+        failures.append(f"raw HTML outside code: {bundle_path}")
+    for html_path in documentation:
+        relative_path = html_path.relative_to(config.site_dir)
+        source_url = _page_source_url(html_path)
+        source_marker = f"Source: {source_url}"
+        is_excluded = _is_excluded_from_bundle(relative_path, config.bundle_excluded_prefixes)
+        if is_excluded and source_marker in bundle:
+            failures.append(f"excluded page leaked into bundle: {source_url}")
+        elif not is_excluded and source_marker not in bundle:
+            failures.append(f"page missing from bundle: {source_url}")
+    return failures
+
+
+def _check_model_markdown(config: Config) -> list[str]:
+    if not config.split_models_page:
+        return []
+    if not config.split_models_namespace:
+        return ["split_models_namespace is required when split_models_page is configured"]
+
+    failures = []
+    models_html = config.site_dir / config.split_models_page
+    for model_name, anchor, _ in _model_sections(models_html, config.split_models_namespace):
+        model_path = models_html.parent / f"{_model_slug(model_name)}.md"
+        if not model_path.is_file():
+            failures.append(f"missing per-model Markdown: {model_path}")
+            continue
+        model_markdown = model_path.read_text(encoding="utf-8")
+        if len(model_markdown) < MIN_MODEL_MARKDOWN_CHARS:
+            failures.append(f"per-model Markdown is unexpectedly empty: {model_path}")
+        if f"#{anchor}" not in model_markdown:
+            failures.append(f"source anchor missing from per-model Markdown: {model_path}")
+        if RAW_HTML_RE.search(_content_without_code(model_markdown)):
+            failures.append(f"raw HTML outside code: {model_path}")
+    return failures
+
+
+def check_markdown(config: Config, pages: list[Path] | None = None) -> list[str]:
+    """Return validation failures for all generated agent-facing files."""
+    documentation = pages if pages is not None else documentation_pages(config)
+    return [
+        *_check_page_twins(config, documentation),
+        *_check_canary(config),
+        *_check_bundle(config, documentation),
+        *_check_model_markdown(config),
+    ]
 
 
 def main() -> int:
@@ -211,6 +383,20 @@ def main() -> int:
         help="Minimum generated size for the canary page (default: 10000).",
     )
     parser.add_argument("--agent-docs", help="Optional agent guidance included in each generated file's frontmatter.")
+    parser.add_argument("--bundle", type=Path, help="Write selected pages to this bundle path relative to site-dir.")
+    parser.add_argument(
+        "--bundle-exclude-prefix",
+        action="append",
+        default=[],
+        type=Path,
+        help="Exclude this site-relative HTML path prefix from the bundle; repeat for multiple prefixes.",
+    )
+    parser.add_argument(
+        "--split-models-page",
+        type=Path,
+        help="Split top-level classes from this site-relative HTML page into sibling Markdown files.",
+    )
+    parser.add_argument("--split-models-namespace", help="Python namespace rendered by --split-models-page.")
     parser.add_argument("--check", action="store_true", help="Validate existing Markdown without regenerating it.")
     args = parser.parse_args()
 
@@ -224,11 +410,21 @@ def main() -> int:
         canary_page=args.canary,
         canary_min_chars=args.canary_min_chars,
         agent_docs=args.agent_docs,
+        bundle_filename=args.bundle,
+        bundle_excluded_prefixes=tuple(args.bundle_exclude_prefix),
+        split_models_page=args.split_models_page,
+        split_models_namespace=args.split_models_namespace,
     )
     pages = documentation_pages(config)
     if not args.check:
         written = emit_markdown(config, pages)
         print(f"Generated {len(written)} Markdown files from {len(pages)} HTML pages.")
+        bundle_path = emit_bundle(config, pages)
+        if bundle_path:
+            print(f"Generated documentation bundle: {bundle_path}.")
+        model_paths = emit_model_markdown(config)
+        if model_paths:
+            print(f"Generated {len(model_paths)} per-model Markdown files.")
 
     failures = check_markdown(config, pages)
     if failures:

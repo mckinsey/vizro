@@ -1,12 +1,12 @@
-r"""Stamps a built ``site/llms.txt`` with the correct ReadTheDocs version slug.
+r"""Stamps built LLM documentation files with the correct ReadTheDocs version slug.
 
 Each Vizro docset's source ``docs/llms.txt`` uses a fixed placeholder URL for
 all of its own page links (e.g. ``https://vizro.readthedocs.io/en/stable/`` for
 ``vizro-core``, ``https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/``
 for ``vizro-mcp``). When ReadTheDocs builds the docs, this script replaces the
 placeholder's trailing version segment with the actual build version
-(``READTHEDOCS_VERSION``) so that links in the built ``llms.txt`` are
-self-consistent with the version that serves them.
+(``READTHEDOCS_VERSION``) so that links in files such as ``llms.txt`` and
+``llms-full.txt`` are self-consistent with the version that serves them.
 
 Intended to run from a docset directory (e.g. ``vizro-mcp/``) immediately after
 ``zensical build``, as part of the docs build step on ReadTheDocs.
@@ -20,7 +20,9 @@ Usage::
 
     python ../tools/stamp_llms_txt.py \
         --placeholder=https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/ \
-        --site-dir=site
+        --site-dir=site \
+        --filename=llms.txt \
+        --filename=llms-full.txt
 """
 # ruff: noqa: T201
 
@@ -56,17 +58,19 @@ def compute_versioned_url(placeholder: str, version: str) -> str:
     return f"{stem}/{version}/"
 
 
-def stamp_llms_txt(placeholder: str, site_dir: Path) -> int:
-    """Replace ``placeholder`` in ``<site_dir>/llms.txt`` with the versioned URL."""
+def stamp_llms_txt(placeholder: str, site_dir: Path, filenames: tuple[str, ...] = ("llms.txt",)) -> int:
+    """Replace ``placeholder`` in selected files with the versioned URL."""
     version = os.environ.get("READTHEDOCS_VERSION")
-    site_llms_txt = site_dir / "llms.txt"
+    site_files = [site_dir / filename for filename in filenames]
 
     if not version:
-        print(f"READTHEDOCS_VERSION not set, leaving {site_llms_txt} unchanged.")
+        print(f"READTHEDOCS_VERSION not set, leaving {len(site_files)} LLM documentation file(s) unchanged.")
         return 0
 
-    if not site_llms_txt.exists():
-        print(f"ERROR: {site_llms_txt} not found. Run after `zensical build` from the docset directory.")
+    missing = [path for path in site_files if not path.exists()]
+    if missing:
+        for path in missing:
+            print(f"ERROR: {path} not found. Run after `zensical build` from the docset directory.")
         return 1
 
     versioned_url = compute_versioned_url(placeholder, version)
@@ -75,15 +79,15 @@ def stamp_llms_txt(placeholder: str, site_dir: Path) -> int:
         print(f"READTHEDOCS_VERSION='{version}' matches placeholder, no stamping needed.")
         return 0
 
-    content = site_llms_txt.read_text(encoding="utf-8")
-
-    if placeholder not in content:
-        print(f"Placeholder '{placeholder}' not found in {site_llms_txt}, nothing to replace.")
-        return 0
-
-    stamped = content.replace(placeholder, versioned_url)
-    site_llms_txt.write_text(stamped, encoding="utf-8")
-    print(f"Stamped {site_llms_txt}: replaced '{placeholder}' with '{versioned_url}'.")
+    stamped_files = 0
+    for site_file in site_files:
+        content = site_file.read_text(encoding="utf-8")
+        if placeholder not in content:
+            print(f"Placeholder '{placeholder}' not found in {site_file}, nothing to replace.")
+            continue
+        site_file.write_text(content.replace(placeholder, versioned_url), encoding="utf-8")
+        stamped_files += 1
+    print(f"Stamped {stamped_files} file(s): replaced '{placeholder}' with '{versioned_url}'.")
     return 0
 
 
@@ -101,12 +105,22 @@ def main() -> int:
         type=Path,
         help="Built docs directory containing llms.txt (default: site).",
     )
+    parser.add_argument(
+        "--filename",
+        action="append",
+        default=None,
+        help="Filename under site-dir to stamp; repeat for multiple files (default: llms.txt).",
+    )
     args = parser.parse_args()
 
     if not args.placeholder.endswith("/"):
         parser.error("--placeholder must end with a trailing slash")
 
-    return stamp_llms_txt(placeholder=args.placeholder, site_dir=args.site_dir)
+    return stamp_llms_txt(
+        placeholder=args.placeholder,
+        site_dir=args.site_dir,
+        filenames=tuple(args.filename or ["llms.txt"]),
+    )
 
 
 if __name__ == "__main__":

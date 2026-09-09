@@ -10,12 +10,17 @@ emit_agent_markdown = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(emit_agent_markdown)
 
 
-def make_html(title="Test page", description="Test description", body="<p>Useful content.</p>"):
+def make_html(
+    title="Test page",
+    description="Test description",
+    body="<p>Useful content.</p>",
+    canonical="https://vizro.readthedocs.io/en/stable/pages/test/",
+):
     return f"""<!doctype html>
 <html>
   <head>
     <meta name="description" content="{description}">
-    <link rel="canonical" href="https://vizro.readthedocs.io/en/stable/pages/test/">
+    <link rel="canonical" href="{canonical}">
   </head>
   <body>
     <nav>Navigation must not leak</nav>
@@ -90,6 +95,53 @@ def test_emit_fails_if_documentation_dom_changes(tmp_path):
     assert emit_agent_markdown.documentation_pages(config) == [html_path]
     with pytest.raises(ValueError, match="expected an article heading and canonical URL"):
         emit_agent_markdown.emit_markdown(config)
+
+
+def test_emit_bundle_and_split_models(tmp_path):
+    root_page = tmp_path / "index.html"
+    root_page.write_text(make_html(title="Home"), encoding="utf-8")
+    models_page = tmp_path / "reference/models/index.html"
+    models_page.parent.mkdir(parents=True)
+    models_page.write_text(
+        make_html(
+            title="Models",
+            canonical="https://example.com/reference/models/",
+            body="""
+<div class="doc doc-object doc-class">
+  <h3 id="example.models.Graph" class="doc doc-heading">
+    <span class="doc doc-object-name doc-class-name">Graph</span>
+    <span class="doc doc-labels">pydantic-model</span>
+  </h3>
+  <div class="doc doc-contents"><p>Graph documentation.</p></div>
+</div>
+""",
+        ),
+        encoding="utf-8",
+    )
+    config = emit_agent_markdown.Config(
+        site_dir=tmp_path,
+        bundle_filename=Path("llms-full.txt"),
+        bundle_excluded_prefixes=(Path("reference"),),
+        split_models_page=Path("reference/models/index.html"),
+        split_models_namespace="example.models",
+    )
+    pages = emit_agent_markdown.documentation_pages(config)
+    emit_agent_markdown.emit_markdown(config, pages)
+
+    bundle_path = emit_agent_markdown.emit_bundle(config, pages)
+    model_paths = emit_agent_markdown.emit_model_markdown(config)
+
+    assert bundle_path == tmp_path / "llms-full.txt"
+    bundle = bundle_path.read_text(encoding="utf-8")
+    assert "Source: https://vizro.readthedocs.io/en/stable/pages/test/" in bundle
+    assert "Models" not in bundle
+    assert "source_url:" not in bundle
+    assert model_paths == [tmp_path / "reference/models/graph.md"]
+    model_markdown = model_paths[0].read_text(encoding="utf-8")
+    assert 'source_url: "https://example.com/reference/models/#example.models.Graph"' in model_markdown
+    assert "# Graph\n\nGraph documentation." in model_markdown
+    assert "pydantic-model" not in model_markdown
+    assert emit_agent_markdown.check_markdown(config, pages) == []
 
 
 @pytest.mark.parametrize(

@@ -85,6 +85,28 @@ If Kedro publishes `llms.txt` or a full documentation bundle, advertise them in 
 
 Omit this option until those URLs exist.
 
+### Generate `llms-full.txt`
+
+Use `--bundle` to concatenate generated pages into a single file. Exclude oversized or separately published API sections with one or more site-relative prefixes:
+
+```shell
+--bundle=llms-full.txt \
+  --bundle-exclude-prefix=reference/api
+```
+
+The bundle strips per-page frontmatter, retains each page's canonical source URL, and separates pages with Markdown dividers.
+
+### Split a large API namespace
+
+If a rendered mkdocstrings page is too large to consume as one file, split its top-level classes into sibling Markdown files:
+
+```shell
+--split-models-page=reference/api/index.html \
+  --split-models-namespace=kedro
+```
+
+For example, a rendered class named `kedro.KedroSession` becomes `reference/api/kedro-session.md`. The combined page remains available.
+
 A complete command might therefore look like:
 
 ```shell
@@ -92,7 +114,21 @@ python tools/emit_agent_markdown.py \
   --site-dir=site \
   --exclude=path/to/standalone/index.html \
   --canary=reference/api/index.html \
+  --bundle=llms-full.txt \
+  --bundle-exclude-prefix=reference/api \
+  --split-models-page=reference/api/index.html \
+  --split-models-namespace=kedro \
   --agent-docs='Index: https://docs.kedro.org/en/stable/llms.txt; full documentation: https://docs.kedro.org/en/stable/llms-full.txt'
+```
+
+For versioned Read the Docs builds, optionally copy Vizro's adjacent `stamp_llms_txt.py` utility and run it after generation:
+
+```shell
+python tools/stamp_llms_txt.py \
+  --placeholder=https://docs.kedro.org/en/stable/ \
+  --site-dir=site \
+  --filename=llms.txt \
+  --filename=llms-full.txt
 ```
 
 ## CI validation
