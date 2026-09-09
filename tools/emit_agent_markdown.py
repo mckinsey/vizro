@@ -27,6 +27,7 @@ Usage::
 
 import argparse
 import json
+import os
 import re
 import sys
 from dataclasses import dataclass
@@ -72,6 +73,8 @@ class Config:
     bundle_excluded_prefixes: tuple[Path, ...] = ()
     split_models_page: Path | None = None
     split_models_namespace: str | None = None
+    url_placeholder: str | None = None
+    published_base_url: str | None = None
 
 
 class AgentMarkdownConverter(MarkdownConverter):
@@ -109,7 +112,18 @@ def _metadata(soup: BeautifulSoup, html_path: Path) -> tuple[str, str, str]:
     )
 
 
-def _canonicalize_links(article: Tag, source_url: str) -> None:
+def _rewrite_url(value: str, url_placeholder: str | None, published_base_url: str | None) -> str:
+    if url_placeholder and published_base_url and value.startswith(url_placeholder):
+        return published_base_url + value.removeprefix(url_placeholder)
+    return value
+
+
+def _canonicalize_links(
+    article: Tag,
+    source_url: str,
+    url_placeholder: str | None = None,
+    published_base_url: str | None = None,
+) -> None:
     for element in article.select("[title]"):
         # Autorefs stores a large HTML tooltip in ``title``. Markdownify turns
         # that into a Markdown link title, leaking raw HTML into the result.
@@ -122,14 +136,20 @@ def _canonicalize_links(article: Tag, source_url: str) -> None:
     ):
         value = element.get(attribute)
         if value and not value.startswith(("data:", "mailto:", "tel:")):
-            element[attribute] = urljoin(source_url, value)
+            resolved = urljoin(source_url, value)
+            element[attribute] = _rewrite_url(resolved, url_placeholder, published_base_url)
 
 
-def _convert_tag(tag: Tag, source_url: str) -> str:
+def _convert_tag(
+    tag: Tag,
+    source_url: str,
+    url_placeholder: str | None = None,
+    published_base_url: str | None = None,
+) -> str:
     for selector in REMOVE_SELECTORS:
         for element in tag.select(selector):
             element.decompose()
-    _canonicalize_links(tag, source_url)
+    _canonicalize_links(tag, source_url, url_placeholder, published_base_url)
     return AgentMarkdownConverter(heading_style=ATX, bullets="-").convert_soup(tag).strip()
 
 
@@ -145,15 +165,23 @@ def _frontmatter(title: str, description: str, source_url: str, agent_docs: str 
     return f"{frontmatter}---"
 
 
-def html_to_markdown(html_path: Path, agent_docs: str | None = None) -> str:
+def html_to_markdown(
+    html_path: Path,
+    agent_docs: str | None = None,
+    url_placeholder: str | None = None,
+    published_base_url: str | None = None,
+) -> str:
     """Convert one built HTML documentation page to agent-facing Markdown."""
     soup = BeautifulSoup(html_path.read_text(encoding="utf-8"), "html.parser")
     title, description, source_url = _metadata(soup, html_path)
+    source_url = _rewrite_url(source_url, url_placeholder, published_base_url)
+    if agent_docs and url_placeholder and published_base_url:
+        agent_docs = agent_docs.replace(url_placeholder, published_base_url)
     article = soup.select_one(ARTICLE_SELECTOR)
     if not isinstance(article, Tag):  # Kept separate from _metadata for type narrowing.
         raise ValueError(f"{html_path}: expected exactly one documentation article")
 
-    body = _convert_tag(article, source_url)
+    body = _convert_tag(article, source_url, url_placeholder, published_base_url)
     frontmatter = _frontmatter(title, description, source_url, agent_docs)
     return f"{frontmatter}\n\n{body}\n"
 
@@ -183,7 +211,12 @@ def emit_markdown(config: Config, pages: list[Path] | None = None) -> list[Path]
     """Generate Markdown twins and return all written paths."""
     written = []
     for html_path in pages if pages is not None else documentation_pages(config):
-        markdown = html_to_markdown(html_path, agent_docs=config.agent_docs)
+        markdown = html_to_markdown(
+            html_path,
+            agent_docs=config.agent_docs,
+            url_placeholder=config.url_placeholder,
+            published_base_url=config.published_base_url,
+        )
         for output_path in markdown_paths(html_path, config.site_dir):
             output_path.write_text(markdown, encoding="utf-8")
             written.append(output_path)
@@ -215,7 +248,7 @@ def emit_bundle(config: Config, pages: list[Path]) -> Path | None:
         markdown_path = markdown_paths(html_path, config.site_dir)[0]
         markdown = FRONTMATTER_RE.sub("", markdown_path.read_text(encoding="utf-8"), count=1).strip()
         heading, separator, remainder = markdown.partition("\n")
-        source_url = _page_source_url(html_path)
+        source_url = _rewrite_url(_page_source_url(html_path), config.url_placeholder, config.published_base_url)
         bundled_pages.append(f"{heading}\n\nSource: {source_url}{separator}{remainder}".strip())
 
     if not bundled_pages:
@@ -259,7 +292,10 @@ def emit_model_markdown(config: Config) -> list[Path]:
         raise ValueError("split_models_namespace is required when split_models_page is configured")
 
     html_path = config.site_dir / config.split_models_page
-    page_url = _page_source_url(html_path)
+    page_url = _rewrite_url(_page_source_url(html_path), config.url_placeholder, config.published_base_url)
+    agent_docs = config.agent_docs
+    if agent_docs and config.url_placeholder and config.published_base_url:
+        agent_docs = agent_docs.replace(config.url_placeholder, config.published_base_url)
     output_dir = html_path.parent
     model_sections = _model_sections(html_path, config.split_models_namespace)
     slugs = [_model_slug(model_name) for model_name, _, _ in model_sections]
@@ -277,10 +313,10 @@ def emit_model_markdown(config: Config) -> list[Path]:
         for label in heading.select(".doc-labels"):
             label.decompose()
         source_url = f"{page_url}#{anchor}"
-        body = _convert_tag(section, source_url)
+        body = _convert_tag(section, source_url, config.url_placeholder, config.published_base_url)
         first_paragraph = section.find("p")
         description = first_paragraph.get_text(" ", strip=True) if isinstance(first_paragraph, Tag) else ""
-        markdown = f"{_frontmatter(model_name, description, source_url, config.agent_docs)}\n\n{body}\n"
+        markdown = f"{_frontmatter(model_name, description, source_url, agent_docs)}\n\n{body}\n"
         output_path = output_dir / f"{slug}.md"
         output_path.write_text(markdown, encoding="utf-8")
         written.append(output_path)
@@ -448,12 +484,23 @@ def main() -> int:
         help="Split top-level classes from this site-relative HTML page into sibling Markdown files.",
     )
     parser.add_argument("--split-models-namespace", help="Python namespace rendered by --split-models-page.")
+    parser.add_argument(
+        "--url-placeholder",
+        help="Canonical documentation base URL to replace with the active Read the Docs build URL.",
+    )
+    parser.add_argument(
+        "--published-base-url",
+        default=os.environ.get("READTHEDOCS_CANONICAL_URL"),
+        help="Active documentation base URL (default: READTHEDOCS_CANONICAL_URL).",
+    )
     parser.add_argument("--check", action="store_true", help="Validate existing Markdown without regenerating it.")
     args = parser.parse_args()
 
     if not args.site_dir.is_dir():
         print(f"ERROR: {args.site_dir} not found. Run after `zensical build` from the docset directory.")
         return 1
+    if args.published_base_url and not args.url_placeholder:
+        parser.error("--url-placeholder is required when an active published base URL is configured")
 
     config = Config(
         site_dir=args.site_dir,
@@ -465,6 +512,8 @@ def main() -> int:
         bundle_excluded_prefixes=tuple(args.bundle_exclude_prefix),
         split_models_page=args.split_models_page,
         split_models_namespace=args.split_models_namespace,
+        url_placeholder=args.url_placeholder,
+        published_base_url=args.published_base_url.rstrip("/") + "/" if args.published_base_url else None,
     )
     pages = documentation_pages(config)
     if not args.check:

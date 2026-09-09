@@ -61,6 +61,40 @@ def test_html_to_markdown(tmp_path):
     assert "<span>" not in markdown
 
 
+@pytest.mark.parametrize(
+    "published_base_url",
+    [
+        "https://vizro--1857.org.readthedocs.build/en/1857/",
+        "https://vizro.readthedocs.io/en/latest/",
+        "https://vizro.readthedocs.io/en/0.2.0/",
+    ],
+)
+def test_html_to_markdown_uses_active_published_base_url(tmp_path, published_base_url):
+    html_path = tmp_path / "index.html"
+    html_path.write_text(
+        make_html(
+            body=(
+                '<a href="../relative/">Relative</a>'
+                '<a href="https://vizro.readthedocs.io/en/stable/pages/absolute/">Absolute</a>'
+            )
+        ),
+        encoding="utf-8",
+    )
+    placeholder = "https://vizro.readthedocs.io/en/stable/"
+
+    markdown = emit_agent_markdown.html_to_markdown(
+        html_path,
+        agent_docs=f"Index: {placeholder}llms.txt",
+        url_placeholder=placeholder,
+        published_base_url=published_base_url,
+    )
+
+    assert f'source_url: "{published_base_url}pages/test/"' in markdown
+    assert f'agent_docs: "Index: {published_base_url}llms.txt"' in markdown
+    assert f"[Relative]({published_base_url}pages/relative/)" in markdown
+    assert f"[Absolute]({published_base_url}pages/absolute/)" in markdown
+
+
 def test_emit_and_check_markdown(tmp_path):
     root_page = tmp_path / "index.html"
     root_page.write_text(make_html(), encoding="utf-8")

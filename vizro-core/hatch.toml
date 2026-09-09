@@ -148,10 +148,10 @@ installer = "uv"
 template = "docs"  # Can't be detached = true since griffe_extensions:DynamicallyInspect needs vizro to be importable.
 
 [envs.docs.scripts]
-agent-markdown-check = "python ../tools/emit_agent_markdown.py --site-dir=site --exclude=pages/components_compendium/index.html --canary=pages/API-reference/models/index.html --agent-docs=\"Index: https://vizro.readthedocs.io/en/stable/llms.txt; full documentation: https://vizro.readthedocs.io/en/stable/llms-full.txt\" --bundle=llms-full.txt --bundle-exclude-prefix=pages/API-reference --split-models-page=pages/API-reference/models/index.html --split-models-namespace=vizro.models --check"
+agent-markdown-check = "python ../tools/emit_agent_markdown.py --site-dir=site --exclude=pages/components_compendium/index.html --canary=pages/API-reference/models/index.html --agent-docs=\"Index: https://vizro.readthedocs.io/en/stable/llms.txt; full documentation: https://vizro.readthedocs.io/en/stable/llms-full.txt\" --bundle=llms-full.txt --bundle-exclude-prefix=pages/API-reference --split-models-page=pages/API-reference/models/index.html --split-models-namespace=vizro.models --url-placeholder=https://vizro.readthedocs.io/en/stable/ --check"
 build = [
   "zensical build --clean",
-  "python ../tools/emit_agent_markdown.py --site-dir=site --exclude=pages/components_compendium/index.html --canary=pages/API-reference/models/index.html --agent-docs=\"Index: https://vizro.readthedocs.io/en/stable/llms.txt; full documentation: https://vizro.readthedocs.io/en/stable/llms-full.txt\" --bundle=llms-full.txt --bundle-exclude-prefix=pages/API-reference --split-models-page=pages/API-reference/models/index.html --split-models-namespace=vizro.models",
+  "python ../tools/emit_agent_markdown.py --site-dir=site --exclude=pages/components_compendium/index.html --canary=pages/API-reference/models/index.html --agent-docs=\"Index: https://vizro.readthedocs.io/en/stable/llms.txt; full documentation: https://vizro.readthedocs.io/en/stable/llms-full.txt\" --bundle=llms-full.txt --bundle-exclude-prefix=pages/API-reference --split-models-page=pages/API-reference/models/index.html --split-models-namespace=vizro.models --url-placeholder=https://vizro.readthedocs.io/en/stable/",
   "python tools/check_llms_txt.py",
   "python ../tools/stamp_llms_txt.py --placeholder=https://vizro.readthedocs.io/en/stable/ --site-dir=site --filename=llms.txt --filename=llms-full.txt",
   "python ../tools/strip_html_leading_whitespace.py --site-dir=site"
