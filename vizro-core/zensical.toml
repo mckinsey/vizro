@@ -150,6 +150,7 @@ repo = "fontawesome/brands/github"
 # markdown_extensions
 # -------------------------
 [project.markdown_extensions.pymdownx.highlight]
+pygments_lang_class = true
 # Keep false: no page uses `linenums`, so these anchors render nothing but do emit an empty
 # <a id="__codelineno-..."> per code line, which becomes `[](#__codelineno-0-1)` noise in the
 # markdown that AI agents fetch.

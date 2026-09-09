@@ -54,7 +54,7 @@ FENCE_START_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
 INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
 FRONTMATTER_RE = re.compile(r"\A---\n.*?\n---\n\n", flags=re.DOTALL)
 MODEL_ID_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
-RTD_VERSION_SEGMENT_RE = re.compile(r"(?<=/en/)[^/]+(?=/)")
+RTD_BASE_URL_RE = re.compile(r"https://[^/\s]+(?:/projects/[^/\s]+)?/en/[^/\s]+/")
 MIN_MODEL_MARKDOWN_CHARS = 100
 MAX_FENCE_INDENT = 3
 
@@ -75,12 +75,24 @@ class Config:
 
 
 class AgentMarkdownConverter(MarkdownConverter):
-    """Markdown converter that retains Mermaid's language marker."""
+    """Markdown converter that retains fenced-code language markers."""
 
     def convert_pre(self, el: Tag, text: str, parent_tags: set[str]) -> str:
-        """Convert Mermaid ``pre`` elements to explicitly typed code fences."""
-        if "mermaid" in el.get("class", []):
+        """Convert highlighted ``pre`` elements to explicitly typed code fences."""
+        code = el.find("code", recursive=False)
+        candidates = (el.parent, el, code)
+        classes = [
+            class_name
+            for candidate in candidates
+            if isinstance(candidate, Tag)
+            for class_name in candidate.get("class", [])
+        ]
+        if "mermaid" in classes:
             return f"\n```mermaid\n{el.get_text().strip()}\n```\n"
+        language_class = next((class_name for class_name in classes if class_name.startswith("language-")), None)
+        if language_class:
+            language = language_class.removeprefix("language-")
+            return f"\n```{language}\n{el.get_text().strip()}\n```\n"
         return super().convert_pre(el, text, parent_tags)
 
 
@@ -249,14 +261,15 @@ def emit_model_markdown(config: Config) -> list[Path]:
     html_path = config.site_dir / config.split_models_page
     page_url = _page_source_url(html_path)
     output_dir = html_path.parent
-    written = []
-    seen_slugs = set()
-    for model_name, anchor, section in _model_sections(html_path, config.split_models_namespace):
-        slug = _model_slug(model_name)
-        if slug in seen_slugs:
-            raise ValueError(f"{html_path}: duplicate model filename '{slug}.md'")
-        seen_slugs.add(slug)
+    model_sections = _model_sections(html_path, config.split_models_namespace)
+    slugs = [_model_slug(model_name) for model_name, _, _ in model_sections]
+    if "index" in slugs:
+        raise ValueError(f"{html_path}: model filename 'index.md' is reserved for the combined page")
+    if len(slugs) != len(set(slugs)):
+        raise ValueError(f"{html_path}: duplicate model filename after slug conversion")
 
+    written = []
+    for (model_name, anchor, section), slug in zip(model_sections, slugs, strict=True):
         heading = section.find(["h2", "h3"], class_="doc-heading", recursive=False)
         if not isinstance(heading, Tag):
             raise ValueError(f"{html_path}: model {model_name} has no heading")
@@ -337,17 +350,18 @@ def _check_bundle(config: Config, documentation: list[Path]) -> list[str]:
 
     failures = []
     bundle = bundle_path.read_text(encoding="utf-8")
-    normalized_bundle = RTD_VERSION_SEGMENT_RE.sub("{version}", bundle)
+    normalized_bundle = RTD_BASE_URL_RE.sub("{docs-base}/", bundle)
+    bundle_source_markers = {line for line in normalized_bundle.splitlines() if line.startswith("Source: ")}
     if RAW_HTML_RE.search(_content_without_code(bundle)):
         failures.append(f"raw HTML outside code: {bundle_path}")
     for html_path in documentation:
         relative_path = html_path.relative_to(config.site_dir)
         source_url = _page_source_url(html_path)
-        source_marker = RTD_VERSION_SEGMENT_RE.sub("{version}", f"Source: {source_url}")
+        source_marker = RTD_BASE_URL_RE.sub("{docs-base}/", f"Source: {source_url}")
         is_excluded = _is_excluded_from_bundle(relative_path, config.bundle_excluded_prefixes)
-        if is_excluded and source_marker in normalized_bundle:
+        if is_excluded and source_marker in bundle_source_markers:
             failures.append(f"excluded page leaked into bundle: {source_url}")
-        elif not is_excluded and source_marker not in normalized_bundle:
+        elif not is_excluded and source_marker not in bundle_source_markers:
             failures.append(f"page missing from bundle: {source_url}")
     return failures
 
@@ -364,7 +378,10 @@ def _check_model_markdown(config: Config) -> list[str]:
         models_html.parent / f"{_model_slug(model_name)}.md": anchor
         for model_name, anchor, _ in _model_sections(models_html, config.split_models_namespace)
     }
-    actual = set(models_html.parent.glob("*.md")) - {models_html.with_suffix(".md")}
+    combined_page = models_html.with_suffix(".md")
+    if combined_page in expected:
+        return [f"per-model filename is reserved for the combined page: {combined_page}"]
+    actual = set(models_html.parent.glob("*.md")) - {combined_page}
     failures.extend(
         f"unexpected stale per-model Markdown: {unexpected_path}"
         for unexpected_path in sorted(actual - expected.keys())

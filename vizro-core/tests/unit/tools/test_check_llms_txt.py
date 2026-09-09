@@ -35,7 +35,7 @@ def test_check_generated_and_authored_links(built_docs):
     write_llms_txt(
         built_docs,
         [
-            f"{BASE_URL}pages/guide/",
+            f"{BASE_URL}pages/guide.md",
             f"{BASE_URL}llms-full.txt",
             f"{BASE_URL}pages/API-reference/models/graph.md",
         ],

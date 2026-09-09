@@ -16,6 +16,7 @@ def test_stamp_multiple_files(tmp_path, monkeypatch):
     llms_txt.write_text(f"{PLACEHOLDER}pages/guide/", encoding="utf-8")
     llms_full_txt.write_text(f"Source: {PLACEHOLDER}pages/guide/", encoding="utf-8")
     monkeypatch.setenv("READTHEDOCS_VERSION", "0.2.0")
+    monkeypatch.delenv("READTHEDOCS_CANONICAL_URL", raising=False)
 
     result = stamp_llms_txt.stamp_llms_txt(
         PLACEHOLDER,
@@ -28,10 +29,24 @@ def test_stamp_multiple_files(tmp_path, monkeypatch):
     assert llms_full_txt.read_text(encoding="utf-8") == "Source: https://vizro.readthedocs.io/en/0.2.0/pages/guide/"
 
 
+def test_stamp_uses_pull_request_canonical_url(tmp_path, monkeypatch):
+    llms_txt = tmp_path / "llms.txt"
+    llms_txt.write_text(f"{PLACEHOLDER}pages/guide/", encoding="utf-8")
+    monkeypatch.setenv("READTHEDOCS_VERSION", "1857")
+    monkeypatch.setenv(
+        "READTHEDOCS_CANONICAL_URL",
+        "https://vizro--1857.org.readthedocs.build/en/1857/",
+    )
+
+    assert stamp_llms_txt.stamp_llms_txt(PLACEHOLDER, tmp_path) == 0
+    assert llms_txt.read_text(encoding="utf-8") == "https://vizro--1857.org.readthedocs.build/en/1857/pages/guide/"
+
+
 def test_stamp_validates_all_files_before_writing(tmp_path, monkeypatch):
     llms_txt = tmp_path / "llms.txt"
     llms_txt.write_text(PLACEHOLDER, encoding="utf-8")
     monkeypatch.setenv("READTHEDOCS_VERSION", "0.2.0")
+    monkeypatch.delenv("READTHEDOCS_CANONICAL_URL", raising=False)
 
     result = stamp_llms_txt.stamp_llms_txt(
         PLACEHOLDER,

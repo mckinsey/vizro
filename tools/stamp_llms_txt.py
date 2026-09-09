@@ -4,9 +4,10 @@ Each Vizro docset's source ``docs/llms.txt`` uses a fixed placeholder URL for
 all of its own page links (e.g. ``https://vizro.readthedocs.io/en/stable/`` for
 ``vizro-core``, ``https://vizro.readthedocs.io/projects/vizro-mcp/en/latest/``
 for ``vizro-mcp``). When ReadTheDocs builds the docs, this script replaces the
-placeholder's trailing version segment with the actual build version
-(``READTHEDOCS_VERSION``) so that links in files such as ``llms.txt`` and
-``llms-full.txt`` are self-consistent with the version that serves them.
+placeholder with the build's canonical URL (``READTHEDOCS_CANONICAL_URL``).
+This keeps production and pull-request preview links self-consistent with the
+version and host that serve them. ``READTHEDOCS_VERSION`` is retained as a
+fallback for older Read the Docs environments.
 
 Intended to run from a docset directory (e.g. ``vizro-mcp/``) immediately after
 ``zensical build``, as part of the docs build step on ReadTheDocs.
@@ -61,6 +62,7 @@ def compute_versioned_url(placeholder: str, version: str) -> str:
 def stamp_llms_txt(placeholder: str, site_dir: Path, filenames: tuple[str, ...] = ("llms.txt",)) -> int:
     """Replace ``placeholder`` in selected files with the versioned URL."""
     version = os.environ.get("READTHEDOCS_VERSION")
+    canonical_url = os.environ.get("READTHEDOCS_CANONICAL_URL")
     site_files = [site_dir / filename for filename in filenames]
 
     if not version:
@@ -73,7 +75,7 @@ def stamp_llms_txt(placeholder: str, site_dir: Path, filenames: tuple[str, ...] 
             print(f"ERROR: {path} not found. Run after `zensical build` from the docset directory.")
         return 1
 
-    versioned_url = compute_versioned_url(placeholder, version)
+    versioned_url = canonical_url.rstrip("/") + "/" if canonical_url else compute_versioned_url(placeholder, version)
 
     if versioned_url == placeholder:
         print(f"READTHEDOCS_VERSION='{version}' matches placeholder, no stamping needed.")

@@ -40,6 +40,8 @@ def url_to_local_path(url: str) -> Path | None:
     relative = url[len(DOCS_BASE_URL) :]
     if relative == "llms-full.txt" or (relative.startswith(f"{GENERATED_MODELS_DIR}/") and relative.endswith(".md")):
         return SITE_DIR / relative
+    if relative.endswith(".md"):
+        return DOCS_DIR / relative
     return DOCS_DIR / (relative.rstrip("/") + ".md")
 
 

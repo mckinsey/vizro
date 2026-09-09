@@ -40,6 +40,7 @@ def test_html_to_markdown(tmp_path):
 <a class="PyCafe-launch-button" href="https://py.cafe/">Run in PyCafe</a>
 <pre class="mermaid"><code>graph TD
   A --&gt; B</code></pre>
+<div class="language-python highlight"><pre><code>print("Hello")</code></pre></div>
 """,
         ),
         encoding="utf-8",
@@ -54,6 +55,7 @@ def test_html_to_markdown(tmp_path):
     assert "[Other page](https://vizro.readthedocs.io/en/stable/pages/other/)" in markdown
     assert "Useful title" in markdown
     assert "```mermaid\ngraph TD\n  A --> B\n```" in markdown
+    assert '```python\nprint("Hello")\n```' in markdown
     assert "Navigation must not leak" not in markdown
     assert "Run in PyCafe" not in markdown
     assert "<span>" not in markdown
@@ -145,7 +147,22 @@ def test_emit_bundle_and_split_models(tmp_path):
     assert "pydantic-model" not in model_markdown
     assert emit_agent_markdown.check_markdown(config, pages) == []
 
-    bundle_path.write_text(bundle.replace("/en/stable/", "/en/1.2.3/"), encoding="utf-8")
+    bundle_path.write_text(
+        bundle.replace(
+            "Source: https://vizro.readthedocs.io/en/stable/pages/test/",
+            "Source: https://vizro.readthedocs.io/en/stable/pages/test/child/",
+        ),
+        encoding="utf-8",
+    )
+    assert any("page missing from bundle" in failure for failure in emit_agent_markdown.check_markdown(config, pages))
+
+    bundle_path.write_text(
+        bundle.replace(
+            "https://vizro.readthedocs.io/en/stable/",
+            "https://vizro--1857.org.readthedocs.build/en/1857/",
+        ),
+        encoding="utf-8",
+    )
     assert emit_agent_markdown.check_markdown(config, pages) == []
 
     stale_model = models_page.parent / "removed-model.md"
@@ -153,6 +170,37 @@ def test_emit_bundle_and_split_models(tmp_path):
     assert any(
         "unexpected stale per-model Markdown" in failure for failure in emit_agent_markdown.check_markdown(config)
     )
+
+
+def test_split_models_rejects_reserved_index_filename(tmp_path):
+    models_page = tmp_path / "reference/models/index.html"
+    models_page.parent.mkdir(parents=True)
+    models_page.write_text(
+        make_html(
+            title="Models",
+            canonical="https://example.com/reference/models/",
+            body="""
+<div class="doc doc-object doc-class">
+  <h3 id="example.models.Index" class="doc doc-heading">Index</h3>
+  <div class="doc doc-contents"><p>Index documentation.</p></div>
+</div>
+""",
+        ),
+        encoding="utf-8",
+    )
+    config = emit_agent_markdown.Config(
+        site_dir=tmp_path,
+        split_models_page=Path("reference/models/index.html"),
+        split_models_namespace="example.models",
+    )
+    emit_agent_markdown.emit_markdown(config)
+    combined_markdown = models_page.with_suffix(".md").read_text(encoding="utf-8")
+
+    with pytest.raises(ValueError, match=r"'index\.md' is reserved"):
+        emit_agent_markdown.emit_model_markdown(config)
+
+    assert models_page.with_suffix(".md").read_text(encoding="utf-8") == combined_markdown
+    assert any("reserved for the combined page" in failure for failure in emit_agent_markdown.check_markdown(config))
 
 
 def test_content_without_code_ignores_backticks_inside_fence():
