@@ -65,8 +65,11 @@ def stamp_llms_txt(placeholder: str, site_dir: Path, filenames: tuple[str, ...] 
     canonical_url = os.environ.get("READTHEDOCS_CANONICAL_URL")
     site_files = [site_dir / filename for filename in filenames]
 
-    if not version:
-        print(f"READTHEDOCS_VERSION not set, leaving {len(site_files)} LLM documentation file(s) unchanged.")
+    if not canonical_url and not version:
+        print(
+            "READTHEDOCS_CANONICAL_URL and READTHEDOCS_VERSION are not set, "
+            f"leaving {len(site_files)} LLM documentation file(s) unchanged."
+        )
         return 0
 
     missing = [path for path in site_files if not path.exists()]
@@ -75,10 +78,14 @@ def stamp_llms_txt(placeholder: str, site_dir: Path, filenames: tuple[str, ...] 
             print(f"ERROR: {path} not found. Run after `zensical build` from the docset directory.")
         return 1
 
-    versioned_url = canonical_url.rstrip("/") + "/" if canonical_url else compute_versioned_url(placeholder, version)
+    if canonical_url:
+        versioned_url = canonical_url.rstrip("/") + "/"
+    else:
+        assert version
+        versioned_url = compute_versioned_url(placeholder, version)
 
     if versioned_url == placeholder:
-        print(f"READTHEDOCS_VERSION='{version}' matches placeholder, no stamping needed.")
+        print("Read the Docs build URL matches placeholder, no stamping needed.")
         return 0
 
     stamped_files = 0
