@@ -221,6 +221,10 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-outer-border-color: #141721;
   --border-stroke-tertiary: rgba(255, 255, 255, 0.16);
   --border-stroke-divider: rgba(255, 255, 255, 0.08);
+  --bg-trend-positive: #2dd4bf;
+  --text-fg-trend-negative: #fb7185;
+  --bs-kpi-card-bg: #1f222e;
+  --text-fg-primary: rgba(255, 255, 255, 0.88);
 }
 
 [data-bs-theme="light"] {
@@ -242,6 +246,10 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-dropdown-bg-color: #ffffff;
   --bs-outer-border-color: #d8dadd;
   --border-stroke-tertiary: rgba(20, 23, 33, 0.16);
+  --bg-trend-positive: #0f766e;
+  --text-fg-trend-negative: #be123c;
+  --bs-kpi-card-bg: #fafafb;
+  --text-fg-primary: rgba(20, 23, 33, 0.88);
 
   /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white. */
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
@@ -269,7 +277,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 /* CARDS */
 .card {
-  background-color: var(--bs-card-bg);
+  background-color: var(--bs-kpi-card-bg);
   margin: 4px;
   overflow: scroll;
   padding: 0.75rem;
