@@ -1,5 +1,6 @@
 """Contains unwrapped KPI card functions (suitable to use in pure Dash app)."""
 
+import math
 from typing import Literal
 
 import dash_bootstrap_components as dbc
@@ -74,12 +75,12 @@ def kpi_card(  # noqa: PLR0913
 
     header = dbc.CardHeader(
         [
-            html.P(validate_icon(icon), className="material-symbols-outlined") if icon else None,
             html.H4(title, className="card-kpi-title"),
         ]
     )
+    icon = html.P(validate_icon(icon), className="material-symbols-outlined") if icon else None
     body = dbc.CardBody(value_format.format(value=value))
-    return dbc.Card([header, body], class_name=_kpi_card_class_name(size))
+    return dbc.Card([header, icon, body], class_name=_kpi_card_class_name(size))
 
 
 def kpi_card_reference(  # noqa: PLR0913
@@ -152,25 +153,26 @@ def kpi_card_reference(  # noqa: PLR0913
     title = title or f"{agg_func} {value_column}".title()
     value, reference = data_frame[[value_column, reference_column]].agg(agg_func)
     delta = value - reference
-    delta_relative = delta / reference if reference else 0.0
+    delta_relative = delta / reference if reference else math.nan
     pos_color, neg_color = ("color-neg", "color-pos") if reverse_color else ("color-pos", "color-neg")
     footer_class = pos_color if delta > 0 else neg_color if delta < 0 else ""
 
     header = dbc.CardHeader(
         [
-            html.P(validate_icon(icon), className="material-symbols-outlined") if icon else None,
             html.H4(title, className="card-kpi-title"),
         ]
     )
     body = dbc.CardBody(
         value_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)
     )
+
+    icon = html.P(validate_icon(icon), className="material-symbols-outlined") if icon else None
     footer = dbc.CardFooter(
         [
             html.Span(
                 [
                     html.Span(
-                        "arrow_upward_alt" if delta > 0 else "arrow_downward_alt" if delta < 0 else "arrow_right_alt",
+                        "arrow_circle_up" if delta > 0 else "arrow_circle_down" if delta < 0 else "do_not_disturb_on",
                         className="material-symbols-outlined",
                     ),
                     html.Span(
@@ -188,4 +190,4 @@ def kpi_card_reference(  # noqa: PLR0913
         ],
         class_name=footer_class,
     )
-    return dbc.Card([header, body, footer], class_name=_kpi_card_class_name(size))
+    return dbc.Card([header, icon, body, footer], class_name=_kpi_card_class_name(size))

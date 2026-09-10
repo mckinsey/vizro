@@ -2,7 +2,7 @@
 
 import vizro.models as vm
 from vizro import Vizro
-from vizro.figures import kpi_card_reference
+from vizro.figures import kpi_card_reference, kpi_card
 from functools import reduce
 import numpy as np
 from typing import List, Optional
@@ -223,10 +223,10 @@ kpi_banner = vm.Container(
                 value_column="Total Complaints_2019",
                 reference_column="Total Complaints_2018",
                 title="Total Complaints",
-                value_format="{value:.0f}",
+                value_format="{value:,}",
                 reference_format="vs. 2018 ({reference:.0f})",
                 icon="person",
-                size="default",
+                size="compact",
                 reverse_color=True,
             ),
         ),
@@ -251,31 +251,40 @@ kpi_banner = vm.Container(
                 value_format="{value:.1f}%",
                 reference_format="vs. 2018 ({reference:.1f}%)",
                 icon="timer",
+                size="large",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=df_kpi_cards,
+                value_column="Total Complaints_2019",
+                value_format="{value:,}",
+                # agg_func="count",
+                icon="person",
+                title="Total Complaints 2019",
+                size="compact",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=df_kpi_cards,
+                value_column="Total Complaints_2019",
+                value_format="{value:,}",
+                # agg_func="count",
+                icon="person",
+                title="Total Complaints 2019",
                 size="default",
             )
         ),
         vm.Figure(
-            figure=kpi_card_reference(
-                df_kpi_cards,
-                value_column="Closed w/o cost_2019",
-                reference_column="Closed w/o cost_2018",
-                title="Closed w/o cost",
-                value_format="{value:.1f}%",
-                reference_format="vs. 2018 ({reference:.1f}%)",
-                icon="payments",
-                size="default",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card_reference(
-                df_kpi_cards,
-                value_column="Consumer disputed_2019",
-                reference_column="Consumer disputed_2018",
-                title="Consumer disputed",
-                value_format="{value:.1f}%",
-                reference_format="vs. 2018 ({reference:.1f}%)",
-                icon="sentiment_dissatisfied",
-                size="default",
+            figure=kpi_card(
+                data_frame=df_kpi_cards,
+                value_column="Total Complaints_2019",
+                value_format="{value:,}",
+                # agg_func="count",
+                icon="person",
+                title="Total Complaints 2019",
+                size="large",
             )
         ),
     ],
@@ -303,6 +312,7 @@ page_exec = vm.Page(
     title="Executive View",
     layout=vm.Grid(
         grid=[
+            [0, 0],
             [0, 0],
             [0, 0],
             [1, 2],

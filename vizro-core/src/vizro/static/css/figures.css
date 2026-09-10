@@ -1,15 +1,6 @@
 .card-kpi {
-  background-color: inherit !important;
-  border-left: 4px solid var(--bs-gray);
-  box-shadow: var(--bs-box-shadow);
   height: 100%;
   padding: 0.75rem;
-}
-
-/* `--bs-box-shadow` is a dark, low-opacity color with no dark-theme override anywhere in the codebase, so it's
-invisible against a dark background. Swap in a lighter, higher-opacity shadow so elevation still reads in dark mode. */
-[data-bs-theme="dark"] .card-kpi {
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.6);
 }
 
 /* We currently ship this CSS file with the package, so the font definitions need to live here at the moment.
@@ -41,11 +32,8 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .card-kpi .material-symbols-outlined {
-  margin: auto 0;
-}
-
-.card-kpi .card-header .material-symbols-outlined {
   color: var(--bs-secondary-color);
+  margin: auto 0;
 }
 
 /* This should be replaced, when the bootstrap theme is finalized. Currently our font tokens don't match with the
@@ -72,17 +60,16 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 .card-kpi .card-header {
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
-  margin-bottom: 0.375rem;
+  margin-bottom: 0.5rem;
 }
 
 .card-kpi .card-body {
   align-items: center;
-  color: var(--bs-body-color);
+  color: var(--text-fg-primary);
   display: flex;
   flex-grow: 1;
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 40px;
+  font-weight: 300;
   margin-bottom: 0.5rem;
 }
 
@@ -91,7 +78,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   color: var(--bs-secondary-color);
   display: flex;
   flex-wrap: wrap;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 400;
   gap: 0.375rem;
   width: fit-content;
@@ -101,6 +88,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 .card-kpi .card-kpi-delta-chip {
   align-items: center;
   display: inline-flex;
+  font-size: 16px;
   font-weight: 600;
   gap: 0.25rem;
   padding: 0.125rem 0.375rem;
@@ -110,28 +98,26 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   font-size: 1.1rem;
 }
 
+.card-kpi-large .card-kpi-delta-chip {
+  font-size: 20px;
+}
+
+.card-kpi-compact .card-kpi-delta-chip {
+  font-size: 14px;
+}
+
 .card-kpi .color-pos.card-footer .card-kpi-delta-chip {
-  background-color: var(--bs-success-bg-subtle);
-  color: var(--bs-success);
+  color: var(--bg-trend-positive);
 }
 
 .card-kpi .color-neg.card-footer .card-kpi-delta-chip {
-  background-color: var(--bs-danger-bg-subtle);
-  color: var(--bs-danger);
+  color: var(--text-fg-trend-negative);
 }
 
 /* The supporting comparison text (e.g. "vs. reference (...)") stays muted, so it doesn't compete with the delta. */
 .card-kpi .card-kpi-reference-text {
   color: var(--bs-secondary-color);
   font-weight: 400;
-}
-
-.card-kpi:has(.color-pos) {
-  border-left: 4px solid var(--bs-success);
-}
-
-.card-kpi:has(.color-neg) {
-  border-left: 4px solid var(--bs-danger);
 }
 
 .is-clickable > .card-kpi {
@@ -153,7 +139,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .card-kpi-compact .card-body {
-  font-size: 1.5rem;
+  font-size: 32px;
   margin-bottom: 0.375rem;
 }
 
@@ -170,9 +156,17 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .card-kpi-large .card-body {
-  font-size: 2.5rem;
+  font-size: 56px;
 }
 
 .card-kpi-large .card-footer {
   font-size: 1rem;
+}
+
+.card-kpi-large .card-footer .material-symbols-outlined {
+  font-size: 32px;
+}
+
+.card-kpi-compact .card-footer .material-symbols-outlined {
+  font-size: 16px;
 }
