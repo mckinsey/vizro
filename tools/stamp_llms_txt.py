@@ -12,10 +12,10 @@ fallback for older Read the Docs environments.
 Intended to run from a docset directory (e.g. ``vizro-mcp/``) immediately after
 ``zensical build``, as part of the docs build step on ReadTheDocs.
 
-If ``READTHEDOCS_VERSION`` is not set (e.g. during a local build), the file is
-left unchanged. If the computed versioned URL is identical to the placeholder
-(e.g. ``stable`` build of vizro-core, ``latest`` build of vizro-mcp), the file
-is also left unchanged.
+If neither Read the Docs environment variable is set (e.g. during a local
+build), the files are left unchanged. If the computed versioned URL is
+identical to the placeholder (e.g. ``stable`` build of vizro-core, ``latest``
+build of vizro-mcp), the files are also left unchanged.
 
 Usage::
 

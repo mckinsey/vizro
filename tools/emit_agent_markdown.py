@@ -118,6 +118,17 @@ def _rewrite_url(value: str, url_placeholder: str | None, published_base_url: st
     return value
 
 
+def _resolve_published_base_url(explicit_url: str | None, url_placeholder: str | None) -> str | None:
+    """Return the active documentation base URL, preferring the most precise source."""
+    published_base_url = explicit_url or os.environ.get("READTHEDOCS_CANONICAL_URL")
+    if not published_base_url:
+        version = os.environ.get("READTHEDOCS_VERSION")
+        if version and url_placeholder:
+            stem = url_placeholder.rstrip("/").rsplit("/", 1)[0]
+            published_base_url = f"{stem}/{version}/"
+    return published_base_url.rstrip("/") + "/" if published_base_url else None
+
+
 def _canonicalize_links(
     article: Tag,
     source_url: str,
@@ -490,8 +501,10 @@ def main() -> int:
     )
     parser.add_argument(
         "--published-base-url",
-        default=os.environ.get("READTHEDOCS_CANONICAL_URL"),
-        help="Active documentation base URL (default: READTHEDOCS_CANONICAL_URL).",
+        help=(
+            "Active documentation base URL (default: READTHEDOCS_CANONICAL_URL, or the URL placeholder "
+            "with READTHEDOCS_VERSION substituted)."
+        ),
     )
     parser.add_argument("--check", action="store_true", help="Validate existing Markdown without regenerating it.")
     args = parser.parse_args()
@@ -499,7 +512,8 @@ def main() -> int:
     if not args.site_dir.is_dir():
         print(f"ERROR: {args.site_dir} not found. Run after `zensical build` from the docset directory.")
         return 1
-    if args.published_base_url and not args.url_placeholder:
+    published_base_url = _resolve_published_base_url(args.published_base_url, args.url_placeholder)
+    if published_base_url and not args.url_placeholder:
         parser.error("--url-placeholder is required when an active published base URL is configured")
 
     config = Config(
@@ -513,7 +527,7 @@ def main() -> int:
         split_models_page=args.split_models_page,
         split_models_namespace=args.split_models_namespace,
         url_placeholder=args.url_placeholder,
-        published_base_url=args.published_base_url.rstrip("/") + "/" if args.published_base_url else None,
+        published_base_url=published_base_url,
     )
     pages = documentation_pages(config)
     if not args.check:

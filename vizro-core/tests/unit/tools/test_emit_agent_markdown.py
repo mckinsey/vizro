@@ -1,4 +1,5 @@
 import importlib.util
+import sys
 from pathlib import Path
 
 import pytest
@@ -93,6 +94,33 @@ def test_html_to_markdown_uses_active_published_base_url(tmp_path, published_bas
     assert f'agent_docs: "Index: {published_base_url}llms.txt"' in markdown
     assert f"[Relative]({published_base_url}pages/relative/)" in markdown
     assert f"[Absolute]({published_base_url}pages/absolute/)" in markdown
+
+
+def test_main_uses_readthedocs_version_fallback(tmp_path, monkeypatch):
+    placeholder = "https://vizro.readthedocs.io/en/stable/"
+    html_path = tmp_path / "index.html"
+    html_path.write_text(
+        make_html(body='<a href="../other/">Other page</a>'),
+        encoding="utf-8",
+    )
+    monkeypatch.delenv("READTHEDOCS_CANONICAL_URL", raising=False)
+    monkeypatch.setenv("READTHEDOCS_VERSION", "0.2.0")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "emit_agent_markdown.py",
+            f"--site-dir={tmp_path}",
+            f"--url-placeholder={placeholder}",
+            f"--agent-docs=Index: {placeholder}llms.txt",
+        ],
+    )
+
+    assert emit_agent_markdown.main() == 0
+    markdown = html_path.with_suffix(".md").read_text(encoding="utf-8")
+    assert 'source_url: "https://vizro.readthedocs.io/en/0.2.0/pages/test/"' in markdown
+    assert 'agent_docs: "Index: https://vizro.readthedocs.io/en/0.2.0/llms.txt"' in markdown
+    assert "[Other page](https://vizro.readthedocs.io/en/0.2.0/pages/other/)" in markdown
 
 
 def test_emit_and_check_markdown(tmp_path):
