@@ -46,6 +46,8 @@ dependencies = [
   "pixelmatch",
   "playwright",
   "kaleido",
+  "beautifulsoup4>=4.13.0",
+  "markdownify>=1.2.0",
   # seaborn and scikit-learn are needed for tests of kedro integration on real project.
   # We don't use kedro-datasets since it can lower our versions of important dependencies like plotly where
   # we want to be testing the latest.
@@ -138,15 +140,20 @@ dependencies = [
   "mkdocs-pycafe",
   "griffe-pydantic",
   "PyGithub",
-  "playwright"
+  "playwright",
+  "beautifulsoup4>=4.13.0",
+  "markdownify>=1.2.0"
 ]
 installer = "uv"
 template = "docs"  # Can't be detached = true since griffe_extensions:DynamicallyInspect needs vizro to be importable.
 
 [envs.docs.scripts]
+agent-markdown-check = "python ../tools/emit_agent_markdown.py --site-dir=site --exclude=pages/components_compendium/index.html --canary=pages/API-reference/models/index.html --agent-docs=\"Index: https://vizro.readthedocs.io/en/stable/llms.txt; full documentation: https://vizro.readthedocs.io/en/stable/llms-full.txt\" --bundle=llms-full.txt --bundle-exclude-prefix=pages/API-reference --split-models-page=pages/API-reference/models/index.html --split-models-namespace=vizro.models --url-placeholder=https://vizro.readthedocs.io/en/stable/ --check"
 build = [
   "zensical build --clean",
-  "python ../tools/stamp_llms_txt.py --placeholder=https://vizro.readthedocs.io/en/stable/ --site-dir=site",
+  "python ../tools/emit_agent_markdown.py --site-dir=site --exclude=pages/components_compendium/index.html --canary=pages/API-reference/models/index.html --agent-docs=\"Index: https://vizro.readthedocs.io/en/stable/llms.txt; full documentation: https://vizro.readthedocs.io/en/stable/llms-full.txt\" --bundle=llms-full.txt --bundle-exclude-prefix=pages/API-reference --split-models-page=pages/API-reference/models/index.html --split-models-namespace=vizro.models --url-placeholder=https://vizro.readthedocs.io/en/stable/",
+  "python tools/check_llms_txt.py",
+  "python ../tools/stamp_llms_txt.py --placeholder=https://vizro.readthedocs.io/en/stable/ --site-dir=site --filename=llms.txt --filename=llms-full.txt",
   "python ../tools/strip_html_leading_whitespace.py --site-dir=site"
 ]
 # Disable warnings on the linkcheck so that HTTP redirects are accepted. We could ignore only that warning and specify
@@ -162,6 +169,7 @@ logo-check = "grep -q 'logo_watermark_extended.svg' docs/pages/user-guides/insta
 pip = '"{env:HATCH_UV}" pip {args}'
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
 serve = "zensical serve --open {args}"
+serve-markdown = ["build", "python -m http.server {args:8000} --directory site"]
 
 [envs.examples]
 # TODO: once the visual-vocabulary dashboard has moved out of this repo, this environment should be removed fully and
