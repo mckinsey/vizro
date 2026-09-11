@@ -18,7 +18,7 @@ The names of our products and sites are:
 
 - **[Vizro](https://github.com/mckinsey/vizro)**
 - **[Vizro-MCP](https://github.com/mckinsey/vizro/tree/main/vizro-mcp)**
-- **[Vizro visual vocabulary dashboard](https://huggingface.co/spaces/vizro/demo-visual-vocabulary)**
+- **[Vizro visual vocabulary dashboard](https://py.cafe/app/vizro-official/vizro-visual-vocabulary)**
 - **[Vizro-AI](https://github.com/mckinsey/vizro/tree/main/vizro-ai) (mostly deprecated in favor of Vizro-MCP)**
 
 We refer to other products using their preferred capitalization. For example:

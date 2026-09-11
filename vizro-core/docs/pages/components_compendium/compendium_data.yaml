@@ -859,13 +859,13 @@ demos:
     platform_class: platform-pycafe
 
   - title: Visual Vocabulary
-    url: https://huggingface.co/spaces/vizro/demo-visual-vocabulary
+    url: https://py.cafe/app/vizro-official/vizro-visual-vocabulary
     image: assets/images/visual_vocabulary.png
-    platform: Hugging Face
-    platform_class: platform-huggingface
+    platform: PyCafe
+    platform_class: platform-pycafe
 
   - title: BI Dashboard
-    url: https://huggingface.co/spaces/vizro/BI-dashboard
+    url: https://py.cafe/app/vizro-official/vizro-BI-dashboard
     image: assets/images/bi_dashboard.png
     platform: Hugging Face
     platform_class: platform-huggingface
@@ -873,8 +873,8 @@ demos:
   - title: Call Center Dashboard
     url: https://huggingface.co/spaces/vizro/call-center-dashboard
     image: assets/images/call_center_dashboard.png
-    platform: Hugging Face
-    platform_class: platform-huggingface
+    platform: PyCafe
+    platform_class: platform-pycafe
 
   - title: KPI Dashboard
     url: https://huggingface.co/spaces/vizro/demo-kpi
