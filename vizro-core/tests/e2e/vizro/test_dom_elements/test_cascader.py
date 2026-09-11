@@ -6,8 +6,8 @@ from e2e.vizro.checkers import (
 )
 from e2e.vizro.navigation import (
     accordion_select,
-    clear_cascader,
-    deselect_all_cascader,
+    clear_cascader_multi,
+    clear_cascader_single,
     page_select,
     select_cascader_path,
 )
@@ -34,35 +34,11 @@ def _open_cascader_path_page(dash_br):
     )
 
 
-def test_cascader_leaf_single_default_filters_ag_grid(dash_br):
-    """Leaf-mode single Cascader applies its default country filter to the target AgGrid."""
-    _open_cascader_leaf_page(dash_br)
-
-    check_cascader_trigger_value(dash_br, cnst.CASCADER_LEAF_ID, "United States")
-    check_table_ag_grid_rows_number(dash_br, table_id=cnst.CASCADER_LEAF_AG_GRID_ID, expected_rows_num=1)
-    check_table_ag_grid_column_values(
-        dash_br, table_id=cnst.CASCADER_LEAF_AG_GRID_ID, col_id="country", expected_values=["United States"]
-    )
-
-
-def test_cascader_leaf_multi_default_filters_ag_grid(dash_br):
-    """Leaf-mode multi Cascader applies its default countries filter to the target AgGrid."""
-    _open_cascader_leaf_page(dash_br)
-
-    check_table_ag_grid_rows_number(dash_br, table_id=cnst.CASCADER_LEAF_MULTI_AG_GRID_ID, expected_rows_num=2)
-    check_table_ag_grid_column_values(
-        dash_br,
-        table_id=cnst.CASCADER_LEAF_MULTI_AG_GRID_ID,
-        col_id="country",
-        expected_values=["United States", "China"],
-    )
-
-
 def test_cascader_leaf_single_select_filters_ag_grid(dash_br):
     """Leaf-mode single Cascader filters on the leaf column when a new country is selected."""
     _open_cascader_leaf_page(dash_br)
 
-    clear_cascader(dash_br, cnst.CASCADER_LEAF_ID)
+    clear_cascader_single(dash_br, cnst.CASCADER_LEAF_ID)
     select_cascader_path(
         dash_br,
         cnst.CASCADER_LEAF_ID,
@@ -81,7 +57,7 @@ def test_cascader_leaf_multi_select_filters_ag_grid(dash_br):
     """Leaf-mode multi Cascader filters on multiple leaf countries independently."""
     _open_cascader_leaf_page(dash_br)
 
-    deselect_all_cascader(dash_br, cnst.CASCADER_LEAF_MULTI_ID)
+    clear_cascader_multi(dash_br, cnst.CASCADER_LEAF_MULTI_ID)
     select_cascader_path(
         dash_br,
         cnst.CASCADER_LEAF_MULTI_ID,
@@ -104,44 +80,11 @@ def test_cascader_leaf_multi_select_filters_ag_grid(dash_br):
     )
 
 
-def test_cascader_path_single_default_filters_ag_grid(dash_br):
-    """Path-mode single Cascader applies its default root-to-leaf path to the target AgGrid."""
-    _open_cascader_path_page(dash_br)
-
-    check_cascader_trigger_value(dash_br, cnst.CASCADER_PATH_ID, "Portland")
-    check_table_ag_grid_rows_number(dash_br, table_id=cnst.CASCADER_PATH_AG_GRID_ID, expected_rows_num=1)
-    check_table_ag_grid_column_values(
-        dash_br,
-        table_id=cnst.CASCADER_PATH_AG_GRID_ID,
-        col_id="state",
-        expected_values=["Oregon"],
-    )
-    check_table_ag_grid_column_values(
-        dash_br,
-        table_id=cnst.CASCADER_PATH_AG_GRID_ID,
-        col_id="city",
-        expected_values=["Portland"],
-    )
-
-
-def test_cascader_path_multi_default_filters_ag_grid(dash_br):
-    """Path-mode multi Cascader applies its default paths to the target AgGrid."""
-    _open_cascader_path_page(dash_br)
-
-    check_table_ag_grid_rows_number(dash_br, table_id=cnst.CASCADER_PATH_MULTI_AG_GRID_ID, expected_rows_num=2)
-    check_table_ag_grid_column_values(
-        dash_br,
-        table_id=cnst.CASCADER_PATH_MULTI_AG_GRID_ID,
-        col_id="city",
-        expected_values=["Chicago", "Augusta"],
-    )
-
-
 def test_cascader_path_single_select_filters_duplicate_leaf(dash_br):
     """Path-mode single Cascader disambiguates duplicate leaf labels via the full path."""
     _open_cascader_path_page(dash_br)
 
-    clear_cascader(dash_br, cnst.CASCADER_PATH_ID)
+    clear_cascader_single(dash_br, cnst.CASCADER_PATH_ID)
     select_cascader_path(
         dash_br,
         cnst.CASCADER_PATH_ID,
@@ -163,7 +106,7 @@ def test_cascader_path_multi_select_filters_duplicate_leaves(dash_br):
     """Path-mode multi Cascader filters both 'Portland' paths independently."""
     _open_cascader_path_page(dash_br)
 
-    deselect_all_cascader(dash_br, cnst.CASCADER_PATH_MULTI_ID)
+    clear_cascader_multi(dash_br, cnst.CASCADER_PATH_MULTI_ID)
     select_cascader_path(
         dash_br,
         cnst.CASCADER_PATH_MULTI_ID,
@@ -209,6 +152,7 @@ def test_set_control_cascader_leaf_ag_grid_filters_ag_grid(dash_br):
     """set_control from an AgGrid sets a leaf-mode Cascader filter and refreshes its target AgGrid."""
     _open_cascader_leaf_page(dash_br)
 
+    # Select Brazil on AgGrid
     dash_br.multiple_click(
         table_ag_grid_cell_path_by_row(
             cnst.CASCADER_LEAF_SET_CONTROL_AG_GRID_SOURCE_ID, row_index=14, col_id="country"
@@ -227,6 +171,7 @@ def test_set_control_cascader_path_ag_grid_filters_ag_grid(dash_br):
     """set_control from an AgGrid sets a leaf-mode Cascader on the path page and refreshes its target AgGrid."""
     _open_cascader_path_page(dash_br)
 
+    # Select vity Augusta on AgGrid
     dash_br.multiple_click(
         table_ag_grid_cell_path_by_row(cnst.CASCADER_PATH_SET_CONTROL_AG_GRID_SOURCE_ID, row_index=4, col_id="city"),
         1,

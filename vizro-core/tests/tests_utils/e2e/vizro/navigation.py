@@ -344,7 +344,7 @@ def select_cascader_path_playwright(page, cascader_id, path_labels, *, multi=Fal
         else:
             raise ValueError(f"Cascader row '{label}' not found in column {column_index}")
         if not is_leaf:
-            page.wait_for_timeout(200)
+            page.wait_for_selector(f".dash-cascader-column:nth-child({column_index + 1}) .dash-cascader-row")
     page.locator("body").click()
 
 
@@ -441,17 +441,18 @@ def select_cascader_path(driver, cascader_id, path_labels, *, multi=False):
     close_cascader(driver)
 
 
-def clear_cascader(driver, cascader_id):
+def clear_cascader_single(driver, cascader_id):
     """Clear the current Cascader selection."""
     if driver.find_elements(cascader_clear_path(cascader_id)):
         driver.multiple_click(cascader_clear_path(cascader_id), 1)
         callbacks_finish_waiter(driver)
 
 
-def deselect_all_cascader(driver, cascader_id):
+def clear_cascader_multi(driver, cascader_id):
     """Deselect all values in a multi-select Cascader."""
     open_cascader(driver, cascader_id)
     action_buttons = driver.driver.find_elements(By.CSS_SELECTOR, ".dash-cascader-content .dash-dropdown-action-button")
-    if len(action_buttons) >= 2:
-        action_buttons[1].click()
+    if len(action_buttons) < 2:
+        raise ValueError("Expected 'Deselect all' action button in multi-select Cascader, but it was not found")
+    action_buttons[1].click()
     close_cascader(driver)

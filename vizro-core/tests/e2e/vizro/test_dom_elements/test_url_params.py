@@ -4,8 +4,8 @@ from e2e.asserts import decode_url_params, encode_url_params, get_url_params, pa
 from e2e.vizro.checkers import check_selected_categorical_component, check_selected_dropdown
 from e2e.vizro.navigation import (
     accordion_select,
+    clear_cascader_multi,
     clear_dropdown,
-    deselect_all_cascader,
     page_select,
     select_cascader_path,
     select_dropdown_value,
@@ -339,7 +339,7 @@ def test_url_params_encoding_and_page_refresh_cascader_leaf_multi(dash_br):
         page_path=cnst.CASCADER_LEAF_PAGE_PATH,
         graph_check=False,
     )
-    deselect_all_cascader(dash_br, cnst.CASCADER_LEAF_MULTI_ID)
+    clear_cascader_multi(dash_br, cnst.CASCADER_LEAF_MULTI_ID)
     select_cascader_path(dash_br, cnst.CASCADER_LEAF_MULTI_ID, ["Americas", "South", "Brazil"], multi=True)
     select_cascader_path(dash_br, cnst.CASCADER_LEAF_MULTI_ID, ["Asia", "South", "Japan"], multi=True)
 
@@ -359,7 +359,7 @@ def test_url_params_encoding_and_page_refresh_cascader_path_multi(dash_br):
         page_path=cnst.CASCADER_PATH_PAGE_PATH,
         graph_check=False,
     )
-    deselect_all_cascader(dash_br, cnst.CASCADER_PATH_MULTI_ID)
+    clear_cascader_multi(dash_br, cnst.CASCADER_PATH_MULTI_ID)
     select_cascader_path(dash_br, cnst.CASCADER_PATH_MULTI_ID, ["Oregon", "Portland"], multi=True)
     select_cascader_path(dash_br, cnst.CASCADER_PATH_MULTI_ID, ["Maine", "Portland"], multi=True)
 
