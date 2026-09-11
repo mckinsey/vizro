@@ -641,8 +641,8 @@ class Filter(VizroBaseModel):
             build_default_control_selector_actions(
                 selector=self.selector,
                 targeted_controls=targeted_controls,
-                update_targets_id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                update_targets=self.targets,
+                targeted_figures=self.targets,
+                update_targets_action_id=f"{FILTER_ACTION_PREFIX}_{self.id}",
             )
         else:
             # Explicit selector actions bypass the default sync chain, so any control targets were stripped without

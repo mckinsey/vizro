@@ -120,7 +120,7 @@ To organize the control panel on a page into sections, you can group [filters](f
                 controls:
                   - type: parameter
                     targets:
-                      - scatter-chart.title
+                      - scatter_chart.title
                     selector:
                       options: [My scatter chart, A better title!, Another title...]
                       multi: false
@@ -135,7 +135,11 @@ To organize the control panel on a page into sections, you can group [filters](f
 
 You can keep two controls in sync so that changing one automatically applies the same value to the other. This is useful, for example, when you need to both filter and parametrize a chart from the same user selection, such as filtering a chart down to one species and also using that species to set the chart's title.
 
-To sync controls, add another control's `id` to the `targets` of a [filter](filters.md) or [parameter](parameters.md). Whenever the control changes, Vizro sets the targeted control to the same value (using the [`set_control` action][vizro.actions.set_control] behind the scenes) and then refreshes that both controls figure targets. All combinations work: filter and filter, parameter and parameter, and filter and parameter.
+To sync controls, add another control's `id` to the `targets` of a [filter](filters.md) or [parameter](parameters.md). Whenever the control changes, Vizro sets the targeted control to the same value (using the [`set_control` action][vizro.actions.set_control] behind the scenes) and then refreshes both controls' figure targets. All combinations work: filter and filter, parameter and parameter, and filter and parameter.
+
+!!! note "Synced controls must hold compatible values"
+
+    Syncing copies one control's value straight into the other, so the two controls must understand the same kind of value. Pair a categorical selector ([`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`Checklist`][vizro.models.Checklist]) with another categorical selector, a numeric [`Slider`][vizro.models.Slider] / [`RangeSlider`][vizro.models.RangeSlider] with another numeric one, a range selector with another range selector, and so on. Mismatched pairings do not sync: for example a [`Slider`][vizro.models.Slider] cannot sync with a [`Switch`][vizro.models.Switch], and a multi-select selector syncing into a single-select one is ignored once more than one value is selected.
 
 !!! note "Controls can only sync on the same page (for now)"
 
@@ -147,7 +151,7 @@ To sync controls, add another control's `id` to the `targets` of a [filter](filt
 
 !!! note "A control that only drives other controls is not a Filter or Parameter"
 
-    By design a [filter](filters.md) and [parameter](parameters.md) always act on figures, so above mean neither can exist purely to drive other controls. A filter with no figure target *is not a filter*, and a parameter with no figure target *is not a parameter*.
+    By design a [filter](filters.md) and [parameter](parameters.md) always act on figures, so neither can exist purely to drive other controls. A filter with no figure target *is not a filter*, and a parameter with no figure target *is not a parameter*.
 
     If a control that only sets other controls (and filters or parametrizes nothing itself) is exactly what you want, skip the filter/parameter wrapper: put a bare [selector](selectors.md) (for example a [`RadioItems`][vizro.models.RadioItems]) straight into the layout and give it an explicit [`set_control`][vizro.actions.set_control] action for each control it should drive. The targeted controls do the actual figure work when their value changes. A selector is normally only allowed inside a filter or parameter, so first whitelist it on its parent with the [`add_type`][vizro.models.VizroBaseModel.add_type] like:
 
