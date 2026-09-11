@@ -1,4 +1,5 @@
 from collections.abc import Iterable
+from functools import cached_property
 from typing import Any, Literal, cast
 
 from dash import ctx
@@ -10,7 +11,7 @@ from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, ModelID, _Controls
+from vizro.models.types import FigureType, ModelID, _Controls, _normalize_action_notifications
 
 
 class update_targets(_AbstractAction):
@@ -88,3 +89,10 @@ class update_targets(_AbstractAction):
             target: f"{target}.selector" if isinstance(model_manager[target], vm.Filter) else target
             for target in self.targets
         }
+
+    @cached_property
+    def notifications(self):  # type: ignore[override]
+        # Only an error notification is shown - a success toast on every filter/parameter/button refresh would be noise.
+        # cached_property is used so the notification models are built once per action instead of being re-minted
+        # (with fresh model_manager entries) on every callback run.
+        return _normalize_action_notifications({"error": "Updating figures failed."})
