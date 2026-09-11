@@ -4,6 +4,7 @@ from datetime import datetime
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_accordion_active
 from e2e.vizro.paths import (
+    cascader_clear_path,
     dropdown_deselect_all_path,
     dropdown_id_path,
     dropdown_select_all_path,
@@ -324,6 +325,29 @@ def _set_time_picker_fields_playwright(page, elem_id, hour, minute):
         page.wait_for_timeout(300)
 
 
+def select_cascader_path_playwright(page, cascader_id, path_labels, *, multi=False):
+    """Traverse a Cascader tree and select the terminal path using Playwright."""
+    page.locator(f"button[id='{cascader_id}']").click()
+    page.wait_for_selector(".dash-cascader-content")
+    for column_index, label in enumerate(path_labels, start=1):
+        is_leaf = column_index == len(path_labels)
+        column = page.locator(f".dash-cascader-column:nth-child({column_index})")
+        rows = column.locator(".dash-cascader-row")
+        for i in range(rows.count()):
+            row = rows.nth(i)
+            if row.locator(".dash-cascader-row-label").inner_text().strip() == label:
+                if multi and is_leaf:
+                    row.locator(".dash-cascader-checkbox").click()
+                else:
+                    row.click()
+                break
+        else:
+            raise ValueError(f"Cascader row '{label}' not found in column {column_index}")
+        if not is_leaf:
+            page.wait_for_selector(f".dash-cascader-column:nth-child({column_index + 1}) .dash-cascader-row")
+    page.locator("body").click()
+
+
 def select_slider_value(driver, elem_id, min_value=None, max_value=None):
     if min_value:
         min_value_elem = driver.find_element(f"div[id='{elem_id}'] input[class$='dash-range-slider-min-input']")
@@ -367,3 +391,68 @@ def select_dropdown_deselect_all(driver, dropdown_id):
     if driver.find_elements(f"{dropdown_id_path(dropdown_id)}[aria-expanded='false']"):
         driver.multiple_click(dropdown_id_path(dropdown_id), 1)
     driver.multiple_click(dropdown_deselect_all_path(dropdown_id), 1)
+
+
+def open_cascader(driver, cascader_id):
+    """Open a Cascader panel."""
+    if driver.find_elements(f"{dropdown_id_path(cascader_id)}[aria-expanded='true']"):
+        return
+    driver.multiple_click(dropdown_id_path(cascader_id), 1)
+    driver.wait_for_element(".dash-cascader-content")
+
+
+def close_cascader(driver):
+    """Close an open Cascader panel by clicking outside."""
+    driver.find_element("body").click()
+    callbacks_finish_waiter(driver)
+
+
+def _click_cascader_row_by_label(driver, column_index, label, *, multi=False):
+    """Click a Cascader row (or its leaf checkbox in multi mode) matching `label` in the given column."""
+    rows = driver.driver.find_elements(
+        By.CSS_SELECTOR, f".dash-cascader-column:nth-child({column_index}) .dash-cascader-row"
+    )
+    for row in rows:
+        label_elem = row.find_element(By.CSS_SELECTOR, ".dash-cascader-row-label")
+        if label_elem.text.strip() == label:
+            if multi:
+                row.find_element(By.CSS_SELECTOR, ".dash-cascader-checkbox").click()
+            else:
+                row.click()
+            return
+    raise ValueError(f"Cascader row '{label}' not found in column {column_index}")
+
+
+def select_cascader_path(driver, cascader_id, path_labels, *, multi=False):
+    """Traverse a Cascader tree and select the terminal path.
+
+    Args:
+        driver: dash_br fixture.
+        cascader_id: Cascader selector id.
+        path_labels: root-to-leaf labels, e.g. ["Americas", "North", "United States"].
+        multi: when True, toggle the leaf checkbox instead of performing a single-select click.
+    """
+    open_cascader(driver, cascader_id)
+    for column_index, label in enumerate(path_labels, start=1):
+        is_leaf = column_index == len(path_labels)
+        _click_cascader_row_by_label(driver, column_index, label, multi=multi and is_leaf)
+        if not is_leaf:
+            time.sleep(0.2)
+    close_cascader(driver)
+
+
+def clear_cascader_single(driver, cascader_id):
+    """Clear the current Cascader selection."""
+    if driver.find_elements(cascader_clear_path(cascader_id)):
+        driver.multiple_click(cascader_clear_path(cascader_id), 1)
+        callbacks_finish_waiter(driver)
+
+
+def clear_cascader_multi(driver, cascader_id):
+    """Deselect all values in a multi-select Cascader."""
+    open_cascader(driver, cascader_id)
+    action_buttons = driver.driver.find_elements(By.CSS_SELECTOR, ".dash-cascader-content .dash-dropdown-action-button")
+    if len(action_buttons) < 2:
+        raise ValueError("Expected 'Deselect all' action button in multi-select Cascader, but it was not found")
+    action_buttons[1].click()
+    close_cascader(driver)
