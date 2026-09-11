@@ -266,3 +266,14 @@ class TestRadioItemsBuild:
             ],
         )
         assert_component_equal(radio_items, expected_radio_items)
+
+
+class TestRadioItemsGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""
+
+    @pytest.mark.parametrize("trigger", ["Europe", None])
+    def test_get_value_from_trigger_returns_trigger(self, trigger):
+        # A selector already holds the value to propagate, so _get_value_from_trigger ignores `value` and returns the
+        # raw trigger value unchanged (this is what powers syncing controls that target another control).
+        radio_items = RadioItems()
+        assert radio_items._get_value_from_trigger(value="ignored", trigger=trigger) == trigger

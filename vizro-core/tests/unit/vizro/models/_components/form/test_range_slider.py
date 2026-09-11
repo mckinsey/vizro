@@ -299,3 +299,14 @@ class TestRangeSliderBuild:
         ).build()
 
         assert_component_equal(range_slider, expected_range_slider_with_description)
+
+
+class TestRangeSliderGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""
+
+    @pytest.mark.parametrize("trigger", [[1, 10], None])
+    def test_get_value_from_trigger_returns_trigger(self, trigger):
+        # A selector already holds the value to propagate, so _get_value_from_trigger ignores `value` and returns the
+        # raw trigger value unchanged (this is what powers syncing controls that target another control).
+        range_slider = vm.RangeSlider()
+        assert range_slider._get_value_from_trigger(value="ignored", trigger=trigger) == trigger

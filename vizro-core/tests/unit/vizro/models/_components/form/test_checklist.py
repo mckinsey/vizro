@@ -365,3 +365,14 @@ class TestChecklistBuild:
             ],
         )
         assert_component_equal(checklist, expected_checklist, keys_to_strip={"id"})
+
+
+class TestChecklistGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""
+
+    @pytest.mark.parametrize("trigger", [["Europe", "Asia"], [], None])
+    def test_get_value_from_trigger_returns_trigger(self, trigger):
+        # A selector already holds the value to propagate, so _get_value_from_trigger ignores `value` and returns the
+        # raw trigger value unchanged (this is what powers syncing controls that target another control).
+        checklist = Checklist()
+        assert checklist._get_value_from_trigger(value="ignored", trigger=trigger) == trigger
