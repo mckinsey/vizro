@@ -128,13 +128,13 @@ Explore a few live demos to see different Vizro dashboards in action:
   </tr>
   <tr>
     <td align="center" valign="top" width="33%">
-      <a href="https://huggingface.co/spaces/vizro/call-center-dashboard" target="_blank" rel="noopener noreferrer">
+      <a href="https://py.cafe/vizro-official/vizro-call-center-dashboard" target="_blank" rel="noopener noreferrer">
         <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/call_center_dashboard.png" alt="Call Center Dashboard" width="100%">
       </a>
       <br>
       <strong>Call Center Dashboard</strong>
       <br>
-      <a href="https://huggingface.co/spaces/vizro/call-center-dashboard" target="_blank" rel="noopener noreferrer">Try it live</a>
+      <a href="https://py.cafe/vizro-official/vizro-call-center-dashboard" target="_blank" rel="noopener noreferrer">Try it live</a>
     </td>
     <td align="center" valign="top" width="33%">
       <a href="https://huggingface.co/spaces/vizro/demo-kpi" target="_blank" rel="noopener noreferrer">

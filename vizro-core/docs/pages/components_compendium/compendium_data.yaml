@@ -871,7 +871,7 @@ demos:
     platform_class: platform-pycafe
 
   - title: Call Center Dashboard
-    url: https://huggingface.co/spaces/vizro/call-center-dashboard
+    url: https://py.cafe/vizro-official/vizro-call-center-dashboard
     image: assets/images/call_center_dashboard.png
     platform: PyCafe
     platform_class: platform-pycafe
