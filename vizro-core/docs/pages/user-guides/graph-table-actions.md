@@ -14,7 +14,7 @@ All these interactions use the [`set_control` action][vizro.actions.set_control]
 
 - The target components can be anything that reacts to a control: [built-in graphs](graph.md), [custom graphs](custom-charts.md), [built-in tables](table.md), [custom tables](custom-tables.md), [built-in figures](figure.md) and [custom figures](custom-figures.md).
 - A single control can update any number of these target components, and a single source component can set any number of controls. Hence a single source component can interact with any number of target components.
-- A target component can be on the same page as the source or on a different page (so long as the intermediate control has [`show_in_url=True`](run-deploy.md#shareable-url)).
+- A target component can be on the same page as the source or on a different page.
 - A target component can also be the source component to enable a "self-interaction".
 - The value of a control is persisted when you change page.
 - Interactions are not "invisible"; they are explicitly shown on the screen by the value of the control. Just like a normal control, you can change the value manually.
@@ -634,7 +634,7 @@ For example, let us rearrange the [cross-filter from a table example](#cross-fil
 
 ### Cross-filter between pages
 
-You can perform a cross-filter where the target components are on a different page from the source. The use of [`va.set_control`][vizro.actions.set_control] is identical, but the intermediate filter must have [`show_in_url=True`](run-deploy.md#shareable-url).
+You can perform a cross-filter where the target components are on a different page from the source. The use of [`va.set_control`][vizro.actions.set_control] is identical: clicking the source navigates to the target page and applies the value there.
 
 For example, let us rearrange the [cross-filter from a table example](#cross-filter-from-table) so that the source table is on a different page from the target graph (and hence filter). When you click or press ++space++ on a row in the table, you are taken to the target page with the graph cross-filtered to show data only for one sex.
 
@@ -673,7 +673,7 @@ For example, let us rearrange the [cross-filter from a table example](#cross-fil
         ```
 
         1. The `vm.Graph` no longer needs an `id` assigned to it, since the `vm.Filter` does not need to explicitly target it any more.
-        1. The `vm.Filter` no longer needs to specify `targets`. By default, the `vm.Filter` targets all components on its page whose data source includes `column="sex"`. We must set `show_in_url=True` for this filter to be set by `va.set_control`.
+        1. The `vm.Filter` no longer needs to specify `targets`. By default, the `vm.Filter` targets all components on its page whose data source includes `column="sex"`.
 
     === "app.yaml"
 
