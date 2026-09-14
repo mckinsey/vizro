@@ -15,7 +15,18 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 
-Vizro().build(vm.Dashboard(pages=[vm.Page(title="Iris", components=[vm.Graph(figure=px.scatter(px.data.iris(), x="sepal_length", y="sepal_width", color="species"))])])).run()
+Vizro().build(
+    vm.Dashboard(
+        pages=[
+            vm.Page(
+                title="Iris",
+                components=[
+                    vm.Graph(figure=px.scatter(px.data.iris(), x="sepal_length", y="sepal_width", color="species"))
+                ],
+            )
+        ]
+    )
+).run()
 ```
 
 Longer walk-through: [quickstart tutorial](tutorials/quickstart-tutorial.md).
