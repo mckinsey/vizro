@@ -867,8 +867,8 @@ demos:
   - title: BI Dashboard
     url: https://py.cafe/app/vizro-official/vizro-BI-dashboard
     image: assets/images/bi_dashboard.png
-    platform: Hugging Face
-    platform_class: platform-huggingface
+    platform: PyCafe
+    platform_class: platform-pycafe
 
   - title: Call Center Dashboard
     url: https://huggingface.co/spaces/vizro/call-center-dashboard

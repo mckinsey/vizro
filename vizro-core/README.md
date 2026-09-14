@@ -175,7 +175,7 @@ The visual vocabulary helps you to decide which chart type to use for your requi
 
 Visit the [visual vocabulary](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/) to search for charts or get inspiration.
 
-<a href="https://vizro-demo-visual-vocabulary.hf.space/">
+<a href="https://py.cafe/app/vizro-official/vizro-visual-vocabulary/">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png" width="600">
 </a>
 
