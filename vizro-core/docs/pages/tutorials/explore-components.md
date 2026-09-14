@@ -19,7 +19,7 @@ This tutorial should take **about half an hour to finish**, so grab a coffee or 
 **By the end of this tutorial, you will have learned how to:**
 
 - Explore most of [Vizro's components](../user-guides/components.md).
-- Use the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to guide your chart creation.
+- Use the [Vizro visual vocabulary](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/) to guide your chart creation.
 - Design custom charts with [Plotly Express](https://plotly.com/python-api-reference/plotly.express.html).
 - Develop multiple pages for the dashboard.
 - Customize the layout of the pages.
@@ -263,13 +263,13 @@ To achieve this, we'll switch to the `Flex` layout and set a `height` for the `A
 
 Next, you'll learn how to add a second page to the dashboard that features charts and KPI (Key Performance Indicator) cards.
 
-Vizro uses [`Graph`][vizro.models.Graph] models and [Plotly Express functions](https://plotly.com/python/plotly-express/) to create various types of charts. You can explore some of the available chart types and their code examples in the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space).
+Vizro uses [`Graph`][vizro.models.Graph] models and [Plotly Express functions](https://plotly.com/python/plotly-express/) to create various types of charts. You can explore some of the available chart types and their code examples in the [Vizro visual vocabulary](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/).
 
 These steps add a histogram to the page:
 
 1. Create a second [`Page`][vizro.models.Page] and store it in a variable called `second_page`. Set its `title` to `"Summary"`.
 1. Add a [`Graph`][vizro.models.Graph] model to the `components` list.
-1. Inside the `figure` argument of the [`Graph`][vizro.models.Graph] model, use the code for the [px.histogram from the visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/histogram).
+1. Inside the `figure` argument of the [`Graph`][vizro.models.Graph] model, use the code for the [px.histogram from the visual vocabulary](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/).
 1. Add the new page to the list of `pages` in the [`Dashboard`][vizro.models.Dashboard] model by calling `vm.Dashboard(pages=[first_page, second_page])`.
 
 !!! example "Second Page"
@@ -780,11 +780,11 @@ If you want to apply a filter to specific components only, check out [How to use
 
 Now that you've learned how to create pages, add components, and configure layouts, you'll create a third page for the dashboard. This will give you the opportunity to practice your skills alongside learning some new concepts!
 
-This page takes inspiration from the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/). It will feature:
+This page takes inspiration from the [Vizro visual vocabulary](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/). It will feature:
 
-- a [bar chart](https://vizro-demo-visual-vocabulary.hf.space/magnitude/bar)
-- a [violin chart](https://vizro-demo-visual-vocabulary.hf.space/distribution/violin)
-- a [heatmap](https://vizro-demo-visual-vocabulary.hf.space/time/heatmap)
+- a [bar chart](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/)
+- a [violin chart](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/)
+- a [heatmap](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/)
 
 ### 5.1. Add multiple charts
 
@@ -793,9 +793,9 @@ These steps should feel familiar, as they add three charts to the new page.
 1. Create a third [`Page`][vizro.models.Page] and store it in a variable called `third_page`. Set its `title` to "Analysis".
 1. Add three [`Graph`][vizro.models.Graph] models to the `components` of the `Page`.
 1. For each `Graph`, use the `figure` argument to provide one of the Plotly express functions:
-    - [px.violin](https://vizro-demo-visual-vocabulary.hf.space/distribution/violin) (copy the code directly)
-    - [px.bar](https://vizro-demo-visual-vocabulary.hf.space/magnitude/column) (copy the code directly)
-    - [px.density_heatmap](https://vizro-demo-visual-vocabulary.hf.space/time/heatmap) (update the `data`, `x`, and `y` arguments to match the dataset)
+    - [px.violin](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/) (copy the code directly)
+    - [px.bar](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/) (copy the code directly)
+    - [px.density_heatmap](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/) (update the `data`, `x`, and `y` arguments to match the dataset)
 1. Provide a `title` for each `Graph`.
 1. Add the new `Page` to the list of `pages` in the [`Dashboard`][vizro.models.Dashboard] model.
 
