@@ -231,9 +231,13 @@ class Parameter(VizroBaseModel):
             build_default_control_selector_actions(
                 selector=self.selector,
                 targeted_controls=targeted_controls,
-                update_targets_id=f"{PARAMETER_ACTION_PREFIX}_{self.id}",
-                update_targets=targets_ids,
+                targeted_figures=targets_ids,
+                update_targets_action_id=f"{PARAMETER_ACTION_PREFIX}_{self.id}",
             )
+            # Prebuild the generated actions here (unlike Filter, which is prebuilt preemptively in `Vizro._pre_build`).
+            # All newly created models within other model's pre_build method have to run their own pre_build method.
+            for action in self.selector.actions:
+                action.pre_build()
         else:
             # Explicit selector actions bypass the default sync chain, so any control targets were stripped without
             # generating a set_control. Warn rather than silently drop them.

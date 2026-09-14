@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from functools import cached_property
 from typing import Literal, Protocol, cast, runtime_checkable
 
 from dash import get_relative_path, no_update, set_props
@@ -9,7 +10,7 @@ from pydantic import Field, JsonValue
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ControlType, ModelID
+from vizro.models.types import ControlType, ModelID, _normalize_action_notifications
 
 logger = logging.getLogger(__name__)
 
@@ -121,6 +122,7 @@ class set_control(_AbstractAction):
         "is opened."
     )
 
+    # TODO AM-PP: How about making it optional with default=None.
     value: JsonValue = Field(
         description="Value to take from trigger and send to the `target`. Format depends on the model "
         "that triggers `set_control`."
@@ -188,7 +190,7 @@ class set_control(_AbstractAction):
         # Returning no_update will leave control unchanged and control's action will not be triggered.
         # Don't raise PreventUpdate exception as it stops other actions in the chain from running.
         if value is no_update:
-            return self._get_no_update_response()
+            return no_update
 
         # If value is None then reset control to original value. Fall back to the selector's build-time value if the
         # store entry is missing/incomplete - a persisted (storage_type="session") store can be stale after a control
@@ -214,7 +216,7 @@ class set_control(_AbstractAction):
             reorder_range = isinstance(self._parent_model, (AgGrid, Graph))
             value = self._normalize_range_value(value, reorder=reorder_range)
             if value is None:
-                return self._get_no_update_response()
+                return no_update
         elif isinstance(value, list):
             # Target is single-value selector but value is list.
             if len(value) == 1:
@@ -227,7 +229,7 @@ class set_control(_AbstractAction):
                     type(selector).__name__,
                     self.control,
                 )
-                return self._get_no_update_response()
+                return no_update
 
         if self._same_page:
             # Same-page target: its selector is mounted, so update it directly through the callback output.
@@ -304,7 +306,9 @@ class set_control(_AbstractAction):
             return [min(value), max(value)]
         return value
 
-    def _get_no_update_response(self):
-        # Both the same-page (single control output) and cross-page (single vizro_url.pathname output) callbacks have a
-        # single output, so a bare no_update is the correct "leave everything unchanged" response in either case.
-        return no_update
+    @cached_property
+    def notifications(self):  # type: ignore[override]
+        # set_control has only a subtle visual cue (the control value changing), so show the success notification.
+        # cached_property is used as the notification models are built once per action instead of being re-minted
+        # (with fresh model_manager entries) on every callback run.
+        return _normalize_action_notifications({"success": "Control updated.", "error": "Setting the control failed."})
