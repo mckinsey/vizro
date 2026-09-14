@@ -6,6 +6,7 @@ from pages.actions_properties_shortcut_page import (
 )
 from pages.ag_grid_interactions_page import ag_grid_interactions_page
 from pages.ag_grid_page import ag_grid_page
+from pages.cascader_pages import cascader_leaf_page, cascader_path_page
 from pages.collapsible_containers_pages import collapsible_containers_flex, collapsible_containers_grid
 from pages.conditional_notifications import conditional_notifications_page
 from pages.container_pages import container_variants_page
@@ -146,6 +147,8 @@ dashboard = vm.Dashboard(
         datetimepicker_single,
         datetimepicker_parameter,
         datetimepicker_range_url,
+        cascader_leaf_page,
+        cascader_path_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -173,6 +176,10 @@ dashboard = vm.Dashboard(
                 cnst.DATETIMEPICKER_SINGLE_PAGE,
                 cnst.DATETIMEPICKER_PARAMETER_PAGE,
                 cnst.DATETIMEPICKER_RANGE_URL_PAGE,
+            ],
+            cnst.CASCADER_ACCORDION: [
+                cnst.CASCADER_LEAF_PAGE,
+                cnst.CASCADER_PATH_PAGE,
             ],
             cnst.AG_GRID_ACCORDION: [
                 cnst.TABLE_PAGE,
