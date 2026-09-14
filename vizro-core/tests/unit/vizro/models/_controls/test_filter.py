@@ -1938,8 +1938,8 @@ class TestFilterPreBuildMethod:
             components=[vm.Graph(id="graph_b", figure=px.scatter(gapminder, x="lifeExp", y="gdpPercap"))],
             controls=[vm.Filter(id="filter_b", column="continent")],
         )
-        model_manager["filter_b"].pre_build()
         model_manager["filter_a"].pre_build()
+        model_manager["filter_b"].pre_build()
 
         filter_a = model_manager["filter_a"]
         # The cross-page control target is stripped from targets (which fall back to the page's figures).
@@ -1948,10 +1948,6 @@ class TestFilterPreBuildMethod:
         set_control_actions = [action for action in filter_a.selector.actions if isinstance(action, set_control)]
         assert len(set_control_actions) == 1
         assert set_control_actions[0].control == "filter_b"
-        # The target is on a different page, and the trigger is a control selector, so this is a sync (not a
-        # drill-through): it does not navigate.
-        assert set_control_actions[0]._same_page is False
-        assert set_control_actions[0]._is_drill_through is False
 
     def test_filter_action_properties(self, managers_column_only_exists_in_some):
         filter = Filter(

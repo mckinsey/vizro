@@ -2934,7 +2934,7 @@
           "type": "string"
         },
         "control": {
-          "description": "Filter or Parameter component id to be affected by the trigger. If the control is on a different page to the trigger, then it must have `show_in_url=True`.",
+          "description": "Filter or Parameter component id to be affected by the trigger. The control can be on the same page as the trigger or on a different page: a different-page control is kept in sync through the internal `vizro_controls_store`, and its new value is applied when that page is opened.",
           "title": "Control",
           "type": "string"
         },
