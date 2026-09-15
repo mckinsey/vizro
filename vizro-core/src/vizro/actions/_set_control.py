@@ -25,10 +25,14 @@ class _SupportsSetControl(Protocol):
 
 
 class set_control(_AbstractAction):
-    """Sets the value of a control, which then updates its targets.
+    """Sets the value of one or more controls, which then update their targets.
 
     Abstract: Usage documentation
         [Graph and table interactions](../user-guides/graph-table-actions.md)
+
+    `control` accepts a single control id or a list of control ids. Pass a list to set several controls from a single
+    trigger (for example, one graph click that cross-filters multiple filters, or one selector that syncs several
+    controls). The same `value` is sent to every targeted control and is reshaped to each control's own selector.
 
     The following Vizro models can be a source of `set_control`:
 
@@ -110,6 +114,16 @@ class set_control(_AbstractAction):
         vm.Card(
             title="Click Card to set control to A",
             actions=va.set_control(control="target_control", value="A"),
+        )
+        ```
+
+    Example: target multiple controls at once
+        ```python
+        import vizro.actions as va
+
+        vm.Graph(
+            figure=px.scatter(iris, x="sepal_width", y="sepal_length", custom_data="species"),
+            actions=va.set_control(control=["target_control_1", "target_control_2"], value="species"),
         )
         ```
     """
@@ -221,8 +235,7 @@ class set_control(_AbstractAction):
         # value is reshaped for its own selector; a target that cannot accept the value contributes no_update so the
         # other targets are still updated.
         results = [
-            self._shape_value_for_control(control_id, value, _controls_store)
-            for control_id in self._same_page_controls
+            self._shape_value_for_control(control_id, value, _controls_store) for control_id in self._same_page_controls
         ]
 
         # Different-page targets: their selectors are not mounted, so they cannot be callback outputs. Persist each new

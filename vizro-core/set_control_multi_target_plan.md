@@ -221,7 +221,7 @@ Mirrors the `Layout → Grid` precedent (`src/vizro/models/_grid.py:249`) and `f
 
 1. Rename the class to `set_controls` (`type: Literal["set_controls"]`, field `controls`); keep `set_control` as a
    `@deprecated(..., category=FutureWarning)` alias (`type` stays `"set_control"`). Because the field name changes
-   (`control` → `controls`), prefer a **shared private base** that normalises both to one internal list, rather
+   (`control` → `controls`), prefer a **shared private base** that normalizes both to one internal list, rather
    than a plain subclass. Link the warning to a new `deprecations.md` anchor.
 2. Register `set_controls` in the `ActionType` union (`src/vizro/models/types.py:760`), keeping `set_control`.
 3. Export `set_controls` in `src/vizro/actions/__init__.py` and import it in `src/vizro/models/__init__.py`

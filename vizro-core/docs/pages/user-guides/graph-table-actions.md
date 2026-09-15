@@ -718,6 +718,14 @@ A single source component can trigger _multiple_ cross-filters. For example, [pi
 
 To perform multiple cross-filters, each dimension that is filtered must have its own `vm.Filter` that is set by `va.set_control` in the `actions` of the source component in an [actions chain](actions.md#multiple-actions). Here is a 2-dimensional example that [cross-filters from a graph](#cross-filter-from-graph) using the positional variables `x` and `y`.
 
+!!! note "Setting several controls to the _same_ value"
+
+    Chaining one `va.set_control` per control (as below) is needed when each control receives a _different_ value — here `x` sets `day_filter` and `y` sets `sex_filter`. When several controls should instead receive the _same_ value from a single trigger, pass a list of control ids to one `va.set_control` (which then also shows a single confirmation notification):
+
+    ```python
+    va.set_control(control=["filter_a", "filter_b"], value="species")
+    ```
+
 !!! example "Cross-filter over 2 dimensions - from a graph"
 
     === "app.py"

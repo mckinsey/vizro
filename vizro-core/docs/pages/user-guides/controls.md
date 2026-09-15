@@ -158,7 +158,8 @@ Syncing copies one control's value straight into the other, so the two controls 
     # ...then, as a Page component:
     vm.RadioItems(
         options=["setosa", "versicolor", "virginica"],
-        actions=[set_control(control="species_filter_1", value=None), set_control(control="species_filter_2", value=None)],
+        # A single `set_control` can drive several controls at once by passing a list of ids to `control`.
+        actions=[set_control(control=["species_filter_1", "species_filter_2"], value=None)],
     )
     ```
 

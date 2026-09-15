@@ -1854,7 +1854,8 @@ class TestFilterPreBuildMethod:
 
         set_control_action, update_targets_action = source_filter.selector.actions
         assert isinstance(set_control_action, set_control)
-        assert set_control_action.control == "target_filter"
+        # A single set_control targets all synced controls (here just one), as a list.
+        assert set_control_action.control == ["target_filter"]
         assert set_control_action.value is None
         assert isinstance(update_targets_action, update_targets)
         assert update_targets_action.id == "__filter_action_source_filter"
@@ -1874,7 +1875,8 @@ class TestFilterPreBuildMethod:
         assert source_filter.targets == ["scatter_chart"]
         set_control_actions = [action for action in source_filter.selector.actions if isinstance(action, set_control)]
         assert len(set_control_actions) == 1
-        assert set_control_actions[0].control == "target_filter"
+        # The duplicate is collapsed inside the single set_control's (de-duplicated) control list.
+        assert set_control_actions[0].control == ["target_filter"]
 
     def test_target_control_only_falls_back_to_all_figures(self, managers_one_page_two_graphs):
         # When a Filter targets *only* another control, the figure targets fall back to all figures on the page that
@@ -1888,7 +1890,7 @@ class TestFilterPreBuildMethod:
         assert source_filter.targets == ["scatter_chart", "bar_chart"]
         set_control_action, update_targets_action = source_filter.selector.actions
         assert isinstance(set_control_action, set_control)
-        assert set_control_action.control == "target_filter"
+        assert set_control_action.control == ["target_filter"]
         assert isinstance(update_targets_action, update_targets)
         assert update_targets_action.targets == ["scatter_chart", "bar_chart"]
 
@@ -1947,7 +1949,7 @@ class TestFilterPreBuildMethod:
         # A single set_control sync action is generated for the cross-page target.
         set_control_actions = [action for action in filter_a.selector.actions if isinstance(action, set_control)]
         assert len(set_control_actions) == 1
-        assert set_control_actions[0].control == "filter_b"
+        assert set_control_actions[0].control == ["filter_b"]
 
     def test_filter_action_properties(self, managers_column_only_exists_in_some):
         filter = Filter(
