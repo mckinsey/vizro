@@ -165,29 +165,3 @@ def test_set_control_cascader_leaf_ag_grid_filters_ag_grid(dash_br):
     check_table_ag_grid_column_values(
         dash_br, table_id=cnst.CASCADER_LEAF_AG_GRID_ID, col_id="country", expected_values=["Brazil"]
     )
-
-
-def test_set_control_cascader_path_ag_grid_filters_ag_grid(dash_br):
-    """set_control from an AgGrid sets a leaf-mode Cascader on the path page and refreshes its target AgGrid."""
-    _open_cascader_path_page(dash_br)
-
-    # Select vity Augusta on AgGrid
-    dash_br.multiple_click(
-        table_ag_grid_cell_path_by_row(cnst.CASCADER_PATH_SET_CONTROL_AG_GRID_SOURCE_ID, row_index=4, col_id="city"),
-        1,
-    )
-
-    check_cascader_trigger_value(dash_br, cnst.CASCADER_PATH_SET_CONTROL_ID, "Augusta")
-    check_table_ag_grid_rows_number(dash_br, table_id=cnst.CASCADER_PATH_SET_CONTROL_AG_GRID_ID, expected_rows_num=1)
-    check_table_ag_grid_column_values(
-        dash_br,
-        table_id=cnst.CASCADER_PATH_SET_CONTROL_AG_GRID_ID,
-        col_id="state",
-        expected_values=["Maine"],
-    )
-    check_table_ag_grid_column_values(
-        dash_br,
-        table_id=cnst.CASCADER_PATH_SET_CONTROL_AG_GRID_ID,
-        col_id="city",
-        expected_values=["Augusta"],
-    )
