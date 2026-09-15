@@ -115,11 +115,11 @@ class set_control(_AbstractAction):
     """
 
     type: Literal["set_control"] = "set_control"
-    control: ModelID = Field(
-        description="Filter or Parameter component id to be affected by the trigger. "
-        "The control can be on the same page as the trigger or on a different page: a different-page control is "
-        "kept in sync through the internal `vizro_controls_store`, and its new value is applied when that page "
-        "is opened."
+    control: ModelID | list[ModelID] = Field(
+        description="Filter or Parameter component id(s) to be affected by the trigger. Provide a single id to set "
+        "one control, or a list of ids to set several controls at once. Each control can be on the same page as the "
+        "trigger or on a different page: a different-page control is kept in sync through the internal "
+        "`vizro_controls_store`, and its new value is applied when that page is opened."
     )
 
     # TODO AM-PP: How about making it optional with default=None.
@@ -127,6 +127,16 @@ class set_control(_AbstractAction):
         description="Value to take from trigger and send to the `target`. Format depends on the model "
         "that triggers `set_control`."
     )
+
+    @property
+    def _control_ids(self) -> list[ModelID]:
+        """Normalize `control` (a single id or a list) to a de-duplicated, order-preserving list of control ids.
+
+        Duplicates are collapsed because two Dash `Output`s pointing at the same component within a single callback
+        is an error, not merely redundant.
+        """
+        control_ids = [self.control] if isinstance(self.control, str) else list(self.control)
+        return list(dict.fromkeys(control_ids))
 
     @_log_call
     def pre_build(self):
@@ -140,139 +150,191 @@ class set_control(_AbstractAction):
                 "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_control"
             )
 
-        # Validate that action's control exists in the dashboard.
-        control_model = cast(ControlType, model_manager[self.control]) if self.control in model_manager else None
-        control_model_page = model_manager._get_model_page(control_model) if control_model else None
-        if control_model is None or control_model_page is None:
-            raise ValueError(
-                f"Model with ID `{self.control}` used as a `control` in `set_control` action not found in the "
-                f"dashboard. Please provide a valid control ID that exists in the dashboard."
-            )
+        from vizro.models._controls._controls_utils import SELECTORS, _is_hierarchical_selector
 
-        # Validate that target control model is Filter or Parameter.
-        if not hasattr(control_model, "selector"):
-            raise TypeError(
-                f"Model with ID `{self.control}` used as a `control` in `set_control` action must be a control model "
-                f"(for example, Filter, Parameter)."
-            )
+        # Validate every targeted control and classify it by page (order-preserving), so the callback can update
+        # same-page controls directly through its outputs and sync cross-page controls through `vizro_controls_store`.
+        action_page = model_manager._get_model_page(self)
+        self._same_page_controls: list[ModelID] = []
+        self._cross_page_controls: list[ModelID] = []
+        cross_page_pages = []  # pages of the cross-page controls, used to resolve the drill-through navigation target
 
-        # A path-mode Cascader (full_path=True) identifies a selection by its full root-to-leaf path. A trigger
-        # (Graph/AgGrid) only supplies a single column value, which cannot reconstruct a path, so `set_control`
-        # is disabled for it. Leaf mode (full_path=False) works like a flat selector and is supported.
-        from vizro.models._controls._controls_utils import _is_hierarchical_selector
+        for control_id in self._control_ids:
+            # Validate that the control exists in the dashboard.
+            control_model = cast(ControlType, model_manager[control_id]) if control_id in model_manager else None
+            control_model_page = model_manager._get_model_page(control_model) if control_model else None
+            if control_model is None or control_model_page is None:
+                raise ValueError(
+                    f"Model with ID `{control_id}` used as a `control` in `set_control` action not found in the "
+                    f"dashboard. Please provide a valid control ID that exists in the dashboard."
+                )
 
-        selector = getattr(control_model, "selector", None)
-        if _is_hierarchical_selector(selector) and getattr(selector, "full_path", False):
-            raise ValueError(
-                f"`set_control` cannot target control `{self.control}` because its Cascader selector uses "
-                f"full_path=True. A trigger supplies a single leaf value that cannot be resolved to a full "
-                f"root-to-leaf path. Use a Cascader with full_path=False (leaf mode) to enable `set_control`."
-            )
+            # Validate that target control model is Filter or Parameter.
+            if not hasattr(control_model, "selector"):
+                raise TypeError(
+                    f"Model with ID `{control_id}` used as a `control` in `set_control` action must be a control "
+                    f"model (for example, Filter, Parameter)."
+                )
 
-        self._same_page = control_model_page == model_manager._get_model_page(self)
+            # A path-mode Cascader (full_path=True) identifies a selection by its full root-to-leaf path. A trigger
+            # (Graph/AgGrid) only supplies a single column value, which cannot reconstruct a path, so `set_control`
+            # is disabled for it. Leaf mode (full_path=False) works like a flat selector and is supported.
+            selector = getattr(control_model, "selector", None)
+            if _is_hierarchical_selector(selector) and getattr(selector, "full_path", False):
+                raise ValueError(
+                    f"`set_control` cannot target control `{control_id}` because its Cascader selector uses "
+                    f"full_path=True. A trigger supplies a single leaf value that cannot be resolved to a full "
+                    f"root-to-leaf path. Use a Cascader with full_path=False (leaf mode) to enable `set_control`."
+                )
+
+            if control_model_page == action_page:
+                self._same_page_controls.append(control_id)
+            else:
+                self._cross_page_controls.append(control_id)
+                cross_page_pages.append(control_model_page)
 
         # Distinguish two cross-page use cases by what triggers the action:
         #   - triggered by a control's own selector (Dropdown, Checklist, ...) -> "syncing controls": stay on the
         #     current page, the value is applied to the target when its page is next opened;
         #   - triggered by a figure/action component (Graph, AgGrid, Figure, Button, Card, ...) -> "drill-through":
         #     navigate to the target control's page so the user is taken to the drilled-into detail.
-        # Only relevant when the target is on a different page (see `function`).
-        from vizro.models._controls._controls_utils import SELECTORS
-
+        # Only relevant when a target is on a different page (see `function`).
         selector_types = tuple(selector for selectors in SELECTORS.values() for selector in selectors)
         self._is_drill_through = not isinstance(self._parent_model, selector_types)
 
-    def function(self, _trigger, _controls_store):
-        from vizro.models import AgGrid, Checklist, Graph, RangeSlider
+        # Resolve the drill-through navigation target once (a control's page is fixed at build time). Drill-through
+        # navigates only when the destination is unambiguous: every cross-page target lives on a single page. When they
+        # span several pages there is no single "detail view" to open (and only one `vizro_url`), so we never navigate
+        # (path stays None). `get_relative_path` is deferred to `function` as it needs the running app's routing config.
+        distinct_pages = {page.id: page for page in cross_page_pages}
+        self._drill_through_path = next(iter(distinct_pages.values())).path if len(distinct_pages) == 1 else None
 
+    def function(self, _trigger, _controls_store):
         value = cast(_SupportsSetControl, self._parent_model)._get_value_from_trigger(self.value, _trigger)
 
-        # Returning no_update will leave control unchanged and control's action will not be triggered.
+        # Returning no_update will leave the control(s) unchanged and their actions will not be triggered.
         # Don't raise PreventUpdate exception as it stops other actions in the chain from running.
         if value is no_update:
-            return no_update
+            return self._no_update_result()
+
+        # Same-page targets: their selectors are mounted, so update them directly through the callback outputs. Each
+        # value is reshaped for its own selector; a target that cannot accept the value contributes no_update so the
+        # other targets are still updated.
+        results = [
+            self._shape_value_for_control(control_id, value, _controls_store)
+            for control_id in self._same_page_controls
+        ]
+
+        # Different-page targets: their selectors are not mounted, so they cannot be callback outputs. Persist each new
+        # value into `vizro_controls_store` (via set_props, as the store is only a State here); the target page's sync
+        # callback applies this `currentValue` to the selector when that page is opened.
+        navigated = no_update
+        if self._cross_page_controls:
+            wrote_any = False
+            for control_id in self._cross_page_controls:
+                shaped_value = self._shape_value_for_control(control_id, value, _controls_store)
+                if shaped_value is no_update:
+                    continue
+                self._write_cross_page_store_entry(control_id, shaped_value, _controls_store)
+                wrote_any = True
+
+            if wrote_any:
+                set_props("vizro_controls_store", {"data": _controls_store})
+                # Drill-through navigates to the pre-resolved target page (see pre_build); it is None when the targets
+                # span several pages, in which case we stay put and each page applies its value from the store on open.
+                # A control-to-control sync never navigates.
+                if self._is_drill_through and self._drill_through_path is not None:
+                    navigated = get_relative_path(self._drill_through_path)
+
+            # `vizro_url.pathname` is the last output whenever there are cross-page targets (see `outputs`).
+            results.append(navigated)
+
+        # A single output must return a scalar; multiple outputs must return a positionally-aligned list.
+        return results[0] if len(results) == 1 else results
+
+    def _shape_value_for_control(self, control_id, value, controls_store):
+        """Shape the trigger-derived `value` for one target control, or return `no_update` to skip just that control.
+
+        The raw value is derived once from the trigger; this resets it to the control's original value when the
+        trigger yields None, then reshapes it to the target selector (multi vs range vs single-value). Returns
+        `no_update` when the value cannot be applied to this control (an incomplete range, or a multi-item list into
+        a single-value selector), leaving that control unchanged without affecting the others.
+        """
+        from vizro.models import AgGrid, Checklist, Graph, RangeSlider
 
         # If value is None then reset control to original value. Fall back to the selector's build-time value if the
         # store entry is missing/incomplete - a persisted (storage_type="session") store can be stale after a control
         # was added or renamed, so we must not assume the key exists.
         if value is None:
-            control_store = _controls_store.get(self.control, {})
-            value = control_store.get("originalValue", cast(ControlType, model_manager[self.control]).selector.value)
+            control_store = controls_store.get(control_id, {})
+            value = control_store.get("originalValue", cast(ControlType, model_manager[control_id]).selector.value)
 
-        selector = cast(ControlType, model_manager[self.control]).selector
+        selector = cast(ControlType, model_manager[control_id]).selector
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
         is_range = getattr(selector, "range", isinstance(selector, RangeSlider))
 
         # A leaf-mode Cascader (the only kind that reaches here — path mode is rejected at pre_build) reshapes
         # like a flat categorical selector: a multi-select value is a list of leaves, a single-select a scalar.
         if is_multi:
-            value = value if isinstance(value, list) else [value]
-        elif is_range:
+            return value if isinstance(value, list) else [value]
+        if is_range:
             # AgGrid/Graph emit the picked values in selection (click) order, so a multi-value trigger can arrive
             # with its ends out of order; reorder into [min, max] to form a valid range. A range *selector*
             # (RangeSlider/DatePicker/DateTimePicker/TimePicker) instead emits an authoritative positional
             # [start, end] that must be preserved as-is: its ends are not always lexically ordered (e.g. a
             # DateTimePicker with a timed start and a date-only, whole-day end), so reordering would misplace them.
             reorder_range = isinstance(self._parent_model, (AgGrid, Graph))
-            value = self._normalize_range_value(value, reorder=reorder_range)
-            if value is None:
-                return no_update
-        elif isinstance(value, list):
+            normalized = self._normalize_range_value(value, reorder=reorder_range)
+            # An incomplete/empty range must not be synced (see `_normalize_range_value`); skip just this control.
+            return no_update if normalized is None else normalized
+        if isinstance(value, list):
             # Target is single-value selector but value is list.
             if len(value) == 1:
-                value = value[0]
-            else:
-                logger.debug(
-                    "set_control %s received list with %d items but targets a single-value %s %s; return no_update",
-                    self.id,
-                    len(value),
-                    type(selector).__name__,
-                    self.control,
-                )
-                return no_update
+                return value[0]
+            logger.debug(
+                "set_control %s received list with %d items but targets a single-value %s %s; skipping this control",
+                self.id,
+                len(value),
+                type(selector).__name__,
+                control_id,
+            )
+            return no_update
+        return value
 
-        if self._same_page:
-            # Same-page target: its selector is mounted, so update it directly through the callback output.
-            return value
+    def _write_cross_page_store_entry(self, control_id, value, controls_store):
+        """Persist a cross-page target's new value into `vizro_controls_store`.
 
-        # Different-page target: its selector is not mounted, so it cannot be a callback output. Instead persist the
-        # new value into `vizro_controls_store` (via set_props, as the store is only a State here). The target page's
-        # sync callback applies this `currentValue` to the selector when that page is opened.
-        #
-        # If the control's entry is missing (a persisted storage_type="session" store can be stale after a control was
-        # added/renamed), rebuild the full entry - mirroring Dashboard._make_page_layout - rather than writing only
-        # `currentValue`. A complete entry keeps cross-page syncing working (the sync callback needs `crossPageTarget`,
-        # `selectorId`, etc.) instead of merely avoiding a KeyError. `crossPageTarget` is True here by construction:
-        # this control is the target of a cross-page set_control.
-        if self.control not in _controls_store:
-            control_model = cast(ControlType, model_manager[self.control])
-            _controls_store[self.control] = {
+        If the control's entry is missing (a persisted storage_type="session" store can be stale after a control was
+        added/renamed), rebuild the full entry - mirroring Dashboard._make_page_layout - rather than writing only
+        `currentValue`. A complete entry keeps cross-page syncing working (the sync callback needs `crossPageTarget`,
+        `selectorId`, etc.) instead of merely avoiding a KeyError. `crossPageTarget` is True here by construction:
+        this control is the target of a cross-page set_control.
+        """
+        if control_id not in controls_store:
+            control_model = cast(ControlType, model_manager[control_id])
+            controls_store[control_id] = {
                 "originalValue": control_model.selector.value,
                 "pageId": model_manager._get_model_page(control_model).id,
                 "selectorId": control_model.selector.id,
                 "showInURL": control_model.show_in_url,
                 "crossPageTarget": True,
             }
-        _controls_store[self.control]["currentValue"] = value
-        set_props("vizro_controls_store", {"data": _controls_store})
+        controls_store[control_id]["currentValue"] = value
 
-        if self._is_drill_through:
-            # Drill-through: navigate to the target control's page (over the URL). The value travels through the store
-            # above and is applied when that page opens.
-            target_page_path = model_manager._get_model_page(model_manager[self.control]).path
-            return get_relative_path(target_page_path)
-
-        # Syncing controls: stay on the current page; the value is applied when the target's page is next opened.
-        return no_update
+    def _no_update_result(self):
+        """Return `no_update` shaped to match `outputs`: a scalar for a single output, else one entry per output."""
+        output_count = len(self._same_page_controls) + (1 if self._cross_page_controls else 0)
+        return no_update if output_count == 1 else [no_update] * output_count
 
     @property
     def outputs(self):  # type: ignore[override]
-        if self._same_page:
-            return self.control
-        # Cross-page: the new value is written to `vizro_controls_store` via set_props. The callback output is
-        # `vizro_url.pathname`, used to navigate on drill-through; for a control-to-control sync we return `no_update`
-        # for it so the page does not change.
-        return ["vizro_url.pathname"]
+        # Same-page targets are real callback outputs (their selectors are mounted). Cross-page targets are written to
+        # `vizro_controls_store` via set_props instead, so they contribute only the shared `vizro_url.pathname` output
+        # (used to navigate on drill-through; `no_update` for a control-to-control sync so the page does not change).
+        if self._cross_page_controls:
+            return [*self._same_page_controls, "vizro_url.pathname"]
+        # All targets on the same page: a single target returns a bare id (one Output); several return a list.
+        return self._same_page_controls[0] if len(self._same_page_controls) == 1 else self._same_page_controls
 
     @staticmethod
     def _normalize_range_value(value, *, reorder):

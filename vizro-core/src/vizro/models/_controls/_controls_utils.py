@@ -151,17 +151,19 @@ def build_default_control_selector_actions(
     targeted_figures: list[str],
     update_targets_action_id: str,
 ) -> None:
-    """Set a control selector's default action chain: sync each targeted control, then refresh its targets.
+    """Set a control selector's default action chain: sync the targeted controls, then refresh its targets.
 
     Filter and Parameter share this: on selector change they first push the new value to every control they keep in
-    sync (via `set_control`), then refresh their own targets (via `update_targets`). The `set_control` actions run
-    first so the latest value is applied before the refresh.
+    sync (via a single `set_control` that targets them all), then refresh their own targets (via `update_targets`).
+    The `set_control` action runs first so the latest value is applied before the refresh.
     """
     # Local import to avoid a circular import between this module and vizro.actions.
     from vizro.actions import set_control, update_targets
 
+    # One `set_control` drives every synced control at once (one callback, one notification) instead of one action
+    # per control. `targeted_controls` is already de-duplicated and order-preserving (see `extract_control_targets`).
     selector.actions = [
-        *[set_control(control=control_id, value=None) for control_id in targeted_controls],
+        *([set_control(control=targeted_controls, value=None)] if targeted_controls else []),
         update_targets(id=update_targets_action_id, targets=targeted_figures),
     ]
 
