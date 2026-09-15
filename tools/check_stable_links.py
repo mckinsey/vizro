@@ -27,24 +27,32 @@ from pathlib import Path
 _ANCHOR_RE_TEMPLATE = r'<a\b[^>]*\bhref="{placeholder}[^"]*"'
 
 
-def find_stable_links(site_dir: Path, placeholder: str) -> dict[Path, int]:
-    """Return a mapping of HTML file -> count of anchor links to the placeholder."""
+def find_stable_links(site_dir: Path, placeholder: str, exclude: tuple[str, ...] = ()) -> dict[Path, int]:
+    """Return a mapping of HTML file -> count of anchor links to the placeholder.
+
+    Files whose path relative to ``site_dir`` equals any entry in ``exclude`` are
+    skipped. Use this for pages that intentionally keep absolute stable links and
+    will not be migrated (e.g. static pages that are no longer maintained).
+    """
     anchor_re = re.compile(_ANCHOR_RE_TEMPLATE.format(placeholder=re.escape(placeholder)))
+    excluded = {Path(entry) for entry in exclude}
     offenders: dict[Path, int] = {}
     for html_path in sorted(site_dir.rglob("*.html")):
+        if html_path.relative_to(site_dir) in excluded:
+            continue
         count = len(anchor_re.findall(html_path.read_text(encoding="utf-8")))
         if count:
             offenders[html_path] = count
     return offenders
 
 
-def check_stable_links(site_dir: Path, placeholder: str, fail: bool = False) -> int:
+def check_stable_links(site_dir: Path, placeholder: str, exclude: tuple[str, ...] = (), fail: bool = False) -> int:
     """Report anchor links hardcoded to ``placeholder``; exit non-zero only with ``fail``."""
     if not site_dir.is_dir():
         print(f"ERROR: {site_dir} not found. Run after `zensical build` from the docset directory.")
         return 1
 
-    offenders = find_stable_links(site_dir, placeholder)
+    offenders = find_stable_links(site_dir, placeholder, exclude)
     if not offenders:
         print(f"OK: no <a> links hardcoded to '{placeholder}' found in {site_dir}.")
         return 0
@@ -74,12 +82,23 @@ def main() -> int:
         help="Built docs directory to scan (default: site).",
     )
     parser.add_argument(
+        "--exclude",
+        action="append",
+        default=None,
+        help="Path (relative to site-dir) to skip; repeat for multiple. For pages that will not be migrated.",
+    )
+    parser.add_argument(
         "--fail",
         action="store_true",
         help="Exit 1 when offenders are found (enforcement mode). Off by default (report-only).",
     )
     args = parser.parse_args()
-    return check_stable_links(site_dir=args.site_dir, placeholder=args.placeholder, fail=args.fail)
+    return check_stable_links(
+        site_dir=args.site_dir,
+        placeholder=args.placeholder,
+        exclude=tuple(args.exclude or ()),
+        fail=args.fail,
+    )
 
 
 if __name__ == "__main__":

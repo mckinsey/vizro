@@ -156,8 +156,9 @@ build = [
   "python ../tools/stamp_llms_txt.py --placeholder=https://vizro.readthedocs.io/en/stable/ --site-dir=site --filename=llms.txt --filename=llms-full.txt",
   "python ../tools/strip_html_leading_whitespace.py --site-dir=site",
   # Report-only: flags pages with absolute `en/stable/` anchor links that break on non-stable builds.
+  # The cheatsheet and components compendium are excluded as they are no longer maintained.
   # Migrate the remaining offenders to relative links, then add --fail here to make it enforcing.
-  "python ../tools/check_stable_links.py --placeholder=https://vizro.readthedocs.io/en/stable/ --site-dir=site"
+  "python ../tools/check_stable_links.py --placeholder=https://vizro.readthedocs.io/en/stable/ --site-dir=site --exclude=pages/cheatsheet/cheatsheet.html --exclude=pages/components_compendium/index.html"
 ]
 # Disable warnings on the linkcheck so that HTTP redirects are accepted. We could ignore only that warning and specify
 # more advanced settings using a linkcheckerrc config file.
@@ -173,7 +174,7 @@ pip = '"{env:HATCH_UV}" pip {args}'
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
 serve = "zensical serve --open {args}"
 serve-markdown = ["build", "python -m http.server {args:8000} --directory site"]
-stable-link-check = "python ../tools/check_stable_links.py --placeholder=https://vizro.readthedocs.io/en/stable/ --site-dir=site"
+stable-link-check = "python ../tools/check_stable_links.py --placeholder=https://vizro.readthedocs.io/en/stable/ --site-dir=site --exclude=pages/cheatsheet/cheatsheet.html --exclude=pages/components_compendium/index.html"
 
 [envs.examples]
 # TODO: once the visual-vocabulary dashboard has moved out of this repo, this environment should be removed fully and
