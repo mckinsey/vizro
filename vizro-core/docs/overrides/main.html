@@ -8,9 +8,16 @@
   rel="stylesheet"
 />
 <link
-  rel="alternate"
-  type="text/markdown"
+  rel="describedby"
   title="llms.txt"
   href="{{ 'llms.txt' | url }}"
 />
+{% if page %}
+  <link
+    rel="alternate"
+    type="text/markdown"
+    title="{{ page.title }} as Markdown"
+    href="{{ (page.url ~ 'index.md') | url }}"
+  />
+{% endif %}
 {% endblock %}
