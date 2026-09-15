@@ -140,6 +140,8 @@ class Page(VizroBaseModel):
         targets = figure_targets + filter_targets
 
         if targets:
+            # Wrap in a list so mypy sees the declared `actions` list type (a bare single action is coerced to a list
+            # at runtime by the field validator, but mypy only sees the annotation).
             self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
 
         # Convert generator to list as it's going to be iterated multiple times.
