@@ -120,16 +120,6 @@ cascader_path_page = vm.Page(
             id=cnst.CASCADER_PATH_MULTI_AG_GRID_ID,
             figure=dash_ag_grid(data_frame=_cities),
         ),
-        vm.AgGrid(
-            id=cnst.CASCADER_PATH_SET_CONTROL_AG_GRID_SOURCE_ID,
-            title="set_control source",
-            figure=dash_ag_grid(data_frame=_cities),
-            actions=set_control(control=cnst.CASCADER_PATH_SET_CONTROL_FILTER_CONTROL_ID, value="city"),
-        ),
-        vm.AgGrid(
-            id=cnst.CASCADER_PATH_SET_CONTROL_AG_GRID_ID,
-            figure=dash_ag_grid(data_frame=_cities),
-        ),
     ],
     controls=[
         vm.Filter(
@@ -155,24 +145,6 @@ cascader_path_page = vm.Page(
                 full_path=True,
                 value=[["Illinois", "Chicago"], ["Maine", "Augusta"]],
                 title="Cities (multi, path mode)",
-            ),
-        ),
-        # Path-mode Cascader cannot be a set_control target; leaf mode with unique leaves is used here instead.
-        vm.Filter(
-            id=cnst.CASCADER_PATH_SET_CONTROL_FILTER_CONTROL_ID,
-            column=["state", "city"],
-            targets=[cnst.CASCADER_PATH_SET_CONTROL_AG_GRID_ID],
-            selector=vm.Cascader(
-                id=cnst.CASCADER_PATH_SET_CONTROL_ID,
-                multi=False,
-                full_path=False,
-                options={
-                    "Maine": ["Augusta"],
-                    "Illinois": ["Chicago"],
-                    "Oregon": ["Salem"],
-                },
-                value="Chicago",
-                title="City (single, leaf mode, set_control target)",
             ),
         ),
     ],
