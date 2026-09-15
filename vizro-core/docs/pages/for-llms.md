@@ -10,10 +10,10 @@ This page is a single-file cheatsheet for LLMs and coding agents. It restates on
 
 Use [`llms.txt`](../llms.txt) as the machine-readable index, then fetch detailed documentation in one of these forms:
 
-1. **Per-page Markdown:** Remove the trailing `/` from any canonical documentation URL and append `.md`; use `/index.md` for the documentation root. No custom request header is needed.
+1. **Per-page Markdown:** Take the URL of the page you fetched — or the `rel="alternate"` Markdown link advertised in its `<head>` — remove the trailing `/` and append `.md`; use `/index.md` for the documentation root. Build this from the page URL you are on, not from its `rel="canonical"` link: the canonical link always points at the `stable` release, so deriving from it would send you to the wrong version. No custom request header is needed.
 2. **Content negotiation:** Send `Accept: text/markdown, text/html;q=0.9`. Include the HTML fallback because upstream conversion returns HTTP 406 for pages over 2 MB.
-3. **Bulk documentation:** Fetch [`llms-full.txt`](https://vizro.readthedocs.io/en/stable/llms-full.txt) for the narrative documentation and user guides in one request, excluding the API reference.
-4. **Targeted model reference:** Fetch per-model files such as [`graph.md`](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/graph.md) instead of loading the combined Models API page. All per-model files are listed in `llms.txt`.
+3. **Bulk documentation:** Fetch [`llms-full.txt`](../llms-full.txt) for the narrative documentation and user guides in one request, excluding the API reference.
+4. **Targeted model reference:** Fetch per-model files such as `graph.md` instead of loading the combined Models API page. Every per-model file is listed with its URL in [`llms.txt`](../llms.txt).
 
 ## Minimum runnable app
 
