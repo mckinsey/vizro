@@ -414,8 +414,10 @@ class TestPreBuildMethod:
         ):
             parameter.pre_build()
 
-    def test_target_control_different_page_invalid(self, gapminder):
-        # A control can only target other controls on the same page (the underlying set_control sync is per-page).
+    def test_target_control_different_page_valid(self, gapminder):
+        # A Parameter can target a control on a *different* page: the control target is extracted and a set_control
+        # sync action is generated, while its figure target(s) remain. The cross-page value is carried through
+        # vizro_controls_store and applied when the target's page is opened.
         vm.Page(
             id="page_a",
             title="Page A",
@@ -434,10 +436,19 @@ class TestPreBuildMethod:
             components=[vm.Graph(id="graph_b", figure=px.scatter(gapminder, x="lifeExp", y="gdpPercap"))],
             controls=[vm.Filter(id="filter_b", column="continent")],
         )
-        with pytest.raises(
-            ValueError, match=r"Control 'param_a' cannot target control 'filter_b' because they are on different pages"
-        ):
-            model_manager["param_a"].pre_build()
+        model_manager["filter_b"].pre_build()
+        model_manager["param_a"].pre_build()
+
+        param_a = model_manager["param_a"]
+        # The cross-page control target is stripped, leaving only the figure-argument target.
+        assert param_a.targets == ["graph_a.x"]
+        # A single set_control sync action is generated for the cross-page target.
+        set_control_actions = [action for action in param_a.selector.actions if isinstance(action, set_control)]
+        assert len(set_control_actions) == 1
+        assert set_control_actions[0].control == "filter_b"
+        # Different page + control-selector trigger => a sync, not a drill-through: it does not navigate.
+        assert set_control_actions[0]._same_page is False
+        assert set_control_actions[0]._is_drill_through is False
 
     def test_target_only_controls_invalid(self, managers_one_page_two_graphs):
         # A Parameter must have at least one figure target: its value is applied to figures only through its

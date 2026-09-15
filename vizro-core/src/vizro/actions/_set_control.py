@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-import base64
-import json
 import logging
 from functools import cached_property
 from typing import Literal, Protocol, cast, runtime_checkable
 
-from dash import get_relative_path, no_update
+from dash import get_relative_path, no_update, set_props
 from pydantic import Field, JsonValue
 
 from vizro.actions._abstract_action import _AbstractAction
@@ -24,12 +22,6 @@ _RANGE_VALUE_LEN = 2
 @runtime_checkable
 class _SupportsSetControl(Protocol):
     def _get_value_from_trigger(self, value: JsonValue, trigger: JsonValue) -> JsonValue: ...
-
-
-def _encode_to_base64(value):
-    json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
-    b64_bytes = base64.urlsafe_b64encode(json_bytes)
-    return f"b64_{b64_bytes.decode('utf-8').rstrip('=')}"
 
 
 class set_control(_AbstractAction):
@@ -125,7 +117,9 @@ class set_control(_AbstractAction):
     type: Literal["set_control"] = "set_control"
     control: ModelID = Field(
         description="Filter or Parameter component id to be affected by the trigger. "
-        "If the control is on a different page to the trigger, then it must have `show_in_url=True`."
+        "The control can be on the same page as the trigger or on a different page: a different-page control is "
+        "kept in sync through the internal `vizro_controls_store`, and its new value is applied when that page "
+        "is opened."
     )
 
     # TODO AM-PP: How about making it optional with default=None.
@@ -175,16 +169,18 @@ class set_control(_AbstractAction):
                 f"root-to-leaf path. Use a Cascader with full_path=False (leaf mode) to enable `set_control`."
             )
 
-        if control_model_page == model_manager._get_model_page(self):
-            self._same_page = True
-        else:
-            # Validate that control on different page has `show_in_url=True`.
-            if not control_model.show_in_url:
-                raise ValueError(
-                    f"Model with ID `{self.control}` used as a `control` in `set_control` action is on a different "
-                    f"page from the trigger and so must have `show_in_url=True`."
-                )
-            self._same_page = False
+        self._same_page = control_model_page == model_manager._get_model_page(self)
+
+        # Distinguish two cross-page use cases by what triggers the action:
+        #   - triggered by a control's own selector (Dropdown, Checklist, ...) -> "syncing controls": stay on the
+        #     current page, the value is applied to the target when its page is next opened;
+        #   - triggered by a figure/action component (Graph, AgGrid, Figure, Button, Card, ...) -> "drill-through":
+        #     navigate to the target control's page so the user is taken to the drilled-into detail.
+        # Only relevant when the target is on a different page (see `function`).
+        from vizro.models._controls._controls_utils import SELECTORS
+
+        selector_types = tuple(selector for selectors in SELECTORS.values() for selector in selectors)
+        self._is_drill_through = not isinstance(self._parent_model, selector_types)
 
     def function(self, _trigger, _controls_store):
         from vizro.models import AgGrid, Checklist, Graph, RangeSlider
@@ -194,11 +190,14 @@ class set_control(_AbstractAction):
         # Returning no_update will leave control unchanged and control's action will not be triggered.
         # Don't raise PreventUpdate exception as it stops other actions in the chain from running.
         if value is no_update:
-            return no_update if self._same_page else (no_update, no_update)
+            return no_update
 
-        # If value is None then reset control to original value.
+        # If value is None then reset control to original value. Fall back to the selector's build-time value if the
+        # store entry is missing/incomplete - a persisted (storage_type="session") store can be stale after a control
+        # was added or renamed, so we must not assume the key exists.
         if value is None:
-            value = _controls_store[self.control]["originalValue"]
+            control_store = _controls_store.get(self.control, {})
+            value = control_store.get("originalValue", cast(ControlType, model_manager[self.control]).selector.value)
 
         selector = cast(ControlType, model_manager[self.control]).selector
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
@@ -217,7 +216,7 @@ class set_control(_AbstractAction):
             reorder_range = isinstance(self._parent_model, (AgGrid, Graph))
             value = self._normalize_range_value(value, reorder=reorder_range)
             if value is None:
-                return self._get_no_update_response()
+                return no_update
         elif isinstance(value, list):
             # Target is single-value selector but value is list.
             if len(value) == 1:
@@ -230,20 +229,50 @@ class set_control(_AbstractAction):
                     type(selector).__name__,
                     self.control,
                 )
-                return self._get_no_update_response()
+                return no_update
 
         if self._same_page:
+            # Same-page target: its selector is mounted, so update it directly through the callback output.
             return value
 
-        page_path = model_manager._get_model_page(model_manager[self.control]).path
-        url_query_params = f"?{self.control}={_encode_to_base64(value)}"
-        return get_relative_path(page_path), url_query_params
+        # Different-page target: its selector is not mounted, so it cannot be a callback output. Instead persist the
+        # new value into `vizro_controls_store` (via set_props, as the store is only a State here). The target page's
+        # sync callback applies this `currentValue` to the selector when that page is opened.
+        #
+        # If the control's entry is missing (a persisted storage_type="session" store can be stale after a control was
+        # added/renamed), rebuild the full entry - mirroring Dashboard._make_page_layout - rather than writing only
+        # `currentValue`. A complete entry keeps cross-page syncing working (the sync callback needs `crossPageTarget`,
+        # `selectorId`, etc.) instead of merely avoiding a KeyError. `crossPageTarget` is True here by construction:
+        # this control is the target of a cross-page set_control.
+        if self.control not in _controls_store:
+            control_model = cast(ControlType, model_manager[self.control])
+            _controls_store[self.control] = {
+                "originalValue": control_model.selector.value,
+                "pageId": model_manager._get_model_page(control_model).id,
+                "selectorId": control_model.selector.id,
+                "showInURL": control_model.show_in_url,
+                "crossPageTarget": True,
+            }
+        _controls_store[self.control]["currentValue"] = value
+        set_props("vizro_controls_store", {"data": _controls_store})
+
+        if self._is_drill_through:
+            # Drill-through: navigate to the target control's page (over the URL). The value travels through the store
+            # above and is applied when that page opens.
+            target_page_path = model_manager._get_model_page(model_manager[self.control]).path
+            return get_relative_path(target_page_path)
+
+        # Syncing controls: stay on the current page; the value is applied when the target's page is next opened.
+        return no_update
 
     @property
     def outputs(self):  # type: ignore[override]
         if self._same_page:
             return self.control
-        return ["vizro_url.pathname", "vizro_url.search"]
+        # Cross-page: the new value is written to `vizro_controls_store` via set_props. The callback output is
+        # `vizro_url.pathname`, used to navigate on drill-through; for a control-to-control sync we return `no_update`
+        # for it so the page does not change.
+        return ["vizro_url.pathname"]
 
     @staticmethod
     def _normalize_range_value(value, *, reorder):
@@ -264,6 +293,10 @@ class set_control(_AbstractAction):
         source, which has no positional start/end, so it always collapses to the spanning [min, max].
         """
         if not isinstance(value, list):
+            # A scalar empty value (None or "") is an incomplete/cleared selection, exactly like the list cases
+            # below: don't sync it (min/max would raise on None, and "" would seed a meaningless ["", ""] range).
+            if value is None or value == "":
+                return None
             return [value, value]
         if len(value) == 0 or any(item is None or item == "" for item in value):
             return None
@@ -272,9 +305,6 @@ class set_control(_AbstractAction):
         if reorder or len(value) > _RANGE_VALUE_LEN:
             return [min(value), max(value)]
         return value
-
-    def _get_no_update_response(self):
-        return no_update if self._same_page else (no_update, no_update)
 
     @cached_property
     def notifications(self):  # type: ignore[override]

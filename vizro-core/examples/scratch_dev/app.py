@@ -52,7 +52,6 @@ SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3
 
 vm.Page.add_type("controls", vm.Button)
 
-
 page_0_1 = vm.Page(
     id="page_0_1",
     title="Smoke test Page",
@@ -845,6 +844,97 @@ page_3_10 = vm.Page(
 )
 
 
+# ====== **NEW** Syncing controls across pages ======
+# A Filter/Parameter can now list a control on ANOTHER page in its `targets`. Changing it writes the new value into the
+# internal `vizro_controls_store`; the synced control picks that value up when its own page is opened. There is no page
+# navigation and no global URL - the values simply stay in sync across pages within the session.
+
+page_40 = vm.Page(
+    id="page_40",
+    title="Cross-page sync (Page A)",
+    components=[
+        vm.Graph(id="p40_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        vm.Filter(
+            id="p40_species",
+            column="species",
+            # Target a control on ANOTHER page (page_41) as well as this page's graph.
+            targets=["p41_speciessss", "p40_graph"],
+            selector=vm.Dropdown(title="Species (synced with Page B)"),
+            # show_in_url is independent of cross-page syncing; here it also mirrors this control in the URL.
+            show_in_url=True,
+        ),
+    ],
+)
+
+page_41 = vm.Page(
+    id="page_41",
+    title="Cross-page sync (Page B)",
+    components=[
+        vm.Graph(id="p41_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        vm.Filter(
+            id="p41_speciessss",
+            column="species",
+            # Sync back to Page A's control (two-way) as well as this page's graph.
+            targets=["p41_graph"],
+            selector=vm.Checklist(title="Species (synced with Page A)"),
+        ),
+    ],
+)
+
+
+# ====== **NEW** Drill-through across pages (navigates over the URL) ======
+# Clicking a point sets a control on ANOTHER page AND navigates there. Because the trigger is a figure (not a control
+# selector), set_control performs a drill-through: the clicked value is written to the internal store and the page
+# changes over the URL to the target page, where the value is applied on open.
+
+page_42 = vm.Page(
+    id="page_42",
+    title="Drill-through (source)",
+    components=[
+        vm.Graph(
+            id="p42_graph",
+            title="Drill-through (source) - targets control with NO URL",
+            # custom_data carries the species so set_control can read the clicked point's species.
+            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data="species"),
+            # Drill-through to a target restored from the store only (target has no show_in_url).
+            actions=set_control(control="p43_species", value="species"),
+        ),
+        vm.Graph(
+            id="p42_graph_url",
+            title="Drill-through (source) - targets control with URL",
+            figure=px.scatter(df, x="petal_width", y="petal_length", color="species", custom_data="species"),
+            # Drill-through to a target that ALSO persists in the URL (target has show_in_url=True).
+            actions=set_control(control="p43_species_url", value="species"),
+        ),
+    ],
+)
+
+page_43 = vm.Page(
+    id="page_43",
+    title="Drill-through (target)",
+    components=[
+        vm.Graph(id="p43_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+        vm.Graph(id="p43_graph_url", figure=px.scatter(df, x="petal_width", y="petal_length", color="species")),
+    ],
+    controls=[
+        # Drill-through target restored from the store only (no URL).
+        vm.Filter(id="p43_species", column="species", targets=["p43_graph"], selector=vm.Dropdown()),
+        # Drill-through target that ALSO reflects its value in the URL (show_in_url=True) so it is bookmarkable.
+        vm.Filter(
+            id="p43_species_url",
+            column="species",
+            targets=["p43_graph_url"],
+            selector=vm.RadioItems(),
+            show_in_url=True,
+        ),
+    ],
+)
+
+
 dashboard = vm.Dashboard(
     pages=[
         page_0_1,
@@ -862,6 +952,10 @@ dashboard = vm.Dashboard(
         page_3_8,
         page_3_9,
         page_3_10,
+        page_40,
+        page_41,
+        page_42,
+        page_43,
     ],
     navigation=vm.Navigation(
         pages={
@@ -880,6 +974,7 @@ dashboard = vm.Dashboard(
                 "page_3_9",
                 "page_3_10",
             ],
+            "Syncing controls across pages": ["page_40", "page_41", "page_42", "page_43"],
         }
     ),
 )

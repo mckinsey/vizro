@@ -192,6 +192,18 @@ class Dashboard(VizroBaseModel):
                 hidden=True,
             )
 
+        # Controls that are the target of a cross-page `set_control` - i.e. a control synced from another page, or a
+        # drill-through target. Only these have their value restored from the store when a page is opened; every other
+        # control keeps its usual per-page behavior and resets when you navigate away. `_same_page` is set in
+        # set_control.pre_build, which has run by now.
+        from vizro.actions import set_control
+
+        cross_page_target_ids = {
+            action.control
+            for action in cast(Iterable[set_control], model_manager._get_models(set_control))
+            if not getattr(action, "_same_page", True)
+        }
+
         layout = html.Div(
             id="dashboard-container",
             children=[
@@ -203,13 +215,27 @@ class Dashboard(VizroBaseModel):
                         "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
                     },
                 ),
+                # Holds every control's state so controls can be synced across pages (see set_control) and reset.
+                # `currentValue` is kept up to date clientside as controls change and by cross-page set_control. On page
+                # open it is applied only to controls with `crossPageTarget=True` (targets of a cross-page set_control),
+                # so unrelated controls keep their usual per-page behavior. `showInURL` mirrors control.show_in_url so
+                # the clientside sync callback knows which controls to write into the URL query string.
+                # storage_type="session" so synced values also survive a full browser refresh within the session.
                 dcc.Store(
                     id="vizro_controls_store",
                     data={
-                        control.id: {"originalValue": control.selector.value, "pageId": page.id}
+                        control.id: {
+                            "currentValue": control.selector.value,
+                            "originalValue": control.selector.value,
+                            "pageId": page.id,
+                            "selectorId": control.selector.id,
+                            "showInURL": control.show_in_url,
+                            "crossPageTarget": control.id in cross_page_target_ids,
+                        }
                         for page in self.pages
                         for control in cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter), page))
                     },
+                    storage_type="session",
                 ),
                 dash.page_container,
             ],
