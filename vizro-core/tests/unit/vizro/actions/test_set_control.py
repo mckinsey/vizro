@@ -187,6 +187,14 @@ class TestSetControlInstantiation:
         assert action.control == ["control_a", "control_b"]
         assert action.value == "some_value"
 
+    def test_notifications_single_set_for_multiple_controls(self):
+        # A multi-target set_control is one callback, so it shows a single confirmation - one success/error
+        # notification, not one per control.
+        action = set_control(control=["control_a", "control_b"], value="some_value")
+
+        assert set(action.notifications) == {"success", "error"}
+        assert action.notifications["success"].text == "Control updated."
+
 
 class TestNormalizeRangeValue:
     """Tests the range-value shaping helper directly, for both source kinds (`reorder` True/False)."""
@@ -303,6 +311,14 @@ class TestSetControlPreBuild:
                 "Please provide a valid control ID that exists in the dashboard."
             ),
         ):
+            action.pre_build()
+
+    def test_pre_build_empty_control_list_raises(self):
+        # An empty `control` has nothing to set and would produce zero callback outputs; reject it at build time.
+        action = set_control(control=[], value="Europe")
+        model_manager["button_1"].actions = action
+
+        with pytest.raises(ValueError, match="has an empty `control`"):
             action.pre_build()
 
     def test_pre_build_parent_model_does_not_support_set_control(self):
@@ -672,6 +688,28 @@ class TestSetControlFunction:
 
         # Same-page value first, then the navigation pathname.
         assert result == [["Europe"], "/mocked_path"]
+        assert controls_store["filter_page_2_show_in_url_true"]["currentValue"] == ["Europe"]
+        set_props_mock.assert_called_once_with("vizro_controls_store", {"data": controls_store})
+
+    def test_function_mixed_same_and_cross_page_sync(self, mocker):
+        # Selector-triggered mixed sync (not a drill-through): the same-page control is updated via the callback output
+        # and the cross-page control is written to the store, but the page does NOT change. The returned list is aligned
+        # to `outputs` = [filter_page_1, "vizro_url.pathname"], so the trailing pathname slot stays no_update.
+        action = set_control(control=["filter_page_1", "filter_page_2_show_in_url_true"], value="Europe")
+        model_manager["button_1"].actions = action
+        action.pre_build()
+        # Simulate a control-selector trigger (which does not navigate).
+        action._is_drill_through = False
+
+        get_relative_path_mock = mocker.patch.object(set_control_module, "get_relative_path")
+        set_props_mock = mocker.patch.object(set_control_module, "set_props")
+
+        controls_store = {"filter_page_2_show_in_url_true": {"currentValue": None}}
+        result = action.function(_trigger=None, _controls_store=controls_store)
+
+        # Same-page value first, then no navigation (sync, not drill-through).
+        assert result == [["Europe"], no_update]
+        get_relative_path_mock.assert_not_called()
         assert controls_store["filter_page_2_show_in_url_true"]["currentValue"] == ["Europe"]
         set_props_mock.assert_called_once_with("vizro_controls_store", {"data": controls_store})
 

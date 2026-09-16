@@ -164,6 +164,14 @@ class set_control(_AbstractAction):
                 "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_control"
             )
 
+        # An empty `control` (e.g. `control=[]`) has nothing to set: it would produce zero callback outputs and fail at
+        # runtime, so reject it clearly at build time.
+        if not self._control_ids:
+            raise ValueError(
+                f"`set_control` action on model `{self._parent_model.id}` has an empty `control`. "
+                f"Provide at least one Filter or Parameter id to set."
+            )
+
         from vizro.models._controls._controls_utils import SELECTORS, _is_hierarchical_selector
 
         # Validate every targeted control and classify it by page (order-preserving), so the callback can update
@@ -228,8 +236,10 @@ class set_control(_AbstractAction):
 
         # Returning no_update will leave the control(s) unchanged and their actions will not be triggered.
         # Don't raise PreventUpdate exception as it stops other actions in the chain from running.
+        # Reuse the framework helper so the no_update shape always matches `outputs` (scalar for one output, else one
+        # entry per output) - a single source of truth for the 1-element-list -> scalar collapse rule.
         if value is no_update:
-            return self._no_update_result()
+            return self._no_update_outputs(self._transformed_outputs)
 
         # Same-page targets: their selectors are mounted, so update them directly through the callback outputs. Each
         # value is reshaped for its own selector; a target that cannot accept the value contributes no_update so the
@@ -275,14 +285,15 @@ class set_control(_AbstractAction):
         """
         from vizro.models import AgGrid, Checklist, Graph, RangeSlider
 
+        selector = cast(ControlType, model_manager[control_id]).selector
+
         # If value is None then reset control to original value. Fall back to the selector's build-time value if the
         # store entry is missing/incomplete - a persisted (storage_type="session") store can be stale after a control
         # was added or renamed, so we must not assume the key exists.
         if value is None:
             control_store = controls_store.get(control_id, {})
-            value = control_store.get("originalValue", cast(ControlType, model_manager[control_id]).selector.value)
+            value = control_store.get("originalValue", selector.value)
 
-        selector = cast(ControlType, model_manager[control_id]).selector
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
         is_range = getattr(selector, "range", isinstance(selector, RangeSlider))
 
@@ -333,11 +344,6 @@ class set_control(_AbstractAction):
                 "crossPageTarget": True,
             }
         controls_store[control_id]["currentValue"] = value
-
-    def _no_update_result(self):
-        """Return `no_update` shaped to match `outputs`: a scalar for a single output, else one entry per output."""
-        output_count = len(self._same_page_controls) + (1 if self._cross_page_controls else 0)
-        return no_update if output_count == 1 else [no_update] * output_count
 
     @property
     def outputs(self):  # type: ignore[override]
