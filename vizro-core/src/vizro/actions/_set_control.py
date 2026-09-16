@@ -169,7 +169,7 @@ class set_control(_AbstractAction):
         if not self._control_ids:
             raise ValueError(
                 f"`set_control` action on model `{self._parent_model.id}` has an empty `control`. "
-                f"Provide at least one Filter or Parameter id to set."
+                "Provide at least one Filter or Parameter id to set."
             )
 
         from vizro.models._controls._controls_utils import SELECTORS, _is_hierarchical_selector
