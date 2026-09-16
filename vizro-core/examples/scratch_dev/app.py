@@ -814,7 +814,11 @@ for _key, _column, _sel_type, _cfg in _p310_specs:
         _sel_type(
             id=f"p310_t1_{_key}",
             title=f"{_key}: pure selector -> sets {_t2_id} & {_t3_id}",
-            actions=[set_control(control=_t2_id, value=None), set_control(control=_t3_id, value=None)],
+            # actions=[
+            #     set_control(control=_t2_id, value=None),
+            #     set_control(control=_t3_id, value=None)
+            # ],
+            actions=[set_control(control=[_t2_id, _t3_id], value=None)],
             **_cfg,
         )
     )
@@ -844,14 +848,15 @@ page_3_10 = vm.Page(
 )
 
 
-# ====== **NEW** Syncing controls across pages ======
-# A Filter/Parameter can now list a control on ANOTHER page in its `targets`. Changing it writes the new value into the
-# internal `vizro_controls_store`; the synced control picks that value up when its own page is opened. There is no page
-# navigation and no global URL - the values simply stay in sync across pages within the session.
+# ====== **NEW** Cross-page control sync to MULTIPLE pages (one set_control, no navigation) ======
+# page_40's Filter selector targets controls on TWO other pages (page_41 and page_42) as well as its own graph. The
+# syncing feature collapses this into a SINGLE set_control(control=["p41_species", "p42_species"], value=None). Because
+# the trigger is a control selector (not a figure) it is a sync, NOT a drill-through: no navigation happens; each target
+# picks up the value when its own page is opened. page_42's target additionally mirrors its value in the URL.
 
 page_40 = vm.Page(
     id="page_40",
-    title="Cross-page sync (Page A)",
+    title="Cross-page sync source -> pages 41 & 42",
     components=[
         vm.Graph(id="p40_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
     ],
@@ -859,75 +864,122 @@ page_40 = vm.Page(
         vm.Filter(
             id="p40_species",
             column="species",
-            # Target a control on ANOTHER page (page_41) as well as this page's graph.
-            targets=["p41_speciessss", "p40_graph"],
-            selector=vm.Dropdown(title="Species (synced with Page B)"),
-            # show_in_url is independent of cross-page syncing; here it also mirrors this control in the URL.
-            show_in_url=True,
+            # One selector change syncs BOTH other-page controls (via a single set_control) and filters this graph.
+            targets=["p41_species", "p42_species", "p40_graph"],
+            selector=vm.RadioItems(title="Species (syncs pages 41 & 42; no navigation)"),
         ),
     ],
 )
 
 page_41 = vm.Page(
     id="page_41",
-    title="Cross-page sync (Page B)",
+    title="Cross-page sync target (no URL)",
     components=[
         vm.Graph(id="p41_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
     ],
     controls=[
-        vm.Filter(
-            id="p41_speciessss",
-            column="species",
-            # Sync back to Page A's control (two-way) as well as this page's graph.
-            targets=["p41_graph"],
-            selector=vm.Checklist(title="Species (synced with Page A)"),
-        ),
+        vm.Filter(id="p41_species", column="species", targets=["p41_graph"], selector=vm.Checklist()),
     ],
 )
-
-
-# ====== **NEW** Drill-through across pages (navigates over the URL) ======
-# Clicking a point sets a control on ANOTHER page AND navigates there. Because the trigger is a figure (not a control
-# selector), set_control performs a drill-through: the clicked value is written to the internal store and the page
-# changes over the URL to the target page, where the value is applied on open.
 
 page_42 = vm.Page(
     id="page_42",
-    title="Drill-through (source)",
+    title="Cross-page sync target (URL)",
     components=[
-        vm.Graph(
-            id="p42_graph",
-            title="Drill-through (source) - targets control with NO URL",
-            # custom_data carries the species so set_control can read the clicked point's species.
-            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data="species"),
-            # Drill-through to a target restored from the store only (target has no show_in_url).
-            actions=set_control(control="p43_species", value="species"),
-        ),
-        vm.Graph(
-            id="p42_graph_url",
-            title="Drill-through (source) - targets control with URL",
-            figure=px.scatter(df, x="petal_width", y="petal_length", color="species", custom_data="species"),
-            # Drill-through to a target that ALSO persists in the URL (target has show_in_url=True).
-            actions=set_control(control="p43_species_url", value="species"),
+        vm.Graph(id="p42_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        # This synced target also mirrors its value in the URL query string (show_in_url=True).
+        vm.Filter(
+            id="p42_species",
+            column="species",
+            targets=["p42_graph"],
+            selector=vm.RadioItems(),
+            show_in_url=True,
         ),
     ],
 )
 
-page_43 = vm.Page(
-    id="page_43",
-    title="Drill-through (target)",
+
+# ====== **NEW** Drill-through to a SINGLE page, setting MULTIPLE controls there (navigates) ======
+# page_50's graph drill-through targets TWO controls that both live on page_51. Because every cross-page target resolves
+# to a single page, the destination is unambiguous: clicking a point writes both values to the store and navigates to
+# page_51, where both are applied on open. The second target (p51_species_url) also persists in the URL.
+
+page_50 = vm.Page(
+    id="page_50",
+    title="Drill-through source -> two controls on page 51",
     components=[
-        vm.Graph(id="p43_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
-        vm.Graph(id="p43_graph_url", figure=px.scatter(df, x="petal_width", y="petal_length", color="species")),
+        vm.Graph(
+            id="p50_graph",
+            title="Click a point: sets two controls on page 51, then navigates there",
+            # custom_data carries the species so set_control can read the clicked point's species.
+            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data="species"),
+            actions=set_control(control=["p51_species", "p51_species_url"], value="species"),
+        ),
+    ],
+)
+
+page_51 = vm.Page(
+    id="page_51",
+    title="Drill-through target (two controls, one with URL)",
+    components=[
+        vm.Graph(id="p51_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+        vm.Graph(id="p51_graph_url", figure=px.scatter(df, x="petal_width", y="petal_length", color="species")),
     ],
     controls=[
-        # Drill-through target restored from the store only (no URL).
-        vm.Filter(id="p43_species", column="species", targets=["p43_graph"], selector=vm.Dropdown()),
-        # Drill-through target that ALSO reflects its value in the URL (show_in_url=True) so it is bookmarkable.
+        vm.Filter(id="p51_species", column="species", targets=["p51_graph"], selector=vm.Dropdown()),
+        # Second drill-through target that ALSO reflects its value in the URL (bookmarkable).
         vm.Filter(
-            id="p43_species_url",
+            id="p51_species_url",
             column="species",
-            targets=["p43_graph_url"],
+            targets=["p51_graph_url"],
+            selector=vm.RadioItems(),
+            show_in_url=True,
+        ),
+    ],
+)
+
+
+# ====== **NEW** Drill-through mixing a same-page and a cross-page target (navigates to the cross-page one) ======
+# page_60's graph drill-through targets one control on THIS page (p60_species, set live) and one on page_61
+# (p61_species). There is exactly one cross-page destination, so clicking a point sets the same-page control, writes the
+# page_61 value to the store, and navigates to page_61. Both controls mirror their value in the URL.
+
+page_60 = vm.Page(
+    id="page_60",
+    title="Drill-through source -> same-page + page 61",
+    components=[
+        vm.Graph(
+            id="p60_graph",
+            title="Click a point: sets this page's control AND page 61's, then navigates to page 61",
+            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data="species"),
+            actions=set_control(control=["p60_species", "p61_species"], value="species"),
+        ),
+    ],
+    controls=[
+        # Same-page target: updated live by the drill-through (just before navigating away). Mirrored in the URL.
+        vm.Filter(
+            id="p60_species",
+            column="species",
+            targets=["p60_graph"],
+            selector=vm.Dropdown(),
+            show_in_url=True,
+        ),
+    ],
+)
+
+page_61 = vm.Page(
+    id="page_61",
+    title="Drill-through target (URL)",
+    components=[
+        vm.Graph(id="p61_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        vm.Filter(
+            id="p61_species",
+            column="species",
+            targets=["p61_graph"],
             selector=vm.RadioItems(),
             show_in_url=True,
         ),
@@ -955,7 +1007,10 @@ dashboard = vm.Dashboard(
         page_40,
         page_41,
         page_42,
-        page_43,
+        page_50,
+        page_51,
+        page_60,
+        page_61,
     ],
     navigation=vm.Navigation(
         pages={
@@ -974,7 +1029,9 @@ dashboard = vm.Dashboard(
                 "page_3_9",
                 "page_3_10",
             ],
-            "Syncing controls across pages": ["page_40", "page_41", "page_42", "page_43"],
+            "Cross-page sync (multi-target)": ["page_40", "page_41", "page_42"],
+            "Drill-through to one page (multi-target)": ["page_50", "page_51"],
+            "Drill-through mixing same/cross page": ["page_60", "page_61"],
         }
     ),
 )

@@ -101,6 +101,33 @@ def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid, stan
 
 
 @pytest.fixture
+def managers_three_pages_for_set_control(standard_px_chart):
+    """A source page plus two separate target pages, for multi-page drill-through tests."""
+    vm.Page(
+        id="src-page",
+        title="src-page",
+        components=[
+            vm.Button(id="src_button", text="Set"),
+            vm.Graph(id="src_graph", figure=standard_px_chart),
+        ],
+        controls=[vm.Filter(id="src_filter", column="continent")],
+    )
+    vm.Page(
+        id="target-page-a",
+        title="target-page-a",
+        components=[vm.Graph(id="graph_a", figure=standard_px_chart)],
+        controls=[vm.Filter(id="filter_a", column="continent")],
+    )
+    vm.Page(
+        id="target-page-b",
+        title="target-page-b",
+        components=[vm.Graph(id="graph_b", figure=standard_px_chart)],
+        controls=[vm.Filter(id="filter_b", column="continent")],
+    )
+    Vizro._pre_build()
+
+
+@pytest.fixture
 def managers_page_hierarchical_filter_set_control(standard_px_chart):
     vm.Page(
         id="hier-set-page",
@@ -151,6 +178,22 @@ class TestSetControlInstantiation:
         assert action.type == "set_control"
         assert action.control == "control_id"
         assert action.value == "some_value"
+
+    def test_create_set_control_with_list_control(self):
+        # `control` accepts a list of ids to target several controls at once; the value is preserved as given.
+        action = set_control(control=["control_a", "control_b"], value="some_value")
+
+        assert action.type == "set_control"
+        assert action.control == ["control_a", "control_b"]
+        assert action.value == "some_value"
+
+    def test_notifications_single_set_for_multiple_controls(self):
+        # A multi-target set_control is one callback, so it shows a single confirmation - one success/error
+        # notification, not one per control.
+        action = set_control(control=["control_a", "control_b"], value="some_value")
+
+        assert set(action.notifications) == {"success", "error"}
+        assert action.notifications["success"].text == "Controls updated."
 
 
 class TestNormalizeRangeValue:
@@ -204,7 +247,10 @@ class TestSetControlPreBuild:
 
         action.pre_build()
 
-        assert action._same_page is True
+        assert action._same_page_controls == ["filter_page_1"]
+        assert action._cross_page_controls == []
+        # No cross-page target, so there is nothing to navigate to.
+        assert action._drill_through_path is None
 
     def test_pre_build_control_model_on_different_page(self):
         # Target a control on a different page. The trigger (Button) is not a control selector, so this is a
@@ -214,8 +260,66 @@ class TestSetControlPreBuild:
 
         action.pre_build()
 
-        assert action._same_page is False
+        assert action._same_page_controls == []
+        assert action._cross_page_controls == ["filter_page_2_show_in_url_true"]
         assert action._is_drill_through is True
+        # A single cross-page target resolves to one unambiguous page to navigate to.
+        assert action._drill_through_path == model_manager["test-page-2"].path
+
+    def test_pre_build_multiple_controls_same_page(self):
+        # Several same-page targets are all classified as same-page; nothing to navigate to.
+        action = set_control(control=["filter_page_1", "filter_page_1_slider"], value="Europe")
+        model_manager["button_1"].actions = action
+
+        action.pre_build()
+
+        assert action._same_page_controls == ["filter_page_1", "filter_page_1_slider"]
+        assert action._cross_page_controls == []
+        assert action._drill_through_path is None
+
+    def test_pre_build_dedupes_repeated_controls(self):
+        # A control listed more than once is collapsed (two Outputs to one component in a callback is an error).
+        action = set_control(control=["filter_page_1", "filter_page_1"], value="Europe")
+        model_manager["button_1"].actions = action
+
+        action.pre_build()
+
+        assert action._control_ids == ["filter_page_1"]
+        assert action._same_page_controls == ["filter_page_1"]
+
+    def test_pre_build_mixed_same_and_cross_page(self):
+        # A mix of a same-page and a cross-page target: classified into the two lists (order preserved), and the single
+        # cross-page target gives one unambiguous navigation page.
+        action = set_control(control=["filter_page_1", "filter_page_2_show_in_url_true"], value="Europe")
+        model_manager["button_1"].actions = action
+
+        action.pre_build()
+
+        assert action._same_page_controls == ["filter_page_1"]
+        assert action._cross_page_controls == ["filter_page_2_show_in_url_true"]
+        assert action._drill_through_path == model_manager["test-page-2"].path
+
+    def test_pre_build_invalid_control_in_list_raises(self):
+        # Every id in the list is validated; an invalid one raises, naming that id.
+        action = set_control(control=["filter_page_1", "invalid_id"], value="Europe")
+        model_manager["button_1"].actions = action
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                "Model with ID `invalid_id` used as a `control` in `set_control` action not found in the dashboard. "
+                "Please provide a valid control ID that exists in the dashboard."
+            ),
+        ):
+            action.pre_build()
+
+    def test_pre_build_empty_control_list_raises(self):
+        # An empty `control` has nothing to set and would produce zero callback outputs; reject it at build time.
+        action = set_control(control=[], value="Europe")
+        model_manager["button_1"].actions = action
+
+        with pytest.raises(ValueError, match="has an empty `control`"):
+            action.pre_build()
 
     def test_pre_build_parent_model_does_not_support_set_control(self):
         action = set_control(control="filter_page_1", value="Europe")
@@ -289,7 +393,8 @@ class TestSetControlPreBuild:
 
         action.pre_build()
 
-        assert action._same_page is False
+        assert action._same_page_controls == []
+        assert action._cross_page_controls == ["filter_page_2_show_in_url_false"]
         assert action._is_drill_through is True
 
 
@@ -303,7 +408,7 @@ class TestSetControlFunction:
         # Any other model that supports set_control can be used here, but the Button used for the simplicity.
         # Button._get_value_from_trigger returns None as set_control attribute value=None
         model_manager["button_1"].actions = action
-        # Call pre_build to set _same_page attribute
+        # Call pre_build to classify the target control(s) by page
         action.pre_build()
 
         # Mock original value in controls store
@@ -320,20 +425,25 @@ class TestSetControlFunction:
 
         assert result == expected
 
-    @pytest.mark.parametrize("same_page, expected", [(True, no_update), (False, no_update)])
-    def test_function_trigger_returns_no_update(self, same_page, expected):
+    @pytest.mark.parametrize(
+        "same_page_controls, cross_page_controls",
+        [(["filter_page_1"], []), ([], ["filter_page_1"])],
+    )
+    def test_function_trigger_returns_no_update(self, same_page_controls, cross_page_controls):
         # Add action to an AgGrid as the AgGrid returns no_update if set_control value is a key from the
         # CELL_CLICKED_MAPPING (e.g. "column"), and trigger does not contain "cellClicked"
         action = set_control(control="filter_page_1", value="column")
         model_manager["ag_grid_1"].actions = action
 
-        # Set _same_page as the output depends on it.
-        action._same_page = same_page
+        # Set the page-classification attributes directly (the output shape depends on them); a no_update trigger must
+        # yield no_update regardless of whether the target is on the same page or a different one.
+        action._same_page_controls = same_page_controls
+        action._cross_page_controls = cross_page_controls
 
         # Call function method with a mock trigger value of None
         result = action.function(_trigger={"selectedRows": []}, _controls_store={})
 
-        assert result == expected
+        assert result is no_update
 
     @pytest.mark.parametrize(
         "control, value, expected_result",
@@ -416,7 +526,7 @@ class TestSetControlFunction:
         # Any other model that supports set_control can be used here, but the Button used for the simplicity.
         # Button._get_value_from_trigger returns value as set_control attribute value=value
         model_manager["button_1"].actions = action
-        # Call pre_build to set _same_page attribute
+        # Call pre_build to classify the target control(s) by page
         action.pre_build()
 
         # Call function method with a mock trigger value
@@ -445,7 +555,7 @@ class TestSetControlFunction:
         # Any other model that supports set_control can be used here, but the Button used for the simplicity.
         # Button._get_value_from_trigger returns "Europe" as set_control attribute value="Europe"
         model_manager["button_1"].actions = action
-        # Call pre_build to set _same_page attribute
+        # Call pre_build to classify the target control(s) by page
         action.pre_build()
 
         # Call function method with a mock trigger value
@@ -539,6 +649,70 @@ class TestSetControlFunction:
         }
         set_props_mock.assert_called_once_with("vizro_controls_store", {"data": controls_store})
 
+    def test_function_multiple_controls_same_page(self):
+        # Two same-page targets: the value is shaped per selector and returned as a positionally-aligned list matching
+        # `outputs`. filter_page_1 is multi ("Europe" -> ["Europe"]); filter_page_1_single_select is single ("Europe").
+        action = set_control(control=["filter_page_1", "filter_page_1_single_select"], value="Europe")
+        model_manager["button_1"].actions = action
+        action.pre_build()
+
+        result = action.function(_trigger=None, _controls_store={})
+
+        assert result == [["Europe"], "Europe"]
+
+    def test_function_multiple_controls_same_page_per_control_no_update(self):
+        # A value that cannot be applied to one target contributes no_update at that position only; the others still
+        # update. A 2-item list goes into filter_page_1 (multi) as-is, but a single-value selector cannot take it.
+        action = set_control(control=["filter_page_1", "filter_page_1_single_select"], value=["Asia", "Europe"])
+        model_manager["button_1"].actions = action
+        action.pre_build()
+
+        result = action.function(_trigger=None, _controls_store={})
+
+        assert result == [["Asia", "Europe"], no_update]
+
+    def test_function_mixed_same_and_cross_page_drill_through(self, mocker):
+        # One same-page target (returned via the callback output) and one cross-page target (written to the store);
+        # a drill-through to a single cross-page destination also navigates. The returned list is aligned to `outputs`
+        # = [filter_page_1, "vizro_url.pathname"].
+        action = set_control(control=["filter_page_1", "filter_page_2_show_in_url_true"], value="Europe")
+        model_manager["button_1"].actions = action
+        action.pre_build()
+        assert action._is_drill_through is True
+
+        mocker.patch.object(set_control_module, "get_relative_path", return_value="/mocked_path")
+        set_props_mock = mocker.patch.object(set_control_module, "set_props")
+
+        controls_store = {"filter_page_2_show_in_url_true": {"currentValue": None}}
+        result = action.function(_trigger=None, _controls_store=controls_store)
+
+        # Same-page value first, then the navigation pathname.
+        assert result == [["Europe"], "/mocked_path"]
+        assert controls_store["filter_page_2_show_in_url_true"]["currentValue"] == ["Europe"]
+        set_props_mock.assert_called_once_with("vizro_controls_store", {"data": controls_store})
+
+    def test_function_mixed_same_and_cross_page_sync(self, mocker):
+        # Selector-triggered mixed sync (not a drill-through): the same-page control is updated via the callback output
+        # and the cross-page control is written to the store, but the page does NOT change. The returned list is aligned
+        # to `outputs` = [filter_page_1, "vizro_url.pathname"], so the trailing pathname slot stays no_update.
+        action = set_control(control=["filter_page_1", "filter_page_2_show_in_url_true"], value="Europe")
+        model_manager["button_1"].actions = action
+        action.pre_build()
+        # Simulate a control-selector trigger (which does not navigate).
+        action._is_drill_through = False
+
+        get_relative_path_mock = mocker.patch.object(set_control_module, "get_relative_path")
+        set_props_mock = mocker.patch.object(set_control_module, "set_props")
+
+        controls_store = {"filter_page_2_show_in_url_true": {"currentValue": None}}
+        result = action.function(_trigger=None, _controls_store=controls_store)
+
+        # Same-page value first, then no navigation (sync, not drill-through).
+        assert result == [["Europe"], no_update]
+        get_relative_path_mock.assert_not_called()
+        assert controls_store["filter_page_2_show_in_url_true"]["currentValue"] == ["Europe"]
+        set_props_mock.assert_called_once_with("vizro_controls_store", {"data": controls_store})
+
 
 @pytest.mark.usefixtures("managers_two_pages_for_set_control")
 class TestSetControlOutputs:
@@ -563,6 +737,24 @@ class TestSetControlOutputs:
 
         assert action.outputs == ["vizro_url.pathname"]
 
+    def test_outputs_multiple_controls_same_page(self):
+        # All targets on the same page: outputs is the ordered list of their ids (each a callback output).
+        action = set_control(control=["filter_page_1", "filter_page_1_single_select"], value="Europe")
+        model_manager["button_1"].actions = action
+
+        action.pre_build()
+
+        assert action.outputs == ["filter_page_1", "filter_page_1_single_select"]
+
+    def test_outputs_mixed_same_and_cross_page(self):
+        # Same-page ids are real outputs; the single trailing vizro_url.pathname covers all cross-page targets.
+        action = set_control(control=["filter_page_1", "filter_page_2_show_in_url_true"], value="Europe")
+        model_manager["button_1"].actions = action
+
+        action.pre_build()
+
+        assert action.outputs == ["filter_page_1", "vizro_url.pathname"]
+
 
 @pytest.mark.usefixtures("managers_page_hierarchical_filter_set_control")
 class TestSetControlHierarchicalFilter:
@@ -571,7 +763,7 @@ class TestSetControlHierarchicalFilter:
         action = set_control(control="hier_set_filter", value="Germany")
         model_manager["hier_set_btn"].actions = action
         action.pre_build()
-        assert action._same_page is True
+        assert action._same_page_controls == ["hier_set_filter"]
 
 
 @pytest.mark.usefixtures("managers_page_hierarchical_filter_set_control_path")
@@ -583,3 +775,49 @@ class TestSetControlHierarchicalFilterPathMode:
         model_manager["hier_set_btn_path"].actions = action
         with pytest.raises(ValueError, match="full_path=True"):
             action.pre_build()
+
+
+@pytest.mark.usefixtures("managers_three_pages_for_set_control")
+class TestSetControlMultiPage:
+    """Drill-through navigates only when every cross-page target resolves to a single, unambiguous page."""
+
+    def test_pre_build_multi_page_targets_have_no_navigation(self):
+        # Two cross-page targets on two different pages: the destination is ambiguous, so no navigation path is set.
+        action = set_control(control=["filter_a", "filter_b"], value="Europe")
+        model_manager["src_button"].actions = action
+
+        action.pre_build()
+
+        assert action._cross_page_controls == ["filter_a", "filter_b"]
+        assert action._is_drill_through is True
+        assert action._drill_through_path is None
+
+    def test_function_multi_page_targets_do_not_navigate(self, mocker):
+        # A drill-through spanning several pages writes every value to the store but does NOT navigate (there is no
+        # single "detail view" and only one vizro_url). get_relative_path must not be called.
+        action = set_control(control=["filter_a", "filter_b"], value="Europe")
+        model_manager["src_button"].actions = action
+        action.pre_build()
+
+        get_relative_path_mock = mocker.patch.object(set_control_module, "get_relative_path")
+        set_props_mock = mocker.patch.object(set_control_module, "set_props")
+
+        controls_store = {}
+        result = action.function(_trigger=None, _controls_store=controls_store)
+
+        # Single output (vizro_url.pathname) and no navigation.
+        assert result is no_update
+        get_relative_path_mock.assert_not_called()
+        # Both cross-page targets are written to the store for pickup on page open.
+        assert controls_store["filter_a"]["currentValue"] == ["Europe"]
+        assert controls_store["filter_b"]["currentValue"] == ["Europe"]
+        set_props_mock.assert_called_once_with("vizro_controls_store", {"data": controls_store})
+
+    def test_outputs_multi_page_targets(self):
+        # No same-page targets and at least one cross-page target: the only output is the shared vizro_url.pathname.
+        action = set_control(control=["filter_a", "filter_b"], value="Europe")
+        model_manager["src_button"].actions = action
+
+        action.pre_build()
+
+        assert action.outputs == ["vizro_url.pathname"]
