@@ -392,4 +392,4 @@ class set_control(_AbstractAction):
         # set_control has only a subtle visual cue (the control value changing), so show the success notification.
         # cached_property is used as the notification models are built once per action instead of being re-minted
         # (with fresh model_manager entries) on every callback run.
-        return _normalize_action_notifications({"success": "Control updated.", "error": "Setting the control failed."})
+        return _normalize_action_notifications({"success": "Controls updated.", "error": "Setting controls failed."})

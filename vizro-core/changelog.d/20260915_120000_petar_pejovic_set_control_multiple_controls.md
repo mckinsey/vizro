@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- [`set_control`][vizro.actions.set_control] can now target multiple controls at once: pass a list of control ids to `control`. A single action sets them all (one callback and one confirmation notification). ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- [`set_control`][vizro.actions.set_control] can now target multiple controls at once: pass a list of control ids to `control`. A single action sets them all (one callback and one confirmation notification). ([#1862](https://github.com/mckinsey/vizro/pull/1862))
 
 <!--
 ### Changed

@@ -193,7 +193,7 @@ class TestSetControlInstantiation:
         action = set_control(control=["control_a", "control_b"], value="some_value")
 
         assert set(action.notifications) == {"success", "error"}
-        assert action.notifications["success"].text == "Control updated."
+        assert action.notifications["success"].text == "Controls updated."
 
 
 class TestNormalizeRangeValue:
