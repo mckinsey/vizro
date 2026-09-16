@@ -25,6 +25,7 @@ from pages.set_control_multi_select_pages import (
     self_filter_set_control_page,
 )
 from pages.timepicker_pages import timepicker_range
+from pages.update_targets_page import apply_controls_on_button_click_page
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -313,6 +314,7 @@ dashboard = vm.Dashboard(
         datetimepicker_range,
         cascader_leaf_page,
         cascader_path_page,
+        apply_controls_on_button_click_page,
     ]
 )
 
