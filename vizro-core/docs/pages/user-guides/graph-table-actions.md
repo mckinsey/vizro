@@ -720,7 +720,7 @@ To perform multiple cross-filters, each dimension that is filtered must have its
 
 !!! note "Setting several controls to the _same_ value"
 
-    Chaining one `va.set_control` per control (as below) is needed when each control receives a _different_ value — here `x` sets `day_filter` and `y` sets `sex_filter`. When several controls should instead receive the _same_ value from a single trigger, pass a list of control ids to one `va.set_control` (which then also shows a single confirmation notification):
+    Chaining one `va.set_control` per control (as below) is needed when each control receives a _different_ value — here `x` sets `day_filter` and `y` sets `sex_filter`. When several controls should instead receive the _same_ value from a single trigger, pass a list of control ids to one `va.set_control` (which then also triggers a single request to the server and shows a single confirmation notification):
 
     ```python
     va.set_control(control=["filter_a", "filter_b"], value="species")
