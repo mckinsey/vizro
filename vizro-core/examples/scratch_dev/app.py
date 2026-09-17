@@ -941,24 +941,25 @@ page_51 = vm.Page(
 )
 
 
-# ====== **NEW** Drill-through mixing a same-page and a cross-page target (navigates to the cross-page one) ======
+# ====== **NEW** Drill-through mixing a same-page and a cross-page target (stays on this page) ======
 # page_60's graph drill-through targets one control on THIS page (p60_species, set live) and one on page_61
-# (p61_species). There is exactly one cross-page destination, so clicking a point sets the same-page control, writes the
-# page_61 value to the store, and navigates to page_61. Both controls mirror their value in the URL.
+# (p61_species). Because a same-page target is present, clicking a point does NOT navigate: it sets the same-page
+# control live (cross-filtering this page) and writes the page_61 value to the store, which is applied when you open
+# page_61. Both controls mirror their value in the URL.
 
 page_60 = vm.Page(
     id="page_60",
-    title="Drill-through source -> same-page + page 61",
+    title="Drill-through source -> same-page + page 61 (stays here)",
     components=[
         vm.Graph(
             id="p60_graph",
-            title="Click a point: sets this page's control AND page 61's, then navigates to page 61",
+            title="Click a point: sets this page's control live AND page 61's (applied on open); stays on this page",
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data="species"),
             actions=set_control(control=["p60_species", "p61_species"], value="species"),
         ),
     ],
     controls=[
-        # Same-page target: updated live by the drill-through (just before navigating away). Mirrored in the URL.
+        # Same-page target: updated live by the drill-through (cross-filters this page). Mirrored in the URL.
         vm.Filter(
             id="p60_species",
             column="species",

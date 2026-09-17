@@ -288,8 +288,9 @@ class TestSetControlPreBuild:
         assert action._same_page_controls == ["filter_page_1"]
 
     def test_pre_build_mixed_same_and_cross_page(self):
-        # A mix of a same-page and a cross-page target: classified into the two lists (order preserved), and the single
-        # cross-page target gives one unambiguous navigation page.
+        # A mix of a same-page and a cross-page target: classified into the two lists (order preserved). Even though the
+        # single cross-page target resolves to one page, a same-page target means we do NOT navigate (staying to set a
+        # control on the current page contradicts leaving it), so no navigation path is set.
         action = set_control(control=["filter_page_1", "filter_page_2_show_in_url_true"], value="Europe")
         model_manager["button_1"].actions = action
 
@@ -297,7 +298,7 @@ class TestSetControlPreBuild:
 
         assert action._same_page_controls == ["filter_page_1"]
         assert action._cross_page_controls == ["filter_page_2_show_in_url_true"]
-        assert action._drill_through_path == model_manager["test-page-2"].path
+        assert action._drill_through_path is None
 
     def test_pre_build_invalid_control_in_list_raises(self):
         # Every id in the list is validated; an invalid one raises, naming that id.
@@ -671,23 +672,27 @@ class TestSetControlFunction:
 
         assert result == [["Asia", "Europe"], no_update]
 
-    def test_function_mixed_same_and_cross_page_drill_through(self, mocker):
-        # One same-page target (returned via the callback output) and one cross-page target (written to the store);
-        # a drill-through to a single cross-page destination also navigates. The returned list is aligned to `outputs`
-        # = [filter_page_1, "vizro_url.pathname"].
+    def test_function_mixed_same_and_cross_page_drill_through_does_not_navigate(self, mocker):
+        # A drill-through (figure trigger) with one same-page target (returned via the callback output) and one
+        # cross-page target (written to the store) does NOT navigate: a same-page target means the user stays on the
+        # current page (its selector is updated live, the cross-page value is applied from the store when that page is
+        # opened). The returned list is aligned to `outputs` = [filter_page_1, "vizro_url.pathname"], so the trailing
+        # pathname slot stays no_update.
         action = set_control(control=["filter_page_1", "filter_page_2_show_in_url_true"], value="Europe")
         model_manager["button_1"].actions = action
         action.pre_build()
         assert action._is_drill_through is True
+        assert action._drill_through_path is None
 
-        mocker.patch.object(set_control_module, "get_relative_path", return_value="/mocked_path")
+        get_relative_path_mock = mocker.patch.object(set_control_module, "get_relative_path")
         set_props_mock = mocker.patch.object(set_control_module, "set_props")
 
         controls_store = {"filter_page_2_show_in_url_true": {"currentValue": None}}
         result = action.function(_trigger=None, _controls_store=controls_store)
 
-        # Same-page value first, then the navigation pathname.
-        assert result == [["Europe"], "/mocked_path"]
+        # Same-page value first, then no navigation (a same-page target is present).
+        assert result == [["Europe"], no_update]
+        get_relative_path_mock.assert_not_called()
         assert controls_store["filter_page_2_show_in_url_true"]["currentValue"] == ["Europe"]
         set_props_mock.assert_called_once_with("vizro_controls_store", {"data": controls_store})
 
