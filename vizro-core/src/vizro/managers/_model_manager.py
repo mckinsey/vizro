@@ -108,6 +108,13 @@ class ModelManager:
             if model in self.__get_model_children(page):  # type: ignore[operator]
                 return page
 
+        # Some internal actions (e.g. the reset-controls refresh) are created outside a page's model tree and so are not
+        # found by the traversal above. Fall back to `_parent_model` only when it is the Page itself, so that any other
+        # mis-wired `_parent_model` still returns None (surfacing the bug) rather than silently resolving to a page.
+        # TODO: remove once the model manager tracks each model's parent directly (see _models_utils.make_actions_chain).
+        if isinstance(parent_model := getattr(model, "_parent_model", None), Page):
+            return parent_model
+
     def _clear(self):
         self.__init__()  # type: ignore[misc]
 

@@ -200,7 +200,7 @@ function reset_controls(_, vizroControlsStore, pageId) {
   // For each control set all its guard to true to prevent triggering unnecessary actions.
   const outputSelectorGuards = pageControls.map(() => true);
 
-  // Trigger the OPL after resetting all controls.
+  // Trigger the dedicated controls-refresh action after resetting all controls.
   return [null, ...outputSelectorValues, ...outputSelectorGuards];
 }
 
