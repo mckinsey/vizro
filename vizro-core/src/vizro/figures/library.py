@@ -76,11 +76,12 @@ def kpi_card(  # noqa: PLR0913
     header = dbc.CardHeader(
         [
             html.H4(title, className="card-kpi-title"),
-        ]
+            html.P(validate_icon(icon), className="material-symbols-outlined") if icon else None,
+        ],
+        className="card-kpi-header",
     )
-    icon = html.P(validate_icon(icon), className="material-symbols-outlined") if icon else None
     body = dbc.CardBody(value_format.format(value=value))
-    return dbc.Card([header, icon, body], class_name=_kpi_card_class_name(size))
+    return dbc.Card([header, body], class_name=_kpi_card_class_name(size))
 
 
 def kpi_card_reference(  # noqa: PLR0913
@@ -160,13 +161,14 @@ def kpi_card_reference(  # noqa: PLR0913
     header = dbc.CardHeader(
         [
             html.H4(title, className="card-kpi-title"),
-        ]
+            html.P(validate_icon(icon), className="material-symbols-outlined") if icon else None,
+        ],
+        className="card-kpi-header",
     )
     body = dbc.CardBody(
         value_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)
     )
 
-    icon = html.P(validate_icon(icon), className="material-symbols-outlined") if icon else None
     footer = dbc.CardFooter(
         [
             html.Span(
@@ -190,4 +192,4 @@ def kpi_card_reference(  # noqa: PLR0913
         ],
         class_name=footer_class,
     )
-    return dbc.Card([header, icon, body, footer], class_name=_kpi_card_class_name(size))
+    return dbc.Card([header, body, footer], class_name=_kpi_card_class_name(size))

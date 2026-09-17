@@ -259,9 +259,8 @@ kpi_banner = vm.Container(
                 data_frame=df_kpi_cards,
                 value_column="Total Complaints_2019",
                 value_format="{value:,}",
-                # agg_func="count",
                 icon="person",
-                title="Total Complaints 2019",
+                title="Total Complaints",
                 size="compact",
             )
         ),
@@ -270,9 +269,8 @@ kpi_banner = vm.Container(
                 data_frame=df_kpi_cards,
                 value_column="Total Complaints_2019",
                 value_format="{value:,}",
-                # agg_func="count",
                 icon="person",
-                title="Total Complaints 2019",
+                title="Total Complaints",
                 size="default",
             )
         ),
@@ -281,9 +279,8 @@ kpi_banner = vm.Container(
                 data_frame=df_kpi_cards,
                 value_column="Total Complaints_2019",
                 value_format="{value:,}",
-                # agg_func="count",
                 icon="person",
-                title="Total Complaints 2019",
+                title="Total Complaints",
                 size="large",
             )
         ),
