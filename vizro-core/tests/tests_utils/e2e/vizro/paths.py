@@ -53,6 +53,14 @@ def dropdown_id_path(dropdown_id):
     return f"button[id='{dropdown_id}']"
 
 
+def cascader_trigger_value_path(cascader_id):
+    return f"{dropdown_id_path(cascader_id)} .dash-dropdown-value"
+
+
+def cascader_clear_path(cascader_id):
+    return f"{dropdown_id_path(cascader_id)} .dash-dropdown-clear"
+
+
 def dropdown_select_all_path(dropdown_id):
     return f"{dropdown_id_path(dropdown_id)} + div .dash-dropdown-action-button:nth-of-type(1)"
 

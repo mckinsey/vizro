@@ -1,6 +1,7 @@
 import e2e.vizro.constants as cnst
 from e2e.vizro.checkers import check_http_requests_count
 from e2e.vizro.navigation import (
+    select_cascader_path_playwright,
     select_range_datetime_picker_value_playwright,
     select_range_time_picker_value_playwright,
 )
@@ -526,3 +527,50 @@ def test_datetimepicker_range_filters_ag_grid(page, http_requests_paths):
 
     # checking that no additional http has occurred
     check_http_requests_count(page, http_requests_paths, 6, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_cascader_leaf_single_filters_ag_grid(page, http_requests_paths):
+    """Page with single leaf-mode Cascader filter triggers one HTTP request on selection."""
+    page.locator(f"a[href='{cnst.CASCADER_LEAF_PAGE_PATH}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    select_cascader_path_playwright(page, cnst.CASCADER_LEAF_ID, ["Asia", "South", "China"], multi=False)
+    check_http_requests_count(page, http_requests_paths, 3)
+
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_apply_controls_on_button_click(page, http_requests_paths):
+    """Page with deferred filter and parameter applied together via update_targets button."""
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.PAGE_APPLY_CONTROLS_ON_BUTTON_CLICK}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # select filter (0 http)
+    page.get_by_text("Americas").nth(0).click()
+    check_http_requests_count(page, http_requests_paths, 2, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+    # select parameter (0 http)
+    page.get_by_text("lifeExp").nth(0).click()
+    check_http_requests_count(page, http_requests_paths, 2, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+    # click apply controls button (1 http)
+    page.get_by_text("Apply controls").click()
+    check_http_requests_count(page, http_requests_paths, 3)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_cascader_path_multi_filters_ag_grid(page, http_requests_paths):
+    """Page with multi path-mode Cascader filter triggers one HTTP request on selection."""
+    page.locator(f"a[href='{cnst.CASCADER_PATH_PAGE_PATH}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    select_cascader_path_playwright(page, cnst.CASCADER_PATH_MULTI_ID, ["Oregon", "Portland"], multi=True)
+    check_http_requests_count(page, http_requests_paths, 3)
+
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)

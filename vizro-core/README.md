@@ -99,42 +99,42 @@ Explore a few live demos to see different Vizro dashboards in action:
 <table>
   <tr>
     <td align="center" valign="top" width="33%">
-      <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard" target="_blank" rel="noopener noreferrer">
+      <a href="https://py.cafe/vizro-official/vizro-iris-analysis" target="_blank" rel="noopener noreferrer">
         <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/basic_dashboard.png" alt="Basic Dashboard" width="100%">
       </a>
       <br>
       <strong>Basic Dashboard</strong>
       <br>
-      <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard" target="_blank" rel="noopener noreferrer">Try it live</a>
+      <a href="https://py.cafe/vizro-official/vizro-iris-analysis" target="_blank" rel="noopener noreferrer">Try it live</a>
     </td>
     <td align="center" valign="top" width="33%">
-      <a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary" target="_blank" rel="noopener noreferrer">
+      <a href="https://py.cafe/app/vizro-official/vizro-visual-vocabulary" target="_blank" rel="noopener noreferrer">
         <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/visual_vocabulary.png" alt="Visual Vocabulary" width="100%">
       </a>
       <br>
       <strong>Visual Vocabulary</strong>
       <br>
-      <a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary" target="_blank" rel="noopener noreferrer">Try it live</a>
+      <a href="https://py.cafe/app/vizro-official/vizro-visual-vocabulary" target="_blank" rel="noopener noreferrer">Try it live</a>
     </td>
     <td align="center" valign="top" width="33%">
-      <a href="https://huggingface.co/spaces/vizro/BI-dashboard" target="_blank" rel="noopener noreferrer">
+      <a href="https://py.cafe/vizro-official/vizro-BI-dashboard" target="_blank" rel="noopener noreferrer">
         <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/bi_dashboard.png" alt="BI Dashboard" width="100%">
       </a>
       <br>
       <strong>BI Dashboard</strong>
       <br>
-      <a href="https://huggingface.co/spaces/vizro/BI-dashboard" target="_blank" rel="noopener noreferrer">Try it live</a>
+      <a href="https://py.cafe/vizro-official/vizro-BI-dashboard" target="_blank" rel="noopener noreferrer">Try it live</a>
     </td>
   </tr>
   <tr>
     <td align="center" valign="top" width="33%">
-      <a href="https://huggingface.co/spaces/vizro/call-center-dashboard" target="_blank" rel="noopener noreferrer">
+      <a href="https://py.cafe/vizro-official/vizro-call-center-dashboard" target="_blank" rel="noopener noreferrer">
         <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/call_center_dashboard.png" alt="Call Center Dashboard" width="100%">
       </a>
       <br>
       <strong>Call Center Dashboard</strong>
       <br>
-      <a href="https://huggingface.co/spaces/vizro/call-center-dashboard" target="_blank" rel="noopener noreferrer">Try it live</a>
+      <a href="https://py.cafe/vizro-official/vizro-call-center-dashboard" target="_blank" rel="noopener noreferrer">Try it live</a>
     </td>
     <td align="center" valign="top" width="33%">
       <a href="https://huggingface.co/spaces/vizro/demo-kpi" target="_blank" rel="noopener noreferrer">
@@ -167,15 +167,15 @@ The Vizro framework underpins the entire Vizro toolkit. It is a Python package (
 
 Visit the [documentation](https://vizro.readthedocs.io/en/stable/) for more details.
 
-## [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/)
+## [Vizro visual vocabulary](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/)
 
 **Chart examples.**
 
 The visual vocabulary helps you to decide which chart type to use for your requirements, and offers sample code to create these charts with Plotly or embed them into a Vizro dashboard.
 
-Visit the [visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to search for charts or get inspiration.
+Visit the [visual vocabulary](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/) to search for charts or get inspiration.
 
-<a href="https://vizro-demo-visual-vocabulary.hf.space/">
+<a href="https://py.cafe/app/vizro-official/vizro-visual-vocabulary/">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png" width="600">
 </a>
 
@@ -216,7 +216,12 @@ The [get started documentation](https://vizro.readthedocs.io/en/stable/pages/tut
 
 ## For AI agents and LLMs
 
-If you are an AI agent or LLM building Vizro apps, start with the [Vizro for LLMs cheatsheet](https://vizro.readthedocs.io/en/stable/pages/for-llms/) — a single-page reference covering the minimum runnable app, model index, action index, `@capture` decorator matrix, and top errors with fixes. The [llms.txt](https://vizro.readthedocs.io/en/stable/llms.txt) file provides a machine-readable index of the full documentation, and documentation pages return clean Markdown when fetched with the `Accept: text/markdown, text/html;q=0.9` request header, with very large pages (currently the Models API reference) served as HTML instead.
+If you are an AI agent or LLM building Vizro apps, start with the [Vizro for LLMs cheatsheet](https://vizro.readthedocs.io/en/stable/pages/for-llms/) and use [llms.txt](https://vizro.readthedocs.io/en/stable/llms.txt) as the machine-readable documentation index. Detailed documentation is available in these forms:
+
+1. **Per-page Markdown:** Remove the trailing `/` from any canonical documentation URL and append `.md`; use `/index.md` for the documentation root. No custom request header is needed.
+2. **Content negotiation:** Send `Accept: text/markdown, text/html;q=0.9`. Include the HTML fallback because upstream conversion returns HTTP 406 for pages over 2 MB.
+3. **Bulk documentation:** Fetch [llms-full.txt](https://vizro.readthedocs.io/en/stable/llms-full.txt) for the narrative documentation and user guides in one request, excluding the API reference.
+4. **Targeted model reference:** Fetch per-model files such as [`graph.md`](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/graph.md) instead of loading the combined Models API page. All per-model files are listed in `llms.txt`.
 
 ## Packages
 
