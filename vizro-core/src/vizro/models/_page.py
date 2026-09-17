@@ -167,10 +167,9 @@ class Page(VizroBaseModel):
         controls = list(cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter), root_model=self)))
 
         # The "Reset all" button always refreshes every figure and dynamic filter on the page, independently of
-        # `Page.actions`. Resetting controls should show the data for the reset values even when the user has customized
-        # or disabled the on-page-load actions, so this refresh is a dedicated action on its own trigger rather than a
-        # re-run of the page-load chain. It lives outside `Page.actions` and so does not go through `make_actions_chain`;
-        # the private attributes set below mirror that function's action-wiring contract and must be kept in sync with it.
+        # `Page.actions`. This refresh is a dedicated action on its own trigger rather than a re-run of the page-load.
+        # It lives outside `Page.actions` and so does not go through `make_actions_chain`. The private attributes set
+        # below mirror that function's action-wiring contract and must be kept in sync with it.
         if controls and targets:
             reset_action_trigger = f"{RESET_CONTROLS_ACTION_PREFIX}_trigger_{self.id}.data"
             reset_action = update_targets(id=f"{RESET_CONTROLS_ACTION_PREFIX}_{self.id}", targets=targets)

@@ -132,7 +132,7 @@ class TestPagePreBuildMethod:
         assert isinstance(refresh_action, va.update_targets)
         assert isinstance(notification_action, va.show_notification)
 
-        # The first action in the chain runs on page load; subsequent actions run when the previous one finishes.
+        # The first action in the chain runs after the page load; subsequent actions run when the previous one finishes.
         assert refresh_action._trigger == f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{page.id}.data"
         assert refresh_action._prevent_initial_call_of_guard is False
         assert notification_action._trigger == f"{refresh_action.id}_finished.data"
@@ -162,18 +162,21 @@ class TestPageResetControlsAction:
         [
             ("UNSET", [_on_page_load]),  # default: on-page-load refresh kept
             ([va.show_notification(text="Hi")], [va.show_notification]),  # customized page-load actions
+            (None, []),  # on-page-load disabled
             ([], []),  # on-page-load disabled
         ],
     )
     def test_reset_controls_action_created(self, actions, expected_page_actions, standard_px_chart):
         actions_kwarg = {} if actions == "UNSET" else {"actions": actions}
+        filter = vm.Filter(id="continent_filter", column="continent")
         page = vm.Page(
             title="Page 1",
             components=[vm.Graph(id="scatter_chart", figure=standard_px_chart)],
-            controls=[vm.Filter(id="continent_filter", column="continent")],
+            controls=[filter],
             **actions_kwarg,
         )
-        Vizro().build(vm.Dashboard(pages=[page]))
+        filter.pre_build()
+        page.pre_build()
 
         # The reset action is created independently of Page.actions.
         assert [type(action) for action in page.actions] == expected_page_actions
@@ -192,7 +195,7 @@ class TestPageResetControlsAction:
 
     def test_no_reset_controls_action_without_controls(self, standard_px_chart):
         page = vm.Page(title="Page 1", components=[vm.Graph(id="scatter_chart", figure=standard_px_chart)])
-        Vizro().build(vm.Dashboard(pages=[page]))
+        page.pre_build()
 
         assert page._reset_controls_action is None
 
