@@ -4,10 +4,10 @@
   --code-background: var(--surfaces-bg-card) !important;
 }
 
-.hljs {
+.dmc-code .hljs {
   background: var(--surfaces-bg-card);
   border-radius: 0;
-  color: var(--bs-body-color);
+  color: var(--bs-body-color) !important;
 }
 
 .mantine-ActionIcon-icon {

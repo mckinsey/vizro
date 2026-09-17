@@ -6,6 +6,15 @@ description: "Compact reference for LLMs: minimum runnable Vizro app, model and 
 
 This page is a single-file cheatsheet for LLMs and coding agents. It restates only what an agent needs to write correct Vizro code in one pass, and links out to canonical reference for everything else. Do not duplicate content from linked pages here — follow the links.
 
+## Fetch documentation as Markdown
+
+Use [`llms.txt`](../llms.txt) as the machine-readable index, then fetch detailed documentation in one of these forms:
+
+1. **Per-page Markdown:** Fetch the `rel="alternate"` Markdown link advertised in the page's `<head>` directly — it already points at the Markdown file. Otherwise, take the URL of the page you fetched, remove the trailing `/` and append `.md` (use `/index.md` for the documentation root). Build this from the page URL you are on, not from its `rel="canonical"` link: the canonical link always points at the `stable` release, so deriving from it would send you to the wrong version. No custom request header is needed.
+2. **Content negotiation:** Send `Accept: text/markdown, text/html;q=0.9`. Include the HTML fallback because upstream conversion returns HTTP 406 for pages over 2 MB.
+3. **Bulk documentation:** Fetch [`llms-full.txt`](../llms-full.txt) for the narrative documentation and user guides in one request, excluding the API reference.
+4. **Targeted model reference:** Fetch per-model files such as `graph.md` instead of loading the combined Models API page. Every per-model file is listed with its URL in [`llms.txt`](../llms.txt).
+
 ## Minimum runnable app
 
 Five lines of Python produce a running Vizro dashboard:

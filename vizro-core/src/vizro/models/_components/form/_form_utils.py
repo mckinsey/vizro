@@ -16,7 +16,10 @@ def get_dict_options_and_value(
     dict_options = [option if isinstance(option, dict) else {"label": option, "value": option} for option in options]
 
     list_values = [dict_option["value"] for dict_option in dict_options]
-    default_value = list_values if multi else list_values[0]
+    # A single-select selector with no options has no default value to derive
+    # (options default to [] and can be empty), so fall back to None instead of
+    # indexing into an empty list.
+    default_value = list_values if multi else (list_values[0] if list_values else None)
 
     return dict_options, value if value is not None else default_value  # type: ignore[return-value]
 

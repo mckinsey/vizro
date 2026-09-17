@@ -190,6 +190,27 @@ class TestDropdownBuild:
 
         assert_component_equal(dropdown, expected_dropdown)
 
+    def test_dropdown_build_empty_options_single(self):
+        """A single-select dropdown with no options builds with value=None instead of crashing."""
+        dropdown = Dropdown(id="dropdown_id", multi=False).build()
+        expected_dropdown = html.Div(
+            [
+                None,
+                dcc.Dropdown(
+                    id="dropdown_id",
+                    options=[],
+                    value=None,
+                    multi=False,
+                    clearable=False,
+                    placeholder="Select option",
+                    persistence=True,
+                    persistence_type="session",
+                    className="",
+                ),
+            ]
+        )
+        assert_component_equal(dropdown, expected_dropdown)
+
     def test_dropdown_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
         dropdown = Dropdown(

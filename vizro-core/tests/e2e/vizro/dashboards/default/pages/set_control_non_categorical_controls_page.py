@@ -10,6 +10,10 @@ df = px.data.iris()
 df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq="D")
 df["is_setosa"] = df["species"] == "setosa"
 
+temporal_df = px.data.iris()
+temporal_df["datetime_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(temporal_df), freq="h")
+temporal_df["time_column"] = temporal_df["datetime_column"].dt.time
+
 custom_scatter = px.scatter(
     data_frame=df,
     x="sepal_width",
@@ -17,6 +21,15 @@ custom_scatter = px.scatter(
     color="species",
     custom_data=["species", "sepal_length", "date_column", "is_setosa"],
     hover_data=["species", "sepal_length", "date_column", "is_setosa"],
+)
+
+timepicker_scatter = px.scatter(
+    data_frame=temporal_df,
+    x="sepal_width",
+    y="sepal_length",
+    color="species",
+    custom_data=["time_column"],
+    hover_data=["time_column"],
 )
 
 
@@ -154,6 +167,84 @@ set_control_non_categorical_ag_grid = vm.Page(
                         # Boolean Single
                         vm.Filter(
                             id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SWITCH, column="is_setosa", selector=vm.Switch()
+                        ),
+                    ],
+                ),
+            ],
+        ),
+    ],
+)
+
+set_control_non_categorical_timepicker_graph = vm.Page(
+    title=cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_PAGE_TITLE,
+    components=[
+        vm.Container(
+            title="Click set_control",
+            components=[
+                vm.Graph(
+                    id=cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER,
+                    figure=timepicker_scatter,
+                    title="Click on points to set the time filter below",
+                    actions=[
+                        set_control(
+                            control=cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_FILTER,
+                            value="time_column",
+                        ),
+                    ],
+                ),
+                vm.Container(
+                    components=[
+                        vm.AgGrid(
+                            id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_TARGET,
+                            figure=dash_ag_grid(temporal_df),
+                        ),
+                    ],
+                    controls=[
+                        vm.Filter(
+                            id=cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_FILTER,
+                            column="time_column",
+                            targets=[cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_TARGET],
+                            selector=vm.TimePicker(id=cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_ID, range=True),
+                        ),
+                    ],
+                ),
+            ],
+        ),
+    ],
+)
+
+set_control_non_categorical_datetimepicker_ag_grid = vm.Page(
+    title=cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_PAGE_TITLE,
+    components=[
+        vm.Container(
+            title="Click set_control",
+            components=[
+                vm.AgGrid(
+                    id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER,
+                    figure=dash_ag_grid(temporal_df),
+                    title="Click on row to set the datetime filter below",
+                    actions=[
+                        set_control(
+                            control=cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_FILTER,
+                            value="datetime_column",
+                        ),
+                    ],
+                ),
+                vm.Container(
+                    components=[
+                        vm.AgGrid(
+                            id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_TARGET,
+                            figure=dash_ag_grid(temporal_df),
+                        ),
+                    ],
+                    controls=[
+                        vm.Filter(
+                            id=cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_FILTER,
+                            column="datetime_column",
+                            targets=[cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_TARGET],
+                            selector=vm.DateTimePicker(
+                                id=cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_ID, range=True
+                            ),
                         ),
                     ],
                 ),

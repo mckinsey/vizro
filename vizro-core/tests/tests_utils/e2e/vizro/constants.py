@@ -151,6 +151,26 @@ DATETIMEPICKER_PARAMETER_PAGE_PATH = "/datetimepicker-parameter"
 DATETIMEPICKER_PARAMETER_SCATTER_ID = "scatter_chart_datetimepicker"
 DATETIMEPICKER_PARAMETER_ID = "datetimepicker_parameter"
 
+CASCADER_LEAF_PAGE = "cascader leaf"
+CASCADER_LEAF_PAGE_PATH = "/cascader-leaf"
+CASCADER_LEAF_AG_GRID_ID = "cascader leaf ag grid"
+CASCADER_LEAF_MULTI_AG_GRID_ID = "cascader leaf multi ag grid"
+CASCADER_LEAF_FILTER_CONTROL_ID = "cascader_leaf_filter_control_id"
+CASCADER_LEAF_ID = "cascader leaf selector"
+CASCADER_LEAF_MULTI_FILTER_CONTROL_ID = "cascader_leaf_multi_filter_control_id"
+CASCADER_LEAF_MULTI_ID = "cascader leaf multi selector"
+CASCADER_LEAF_SET_CONTROL_AG_GRID_SOURCE_ID = "cascader leaf set control ag grid source"
+CASCADER_LEAF_SET_CONTROL_BUTTON_ID = "cascader_leaf_set_control_button"
+
+CASCADER_PATH_PAGE = "cascader path"
+CASCADER_PATH_PAGE_PATH = "/cascader-path"
+CASCADER_PATH_AG_GRID_ID = "cascader path ag grid"
+CASCADER_PATH_MULTI_AG_GRID_ID = "cascader path multi ag grid"
+CASCADER_PATH_FILTER_CONTROL_ID = "cascader_path_filter_control_id"
+CASCADER_PATH_ID = "cascader path selector"
+CASCADER_PATH_MULTI_FILTER_CONTROL_ID = "cascader_path_multi_filter_control_id"
+CASCADER_PATH_MULTI_ID = "cascader path multi selector"
+
 TABLE_AG_GRID_PAGE = "table-ag-grid-page"
 TABLE_AG_GRID_ID = "123_ag_grid_table"
 BOX_AG_GRID_PAGE_ID = "B@x on ag grid page"
@@ -366,6 +386,24 @@ SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE = "set-control-non-categori
 SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE_ID = "set-control-non-categorical-ag-grid-datepicker-range-id"
 SET_CONTROL_NON_CATEGORICAL_AG_GRID_SWITCH = "set-control-non-categorical-ag-grid-switch"
 
+SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_PAGE_TITLE = "set-control-non-categorical-timepicker-graph-page-title"
+SCATTER_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER = "scatter-set-control-non-categorical-timepicker"
+AG_GRID_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_TARGET = (
+    "ag-grid-set-control-non-categorical-timepicker-graph-target"
+)
+SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_FILTER = "set-control-non-categorical-timepicker-graph-filter"
+SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_ID = "set-control-non-categorical-timepicker-graph-id"
+
+SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_PAGE_TITLE = (
+    "set-control-non-categorical-datetimepicker-ag-grid-page-title"
+)
+AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER = "aggrid-set-control-non-categorical-datetimepicker"
+AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_TARGET = (
+    "ag-grid-set-control-non-categorical-datetimepicker-ag-grid-target"
+)
+SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_FILTER = "set-control-non-categorical-datetimepicker-ag-grid-filter"
+SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_ID = "set-control-non-categorical-datetimepicker-ag-grid-id"
+
 SET_CONTROL_NON_CATEGORICAL_GRAPH_PAGE_TITLE = "set-control-non-categorical-graph-page-title"
 SCATTER_SET_CONTROL_NON_CATEGORICAL = "scatter-set-control-non-categorical"
 SCATTER_SET_CONTROL_NON_CATEGORICAL_TARGET = "scatter-set-control-non-categorical-target"
@@ -476,6 +514,7 @@ PAGE_404_PATH = "/404-page"
 
 GENERAL_ACCORDION = "generAl"
 DATEPICKER_ACCORDION = "DATEpicker"
+CASCADER_ACCORDION = "Cascader"
 AG_GRID_ACCORDION = "AGgrid"
 DYNAMIC_DATA_ACCORDION = "DYNAMIC data"
 KPI_ACCORDION = "KPI"
@@ -536,6 +575,7 @@ PAGE_AG_GRID_WITH_FILTER_INTERACTION = "page-ag-grid-with-filter-interaction"
 PAGE_DYNAMIC_PARAMETRISATION = "page-dynamic-parametrisation"
 PAGE_ALL_SELECTORS = "page-all-selectors"
 PAGE_ALL_SELECTORS_IN_URL = "page-all-selectors-in-url"
+PAGE_APPLY_CONTROLS_ON_BUTTON_CLICK = "page-apply-controls-on-button-click"
 
 HTTP_TIMEOUT_SHORT = 200
 HTTP_TIMEOUT_LONG = 1000
