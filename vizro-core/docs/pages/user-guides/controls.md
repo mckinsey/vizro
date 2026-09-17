@@ -245,40 +245,31 @@ You can combine syncing with [applying controls on a button click](#apply-contro
 
 ### Sync controls across pages
 
-A control's `targets` can also list controls on **other pages**. This lets you build **global controls**: a single control on one page that drives figures on many pages. Point a control on your main page at a control on each of the other pages, then hide those other controls with `visible=False`. The user only ever interacts with the control on the main page, but every page stays filtered and parametrized by the same value.
+A control's `targets` can also list controls on **other pages**. Cross-page syncing works exactly like same-page syncing — you still just add the target control's `id` to `targets` — with one behavioral difference: a value set on one page is applied to the synced control on another page **when you open that page**, rather than instantly. Vizro keeps the value in an internal browser-session store, so it also survives a full page refresh within the session.
 
-Cross-page syncing works exactly like same-page syncing — you still just add the target control's `id` to `targets` — with one behavioral difference: a value set on one page is applied to the synced control on another page **when you open that page**, rather than instantly. Vizro keeps the value in an internal browser-session store, so it also survives a full page refresh within the session.
+The example below syncs one filter across two pages. Both controls are visible so you can watch the value carry over: pick a species on _Overview_, open _Detail_, and its filter already shows the same species.
 
-!!! example "Global controls across three pages"
+!!! example "Sync a control across two pages"
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="7 20 25 41"}
+        ```{.python pycafe-link hl_lines="16 28"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
-        from vizro.managers import data_manager
+        from vizro.tables import dash_ag_grid
 
-
-        def load_iris(sample_size=100):  # (1)!
-            return px.data.iris().sample(sample_size, random_state=42)
-
-
-        data_manager["iris"] = load_iris
+        iris = px.data.iris()
 
         overview_page = vm.Page(
             title="Overview",
             components=[
-                vm.Graph(id="overview_graph", figure=px.scatter("iris", x="sepal_width", y="sepal_length", color="species")),
+                vm.AgGrid(id="overview_table", figure=dash_ag_grid(iris)),
             ],
             controls=[
-                vm.Parameter(
-                    targets=["overview_graph.data_frame.sample_size", "detail_sample_size", "summary_sample_size"],  # (2)!
-                    selector=vm.Slider(min=50, max=150, step=25, value=100, title="Sample size"),
-                ),
                 vm.Filter(
                     column="species",
-                    targets=["overview_graph", "detail_species", "summary_species"],  # (3)!
+                    targets=["overview_table", "detail_species"],  # (1)!
                     selector=vm.Dropdown(title="Species"),
                 ),
             ],
@@ -287,73 +278,37 @@ Cross-page syncing works exactly like same-page syncing — you still just add t
         detail_page = vm.Page(
             title="Detail",
             components=[
-                vm.Graph(id="detail_graph", figure=px.scatter("iris", x="petal_width", y="petal_length", color="species")),
+                vm.Graph(id="detail_graph", figure=px.scatter(iris, x="petal_width", y="petal_length", color="species")),
             ],
             controls=[
-                vm.Parameter(
-                    id="detail_sample_size",
-                    targets=["detail_graph.data_frame.sample_size"],
-                    selector=vm.Slider(min=50, max=150, step=25, value=100),
-                    visible=False,  # (4)!
-                ),
-                vm.Filter(id="detail_species", column="species", targets=["detail_graph"], visible=False),
+                vm.Filter(id="detail_species", column="species", targets=["detail_graph"]),  # (2)!
             ],
         )
 
-        summary_page = vm.Page(
-            title="Summary",
-            components=[
-                vm.Graph(id="summary_graph", figure=px.box("iris", x="species", y="sepal_length", color="species")),
-            ],
-            controls=[
-                vm.Parameter(
-                    id="summary_sample_size",
-                    targets=["summary_graph.data_frame.sample_size"],
-                    selector=vm.Slider(min=50, max=150, step=25, value=100),
-                    visible=False,
-                ),
-                vm.Filter(id="summary_species", column="species", targets=["summary_graph"], visible=False),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[overview_page, detail_page, summary_page])
+        dashboard = vm.Dashboard(pages=[overview_page, detail_page])
         Vizro().build(dashboard).run()
         ```
 
-        1. A [dynamic data](data.md#dynamic-data) loader whose `sample_size` argument controls how many rows are loaded. A [parameter can drive this argument](parameters.md#dynamic-data-parameters) via a `data_frame.sample_size` target.
-        1. The parameter targets its own graph's `data_frame.sample_size` **and** the hidden `sample_size` parameters on the other two pages, so the sample size stays in sync everywhere.
-        1. The filter targets its own graph **and** the hidden `species` filters on the other two pages.
-        1. `visible=False` hides the control on _Detail_ and _Summary_. The user never sees it, but it still filters and parametrizes that page's figure using the value synced from _Overview_.
+        1. The _Overview_ filter targets its own table **and** `detail_species`, the species filter on the _Detail_ page. Choose a species here and it is applied to _Detail_ too.
+        1. `detail_species` is an ordinary, visible filter. When you open _Detail_ after choosing a species on _Overview_, it already shows that same species.
 
     === "app.yaml"
 
         ```yaml
-        # Still requires a .py to register the dynamic data source "iris" and parse YAML configuration
+        # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - title: Overview
             components:
-              - id: overview_graph
-                type: graph
+              - id: overview_table
+                type: ag_grid
                 figure:
-                  _target_: scatter
+                  _target_: dash_ag_grid
                   data_frame: iris
-                  x: sepal_width
-                  y: sepal_length
-                  color: species
             controls:
-              - type: parameter
-                targets: [overview_graph.data_frame.sample_size, detail_sample_size, summary_sample_size]
-                selector:
-                  type: slider
-                  min: 50
-                  max: 150
-                  step: 25
-                  value: 100
-                  title: Sample size
               - type: filter
                 column: species
-                targets: [overview_graph, detail_species, summary_species]
+                targets: [overview_table, detail_species]
                 selector:
                   type: dropdown
                   title: Species
@@ -368,48 +323,15 @@ Cross-page syncing works exactly like same-page syncing — you still just add t
                   y: petal_length
                   color: species
             controls:
-              - id: detail_sample_size
-                type: parameter
-                targets: [detail_graph.data_frame.sample_size]
-                visible: false
-                selector:
-                  type: slider
-                  min: 50
-                  max: 150
-                  step: 25
-                  value: 100
               - id: detail_species
                 type: filter
                 column: species
                 targets: [detail_graph]
-                visible: false
-          - title: Summary
-            components:
-              - id: summary_graph
-                type: graph
-                figure:
-                  _target_: box
-                  data_frame: iris
-                  x: species
-                  y: sepal_length
-                  color: species
-            controls:
-              - id: summary_sample_size
-                type: parameter
-                targets: [summary_graph.data_frame.sample_size]
-                visible: false
-                selector:
-                  type: slider
-                  min: 50
-                  max: 150
-                  step: 25
-                  value: 100
-              - id: summary_species
-                type: filter
-                column: species
-                targets: [summary_graph]
-                visible: false
         ```
+
+    === "Result"
+
+        [![SyncControlsAcrossPages]][synccontrolsacrosspages]
 
 The same mechanism powers **drill-through**: when a `set_control` is triggered from a figure or component (a [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid], [`Button`][vizro.models.Button], or [`Card`][vizro.models.Card]) rather than from a control's own selector, and its target control is on another page, Vizro navigates to that page and applies the value there. See [graph and table interactions](graph-table-actions.md) for more.
 
@@ -508,3 +430,4 @@ To refresh the targets on demand, add a [`Button`][vizro.models.Button] that run
 [controlgroup]: ../../assets/user_guides/control/control_group.png
 [applycontrolswithabutton]: ../../assets/user_guides/control/apply_controls_with_a_button.gif
 [synccontrols]: ../../assets/user_guides/control/sync_controls.gif
+[synccontrolsacrosspages]: ../../assets/user_guides/control/sync_controls_across_pages.gif
