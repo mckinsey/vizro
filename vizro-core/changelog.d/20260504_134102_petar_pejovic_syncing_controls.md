@@ -6,7 +6,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Keep controls in sync: a `Filter` or `Parameter` can now list another control's `id` in its `targets` so that changing one control automatically applies the same value to the other. The synced control can be on the same page or on a **different page**, in which case a value set on one page is applied to the synced control when its page is opened, making it possible to build dashboard-wide "global controls". See the [user guide on syncing controls](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls/#sync-controls) for more details. ([#1723](https://github.com/mckinsey/vizro/pull/1723))
+- Keep controls in sync: a `Filter` or `Parameter` can now list another control's `id` in its `targets` so that changing one control automatically applies the same value to the other. The synced control can be on the **same page** or on a **different page**, in which case a value set on one page is applied to the synced control when its page is opened, making it possible to build dashboard-wide "global controls". See the [user guide on syncing controls](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls/#sync-controls) for more details. ([#1723](https://github.com/mckinsey/vizro/pull/1723))
 
 <!--
 ### Removed
