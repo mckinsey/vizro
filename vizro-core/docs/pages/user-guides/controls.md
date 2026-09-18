@@ -241,11 +241,9 @@ Syncing copies one control's value straight into the other, so the two controls 
 
         [![SyncControls]][synccontrols]
 
-You can combine syncing with [applying controls on a button click](#apply-controls-with-a-button): give a control's selector an explicit [`set_control`][vizro.actions.set_control] action to sync its partner without refreshing figures on change, then refresh the figures together with an [`update_targets`][vizro.actions.update_targets] button.
-
 ### Sync controls across pages
 
-A control's `targets` can also list controls on **other pages**. Cross-page syncing works exactly like same-page syncing — you still just add the target control's `id` to `targets` — with one behavioral difference: a value set on one page is applied to the synced control on another page **when you open that page**, rather than instantly. Vizro keeps the value in an internal browser-session store, so it also survives a full page refresh within the session.
+A control's `targets` can also list controls on **other pages**. Cross-page syncing works exactly like same-page syncing: you still just add the target control's `id` to `targets`, and a value set is applied to the synced control on another page **when you open that page**.
 
 The example below syncs one filter across two pages. Both controls are visible so you can watch the value carry over: pick a species on _Overview_, open _Detail_, and its filter already shows the same species.
 
