@@ -1,5 +1,5 @@
 ---
-description: "Cross-cutting control patterns: set a control's value programmatically via `set_control`, reset controls to defaults, and group controls in the panel."
+description: "Cross-cutting control patterns: set a control's value programmatically via `set_control`, sync controls on the same page or across pages, reset controls to defaults, and group controls in the panel."
 ---
 
 # Controls
@@ -145,7 +145,7 @@ Syncing copies one control's value straight into the other, so the two controls 
 
 !!! note "A control that only drives other controls is not a Filter or Parameter"
 
-    By design a [filter](filters.md) and [parameter](parameters.md) always act on figures, so above mean neither can exist purely to drive other controls. A filter with no figure target *is not a filter*, and a parameter with no figure target *is not a parameter*.
+    By design a [filter](filters.md) and [parameter](parameters.md) always act on figures, so neither can exist purely to drive other controls. A filter with no figure target *is not a filter*, and a parameter with no figure target *is not a parameter*.
 
     If a control that only sets other controls (and filters or parametrizes nothing itself) is exactly what you want, skip the filter/parameter wrapper: put a bare [selector](selectors.md) (for example a [`RadioItems`][vizro.models.RadioItems]) straight into the layout and give it an explicit [`set_control`][vizro.actions.set_control] action for each control it should drive. The targeted controls do the actual figure work when their value changes. A selector is normally only allowed inside a filter or parameter, so first whitelist it on its parent with the [`add_type`][vizro.models.VizroBaseModel.add_type] like:
 

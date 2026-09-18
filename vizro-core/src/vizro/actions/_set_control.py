@@ -138,7 +138,7 @@ class set_control(_AbstractAction):
 
     # TODO AM-PP: How about making it optional with default=None.
     value: JsonValue = Field(
-        description="Value to take from trigger and send to the `target`. Format depends on the model "
+        description="Value to take from the trigger and send to the target control(s). Format depends on the model "
         "that triggers `set_control`."
     )
 
