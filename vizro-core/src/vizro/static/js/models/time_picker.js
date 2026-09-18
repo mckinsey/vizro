@@ -68,7 +68,10 @@ function update_range_time_picker_store(
 
   // The Store changed externally (URL load, reset, set_control, custom action) -> push both Store
   // values into the pickers. Do NOT raise the guard here (see the docstring): the writer owns it.
-  return [dash_clientside.no_update, store_data[0], store_data[1]];
+  // Guard a non-array store the same way the DateTimePicker callbacks do (e.g. a crafted URL param
+  // encoding JSON null, or blocked sessionStorage), so a null store can't throw when dereferenced.
+  const store = Array.isArray(store_data) ? store_data : [null, null];
+  return [dash_clientside.no_update, store[0], store[1]];
 }
 
 window.dash_clientside = {

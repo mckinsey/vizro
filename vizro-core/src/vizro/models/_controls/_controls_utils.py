@@ -121,11 +121,11 @@ def extract_control_targets(control: ControlType) -> list[ModelID]:
             raise ValueError(f"Control '{control.id}' cannot target itself. Remove '{target}' from its `targets`.")
 
         control.targets.remove(target)
-        # Deduplicate so a control listed more than once does not generate duplicate set_control sync actions.
-        if target not in targeted_controls:
-            targeted_controls.append(target)
+        targeted_controls.append(target)
 
-    return targeted_controls
+    # Deduplicate (order-preserving) so a control listed more than once does not generate duplicate set_control
+    # sync actions, using the same idiom as elsewhere in the codebase (e.g. `set_control._control_ids`).
+    return list(dict.fromkeys(targeted_controls))
 
 
 def warn_ignored_control_sync_targets(control: ControlType, targeted_controls: list[ModelID]) -> None:
