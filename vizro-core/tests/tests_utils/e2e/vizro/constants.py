@@ -170,10 +170,6 @@ CASCADER_PATH_FILTER_CONTROL_ID = "cascader_path_filter_control_id"
 CASCADER_PATH_ID = "cascader path selector"
 CASCADER_PATH_MULTI_FILTER_CONTROL_ID = "cascader_path_multi_filter_control_id"
 CASCADER_PATH_MULTI_ID = "cascader path multi selector"
-CASCADER_PATH_SET_CONTROL_AG_GRID_SOURCE_ID = "cascader path set control ag grid source"
-CASCADER_PATH_SET_CONTROL_AG_GRID_ID = "cascader path set control ag grid"
-CASCADER_PATH_SET_CONTROL_FILTER_CONTROL_ID = "cascader_path_set_control_filter_control_id"
-CASCADER_PATH_SET_CONTROL_ID = "cascader path set control selector"
 
 TABLE_AG_GRID_PAGE = "table-ag-grid-page"
 TABLE_AG_GRID_ID = "123_ag_grid_table"
@@ -579,6 +575,7 @@ PAGE_AG_GRID_WITH_FILTER_INTERACTION = "page-ag-grid-with-filter-interaction"
 PAGE_DYNAMIC_PARAMETRISATION = "page-dynamic-parametrisation"
 PAGE_ALL_SELECTORS = "page-all-selectors"
 PAGE_ALL_SELECTORS_IN_URL = "page-all-selectors-in-url"
+PAGE_APPLY_CONTROLS_ON_BUTTON_CLICK = "page-apply-controls-on-button-click"
 
 HTTP_TIMEOUT_SHORT = 200
 HTTP_TIMEOUT_LONG = 1000
