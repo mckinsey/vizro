@@ -274,18 +274,21 @@ class set_control(_AbstractAction):
     def _shape_value_for_control(self, control_id, value, controls_store):
         """Shape the trigger-derived `value` for one target control, or return `no_update` to skip just that control.
 
-        The raw value is derived once from the trigger; this resets it to the control's original value when the
-        trigger yields None, then reshapes it to the target selector (multi vs range vs single-value). Returns
-        `no_update` when the value cannot be applied to this control (an incomplete range, or a multi-item list into
-        a single-value selector), leaving that control unchanged without affecting the others.
+        The raw value is derived once from the trigger; a figure/component drill-through's None is the reset sentinel
+        (restore the control's original value), while a selector sync propagates its live value (so a cleared source
+        clears the target). It then reshapes the value to the target selector (multi vs range vs single-value).
+        Returns `no_update` when the value cannot be applied to this control (an incomplete range, or a multi-item
+        list into a single-value selector), leaving that control unchanged without affecting the others.
         """
         from vizro.models import AgGrid, Checklist, Graph, RangeSlider
 
         selector = cast(ControlType, model_manager[control_id]).selector
 
-        # None resets the control to its original value. Fall back to the selector's build-time value if the store
-        # entry is missing (a session-persisted store can be stale after a control was added/renamed).
-        if value is None:
+        # A drill-through's None is the reset sentinel: restore the control's original value (falling back to the
+        # selector's build-time value if a session-persisted store entry is stale/missing after a control was
+        # added/renamed). A selector sync instead propagates the source's live value, so a cleared source (None)
+        # clears the target rather than resetting it, keeping the two controls mirrored.
+        if value is None and self._is_drill_through:
             control_store = controls_store.get(control_id, {})
             value = control_store.get("originalValue", selector.value)
 
@@ -295,6 +298,9 @@ class set_control(_AbstractAction):
         # A leaf-mode Cascader (the only kind that reaches here — path mode is rejected at pre_build) reshapes
         # like a flat categorical selector: a multi-select value is a list of leaves, a single-select a scalar.
         if is_multi:
+            # A cleared source (None, from a selector sync) clears a multi-select target rather than seeding [None].
+            if value is None:
+                return []
             return value if isinstance(value, list) else [value]
         if is_range:
             # AgGrid/Graph emit values in selection (click) order, so a multi-value trigger can arrive out of order;

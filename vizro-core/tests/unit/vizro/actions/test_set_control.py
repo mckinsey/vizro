@@ -426,6 +426,36 @@ class TestSetControlFunction:
 
         assert result == expected
 
+    def test_function_selector_sync_none_clears_multi_target_instead_of_resetting(self):
+        # Counterpart to the drill-through reset above: a selector-driven sync (not a drill-through) propagates the
+        # source's live value as-is. When the user clears the source selector (value None), the synced multi-select
+        # target is cleared to [] - it does NOT fall back to the target's original value.
+        action = set_control(control="filter_page_1", value=None)
+        model_manager["button_1"].actions = action
+        action.pre_build()
+        # Simulate a control-selector trigger (a sync mirrors the cleared value rather than resetting).
+        action._is_drill_through = False
+
+        # Even with an original value stored, a sync clear must not restore it.
+        controls_store = {"filter_page_1": {"originalValue": ["Asia", "Europe"]}}
+        result = action.function(_trigger=None, _controls_store=controls_store)
+
+        # filter_page_1 is multi-select, so a cleared value shapes to [] (not the stored ["Asia", "Europe"]).
+        assert result == []
+
+    def test_function_selector_sync_none_clears_single_select_target(self):
+        # As above but for a single-select target: a cleared sync value stays None (mirrors the empty source) rather
+        # than resetting to the target's original value.
+        action = set_control(control="filter_page_1_single_select", value=None)
+        model_manager["button_1"].actions = action
+        action.pre_build()
+        action._is_drill_through = False
+
+        controls_store = {"filter_page_1_single_select": {"originalValue": "Asia"}}
+        result = action.function(_trigger=None, _controls_store=controls_store)
+
+        assert result is None
+
     @pytest.mark.parametrize(
         "same_page_controls, cross_page_controls",
         [(["filter_page_1"], []), ([], ["filter_page_1"])],
