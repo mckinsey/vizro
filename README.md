@@ -216,7 +216,12 @@ The [get started documentation](https://vizro.readthedocs.io/en/stable/pages/tut
 
 ## For AI agents and LLMs
 
-If you are an AI agent or LLM building Vizro apps, start with the [Vizro for LLMs cheatsheet](https://vizro.readthedocs.io/en/stable/pages/for-llms/) — a single-page reference covering the minimum runnable app, model index, action index, `@capture` decorator matrix, and top errors with fixes. The [llms.txt](https://vizro.readthedocs.io/en/stable/llms.txt) file provides a machine-readable index of the full documentation, and documentation pages return clean Markdown when fetched with the `Accept: text/markdown, text/html;q=0.9` request header, with very large pages (currently the Models API reference) served as HTML instead.
+If you are an AI agent or LLM building Vizro apps, start with the [Vizro for LLMs cheatsheet](https://vizro.readthedocs.io/en/stable/pages/for-llms/) and use [llms.txt](https://vizro.readthedocs.io/en/stable/llms.txt) as the machine-readable documentation index. Detailed documentation is available in these forms:
+
+1. **Per-page Markdown:** Remove the trailing `/` from any canonical documentation URL and append `.md`; use `/index.md` for the documentation root. No custom request header is needed.
+2. **Content negotiation:** Send `Accept: text/markdown, text/html;q=0.9`. Include the HTML fallback because upstream conversion returns HTTP 406 for pages over 2 MB.
+3. **Bulk documentation:** Fetch [llms-full.txt](https://vizro.readthedocs.io/en/stable/llms-full.txt) for the narrative documentation and user guides in one request, excluding the API reference.
+4. **Targeted model reference:** Fetch per-model files such as [`graph.md`](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/graph.md) instead of loading the combined Models API page. All per-model files are listed in `llms.txt`.
 
 ## Packages
 
