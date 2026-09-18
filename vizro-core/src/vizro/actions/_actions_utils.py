@@ -24,11 +24,6 @@ from vizro.models.types import (
 ValidatedNoneValueType = SingleValueType | MultiValueType | None | list[None] | list[SingleValueType]
 
 
-# TODO-AV2 A 2: go through and finish tidying bits that weren't already. Potentially there won't be much code left here
-#  at all. Think about where it should live so it might become public in future. Is it just apply_controls and helper
-#  functions for that? Do we want public vizro.actions.utils/helpers?
-
-
 class CallbackTriggerDict(TypedDict):
     """Represent dash.ctx.args_grouping item. Shortened as 'ctd' in the code.
 
@@ -236,9 +231,6 @@ def _get_unfiltered_data(
     return dict(zip(targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
 
 
-# TODO-AV2 A 2: rename this, make sure it could become public in future but don't make public yet. Probably take in
-#  controls + filter_interaction only once have worked out structure of filters/parameters. Then make public once
-#  have removed filter_interaction.
 def _get_modified_page_figures(
     ctds_filter: list[CallbackTriggerDict],
     ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
