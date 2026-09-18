@@ -26,6 +26,13 @@ from pages.set_control_multi_select_pages import (
 )
 from pages.timepicker_pages import timepicker_range
 from pages.update_targets_page import apply_controls_on_button_click_page
+from pages.sync_controls_pages import (
+    sync_cross_page_source_page,
+    sync_cross_page_target_page,
+    sync_drill_through_source_page,
+    sync_drill_through_target_page,
+    sync_hidden_parameter_page,
+)
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -315,6 +322,11 @@ dashboard = vm.Dashboard(
         cascader_leaf_page,
         cascader_path_page,
         apply_controls_on_button_click_page,
+        sync_hidden_parameter_page,
+        sync_cross_page_source_page,
+        sync_cross_page_target_page,
+        sync_drill_through_source_page,
+        sync_drill_through_target_page,
     ]
 )
 
