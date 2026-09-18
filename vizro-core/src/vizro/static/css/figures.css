@@ -67,6 +67,14 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   margin-bottom: 0.5rem;
 }
 
+/* Sized in em so it scales automatically with the value's font-size across card-kpi-compact/-large. */
+.card-kpi .card-kpi-units {
+  color: var(--bs-secondary-color);
+  font-size: 24px;
+  font-weight: 400;
+  margin-left: 0.25rem;
+}
+
 .card-kpi .card-footer {
   align-items: center;
   color: var(--bs-secondary-color);
@@ -81,6 +89,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 /* The headline change (icon + delta) is the loud part of the footer — bold, colored, tinted. */
 .card-kpi .card-kpi-delta-chip {
   align-items: center;
+  color: var(--text-secondary);
   display: inline-flex;
   font-size: 16px;
   font-weight: 600;
@@ -98,6 +107,10 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 
 .card-kpi-compact .card-kpi-delta-chip {
   font-size: 14px;
+}
+
+.card-kpi-compact .card-kpi-units {
+  font-size: 20px;
 }
 
 .card-kpi .color-pos.card-footer .card-kpi-delta-chip {

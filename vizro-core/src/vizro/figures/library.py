@@ -26,6 +26,7 @@ def kpi_card(  # noqa: PLR0913
     agg_func: str = "sum",
     title: str | None = None,
     icon: str | None = None,
+    units: str | None = None,
     size: Literal["compact", "default", "large"] = "default",
 ) -> dbc.Card:
     """Creates a styled KPI (Key Performance Indicator) card displaying a value.
@@ -57,6 +58,8 @@ def kpi_card(  # noqa: PLR0913
             `value_column`.
         icon: Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons)
             to be displayed on the left side of the KPI title. If not provided, no icon is displayed.
+        units: Unit label (for example `"%"` or `"kg"`) displayed directly after the value in a smaller,
+            muted style. If not provided, no unit is displayed.
         size: Size of the card. Possible values are `"compact"`, `"default"` or `"large"`. Defaults to `"default"`.
 
     Returns:
@@ -80,7 +83,9 @@ def kpi_card(  # noqa: PLR0913
         ],
         className="card-kpi-header",
     )
-    body = dbc.CardBody(value_format.format(value=value))
+    body = dbc.CardBody(
+        [value_format.format(value=value), html.Span(units, className="card-kpi-units") if units else None]
+    )
     return dbc.Card([header, body], class_name=_kpi_card_class_name(size))
 
 
@@ -95,6 +100,7 @@ def kpi_card_reference(  # noqa: PLR0913
     agg_func: str = "sum",
     title: str | None = None,
     icon: str | None = None,
+    units: str | None = None,
     reverse_color: bool = False,
     size: Literal["compact", "default", "large"] = "default",
 ) -> dbc.Card:
@@ -135,6 +141,8 @@ def kpi_card_reference(  # noqa: PLR0913
             `value_column`.
         icon: Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons)
             to be displayed on the left side of the KPI title. If not provided, no icon is displayed.
+        units: Unit label (for example `"%"` or `"kg"`) displayed directly after the value in a smaller,
+            muted style. If not provided, no unit is displayed.
         reverse_color: If `False`, a positive delta will be colored positively (for example, blue) and a negative delta
             negatively (for example, red). If `True`, the colors will be inverted: a positive delta will be colored
             negatively (for example, red) and a negative delta positively (for example, blue).
@@ -166,7 +174,10 @@ def kpi_card_reference(  # noqa: PLR0913
         className="card-kpi-header",
     )
     body = dbc.CardBody(
-        value_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)
+        [
+            value_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative),
+            html.Span(units, className="card-kpi-units") if units else None,
+        ]
     )
 
     footer = dbc.CardFooter(

@@ -228,6 +228,7 @@ kpi_banner = vm.Container(
                 icon="person",
                 size="compact",
                 reverse_color=True,
+                units="%",
             ),
         ),
         vm.Figure(
@@ -236,10 +237,11 @@ kpi_banner = vm.Container(
                 value_column="Closed Complaints_2019",
                 reference_column="Closed Complaints_2018",
                 title="Closed Complaints",
-                value_format="{value:.1f}%",
+                value_format="{value:.1f}",
                 reference_format=" vs. 2018 ({reference:.1f}%)",
                 icon="inventory",
                 size="default",
+                units="%",
             )
         ),
         vm.Figure(
@@ -248,10 +250,11 @@ kpi_banner = vm.Container(
                 value_column="Timely response_2019",
                 reference_column="Timely response_2018",
                 title="Timely Response",
-                value_format="{value:.1f}%",
+                value_format="{value:.1f}",
                 reference_format="vs. 2018 ({reference:.1f}%)",
                 icon="timer",
                 size="large",
+                units="%",
             )
         ),
         vm.Figure(
