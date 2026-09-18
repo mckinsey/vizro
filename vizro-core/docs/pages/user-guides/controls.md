@@ -133,15 +133,11 @@ To organize the control panel on a page into sections, you can group [filters](f
 
 ## Sync controls
 
-You can keep two controls in sync so that changing one automatically applies the same value to the other. This is useful, for example, when you need to both filter and parametrize a chart from the same user selection, such as filtering a chart down to one species and also using that species to set the chart's title.
+You can keep two controls in sync so that changing one automatically applies the same value to the other. This is useful, for example, when you need to both filter and parametrize a chart from the same user selection, such as filtering a chart down to one species and also using that species to set the chart's title. The two controls can be on the same page or on [different pages](#sync-controls-across-pages).
 
 To sync controls, add another control's `id` to the `targets` of a [filter](filters.md) or [parameter](parameters.md). Whenever the control changes, Vizro sets the targeted control to the same value (using the [`set_control` action][vizro.actions.set_control] behind the scenes) and then refreshes the figure targets of both controls. All combinations work: filter with filter, parameter with parameter, and filter with parameter.
 
 Syncing copies one control's value straight into the other, so the two controls must understand the same kind of value. Pair a categorical selector ([`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`Checklist`][vizro.models.Checklist]) with another categorical selector, a range numeric [`RangeSlider`][vizro.models.RangeSlider] with another range numeric one, and so on. A multi-select selector syncs into a single-select one only while one value is selected.
-
-!!! note "Controls can only sync on the same page (for now)"
-
-    A control can currently only target another control on the **same page**. Support for syncing controls **across pages** is coming soon, at which point this limitation is removed.
 
 !!! note "A parameter always needs a figure target"
 
@@ -149,7 +145,7 @@ Syncing copies one control's value straight into the other, so the two controls 
 
 !!! note "A control that only drives other controls is not a Filter or Parameter"
 
-    By design a [filter](filters.md) and [parameter](parameters.md) always act on figures, so neither can exist purely to drive other controls. A filter with no figure target *is not a filter*, and a parameter with no figure target *is not a parameter*.
+    By design a [filter](filters.md) and [parameter](parameters.md) always act on figures, so above mean neither can exist purely to drive other controls. A filter with no figure target *is not a filter*, and a parameter with no figure target *is not a parameter*.
 
     If a control that only sets other controls (and filters or parametrizes nothing itself) is exactly what you want, skip the filter/parameter wrapper: put a bare [selector](selectors.md) (for example a [`RadioItems`][vizro.models.RadioItems]) straight into the layout and give it an explicit [`set_control`][vizro.actions.set_control] action for each control it should drive. The targeted controls do the actual figure work when their value changes. A selector is normally only allowed inside a filter or parameter, so first whitelist it on its parent with the [`add_type`][vizro.models.VizroBaseModel.add_type] like:
 
@@ -162,7 +158,8 @@ Syncing copies one control's value straight into the other, so the two controls 
     # ...then, as a Page component:
     vm.RadioItems(
         options=["setosa", "versicolor", "virginica"],
-        actions=[set_control(control="species_filter_1", value=None), set_control(control="species_filter_2", value=None)],
+        # A single `set_control` can drive several controls at once by passing a list of ids to `control`.
+        actions=[set_control(control=["species_filter_1", "species_filter_2"], value=None)],
     )
     ```
 
@@ -244,7 +241,104 @@ Syncing copies one control's value straight into the other, so the two controls 
 
         [![SyncControls]][synccontrols]
 
-You can combine syncing with [applying controls on a button click](#apply-controls-with-a-button): give a control's selector an explicit [`set_control`][vizro.actions.set_control] action to sync its partner without refreshing figures on change, then refresh the figures together with an [`update_targets`][vizro.actions.update_targets] button.
+### Sync controls across pages
+
+A control's `targets` can also list controls on **other pages**. Cross-page syncing works exactly like same-page syncing: you still just add the target control's `id` to `targets`, and a value set is applied to the synced control on another page **when you open that page**.
+
+The example below syncs one filter across two pages. Both controls are visible so you can watch the value carry over: pick a species on _Overview_, open _Detail_, and its filter already shows the same species.
+
+!!! example "Sync a control across two pages"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="16 28"}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+
+        iris = px.data.iris()
+
+        overview_page = vm.Page(
+            title="Overview",
+            components=[
+                vm.AgGrid(id="overview_table", figure=dash_ag_grid(iris)),
+            ],
+            controls=[
+                vm.Filter(
+                    column="species",
+                    targets=["overview_table", "detail_species"],  # (1)!
+                    selector=vm.Dropdown(title="Species"),
+                ),
+            ],
+        )
+
+        detail_page = vm.Page(
+            title="Detail",
+            components=[
+                vm.Graph(id="detail_graph", figure=px.scatter(iris, x="petal_width", y="petal_length", color="species")),
+            ],
+            controls=[
+                vm.Filter(id="detail_species", column="species", targets=["detail_graph"]),  # (2)!
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[overview_page, detail_page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. The _Overview_ filter targets its own table **and** `detail_species`, the species filter on the _Detail_ page. Choose a species here and it is applied to _Detail_ too.
+        1. `detail_species` is an ordinary, visible filter. When you open _Detail_ after choosing a species on _Overview_, it already shows that same species.
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: Overview
+            components:
+              - id: overview_table
+                type: ag_grid
+                figure:
+                  _target_: dash_ag_grid
+                  data_frame: iris
+            controls:
+              - type: filter
+                column: species
+                targets: [overview_table, detail_species]
+                selector:
+                  type: dropdown
+                  title: Species
+          - title: Detail
+            components:
+              - id: detail_graph
+                type: graph
+                figure:
+                  _target_: scatter
+                  data_frame: iris
+                  x: petal_width
+                  y: petal_length
+                  color: species
+            controls:
+              - id: detail_species
+                type: filter
+                column: species
+                targets: [detail_graph]
+        ```
+
+    === "Result"
+
+        [![SyncControlsAcrossPages]][synccontrolsacrosspages]
+
+The same mechanism powers **drill-through**: when a `set_control` is triggered from a figure or component (a [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid], [`Button`][vizro.models.Button], or [`Card`][vizro.models.Card]) rather than from a control's own selector, and its target control is on another page, Vizro navigates to that page and applies the value there. See [graph and table interactions](graph-table-actions.md) for more.
+
+!!! note "Things to know about cross-page syncing"
+
+    - **Values apply on page open, not live.** Changing a control updates its cross-page targets the next time you open their pages, not while you are still on the source page.
+    - **Syncing is not transitive.** If page A syncs to page B and page B syncs to page C, opening page B restores its value from A but does not itself re-trigger the B → C sync. C only updates when you actually change B's control. To keep all three in sync, target them directly from A instead, for example `targets=["B_control", "C_control"]`.
+    - **Reset is per page.** The "Reset controls" button resets only the current page. A synced control can therefore temporarily differ from its source after a reset, until you change the source again.
+    - **Keep synced controls compatible.** Vizro applies the value as-is and does not validate that the two controls accept the same kind of value. Syncing, say, a species selection into a numeric range would coerce the value and can filter to nothing. If a synced control is a [dynamic filter](data.md#filters), make sure the synced value is still a valid option after the data refreshes.
 
 ## Apply controls with a button
 
@@ -334,3 +428,4 @@ To refresh the targets on demand, add a [`Button`][vizro.models.Button] that run
 [controlgroup]: ../../assets/user_guides/control/control_group.png
 [applycontrolswithabutton]: ../../assets/user_guides/control/apply_controls_with_a_button.gif
 [synccontrols]: ../../assets/user_guides/control/sync_controls.gif
+[synccontrolsacrosspages]: ../../assets/user_guides/control/sync_controls_across_pages.gif

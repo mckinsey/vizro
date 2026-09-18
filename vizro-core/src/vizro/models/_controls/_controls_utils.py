@@ -66,7 +66,11 @@ def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
     component_figure_ids = [model.id for model in component_figures]
     for target in targets:
         if (target_id := target.split(".")[0]) not in component_figure_ids:
-            raise ValueError(f"Target {target_id} not found within the {root_model.id}.")
+            raise ValueError(
+                f"Target {target_id} not found within the {root_model.id}. A target must be a component on "
+                f"{root_model.id}, or the id of another Filter or Parameter to keep in sync (which may be on a "
+                f"different page). Check that '{target_id}' is spelled correctly and refers to an existing model."
+            )
 
 
 # TODO: Consider rewriting the model_manager._get_model_page to model_manager._get_model_parent()
@@ -97,13 +101,12 @@ def extract_control_targets(control: ControlType) -> list[ModelID]:
     ``control.targets`` in place and returns them separately. The remaining figure targets are validated later by
     `check_control_targets`.
 
-    A control target must be a *different* control on the *same page*: self-targeting would create a self-referential
-    sync loop, and the underlying `set_control` sync runs within a single page.
+    A control target must be a *different* control: self-targeting would create a self-referential sync loop. The
+    target may be on the same page as the control or on a different page. A same-page target's selector value is set
+    directly; a different-page target is kept in sync through the internal ``vizro_controls_store`` and its value is
+    applied when that page is opened (see the `set_control` action).
     """
     from vizro.models._controls import Filter, Parameter
-
-    # `control` is loop-invariant, so resolve its page once rather than per target.
-    control_page = model_manager._get_model_page(control)
 
     targeted_controls: list[ModelID] = []
     for target in control.targets.copy():
@@ -116,13 +119,6 @@ def extract_control_targets(control: ControlType) -> list[ModelID]:
         # Forbid self-targeting: a control targeting itself would create a self-referential sync loop.
         if target == control.id:
             raise ValueError(f"Control '{control.id}' cannot target itself. Remove '{target}' from its `targets`.")
-
-        # Control targets must be on the same page as the control that targets them.
-        if control_page is not model_manager._get_model_page(target_model):
-            raise ValueError(
-                f"Control '{control.id}' cannot target control '{target}' because they are on different pages. "
-                f"A control can only target other controls on the same page."
-            )
 
         control.targets.remove(target)
         # Deduplicate so a control listed more than once does not generate duplicate set_control sync actions.
@@ -155,17 +151,19 @@ def build_default_control_selector_actions(
     targeted_figures: list[str],
     update_targets_action_id: str,
 ) -> None:
-    """Set a control selector's default action chain: sync each targeted control, then refresh its targets.
+    """Set a control selector's default action chain: sync the targeted controls, then refresh its targets.
 
     Filter and Parameter share this: on selector change they first push the new value to every control they keep in
-    sync (via `set_control`), then refresh their own targets (via `update_targets`). The `set_control` actions run
-    first so the latest value is applied before the refresh.
+    sync (via a single `set_control` that targets them all), then refresh their own targets (via `update_targets`).
+    The `set_control` action runs first so the latest value is applied before the refresh.
     """
     # Local import to avoid a circular import between this module and vizro.actions.
     from vizro.actions import set_control, update_targets
 
+    # One `set_control` drives every synced control at once (one callback, one notification) instead of one action
+    # per control. `targeted_controls` is already de-duplicated and order-preserving (see `extract_control_targets`).
     selector.actions = [
-        *[set_control(control=control_id, value=None) for control_id in targeted_controls],
+        *([set_control(control=targeted_controls, value=None)] if targeted_controls else []),
         update_targets(id=update_targets_action_id, targets=targeted_figures),
     ]
 
