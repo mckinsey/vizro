@@ -706,7 +706,7 @@ class TestSetControlFunction:
         # A drill-through (figure trigger) with one same-page target (returned via the callback output) and one
         # cross-page target (written to the store) does NOT navigate: a same-page target means the user stays on the
         # current page (its selector is updated live, the cross-page value is applied from the store when that page is
-        # opened). The returned list is aligned to `outputs` = [filter_page_1, "vizro_url.pathname"], so the trailing
+        # opened). The returned list is aligned to `outputs` = [filter_page_1, "vizro_url.href"], so the trailing
         # pathname slot stays no_update.
         action = set_control(control=["filter_page_1", "filter_page_2_show_in_url_true"], value="Europe")
         model_manager["button_1"].actions = action
@@ -729,7 +729,7 @@ class TestSetControlFunction:
     def test_function_mixed_same_and_cross_page_sync(self, mocker):
         # Selector-triggered mixed sync (not a drill-through): the same-page control is updated via the callback output
         # and the cross-page control is written to the store, but the page does NOT change. The returned list is aligned
-        # to `outputs` = [filter_page_1, "vizro_url.pathname"], so the trailing pathname slot stays no_update.
+        # to `outputs` = [filter_page_1, "vizro_url.href"], so the trailing href slot stays no_update.
         action = set_control(control=["filter_page_1", "filter_page_2_show_in_url_true"], value="Europe")
         model_manager["button_1"].actions = action
         action.pre_build()
@@ -764,13 +764,13 @@ class TestSetControlOutputs:
 
     def test_outputs_control_model_on_different_page(self):
         # Cross-page set_control writes to the controls store via set_props; the single callback output is
-        # vizro_url.pathname, used to navigate on drill-through (and returned as no_update for a control sync).
+        # vizro_url.href, used to navigate on drill-through (and returned as no_update for a control sync).
         action = set_control(control="filter_page_2_show_in_url_true", value="Europe")
         model_manager["button_1"].actions = action
 
         action.pre_build()
 
-        assert action.outputs == ["vizro_url.pathname"]
+        assert action.outputs == ["vizro_url.href"]
 
     def test_outputs_multiple_controls_same_page(self):
         # All targets on the same page: outputs is the ordered list of their ids (each a callback output).
@@ -782,13 +782,13 @@ class TestSetControlOutputs:
         assert action.outputs == ["filter_page_1", "filter_page_1_single_select"]
 
     def test_outputs_mixed_same_and_cross_page(self):
-        # Same-page ids are real outputs; the single trailing vizro_url.pathname covers all cross-page targets.
+        # Same-page ids are real outputs; the single trailing vizro_url.href covers all cross-page targets.
         action = set_control(control=["filter_page_1", "filter_page_2_show_in_url_true"], value="Europe")
         model_manager["button_1"].actions = action
 
         action.pre_build()
 
-        assert action.outputs == ["filter_page_1", "vizro_url.pathname"]
+        assert action.outputs == ["filter_page_1", "vizro_url.href"]
 
 
 @pytest.mark.usefixtures("managers_page_hierarchical_filter_set_control")
@@ -840,7 +840,7 @@ class TestSetControlMultiPage:
         controls_store = {}
         result = action.function(_trigger=None, _controls_store=controls_store)
 
-        # Single output (vizro_url.pathname) and no navigation.
+        # Single output (vizro_url.href) and no navigation.
         assert result is no_update
         get_relative_path_mock.assert_not_called()
         # Both cross-page targets are written to the store for pickup on page open.
@@ -849,10 +849,10 @@ class TestSetControlMultiPage:
         set_props_mock.assert_called_once_with("vizro_controls_store", {"data": controls_store})
 
     def test_outputs_multi_page_targets(self):
-        # No same-page targets and at least one cross-page target: the only output is the shared vizro_url.pathname.
+        # No same-page targets and at least one cross-page target: the only output is the shared vizro_url.href.
         action = set_control(control=["filter_a", "filter_b"], value="Europe")
         model_manager["src_button"].actions = action
 
         action.pre_build()
 
-        assert action.outputs == ["vizro_url.pathname"]
+        assert action.outputs == ["vizro_url.href"]

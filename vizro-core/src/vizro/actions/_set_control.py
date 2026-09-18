@@ -265,7 +265,7 @@ class set_control(_AbstractAction):
                 if self._is_drill_through and self._drill_through_path is not None:
                     navigated = get_relative_path(self._drill_through_path)
 
-            # `vizro_url.pathname` is the last output whenever there are cross-page targets (see `outputs`).
+            # `vizro_url.href` is the last output whenever there are cross-page targets (see `outputs`).
             results.append(navigated)
 
         # A single output must return a scalar; multiple outputs must return a positionally-aligned list.
@@ -346,10 +346,14 @@ class set_control(_AbstractAction):
     @property
     def outputs(self):  # type: ignore[override]
         # Same-page targets are real callback outputs (their selectors are mounted). Cross-page targets are written to
-        # `vizro_controls_store` via set_props instead, so they contribute only the shared `vizro_url.pathname` output
+        # `vizro_controls_store` via set_props instead, so they contribute only the shared `vizro_url.href` output
         # (used to navigate on drill-through; `no_update` for a control-to-control sync so the page does not change).
+        # We navigate via `href` (the full target) rather than `pathname`: when the source page has a `show_in_url`
+        # control, `page.js` rewrites the query string with `history.replaceState`, which desyncs `vizro_url` from the
+        # browser URL. A `pathname`-only `callback-nav` then reconciles against that stale state and fails to navigate
+        # (it re-asserts the current path); a full `href` navigates unambiguously regardless of the desync.
         if self._cross_page_controls:
-            return [*self._same_page_controls, "vizro_url.pathname"]
+            return [*self._same_page_controls, "vizro_url.href"]
         # All targets on the same page: a single target returns a bare id (one Output); several return a list.
         return self._same_page_controls[0] if len(self._same_page_controls) == 1 else self._same_page_controls
 
