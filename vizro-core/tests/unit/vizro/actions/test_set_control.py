@@ -179,6 +179,14 @@ class TestSetControlInstantiation:
         assert action.control == "control_id"
         assert action.value == "some_value"
 
+    def test_create_set_control_value_optional_defaults_none(self):
+        # `value` is optional: a selector-driven sync omits it (the selector's live value is used). It defaults to None.
+        action = set_control(control="control_id")
+
+        assert action.type == "set_control"
+        assert action.control == "control_id"
+        assert action.value is None
+
     def test_create_set_control_with_list_control(self):
         # `control` accepts a list of ids to target several controls at once; the value is preserved as given.
         action = set_control(control=["control_a", "control_b"], value="some_value")
@@ -384,6 +392,60 @@ class TestSetControlPreBuild:
             ),
         ):
             action.pre_build()
+
+    def test_pre_build_value_required_for_graph_trigger(self):
+        # A Graph uses `value` to extract data from the click, so omitting it is caught at build time with a
+        # Graph-specific hint (rather than surfacing as a confusing runtime error).
+        action = set_control(control="filter_page_1")  # no value
+        model_manager["scatter_chart_1"].actions = action
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                "`set_control` triggered by `Graph` model `scatter_chart_1` requires a `value`: a column name "
+                'present in the figure\'s `custom_data`, or a positional lookup such as "x" or "y".'
+            ),
+        ):
+            action.pre_build()
+
+    def test_pre_build_value_required_for_aggrid_trigger(self):
+        # An AgGrid uses `value` to extract from the selected cell/row, so omitting it is caught with an
+        # AgGrid-specific hint.
+        action = set_control(control="filter_page_1")  # no value
+        model_manager["ag_grid_1"].actions = action
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                '`set_control` triggered by `AgGrid` model `ag_grid_1` requires a `value`: "cell", "column", '
+                '"row", or a column name.'
+            ),
+        ):
+            action.pre_build()
+
+    def test_pre_build_value_optional_for_button_trigger(self):
+        # A Button/Card/Figure treats a missing `value` (None) as "reset the target to its default", so it is a valid
+        # build-time configuration - no guard error (unlike Graph/AgGrid above).
+        action = set_control(control="filter_page_1")  # no value -> reset on click
+        model_manager["button_1"].actions = action
+
+        action.pre_build()
+
+        assert action.value is None
+        assert action._is_drill_through is True
+        assert action._same_page_controls == ["filter_page_1"]
+
+    def test_pre_build_value_optional_for_selector_sync(self):
+        # A selector-driven sync ignores `value` and propagates the selector's own live value, so omitting `value` is
+        # allowed. This mirrors the auto-generated sync action, which is created without a `value`.
+        action = set_control(control="filter_page_1_single_select")  # no value
+        model_manager["filter_page_1"].selector.actions = [action]
+
+        action.pre_build()
+
+        assert action.value is None
+        assert action._is_drill_through is False
+        assert action._same_page_controls == ["filter_page_1_single_select"]
 
     def test_pre_build_control_model_on_different_page_show_in_url_not_required(self):
         # Cross-page set_control no longer requires the target to have show_in_url=True: the value is carried through

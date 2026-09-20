@@ -280,12 +280,12 @@ class TestDunderMethodsAgGrid:
             ([], {}, {}),
             ([], {"mode": "singleRow"}, {"mode": "singleRow"}),
             (
-                va.set_control(control="control_id", value=None),
+                va.set_control(control="control_id", value="continent"),
                 {},
                 {"mode": "multiRow", "checkboxes": True, "headerCheckbox": True, "enableClickSelection": True},
             ),
             (
-                va.set_control(control="control_id", value=None),
+                va.set_control(control="control_id", value="continent"),
                 {"mode": "singleRow"},
                 {"mode": "singleRow", "checkboxes": True, "headerCheckbox": True, "enableClickSelection": True},
             ),

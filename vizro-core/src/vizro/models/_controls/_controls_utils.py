@@ -162,8 +162,9 @@ def build_default_control_selector_actions(
 
     # One `set_control` drives every synced control at once (one callback, one notification) instead of one action
     # per control. `targeted_controls` is already de-duplicated and order-preserving (see `extract_control_targets`).
+    # `value` is omitted: a selector-driven sync ignores it and propagates the selector's own live value.
     selector.actions = [
-        *([set_control(control=targeted_controls, value=None)] if targeted_controls else []),
+        *([set_control(control=targeted_controls)] if targeted_controls else []),
         update_targets(id=update_targets_action_id, targets=targeted_figures),
     ]
 
