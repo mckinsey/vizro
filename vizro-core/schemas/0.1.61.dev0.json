@@ -2950,7 +2950,7 @@
         },
         "value": {
           "$ref": "#/$defs/JsonValue",
-          "description": "Value to take from trigger and send to the `target`. Format depends on the model that triggers `set_control`."
+          "description": "Value to take from the trigger and send to the target control(s). Format depends on the model that triggers `set_control`."
         }
       },
       "required": ["control", "value"],
