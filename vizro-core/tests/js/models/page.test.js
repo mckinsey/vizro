@@ -146,6 +146,18 @@ describe("sync_url_query_params_and_controls", () => {
   let mockUrlParams;
   let sync_url_query_params_and_controls;
 
+  // Build a vizro_controls_store entry with sensible defaults, overridable per test. This mirrors the per-control
+  // shape produced in Dashboard._make_page_layout (vizro_controls_store).
+  const storeEntry = (overrides = {}) => ({
+    currentValue: null,
+    originalValue: null,
+    pageId: "page-1",
+    selectorId: null,
+    showInURL: false,
+    crossPageTarget: false,
+    ...overrides,
+  });
+
   beforeEach(() => {
     jest.restoreAllMocks();
     global.dash_clientside.set_props.mockClear();
@@ -163,6 +175,17 @@ describe("sync_url_query_params_and_controls", () => {
           .join("&");
       }),
       entries: jest.fn(() => mockUrlParams.entries()),
+    }));
+
+    // encodeUrlParams always runs, so btoa/TextEncoder must be available. Individual tests can override atob/JSON.parse
+    // to decode specific URL params.
+    global.btoa = jest.fn((str) => `enc_${str}`);
+    global.TextEncoder = jest.fn(() => ({
+      encode: jest.fn(() => new Uint8Array([1, 2, 3])),
+    }));
+    global.atob = jest.fn((str) => str);
+    global.TextDecoder = jest.fn(() => ({
+      decode: jest.fn(() => '"decoded"'),
     }));
 
     // Setup history mock
@@ -187,8 +210,9 @@ describe("sync_url_query_params_and_controls", () => {
   describe("Page opened scenarios (opl_triggered = undefined)", () => {
     const opl_triggered = undefined;
 
+    // Two controls on the current page. control-1 is a cross-page sync target; control-2 is a regular control.
     const values_ids = [
-      "selector-value-1", // selector values
+      "selector-value-1", // selector values (current mounted values)
       "selector-value-2",
       "control-id-1", // control IDs
       "control-id-2",
@@ -196,119 +220,119 @@ describe("sync_url_query_params_and_controls", () => {
       "selector-id-2",
     ];
 
-    test("should decode URL params and call setProps for matching control IDs", () => {
-      // Mock the decoding to return specific values
-      global.atob = jest
-        .fn()
-        .mockReturnValueOnce('{"value":"value1"}') // for control-1
-        .mockReturnValueOnce('{"value":"value2"}'); // for control-2
-
-      // Mock JSON.parse using jest.spyOn to avoid circular reference
-      jest
-        .spyOn(JSON, "parse")
-        .mockReturnValueOnce({ value: "value1" }) // for control-1
-        .mockReturnValueOnce({ value: "value2" }); // for control-2
-
-      // Setup encoded URL params that match control IDs
-      mockUrlParams.set("control-id-1", "b64_InZhbHVlMSI"); // "value1" encoded
-      mockUrlParams.set("control-id-2", "b64_InZhbHVlMiI"); // "value2" encoded
+    test("restores crossPageTarget controls from the store, and not other controls", () => {
+      const store = {
+        "control-id-1": storeEntry({
+          currentValue: "synced-value",
+          selectorId: "selector-id-1",
+          crossPageTarget: true,
+        }),
+        "control-id-2": storeEntry({
+          currentValue: "stored-but-ignored",
+          selectorId: "selector-id-2",
+          crossPageTarget: false,
+        }),
+      };
 
       const result = sync_url_query_params_and_controls(
         opl_triggered,
         ...values_ids,
+        store,
       );
 
-      // Should call setProps for both controls
-      // selector-id-1
+      // control-1 (crossPageTarget) is restored from the store's currentValue.
       expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
         "selector-id-1",
-        { value: { value: "value1" } },
+        { value: "synced-value" },
       );
       expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
         "selector-id-1_guard_actions_chain",
         { data: true },
       );
-      // selector-id-2
-      expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
-        "selector-id-2",
-        { value: { value: "value2" } },
-      );
-      expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
-        "selector-id-2_guard_actions_chain",
-        { data: true },
-      );
-
-      // Should trigger OPL
-      expect(result).toBe(null);
-    });
-
-    test("should handle partially defined URL params", () => {
-      // Mock the decoding to return specific value for control-1 only
-      global.atob = jest.fn().mockReturnValueOnce('{"value":"value1"}');
-      jest.spyOn(JSON, "parse").mockReturnValueOnce({ value: "value1" });
-
-      // Only one control is defined in URL
-      mockUrlParams.set("control-id-1", "b64_InZhbHVlMSI"); // "value1" encoded
-
-      const result = sync_url_query_params_and_controls(
-        opl_triggered,
-        ...values_ids,
-      );
-
-      // Should only call setProps for control-1
-      // selector-id-1
-      expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
-        "selector-id-1",
-        { value: { value: "value1" } },
-      );
-      expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
-        "selector-id-1_guard_actions_chain",
-        { data: true },
-      );
-
-      // Should NOT call setProps for control-2
-      // selector-id-2
+      // control-2 (not a crossPageTarget) is NOT restored from the store.
       expect(global.dash_clientside.set_props).not.toHaveBeenCalledWith(
         "selector-id-2",
         { value: expect.anything() },
       );
-      expect(global.dash_clientside.set_props).not.toHaveBeenCalledWith(
-        "selector-id-2_guard_actions_chain",
-        { data: true },
-      );
-
-      // Should trigger OPL
+      // Page open triggers the OPL.
       expect(result).toBe(null);
     });
 
-    test("should not call setProps when URL params are empty", () => {
-      // No URL params - mockUrlParams is already cleared in beforeEach
-      const result = sync_url_query_params_and_controls(
-        opl_triggered,
-        ...values_ids,
-      );
+    test("URL param takes precedence and is applied even to a non-crossPageTarget control", () => {
+      const store = {
+        "control-id-1": storeEntry({
+          currentValue: "store-value",
+          selectorId: "selector-id-1",
+          crossPageTarget: false, // not restored from the store...
+          showInURL: true,
+        }),
+        "control-id-2": storeEntry({
+          selectorId: "selector-id-2",
+          crossPageTarget: false,
+        }),
+      };
 
-      // Should NOT call setProps since no control IDs match
-      expect(global.dash_clientside.set_props).not.toHaveBeenCalled();
-
-      // Should trigger OPL
-      expect(result).toBe(null);
-    });
-
-    test("should not call setProps when URL param IDs don't match control IDs", () => {
-      // URL contains params that don't match any control IDs
-      mockUrlParams.set("different-control", "b64_InZhbHVlMSI");
-      mockUrlParams.set("another-control", "b64_InZhbHVlMiI");
+      // ...but a URL param for control-1 is applied on page open (drill-through / bookmark).
+      mockUrlParams.set("control-id-1", "b64_whatever");
+      global.atob = jest.fn().mockReturnValue('"url-value"');
+      jest.spyOn(JSON, "parse").mockReturnValue("url-value");
 
       const result = sync_url_query_params_and_controls(
         opl_triggered,
         ...values_ids,
+        store,
       );
 
-      // Should NOT call setProps since no control IDs match
-      expect(global.dash_clientside.set_props).not.toHaveBeenCalled();
+      // URL value is applied to the selector...
+      expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
+        "selector-id-1",
+        { value: "url-value" },
+      );
+      // ...and written back into the store, which is persisted.
+      expect(store["control-id-1"].currentValue).toBe("url-value");
+      expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
+        "vizro_controls_store",
+        { data: store },
+      );
+      expect(result).toBe(null);
+    });
 
-      // Should trigger OPL
+    test("encodes show_in_url controls into the URL on page open", () => {
+      const store = {
+        "control-id-1": storeEntry({
+          currentValue: "X",
+          selectorId: "selector-id-1",
+          crossPageTarget: true,
+          showInURL: true,
+        }),
+        "control-id-2": storeEntry({
+          selectorId: "selector-id-2",
+          showInURL: false,
+        }),
+      };
+
+      sync_url_query_params_and_controls(opl_triggered, ...values_ids, store);
+
+      const finalUrl = replaceStateSpy.mock.calls[0][2];
+      // show_in_url control is written into the URL; the other is not.
+      expect(finalUrl).toContain("control-id-1=");
+      expect(finalUrl).not.toContain("control-id-2=");
+    });
+
+    test("does nothing to selectors when no control is a crossPageTarget and there are no URL params", () => {
+      const store = {
+        "control-id-1": storeEntry({ selectorId: "selector-id-1" }),
+        "control-id-2": storeEntry({ selectorId: "selector-id-2" }),
+      };
+
+      const result = sync_url_query_params_and_controls(
+        opl_triggered,
+        ...values_ids,
+        store,
+      );
+
+      // No selector is restored (nothing to restore) and the store is not rewritten (no URL params).
+      expect(global.dash_clientside.set_props).not.toHaveBeenCalled();
       expect(result).toBe(null);
     });
   });
@@ -316,22 +340,13 @@ describe("sync_url_query_params_and_controls", () => {
   describe("Control changed scenarios (opl_triggered = null)", () => {
     const opl_triggered = null;
 
-    test("should update URL with single control change and not trigger OPL", () => {
-      // Save original TextEncoder before mocking
-      const OriginalTextEncoder = TextEncoder;
-
-      // Mock encoding for the new value
-      global.btoa = jest.fn().mockReturnValue("bmV3LXZhbHVl"); // "new-value" encoded
-      global.TextEncoder = jest.fn(() => ({
-        encode: jest
-          .fn()
-          .mockReturnValue(
-            new OriginalTextEncoder().encode(JSON.stringify("new-value")),
-          ),
-      }));
-
-      // URL initially contains one encoded control for this control ID
-      mockUrlParams.set("control-id-1", "b64_InZhbHVlMSI"); // old value "value1"
+    test("tracks the changed value into the store, persists it, and does not trigger OPL", () => {
+      const store = {
+        "control-id-1": storeEntry({
+          currentValue: "old-value",
+          selectorId: "selector-id-1",
+        }),
+      };
 
       const values_ids = [
         "new-value", // new selector value
@@ -342,71 +357,53 @@ describe("sync_url_query_params_and_controls", () => {
       const result = sync_url_query_params_and_controls(
         opl_triggered,
         ...values_ids,
+        store,
       );
 
-      // Should update URL with new encoded value
-      expect(replaceStateSpy).toHaveBeenCalledWith(
-        null,
-        "",
-        expect.stringContaining("control-id-1=b64_bmV3LXZhbHVl"), // "new-value" encoded
+      // currentValue is refreshed from the selector value and the store is persisted.
+      expect(store["control-id-1"].currentValue).toBe("new-value");
+      expect(global.dash_clientside.set_props).toHaveBeenCalledWith(
+        "vizro_controls_store",
+        { data: store },
       );
-
-      // Should not call setProps when control changes
-      expect(global.dash_clientside.set_props).not.toHaveBeenCalled();
-
-      // Should not trigger OPL
+      // A control change must not re-set the selector value...
+      expect(global.dash_clientside.set_props).not.toHaveBeenCalledWith(
+        "selector-id-1",
+        { value: expect.anything() },
+      );
+      // ...and must not trigger the OPL (the control's own action chain handles the refresh).
       expect(result).toBe(global.dash_clientside.no_update);
     });
 
-    test("should update URL with multiple controls, changing only one", () => {
-      // Save original TextEncoder before mocking
-      const OriginalTextEncoder = TextEncoder;
-
-      // Mock encoding for both values
-      global.btoa = jest
-        .fn()
-        .mockReturnValueOnce("bmV3LXZhbHVl") // "new-value" encoded
-        .mockReturnValueOnce("dW5jaGFuZ2VkLXZhbHVl"); // "unchanged-value" encoded
-
-      global.TextEncoder = jest.fn(() => ({
-        encode: jest
-          .fn()
-          .mockReturnValueOnce(
-            new OriginalTextEncoder().encode(JSON.stringify("new-value")),
-          )
-          .mockReturnValueOnce(
-            new OriginalTextEncoder().encode(JSON.stringify("unchanged-value")),
-          ),
-      }));
-
-      // URL initially contains two encoded controls
-      mockUrlParams.set("control-id-1", "b64_InZhbHVlMSI"); // old value1
-      mockUrlParams.set("control-id-2", "b64_InZhbHVlMiI"); // old value2
+    test("writes only show_in_url controls into the URL on change", () => {
+      const store = {
+        "control-id-1": storeEntry({
+          currentValue: "old-1",
+          selectorId: "selector-id-1",
+          showInURL: true,
+        }),
+        "control-id-2": storeEntry({
+          currentValue: "old-2",
+          selectorId: "selector-id-2",
+          showInURL: false,
+        }),
+      };
 
       const values_ids = [
-        "new-value", // selector values - only first one changed
-        "unchanged-value",
+        "new-1", // selector values - only the first changed in practice
+        "new-2",
         "control-id-1", // control IDs
         "control-id-2",
         "selector-id-1", // selector IDs
         "selector-id-2",
       ];
 
-      const result = sync_url_query_params_and_controls(
-        opl_triggered,
-        ...values_ids,
-      );
+      sync_url_query_params_and_controls(opl_triggered, ...values_ids, store);
 
-      // Should update URL with new values for both controls
       const finalUrl = replaceStateSpy.mock.calls[0][2];
-      expect(finalUrl).toContain("control-id-1=b64_bmV3LXZhbHVl"); // "new-value" encoded
-      expect(finalUrl).toContain("control-id-2=b64_dW5jaGFuZ2VkLXZhbHVl"); // "unchanged-value" encoded
-
-      // Should not call setProps when control changes
-      expect(global.dash_clientside.set_props).not.toHaveBeenCalled();
-
-      // Should not trigger OPL
-      expect(result).toBe(global.dash_clientside.no_update);
+      // Only the show_in_url control is mirrored into the URL.
+      expect(finalUrl).toContain("control-id-1=");
+      expect(finalUrl).not.toContain("control-id-2=");
     });
   });
 });
