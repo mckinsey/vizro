@@ -15,64 +15,80 @@ import vizro.actions as va
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.figures import kpi_sparkline_card
 
 df = px.data.iris()
+stocks = px.data.stocks()
 SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
 
-
-page = vm.Page(
-    id="builtin_notifications",
-    title="Built-in action notifications",
-    layout=vm.Flex(),
+kpi_sparkline_page = vm.Page(
+    id="kpi-sparkline-cards",
+    title="KPI sparkline cards",
+    layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 4, 5, 5], [4, 4, 5, 5], [4, 4, 5, 5]]),
     components=[
-        vm.Graph(
-            id="source_graph",
-            title="Click a bar to set the species filter (set_control)",
-            figure=px.bar(
-                df,
-                x="species",
-                y="sepal_length",
-                color="species",
-                color_discrete_map=SPECIES_COLORS,
-                custom_data="species",
-            ),
-            # set_control: on success shows "Control updated.", on failure shows "Setting the control failed."
-            actions=va.set_control(control="species_filter", value="species"),
+        vm.Figure(
+            figure=kpi_sparkline_card(
+                stocks,
+                value_column="GOOG",
+                x_column="date",
+                title="Google",
+                icon="trending_up",
+                value_format="{value:.2f}",
+            )
         ),
-        vm.Container(
-            layout=vm.Flex(direction="row"),
-            components=[
-                # export_data: shows "Exporting data..." (progress) then "Data exported." (success); on failure
-                # shows "Exporting data failed."
-                vm.Button(text="Export data", actions=va.export_data(targets=["target_graph"])),
-                # update_targets on a button: no success toast; on failure shows "Updating figures failed."
-                vm.Button(text="Apply controls", actions=va.update_targets(targets=["target_graph"])),
-            ],
+        vm.Figure(
+            figure=kpi_sparkline_card(
+                stocks,
+                value_column="AAPL",
+                x_column="date",
+                title="Apple",
+                chart_type="line",
+                value_format="{value:.2f} ({delta_relative:+.1%})",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_sparkline_card(
+                stocks,
+                value_column="MSFT",
+                x_column="date",
+                title="Microsoft",
+                reverse_color=True,
+                value_format="{value:.2f}",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_sparkline_card(
+                stocks,
+                value_column="FB",
+                x_column="date",
+                title="Meta",
+                icon="show_chart",
+                agg_func="mean",
+                value_format="${value:.2f}",
+            )
         ),
         vm.Graph(
-            id="target_graph",
-            title="Target graph (filtered / parameterized / exported)",
+            figure=px.line(
+                stocks,
+                x="date",
+                y=["GOOG", "AAPL", "AMZN"],
+                title="Stock Prices Over Time",
+                labels={"date": "Date", "value": "Price", "variable": "Company"},
+            )
+        ),
+        vm.Graph(
             figure=px.scatter(
-                df,
-                x="sepal_length",
-                y="sepal_width",
-                color="species",
-                color_discrete_map=SPECIES_COLORS,
-            ),
-        ),
-    ],
-    controls=[
-        # Filter change auto-runs update_targets -> silent refresh (no toast).
-        vm.Filter(id="species_filter", column="species", targets=["target_graph"]),
-        # Parameter change auto-runs update_targets -> silent refresh (no toast).
-        vm.Parameter(
-            targets=["target_graph.x"],
-            selector=vm.RadioItems(options=["sepal_length", "sepal_width"], title="X axis"),
+                stocks,
+                x="AAPL",
+                y="MSFT",
+                title="Apple vs Microsoft Stock Prices",
+                labels={"AAPL": "Apple", "MSFT": "Microsoft"},
+            )
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+dashboard = vm.Dashboard(pages=[kpi_sparkline_page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

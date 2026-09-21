@@ -232,7 +232,7 @@ show_signature_annotations = true
 filters = ["!^_"]
 show_root_heading = true
 extensions = [
-  {"docs/griffe_extensions.py:DynamicallyInspect" = {paths = ["vizro.figures.kpi_card", "vizro.figures.kpi_card_reference"]}},
+  {"docs/griffe_extensions.py:DynamicallyInspect" = {paths = ["vizro.figures.kpi_card", "vizro.figures.kpi_card_reference", "vizro.figures.kpi_sparkline_card"]}},
   {griffe_warnings_deprecated = {kind = "danger", title = "Deprecated"}},
   {griffe_pydantic = {schema = true}},
   "docs/griffe_extensions.py:PydanticDocsCleaner"

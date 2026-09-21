@@ -93,6 +93,14 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   border-left: 4px solid var(--bs-danger);
 }
 
+.card-kpi.card-kpi-sparkline {
+  border-left: none;
+}
+
+.card-kpi-sparkline-graph {
+  height: 3rem;
+}
+
 .is-clickable > .card-kpi {
   cursor: pointer;
 }

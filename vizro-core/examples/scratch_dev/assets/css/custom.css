@@ -12,3 +12,7 @@
 #p4-exit-path-slider {
   display: none;
 }
+
+#kpi-sparkline-cards .card-kpi {
+  height: 180px;
+}
