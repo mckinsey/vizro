@@ -213,4 +213,4 @@ actions = [
 ]
 ```
 
-[exportdata]: ../../assets/user_guides/actions/actions_export.png
+[exportdata]: ../../assets/user_guides/actions/actions_export.gif
