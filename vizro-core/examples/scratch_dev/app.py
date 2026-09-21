@@ -918,6 +918,7 @@ page_50 = vm.Page(
             actions=set_control(control=["p51_species", "p51_species_url"], value="species"),
         ),
     ],
+    controls=[vm.Filter(id="p50_species_url", column="species", show_in_url=True)],
 )
 
 page_51 = vm.Page(

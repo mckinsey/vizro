@@ -159,7 +159,8 @@ Syncing copies one control's value straight into the other, so the two controls 
     vm.RadioItems(
         options=["setosa", "versicolor", "virginica"],
         # A single `set_control` can drive several controls at once by passing a list of ids to `control`.
-        actions=[set_control(control=["species_filter_1", "species_filter_2"], value=None)],
+        # `value` is omitted: a selector-driven sync sends its own live value to the targeted controls.
+        actions=[set_control(control=["species_filter_1", "species_filter_2"])],
     )
     ```
 

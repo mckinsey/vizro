@@ -56,6 +56,11 @@ class set_control(_AbstractAction):
     * [`Card`][vizro.models.Card]: triggers `set_control` when the user clicks on the card. `value` specifies a
     literal value to set `control` to.
 
+    `value` is required for `Graph` and `AgGrid` (it is the directive for what to extract from the click). For
+    `Figure`, `Card`, and `Button` it is the literal to set, and `value=None` resets the target control(s) to their
+    default value. `value` may be omitted only when a control's own selector syncs to another control (via that
+    control's `targets`): the sync uses the selector's live value and ignores `value`.
+
     Example: `AgGrid` as trigger
         ```python
         import vizro.actions as va
@@ -126,6 +131,22 @@ class set_control(_AbstractAction):
             actions=va.set_control(control=["target_control_1", "target_control_2"], value="species"),
         )
         ```
+
+    Example: a control selector as trigger (no `value` needed)
+        A control's own selector can be the source. Here a bare `RadioItems` (whitelisted as a page component with
+        `add_type`) syncs its selected value to two filters. `value` is omitted: a selector sync sends the selector's
+        own live value, so there is nothing to specify.
+        ```python
+        import vizro.models as vm
+        import vizro.actions as va
+
+        vm.Page.add_type("components", vm.RadioItems)  # allow a bare selector as a page component
+
+        vm.RadioItems(
+            options=["setosa", "versicolor", "virginica"],
+            actions=va.set_control(control=["species_filter_1", "species_filter_2"]),
+        )
+        ```
     """
 
     type: Literal["set_control"] = "set_control"
@@ -136,10 +157,14 @@ class set_control(_AbstractAction):
         "`vizro_controls_store`, and its new value is applied when that page is opened."
     )
 
-    # TODO AM-PP: How about making it optional with default=None.
     value: JsonValue = Field(
-        description="Value to take from the trigger and send to the target control(s). Format depends on the model "
-        "that triggers `set_control`."
+        default=None,
+        description="Value to take from the trigger and send to the target control(s). Its format depends on the "
+        "triggering model (see the list above): for `Graph`/`AgGrid` it is an extraction directive (a column name or "
+        "lookup) and is required; for `Figure`/`Card`/`Button` it is the literal value to set, and `value=None` "
+        "resets the target control(s) to their default value. It may be omitted (defaults to `None`) only when a "
+        "control's own selector syncs to another control, where `value` is ignored and the selector's live value is "
+        "used instead.",
     )
 
     @property
@@ -170,6 +195,7 @@ class set_control(_AbstractAction):
                 "Provide at least one Filter or Parameter id to set."
             )
 
+        from vizro.models import AgGrid, Graph
         from vizro.models._controls._controls_utils import SELECTORS, _is_hierarchical_selector
 
         # Validate each target and split by page (order-preserving): same-page controls are updated via the callback
@@ -219,6 +245,23 @@ class set_control(_AbstractAction):
         selector_types = tuple(selector for selectors in SELECTORS.values() for selector in selectors)
         self._is_drill_through = not isinstance(self._parent_model, selector_types)
 
+        # `value` is an extraction directive for Graph/AgGrid (a column name or lookup used to pull the value out of
+        # the click), so it is required for them: a missing value would only surface as a confusing "couldn't find
+        # value None" at click time. Catch it here with a message tailored to the trigger. It is intentionally
+        # optional elsewhere: Figure/Card/Button treat `value=None` as "reset the target(s) to their default", and a
+        # selector-driven sync ignores `value` entirely (the selector's own live value is used).
+        if self.value is None and isinstance(self._parent_model, (Graph, AgGrid)):
+            value_hint = (
+                'a column name present in the figure\'s `custom_data`, or a positional lookup such as "x" or "y"'
+                if isinstance(self._parent_model, Graph)
+                else '"cell", "column", "row", or a column name'
+            )
+            raise ValueError(
+                f"`set_control` triggered by `{type(self._parent_model).__name__}` model "
+                f"`{self._parent_model.id}` requires a `value`: {value_hint}. See "
+                "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_control"
+            )
+
         # Resolve the navigation target once (a control's page is fixed at build time). A drill-through navigates only
         # when every target is on one single *other* page:
         #   - no same-page target: staying to update a current-page control contradicts leaving, and that live selector
@@ -265,7 +308,7 @@ class set_control(_AbstractAction):
                 if self._is_drill_through and self._drill_through_path is not None:
                     navigated = get_relative_path(self._drill_through_path)
 
-            # `vizro_url.pathname` is the last output whenever there are cross-page targets (see `outputs`).
+            # `vizro_url.href` is the last output whenever there are cross-page targets (see `outputs`).
             results.append(navigated)
 
         # A single output must return a scalar; multiple outputs must return a positionally-aligned list.
@@ -274,18 +317,21 @@ class set_control(_AbstractAction):
     def _shape_value_for_control(self, control_id, value, controls_store):
         """Shape the trigger-derived `value` for one target control, or return `no_update` to skip just that control.
 
-        The raw value is derived once from the trigger; this resets it to the control's original value when the
-        trigger yields None, then reshapes it to the target selector (multi vs range vs single-value). Returns
-        `no_update` when the value cannot be applied to this control (an incomplete range, or a multi-item list into
-        a single-value selector), leaving that control unchanged without affecting the others.
+        The raw value is derived once from the trigger; a figure/component drill-through's None is the reset sentinel
+        (restore the control's original value), while a selector sync propagates its live value (so a cleared source
+        clears the target). It then reshapes the value to the target selector (multi vs range vs single-value).
+        Returns `no_update` when the value cannot be applied to this control (an incomplete range, or a multi-item
+        list into a single-value selector), leaving that control unchanged without affecting the others.
         """
         from vizro.models import AgGrid, Checklist, Graph, RangeSlider
 
         selector = cast(ControlType, model_manager[control_id]).selector
 
-        # None resets the control to its original value. Fall back to the selector's build-time value if the store
-        # entry is missing (a session-persisted store can be stale after a control was added/renamed).
-        if value is None:
+        # A drill-through's None is the reset sentinel: restore the control's original value (falling back to the
+        # selector's build-time value if a session-persisted store entry is stale/missing after a control was
+        # added/renamed). A selector sync instead propagates the source's live value, so a cleared source (None)
+        # clears the target rather than resetting it, keeping the two controls mirrored.
+        if value is None and self._is_drill_through:
             control_store = controls_store.get(control_id, {})
             value = control_store.get("originalValue", selector.value)
 
@@ -295,6 +341,9 @@ class set_control(_AbstractAction):
         # A leaf-mode Cascader (the only kind that reaches here — path mode is rejected at pre_build) reshapes
         # like a flat categorical selector: a multi-select value is a list of leaves, a single-select a scalar.
         if is_multi:
+            # A cleared source (None, from a selector sync) clears a multi-select target rather than seeding [None].
+            if value is None:
+                return []
             return value if isinstance(value, list) else [value]
         if is_range:
             # AgGrid/Graph emit values in selection (click) order, so a multi-value trigger can arrive out of order;
@@ -340,10 +389,14 @@ class set_control(_AbstractAction):
     @property
     def outputs(self):  # type: ignore[override]
         # Same-page targets are real callback outputs (their selectors are mounted). Cross-page targets are written to
-        # `vizro_controls_store` via set_props instead, so they contribute only the shared `vizro_url.pathname` output
+        # `vizro_controls_store` via set_props instead, so they contribute only the shared `vizro_url.href` output
         # (used to navigate on drill-through; `no_update` for a control-to-control sync so the page does not change).
+        # We navigate via `href` (the full target) rather than `pathname`: when the source page has a `show_in_url`
+        # control, `page.js` rewrites the query string with `history.replaceState`, which desyncs `vizro_url` from the
+        # browser URL. A `pathname`-only `callback-nav` then reconciles against that stale state and fails to navigate
+        # (it re-asserts the current path); a full `href` navigates unambiguously regardless of the desync.
         if self._cross_page_controls:
-            return [*self._same_page_controls, "vizro_url.pathname"]
+            return [*self._same_page_controls, "vizro_url.href"]
         # All targets on the same page: a single target returns a bare id (one Output); several return a list.
         return self._same_page_controls[0] if len(self._same_page_controls) == 1 else self._same_page_controls
 

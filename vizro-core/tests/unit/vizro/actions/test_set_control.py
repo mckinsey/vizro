@@ -179,6 +179,14 @@ class TestSetControlInstantiation:
         assert action.control == "control_id"
         assert action.value == "some_value"
 
+    def test_create_set_control_value_optional_defaults_none(self):
+        # `value` is optional: a selector-driven sync omits it (the selector's live value is used). It defaults to None.
+        action = set_control(control="control_id")
+
+        assert action.type == "set_control"
+        assert action.control == "control_id"
+        assert action.value is None
+
     def test_create_set_control_with_list_control(self):
         # `control` accepts a list of ids to target several controls at once; the value is preserved as given.
         action = set_control(control=["control_a", "control_b"], value="some_value")
@@ -385,6 +393,60 @@ class TestSetControlPreBuild:
         ):
             action.pre_build()
 
+    def test_pre_build_value_required_for_graph_trigger(self):
+        # A Graph uses `value` to extract data from the click, so omitting it is caught at build time with a
+        # Graph-specific hint (rather than surfacing as a confusing runtime error).
+        action = set_control(control="filter_page_1")  # no value
+        model_manager["scatter_chart_1"].actions = action
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                "`set_control` triggered by `Graph` model `scatter_chart_1` requires a `value`: a column name "
+                'present in the figure\'s `custom_data`, or a positional lookup such as "x" or "y".'
+            ),
+        ):
+            action.pre_build()
+
+    def test_pre_build_value_required_for_aggrid_trigger(self):
+        # An AgGrid uses `value` to extract from the selected cell/row, so omitting it is caught with an
+        # AgGrid-specific hint.
+        action = set_control(control="filter_page_1")  # no value
+        model_manager["ag_grid_1"].actions = action
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                '`set_control` triggered by `AgGrid` model `ag_grid_1` requires a `value`: "cell", "column", '
+                '"row", or a column name.'
+            ),
+        ):
+            action.pre_build()
+
+    def test_pre_build_value_optional_for_button_trigger(self):
+        # A Button/Card/Figure treats a missing `value` (None) as "reset the target to its default", so it is a valid
+        # build-time configuration - no guard error (unlike Graph/AgGrid above).
+        action = set_control(control="filter_page_1")  # no value -> reset on click
+        model_manager["button_1"].actions = action
+
+        action.pre_build()
+
+        assert action.value is None
+        assert action._is_drill_through is True
+        assert action._same_page_controls == ["filter_page_1"]
+
+    def test_pre_build_value_optional_for_selector_sync(self):
+        # A selector-driven sync ignores `value` and propagates the selector's own live value, so omitting `value` is
+        # allowed. This mirrors the auto-generated sync action, which is created without a `value`.
+        action = set_control(control="filter_page_1_single_select")  # no value
+        model_manager["filter_page_1"].selector.actions = [action]
+
+        action.pre_build()
+
+        assert action.value is None
+        assert action._is_drill_through is False
+        assert action._same_page_controls == ["filter_page_1_single_select"]
+
     def test_pre_build_control_model_on_different_page_show_in_url_not_required(self):
         # Cross-page set_control no longer requires the target to have show_in_url=True: the value is carried through
         # the internal controls store, not the URL. pre_build must succeed for a different-page target that has
@@ -425,6 +487,36 @@ class TestSetControlFunction:
         expected = original_value
 
         assert result == expected
+
+    def test_function_selector_sync_none_clears_multi_target_instead_of_resetting(self):
+        # Counterpart to the drill-through reset above: a selector-driven sync (not a drill-through) propagates the
+        # source's live value as-is. When the user clears the source selector (value None), the synced multi-select
+        # target is cleared to [] - it does NOT fall back to the target's original value.
+        action = set_control(control="filter_page_1", value=None)
+        model_manager["button_1"].actions = action
+        action.pre_build()
+        # Simulate a control-selector trigger (a sync mirrors the cleared value rather than resetting).
+        action._is_drill_through = False
+
+        # Even with an original value stored, a sync clear must not restore it.
+        controls_store = {"filter_page_1": {"originalValue": ["Asia", "Europe"]}}
+        result = action.function(_trigger=None, _controls_store=controls_store)
+
+        # filter_page_1 is multi-select, so a cleared value shapes to [] (not the stored ["Asia", "Europe"]).
+        assert result == []
+
+    def test_function_selector_sync_none_clears_single_select_target(self):
+        # As above but for a single-select target: a cleared sync value stays None (mirrors the empty source) rather
+        # than resetting to the target's original value.
+        action = set_control(control="filter_page_1_single_select", value=None)
+        model_manager["button_1"].actions = action
+        action.pre_build()
+        action._is_drill_through = False
+
+        controls_store = {"filter_page_1_single_select": {"originalValue": "Asia"}}
+        result = action.function(_trigger=None, _controls_store=controls_store)
+
+        assert result is None
 
     @pytest.mark.parametrize(
         "same_page_controls, cross_page_controls",
@@ -676,7 +768,7 @@ class TestSetControlFunction:
         # A drill-through (figure trigger) with one same-page target (returned via the callback output) and one
         # cross-page target (written to the store) does NOT navigate: a same-page target means the user stays on the
         # current page (its selector is updated live, the cross-page value is applied from the store when that page is
-        # opened). The returned list is aligned to `outputs` = [filter_page_1, "vizro_url.pathname"], so the trailing
+        # opened). The returned list is aligned to `outputs` = [filter_page_1, "vizro_url.href"], so the trailing
         # pathname slot stays no_update.
         action = set_control(control=["filter_page_1", "filter_page_2_show_in_url_true"], value="Europe")
         model_manager["button_1"].actions = action
@@ -699,7 +791,7 @@ class TestSetControlFunction:
     def test_function_mixed_same_and_cross_page_sync(self, mocker):
         # Selector-triggered mixed sync (not a drill-through): the same-page control is updated via the callback output
         # and the cross-page control is written to the store, but the page does NOT change. The returned list is aligned
-        # to `outputs` = [filter_page_1, "vizro_url.pathname"], so the trailing pathname slot stays no_update.
+        # to `outputs` = [filter_page_1, "vizro_url.href"], so the trailing href slot stays no_update.
         action = set_control(control=["filter_page_1", "filter_page_2_show_in_url_true"], value="Europe")
         model_manager["button_1"].actions = action
         action.pre_build()
@@ -734,13 +826,13 @@ class TestSetControlOutputs:
 
     def test_outputs_control_model_on_different_page(self):
         # Cross-page set_control writes to the controls store via set_props; the single callback output is
-        # vizro_url.pathname, used to navigate on drill-through (and returned as no_update for a control sync).
+        # vizro_url.href, used to navigate on drill-through (and returned as no_update for a control sync).
         action = set_control(control="filter_page_2_show_in_url_true", value="Europe")
         model_manager["button_1"].actions = action
 
         action.pre_build()
 
-        assert action.outputs == ["vizro_url.pathname"]
+        assert action.outputs == ["vizro_url.href"]
 
     def test_outputs_multiple_controls_same_page(self):
         # All targets on the same page: outputs is the ordered list of their ids (each a callback output).
@@ -752,13 +844,13 @@ class TestSetControlOutputs:
         assert action.outputs == ["filter_page_1", "filter_page_1_single_select"]
 
     def test_outputs_mixed_same_and_cross_page(self):
-        # Same-page ids are real outputs; the single trailing vizro_url.pathname covers all cross-page targets.
+        # Same-page ids are real outputs; the single trailing vizro_url.href covers all cross-page targets.
         action = set_control(control=["filter_page_1", "filter_page_2_show_in_url_true"], value="Europe")
         model_manager["button_1"].actions = action
 
         action.pre_build()
 
-        assert action.outputs == ["filter_page_1", "vizro_url.pathname"]
+        assert action.outputs == ["filter_page_1", "vizro_url.href"]
 
 
 @pytest.mark.usefixtures("managers_page_hierarchical_filter_set_control")
@@ -810,7 +902,7 @@ class TestSetControlMultiPage:
         controls_store = {}
         result = action.function(_trigger=None, _controls_store=controls_store)
 
-        # Single output (vizro_url.pathname) and no navigation.
+        # Single output (vizro_url.href) and no navigation.
         assert result is no_update
         get_relative_path_mock.assert_not_called()
         # Both cross-page targets are written to the store for pickup on page open.
@@ -819,10 +911,10 @@ class TestSetControlMultiPage:
         set_props_mock.assert_called_once_with("vizro_controls_store", {"data": controls_store})
 
     def test_outputs_multi_page_targets(self):
-        # No same-page targets and at least one cross-page target: the only output is the shared vizro_url.pathname.
+        # No same-page targets and at least one cross-page target: the only output is the shared vizro_url.href.
         action = set_control(control=["filter_a", "filter_b"], value="Europe")
         model_manager["src_button"].actions = action
 
         action.pre_build()
 
-        assert action.outputs == ["vizro_url.pathname"]
+        assert action.outputs == ["vizro_url.href"]
