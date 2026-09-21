@@ -63,6 +63,7 @@ You should see a return output of the form `x.y.z`.
 
     ```py
     import nest_asyncio
+
     nest_asyncio.apply()
     ```
 

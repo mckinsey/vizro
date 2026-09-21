@@ -16,8 +16,7 @@ The action only receives the `uploaded_files` kwarg when its signature explicitl
 
 ```python
 class FileAware(ChatAction):
-    def generate_response(self, messages, uploaded_files=None):
-        ...
+    def generate_response(self, messages, uploaded_files=None): ...
 ```
 
 ## Forward images to a vision model
