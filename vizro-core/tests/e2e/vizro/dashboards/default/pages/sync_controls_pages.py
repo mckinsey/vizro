@@ -77,7 +77,10 @@ sync_drill_through_source_page = vm.Page(
             title="Click a point: sets this page's control live AND the target page's (applied on open); stays here",
             figure=px.scatter(_df, x="sepal_width", y="sepal_length", color="species", custom_data="species"),
             actions=set_control(
-                control=[cnst.SYNC_DRILL_THROUGH_SOURCE_FILTER_CONTROL_ID, cnst.SYNC_DRILL_THROUGH_TARGET_FILTER_CONTROL_ID],
+                control=[
+                    cnst.SYNC_DRILL_THROUGH_SOURCE_FILTER_CONTROL_ID,
+                    cnst.SYNC_DRILL_THROUGH_TARGET_FILTER_CONTROL_ID,
+                ],
                 value="species",
             ),
         ),

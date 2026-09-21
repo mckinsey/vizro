@@ -73,9 +73,7 @@ def test_sync_drill_through_sets_same_page_control_and_target_on_open(dash_br):
     """Drill-through with same-page target stays on source; cross-page value applies on target open."""
     _open_sync_drill_through_source_page(dash_br)
 
-    dash_br.click_at_coord_fractions(
-        scatter_point_path(cnst.SYNC_DRILL_THROUGH_SOURCE_GRAPH_ID, point_number=20), 0, 0
-    )
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SYNC_DRILL_THROUGH_SOURCE_GRAPH_ID, point_number=20), 0, 0)
 
     dash_br.wait_for_text_to_equal(page_title_path(), cnst.SYNC_DRILL_THROUGH_SOURCE_PAGE)
     check_selected_dropdown(
