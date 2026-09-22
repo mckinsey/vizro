@@ -1,10 +1,9 @@
 /* Cascader-specific UI (columns, rows, search results). Trigger/panel chrome: dropdown-chrome.css */
 
 /* Base selectors before .dash-cascader-content > … (stylelint no-descending-specificity). */
+/* Holds column 0 only; deeper columns are pop-outs portaled elsewhere (.dash-cascader-column-flyout). */
 .dash-cascader-columns {
   box-sizing: border-box;
-  display: flex;
-  overflow: hidden;
 }
 
 /* Search results — flat list */
@@ -13,15 +12,23 @@
   overflow-y: auto;
 }
 
-/*
- * Single vertical scroll: chrome (search, multi actions) stays fixed; only columns / search-results
- * list scrolls. Overrides .dash-dropdown-content { overflow-y: auto } which would stack with
- * .dash-cascader-column { overflow-y: auto } (double scrollbar).
- */
+/* Stronger shadow than dropdown-chrome.css's shared one, so this reads as a floating card. */
+.dash-dropdown-content.dash-cascader-content,
+.dash-cascader-column-flyout {
+  box-shadow:
+    0 16px 48px -12px var(--Dash-Shading-Strong),
+    0 12px 24px -12px var(--Dash-Shading-Weak);
+}
+
+/* overflow: hidden (not overflow-x: visible) avoids a double scrollbar with .dash-cascader-column's
+ * own — CSS forces a `visible` axis to `auto` when the other isn't, making this scroll and jump to
+ * follow focus otherwise. Deeper columns are portaled straight into portalContainer instead of
+ * escaping this box. Width is fixed to the trigger's (not dcc.Dropdown's fit-content growth). */
 .dash-dropdown-content.dash-cascader-content {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  width: var(--radix-popover-trigger-width);
 }
 
 .dash-cascader-content > .dash-dropdown-search-container,
@@ -35,20 +42,22 @@
   min-height: 0;
 }
 
-/* One column within the multi-column row */
+/* One column/level; fixed to the panel's width so every level reads as the same-width panel. */
 .dash-cascader-column {
-  border-right: 1px solid var(--Dash-Fill-Disabled);
   box-sizing: border-box;
-  flex-shrink: 0;
   max-height: 100%;
   min-height: 0;
-  min-width: 140px;
   overflow-y: auto;
+  width: 100%;
 }
 
-/* Keep a 1px border so column width does not change when the last column is removed (avoids chevron jump). */
-.dash-cascader-column:last-child {
-  border-right-color: transparent;
+/* Pop-out level: portaled into portalContainer, positioned via inline top/left (Cascader.tsx). */
+.dash-cascader-column-flyout {
+  background: var(--Dash-Fill-Inverse-Strong);
+  border: 1px solid var(--Dash-Stroke-Strong);
+  border-radius: var(--Dash-Spacing);
+  position: fixed;
+  z-index: 500;
 }
 
 /* Rows */
@@ -134,13 +143,6 @@
 
 .dash-cascader-result-row.selected {
   color: var(--Dash-Fill-Interactive-Strong);
-}
-
-.dash-cascader-breadcrumb {
-  color: var(--Dash-Text-Weak);
-  flex-shrink: 0;
-  font-size: 0.875em;
-  white-space: nowrap;
 }
 
 /* No-results message */
