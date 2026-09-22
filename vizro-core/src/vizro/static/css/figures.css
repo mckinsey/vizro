@@ -58,19 +58,19 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .card-kpi .card-body {
-  align-items: center;
+  align-items: baseline;
   color: var(--text-fg-primary);
   display: flex;
   flex-grow: 1;
   font-size: 40px;
   font-weight: 300;
-  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 /* Sized in em so it scales automatically with the value's font-size across card-kpi-compact/-large. */
 .card-kpi .card-kpi-units {
   color: var(--bs-secondary-color);
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 400;
   margin-left: 0.25rem;
 }
@@ -110,7 +110,11 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .card-kpi-compact .card-kpi-units {
-  font-size: 20px;
+  font-size: 16px;
+}
+
+.card-kpi-large .card-kpi-units {
+  font-size: 24px;
 }
 
 .card-kpi .color-pos.card-footer .card-kpi-delta-chip {
@@ -142,12 +146,12 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .card-kpi-compact .card-body {
-  font-size: 32px;
+  font-size: 24px;
   margin-bottom: 0.375rem;
 }
 
 .card-kpi-compact .card-footer {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
 }
 
 .card-kpi-large .card-kpi-title {
