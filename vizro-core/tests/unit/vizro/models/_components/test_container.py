@@ -11,6 +11,9 @@ import vizro.models as vm
 from vizro import Vizro
 from vizro.managers import model_manager
 
+# Cascader.full_path default will change False -> True in Vizro 1.0.0; ignore the default-change warning here.
+pytestmark = pytest.mark.filterwarnings("ignore:The default of `Cascader.full_path` will change:FutureWarning")
+
 
 class TestContainerInstantiation:
     """Tests model instantiation and the validators run at that time."""

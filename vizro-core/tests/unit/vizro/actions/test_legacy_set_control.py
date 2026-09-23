@@ -11,7 +11,10 @@ from vizro.managers import model_manager
 
 # set_control is deprecated in favor of set_controls. Silence the warning for the legacy behavior tests below
 # (test_set_control_deprecated asserts the warning itself).
-pytestmark = pytest.mark.filterwarnings("ignore:`set_control` is deprecated:FutureWarning")
+pytestmark = [
+    pytest.mark.filterwarnings("ignore:`set_control` is deprecated:FutureWarning"),
+    pytest.mark.filterwarnings("ignore:The default of `Cascader.full_path` will change:FutureWarning"),
+]
 
 
 def test_set_control_deprecated():

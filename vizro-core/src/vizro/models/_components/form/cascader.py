@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from collections import Counter
 from typing import Annotated, Any, Literal, cast
 
@@ -238,7 +239,8 @@ class Cascader(VizroBaseModel):
         "(single-select) or a list of leaf scalars (multi-select), and leaf labels must be unique across the tree. "
         "In path mode (True) `value` is a full root-to-leaf path (single-select) or a list of paths (multi-select), "
         "so duplicate leaf labels across different branches are addressed unambiguously. This attribute is "
-        "immutable once set.",
+        "immutable once set. ❗The default will change from `False` to `True` in Vizro 1.0.0; set `full_path` "
+        "explicitly to keep the current behavior.",
     )
     options: Annotated[
         dict[str, Any],
@@ -290,6 +292,21 @@ underlying component may change in the future.""",
     _dynamic: bool = PrivateAttr(False)
     _in_container: bool = PrivateAttr(False)
     _inner_component_properties: list[str] = PrivateAttr(vdc.Cascader().available_properties)
+
+    @model_validator(mode="after")
+    def _warn_full_path_default_change(self):
+        # full_path default will flip False -> True in Vizro 1.0.0. Warn users who rely on the default so they can
+        # opt in to the current behavior. Vizro's own auto-selected hierarchical Filter sets full_path explicitly
+        # (see DEFAULT_SELECTORS), so this only fires for a user-constructed Cascader.
+        if "full_path" not in self.model_fields_set:
+            warnings.warn(
+                "The default of `Cascader.full_path` will change from `False` to `True` in Vizro 1.0.0 "
+                "(https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#cascader-full_path-default)."
+                " Set `full_path=False` explicitly to keep the current behavior.",
+                category=FutureWarning,
+                stacklevel=2,
+            )
+        return self
 
     @model_validator(mode="after")
     def _validate_value(self):

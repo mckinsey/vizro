@@ -116,3 +116,17 @@ va.set_controls(controls=["filter_1", "filter_2"], value="species")  # or a list
 ```
 
 See the [user guide on how to interact with graphs and tables](../user-guides/graph-table-actions.md) for more information.
+
+## `Cascader` `full_path` default
+
+The default of [`Cascader`][vizro.models.Cascader]'s `full_path` argument will change from `False` to `True` in Vizro 1.0.0. To keep the current behavior, set `full_path=False` explicitly.
+
+```python
+# Before (relies on the default, which will change in Vizro 1.0.0):
+vm.Cascader(options=...)
+
+# After (keeps the current behavior):
+vm.Cascader(options=..., full_path=False)
+```
+
+See the [user guide on selectors](../user-guides/selectors.md#hierarchical-selectors) for more information.

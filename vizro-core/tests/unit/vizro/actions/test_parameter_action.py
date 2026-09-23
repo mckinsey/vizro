@@ -10,6 +10,9 @@ from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import data_manager, model_manager
 
+# Cascader.full_path default will change False -> True in Vizro 1.0.0; ignore the default-change warning here.
+pytestmark = pytest.mark.filterwarnings("ignore:The default of `Cascader.full_path` will change:FutureWarning")
+
 
 @pytest.fixture
 def target_scatter_parameter_y(request, gapminder_2007, scatter_params):

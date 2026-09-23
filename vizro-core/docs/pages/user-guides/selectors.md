@@ -253,8 +253,8 @@ In a hierarchical [`Filter`][vizro.models.Filter], leaf mode matches rows on the
                 ),
             ],
             controls=[
-                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options)),
-                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, multi=False, value="France"))
+                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, full_path=False)),
+                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, multi=False, value="France", full_path=False))
             ],
         )
 

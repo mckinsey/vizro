@@ -24,6 +24,10 @@ from vizro.models._controls.filter import (
     _filter_isin,
 )
 
+# Cascader.full_path default will change False -> True in Vizro 1.0.0; ignore the default-change warning here
+# (parametrized selector classes are instantiated at run time without full_path).
+pytestmark = pytest.mark.filterwarnings("ignore:The default of `Cascader.full_path` will change:FutureWarning")
+
 
 @pytest.fixture
 def managers_column_different_type():
@@ -1522,7 +1526,7 @@ class TestFilterPreBuildMethod:
             ("pop", vm.Slider()),
             ("pop", vm.Slider(range=True)),
             ("year", vm.DatePicker()),
-            (["continent", "country"], vm.Cascader()),
+            (["continent", "country"], vm.Cascader(full_path=False)),
         ],
     )
     def test_filter_is_dynamic_with_dynamic_selectors(
@@ -2002,7 +2006,7 @@ class TestFilterHierarchicalColumn:
 
     def test_str_column_rejects_cascader(self):
         with pytest.raises(TypeError, match="list of column names"):
-            vm.Filter(column="continent", selector=vm.Cascader(options={"K": ["a"]}))
+            vm.Filter(column="continent", selector=vm.Cascader(full_path=False, options={"K": ["a"]}))
 
     def test_dataframe_path_to_cascader_options(self):
         df = pd.DataFrame({"a": ["X", "X", "Y"], "b": ["p", "q", "p"], "c": [1, 2, 3]})
@@ -2147,7 +2151,7 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["hier_graph"],
-            selector=vm.Cascader(multi=True),
+            selector=vm.Cascader(full_path=False, multi=True),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -2183,7 +2187,7 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["hier_graph"],
-            selector=vm.Cascader(multi=True, options={"Eu": {"West": ["FR"]}}, value=["FR"]),
+            selector=vm.Cascader(full_path=False, multi=True, options={"Eu": {"West": ["FR"]}}, value=["FR"]),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()  # does not raise
@@ -2198,7 +2202,7 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["scatter_chart"],
-            selector=vm.Cascader(multi=False),
+            selector=vm.Cascader(full_path=False, multi=False),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -2215,7 +2219,7 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["scatter_chart"],
-            selector=vm.Cascader(multi=False, options={"Oceania": ["NZ"], "Europe": ["DE"]}),
+            selector=vm.Cascader(full_path=False, multi=False, options={"Oceania": ["NZ"], "Europe": ["DE"]}),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -2228,7 +2232,7 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["column_categorical_exists_1"],
-            selector=vm.Cascader(multi=False),
+            selector=vm.Cascader(full_path=False, multi=False),
         )
         model_manager["test_page"].controls = [f]
         with pytest.raises(ValueError, match="continent"):
@@ -2251,7 +2255,7 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["hier_graph"],
-            selector=vm.Cascader(id="test_selector_id", multi=True),
+            selector=vm.Cascader(full_path=False, id="test_selector_id", multi=True),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -2304,7 +2308,9 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["hier_graph"],
-            selector=vm.Cascader(id="test_selector_id", multi=True, options={"Eu": ["DE", "FR"], "As": ["JP"]}),
+            selector=vm.Cascader(
+                full_path=False, id="test_selector_id", multi=True, options={"Eu": ["DE", "FR"], "As": ["JP"]}
+            ),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -2337,8 +2343,8 @@ class TestFilterBuild:
             ("column_datetime", vm.TimePicker(range=False)),
             ("column_time", vm.TimePicker()),
             ("column_time", vm.TimePicker(range=False)),
-            (["column_hierarchical_parent", "column_hierarchical_leaf"], vm.Cascader()),
-            (["column_hierarchical_parent", "column_hierarchical_leaf"], vm.Cascader(multi=False)),
+            (["column_hierarchical_parent", "column_hierarchical_leaf"], vm.Cascader(full_path=False)),
+            (["column_hierarchical_parent", "column_hierarchical_leaf"], vm.Cascader(full_path=False, multi=False)),
         ],
     )
     def test_filter_build(self, test_column, test_selector):
@@ -2369,7 +2375,7 @@ class TestFilterBuild:
             ("pop", vm.Slider(range=True)),
             ("year", vm.DatePicker()),
             ("year", vm.DatePicker(range=False)),
-            (["continent", "country"], vm.Cascader()),
+            (["continent", "country"], vm.Cascader(full_path=False)),
         ],
     )
     def test_dynamic_filter_build(self, test_column, test_selector, gapminder_dynamic_first_n_last_n_function):

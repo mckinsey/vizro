@@ -8,6 +8,9 @@ from vizro._constants import FILTER_ACTION_PREFIX
 from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import model_manager
 
+# Cascader.full_path default will change False -> True in Vizro 1.0.0; ignore the default-change warning here.
+pytestmark = pytest.mark.filterwarnings("ignore:The default of `Cascader.full_path` will change:FutureWarning")
+
 
 @pytest.fixture
 def target_scatter_filtered_continent_and_pop(request, gapminder_2007, scatter_params):
