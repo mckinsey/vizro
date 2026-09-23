@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Add `kpi_sparkline_card` figure to display a KPI value alongside a trend sparkline chart. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- Add `kpi_sparkline_card` figure to display a KPI value alongside a trend sparkline chart. ([#1866](https://github.com/mckinsey/vizro/pull/1866))
 
 <!--
 ### Changed

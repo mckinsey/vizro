@@ -1,17 +1,5 @@
-"""Scratch app for testing conditional notifications on built-in actions.
+"""Scratch app for testing kpi_sparkline_card."""
 
-Built-in actions get sensible default notifications that are not configurable through a public field. Error
-messages are action-specific but never leak *why* something failed.
-
-What to look for while testing manually:
-  * Filter / Parameter change -> no toast (silent refresh)            [update_targets]
-  * "Apply controls"          -> no toast on success                  [update_targets]
-  * Click a bar               -> "Control updated." (success)         [set_control]
-  * "Export data"             -> "Exporting data..." then "Data exported." (progress -> success) [export_data]
-  * Any failure               -> action-specific error toast (no reason shown to the end user)
-"""
-
-import vizro.actions as va
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
