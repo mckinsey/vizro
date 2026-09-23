@@ -177,7 +177,3 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   display: flex;
   justify-content: space-between;
 }
-
-.card-kpi-value {
-  align-items: flex-end;
-}
