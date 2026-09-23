@@ -94,7 +94,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   font-size: 16px;
   font-weight: 600;
   gap: 0.25rem;
-  padding: 0rem 0.375rem;
+  padding: 0 0.375rem;
 }
 
 .card-kpi .card-kpi-delta-chip .material-symbols-outlined {

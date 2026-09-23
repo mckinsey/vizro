@@ -265,31 +265,31 @@ kpi_banner = vm.Container(
                 icon="person",
                 title="Total",
                 size="compact",
-                units="MWh"
+                units="MWh",
             )
         ),
-        # vm.Figure(
-        #     figure=kpi_card(
-        #         data_frame=df_kpi_cards,
-        #         value_column="Total Complaints_2019",
-        #         value_format="{value:,}",
-        #         icon="person",
-        #         title="Total Complaints",
-        #         size="default",
-        #         units="MWh"
-        #     )
-        # ),
-        # vm.Figure(
-        #     figure=kpi_card(
-        #         data_frame=df_kpi_cards,
-        #         value_column="Total Complaints_2019",
-        #         value_format="{value:,}",
-        #         icon="person",
-        #         title="Total Complaints",
-        #         size="large",
-        #         units="MWh"
-        #     )
-        # ),
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=df_kpi_cards,
+                value_column="Total Complaints_2019",
+                value_format="{value:,}",
+                icon="person",
+                title="Total Complaints",
+                size="default",
+                units="MWh",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=df_kpi_cards,
+                value_column="Total Complaints_2019",
+                value_format="{value:,}",
+                icon="person",
+                title="Total Complaints",
+                size="large",
+                units="MWh",
+            )
+        ),
     ],
 )
 
