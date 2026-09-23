@@ -5,7 +5,8 @@ from functools import cached_property
 from typing import Literal, Protocol, cast, runtime_checkable
 
 from dash import get_relative_path, no_update, set_props
-from pydantic import Field, JsonValue
+from pydantic import Field, JsonValue, field_validator, model_validator
+from typing_extensions import deprecated
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
@@ -18,43 +19,44 @@ logger = logging.getLogger(__name__)
 _RANGE_VALUE_LEN = 2
 
 
-# What a model must implement to be a set_control trigger.
+# What a model must implement to be a set_controls trigger.
 @runtime_checkable
 class _SupportsSetControl(Protocol):
     def _get_value_from_trigger(self, value: JsonValue, trigger: JsonValue) -> JsonValue: ...
 
 
-class set_control(_AbstractAction):
+class set_controls(_AbstractAction):
     """Sets the value of one or more controls, which then update their targets.
 
     Abstract: Usage documentation
         [Graph and table interactions](../user-guides/graph-table-actions.md)
 
-    `control` accepts a single control id or a list of control ids. Pass a list to set several controls from a single
+    `controls` is one or more control ids: pass a single id, or a list of ids to set several controls from a single
     trigger (for example, one graph click that cross-filters multiple filters, or one selector that syncs several
-    controls). The same `value` is sent to every targeted control and is reshaped to each control's own selector.
+    controls). A single id is normalized to a list internally. The same `value` is sent to every targeted control and
+    is reshaped to each control's own selector.
 
-    The following Vizro models can be a source of `set_control`:
+    The following Vizro models can be a source of `set_controls`:
 
-    * [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when `cellClicked` or `selectedRows` changes (for example
+    * [`AgGrid`][vizro.models.AgGrid]: triggers `set_controls` when `cellClicked` or `selectedRows` changes (for example
     after a cell click or when the row selection changes). `value` can be:
 
         * `"cell"`, `"column"`, or `"row"` to use the clicked cell's value, column id, or row id respectively.
         * Any other string to treat as a column name, taking values from the selected row(s).
-    * [`Graph`][vizro.models.Graph]: triggers `set_control` when the user clicks on data in the graph. `value` is a
-    string that can be used in two ways to specify how to set `control`:
+    * [`Graph`][vizro.models.Graph]: triggers `set_controls` when the user clicks on data in the graph. `value` is a
+    string that can be used in two ways to specify how to set `controls`:
 
         * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.
         * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the
         trigger data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing). This is typically
         useful for a positional variable, for example `"x"`, and does not require setting `custom_data`.
 
-    * [`Figure`][vizro.models.Figure]: triggers `set_control` when the user clicks on the figure. `value` specifies a
-    literal value to set `control` to.
-    * [`Button`][vizro.models.Button]: triggers `set_control` when the user clicks on the button. `value` specifies a
-    literal value to set `control` to.
-    * [`Card`][vizro.models.Card]: triggers `set_control` when the user clicks on the card. `value` specifies a
-    literal value to set `control` to.
+    * [`Figure`][vizro.models.Figure]: triggers `set_controls` when the user clicks on the figure. `value` specifies a
+    literal value to set `controls` to.
+    * [`Button`][vizro.models.Button]: triggers `set_controls` when the user clicks on the button. `value` specifies a
+    literal value to set `controls` to.
+    * [`Card`][vizro.models.Card]: triggers `set_controls` when the user clicks on the card. `value` specifies a
+    literal value to set `controls` to.
 
     `value` is required for `Graph` and `AgGrid` (it is the directive for what to extract from the click). For
     `Figure`, `Card`, and `Button` it is the literal to set, and `value=None` resets the target control(s) to their
@@ -67,7 +69,7 @@ class set_control(_AbstractAction):
 
         vm.AgGrid(
             figure=dash_ag_grid(iris),
-            actions=va.set_control(control="target_control", value="species"),
+            actions=va.set_controls(controls=["target_control"], value="species"),
         )
         ```
 
@@ -77,7 +79,7 @@ class set_control(_AbstractAction):
 
         vm.Graph(
             figure=px.scatter(iris, x="sepal_width", y="sepal_length", custom_data="species"),
-            actions=va.set_control(control="target_control", value="species"),
+            actions=va.set_controls(controls=["target_control"], value="species"),
         )
         ```
 
@@ -87,7 +89,7 @@ class set_control(_AbstractAction):
 
         vm.Graph(
             figure=px.box(iris, x="species", y="sepal_length"),
-            actions=va.set_control(control="target_control", value="x"),
+            actions=va.set_controls(controls=["target_control"], value="x"),
         )
         ```
 
@@ -98,7 +100,7 @@ class set_control(_AbstractAction):
 
         vm.Figure(
             figure=kpi_card(tips, value_column="tip", title="Click KPI to set control to A"),
-            actions=va.set_control(control="target_control", value="A"),
+            actions=va.set_controls(controls=["target_control"], value="A"),
         )
         ```
 
@@ -108,7 +110,7 @@ class set_control(_AbstractAction):
 
         vm.Button(
             text="Click to set control to A",
-            actions=va.set_control(control="target_control", value="A"),
+            actions=va.set_controls(controls=["target_control"], value="A"),
         )
         ```
 
@@ -118,7 +120,7 @@ class set_control(_AbstractAction):
 
         vm.Card(
             title="Click Card to set control to A",
-            actions=va.set_control(control="target_control", value="A"),
+            actions=va.set_controls(controls=["target_control"], value="A"),
         )
         ```
 
@@ -128,7 +130,7 @@ class set_control(_AbstractAction):
 
         vm.Graph(
             figure=px.scatter(iris, x="sepal_width", y="sepal_length", custom_data="species"),
-            actions=va.set_control(control=["target_control_1", "target_control_2"], value="species"),
+            actions=va.set_controls(controls=["target_control_1", "target_control_2"], value="species"),
         )
         ```
 
@@ -144,17 +146,18 @@ class set_control(_AbstractAction):
 
         vm.RadioItems(
             options=["setosa", "versicolor", "virginica"],
-            actions=va.set_control(control=["species_filter_1", "species_filter_2"]),
+            actions=va.set_controls(controls=["species_filter_1", "species_filter_2"]),
         )
         ```
     """
 
-    type: Literal["set_control"] = "set_control"
-    control: ModelID | list[ModelID] = Field(
-        description="Filter or Parameter component id(s) to be affected by the trigger. Provide a single id to set "
-        "one control, or a list of ids to set several controls at once. Each control can be on the same page as the "
-        "trigger or on a different page: a different-page control is kept in sync through the internal "
-        "`vizro_controls_store`, and its new value is applied when that page is opened."
+    type: Literal["set_controls"] = "set_controls"
+    controls: ModelID | list[ModelID] = Field(
+        default=[],
+        description="Filter or Parameter component id(s) to be affected by the trigger. Provide a single id, or a list "
+        "of ids to set several controls at once. Each control can be on the same page as the trigger or on a different "
+        "page: a different-page control is kept in sync through the internal `vizro_controls_store`, and its new value "
+        "is applied when that page is opened.",
     )
 
     value: JsonValue = Field(
@@ -167,31 +170,37 @@ class set_control(_AbstractAction):
         "used instead.",
     )
 
+    @field_validator("controls", mode="after")
+    @classmethod
+    def _coerce_controls_to_list(cls, controls: ModelID | list[ModelID]) -> list[ModelID]:
+        # Accept a single control id and normalize it to a list immediately, so the rest of the action only ever
+        # works with a list of ids.
+        return [controls] if isinstance(controls, str) else controls
+
     @property
     def _control_ids(self) -> list[ModelID]:
-        """Normalize `control` (single id or list) to a de-duplicated, order-preserving list of ids.
+        """Return `controls` as a de-duplicated, order-preserving list of ids.
 
         Duplicates are collapsed because two Dash `Output`s on the same component in one callback is an error.
         """
-        control_ids = [self.control] if isinstance(self.control, str) else list(self.control)
-        return list(dict.fromkeys(control_ids))
+        return list(dict.fromkeys(self.controls))
 
     @_log_call
     def pre_build(self):
-        # Parent model must be able to source set_control.
+        # Parent model must be able to source set_controls.
         if not isinstance(self._parent_model, _SupportsSetControl):
             raise ValueError(
-                f"`set_control` action was added to the model with ID `{self._parent_model.id}`, "
+                f"`set_controls` action was added to the model with ID `{self._parent_model.id}`, "
                 "but this action can only be used with models that support it "
                 "(for example, Graph, AgGrid, Figure, and so on). "
-                "See all models that can source a `set_control` at "
-                "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_control"
+                "See all models that can source a `set_controls` at "
+                "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_controls"
             )
 
-        # An empty `control` (e.g. []) produces zero callback outputs and fails at runtime; reject it at build time.
+        # An empty `controls` (e.g. []) produces zero callback outputs and fails at runtime; reject it at build time.
         if not self._control_ids:
             raise ValueError(
-                f"`set_control` action on model `{self._parent_model.id}` has an empty `control`. "
+                f"`set_controls` action on model `{self._parent_model.id}` has an empty `controls`. "
                 "Provide at least one Filter or Parameter id to set."
             )
 
@@ -211,26 +220,26 @@ class set_control(_AbstractAction):
             control_model_page = model_manager._get_model_page(control_model) if control_model else None
             if control_model is None or control_model_page is None:
                 raise ValueError(
-                    f"Model with ID `{control_id}` used as a `control` in `set_control` action not found in the "
+                    f"Model with ID `{control_id}` used as a `control` in `set_controls` action not found in the "
                     f"dashboard. Please provide a valid control ID that exists in the dashboard."
                 )
 
             # Target must be a control model (Filter/Parameter).
             if not hasattr(control_model, "selector"):
                 raise TypeError(
-                    f"Model with ID `{control_id}` used as a `control` in `set_control` action must be a control "
+                    f"Model with ID `{control_id}` used as a `control` in `set_controls` action must be a control "
                     f"model (for example, Filter, Parameter)."
                 )
 
             # A path-mode Cascader (full_path=True) identifies a selection by its full root-to-leaf path. A trigger
-            # (Graph/AgGrid) only supplies a single column value, which cannot reconstruct a path, so `set_control`
+            # (Graph/AgGrid) only supplies a single column value, which cannot reconstruct a path, so `set_controls`
             # is disabled for it. Leaf mode (full_path=False) works like a flat selector and is supported.
             selector = getattr(control_model, "selector", None)
             if _is_hierarchical_selector(selector) and getattr(selector, "full_path", False):
                 raise ValueError(
-                    f"`set_control` cannot target control `{control_id}` because its Cascader selector uses "
+                    f"`set_controls` cannot target control `{control_id}` because its Cascader selector uses "
                     f"full_path=True. A trigger supplies a single leaf value that cannot be resolved to a full "
-                    f"root-to-leaf path. Use a Cascader with full_path=False (leaf mode) to enable `set_control`."
+                    f"root-to-leaf path. Use a Cascader with full_path=False (leaf mode) to enable `set_controls`."
                 )
 
             if control_model_page == action_page:
@@ -257,9 +266,9 @@ class set_control(_AbstractAction):
                 else '"cell", "column", "row", or a column name'
             )
             raise ValueError(
-                f"`set_control` triggered by `{type(self._parent_model).__name__}` model "
+                f"`set_controls` triggered by `{type(self._parent_model).__name__}` model "
                 f"`{self._parent_model.id}` requires a `value`: {value_hint}. See "
-                "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_control"
+                "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_controls"
             )
 
         # Resolve the navigation target once (a control's page is fixed at build time). A drill-through navigates only
@@ -358,7 +367,7 @@ class set_control(_AbstractAction):
             if len(value) == 1:
                 return value[0]
             logger.debug(
-                "set_control %s received list with %d items but targets a single-value %s %s; skipping this control",
+                "set_controls %s received list with %d items but targets a single-value %s %s; skipping this control",
                 self.id,
                 len(value),
                 type(selector).__name__,
@@ -373,7 +382,7 @@ class set_control(_AbstractAction):
         If the entry is missing (a session-persisted store can be stale after a control was added/renamed), rebuild the
         full entry - mirroring Dashboard._make_page_layout - so cross-page sync keeps working (the sync callback needs
         `crossPageTarget`, `selectorId`, etc.), not merely avoid a KeyError. `crossPageTarget` is True by construction:
-        this control is the target of a cross-page set_control.
+        this control is the target of a cross-page set_controls.
         """
         if control_id not in controls_store:
             control_model = cast(ControlType, model_manager[control_id])
@@ -434,7 +443,30 @@ class set_control(_AbstractAction):
 
     @cached_property
     def notifications(self):  # type: ignore[override]
-        # set_control's only visual cue is the control value changing, so surface a success notification.
+        # set_controls's only visual cue is the control value changing, so surface a success notification.
         # cached_property builds the notification models once per action instead of re-minting them (with fresh
         # model_manager entries) on every callback run.
         return _normalize_action_notifications({"success": "Controls updated.", "error": "Setting controls failed."})
+
+
+@deprecated(
+    "`set_control` is deprecated and will not exist in Vizro 1.0.0 "
+    "(https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#set_control-action). "
+    "Use `set_controls` with `controls` as a list of ids instead.",
+    category=FutureWarning,
+)
+class set_control(set_controls):
+    """Deprecated. Use [`set_controls`][vizro.actions.set_controls] with `controls` as a list of ids instead."""
+
+    type: Literal["set_control"] = "set_control"  # type: ignore[assignment]
+    control: ModelID | list[ModelID] = Field(
+        description="Filter or Parameter component id(s) to be affected by the trigger. Provide a single id or a list "
+        "of ids. Deprecated: use `set_controls` with `controls` instead."
+    )
+
+    @model_validator(mode="after")
+    def _map_control_to_controls(self):
+        # Map the legacy `control` (single id or list) onto the canonical `controls` list. Written via __dict__ to
+        # bypass validate_assignment; `control` is already validated so the ids are valid ModelIDs.
+        self.__dict__["controls"] = [self.control] if isinstance(self.control, str) else list(self.control)
+        return self

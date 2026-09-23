@@ -695,7 +695,7 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) to the `
 
 ## Trigger an action with a card
 
-The example below shows how to use the [set_control action][vizro.actions.set_control] to filter another Graph or Table when a [`Card`][vizro.models.Card] is clicked.
+The example below shows how to use the [set_controls action][vizro.actions.set_controls] to filter another Graph or Table when a [`Card`][vizro.models.Card] is clicked.
 
 !!! example "Action triggered by card"
 
@@ -712,9 +712,9 @@ The example below shows how to use the [set_control action][vizro.actions.set_co
         page = vm.Page(
             title="Action triggered by a card",
             components=[
-                vm.Card(text="Filter: Setosa", actions=va.set_control(control="filter-id-1", value="setosa")),
-                vm.Card(text="Filter: Virginica", actions=va.set_control(control="filter-id-1", value="virginica")),
-                vm.Card(text="Filter: Versicolor", actions=va.set_control(control="filter-id-1", value="versicolor")),
+                vm.Card(text="Filter: Setosa", actions=va.set_controls(controls=["filter-id-1"], value="setosa")),
+                vm.Card(text="Filter: Virginica", actions=va.set_controls(controls=["filter-id-1"], value="virginica")),
+                vm.Card(text="Filter: Versicolor", actions=va.set_controls(controls=["filter-id-1"], value="versicolor")),
                 vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
             ],
             controls=[vm.Filter(id="filter-id-1", column="species")],
@@ -735,17 +735,17 @@ The example below shows how to use the [set_control action][vizro.actions.set_co
               - type: card
                 text: Filter: Setosa
                 actions:
-                  - type: set_control
+                  - type: set_controls
                     value: setosa
               - type: card
                 text: Filter: Viriginica
                 actions:
-                  - type: set_control
+                  - type: set_controls
                     value: virginica
               - type: card
                 text: Filter: Versicolor
                 actions:
-                  - type: set_control
+                  - type: set_controls
                     value: versicolor
               - type: graph
                 figure:

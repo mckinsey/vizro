@@ -74,6 +74,7 @@ from vizro.actions import (
     export_data,
     filter_interaction,
     set_control,
+    set_controls,
     show_notification,
     update_notification,
     update_targets,

@@ -4,7 +4,7 @@ import pandas as pd
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import set_control
+from vizro.actions import set_controls
 from vizro.tables import dash_ag_grid
 
 iris = px.data.iris()
@@ -27,27 +27,27 @@ set_control_ag_grid_cellclicked = vm.Page(
             title="set_control.value=column",
             id=cnst.SET_CONTROL_AG_GRID_COLUMN_CLICKED_ID,
             figure=dash_ag_grid(iris),
-            actions=set_control(control="set_control_column", value="column"),
+            actions=set_controls(controls=["set_control_column"], value="column"),
         ),
         vm.AgGrid(
             title="set_control.value=cell",
             id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_ID,
             figure=dash_ag_grid(iris),
-            actions=set_control(control="set_control_cell", value="cell"),
+            actions=set_controls(controls=["set_control_cell"], value="cell"),
         ),
         vm.AgGrid(
             title="set_control.value=row",
             id=cnst.SET_CONTROL_AG_GRID_ROW_CLICKED_ID,
             figure=dash_ag_grid(iris),
-            actions=set_control(control="set_control_row", value="row"),
+            actions=set_controls(controls=["set_control_row"], value="row"),
         ),
         vm.AgGrid(
             title="set_control.value=mixed",
             id=cnst.SET_CONTROL_AG_GRID_MIXED_CLICKED_ID,
             figure=dash_ag_grid(iris),
             actions=[
-                set_control(control="set_control_column", value="column"),
-                set_control(control="set_control_cell", value="cell"),
+                set_controls(controls=["set_control_column"], value="column"),
+                set_controls(controls=["set_control_cell"], value="cell"),
             ],
         ),
         vm.AgGrid(

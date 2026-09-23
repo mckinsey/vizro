@@ -3,7 +3,7 @@ import pandas as pd
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import set_control
+from vizro.actions import set_controls
 from vizro.tables import dash_ag_grid
 
 df = px.data.iris()
@@ -44,15 +44,17 @@ set_control_non_categorical_graph = vm.Page(
                     figure=custom_scatter,
                     title="Click on points to set the filters below",
                     actions=[
-                        set_control(control=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SLIDER, value="sepal_length"),
-                        set_control(control=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_RANGE_SLIDER, value="sepal_length"),
-                        set_control(
-                            control=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE, value="date_column"
+                        set_controls(controls=[cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SLIDER], value="sepal_length"),
+                        set_controls(
+                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_RANGE_SLIDER], value="sepal_length"
                         ),
-                        set_control(
-                            control=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE, value="date_column"
+                        set_controls(
+                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE], value="date_column"
                         ),
-                        set_control(control=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SWITCH, value="is_setosa"),
+                        set_controls(
+                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE], value="date_column"
+                        ),
+                        set_controls(controls=[cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SWITCH], value="is_setosa"),
                     ],
                 ),
                 vm.Container(
@@ -115,17 +117,17 @@ set_control_non_categorical_ag_grid = vm.Page(
                     figure=dash_ag_grid(df),
                     title="Click on row to set the filters below",
                     actions=[
-                        set_control(control=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SLIDER, value="sepal_length"),
-                        set_control(
-                            control=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_RANGE_SLIDER, value="sepal_length"
+                        set_controls(controls=[cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SLIDER], value="sepal_length"),
+                        set_controls(
+                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_RANGE_SLIDER], value="sepal_length"
                         ),
-                        set_control(
-                            control=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE, value="date_column"
+                        set_controls(
+                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE], value="date_column"
                         ),
-                        set_control(
-                            control=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE, value="date_column"
+                        set_controls(
+                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE], value="date_column"
                         ),
-                        set_control(control=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SWITCH, value="is_setosa"),
+                        set_controls(controls=[cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SWITCH], value="is_setosa"),
                     ],
                 ),
                 vm.Container(
@@ -186,8 +188,8 @@ set_control_non_categorical_timepicker_graph = vm.Page(
                     figure=timepicker_scatter,
                     title="Click on points to set the time filter below",
                     actions=[
-                        set_control(
-                            control=cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_FILTER,
+                        set_controls(
+                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_FILTER],
                             value="time_column",
                         ),
                     ],
@@ -224,8 +226,8 @@ set_control_non_categorical_datetimepicker_ag_grid = vm.Page(
                     figure=dash_ag_grid(temporal_df),
                     title="Click on row to set the datetime filter below",
                     actions=[
-                        set_control(
-                            control=cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_FILTER,
+                        set_controls(
+                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_FILTER],
                             value="datetime_column",
                         ),
                     ],

@@ -2,7 +2,7 @@ import e2e.vizro.constants as cnst
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import set_control
+from vizro.actions import set_controls
 
 _df = px.data.iris()
 
@@ -76,8 +76,8 @@ sync_drill_through_source_page = vm.Page(
             id=cnst.SYNC_DRILL_THROUGH_SOURCE_GRAPH_ID,
             title="Click a point: sets this page's control live AND the target page's (applied on open); stays here",
             figure=px.scatter(_df, x="sepal_width", y="sepal_length", color="species", custom_data="species"),
-            actions=set_control(
-                control=[
+            actions=set_controls(
+                controls=[
                     cnst.SYNC_DRILL_THROUGH_SOURCE_FILTER_ID,
                     cnst.SYNC_DRILL_THROUGH_TARGET_FILTER_ID,
                 ],
