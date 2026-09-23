@@ -230,14 +230,14 @@ page_all_selectors = vm.Page(
     title=cnst.PAGE_ALL_SELECTORS,
     components=[
         vm.Graph(
-            id=f"{cnst.PAGE_ALL_SELECTORS}_graph",
+            id=cnst.PAGE_ALL_SELECTORS_GRAPH_ID,
             figure=px.scatter("dynamic_df_gapminder_arg", x="gdpPercap", y="lifeExp", size="pop", color="continent"),
         ),
     ],
     controls=[
         vm.Parameter(
             targets=[
-                f"{cnst.PAGE_ALL_SELECTORS}_graph.data_frame.continent",
+                f"{cnst.PAGE_ALL_SELECTORS_GRAPH_ID}.data_frame.continent",
             ],
             selector=vm.RadioItems(
                 options=list(set(df_gapminder["continent"])),
@@ -247,10 +247,23 @@ page_all_selectors = vm.Page(
         vm.Filter(column="continent", selector=vm.Dropdown()),
         vm.Filter(column="continent", selector=vm.RadioItems()),
         vm.Filter(column="continent", selector=vm.Checklist()),
-        vm.Filter(column="number_column", selector=vm.Slider()),
-        vm.Filter(column="number_column", selector=vm.RangeSlider()),
-        vm.Filter(column="date_column", selector=vm.DatePicker()),
-        vm.Filter(column="is_europe", selector=vm.Switch(title="Is Europe?")),
+        vm.Filter(
+            column="number_column",
+            selector=vm.Slider(id=cnst.PAGE_ALL_SELECTORS_FILTER_SLIDER_ID),
+        ),
+        vm.Filter(
+            column="number_column",
+            selector=vm.RangeSlider(id=cnst.PAGE_ALL_SELECTORS_FILTER_RANGE_SLIDER_ID),
+        ),
+        vm.Filter(
+            column="date_column",
+            selector=vm.DatePicker(id=cnst.PAGE_ALL_SELECTORS_FILTER_DATEPICKER_ID),
+        ),
+        vm.Filter(
+            id=cnst.PAGE_ALL_SELECTORS_FILTER_SWITCH_CONTROL_ID,
+            column="is_europe",
+            selector=vm.Switch(title="Is Europe?"),
+        ),
     ],
 )
 

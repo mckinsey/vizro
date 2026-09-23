@@ -348,6 +348,24 @@ def select_cascader_path_playwright(page, cascader_id, path_labels, *, multi=Fal
     page.locator("body").click()
 
 
+def select_slider_value_playwright(page, elem_id, *, min_value=None, max_value=None):
+    """Set a Slider or RangeSlider value via its min/max input fields."""
+    if min_value is not None:
+        min_input = page.locator(f"div[id='{elem_id}'] input[class$='dash-range-slider-min-input']")
+        min_input.fill(str(min_value))
+        min_input.press("Tab")
+    if max_value is not None:
+        max_input = page.locator(f"div[id='{elem_id}'] input[class$='dash-range-slider-max-input']")
+        max_input.fill(str(max_value))
+        max_input.press("Tab")
+
+
+def select_date_picker_range_playwright(page, elem_id, start_iso_date, end_iso_date):
+    """Select a date range on a range DatePicker."""
+    _select_date_picker_input_date_playwright(page, f"{elem_id}-start", start_iso_date)
+    _select_date_picker_input_date_playwright(page, f"{elem_id}-end", end_iso_date)
+
+
 def select_slider_value(driver, elem_id, min_value=None, max_value=None):
     if min_value:
         min_value_elem = driver.find_element(f"div[id='{elem_id}'] input[class$='dash-range-slider-min-input']")

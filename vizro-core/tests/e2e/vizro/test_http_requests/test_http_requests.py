@@ -2,8 +2,10 @@ import e2e.vizro.constants as cnst
 from e2e.vizro.checkers import check_http_requests_count
 from e2e.vizro.navigation import (
     select_cascader_path_playwright,
+    select_date_picker_range_playwright,
     select_range_datetime_picker_value_playwright,
     select_range_time_picker_value_playwright,
+    select_slider_value_playwright,
 )
 from playwright.sync_api import sync_playwright
 
@@ -200,6 +202,59 @@ def test_all_selectors_in_url(page, http_requests_paths):
 
     # checking that no additional http has occurred
     check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_all_selectors_filter_slider(page, http_requests_paths):
+    """Slider filter triggers one HTTP request on value change."""
+    page.locator(f"a[href='/{cnst.PAGE_ALL_SELECTORS}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    select_slider_value_playwright(page, cnst.PAGE_ALL_SELECTORS_FILTER_SLIDER_ID, max_value=50)
+    check_http_requests_count(page, http_requests_paths, 3)
+
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_all_selectors_filter_range_slider(page, http_requests_paths):
+    """RangeSlider filter triggers one HTTP request on value change."""
+    page.locator(f"a[href='/{cnst.PAGE_ALL_SELECTORS}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    select_slider_value_playwright(page, cnst.PAGE_ALL_SELECTORS_FILTER_RANGE_SLIDER_ID, min_value=20)
+    check_http_requests_count(page, http_requests_paths, 3)
+
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_all_selectors_filter_datepicker(page, http_requests_paths):
+    """DatePicker filter triggers HTTP requests when a date range is selected."""
+    page.locator(f"a[href='/{cnst.PAGE_ALL_SELECTORS}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    select_date_picker_range_playwright(
+        page,
+        cnst.PAGE_ALL_SELECTORS_FILTER_DATEPICKER_ID,
+        start_iso_date="2025-01-10",
+        end_iso_date="2025-01-20",
+    )
+    check_http_requests_count(page, http_requests_paths, 4)
+
+    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_all_selectors_filter_switch(page, http_requests_paths):
+    """Switch filter triggers one HTTP request on toggle."""
+    page.locator(f"a[href='/{cnst.PAGE_ALL_SELECTORS}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    page.locator(f"div[id='{cnst.PAGE_ALL_SELECTORS_FILTER_SWITCH_CONTROL_ID}'] .form-check-input").click()
+    check_http_requests_count(page, http_requests_paths, 3)
+
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
 
 
 @http_requests
