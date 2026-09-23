@@ -52,6 +52,7 @@ nav = [
       {"Handle data" = "pages/user-guides/data-actions.md"},
       {"Graph and table interactions" = "pages/user-guides/graph-table-actions.md"},
       {"Notifications" = "pages/user-guides/notification-actions.md"},
+      {"Actions on page load" = "pages/user-guides/page-actions.md"},
     ]},
     {"Visual formatting" = [
       {"Overview" = "pages/user-guides/visual-formatting.md"},
