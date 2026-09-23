@@ -130,3 +130,7 @@ vm.Cascader(options=..., full_path=False)
 ```
 
 See the [user guide on selectors](../user-guides/selectors.md#hierarchical-selectors) for more information.
+
+## Python 3.10
+
+Support for Python 3.10 will be removed in Vizro 1.0.0. Upgrade to Python 3.11 or later before then. Vizro emits a warning on import when it is running on Python 3.10.
