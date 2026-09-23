@@ -7,6 +7,7 @@ from pages.cascader_pages import cascader_leaf_page, cascader_path_page
 from pages.conditional_notifications import conditional_notifications_page
 from pages.datetimepicker_pages import datetimepicker_range
 from pages.filters_inside_containters_page import filters_inside_containers_page
+from pages.page_actions_none_page import page_actions_none
 from pages.set_control_cross_filter_page import (
     cross_filter_ag_grid_page,
     cross_filter_graph_page,
@@ -335,6 +336,7 @@ dashboard = vm.Dashboard(
         cascader_leaf_page,
         cascader_path_page,
         apply_controls_on_button_click_page,
+        page_actions_none,
         sync_hidden_parameter_page,
         sync_cross_page_source_page,
         sync_cross_page_target_page,

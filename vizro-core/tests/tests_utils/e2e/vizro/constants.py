@@ -604,6 +604,8 @@ PAGE_ALL_SELECTORS_FILTER_DATEPICKER_ID = "page_all_selectors_filter_datepicker"
 PAGE_ALL_SELECTORS_FILTER_SWITCH_CONTROL_ID = "page_all_selectors_filter_switch_control_id"
 PAGE_ALL_SELECTORS_IN_URL = "page-all-selectors-in-url"
 PAGE_APPLY_CONTROLS_ON_BUTTON_CLICK = "page-apply-controls-on-button-click"
+PAGE_ACTIONS_NONE = "page-actions-none"
+PAGE_ACTIONS_NONE_GRAPH_ID = "page_actions_none_graph"
 
 HTTP_TIMEOUT_SHORT = 200
 HTTP_TIMEOUT_LONG = 1000

@@ -597,6 +597,23 @@ def test_cascader_leaf_single_filters_ag_grid(page, http_requests_paths):
 
 
 @http_requests
+def test_page_actions_none(page, http_requests_paths):
+    """Page with actions=None does not refresh the graph on open."""
+    # open the page (1 http - no on-page-load graph refresh)
+    page.locator(f"a[href='/{cnst.PAGE_ACTIONS_NONE}']").click()
+    check_http_requests_count(page, http_requests_paths, 1)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 1, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+    # load graph on demand (1 http)
+    page.get_by_text("Load graph").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    check_http_requests_count(page, http_requests_paths, 2, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
 def test_apply_controls_on_button_click(page, http_requests_paths):
     """Page with deferred filter and parameter applied together via update_targets button."""
     # open the page (2 http)
