@@ -13,9 +13,7 @@ You can customize this behavior with the `actions` argument of [`Page`][vizro.mo
 
 !!! note
 
-    Because your actions **replace** the default, include [`va.update_targets()`](actions.md#refresh-figures-on-demand) in your chain if you still want figures to refresh on page load. If you leave `actions` unset, the default on-page-load refresh is added for you as before.
-
-    `Page.actions` only controls what runs on page load. The **"Reset all"** button always refreshes every figure and dynamic filter on the page, independently of page's `actions`, so resetting controls shows the data for the reset values even when you have customized or disabled the on-page-load actions.
+    Because your actions **replace** the default, include [`va.update_targets()`](actions.md#refresh-figures-on-demand) in your chain if you still want figures to refresh when page loads. If you leave `actions` unset, the default on-page-load refresh is added for you as before.
 
 ## Run extra actions on page load
 
@@ -25,7 +23,7 @@ To keep the default figure refresh and also do something else, list [`va.update_
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="13"}
+        ```{.python pycafe-link hl_lines="14"}
         import vizro.actions as va
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -74,6 +72,8 @@ To keep the default figure refresh and also do something else, list [`va.update_
 
         The dashboard shows a welcome notification each time the page opens, and the figure is refreshed as usual.
 
+        [![PageActionsShowNotificationOnPageLoad]][pageactionsshownotificationonpageload]
+
 ## Defer loading expensive data
 
 If a page queries a large or slow data source, you might not want it to load automatically every time the page opens. Set `actions=None` or `actions=[]` to switch off the automatic on-page-load refresh, then let the user load the data on demand, for example with a [`Button`][vizro.models.Button] that triggers [`va.update_targets()`](actions.md#refresh-figures-on-demand).
@@ -96,14 +96,15 @@ If a page queries a large or slow data source, you might not want it to load aut
                 vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
                 vm.Button(text="Load data", actions=va.update_targets()),
             ],
-            controls=[vm.Filter(column="species")],
-            actions=[],  # (1)!
+            controls=[vm.Filter(column="species", selector=vm.Checklist(actions=None))],  # (1)!
+            actions=None,  # (2)!
         )
 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
+        1. `actions=[]` or `actions=None` set on filter's selector disables refreshing the graph when its value changes, so the figure is not populated until the user clicks the button.
         1. `actions=[]` or `actions=None` disables the automatic on-page-load refresh, so the figure is not populated until the user clicks the button.
 
     === "app.yaml"
@@ -127,6 +128,9 @@ If a page queries a large or slow data source, you might not want it to load aut
             controls:
               - type: filter
                 column: species
+                selector:
+                  type: checklist
+                  actions: []
             actions: []
             title: Load on demand
         ```
@@ -135,6 +139,11 @@ If a page queries a large or slow data source, you might not want it to load aut
 
         The figure stays empty when the page opens and is populated only after the user clicks "Load data".
 
+        [![PageActionsDeferOnPageLoad]][pageactionsdeferonpageload]
+
 !!! warning
 
     When you disable the on-page-load refresh with `actions=None` or `actions=[]`, [dynamic filters](data.md#filters) do not recompute their options when the page opens; they refresh only once an [`update_targets`](actions.md#refresh-figures-on-demand) action runs, for example from a button or the "Reset all" button. Use static filters if you want their options available immediately.
+
+[pageactionsshownotificationonpageload]: ../../assets/user_guides/page_actions/page_actions_show_notification_on_page_load.png
+[pageactionsdeferonpageload]: ../../assets/user_guides/page_actions/page_actions_defer_on_page_load.gif
