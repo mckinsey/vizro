@@ -4,7 +4,7 @@ description: "Switch between Vizro's dark and light themes, use a custom Bootstr
 
 # How to use themes and colors
 
-This guide shows you how to use themes. Themes are pre-designed collections of stylings that are applied to entire charts and dashboards. The themes provided by Vizro are infused with our design best practices that make charts and dashboards look visually consistent and professional.
+This guide shows you how to use themes. Themes are pre-designed collections of stylings that are applied to entire charts and dashboards. The themes provided by Vizro are infused with our design best practices that make charts and dashboards look visually consistent and professional. Consult the API reference for [further details of the themes and a set of visual color palettes](../API-reference/themes.md).
 
 ## Built-in Vizro themes (dark/light)
 

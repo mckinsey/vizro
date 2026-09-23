@@ -3,9 +3,12 @@ import re
 import pytest
 from pydantic import ValidationError
 
+import vizro.actions as va
 import vizro.models as vm
-from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
-from vizro.actions._update_targets import update_targets
+from vizro import Vizro
+from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX, RESET_CONTROLS_ACTION_PREFIX
+from vizro.actions._on_page_load import _on_page_load
+from vizro.managers import model_manager
 
 
 class TestPageInstantiation:
@@ -109,11 +112,122 @@ class TestPagePreBuildMethod:
         page.pre_build()
         [default_action] = page.actions
 
-        assert isinstance(default_action, update_targets)
+        assert isinstance(default_action, _on_page_load)
         assert default_action.id == f"{ON_PAGE_LOAD_ACTION_PREFIX}_{page.id}"
         assert default_action.targets == ["scatter_chart"]
         assert default_action._trigger == f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{page.id}.data"
         assert default_action._prevent_initial_call_of_guard is False
+
+    def test_page_user_actions_replace_default_action(self, standard_px_chart):
+        page = vm.Page(
+            title="Page 1",
+            components=[vm.Graph(id="scatter_chart", figure=standard_px_chart)],
+            actions=[va.update_targets(), va.show_notification(text="Welcome!")],
+        )
+        page.pre_build()
+
+        # User-provided actions are respected instead of being overwritten by the automatic on-page-load action.
+        assert not any(isinstance(action, _on_page_load) for action in page.actions)
+        refresh_action, notification_action = page.actions
+        assert isinstance(refresh_action, va.update_targets)
+        assert isinstance(notification_action, va.show_notification)
+
+        # The first action in the chain runs after the page load; subsequent actions run when the previous one finishes.
+        assert refresh_action._trigger == f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{page.id}.data"
+        assert refresh_action._prevent_initial_call_of_guard is False
+        assert notification_action._trigger == f"{refresh_action.id}_finished.data"
+        assert notification_action._prevent_initial_call_of_guard is True
+
+    def test_page_empty_actions_disables_on_page_load(self, standard_px_chart):
+        page = vm.Page(
+            title="Page 1",
+            components=[vm.Graph(id="scatter_chart", figure=standard_px_chart)],
+            actions=[],
+        )
+        page.pre_build()
+
+        # Explicitly setting actions=[] disables the automatic on-page-load refresh.
+        assert page.actions == []
+
+
+class TestPageResetControlsAction:
+    """Tests the dedicated reset-controls action that backs the "Reset all" button.
+
+    A full build is used (rather than calling `pre_build` directly) because the reset action is only created when the
+    page has controls, and controls require their selectors to be built first.
+    """
+
+    @pytest.mark.parametrize(
+        "actions, expected_page_actions",
+        [
+            ("UNSET", [_on_page_load]),  # default: on-page-load refresh kept
+            ([va.show_notification(text="Hi")], [va.show_notification]),  # customized page-load actions
+            (None, []),  # on-page-load disabled
+            ([], []),  # on-page-load disabled
+        ],
+    )
+    def test_reset_controls_action_created(self, actions, expected_page_actions, standard_px_chart):
+        actions_kwarg = {} if actions == "UNSET" else {"actions": actions}
+        filter = vm.Filter(id="continent_filter", column="continent")
+        page = vm.Page(
+            title="Page 1",
+            components=[vm.Graph(id="scatter_chart", figure=standard_px_chart)],
+            controls=[filter],
+            **actions_kwarg,
+        )
+        filter.pre_build()
+        page.pre_build()
+
+        # The reset action is created independently of Page.actions.
+        assert [type(action) for action in page.actions] == expected_page_actions
+
+        reset_action = page._reset_controls_action
+        # It is a plain update_targets (not the _on_page_load subclass) refreshing all figures and dynamic filters.
+        assert type(reset_action) is va.update_targets
+        assert reset_action.id == f"{RESET_CONTROLS_ACTION_PREFIX}_{page.id}"
+        assert reset_action.targets == ["scatter_chart"]
+        assert reset_action._trigger == f"{RESET_CONTROLS_ACTION_PREFIX}_trigger_{page.id}.data"
+        assert reset_action._first_in_chain_trigger == reset_action._trigger
+        # Reset only runs on the "Reset all" click, never on the initial page render.
+        assert reset_action._prevent_initial_call_of_guard is True
+        # The reset action lives outside the page's model tree but its page is still resolvable via _parent_model.
+        assert model_manager._get_model_page(reset_action) is page
+
+    def test_no_reset_controls_action_without_controls(self, standard_px_chart):
+        page = vm.Page(title="Page 1", components=[vm.Graph(id="scatter_chart", figure=standard_px_chart)])
+        page.pre_build()
+
+        assert page._reset_controls_action is None
+
+    def test_reset_button_wired_to_reset_trigger_not_on_page_load(self, standard_px_chart):
+        """The "Reset all" clientside callback must write to the reset trigger, not the on-page-load trigger.
+
+        This guards against a regression that re-points reset back at the on-page-load trigger, which would make
+        resetting controls re-run `Page.actions` instead of the dedicated refresh. Dash's global callback map is
+        populated at build time and cleared by `Vizro._reset()` (which the autouse fixture runs), so it only contains
+        this dashboard's callbacks.
+        """
+        from dash._callback import GLOBAL_CALLBACK_MAP
+
+        page = vm.Page(
+            id="mypage",
+            title="Page 1",
+            components=[vm.Graph(id="scatter_chart", figure=standard_px_chart)],
+            controls=[vm.Filter(id="continent_filter", column="continent")],
+            actions=[va.show_notification(text="Hi")],  # customized so reset must not re-run the page chain
+        )
+        Vizro().build(vm.Dashboard(pages=[page]))
+
+        # Collect the output component ids of every callback triggered by the "Reset all" button.
+        reset_button_output_ids = set()
+        for callback in GLOBAL_CALLBACK_MAP.values():
+            if not any(input["id"] == "reset-button" for input in callback["inputs"]):
+                continue
+            outputs = callback["output"] if isinstance(callback["output"], list) else [callback["output"]]
+            reset_button_output_ids |= {output.component_id for output in outputs}
+
+        assert f"{RESET_CONTROLS_ACTION_PREFIX}_trigger_{page.id}" in reset_button_output_ids
+        assert f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{page.id}" not in reset_button_output_ids
 
 
 # TODO: Add unit tests for page build method

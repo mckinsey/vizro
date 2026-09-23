@@ -10,6 +10,7 @@ Actions control how your app responds to user input such as clicking a button or
 - [Graph and table interactions](graph-table-actions.md), for example to cross-filter.
 - [Show notifications](notification-actions.md), for example to provide user feedback.
 - [Refresh figures on demand](#refresh-figures-on-demand), for example to apply controls on a button click.
+- [Run actions when a page opens](page-actions.md), for example to greet the user or defer loading expensive data.
 
 A complete list of built-in actions in given in the [API documentation][vizro.actions]. We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions-tutorial.md) and an [explanation of how Vizro actions work](../explanation/actions-explanation.md).
 
