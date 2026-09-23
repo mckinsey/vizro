@@ -18,6 +18,15 @@ from vizro.models._components.form.cascader import (
     get_cascader_default_value,
 )
 
+# Cascader.full_path default will change False -> True in Vizro 1.0.0. Silence the default-change warning for the
+# behavior tests below (test_full_path_default_change_warning asserts the warning itself).
+pytestmark = pytest.mark.filterwarnings("ignore:The default of `Cascader.full_path` will change:FutureWarning")
+
+
+def test_full_path_default_change_warning():
+    with pytest.warns(FutureWarning, match="The default of `Cascader.full_path` will change"):
+        Cascader(options={"Europe": ["France"]})
+
 
 class TestCascaderInstantiation:
     """Tests model instantiation."""

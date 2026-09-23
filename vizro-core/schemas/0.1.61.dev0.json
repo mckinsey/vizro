@@ -377,7 +377,7 @@
         },
         "full_path": {
           "default": false,
-          "description": "How a selection is identified. In leaf mode (False, default) `value` is a bare leaf scalar (single-select) or a list of leaf scalars (multi-select), and leaf labels must be unique across the tree. In path mode (True) `value` is a full root-to-leaf path (single-select) or a list of paths (multi-select), so duplicate leaf labels across different branches are addressed unambiguously. This attribute is immutable once set.",
+          "description": "How a selection is identified. In leaf mode (False, default) `value` is a bare leaf scalar (single-select) or a list of leaf scalars (multi-select), and leaf labels must be unique across the tree. In path mode (True) `value` is a full root-to-leaf path (single-select) or a list of paths (multi-select), so duplicate leaf labels across different branches are addressed unambiguously. This attribute is immutable once set. \u2757The default will change from `False` to `True` in Vizro 1.0.0; set `full_path` explicitly to keep the current behavior.",
           "title": "Full Path",
           "type": "boolean"
         },

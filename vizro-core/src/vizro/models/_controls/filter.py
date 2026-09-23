@@ -58,7 +58,9 @@ DEFAULT_SELECTORS: dict[str, Callable[..., SelectorType]] = {
     "datetime": DatePicker,
     "time": TimePicker,
     "boolean": Switch,
-    "hierarchical": Cascader,
+    # Set full_path explicitly so an auto-selected hierarchical filter does not emit the full_path default-change
+    # warning and keeps the current (leaf-mode) behavior. TODO[1.0.0]: revisit when the full_path default flips to True.
+    "hierarchical": functools.partial(Cascader, full_path=False),
 }
 
 # This disallowed selectors for each column type map is based on the discussion at the following link:
