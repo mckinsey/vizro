@@ -247,7 +247,7 @@ class Grid(VizroBaseModel):
 
 
 @deprecated(
-    "The `Layout` model has been renamed [`Grid`][vizro.models.Grid], and [`Layout` will not exist in Vizro 0.2.0]"
+    "The `Layout` model has been renamed [`Grid`][vizro.models.Grid], and [`Layout` will not exist in Vizro 1.0.0]"
     "(https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#layout-model).",
     category=FutureWarning,
 )

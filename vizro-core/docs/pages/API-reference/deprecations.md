@@ -1,10 +1,10 @@
 ---
-description: "Migration notes for deprecations ahead of Vizro 0.2.0: `Layout` renamed to `Grid`, changes to `Action.inputs`, static custom-action arguments, and `filter_interaction`."
+description: "Migration notes for deprecations ahead of Vizro 1.0.0: `Layout` renamed to `Grid`, changes to `Action.inputs`, static custom-action arguments, and `filter_interaction`."
 ---
 
 # Deprecations and breaking changes
 
-This page lists Vizro features that are now deprecated and forthcoming breaking changes for Vizro 0.2.0.
+This page lists Vizro features that are now deprecated and forthcoming breaking changes for Vizro 1.0.0.
 
 ## `Layout` model
 
@@ -36,7 +36,7 @@ See the [user guide on custom actions](../user-guides/custom-actions.md#trigger-
 
 ## Static argument for custom action
 
-Passing a static argument to a [custom action](../user-guides/custom-actions.md) is deprecated. All arguments must instead be [runtime inputs](../user-guides/custom-actions.md#trigger-with-a-runtime-input). For example, in Vizro 0.2.0, the following will no longer be possible:
+Passing a static argument to a [custom action](../user-guides/custom-actions.md) is deprecated. All arguments must instead be [runtime inputs](../user-guides/custom-actions.md#trigger-with-a-runtime-input). For example, in Vizro 1.0.0, the following will no longer be possible:
 
 ```python
 @capture("action")

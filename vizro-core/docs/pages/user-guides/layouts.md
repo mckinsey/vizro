@@ -11,7 +11,7 @@ The [`Page`][vizro.models.Page] and [`Container`][vizro.models.Container] models
 
 !!! note
 
-    The `Grid` model used to be called `Layout`, and the name `Layout` will no longer exist in Vizro 0.2.0. See our [full list of deprecations and breaking changes](../API-reference/deprecations.md).
+    The `Grid` model used to be called `Layout`, and the name `Layout` will no longer exist in Vizro 1.0.0. See our [full list of deprecations and breaking changes](../API-reference/deprecations.md).
 
 ## Layout options: Grid and Flex
 
