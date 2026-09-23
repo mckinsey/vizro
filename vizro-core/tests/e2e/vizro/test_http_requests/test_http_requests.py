@@ -571,7 +571,7 @@ def test_sync_hidden_parameter(page, http_requests_paths):
     page.locator(f"a[href='/{cnst.SYNC_HIDDEN_PARAMETER_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # select filter (3 http)
+    # select filter (3 http: `set_control` and `update_targets` from Filter + `update_targets` from Parameter)
     page.get_by_text("versicolor").nth(0).click()
     check_http_requests_count(page, http_requests_paths, 5)
 
