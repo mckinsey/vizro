@@ -3,7 +3,7 @@ import numpy as np
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import set_control
+from vizro.actions import set_controls
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
@@ -34,8 +34,8 @@ cross_filter_multi_select_page = vm.Page(
                 custom_data=["species"],
             ),
             actions=[
-                set_control(control="chl_filter", value="species"),
-                set_control(control="ri_filter", value="species"),
+                set_controls(controls=["chl_filter"], value="species"),
+                set_controls(controls=["ri_filter"], value="species"),
             ],
         ),
         vm.Graph(
@@ -48,16 +48,16 @@ cross_filter_multi_select_page = vm.Page(
                 custom_data=["species"],
             ),
             actions=[
-                set_control(control="chl_filter", value="species"),
-                set_control(control="ri_filter", value="species"),
+                set_controls(controls=["chl_filter"], value="species"),
+                set_controls(controls=["ri_filter"], value="species"),
             ],
         ),
         vm.AgGrid(
             id=cnst.TABLE_SET_CONTROL_MULTI_SELECT,
             figure=dash_ag_grid(iris_species_cycle),
             actions=[
-                set_control(control="chl_filter", value="species"),
-                set_control(control="ri_filter", value="species"),
+                set_controls(controls=["chl_filter"], value="species"),
+                set_controls(controls=["ri_filter"], value="species"),
             ],
         ),
         vm.Graph(
@@ -93,31 +93,31 @@ button_card_trigger_set_control = vm.Page(
         vm.Button(
             id=cnst.SET_CONTROL_BUTTON_NONE,
             actions=[
-                set_control(control="chl_bc_filter", value=None),
-                set_control(control="ri_bc_filter", value=None),
+                set_controls(controls=["chl_bc_filter"], value=None),
+                set_controls(controls=["ri_bc_filter"], value=None),
             ],
         ),
         vm.Button(
             id=cnst.SET_CONTROL_BUTTON_EMPTY_LIST,
             actions=[
-                set_control(control="chl_bc_filter", value=[]),
-                set_control(control="ri_bc_filter", value=[]),
+                set_controls(controls=["chl_bc_filter"], value=[]),
+                set_controls(controls=["ri_bc_filter"], value=[]),
             ],
         ),
         vm.Card(
             id=cnst.SET_CONTROL_CARD_SINGLE_VALUE,
             text="Set to 'virginica'",
             actions=[
-                set_control(control="chl_bc_filter", value=["virginica"]),
-                set_control(control="ri_bc_filter", value=["virginica"]),
+                set_controls(controls=["chl_bc_filter"], value=["virginica"]),
+                set_controls(controls=["ri_bc_filter"], value=["virginica"]),
             ],
         ),
         vm.Card(
             id=cnst.SET_CONTROL_CARD_MULTI_VALUE,
             text="Set to 'virginica' and 'versicolor'",
             actions=[
-                set_control(control="chl_bc_filter", value=["virginica", "versicolor"]),
-                set_control(control="ri_bc_filter", value=["virginica", "versicolor"]),
+                set_controls(controls=["chl_bc_filter"], value=["virginica", "versicolor"]),
+                set_controls(controls=["ri_bc_filter"], value=["virginica", "versicolor"]),
             ],
         ),
         vm.AgGrid(
@@ -163,7 +163,7 @@ filtered_graph_aggrid_trigger_set_control = vm.Page(
                                 color="species",
                                 custom_data=["species"],
                             ),
-                            actions=set_control(control="chl_ft_filter", value="species"),
+                            actions=set_controls(controls=["chl_ft_filter"], value="species"),
                         ),
                     ],
                 ),
@@ -176,7 +176,7 @@ filtered_graph_aggrid_trigger_set_control = vm.Page(
                         vm.AgGrid(
                             id=cnst.FILTERED_AGGRID_TRIGGER_SET_CONTROL_ID,
                             figure=dash_ag_grid(iris_species_cycle),
-                            actions=set_control(control="chl_ft_filter", value="species"),
+                            actions=set_controls(controls=["chl_ft_filter"], value="species"),
                         ),
                     ],
                 ),
@@ -207,7 +207,7 @@ self_filter_set_control_page = vm.Page(
                 color="species",
                 custom_data=["species"],
             ),
-            actions=set_control(control="chl_self_filter", value="species"),
+            actions=set_controls(controls=["chl_self_filter"], value="species"),
         ),
     ],
     controls=[

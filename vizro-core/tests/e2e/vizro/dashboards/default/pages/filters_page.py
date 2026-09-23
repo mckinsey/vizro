@@ -2,7 +2,7 @@ import e2e.vizro.constants as cnst
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import export_data, set_control
+from vizro.actions import export_data, set_controls
 
 iris = px.data.iris()
 
@@ -54,7 +54,9 @@ filters_page = vm.Page(
                                 vm.Button(
                                     id=cnst.FILTERS_PAGE_SET_CONTROL_FILTER_BUTTON,
                                     text="Set versicolor",
-                                    actions=set_control(control=cnst.RADIO_ITEMS_FILTER_CONTROL_ID, value="versicolor"),
+                                    actions=set_controls(
+                                        controls=[cnst.RADIO_ITEMS_FILTER_CONTROL_ID], value="versicolor"
+                                    ),
                                 ),
                             ],
                         )

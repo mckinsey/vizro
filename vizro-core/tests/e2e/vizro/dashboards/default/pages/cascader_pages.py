@@ -3,7 +3,7 @@ import pandas as pd
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import set_control
+from vizro.actions import set_controls
 from vizro.tables import dash_ag_grid
 
 _gapminder = px.data.gapminder().query("year == 2007").copy()
@@ -72,12 +72,12 @@ cascader_leaf_page = vm.Page(
             id=cnst.CASCADER_LEAF_SET_CONTROL_AG_GRID_SOURCE_ID,
             title="set_control source",
             figure=dash_ag_grid(data_frame=_gapminder),
-            actions=set_control(control=cnst.CASCADER_LEAF_FILTER_CONTROL_ID, value="country"),
+            actions=set_controls(controls=[cnst.CASCADER_LEAF_FILTER_CONTROL_ID], value="country"),
         ),
         vm.Button(
             id=cnst.CASCADER_LEAF_SET_CONTROL_BUTTON_ID,
             text="Show China",
-            actions=set_control(control=cnst.CASCADER_LEAF_FILTER_CONTROL_ID, value="China"),
+            actions=set_controls(controls=[cnst.CASCADER_LEAF_FILTER_CONTROL_ID], value="China"),
         ),
     ],
     controls=[

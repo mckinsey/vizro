@@ -1025,7 +1025,7 @@ set_controls_action_cross_filter = vm.Page(
             figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species", custom_data="species"),
             header="💡 Select one or more points to filter the histogram below "
             "(use Box Select or Lasso Select to select multiple points)",
-            actions=va.set_control(value="species", control="species-filter"),
+            actions=va.set_controls(value="species", controls=["species-filter"]),
         ),
         vm.Graph(
             id="histogram_chart",
@@ -1047,7 +1047,7 @@ set_controls_action_cross_parameter = vm.Page(
             ),
             header="💡 Click any bar to highlight that country in the bump chart "
             "(use Shift + click to add/remove bars)",
-            actions=va.set_control(control="highlight_parameter", value="y"),
+            actions=va.set_controls(controls=["highlight_parameter"], value="y"),
         ),
         vm.Graph(
             id="bump_chart",

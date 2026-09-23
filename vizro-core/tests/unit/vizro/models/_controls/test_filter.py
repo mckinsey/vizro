@@ -11,7 +11,7 @@ from dash import dcc, html
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions._set_control import set_control
+from vizro.actions import set_controls
 from vizro.actions._update_targets import update_targets
 from vizro.managers import data_manager, model_manager
 from vizro.models._controls.filter import (
@@ -1843,7 +1843,7 @@ class TestFilterPreBuildMethod:
 
     def test_target_control_sync_actions(self, managers_one_page_two_graphs):
         # A Filter can target another control (a Filter or Parameter) to keep it in sync. The control target is
-        # extracted out of self.targets and turned into a `set_control` action that runs *before* the default
+        # extracted out of self.targets and turned into a `set_controls` action that runs *before* the default
         # `update_targets` action so the synced value is applied first.
         target_filter = vm.Filter(id="target_filter", column="continent", selector=vm.Checklist())
         source_filter = vm.Filter(id="source_filter", column="continent", targets=["target_filter", "scatter_chart"])
@@ -1854,17 +1854,17 @@ class TestFilterPreBuildMethod:
         # The control target is removed from self.targets, leaving only the figure target.
         assert source_filter.targets == ["scatter_chart"]
 
-        set_control_action, update_targets_action = source_filter.selector.actions
-        assert isinstance(set_control_action, set_control)
-        # A single set_control targets all synced controls (here just one), as a list.
-        assert set_control_action.control == ["target_filter"]
-        assert set_control_action.value is None
+        set_controls_action, update_targets_action = source_filter.selector.actions
+        assert isinstance(set_controls_action, set_controls)
+        # A single set_controls targets all synced controls (here just one), as a list.
+        assert set_controls_action.controls == ["target_filter"]
+        assert set_controls_action.value is None
         assert isinstance(update_targets_action, update_targets)
         assert update_targets_action.id == "__filter_action_source_filter"
         assert update_targets_action.targets == ["scatter_chart"]
 
     def test_target_control_duplicate_ids_deduplicated(self, managers_one_page_two_graphs):
-        # A control listed more than once as a target must only generate a single set_control sync action (the
+        # A control listed more than once as a target must only generate a single set_controls sync action (the
         # duplicate is redundant), while the figure target is preserved.
         target_filter = vm.Filter(id="target_filter", column="continent", selector=vm.Checklist())
         source_filter = vm.Filter(
@@ -1875,14 +1875,14 @@ class TestFilterPreBuildMethod:
         source_filter.pre_build()
 
         assert source_filter.targets == ["scatter_chart"]
-        set_control_actions = [action for action in source_filter.selector.actions if isinstance(action, set_control)]
-        assert len(set_control_actions) == 1
-        # The duplicate is collapsed inside the single set_control's (de-duplicated) control list.
-        assert set_control_actions[0].control == ["target_filter"]
+        set_controls_actions = [action for action in source_filter.selector.actions if isinstance(action, set_controls)]
+        assert len(set_controls_actions) == 1
+        # The duplicate is collapsed inside the single set_controls action's (de-duplicated) controls list.
+        assert set_controls_actions[0].controls == ["target_filter"]
 
     def test_target_control_only_falls_back_to_all_figures(self, managers_one_page_two_graphs):
         # When a Filter targets *only* another control, the figure targets fall back to all figures on the page that
-        # contain the column, exactly as if no targets were provided - but the sync set_control action is still added.
+        # contain the column, exactly as if no targets were provided - but the sync set_controls action is still added.
         target_filter = vm.Filter(id="target_filter", column="continent", selector=vm.Checklist())
         source_filter = vm.Filter(id="source_filter", column="continent", targets=["target_filter"])
         model_manager["test_page"].controls = [target_filter, source_filter]
@@ -1890,16 +1890,16 @@ class TestFilterPreBuildMethod:
         source_filter.pre_build()
 
         assert source_filter.targets == ["scatter_chart", "bar_chart"]
-        set_control_action, update_targets_action = source_filter.selector.actions
-        assert isinstance(set_control_action, set_control)
-        assert set_control_action.control == ["target_filter"]
+        set_controls_action, update_targets_action = source_filter.selector.actions
+        assert isinstance(set_controls_action, set_controls)
+        assert set_controls_action.controls == ["target_filter"]
         assert isinstance(update_targets_action, update_targets)
         assert update_targets_action.targets == ["scatter_chart", "bar_chart"]
 
     def test_target_control_ignored_with_explicit_actions_warns(
         self, managers_one_page_two_graphs, identity_action_function
     ):
-        # A control target is synced by generating a default set_control action on the selector. When the selector
+        # A control target is synced by generating a default set_controls action on the selector. When the selector
         # has explicit actions, that default chain is skipped, so a control target listed in `targets` is stripped
         # without being synced. This must warn rather than silently do nothing.
         custom_action = vm.Action(function=identity_action_function())
@@ -1927,7 +1927,7 @@ class TestFilterPreBuildMethod:
             source_filter.pre_build()
 
     def test_target_control_different_page_valid(self, gapminder):
-        # A control can target a control on a *different* page: the target is extracted and a set_control sync action
+        # A control can target a control on a *different* page: the target is extracted and a set_controls sync action
         # is generated. The cross-page value is carried through vizro_controls_store and applied when the target's
         # page is opened, so unlike a same-page target it does not need show_in_url.
         vm.Page(
@@ -1948,10 +1948,10 @@ class TestFilterPreBuildMethod:
         filter_a = model_manager["filter_a"]
         # The cross-page control target is stripped from targets (which fall back to the page's figures).
         assert "filter_b" not in filter_a.targets
-        # A single set_control sync action is generated for the cross-page target.
-        set_control_actions = [action for action in filter_a.selector.actions if isinstance(action, set_control)]
-        assert len(set_control_actions) == 1
-        assert set_control_actions[0].control == ["filter_b"]
+        # A single set_controls sync action is generated for the cross-page target.
+        set_controls_actions = [action for action in filter_a.selector.actions if isinstance(action, set_controls)]
+        assert len(set_controls_actions) == 1
+        assert set_controls_actions[0].controls == ["filter_b"]
 
     def test_filter_action_properties(self, managers_column_only_exists_in_some):
         filter = Filter(

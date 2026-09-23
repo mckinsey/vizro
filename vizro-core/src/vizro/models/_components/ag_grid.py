@@ -15,7 +15,7 @@ from pydantic import (
 )
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.actions import filter_interaction, set_control
+from vizro.actions import filter_interaction, set_controls
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_model
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
@@ -176,7 +176,7 @@ class AgGrid(VizroBaseModel):
             return list(dict.fromkeys(row[value] for row in selected_rows))
         except KeyError:
             raise ValueError(
-                f"Couldn't find value column name: `{value}` in trigger for `set_control` action. "
+                f"Couldn't find value column name: `{value}` in trigger for `set_controls` action. "
                 f"This action was added to the AgGrid model with ID `{self.id}`. "
             )
 
@@ -192,9 +192,9 @@ class AgGrid(VizroBaseModel):
         figure.id = self._inner_component_id
 
         # Configure default grid interaction behavior based on the type of actions provided:
-        all_set_control = all(isinstance(a, set_control) for a in self.actions)
-        all_cell_clicked_actions = all_set_control and all(a.value in CELL_CLICKED_MAPPING for a in self.actions)
-        all_selected_rows_actions = all_set_control and all(a.value not in CELL_CLICKED_MAPPING for a in self.actions)
+        all_set_controls = all(isinstance(a, set_controls) for a in self.actions)
+        all_cell_clicked_actions = all_set_controls and all(a.value in CELL_CLICKED_MAPPING for a in self.actions)
+        all_selected_rows_actions = all_set_controls and all(a.value not in CELL_CLICKED_MAPPING for a in self.actions)
 
         # Set dashGridOptions if not already set.
         figure.dashGridOptions = getattr(figure, "dashGridOptions", {})

@@ -188,7 +188,7 @@ class TestGraphGetValueFromTrigger:
         with pytest.raises(
             ValueError,
             match=re.escape(
-                "Couldn't find value `continent` in trigger for `set_control` action. "
+                "Couldn't find value `continent` in trigger for `set_controls` action. "
                 "This action was added to the Graph model with ID `graph_id`. "
                 "If you expected the value to come from custom data, add it in the figure's custom_data signature."
             ),
@@ -209,7 +209,7 @@ class TestGraphGetValueFromTrigger:
         with pytest.raises(
             ValueError,
             match=re.escape(
-                f"Couldn't find value `{action_value}` in trigger for `set_control` action. "
+                f"Couldn't find value `{action_value}` in trigger for `set_controls` action. "
                 "This action was added to the Graph model with ID `graph_id`. "
                 "If you expected the value to come from custom data, add it in the figure's custom_data signature."
             ),

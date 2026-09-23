@@ -158,13 +158,13 @@ def build_default_control_selector_actions(
     The `set_control` action runs first so the latest value is applied before the refresh.
     """
     # Local import to avoid a circular import between this module and vizro.actions.
-    from vizro.actions import set_control, update_targets
+    from vizro.actions import set_controls, update_targets
 
-    # One `set_control` drives every synced control at once (one callback, one notification) instead of one action
+    # One `set_controls` drives every synced control at once (one callback, one notification) instead of one action
     # per control. `targeted_controls` is already de-duplicated and order-preserving (see `extract_control_targets`).
     # `value` is omitted: a selector-driven sync ignores it and propagates the selector's own live value.
     selector.actions = [
-        *([set_control(control=targeted_controls)] if targeted_controls else []),
+        *([set_controls(controls=targeted_controls)] if targeted_controls else []),
         update_targets(id=update_targets_action_id, targets=targeted_figures),
     ]
 

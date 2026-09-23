@@ -15,7 +15,7 @@ It is possible to add filters to a [page](pages.md) or [container](container.md#
 When the dashboard is running there are two ways for a user to set a filter:
 
 - Direct user interaction with the underlying selector. For example, the user selects values from a checklist.
-- [User interaction with a graph or table](graph-table-actions.md) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-filtering](graph-table-actions.md#cross-filter). To achieve a visually cleaner dashboard you might like to hide the filter's underlying selector with `visible=False`.
+- [User interaction with a graph or table](graph-table-actions.md) via the [`set_controls` action][vizro.actions.set_controls]. This enables functionality such as [cross-filtering](graph-table-actions.md#cross-filter). To achieve a visually cleaner dashboard you might like to hide the filter's underlying selector with `visible=False`.
 
 By default, filters that control components with [dynamic data](data.md#dynamic-data) are [dynamically updated](data.md#filters) when the underlying data changes while the dashboard is running.
 
@@ -174,7 +174,7 @@ To add a hierarchical filter to your page:
 !!! note "Path mode (`full_path=True`) constraints"
 
     - The number of columns in `Filter.column` must equal the number of levels in the `options` hierarchy, because every level of a selected path is matched against the corresponding column. (Leaf mode has no such restriction: it matches on the last column only, so `options` may be arbitrarily deep.)
-    - Path mode does not support [`set_control`](graph-table-actions.md) yet, because a single click cannot reconstruct a full root-to-leaf path. Use leaf mode (`full_path=False`) for filters that are targets of `set_control`.
+    - Path mode does not support [`set_controls`](graph-table-actions.md) yet, because a single click cannot reconstruct a full root-to-leaf path. Use leaf mode (`full_path=False`) for filters that are targets of `set_controls`.
 
 !!! example "Hierarchical Filter"
 

@@ -762,6 +762,7 @@ ActionType = Annotated[
     | Annotated["export_data", Tag("export_data")]
     | Annotated["filter_interaction", Tag("filter_interaction")]
     | Annotated["set_control", Tag("set_control")]
+    | Annotated["set_controls", Tag("set_controls")]
     | Annotated["show_notification", Tag("show_notification")]
     | Annotated["update_notification", Tag("update_notification")]
     | Annotated["update_targets", Tag("update_targets")]

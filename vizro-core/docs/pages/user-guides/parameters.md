@@ -15,7 +15,7 @@ It is possible to add parameters to a [page](pages.md) or [container](container.
 When the dashboard is running there are two ways for a user to set a parameter:
 
 - Direct user interaction with the underlying selector. For example, the user selects values from a checklist.
-- [User interaction with a graph or table](graph-table-actions.md#cross-parameter) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-highlighting](graph-table-actions.md#cross-highlight). To achieve a visually cleaner dashboard you might like to hide the parameter's underlying selector with `visible=False`.
+- [User interaction with a graph or table](graph-table-actions.md#cross-parameter) via the [`set_controls` action][vizro.actions.set_controls]. This enables functionality such as [cross-highlighting](graph-table-actions.md#cross-highlight). To achieve a visually cleaner dashboard you might like to hide the parameter's underlying selector with `visible=False`.
 
 ## Basic parameters
 

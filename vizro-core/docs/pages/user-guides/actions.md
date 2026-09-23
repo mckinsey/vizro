@@ -124,7 +124,7 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
                 vm.Graph(
                     title="Click on a box to use that box's sex to filter table",
                     figure=px.box(tips, x="tip", y="sex"),
-                    actions=va.set_control(control="sex_filter", value="y"),
+                    actions=va.set_controls(controls=["sex_filter"], value="y"),
                 ),
                 vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
             ],
@@ -136,7 +136,7 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
         ```
 
         1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
-        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_controls`.
 
     === "app.yaml"
 
@@ -146,8 +146,9 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
         pages:
           - components:
               - actions:
-                  - control: sex_filter
-                    type: set_control
+                  - controls:
+                      - sex_filter
+                    type: set_controls
                     value: y
                 figure:
                   _target_: box
