@@ -137,7 +137,6 @@ home = vm.Page(
                 * Dropdown
                 * Checklist
                 * RadioItems
-                * RangeSlider
                 * Slider
                 * DatePicker
                 """,
@@ -557,7 +556,8 @@ tooltip = vm.Page(
         ),
         vm.Filter(
             column="sepal_width",
-            selector=vm.RangeSlider(
+            selector=vm.Slider(
+                range=True,
                 title="Sepal Width",
                 description="""
                     Use the slider to filter flowers by sepal width.
@@ -685,7 +685,7 @@ filters = vm.Page(
         vm.Filter(
             column="petal_length",
             targets=["scatter_chart2"],
-            selector=vm.RangeSlider(),
+            selector=vm.Slider(range=True),
         ),
     ],
 )
@@ -735,8 +735,7 @@ selectors = vm.Page(
         * Dropdown (**categorical** multi and single option selector)
         * Checklist (**categorical** multi option selector only)
         * RadioItems (**categorical** single option selector only)
-        * RangeSlider (**numerical** multi option selector only)
-        * Slider (**numerical** single option selector only)
+        * Slider (**numerical** single option selector, or a range selector with `range=True`)
         * DatePicker(**temporal** multi and single option selector)
 
         """
@@ -756,7 +755,7 @@ selectors = vm.Page(
         vm.Filter(
             targets=["table-gapminder"],
             column="lifeExp",
-            selector=vm.RangeSlider(title="Range Slider (Gapminder - lifeExp)", step=1, marks=None),
+            selector=vm.Slider(range=True, title="Range Slider (Gapminder - lifeExp)", step=1, marks=None),
         ),
         vm.Filter(
             targets=["table-gapminder"],
@@ -1190,7 +1189,7 @@ custom_tables = vm.Page(
 
 # CUSTOM COMPONENTS -------------------------------------------------------------
 # 1. Extend existing components
-class TooltipNonCrossRangeSlider(vm.RangeSlider):
+class TooltipNonCrossRangeSlider(vm.Slider):
     """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
 
     type: Literal["other_range_slider"] = "other_range_slider"
@@ -1245,7 +1244,7 @@ custom_components = vm.Page(
         vm.Filter(
             column="sepal_length",
             targets=["for_custom_chart"],
-            selector=TooltipNonCrossRangeSlider(title="Custom component based on extension"),
+            selector=TooltipNonCrossRangeSlider(range=True, title="Custom component based on extension"),
         )
     ],
 )

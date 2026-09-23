@@ -438,7 +438,7 @@ Consider a filter that depends on dynamic data, where you do **not** want the av
 ```python title="Override selector options to make a dynamic filter static"
 controls = [
     vm.Filter(column="species", selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])),
-    vm.Filter(column="sepal_length", selector=vm.RangeSlider(min=4.3, max=7.9)),
+    vm.Filter(column="sepal_length", selector=vm.Slider(range=True, min=4.3, max=7.9)),
     vm.Filter(column="date_column", selector=vm.DatePickerRange(min="2025-01-01", max="2025-05-29")),
 ]
 ```

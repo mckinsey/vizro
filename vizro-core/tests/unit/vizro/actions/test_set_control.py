@@ -45,7 +45,7 @@ def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid, stan
                 id="filter_page_1_range_slider",
                 targets=["table_1"],
                 column="lifeExp",
-                selector=vm.RangeSlider(),
+                selector=vm.Slider(range=True),
             ),
             vm.Filter(
                 id="filter_page_1_boolean",

@@ -137,7 +137,7 @@ You can keep two controls in sync so that changing one automatically applies the
 
 To sync controls, add another control's `id` to the `targets` of a [filter](filters.md) or [parameter](parameters.md). Whenever the control changes, Vizro sets the targeted control to the same value (using the [`set_control` action][vizro.actions.set_control] behind the scenes) and then refreshes the figure targets of both controls. All combinations work: filter with filter, parameter with parameter, and filter with parameter.
 
-Syncing copies one control's value straight into the other, so the two controls must understand the same kind of value. Pair a categorical selector ([`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`Checklist`][vizro.models.Checklist]) with another categorical selector, a range numeric [`RangeSlider`][vizro.models.RangeSlider] with another range numeric one, and so on. A multi-select selector syncs into a single-select one only while one value is selected.
+Syncing copies one control's value straight into the other, so the two controls must understand the same kind of value. Pair a categorical selector ([`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`Checklist`][vizro.models.Checklist]) with another categorical selector, a range numeric [`Slider(range=True)`][vizro.models.Slider] with another range numeric one, and so on. A multi-select selector syncs into a single-select one only while one value is selected.
 
 !!! note "A parameter always needs a figure target"
 

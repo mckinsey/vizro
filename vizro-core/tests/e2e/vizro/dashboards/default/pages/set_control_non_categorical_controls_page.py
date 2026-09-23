@@ -73,7 +73,7 @@ set_control_non_categorical_graph = vm.Page(
                         vm.Filter(
                             id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_RANGE_SLIDER,
                             column="sepal_length",
-                            selector=vm.RangeSlider(),
+                            selector=vm.Slider(range=True),
                         ),
                         # Temporal-Single
                         vm.Filter(
@@ -146,7 +146,7 @@ set_control_non_categorical_ag_grid = vm.Page(
                         vm.Filter(
                             id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_RANGE_SLIDER,
                             column="sepal_length",
-                            selector=vm.RangeSlider(),
+                            selector=vm.Slider(range=True),
                         ),
                         # Temporal-Single
                         vm.Filter(

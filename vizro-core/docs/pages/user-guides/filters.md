@@ -82,7 +82,7 @@ You can also set `targets` to specify which components on the page the filter sh
 The selector is configured automatically based on the target column type data as follows:
 
 - Categorical data uses [`vm.Dropdown(multi=True)`][vizro.models.Dropdown] where `options` is the set of unique values found in `column` across all the data sources of components in `targets`.
-- [Numerical data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_numeric_dtype.html) uses [`vm.RangeSlider`][vizro.models.RangeSlider] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`.
+- [Numerical data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_numeric_dtype.html) uses [`vm.Slider(range=True)`][vizro.models.Slider] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`.
 - [Temporal data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_datetime64_any_dtype.html) (`date` or `datetime` columns) uses [`vm.DatePicker(range=True)`][vizro.models.DatePicker] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`. A column can be converted to this type with [`pandas.to_datetime`](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html). For `time` columns (containing `datetime.time` objects), [`vm.TimePicker(range=True)`][vizro.models.TimePicker] is used instead; a column can be converted to this type with [`pandas.to_datetime`](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html) followed by `.time` (for example, `df["t"] = pd.to_datetime(df["t"]).time`). To filter a `datetime` column by both date and time, pass [`vm.DateTimePicker`][vizro.models.DateTimePicker] as the `selector` explicitly.
 - [Boolean data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_bool_dtype.html) uses [`vm.Switch`][vizro.models.Switch] which provides a toggle interface for True/False values. The Switch also works with binary numerical columns containing 0/1 values.
 
@@ -240,7 +240,7 @@ To add a hierarchical filter to your page:
 
 ## Change selector
 
-Use a different `selector` argument for the [`Filter`][vizro.models.Filter] model for a different selector model. For a **single** `column` string, available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker], [`TimePicker`][vizro.models.TimePicker], [`DateTimePicker`][vizro.models.DateTimePicker] and [`Switch`][vizro.models.Switch]. For a **hierarchical** filter (`column` as a list), use [`Cascader`][vizro.models.Cascader] as in the [section above](#hierarchical-filters).
+Use a different `selector` argument for the [`Filter`][vizro.models.Filter] model for a different selector model. For a **single** `column` string, available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`Slider`][vizro.models.Slider] (single value, or a range with `range=True`), [`DatePicker`][vizro.models.DatePicker], [`TimePicker`][vizro.models.TimePicker], [`DateTimePicker`][vizro.models.DateTimePicker] and [`Switch`][vizro.models.Switch]. For a **hierarchical** filter (`column` as a list), use [`Cascader`][vizro.models.Cascader] as in the [section above](#hierarchical-filters).
 
 You can explore and test all available selectors interactively on our [feature demo dashboard](https://vizro-demo-features.hf.space/selectors).
 
@@ -325,7 +325,7 @@ Below is an example where we only target one page component, and where we furthe
                 vm.Graph(figure=px.scatter(iris, x="petal_length", y="sepal_width", color="species")),
             ],
             controls=[
-                vm.Filter(column="petal_length",targets=["scatter_chart"], selector=vm.RangeSlider(step=1)),
+                vm.Filter(column="petal_length",targets=["scatter_chart"], selector=vm.Slider(range=True, step=1)),
             ],
         )
 
@@ -361,7 +361,8 @@ Below is an example where we only target one page component, and where we furthe
                   - scatter_chart
                 selector:
                   step: 1
-                  type: range_slider
+                  type: slider
+                  range: true
                 type: filter
             title: My first page
         ```

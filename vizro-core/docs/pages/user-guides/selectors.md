@@ -98,12 +98,11 @@ You can customize two predefined dropdown styles that can be customized using th
 
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
-- [`Slider`][vizro.models.Slider] based on [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider)
-- [`RangeSlider`][vizro.models.RangeSlider] based on [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider)
+- [`Slider`][vizro.models.Slider] (single value, or a range with `range=True`) based on [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) (or [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) when `range=True`)
 
 !!! note "Using float values and `step` with an integer value"
 
-    When configuring the [`Slider`][vizro.models.Slider] and the [`RangeSlider`][vizro.models.RangeSlider] with float values, and using `step` with an integer value, you may notice unexpected behavior, such as the drag value being outside its indicated marks. To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size as needed.
+    When configuring the [`Slider`][vizro.models.Slider] (in either single-value or `range=True` mode) with float values, and using `step` with an integer value, you may notice unexpected behavior, such as the drag value being outside its indicated marks. To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size as needed.
 
 ## Temporal selectors
 

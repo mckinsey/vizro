@@ -115,7 +115,9 @@ parameters_page = vm.Page(
             id=cnst.RANGE_SLIDER_PARAM_CONTROL_ID,
             show_in_url=True,
             targets=[f"{cnst.HISTOGRAM_GRAPH_ID}.range_x"],
-            selector=vm.RangeSlider(id=cnst.RANGE_SLIDER_PARAMETERS, min=4, max=8, step=1.0, title="Range X Histogram"),
+            selector=vm.Slider(
+                range=True, id=cnst.RANGE_SLIDER_PARAMETERS, min=4, max=8, step=1.0, title="Range X Histogram"
+            ),
         ),
     ],
 )

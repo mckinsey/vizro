@@ -87,7 +87,7 @@
         },
         "inputs": {
           "default": [],
-          "description": "List of inputs provided to the action function. Each input can be specified as\n            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.\n            \u2757Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](\n            deprecations.md#action-model-inputs-argument).",
+          "description": "List of inputs provided to the action function. Each input can be specified as\n            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.\n            \u2757Deprecated: `inputs` is deprecated and [will not exist in Vizro 1.0.0](\n            deprecations.md#action-model-inputs-argument).",
           "items": {
             "type": "string"
           },
@@ -2195,7 +2195,8 @@
     },
     "RangeSlider": {
       "additionalProperties": false,
-      "description": "Numeric multi-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md#numerical-selectors)",
+      "deprecated": true,
+      "description": "Deprecated numeric range selector. Use [`Slider`][vizro.models.Slider] with `range=True` instead.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md#numerical-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2266,6 +2267,9 @@
         "value": {
           "anyOf": [
             {
+              "type": "number"
+            },
+            {
               "items": {
                 "type": "number"
               },
@@ -2278,7 +2282,14 @@
             }
           ],
           "default": null,
+          "description": "Default value: a single number, or a `[start, end]` pair when `range=True`.",
           "title": "Value"
+        },
+        "range": {
+          "default": true,
+          "description": "Boolean flag for displaying range slider.",
+          "title": "Range",
+          "type": "boolean"
         },
         "title": {
           "default": "",
@@ -2335,7 +2346,7 @@
     },
     "Slider": {
       "additionalProperties": false,
-      "description": "Numeric single-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md#numerical-selectors)",
+      "description": "Numeric single-option or range selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Set `range=True` for a two-handle range selector.\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md#numerical-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2409,12 +2420,26 @@
               "type": "number"
             },
             {
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2,
+              "type": "array"
+            },
+            {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Default value for slider.",
+          "description": "Default value: a single number, or a `[start, end]` pair when `range=True`.",
           "title": "Value"
+        },
+        "range": {
+          "default": false,
+          "description": "Whether to display a two-handle range slider. When True, `value` is a `[start, end]` pair.",
+          "title": "Range",
+          "type": "boolean"
         },
         "title": {
           "default": "",

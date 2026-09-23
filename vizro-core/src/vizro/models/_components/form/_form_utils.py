@@ -111,6 +111,22 @@ def validate_step(step, info: ValidationInfo):
     return step
 
 
+def validate_slider_range(range, info: ValidationInfo):
+    """Ensures a slider's `value` shape matches its `range` flag.
+
+    Mirrors `validate_date_time_range_picker` but is safe for numeric values: a single value is a bare number
+    (not a list), while a range value is a `[start, end]` list.
+    """
+    value = info.data.get("value")
+    if range and value is not None and not isinstance(value, list):
+        raise ValueError("Please set range=False if providing a single value.")
+
+    if not range and isinstance(value, list):
+        raise ValueError("Please set range=True if providing a list of values.")
+
+    return range
+
+
 def validate_date_time_range_picker(range, info: ValidationInfo):
     if (
         range

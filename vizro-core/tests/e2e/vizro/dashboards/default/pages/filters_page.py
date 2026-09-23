@@ -105,7 +105,7 @@ filters_page = vm.Page(
         vm.Filter(
             column="sepal_length",
             targets=[cnst.SCATTER_GRAPH_ID, cnst.BOX_GRAPH_ID],
-            selector=vm.RangeSlider(id=cnst.RANGE_SLIDER_FILTER_FILTERS_PAGE, step=1.0),
+            selector=vm.Slider(range=True, id=cnst.RANGE_SLIDER_FILTER_FILTERS_PAGE, step=1.0),
         ),
     ],
 )

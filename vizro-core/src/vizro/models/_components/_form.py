@@ -6,7 +6,7 @@ from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field, conlist
 
 from vizro.models import VizroBaseModel
-from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
+from vizro.models._components.form import Checklist, Dropdown, RadioItems, Slider
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
 from vizro.models.types import LayoutType, _FormComponentType
@@ -23,7 +23,7 @@ class Form(VizroBaseModel):
     @_log_call
     def pre_build(self):
         for component in self.components:
-            if isinstance(component, (Slider, RangeSlider)):
+            if isinstance(component, Slider):
                 if component.min is None or component.max is None:
                     raise TypeError(f"{component.type} requires the arguments 'min' and 'max' when used within Form.")
 

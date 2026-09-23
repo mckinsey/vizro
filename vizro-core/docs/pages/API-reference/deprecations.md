@@ -84,3 +84,19 @@ controls = [vm.Filter(id="my_filter", targets=["target_chart"], column="species"
 ```
 
 See the [user guide on how to interact with graphs and tables](../user-guides/graph-table-actions.md) for more information.
+
+## `RangeSlider` model
+
+The [`RangeSlider`][vizro.models.RangeSlider] model is deprecated. Use [`Slider`][vizro.models.Slider] with `range=True`, which is functionally identical.
+
+```python
+# Before:
+vm.RangeSlider(min=0, max=10)
+
+# After:
+vm.Slider(min=0, max=10, range=True)
+```
+
+In YAML or JSON configuration, replace `type: range_slider` with `type: slider` and add `range: true`.
+
+See the [user guide on selectors](../user-guides/selectors.md#numerical-selectors) for more information.

@@ -46,7 +46,9 @@ ag_grid_page = vm.Page(
         vm.Filter(
             column="pop",
             targets=[cnst.TABLE_AG_GRID_ID],
-            selector=vm.RangeSlider(id=cnst.RANGESLIDER_AGGRID_FILTER, step=1000000.0, min=1000000, max=10000000),
+            selector=vm.Slider(
+                range=True, id=cnst.RANGESLIDER_AGGRID_FILTER, step=1000000.0, min=1000000, max=10000000
+            ),
         ),
     ],
 )

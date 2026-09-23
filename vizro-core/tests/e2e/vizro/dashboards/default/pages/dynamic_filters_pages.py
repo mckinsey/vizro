@@ -101,7 +101,7 @@ dynamic_filters_numerical_page = vm.Page(
         ),
         vm.Filter(
             column="sepal_length",
-            selector=vm.RangeSlider(id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, step=0.5),
+            selector=vm.Slider(range=True, id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, step=0.5),
         ),
     ],
 )

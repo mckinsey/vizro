@@ -183,7 +183,7 @@ class TestPreBuildMethod:
         "test_input",
         [
             vm.Slider(),
-            vm.RangeSlider(),
+            vm.Slider(range=True),
             vm.DatePicker(),
             vm.DateTimePicker(),
             vm.DateTimePicker(range=False),

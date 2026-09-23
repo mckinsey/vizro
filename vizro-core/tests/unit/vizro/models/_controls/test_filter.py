@@ -1108,7 +1108,7 @@ class TestFilterCall:
         filter = vm.Filter(
             column="column_numerical",
             targets=["column_numerical_exists_1", "column_numerical_exists_2"],
-            selector=vm.RangeSlider(id="test_selector_id"),
+            selector=vm.Slider(range=True, id="test_selector_id"),
         )
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -1358,7 +1358,7 @@ class TestFilterPreBuildMethod:
     @pytest.mark.parametrize(
         "filtered_column, expected_selector",
         [
-            ("column_numerical", vm.RangeSlider),
+            ("column_numerical", vm.Slider),
             ("column_categorical", vm.Dropdown),
             ("column_boolean", vm.Switch),
             ("column_date", vm.DatePicker),
@@ -1372,6 +1372,14 @@ class TestFilterPreBuildMethod:
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert isinstance(filter.selector, expected_selector)
+
+    def test_numerical_default_selector_is_range(self, managers_column_only_exists_in_some):
+        # Numerical columns default to a range slider, now Slider(range=True) since RangeSlider is deprecated.
+        filter = vm.Filter(column="column_numerical")
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert isinstance(filter.selector, vm.Slider)
+        assert filter.selector.range is True
 
     @pytest.mark.parametrize("filtered_column", ["country", "year", "lifeExp"])
     def test_selector_specific_selector(self, filtered_column, managers_one_page_two_graphs):
@@ -1390,7 +1398,6 @@ class TestFilterPreBuildMethod:
             ("column_categorical", vm.Checklist),
             # numerical column - numerical + categorical selectors
             ("column_numerical", vm.Slider),
-            ("column_numerical", vm.RangeSlider),
             ("column_numerical", vm.Dropdown),
             ("column_numerical", vm.RadioItems),
             ("column_numerical", vm.Checklist),
@@ -1429,7 +1436,6 @@ class TestFilterPreBuildMethod:
         [
             # categorical column
             ("column_categorical", vm.Slider, "Slider", "categorical"),
-            ("column_categorical", vm.RangeSlider, "RangeSlider", "categorical"),
             ("column_categorical", vm.DatePicker, "DatePicker", "categorical"),
             ("column_categorical", vm.TimePicker, "TimePicker", "categorical"),
             # Also disallowed for categorical binary columns such as Off/On etc.
@@ -1441,23 +1447,19 @@ class TestFilterPreBuildMethod:
             ("column_numerical", vm.DateTimePicker, "DateTimePicker", "numerical"),
             # boolean column
             ("column_boolean", vm.Slider, "Slider", "boolean"),
-            ("column_boolean", vm.RangeSlider, "RangeSlider", "boolean"),
             ("column_boolean", vm.DatePicker, "DatePicker", "boolean"),
             ("column_boolean", vm.TimePicker, "TimePicker", "boolean"),
             ("column_boolean", vm.DateTimePicker, "DateTimePicker", "boolean"),
             # date column
             ("column_date", vm.Slider, "Slider", "date"),
-            ("column_date", vm.RangeSlider, "RangeSlider", "date"),
             ("column_date", vm.Switch, "Switch", "date"),
             ("column_date", vm.TimePicker, "TimePicker", "date"),
             ("column_date", vm.DateTimePicker, "DateTimePicker", "date"),
             # datetime column
             ("column_datetime", vm.Slider, "Slider", "datetime"),
-            ("column_datetime", vm.RangeSlider, "RangeSlider", "datetime"),
             ("column_datetime", vm.Switch, "Switch", "datetime"),
             # time column
             ("column_time", vm.Slider, "Slider", "time"),
-            ("column_time", vm.RangeSlider, "RangeSlider", "time"),
             ("column_time", vm.Switch, "Switch", "time"),
             ("column_time", vm.DatePicker, "DatePicker", "time"),
             ("column_time", vm.DateTimePicker, "DateTimePicker", "time"),
@@ -1518,7 +1520,7 @@ class TestFilterPreBuildMethod:
             ("continent", vm.Dropdown()),
             ("continent", vm.RadioItems()),
             ("pop", vm.Slider()),
-            ("pop", vm.RangeSlider()),
+            ("pop", vm.Slider(range=True)),
             ("year", vm.DatePicker()),
             (["continent", "country"], vm.Cascader()),
         ],
@@ -1544,9 +1546,9 @@ class TestFilterPreBuildMethod:
             ("pop", vm.Slider(min=10**6)),
             ("pop", vm.Slider(max=10**7)),
             ("pop", vm.Slider(min=10**6, max=10**7)),
-            ("pop", vm.RangeSlider(min=10**6)),
-            ("pop", vm.RangeSlider(max=10**7)),
-            ("pop", vm.RangeSlider(min=10**6, max=10**7)),
+            ("pop", vm.Slider(range=True, min=10**6)),
+            ("pop", vm.Slider(range=True, max=10**7)),
+            ("pop", vm.Slider(range=True, min=10**6, max=10**7)),
             ("year", vm.DatePicker(min="2002-01-01")),
             ("year", vm.DatePicker(max="2007-01-01")),
             ("year", vm.DatePicker(min="2002-01-01", max="2007-01-01")),
@@ -1562,7 +1564,7 @@ class TestFilterPreBuildMethod:
         assert not filter._dynamic
         assert not filter.selector._dynamic
 
-    @pytest.mark.parametrize("selector", [vm.Slider, vm.RangeSlider])
+    @pytest.mark.parametrize("selector", [vm.Slider, functools.partial(vm.Slider, range=True)])
     def test_numerical_min_max_default(self, selector, gapminder, managers_one_page_two_graphs):
         filter = vm.Filter(column="lifeExp", selector=selector())
         model_manager["test_page"].controls = [filter]
@@ -1584,7 +1586,7 @@ class TestFilterPreBuildMethod:
         assert filter.selector.min == gapminder.year.min().to_pydatetime().date()
         assert filter.selector.max == gapminder.year.max().to_pydatetime().date()
 
-    @pytest.mark.parametrize("selector", [vm.Slider, vm.RangeSlider])
+    @pytest.mark.parametrize("selector", [vm.Slider, functools.partial(vm.Slider, range=True)])
     @pytest.mark.parametrize("min, max", [(3, 5), (0, 5), (-5, 0)])
     def test_numerical_min_max_specific(self, selector, min, max, managers_one_page_two_graphs):
         filter = vm.Filter(column="lifeExp", selector=selector(min=min, max=max))
@@ -1738,7 +1740,7 @@ class TestFilterPreBuildMethod:
     # This is difficult to fix fully by un-importing vizro.models though, since we use `import vizro.models as vm` - see
     # https://stackoverflow.com/questions/437589/how-do-i-unload-reload-a-python-module.
     def test_numerical_custom_selector(self, gapminder, managers_one_page_two_graphs):
-        class RangeSliderNonCross(vm.RangeSlider):
+        class RangeSliderNonCross(vm.Slider):
             """Custom numerical multi-selector `RangeSliderNonCross` to be provided to `Filter`."""
 
             type: Literal["range_slider_non_cross"] = "range_slider_non_cross"
@@ -1752,7 +1754,7 @@ class TestFilterPreBuildMethod:
         selector = RangeSliderNonCross
         vm.Filter.add_type("selector", selector)
 
-        filter = vm.Filter(column=filtered_column, selector=selector())
+        filter = vm.Filter(column=filtered_column, selector=selector(range=True))
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
@@ -2325,7 +2327,7 @@ class TestFilterBuild:
             ("column_categorical", vm.Dropdown(multi=False)),
             ("column_categorical", vm.RadioItems()),
             ("column_numerical", vm.Slider()),
-            ("column_numerical", vm.RangeSlider()),
+            ("column_numerical", vm.Slider(range=True)),
             ("column_boolean", vm.Switch()),
             ("column_boolean", vm.Switch(value=True)),
             ("column_date", vm.DatePicker()),
@@ -2364,7 +2366,7 @@ class TestFilterBuild:
             ("continent", vm.Dropdown(multi=False)),
             ("continent", vm.RadioItems()),
             ("pop", vm.Slider()),
-            ("pop", vm.RangeSlider()),
+            ("pop", vm.Slider(range=True)),
             ("year", vm.DatePicker()),
             ("year", vm.DatePicker(range=False)),
             (["continent", "country"], vm.Cascader()),

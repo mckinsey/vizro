@@ -9,6 +9,15 @@ from pydantic import ValidationError
 
 import vizro.models as vm
 
+# RangeSlider is deprecated in favor of Slider(range=True). Silence the warning for the legacy behavior tests below
+# (test_range_slider_deprecated asserts the warning itself).
+pytestmark = pytest.mark.filterwarnings("ignore:`RangeSlider` is deprecated:FutureWarning")
+
+
+def test_range_slider_deprecated():
+    with pytest.warns(FutureWarning, match="`RangeSlider` is deprecated"):
+        vm.RangeSlider()
+
 
 @pytest.fixture()
 def expected_range_slider():
@@ -191,9 +200,9 @@ class TestRangeSliderInstantiation:
         [
             ([0], "List should have at least 2 items after validation"),
             ([], "List should have at least 2 items after validation"),
-            (2, "Input should be a valid list"),
+            (2, "Please set range=False if providing a single value."),
             ([0, None], "Input should be a valid number"),
-            ([None, None], "2 validation errors for RangeSlider"),
+            ([None, None], "Input should be a valid number"),
             ([-1, 11], "Please provide a valid value between the min and max value."),
             ([1, 2, 3], "List should have at most 2 items after validation, not 3"),
         ],

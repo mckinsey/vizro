@@ -23,7 +23,7 @@ from vizro.models._components.form import (
     DatePicker,
     DateTimePicker,
     Dropdown,
-    RangeSlider,
+    Slider,
     Switch,
     TimePicker,
 )
@@ -49,8 +49,10 @@ from vizro.models._controls._controls_utils import (
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
 
-DEFAULT_SELECTORS = {
-    "numerical": RangeSlider,
+DEFAULT_SELECTORS: dict[str, Callable[..., SelectorType]] = {
+    # A numerical column defaults to a range slider, now expressed as Slider(range=True) rather than the
+    # deprecated RangeSlider so that auto-selected filters do not emit a deprecation warning.
+    "numerical": functools.partial(Slider, range=True),
     "categorical": Dropdown,
     "date": DatePicker,
     "datetime": DatePicker,
@@ -613,9 +615,7 @@ class Filter(VizroBaseModel):
         # locals) so the filtering logic can always be reapplied when the targets are refreshed, independently of
         # the selector's actions. Note self.column is deliberately left untouched: it holds the user-provided config
         # and is relied on elsewhere (e.g. _validate_column_type, _get_options) to detect hierarchical filters.
-        if isinstance(self.selector, RangeSlider) or (
-            isinstance(self.selector, (DatePicker, TimePicker, DateTimePicker)) and self.selector.range
-        ):
+        if isinstance(self.selector, (Slider, DatePicker, TimePicker, DateTimePicker)) and self.selector.range:
             self._filter_function = _filter_between
             self._filter_column = self._single_filter_column
         elif _is_hierarchical_selector(self.selector) and self.selector.full_path:

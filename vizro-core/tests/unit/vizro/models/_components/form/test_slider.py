@@ -271,3 +271,37 @@ class TestSliderGetValueFromTrigger:
         # raw trigger value unchanged (this is what powers syncing controls that target another control).
         slider = vm.Slider()
         assert slider._get_value_from_trigger(value="ignored", trigger=trigger) == trigger
+
+
+class TestSliderRange:
+    """Tests for Slider(range=True), which replaces the deprecated RangeSlider."""
+
+    def test_range_defaults_to_false(self):
+        assert vm.Slider().range is False
+
+    def test_range_true_builds_range_slider(self):
+        slider = vm.Slider(id="s", min=0, max=10, range=True)
+        component = slider.build().children[1]
+        assert isinstance(component, dcc.RangeSlider)
+        assert component.value == [0, 10]
+
+    def test_range_false_builds_slider(self):
+        component = vm.Slider(id="s", min=0, max=10).build().children[1]
+        assert isinstance(component, dcc.Slider)
+        assert not isinstance(component, dcc.RangeSlider)
+
+    def test_range_true_with_list_value(self):
+        assert vm.Slider(min=0, max=10, value=[2, 8], range=True).value == [2, 8]
+
+    def test_range_true_inner_component_properties(self):
+        # dcc.RangeSlider exposes extra properties (allowCross, count, pushable) that must be forwardable.
+        assert "allowCross" in vm.Slider(range=True)._inner_component_properties
+        assert "allowCross" not in vm.Slider()._inner_component_properties
+
+    def test_list_value_without_range_raises(self):
+        with pytest.raises(ValidationError, match="Please set range=True if providing a list of values"):
+            vm.Slider(min=0, max=10, value=[2, 8])
+
+    def test_single_value_with_range_raises(self):
+        with pytest.raises(ValidationError, match="Please set range=False if providing a single value"):
+            vm.Slider(min=0, max=10, value=5, range=True)

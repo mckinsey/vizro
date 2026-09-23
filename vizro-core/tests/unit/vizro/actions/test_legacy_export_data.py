@@ -338,7 +338,7 @@ class TestExportData:
         self, ctx_export_data, target_data_filter_and_filter_interaction, target_data_filtered_pop
     ):
         # Creating and adding a Filter object to the existing Page
-        pop_filter = vm.Filter(column="pop", selector=vm.RangeSlider(id="pop_filter"))
+        pop_filter = vm.Filter(column="pop", selector=vm.Slider(range=True, id="pop_filter"))
         model_manager["test_page"].controls = [pop_filter]
         # Adds a default _filter Action to the filter selector objects
         pop_filter.pre_build()
@@ -392,7 +392,7 @@ class TestExportData:
         self, ctx_export_data, target_data_filter_and_filter_interaction, target_data_filtered_pop
     ):
         # Creating and adding a Filter object to the existing Page
-        pop_filter = vm.Filter(column="pop", selector=vm.RangeSlider(id="pop_filter"))
+        pop_filter = vm.Filter(column="pop", selector=vm.Slider(range=True, id="pop_filter"))
         model_manager["test_page"].controls = [pop_filter]
         # Adds a default _filter Action to the filter selector objects
         pop_filter.pre_build()
@@ -457,7 +457,7 @@ class TestExportData:
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
 
         # Creating and adding a Filter object to the existing Page
-        pop_filter = vm.Filter(column="pop", selector=vm.RangeSlider(id="pop_filter"))
+        pop_filter = vm.Filter(column="pop", selector=vm.Slider(range=True, id="pop_filter"))
         model_manager["test_page"].controls = [pop_filter]
         # Adds a default _filter Action to the filter selector objects
         pop_filter.pre_build()

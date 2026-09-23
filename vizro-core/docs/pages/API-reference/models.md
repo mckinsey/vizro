@@ -61,8 +61,8 @@ Selectors are the input widgets used inside `Filter.selector` and `Parameter.sel
 | [`Checklist`][vizro.models.Checklist]   | Multi-select checkbox group.                                                         |
 | [`RadioItems`][vizro.models.RadioItems] | Single-select radio-button group.                                                    |
 | [`Switch`][vizro.models.Switch]         | Boolean toggle (default for boolean data).                                           |
-| [`Slider`][vizro.models.Slider]         | Single numeric slider.                                                               |
-| [`RangeSlider`][vizro.models.RangeSlider] | Numeric range slider (default for numerical data).                                   |
+| [`Slider`][vizro.models.Slider]         | Numeric slider: a single value, or a range with `range=True` (default for numerical data). |
+| [`RangeSlider`][vizro.models.RangeSlider] | Deprecated — use [`Slider`][vizro.models.Slider] with `range=True`.                   |
 | [`DatePicker`][vizro.models.DatePicker] | Date or date-range picker (default for temporal data).                               |
 | [`TimePicker`][vizro.models.TimePicker] | Time or time-range picker.                                                           |
 | [`DateTimePicker`][vizro.models.DateTimePicker] | Combined date-and-time (or date-and-time-range) picker for `datetime` columns.       |
