@@ -19,6 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 ### Added
 
 - Add optional `units` argument to `kpi_card` and `kpi_card_reference` to display a unit label (for example `"%"` or `"kg"`) after the value. ([#1854](https://github.com/mckinsey/vizro/pull/1854))
+- Add optional `size` argument to `kpi_card` and `kpi_card_reference` to control the card's size (`"compact"`, `"default"` or `"large"`). ([#1854](https://github.com/mckinsey/vizro/pull/1854))
 
 <!--
 ### Changed

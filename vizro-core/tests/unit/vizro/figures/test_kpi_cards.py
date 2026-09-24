@@ -78,6 +78,10 @@ class TestKPICard:
         with pytest.raises(KeyError, match="reference"):
             kpi_card(data_frame=df, value_column="Actual", value_format="{reference.2f}}")()
 
+    def test_invalid_size(self):
+        with pytest.raises(ValueError, match=r"Invalid size 'huge'\. size must be one of"):
+            kpi_card(data_frame=df, value_column="Actual", size="huge")()
+
 
 class TestKPICardReference:
     def test_kpi_card_reference_mandatory_delta_negative(self):

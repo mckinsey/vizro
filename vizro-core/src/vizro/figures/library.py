@@ -15,6 +15,8 @@ _SIZE_CLASSES = {"compact": "card-kpi-compact", "default": "", "large": "card-kp
 
 
 def _kpi_card_class_name(size: Literal["compact", "default", "large"]) -> str:
+    if size not in _SIZE_CLASSES:
+        raise ValueError(f"Invalid size {size!r}. size must be one of {list(_SIZE_CLASSES)}.")
     return f"card-kpi {_SIZE_CLASSES[size]}".strip()
 
 
@@ -107,8 +109,8 @@ def kpi_card_reference(  # noqa: PLR0913
     """Creates a styled KPI (Key Performance Indicator) card displaying a value in comparison to a reference value.
 
     !!! warning
-        The format string provided to `value_format` and `reference_format` is evaluated, so ensure that
-        only trusted user input is provided to prevent potential security risks.
+        The format string provided to `value_format`, `delta_format` and `reference_format` is evaluated, so ensure
+        that only trusted user input is provided to prevent potential security risks.
 
     Args:
         data_frame: DataFrame containing the data.
