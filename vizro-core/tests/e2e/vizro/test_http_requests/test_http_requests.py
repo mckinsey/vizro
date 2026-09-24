@@ -565,6 +565,60 @@ def test_apply_controls_on_button_click(page, http_requests_paths):
 
 
 @http_requests
+def test_sync_hidden_parameter(page, http_requests_paths):
+    """Filter sync to hidden parameter refreshes the graph on selection."""
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.SYNC_HIDDEN_PARAMETER_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # select filter (3 http: `set_control` and `update_targets` from Filter + `update_targets` from Parameter)
+    page.get_by_text("versicolor").nth(0).click()
+    check_http_requests_count(page, http_requests_paths, 5)
+
+    check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_sync_cross_page(page, http_requests_paths):
+    """Cross-page filter sync applies on target page open without navigation from source."""
+    # open the source page (2 http)
+    page.locator(f"a[href='/{cnst.SYNC_CROSS_PAGE_SOURCE_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # select filter on source page (2 http)
+    page.get_by_text("versicolor").nth(0).click()
+    check_http_requests_count(page, http_requests_paths, 4)
+
+    # open the target page (2 http)
+    page.locator(f"a[href='/{cnst.SYNC_CROSS_PAGE_TARGET_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 6)
+
+    check_http_requests_count(page, http_requests_paths, 6, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_sync_drill_through_same_page_and_target(page, http_requests_paths):
+    """Drill-through with same-page target stays on source; target page loads on navigation."""
+    # open the source page (2 http)
+    page.locator(f"a[href='/{cnst.SYNC_DRILL_THROUGH_SOURCE_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click scatter point: same-page control live, cross-page value stored (2 http)
+    element = page.locator(
+        f"div[id='{cnst.SYNC_DRILL_THROUGH_SOURCE_GRAPH_ID}'] path[class='point plotly-customdata']"
+    ).nth(20)
+    box = element.bounding_box()
+    page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    check_http_requests_count(page, http_requests_paths, 4)
+
+    # open the target page (2 http)
+    page.locator(f"a[href='/{cnst.SYNC_DRILL_THROUGH_TARGET_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 6)
+
+    check_http_requests_count(page, http_requests_paths, 6, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
 def test_cascader_path_multi_filters_ag_grid(page, http_requests_paths):
     """Page with multi path-mode Cascader filter triggers one HTTP request on selection."""
     page.locator(f"a[href='{cnst.CASCADER_PATH_PAGE_PATH}']").click()

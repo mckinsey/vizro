@@ -72,6 +72,13 @@ from pages.set_control_non_categorical_controls_page import (
     set_control_non_categorical_timepicker_graph,
 )
 from pages.switch_control_page import switch_control_page
+from pages.sync_controls_pages import (
+    sync_cross_page_source_page,
+    sync_cross_page_target_page,
+    sync_drill_through_source_page,
+    sync_drill_through_target_page,
+    sync_hidden_parameter_page,
+)
 from pages.table_interactions_page import table_interactions_page
 from pages.table_page import table_page
 from pages.timepicker_pages import timepicker_parameter, timepicker_range, timepicker_single
@@ -149,6 +156,11 @@ dashboard = vm.Dashboard(
         datetimepicker_range_url,
         cascader_leaf_page,
         cascader_path_page,
+        sync_hidden_parameter_page,
+        sync_cross_page_source_page,
+        sync_cross_page_target_page,
+        sync_drill_through_source_page,
+        sync_drill_through_target_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -180,6 +192,13 @@ dashboard = vm.Dashboard(
             cnst.CASCADER_ACCORDION: [
                 cnst.CASCADER_LEAF_PAGE,
                 cnst.CASCADER_PATH_PAGE,
+            ],
+            cnst.SYNC_CONTROLS_ACCORDION: [
+                cnst.SYNC_HIDDEN_PARAMETER_PAGE,
+                cnst.SYNC_CROSS_PAGE_SOURCE_PAGE,
+                cnst.SYNC_CROSS_PAGE_TARGET_PAGE,
+                cnst.SYNC_DRILL_THROUGH_SOURCE_PAGE,
+                cnst.SYNC_DRILL_THROUGH_TARGET_PAGE,
             ],
             cnst.AG_GRID_ACCORDION: [
                 cnst.TABLE_PAGE,

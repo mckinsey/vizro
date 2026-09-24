@@ -290,7 +290,7 @@ Provide a valid import path for these in your dashboard configuration."""
         )
         # Log control resets. Registered once globally (not per page) since reset-button and vizro_logs_store are
         # shared ids. Matches the action log format ("=====" wrapping and HH:MM:SS.mmm timestamp) for consistency;
-        # any on-page-load actions the reset triggers afterwards produce their own "=====" entries. optional=True
+        # the reset-controls refresh action the button triggers afterwards produces its own "=====" entry. optional=True
         # no-ops this when there are no controls (reset-button absent). A plain array assignment is used because
         # clientside callbacks can't use Patch();
         clientside_callback(
