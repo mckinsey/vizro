@@ -29,6 +29,9 @@ class ColorManager:
 
     def __get_color(self, category):
         if category not in self.__category_colors:
+            # Without the caller's lock, two concurrent requests could both see a new category as
+            # missing here and both assign it a color, advancing __palette_cycle twice for a single
+            # category and/or letting the second assignment silently overwrite the first.
             self.__category_colors[category] = next(self.__palette_cycle)
         return self.__category_colors[category]
 
