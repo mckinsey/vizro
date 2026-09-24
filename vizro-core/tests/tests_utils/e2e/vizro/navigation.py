@@ -362,8 +362,19 @@ def select_slider_value_playwright(page, elem_id, *, min_value=None, max_value=N
 
 def select_date_picker_range_playwright(page, elem_id, start_iso_date, end_iso_date):
     """Select a date range on a range DatePicker."""
-    _select_date_picker_input_date_playwright(page, f"{elem_id}-start", start_iso_date)
-    _select_date_picker_input_date_playwright(page, f"{elem_id}-end", end_iso_date)
+    start = datetime.strptime(start_iso_date, "%Y-%m-%d")
+    end = datetime.strptime(end_iso_date, "%Y-%m-%d")
+    page.locator(f'button[id="{elem_id}"]').click()
+    page.wait_for_selector('div[data-calendar="true"]')
+    page.wait_for_timeout(300)
+    _navigate_calendar_to_month_playwright(page, start.year, start.month)
+    _click_displayed_calendar_control_playwright(
+        page, f'button[aria-label="{_iso_date_to_aria_label(start_iso_date)}"]'
+    )
+    page.wait_for_timeout(200)
+    _navigate_calendar_to_month_playwright(page, end.year, end.month)
+    _click_displayed_calendar_control_playwright(page, f'button[aria-label="{_iso_date_to_aria_label(end_iso_date)}"]')
+    page.wait_for_timeout(200)
 
 
 def select_slider_value(driver, elem_id, min_value=None, max_value=None):

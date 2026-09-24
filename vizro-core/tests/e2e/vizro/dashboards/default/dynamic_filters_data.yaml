@@ -8,8 +8,8 @@ japan: 0
 max: 7
 min: 6
 setosa: 5
+versicolor: 0
+virginica: 0
 time_max: "18:00:00"
 time_min: 08:00:00
 united_states: 1
-versicolor: 10
-virginica: 15
