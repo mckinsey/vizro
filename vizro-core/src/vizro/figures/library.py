@@ -12,8 +12,6 @@ from vizro.models._models_utils import validate_icon
 
 __all__ = ["kpi_card", "kpi_card_reference", "kpi_sparkline_card"]
 
-_TREND_COLORS = {"color-pos": "var(--bs-success)", "color-neg": "var(--bs-danger)", "": "var(--bs-gray)"}
-
 
 def kpi_card(
     data_frame: pd.DataFrame,
@@ -183,7 +181,7 @@ def kpi_sparkline_card(  # noqa: PLR0913
     chart_type: Literal["area", "line"] = "area",
     reverse_color: bool = False,
 ) -> dbc.Card:
-    """Creates a styled KPI (Key Performance Indicator) card displaying a value and its trend as a sparkline.
+    """Creates a styled KPI (Key Performance Indicator) card displaying a value, a trend indicator icon and a sparkline.
 
     !!! warning
         The format string provided to `value_format` is evaluated, so ensure that only trusted
@@ -193,8 +191,8 @@ def kpi_sparkline_card(  # noqa: PLR0913
         data_frame: DataFrame containing the data.
         value_column: Column name of the value to be shown.
         x_column: Column name used to order the data chronologically/sequentially. This determines both the
-            x-axis of the sparkline and the trend direction (calculated from the first and last values of
-            `value_column` once sorted by `x_column`).
+            x-axis of the sparkline and the trend direction shown by the indicator icon (calculated from the
+            first and last values of `value_column` once sorted by `x_column`).
         value_format: Format string to be applied to the value. It must be a
             [valid Python format](https://docs.python.org/3/library/string.html#format-specification-mini-language)
             string where any of the below placeholders can be used.
@@ -219,14 +217,16 @@ def kpi_sparkline_card(  # noqa: PLR0913
             `value_column`.
         icon: Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons)
             to be displayed on the left side of the KPI title. If not provided, no icon is displayed.
-        chart_type: Type of sparkline chart to display, either `"area"` or `"line"`. Defaults to `"area"`.
-        reverse_color: If `False`, an increasing trend will be colored positively (for example, blue) and a
-            decreasing trend negatively (for example, red). If `True`, the colors will be inverted: an increasing
-            trend will be colored negatively (for example, red) and a decreasing trend positively (for example,
-            blue).
+        chart_type: Type of sparkline chart to display, either `"area"` or `"line"`. Defaults to `"area"`. The
+            sparkline itself is always rendered in the default Vizro chart color, regardless of trend direction.
+        reverse_color: If `False`, an increasing trend will be indicated with a positively colored icon (for
+            example, blue) and a decreasing trend with a negatively colored icon (for example, red). If `True`,
+            the colors will be inverted: an increasing trend will be indicated negatively (for example, red) and
+            a decreasing trend positively (for example, blue).
 
     Returns:
-         A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value and a sparkline chart.
+         A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value, a trend indicator icon
+         and a sparkline chart.
 
     Example:
         ```python
@@ -244,7 +244,8 @@ def kpi_sparkline_card(  # noqa: PLR0913
     delta = trend_values.iloc[-1] - trend_values.iloc[0] if len(trend_values) > 1 else 0
     delta_relative = delta / trend_values.iloc[0] if len(trend_values) > 1 and trend_values.iloc[0] else np.nan
     pos_color, neg_color = ("color-neg", "color-pos") if reverse_color else ("color-pos", "color-neg")
-    footer_class = pos_color if delta > 0 else neg_color if delta < 0 else ""
+    delta_class = pos_color if delta > 0 else neg_color if delta < 0 else ""
+    delta_icon = "arrow_circle_up" if delta > 0 else "arrow_circle_down" if delta < 0 else "arrow_circle_right"
 
     header = dbc.CardHeader(
         [
@@ -252,7 +253,12 @@ def kpi_sparkline_card(  # noqa: PLR0913
             html.H4(title, className="card-kpi-title"),
         ]
     )
-    body = dbc.CardBody(value_format.format(value=value, delta=delta, delta_relative=delta_relative))
+    body = dbc.CardBody(
+        [
+            html.Span(delta_icon, className=f"material-symbols-outlined {delta_class}".strip()),
+            html.Span(value_format.format(value=value, delta=delta, delta_relative=delta_relative)),
+        ]
+    )
 
     sparkline_figure = go.Figure(
         go.Scatter(
@@ -260,7 +266,6 @@ def kpi_sparkline_card(  # noqa: PLR0913
             y=trend_values,
             mode="lines",
             fill="tozeroy" if chart_type == "area" else None,
-            line={"color": _TREND_COLORS[footer_class]},
             hovertemplate="%{x}<br>%{y}<extra></extra>",
         )
     )
@@ -277,7 +282,6 @@ def kpi_sparkline_card(  # noqa: PLR0913
             figure=sparkline_figure,
             config={"displayModeBar": False},
             className="card-kpi-sparkline-graph",
-        ),
-        class_name=footer_class,
+        )
     )
     return dbc.Card([header, body, footer], class_name="card-kpi card-kpi-sparkline")

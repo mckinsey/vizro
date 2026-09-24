@@ -125,7 +125,7 @@ A KPI card is a dynamic card that can display a single value, but optionally, ca
 
 - [`kpi_card_with_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_reference): A KPI card that shows a single value and a delta comparison to a reference value found by performing an aggregation function (by default, `sum`) over the specified columns. Required arguments are `data_frame`, `value_column` and `reference_column`.
 
-- [`kpi_sparkline_card`](../API-reference/figure-callables.md#vizro.figures.kpi_sparkline_card): A KPI card that shows a single value found by performing an aggregation function (by default, `sum`) over a specified column, together with a trend sparkline chart colored by whether the underlying series is increasing or decreasing. Required arguments are `data_frame`, `value_column` and `x_column`.
+- [`kpi_sparkline_card`](../API-reference/figure-callables.md#vizro.figures.kpi_sparkline_card): A KPI card that shows a single value found by performing an aggregation function (by default, `sum`) over a specified column, together with a trend indicator icon and a sparkline chart of the underlying series. Required arguments are `data_frame`, `value_column` and `x_column`.
 
 As described in the [API reference](../API-reference/figure-callables.md) and illustrated in the below example, these functions have several arguments to customize your KPI cards. If you require a level of customization that cannot be done with the built-in functions then you can create a [custom figure](custom-figures.md).
 
@@ -310,7 +310,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
 
 ### KPI sparkline cards
 
-[`kpi_sparkline_card`](../API-reference/figure-callables.md#vizro.figures.kpi_sparkline_card) extends `kpi_card` with a small trend chart (a "sparkline") in the footer of the card, plotted from `value_column` ordered by `x_column`. The sparkline is colored to indicate whether the series is trending up or down, based on comparing the first and last values once sorted by `x_column`. You can:
+[`kpi_sparkline_card`](../API-reference/figure-callables.md#vizro.figures.kpi_sparkline_card) extends `kpi_card` with a trend indicator icon next to the value and a small trend chart (a "sparkline") in the footer of the card, plotted from `value_column` ordered by `x_column`. The icon indicates whether the series is trending up or down, based on comparing the first and last values once sorted by `x_column`. The sparkline itself is always rendered in the default Vizro chart color, regardless of trend direction. You can:
 
 - switch between a filled area chart and a plain line with `chart_type` (`"area"` by default, or `"line"`)
 - invert which direction counts as positive with `reverse_color`, exactly as for `kpi_card_reference`

@@ -19,7 +19,7 @@ df = pd.DataFrame(
 )
 
 
-def _expected_sparkline_figure(value_column, chart_type, color):
+def _expected_sparkline_figure(value_column, chart_type):
     # Derive x/y from the module-level df (sorted by Date) rather than hardcoding Python lists, so the resulting
     # numpy arrays have the same dtype as the ones produced inside kpi_sparkline_card and thus serialize identically
     # (Plotly encodes numpy-array traces as compact binary data, which differs from plain Python list encoding).
@@ -30,7 +30,6 @@ def _expected_sparkline_figure(value_column, chart_type, color):
             y=trend_df[value_column],
             mode="lines",
             fill="tozeroy" if chart_type == "area" else None,
-            line={"color": color},
             hovertemplate="%{x}<br>%{y}<extra></extra>",
         )
     )
@@ -45,7 +44,13 @@ def _expected_sparkline_figure(value_column, chart_type, color):
     return fig
 
 
-def _expected_card(*, header, body, footer_class, figure):
+def _expected_card(*, header, value_text, delta_class, delta_icon, figure):
+    body = dbc.CardBody(
+        [
+            html.Span(value_text),
+            html.Span(delta_icon, className=f"material-symbols-outlined {delta_class}".strip()),
+        ]
+    )
     return dbc.Card(
         [
             header,
@@ -56,7 +61,6 @@ def _expected_card(*, header, body, footer_class, figure):
                     config={"displayModeBar": False},
                     className="card-kpi-sparkline-graph",
                 ),
-                class_name=footer_class,
             ),
         ],
         class_name="card-kpi card-kpi-sparkline",
@@ -68,9 +72,10 @@ class TestKPISparklineCard:
         result = kpi_sparkline_card(data_frame=df, value_column="Actual", x_column="Date")()
         expected = _expected_card(
             header=dbc.CardHeader([None, html.H4("Sum Actual", className="card-kpi-title")]),
-            body=dbc.CardBody("60"),
-            footer_class="color-pos",
-            figure=_expected_sparkline_figure("Actual", "area", "var(--bs-success)"),
+            value_text="60",
+            delta_class="color-pos",
+            delta_icon="arrow_circle_up",
+            figure=_expected_sparkline_figure("Actual", "area"),
         )
         assert_component_equal(result, expected)
 
@@ -78,9 +83,10 @@ class TestKPISparklineCard:
         result = kpi_sparkline_card(data_frame=df, value_column="Declining", x_column="Date")()
         expected = _expected_card(
             header=dbc.CardHeader([None, html.H4("Sum Declining", className="card-kpi-title")]),
-            body=dbc.CardBody("60"),
-            footer_class="color-neg",
-            figure=_expected_sparkline_figure("Declining", "area", "var(--bs-danger)"),
+            value_text="60",
+            delta_class="color-neg",
+            delta_icon="arrow_circle_down",
+            figure=_expected_sparkline_figure("Declining", "area"),
         )
         assert_component_equal(result, expected)
 
@@ -88,9 +94,10 @@ class TestKPISparklineCard:
         result = kpi_sparkline_card(data_frame=df, value_column="Flat", x_column="Date")()
         expected = _expected_card(
             header=dbc.CardHeader([None, html.H4("Sum Flat", className="card-kpi-title")]),
-            body=dbc.CardBody("15"),
-            footer_class="",
-            figure=_expected_sparkline_figure("Flat", "area", "var(--bs-gray)"),
+            value_text="15",
+            delta_class="",
+            delta_icon="arrow_circle_right",
+            figure=_expected_sparkline_figure("Flat", "area"),
         )
         assert_component_equal(result, expected)
 
@@ -98,9 +105,10 @@ class TestKPISparklineCard:
         result = kpi_sparkline_card(data_frame=df, value_column="Actual", x_column="Date", reverse_color=True)()
         expected = _expected_card(
             header=dbc.CardHeader([None, html.H4("Sum Actual", className="card-kpi-title")]),
-            body=dbc.CardBody("60"),
-            footer_class="color-neg",
-            figure=_expected_sparkline_figure("Actual", "area", "var(--bs-danger)"),
+            value_text="60",
+            delta_class="color-neg",
+            delta_icon="arrow_circle_up",
+            figure=_expected_sparkline_figure("Actual", "area"),
         )
         assert_component_equal(result, expected)
 
@@ -108,9 +116,10 @@ class TestKPISparklineCard:
         result = kpi_sparkline_card(data_frame=df, value_column="Actual", x_column="Date", chart_type="line")()
         expected = _expected_card(
             header=dbc.CardHeader([None, html.H4("Sum Actual", className="card-kpi-title")]),
-            body=dbc.CardBody("60"),
-            footer_class="color-pos",
-            figure=_expected_sparkline_figure("Actual", "line", "var(--bs-success)"),
+            value_text="60",
+            delta_class="color-pos",
+            delta_icon="arrow_circle_up",
+            figure=_expected_sparkline_figure("Actual", "line"),
         )
         assert_component_equal(result, expected)
 
@@ -131,9 +140,10 @@ class TestKPISparklineCard:
                     html.H4("sales", className="card-kpi-title"),
                 ]
             ),
-            body=dbc.CardBody("$20.00 (+200.0%)"),
-            footer_class="color-pos",
-            figure=_expected_sparkline_figure("Actual", "area", "var(--bs-success)"),
+            value_text="$20.00 (+200.0%)",
+            delta_class="color-pos",
+            delta_icon="arrow_circle_up",
+            figure=_expected_sparkline_figure("Actual", "area"),
         )
         assert_component_equal(result, expected)
 
@@ -143,9 +153,10 @@ class TestKPISparklineCard:
         )()
         expected = _expected_card(
             header=dbc.CardHeader([None, html.H4("Sum Zerostart", className="card-kpi-title")]),
-            body=dbc.CardBody("15 (+nan%)"),
-            footer_class="color-pos",
-            figure=_expected_sparkline_figure("ZeroStart", "area", "var(--bs-success)"),
+            value_text="15 (+nan%)",
+            delta_class="color-pos",
+            delta_icon="arrow_circle_up",
+            figure=_expected_sparkline_figure("ZeroStart", "area"),
         )
         assert_component_equal(result, expected)
 
