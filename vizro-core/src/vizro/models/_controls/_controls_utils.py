@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import warnings
+from collections import deque
 from collections.abc import Generator, Iterable
 from typing import TYPE_CHECKING, Any, cast
 
@@ -167,6 +168,106 @@ def build_default_control_selector_actions(
         *([set_control(control=targeted_controls)] if targeted_controls else []),
         update_targets(id=update_targets_action_id, targets=targeted_figures),
     ]
+
+
+def get_sync_closure(source: ControlType) -> tuple[list[ModelID], list[ModelID]]:
+    """Resolve the full control-sync mesh reachable from ``source`` into a single set of controls and figures.
+
+    Returns ``(closure_controls, closure_figures)``:
+
+    * ``closure_controls`` - every control transitively kept in sync with ``source`` (a cycle-safe, order-preserving
+      traversal of the ``_synced_control_targets`` edges, excluding ``source`` itself). The mesh is only expanded
+      through *same-page* controls; a cross-page target is included as a terminal node but its own edges are not
+      followed - its sync applies when its page is opened (see the `set_control` action).
+    * ``closure_figures`` - the precise union of figure targets that must be refreshed: ``source``'s own figures plus
+      those of every *same-page* synced control. Parameter targets use ``"<figure>.<argument>"`` notation, so they are
+      reduced to the figure id; Filter targets are already bare figure ids.
+
+    Together these let one `set_control` set the whole mesh and one `update_targets` refresh every affected figure,
+    collapsing the mesh into two HTTP requests (see `finalize_control_sync_chains`).
+    """
+    source_page = model_manager._get_model_page(source)
+
+    closure_controls: list[ModelID] = []
+    seen: set[ModelID] = {source.id}
+    queue: deque[ModelID] = deque(source._synced_control_targets)
+    while queue:
+        control_id = queue.popleft()
+        if control_id in seen:
+            continue
+        seen.add(control_id)
+        closure_controls.append(control_id)
+        # Only expand the mesh through same-page controls; a cross-page target is terminal (see docstring).
+        target_control = cast(ControlType, model_manager[control_id])
+        if model_manager._get_model_page(target_control) is source_page:
+            queue.extend(target_control._synced_control_targets)
+
+    closure_figures: list[ModelID] = []
+
+    def _add_figure_targets(control: ControlType) -> None:
+        for target in control.targets:
+            figure_id = cast(ModelID, target.partition(".")[0])
+            if figure_id and figure_id not in closure_figures:
+                closure_figures.append(figure_id)
+
+    _add_figure_targets(source)
+    for control_id in closure_controls:
+        target_control = cast(ControlType, model_manager[control_id])
+        if model_manager._get_model_page(target_control) is source_page:
+            _add_figure_targets(target_control)
+
+    return closure_controls, closure_figures
+
+
+def finalize_control_sync_chains() -> None:
+    """Collapse every same-page control-sync mesh into two HTTP requests.
+
+    During ``pre_build`` each synced control gets a default chain that targets only its *direct* sync targets and
+    figures (`build_default_control_selector_actions`). Setting a target's value then re-fires that target's own chain,
+    so a mesh cascades into many requests. This runs once after all controls are pre-built (so every control's figure
+    targets and ``_synced_control_targets`` are final) and rewrites each source's chain to cover the whole transitive
+    mesh at once:
+
+    * a single ``set_control(control=<all transitively-synced controls>, _stop_internal_action_chaining=True)`` sets
+      every mesh control and raises their guards so their own chains do not fire, and
+    * a single ``update_targets(targets=<precise figure union>)`` refreshes every affected figure.
+
+    The superseded per-control actions are removed from the model_manager first, otherwise their callbacks would still
+    be registered in ``Dashboard.build`` and reusing the ``update_targets`` id would raise ``DuplicateIDError``.
+    """
+    from vizro.actions import set_control, update_targets
+    from vizro.models import Filter, Parameter
+
+    # Materialize before mutating: rebuilding the chains adds/removes models from the model_manager.
+    sources = [
+        control
+        for control in cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter)))
+        if control._synced_control_targets
+    ]
+
+    for source in sources:
+        closure_controls, closure_figures = get_sync_closure(source)
+
+        old_set_control = next(action for action in source.selector.actions if isinstance(action, set_control))
+        old_update_targets = next(action for action in source.selector.actions if isinstance(action, update_targets))
+        update_targets_action_id = old_update_targets.id
+        del model_manager[old_set_control.id]
+        del model_manager[old_update_targets.id]
+
+        # Reassigning selector.actions re-runs make_actions_chain (validate_assignment) so the new chain is wired.
+        build_default_control_selector_actions(
+            selector=source.selector,
+            targeted_controls=closure_controls,
+            targeted_figures=closure_figures,
+            update_targets_action_id=update_targets_action_id,
+        )
+
+        new_set_control = next(action for action in source.selector.actions if isinstance(action, set_control))
+        new_set_control._stop_internal_action_chaining = True
+
+        # Newly created actions must run their own pre_build (mirrors Parameter.pre_build).
+        for action in source.selector.actions:
+            action.pre_build()
 
 
 def check_control_targets(control: ControlType) -> None:

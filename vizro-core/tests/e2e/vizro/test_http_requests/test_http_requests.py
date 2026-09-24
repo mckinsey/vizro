@@ -571,11 +571,13 @@ def test_sync_hidden_parameter(page, http_requests_paths):
     page.locator(f"a[href='/{cnst.SYNC_HIDDEN_PARAMETER_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # select filter (3 http: `set_control` and `update_targets` from Filter + `update_targets` from Parameter)
+    # select filter (2 http: a single `set_control` sets the parameter and raises its guard so the parameter's own
+    # chain does not fire, then a single `update_targets` refreshes the figures shared by the filter and parameter).
+    # The mesh always resolves in two requests, no matter how many controls/figures it spans.
     page.get_by_text("versicolor").nth(0).click()
-    check_http_requests_count(page, http_requests_paths, 5)
+    check_http_requests_count(page, http_requests_paths, 4)
 
-    check_http_requests_count(page, http_requests_paths, 5, sleep=cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
 
 
 @http_requests

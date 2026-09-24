@@ -108,6 +108,10 @@ class Parameter(VizroBaseModel):
     )
 
     _selector_properties: set[str] = PrivateAttr(set())
+    # Direct control-sync targets (other Filter/Parameter ids this control keeps in sync), stashed here when the
+    # default sync chain is built so the post-pre_build finalization (see `finalize_control_sync_chains`) can compute
+    # the transitive mesh even though `extract_control_targets` removes them from `targets` in place.
+    _synced_control_targets: list[ModelID] = PrivateAttr(default_factory=list)
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
@@ -228,6 +232,10 @@ class Parameter(VizroBaseModel):
             self.targets.extend(list(filter_targets))
             targets_ids = [target.partition(".")[0] for target in self.targets]
 
+            # Stash the direct control-sync targets so the post-pre_build finalization can compute the transitive mesh
+            # (they are removed from self.targets by extract_control_targets above). Only stashed on the auto-built
+            # path: explicit selector actions (else branch) intentionally drop control targets.
+            self._synced_control_targets = targeted_controls
             build_default_control_selector_actions(
                 selector=self.selector,
                 targeted_controls=targeted_controls,

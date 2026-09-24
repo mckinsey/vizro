@@ -5,7 +5,7 @@ from functools import cached_property
 from typing import Literal, Protocol, cast, runtime_checkable
 
 from dash import get_relative_path, no_update, set_props
-from pydantic import Field, JsonValue
+from pydantic import Field, JsonValue, PrivateAttr
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
@@ -167,6 +167,14 @@ class set_control(_AbstractAction):
         "used instead.",
     )
 
+    # Private, internal-only flag. When True, the action additionally raises each same-page target's
+    # `_guard_actions_chain` store so setting that target's value does NOT fire its own action chain. It is set by
+    # `build_default_control_selector_actions` for the collapsed selector-sync chain (where a single set_control sets
+    # every transitively-synced control and a single update_targets refreshes every affected figure), so the whole
+    # mesh resolves in two HTTP requests instead of cascading. Kept private (set post-construction) because it is not
+    # part of the public API. See `guard_action_chain` in static/js/models/action.js.
+    _stop_internal_action_chaining: bool = PrivateAttr(default=False)
+
     @property
     def _control_ids(self) -> list[ModelID]:
         """Normalize `control` (single id or list) to a de-duplicated, order-preserving list of ids.
@@ -283,9 +291,17 @@ class set_control(_AbstractAction):
 
         # Same-page targets: selectors are mounted, so update them directly via the callback outputs. Each value is
         # reshaped per selector; one that can't accept it contributes no_update so the others still update.
-        results = [
+        shaped_values = [
             self._shape_value_for_control(control_id, value, _controls_store) for control_id in self._same_page_controls
         ]
+        results = list(shaped_values)
+
+        # When stopping the internal action chaining, raise the guard of every same-page control that actually changes
+        # so its value update does not fire its own action chain (the source chain refreshes all affected figures
+        # itself). Leave the guard untouched (no_update) for a control we skip, so its value is unchanged and no guard
+        # gets stuck True. These guard outputs come right after the value outputs (see `outputs`).
+        if self._stop_internal_action_chaining:
+            results.extend(True if shaped is not no_update else no_update for shaped in shaped_values)
 
         # Cross-page targets: selectors aren't mounted, so they can't be callback outputs. Persist each value into
         # `vizro_controls_store` via set_props (it's only a State here); the target page's sync callback applies this
@@ -395,10 +411,22 @@ class set_control(_AbstractAction):
         # control, `page.js` rewrites the query string with `history.replaceState`, which desyncs `vizro_url` from the
         # browser URL. A `pathname`-only `callback-nav` then reconciles against that stale state and fails to navigate
         # (it re-asserts the current path); a full `href` navigates unambiguously regardless of the desync.
+        value_outputs = list(self._same_page_controls)
+        # When stopping the internal action chaining, also output each same-page control's guard store so `function`
+        # can raise it. Guard outputs follow the value outputs and precede `vizro_url.href` (kept aligned there).
+        guard_outputs = (
+            [
+                f"{cast(ControlType, model_manager[control_id]).selector.id}_guard_actions_chain.data"
+                for control_id in self._same_page_controls
+            ]
+            if self._stop_internal_action_chaining
+            else []
+        )
+        outputs = [*value_outputs, *guard_outputs]
         if self._cross_page_controls:
-            return [*self._same_page_controls, "vizro_url.href"]
-        # All targets on the same page: a single target returns a bare id (one Output); several return a list.
-        return self._same_page_controls[0] if len(self._same_page_controls) == 1 else self._same_page_controls
+            return [*outputs, "vizro_url.href"]
+        # All same-page: a single value output (no guards) returns a bare id (one Output); otherwise a list.
+        return outputs[0] if len(outputs) == 1 else outputs
 
     @staticmethod
     def _normalize_range_value(value, *, reorder):
