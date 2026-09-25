@@ -1,4 +1,4 @@
-"""Scratch app for testing kpi_sparkline_card."""
+"""Scratch app."""
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -22,6 +22,7 @@ kpi_sparkline_page = vm.Page(
                 title="Google",
                 icon="trending_up",
                 value_format="{value:.2f}",
+                units="MWh",
             )
         ),
         vm.Figure(
