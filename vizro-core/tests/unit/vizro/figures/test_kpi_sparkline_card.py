@@ -44,11 +44,12 @@ def _expected_sparkline_figure(value_column, chart_type):
     return fig
 
 
-def _expected_card(*, header, value_text, delta_class, delta_icon, figure):
+def _expected_card(*, header, value_text, delta_class, delta_icon, figure, units_text=None):
     body = dbc.CardBody(
         [
-            html.Span(value_text),
             html.Span(delta_icon, className=f"material-symbols-outlined {delta_class}".strip()),
+            html.Span(value_text),
+            html.Span(units_text, className="card-kpi-units") if units_text else None,
         ]
     )
     return dbc.Card(
@@ -71,7 +72,9 @@ class TestKPISparklineCard:
     def test_kpi_sparkline_card_mandatory_increasing(self):
         result = kpi_sparkline_card(data_frame=df, value_column="Actual", x_column="Date")()
         expected = _expected_card(
-            header=dbc.CardHeader([None, html.H4("Sum Actual", className="card-kpi-title")]),
+            header=dbc.CardHeader(
+                [html.H4("Sum Actual", className="card-kpi-title"), None], className="card-kpi-header"
+            ),
             value_text="60",
             delta_class="color-pos",
             delta_icon="arrow_circle_up",
@@ -82,7 +85,9 @@ class TestKPISparklineCard:
     def test_kpi_sparkline_card_mandatory_decreasing(self):
         result = kpi_sparkline_card(data_frame=df, value_column="Declining", x_column="Date")()
         expected = _expected_card(
-            header=dbc.CardHeader([None, html.H4("Sum Declining", className="card-kpi-title")]),
+            header=dbc.CardHeader(
+                [html.H4("Sum Declining", className="card-kpi-title"), None], className="card-kpi-header"
+            ),
             value_text="60",
             delta_class="color-neg",
             delta_icon="arrow_circle_down",
@@ -93,7 +98,7 @@ class TestKPISparklineCard:
     def test_kpi_sparkline_card_mandatory_flat(self):
         result = kpi_sparkline_card(data_frame=df, value_column="Flat", x_column="Date")()
         expected = _expected_card(
-            header=dbc.CardHeader([None, html.H4("Sum Flat", className="card-kpi-title")]),
+            header=dbc.CardHeader([html.H4("Sum Flat", className="card-kpi-title"), None], className="card-kpi-header"),
             value_text="15",
             delta_class="",
             delta_icon="arrow_circle_right",
@@ -104,7 +109,9 @@ class TestKPISparklineCard:
     def test_kpi_sparkline_card_reverse_color(self):
         result = kpi_sparkline_card(data_frame=df, value_column="Actual", x_column="Date", reverse_color=True)()
         expected = _expected_card(
-            header=dbc.CardHeader([None, html.H4("Sum Actual", className="card-kpi-title")]),
+            header=dbc.CardHeader(
+                [html.H4("Sum Actual", className="card-kpi-title"), None], className="card-kpi-header"
+            ),
             value_text="60",
             delta_class="color-neg",
             delta_icon="arrow_circle_up",
@@ -115,7 +122,9 @@ class TestKPISparklineCard:
     def test_kpi_sparkline_card_chart_type_line(self):
         result = kpi_sparkline_card(data_frame=df, value_column="Actual", x_column="Date", chart_type="line")()
         expected = _expected_card(
-            header=dbc.CardHeader([None, html.H4("Sum Actual", className="card-kpi-title")]),
+            header=dbc.CardHeader(
+                [html.H4("Sum Actual", className="card-kpi-title"), None], className="card-kpi-header"
+            ),
             value_text="60",
             delta_class="color-pos",
             delta_icon="arrow_circle_up",
@@ -136,9 +145,10 @@ class TestKPISparklineCard:
         expected = _expected_card(
             header=dbc.CardHeader(
                 [
-                    html.P("shopping_cart", className="material-symbols-outlined"),
                     html.H4("sales", className="card-kpi-title"),
-                ]
+                    html.P("shopping_cart", className="material-symbols-outlined"),
+                ],
+                className="card-kpi-header",
             ),
             value_text="$20.00 (+200.0%)",
             delta_class="color-pos",
@@ -152,7 +162,9 @@ class TestKPISparklineCard:
             data_frame=df, value_column="ZeroStart", x_column="Date", value_format="{value} ({delta_relative:+.1%})"
         )()
         expected = _expected_card(
-            header=dbc.CardHeader([None, html.H4("Sum Zerostart", className="card-kpi-title")]),
+            header=dbc.CardHeader(
+                [html.H4("Sum Zerostart", className="card-kpi-title"), None], className="card-kpi-header"
+            ),
             value_text="15 (+nan%)",
             delta_class="color-pos",
             delta_icon="arrow_circle_up",
