@@ -335,7 +335,9 @@ To keep a category's color stable everywhere, pin each value to a specific color
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="9 12-16 23 28 31"}
+        ```{.python pycafe-link hl_lines="11 14-18 25 30 33"}
+        from itertools import cycle
+
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -344,7 +346,7 @@ To keep a category's color stable everywhere, pin each value to a specific color
         df = px.data.iris()
 
         # Automatically pair each category with a color from the qualitative palette (uncomment to use):
-        # species_colors = dict(zip(df["species"].unique(), palettes.qualitative))  # (1)
+        # species_colors = dict(zip(df["species"].unique(), cycle(palettes.qualitative)))  # (1)
 
         # Or pin each category to a specific Vizro color:
         species_colors = {

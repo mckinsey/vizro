@@ -1,3 +1,5 @@
+from itertools import cycle
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
@@ -6,7 +8,7 @@ from vizro.themes import colors, palettes
 df = px.data.iris()
 
 # Automatically pair each category with a color from the qualitative palette (uncomment to use):
-# species_colors = dict(zip(df["species"].unique(), palettes.qualitative))  # (1)
+species_colors = dict(zip(df["species"].unique(), cycle(palettes.qualitative)))  # (1)
 
 # Or pin each category to a specific Vizro color:
 species_colors = {
@@ -36,4 +38,6 @@ page = vm.Page(
 )
 
 dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
+
+if __name__ == "__main__":
+    Vizro().build(dashboard).run()
