@@ -21,9 +21,12 @@ from pages.datetimepicker_pages import (
 )
 from pages.dynamic_data_page import dynamic_data_df_parameter_page, dynamic_data_page
 from pages.dynamic_filters_pages import (
+    dynamic_filters_cascader_page,
     dynamic_filters_categorical_page,
     dynamic_filters_datepicker_page,
     dynamic_filters_numerical_page,
+    dynamic_filters_switch_page,
+    dynamic_filters_temporal_page,
 )
 from pages.export_action_page import export_action_page
 from pages.extras_page import extras_page
@@ -110,6 +113,9 @@ dashboard = vm.Dashboard(
         dynamic_filters_categorical_page,
         dynamic_filters_numerical_page,
         dynamic_filters_datepicker_page,
+        dynamic_filters_switch_page,
+        dynamic_filters_temporal_page,
+        dynamic_filters_cascader_page,
         custom_components_page,
         filter_and_param_page,
         container_variants_page,
@@ -212,6 +218,9 @@ dashboard = vm.Dashboard(
                 cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
                 cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
                 cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
+                cnst.DYNAMIC_FILTERS_SWITCH_PAGE,
+                cnst.DYNAMIC_FILTERS_TEMPORAL_PAGE,
+                cnst.DYNAMIC_FILTERS_CASCADER_PAGE,
             ],
             cnst.CONTAINER_ACCORDION: [cnst.CONTAINER_VARIANTS_PAGE],
             cnst.LAYOUT_ACCORDION: [
