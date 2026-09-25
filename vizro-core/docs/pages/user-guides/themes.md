@@ -325,6 +325,74 @@ You can achieve fine-grained control over individual charts by using arguments s
 
         [![ColorPrecedence]][colorprecedence]
 
+### Consistent colors for categories across charts
+
+When you color a chart by a categorical column, Plotly Express assigns colors from the qualitative palette on a first-seen basis, independently for each chart. This means the same category can end up with a different color in different charts. For example, `setosa` might be blue in a scatter chart but purple in a histogram, which makes it harder to visually correlate categories across a dashboard.
+
+To keep a category's color stable everywhere, pin each value to a specific color with the [`color_discrete_map`](https://plotly.com/python/discrete-color/#specifying-colors-with-a-dictionary) argument and reuse the same mapping in every chart. Building that mapping from [Vizro's colors and palettes](#palettes) keeps the result on-theme and colorblind-safe.
+
+!!! example "Consistent category colors"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="11 14-18 25 30 33"}
+        from itertools import cycle
+
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.themes import colors, palettes
+
+        df = px.data.iris()
+
+        # Automatically pair each category with a color from the qualitative palette (uncomment to use):
+        # species_colors = dict(zip(df["species"].unique(), cycle(palettes.qualitative)))  # (1)
+
+        # Or pin each category to a specific Vizro color:
+        species_colors = {
+            "setosa": colors.blue,  # (2)!
+            "versicolor": colors.dark_purple,
+            "virginica": colors.turquoise,
+        }
+
+        page = vm.Page(
+            title="Consistent category colors",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        df, x="sepal_length", y="petal_width", color="species", color_discrete_map=species_colors
+                    ),
+                ),
+                vm.Graph(
+                    figure=px.histogram(
+                        df[df["species"] != "setosa"],  # second chart omits setosa
+                        x="sepal_width",
+                        color="species",
+                        color_discrete_map=species_colors,
+                    ),
+                ),
+            ],
+            controls=[vm.Filter(column="species")],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. `dict(zip(...))` pairs each unique category with a color from the [qualitative palette](#palettes), in order. This is the quickest way to get on-theme, colorblind-safe colors when you don't need a specific color per category. Uncomment it to use it instead of the explicit map below.
+        1. `colors.blue` and the other names come from [`vizro.themes.colors`](#palettes), Vizro's named colors. Reusing them keeps your custom mapping consistent with the Vizro theme.
+
+    === "Result"
+
+        The first chart shows all three species, while the second omits `setosa`. Because each color is pinned to a category value, `versicolor` and `virginica` keep the same colors in both charts (and when you filter categories in or out) instead of shifting.
+
+        [![ColorPerCategory]][colorpercategory]
+
+!!! note "Why define the mapping explicitly?"
+
+    - `color_discrete_map` always takes precedence over the template `colorway`. Any category that is not listed in the map falls back to the qualitative palette.
+    - Because colors are pinned by category value rather than by render order, they stay consistent when a [filter](filters.md) adds or removes categories.
+
 ### Charts outside a dashboard
 
 You can also use our `vizro_dark` and `vizro_light` [templates for plotly charts](https://plotly.com/python/templates) outside the dashboard. This is useful in a few contexts:
@@ -368,6 +436,7 @@ Vizro uses some extra CSS in addition to the Bootstrap stylesheet to style some 
 
 [bootstrapdark]: ../../assets/user_guides/themes/bootstrap_dark.png
 [bootstraplight]: ../../assets/user_guides/themes/bootstrap_light.png
+[colorpercategory]: ../../assets/user_guides/themes/color_per_category.gif
 [colorprecedence]: ../../assets/user_guides/themes/color_precedence.png
 [dark]: ../../assets/user_guides/themes/dark.png
 [light]: ../../assets/user_guides/themes/light.png

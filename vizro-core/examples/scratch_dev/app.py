@@ -1,43 +1,43 @@
-"""Scratch app for testing customization of Page.actions (what runs on page load)."""
+from itertools import cycle
 
-import vizro.actions as va
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.themes import colors, palettes
 
 df = px.data.iris()
 
+# Automatically pair each category with a color from the qualitative palette (uncomment to use):
+species_colors = dict(zip(df["species"].unique(), cycle(palettes.qualitative)))  # (1)
 
-# By default a Page runs an on-page-load action that refreshes all figures and dynamic filters. Setting `Page.actions`
-# replaces that default with your own chain, which runs on page load. The "Reset all" button always refreshes the
-# page's figures and dynamic filters independently of `Page.actions`.
+# Or pin each category to a specific Vizro color:
+species_colors = {
+    "setosa": colors.blue,  # (2)!
+    "versicolor": colors.dark_purple,
+    "virginica": colors.turquoise,
+}
 
-# Page 1: keep the default refresh AND greet the user. `va.update_targets()` re-applies the controls (the same work the
-# default on-page-load does), then `va.show_notification` shows the welcome toast.
-welcome_page = vm.Page(
-    title="Welcome notification",
+page = vm.Page(
+    title="Consistent category colors",
     components=[
-        vm.Graph(id="welcome_graph", figure=px.bar(df, x="species", y="sepal_length", color="species")),
+        vm.Graph(
+            figure=px.scatter(
+                df, x="sepal_length", y="petal_width", color="species", color_discrete_map=species_colors
+            ),
+        ),
+        vm.Graph(
+            figure=px.histogram(
+                df[df["species"] != "setosa"],  # second chart omits setosa
+                x="sepal_width",
+                color="species",
+                color_discrete_map=species_colors,
+            ),
+        ),
     ],
     controls=[vm.Filter(column="species")],
-    actions=[va.update_targets(), va.show_notification(text="Welcome! Data refreshed for this page.")],
 )
 
-
-# Page 2: defer loading expensive data. `actions=[]` disables the automatic on-page-load refresh, so the figure renders
-# empty until the user clicks the button, which triggers the refresh on demand.
-lazy_page = vm.Page(
-    title="Load on demand",
-    components=[
-        vm.Graph(id="lazy_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
-        vm.Button(text="Load data", actions=va.update_targets()),
-    ],
-    controls=[vm.Filter(column="species", selector=vm.Checklist(actions=None))],
-    actions=None,
-)
-
-
-dashboard = vm.Dashboard(pages=[welcome_page, lazy_page])
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
