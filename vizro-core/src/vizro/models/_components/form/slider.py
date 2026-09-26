@@ -97,16 +97,27 @@ underlying component may change in the future.""",
     def _make_actions_chain(self):
         return make_actions_chain(self)
 
-    @model_validator(mode="after")
-    def _validate_range_value_shape(self):
+    @model_validator(mode="before")
+    @classmethod
+    def _validate_range_value_shape(cls, data):
         # `value`'s shape must match `range`: a bare number when range=False, a `[start, end]` list when range=True.
-        # A model validator (rather than a field validator on `range`) so the check also runs when `value` alone is
-        # reassigned under validate_assignment=True; a field validator on `range` would be skipped in that case.
-        if self.range and self.value is not None and not isinstance(self.value, list):
+        # Run in "before" mode (not "after") so that under validate_assignment=True the check raises *before* Pydantic
+        # writes the field, leaving the model unchanged on a rejected assignment; an "after" validator raises only once
+        # the invalid value has already been assigned. "before" also sees both fields on any single-field assignment,
+        # so a mismatch is caught whether `value` or `range` is the one reassigned.
+        if not isinstance(data, dict):
+            return data
+        # Subclasses that lock `range` (e.g. RangeSlider fixes range=True) narrow `value` at the field level, which
+        # gives a clearer error than this cross-field message, so skip the check for them.
+        if cls.model_fields["range"].annotation is not bool:
+            return data
+        range_ = data.get("range", cls.model_fields["range"].get_default())
+        value = data.get("value")
+        if range_ and value is not None and not isinstance(value, list):
             raise ValueError("Please set range=False if providing a single value.")
-        if not self.range and isinstance(self.value, list):
+        if not range_ and isinstance(value, list):
             raise ValueError("Please set range=True if providing a list of values.")
-        return self
+        return data
 
     @model_validator(mode="after")
     def _set_inner_component_properties(self):

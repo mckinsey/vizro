@@ -308,11 +308,23 @@ class TestSliderRange:
 
     def test_value_reassignment_enforces_range_shape(self):
         # The value/range consistency check must also run on assignment (validate_assignment=True), not only at
-        # construction, so a scalar cannot leak into a range slider (or a list into a single-handle slider).
+        # construction, so a scalar cannot leak into a range slider (or a list into a single-handle slider). The check
+        # runs in "before" mode, so a rejected assignment must leave the original value untouched (no partial mutation).
         slider = vm.Slider(min=0, max=10, value=[2, 8], range=True)
         with pytest.raises(ValidationError, match="Please set range=False if providing a single value"):
             slider.value = 5
+        assert slider.value == [2, 8]
 
         slider = vm.Slider(min=0, max=10, value=3)
         with pytest.raises(ValidationError, match="Please set range=True if providing a list of values"):
             slider.value = [2, 8]
+        assert slider.value == 3
+
+    def test_range_reassignment_enforces_range_shape(self):
+        # Flipping `range` so it no longer matches the current `value` is rejected, and the rejected assignment must not
+        # mutate the model (range stays as it was).
+        slider = vm.Slider(min=0, max=10, value=3)
+        with pytest.raises(ValidationError, match="Please set range=False if providing a single value"):
+            slider.range = True
+        assert slider.range is False
+        assert slider.value == 3

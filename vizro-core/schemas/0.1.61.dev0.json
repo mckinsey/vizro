@@ -3008,22 +3008,6 @@
           "title": "Type",
           "type": "string"
         },
-        "controls": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            }
-          ],
-          "default": [],
-          "description": "Filter or Parameter component id(s) to be affected by the trigger. Provide a single id, or a list of ids to set several controls at once. Each control can be on the same page as the trigger or on a different page: a different-page control is kept in sync through the internal `vizro_controls_store`, and its new value is applied when that page is opened.",
-          "title": "Controls"
-        },
         "value": {
           "$ref": "#/$defs/JsonValue",
           "default": null,
@@ -3076,7 +3060,6 @@
               "type": "array"
             }
           ],
-          "default": [],
           "description": "Filter or Parameter component id(s) to be affected by the trigger. Provide a single id, or a list of ids to set several controls at once. Each control can be on the same page as the trigger or on a different page: a different-page control is kept in sync through the internal `vizro_controls_store`, and its new value is applied when that page is opened.",
           "title": "Controls"
         },
@@ -3086,6 +3069,7 @@
           "description": "Value to take from the trigger and send to the target control(s). Its format depends on the triggering model (see the list above): for `Graph`/`AgGrid` it is an extraction directive (a column name or lookup) and is required; for `Figure`/`Card`/`Button` it is the literal value to set, and `value=None` resets the target control(s) to their default value. It may be omitted (defaults to `None`) only when a control's own selector syncs to another control, where `value` is ignored and the selector's live value is used instead."
         }
       },
+      "required": ["controls"],
       "title": "set_controls",
       "type": "object"
     },

@@ -41,7 +41,7 @@ See the [user guide on selectors](../user-guides/selectors.md#numerical-selector
 ```python
 # Before:
 components = [
-    vm.AgGrid(..., actions=va.filter_interaction(targets=["target_chart"]),
+    vm.AgGrid(..., actions=va.filter_interaction(targets=["target_chart"])),
     vm.Graph(id="target_chart", ...)
 ]
 

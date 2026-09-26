@@ -736,16 +736,19 @@ The example below shows how to use the [set_controls action][vizro.actions.set_c
                 text: Filter: Setosa
                 actions:
                   - type: set_controls
+                    controls: [filter-id-1]
                     value: setosa
               - type: card
                 text: Filter: Viriginica
                 actions:
                   - type: set_controls
+                    controls: [filter-id-1]
                     value: virginica
               - type: card
                 text: Filter: Versicolor
                 actions:
                   - type: set_controls
+                    controls: [filter-id-1]
                     value: versicolor
               - type: graph
                 figure:

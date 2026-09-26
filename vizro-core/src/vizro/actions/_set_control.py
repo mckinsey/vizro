@@ -6,6 +6,7 @@ from typing import Literal, Protocol, cast, runtime_checkable
 
 from dash import get_relative_path, no_update, set_props
 from pydantic import Field, JsonValue, field_validator, model_validator
+from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import deprecated
 
 from vizro.actions._abstract_action import _AbstractAction
@@ -153,7 +154,6 @@ class set_controls(_AbstractAction):
 
     type: Literal["set_controls"] = "set_controls"
     controls: ModelID | list[ModelID] = Field(
-        default=[],
         description="Filter or Parameter component id(s) to be affected by the trigger. Provide a single id, or a list "
         "of ids to set several controls at once. Each control can be on the same page as the trigger or on a different "
         "page: a different-page control is kept in sync through the internal `vizro_controls_store`, and its new value "
@@ -463,10 +463,18 @@ class set_control(set_controls):
         description="Filter or Parameter component id(s) to be affected by the trigger. Provide a single id or a list "
         "of ids. Deprecated: use `set_controls` with `controls` instead."
     )
+    # `controls` is required on `set_controls`, but this deprecated alias derives it from `control` (see below), so keep
+    # it optional here and hide it from this alias's schema: users configure `control`, not `controls`.
+    controls: SkipJsonSchema[ModelID | list[ModelID]] = Field(
+        default=[], description="Populated from the deprecated `control` argument."
+    )
 
-    @model_validator(mode="after")
-    def _map_control_to_controls(self):
-        # Map the legacy `control` (single id or list) onto the canonical `controls` list. Written via __dict__ to
-        # bypass validate_assignment; `control` is already validated so the ids are valid ModelIDs.
-        self.__dict__["controls"] = [self.control] if isinstance(self.control, str) else list(self.control)
-        return self
+    @model_validator(mode="before")
+    @classmethod
+    def _map_control_to_controls(cls, data):
+        # Map the legacy `control` (single id or list) onto the canonical `controls` field before validation, so
+        # `set_control(control=...)` satisfies the now-required `controls` without `set_controls` itself exposing an
+        # optional `controls` default (which would let `set_controls()` validate only to fail later in pre_build).
+        if isinstance(data, dict) and "control" in data:
+            data = {**data, "controls": data["control"]}
+        return data

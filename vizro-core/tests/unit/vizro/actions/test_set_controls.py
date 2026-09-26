@@ -6,6 +6,7 @@ and through the Filter/Parameter default-action tests. These tests focus on the 
 """
 
 import pytest
+from pydantic import ValidationError
 
 import vizro.actions as va
 
@@ -16,6 +17,12 @@ class TestSetControlsInstantiation:
         assert action.type == "set_controls"
         assert action.controls == ["filter_1"]
         assert action.value is None
+
+    def test_controls_is_required(self):
+        # `controls` has no default: omitting it fails validation immediately rather than only at pre_build, so the
+        # generated schema does not advertise an unrunnable `set_controls()` configuration.
+        with pytest.raises(ValidationError, match="controls"):
+            va.set_controls()
 
     def test_multiple_controls_and_value(self):
         action = va.set_controls(controls=["filter_1", "filter_2"], value="species")
