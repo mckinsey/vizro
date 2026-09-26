@@ -189,6 +189,9 @@ def get_sync_closure(source: ControlType) -> tuple[list[ModelID], list[ModelID]]
     source_page = model_manager._get_model_page(source)
 
     closure_controls: list[ModelID] = []
+    # Same-page subset of closure_controls, tracked during the BFS so the page lookup runs once per control (it is
+    # reused below to gather figures - only same-page controls contribute figures).
+    same_page_controls: list[ModelID] = []
     seen: set[ModelID] = {source.id}
     queue: deque[ModelID] = deque(source._synced_control_targets)
     while queue:
@@ -200,6 +203,7 @@ def get_sync_closure(source: ControlType) -> tuple[list[ModelID], list[ModelID]]
         # Only expand the mesh through same-page controls; a cross-page target is terminal (see docstring).
         target_control = cast(ControlType, model_manager[control_id])
         if model_manager._get_model_page(target_control) is source_page:
+            same_page_controls.append(control_id)
             queue.extend(target_control._synced_control_targets)
 
     closure_figures: list[ModelID] = []
@@ -211,10 +215,8 @@ def get_sync_closure(source: ControlType) -> tuple[list[ModelID], list[ModelID]]
                 closure_figures.append(figure_id)
 
     _add_figure_targets(source)
-    for control_id in closure_controls:
-        target_control = cast(ControlType, model_manager[control_id])
-        if model_manager._get_model_page(target_control) is source_page:
-            _add_figure_targets(target_control)
+    for control_id in same_page_controls:
+        _add_figure_targets(cast(ControlType, model_manager[control_id]))
 
     return closure_controls, closure_figures
 
@@ -248,8 +250,18 @@ def finalize_control_sync_chains() -> None:
     for source in sources:
         closure_controls, closure_figures = get_sync_closure(source)
 
-        old_set_control = next(action for action in source.selector.actions if isinstance(action, set_control))
-        old_update_targets = next(action for action in source.selector.actions if isinstance(action, update_targets))
+        old_set_control = next((action for action in source.selector.actions if isinstance(action, set_control)), None)
+        old_update_targets = next(
+            (action for action in source.selector.actions if isinstance(action, update_targets)), None
+        )
+        # A finalized source always has both: a non-empty `_synced_control_targets` means the default chain was built
+        # with a `set_control` alongside its `update_targets`. Fail with a clear message (rather than a bare
+        # StopIteration) if that coupling ever drifts.
+        if old_set_control is None or old_update_targets is None:
+            raise RuntimeError(
+                f"Cannot collapse the control-sync mesh for '{source.id}': its selector chain is missing the expected "
+                f"set_control/update_targets actions."
+            )
         update_targets_action_id = old_update_targets.id
         del model_manager[old_set_control.id]
         del model_manager[old_update_targets.id]

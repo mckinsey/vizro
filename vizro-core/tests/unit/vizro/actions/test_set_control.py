@@ -1075,3 +1075,50 @@ class TestControlSyncCrossPageFinalization:
         assert set_control_action.control == ["cf3"]
         assert set_control_action._stop_implicit_actions_chaining is True
         assert update_targets_action.targets == ["cp_g2", "cp_g3"]
+
+
+@pytest.fixture
+def managers_control_sync_mixed_filter_parameter(standard_px_chart):
+    """A same-page mesh mixing a Filter and a Parameter that sync each other.
+
+    The Parameter targets a figure *argument* (``mix_g2.x``), so the collapsed ``update_targets`` must reduce that to
+    the bare figure id ``mix_g2`` - the same notation Filters use - when it unions the mesh's figures.
+    """
+    vm.Page(
+        id="mix-page",
+        title="mix-page",
+        components=[
+            vm.Graph(id="mix_g1", figure=standard_px_chart),
+            vm.Graph(id="mix_g2", figure=standard_px_chart),
+        ],
+        controls=[
+            vm.Filter(id="mix_f1", column="continent", targets=["mix_g1", "mix_p1"]),
+            vm.Parameter(
+                id="mix_p1",
+                targets=["mix_g2.x", "mix_f1"],
+                selector=vm.Dropdown(options=["lifeExp", "gdpPercap"], value="lifeExp"),
+            ),
+        ],
+    )
+    Vizro._pre_build()
+
+
+@pytest.mark.usefixtures("managers_control_sync_mixed_filter_parameter")
+class TestControlSyncMixedFilterParameterFinalization:
+    """A Filter<->Parameter mesh collapses like any other, reducing the Parameter's `figure.arg` to a figure id."""
+
+    def test_filter_source_reduces_parameter_figure_argument(self):
+        # From the Filter: it syncs the Parameter, and the union is the Filter's own figure (mix_g1) plus the
+        # Parameter's figure - reduced from "mix_g2.x" to "mix_g2".
+        set_control_action, update_targets_action = model_manager["mix_f1"].selector.actions
+        assert set_control_action.control == ["mix_p1"]
+        assert set_control_action._stop_implicit_actions_chaining is True
+        assert update_targets_action.targets == ["mix_g1", "mix_g2"]
+
+    def test_parameter_source_reduces_own_figure_argument(self):
+        # From the Parameter: it syncs the Filter, and the union is the Parameter's own figure ("mix_g2.x" -> "mix_g2")
+        # plus the Filter's figure (mix_g1).
+        set_control_action, update_targets_action = model_manager["mix_p1"].selector.actions
+        assert set_control_action.control == ["mix_f1"]
+        assert set_control_action._stop_implicit_actions_chaining is True
+        assert update_targets_action.targets == ["mix_g2", "mix_g1"]
