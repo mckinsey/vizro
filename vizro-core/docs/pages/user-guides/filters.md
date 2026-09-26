@@ -240,7 +240,7 @@ To add a hierarchical filter to your page:
 
 ## Change selector
 
-Use a different `selector` argument for the [`Filter`][vizro.models.Filter] model for a different selector model. For a **single** `column` string, available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`Slider`][vizro.models.Slider] (single value, or a range with `range=True`), [`DatePicker`][vizro.models.DatePicker], [`TimePicker`][vizro.models.TimePicker], [`DateTimePicker`][vizro.models.DateTimePicker] and [`Switch`][vizro.models.Switch]. For a **hierarchical** filter (`column` as a list), use [`Cascader`][vizro.models.Cascader] as in the [section above](#hierarchical-filters).
+Use a different `selector` argument for the [`Filter`][vizro.models.Filter] model for a different selector model. For a **single** `column` string, available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`Slider`][vizro.models.Slider], [`DatePicker`][vizro.models.DatePicker], [`TimePicker`][vizro.models.TimePicker], [`DateTimePicker`][vizro.models.DateTimePicker] and [`Switch`][vizro.models.Switch]. For a **hierarchical** filter (`column` as a list), use [`Cascader`][vizro.models.Cascader] as in the [section above](#hierarchical-filters).
 
 You can explore and test all available selectors interactively on our [feature demo dashboard](https://vizro-demo-features.hf.space/selectors).
 

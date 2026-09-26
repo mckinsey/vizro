@@ -865,22 +865,22 @@ range=False
                 </div>
                 <div class="code-section-flex">
                   <div class="component-card-row-content">
-                    <span>RangeSlider</span>
+                    <span>Slider (range)</span>
                     <a
-                      href="https://vizro.readthedocs.io/en/stable/pages/API-reference/models/#vizro.models.RangeSlider"
+                      href="https://vizro.readthedocs.io/en/stable/pages/API-reference/models/#vizro.models.Slider"
                       target="_blank"
                       class="icon-link"
                     >
                       <span class="material-icons"
                         >integration_instructions</span
                       >
-                      <span class="tooltip">Click to view RangeSlider API</span>
+                      <span class="tooltip">Click to view Slider API</span>
                     </a>
                   </div>
                   <div class="two-column-grid">
                     <div class="code-block-container">
                       <div class="code-block">
-                        <pre><code class="language-python">selector=vm.RangeSlider()</code></pre>
+                        <pre><code class="language-python">selector=vm.Slider(range=True)</code></pre>
                       </div>
                       <button class="copy-btn" onclick="copyCode(this)">
                         Copy
@@ -888,9 +888,9 @@ range=False
                     </div>
                     <img
                       src="assets/images/rangeslider.png"
-                      alt="RangeSlider selector"
+                      alt="Slider range selector"
                       class="selector-icon"
-                      title="RangeSlider selector"
+                      title="Slider range selector"
                     />
                   </div>
                 </div>
@@ -1387,12 +1387,12 @@ vm.Button(
               <div class="card-title">
                 Cross-filter from Table
                 <a
-                  href="https://vizro.readthedocs.io/en/stable/pages/API-reference/action-callables/#vizro.actions.set_control"
+                  href="https://vizro.readthedocs.io/en/stable/pages/API-reference/action-callables/#vizro.actions.set_controls"
                   target="_blank"
                   class="icon-link"
                 >
                   <span class="material-icons">integration_instructions</span>
-                  <span class="tooltip">Click to view set_control API</span>
+                  <span class="tooltip">Click to view set_controls API</span>
                 </a>
               </div>
               <div class="card-description">
@@ -1411,7 +1411,7 @@ page = vm.Page(
     components=[
         vm.AgGrid(
             figure=dash_ag_grid(df),
-            actions=va.set_control(control="filter_id", value="species"),
+            actions=va.set_controls(controls="filter_id", value="species"),
         ),
         vm.Graph(id="graph_id", figure=px.histogram(df, x="sepal_length")),
     ],
@@ -1429,7 +1429,7 @@ page = vm.Page(
                 </div>
                 <div class="highlight-content">
                   • The same can be achieved if the <strong>graph</strong> is
-                  the source of the <strong>set_control</strong> action. In that
+                  the source of the <strong>set_controls</strong> action. In that
                   case, include <code class="code-inline">custom_data</code> in
                   the graph’s figure so the clicked value can be passed to the
                   filter. For example:
@@ -1438,7 +1438,7 @@ page = vm.Page(
                     <div class="code-block">
                       <pre><code class="language-python">vm.Graph(df,
     figure=(..., custom_data=["species"]),
-    actions=va.set_control(... value="species"),
+    actions=va.set_controls(... value="species"),
 )</code></pre>
                     </div>
                   </div>

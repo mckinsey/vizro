@@ -530,7 +530,18 @@ categories:
 
           - id: slider
             name: Slider
-            aliases: [range input, single slider, numeric, vm.Slider]
+            aliases:
+              [
+                range input,
+                single slider,
+                range slider,
+                min max,
+                interval,
+                two-handle,
+                numeric,
+                vm.Slider,
+                vm.RangeSlider,
+              ]
             image: assets/images/slider.png
             code: |
               controls=[
@@ -542,23 +553,6 @@ categories:
                           value=2
                       ),
                   ),
-              ]
-
-          - id: rangeslider
-            name: RangeSlider
-            aliases:
-              [range slider, min max, interval, two-handle, vm.RangeSlider]
-            image: assets/images/rangeslider.png
-            code: |
-              controls=[
-                  vm.Filter(
-                      column="lifeExp",
-                      selector=vm.RangeSlider(
-                          title="Range Slider (Gapminder - lifeExp)",
-                          step=1,
-                          marks=None
-                      ),
-                  )
               ]
 
           - id: datepicker
@@ -688,6 +682,7 @@ categories:
                       column=["continent", "country"],
                       selector=vm.Cascader(
                           title="Continent",
+                          full_path=True,
                           options={
                               "Asia": ["Japan", "India"],
                               "Europe": ["West", "North"],

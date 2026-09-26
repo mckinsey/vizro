@@ -13,7 +13,6 @@ from vizro.managers import model_manager
 # (test_set_control_deprecated asserts the warning itself).
 pytestmark = [
     pytest.mark.filterwarnings("ignore:`set_control` is deprecated:FutureWarning"),
-    pytest.mark.filterwarnings("ignore:The default of `Cascader.full_path` will change:FutureWarning"),
 ]
 
 
@@ -80,12 +79,12 @@ def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid, stan
             vm.Parameter(
                 id="cascade_param_single",
                 targets=["scatter_chart_1.x"],
-                selector=vm.Cascader(multi=False, options={"K": ["leaf_a", "leaf_b"]}),
+                selector=vm.Cascader(multi=False, options={"K": ["leaf_a", "leaf_b"]}, full_path=False),
             ),
             vm.Parameter(
                 id="cascade_param_multi",
                 targets=["scatter_chart_1.y"],
-                selector=vm.Cascader(multi=True, options={"K": ["leaf_a", "leaf_b", "leaf_c"]}),
+                selector=vm.Cascader(multi=True, options={"K": ["leaf_a", "leaf_b", "leaf_c"]}, full_path=False),
             ),
         ],
     )
@@ -153,7 +152,7 @@ def managers_page_hierarchical_filter_set_control(standard_px_chart):
                 id="hier_set_filter",
                 targets=["hier_set_chart"],
                 column=["continent", "country"],
-                selector=vm.Cascader(multi=False),
+                selector=vm.Cascader(multi=False, full_path=False),
             ),
         ],
     )

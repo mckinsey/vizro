@@ -175,9 +175,6 @@
                       <a href="#slider" class="nav-link nav-link-sub">Slider</a>
                     </li>
                     <li class="nav-item">
-                      <a href="#rangeslider" class="nav-link nav-link-sub">RangeSlider</a>
-                    </li>
-                    <li class="nav-item">
                       <a href="#datepicker" class="nav-link nav-link-sub">DatePicker (single date)</a>
                     </li>
                     <li class="nav-item">
@@ -1271,7 +1268,7 @@ respective models.
                           </div>
                         </div>
 
-                                                <div class="component_card" id="slider" data-aliases="range input single slider numeric vm.Slider">
+                                                <div class="component_card" id="slider" data-aliases="range input single slider range slider min max interval two-handle numeric vm.Slider vm.RangeSlider">
                           <h3 class="component_card_title">Slider</h3>
                           <div class="component_card_content">
                             <img src="assets/images/slider.png" alt="Slider" />
@@ -1292,32 +1289,6 @@ respective models.
             value=2
         ),
     ),
-]</code></pre>
-                            </div>
-                          </div>
-                        </div>
-
-                                                <div class="component_card" id="rangeslider" data-aliases="range slider min max interval two-handle vm.RangeSlider">
-                          <h3 class="component_card_title">RangeSlider</h3>
-                          <div class="component_card_content">
-                            <img src="assets/images/rangeslider.png" alt="RangeSlider" />
-                            <div class="code-block">
-                              <button class="code-block__copy-button" aria-label="Copy code to clipboard">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-                                <span class="code-block__copy-text">Copy</span>
-                              </button>
-                              <pre><code class="language-python">controls=[
-    vm.Filter(
-        column=&#34;lifeExp&#34;,
-        selector=vm.RangeSlider(
-            title=&#34;Range Slider (Gapminder - lifeExp)&#34;,
-            step=1,
-            marks=None
-        ),
-    )
 ]</code></pre>
                             </div>
                           </div>
@@ -1509,6 +1480,7 @@ respective models.
         column=[&#34;continent&#34;, &#34;country&#34;],
         selector=vm.Cascader(
             title=&#34;Continent&#34;,
+            full_path=True,
             options={
                 &#34;Asia&#34;: [&#34;Japan&#34;, &#34;India&#34;],
                 &#34;Europe&#34;: [&#34;West&#34;, &#34;North&#34;],

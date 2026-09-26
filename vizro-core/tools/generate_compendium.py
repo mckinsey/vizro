@@ -51,6 +51,7 @@ EXCLUDED_MODELS = {
     "Dashboard",
     "Page",  # top-level structural config
     "Layout",  # legacy alias for Grid (Grid is already covered)
+    "RangeSlider",  # deprecated alias for Slider(range=True) (Slider is already covered)
     "Tooltip",  # utility attached to other components
     "ControlGroup",  # grouping utility, not a standalone visual component
     "Table",  # covered by AgGrid; vm.Table wraps Dash DataTable, less commonly used

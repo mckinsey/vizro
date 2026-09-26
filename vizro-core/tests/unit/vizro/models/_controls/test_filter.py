@@ -24,10 +24,6 @@ from vizro.models._controls.filter import (
     _filter_isin,
 )
 
-# Cascader.full_path default will change False -> True in Vizro 1.0.0; ignore the default-change warning here
-# (parametrized selector classes are instantiated at run time without full_path).
-pytestmark = pytest.mark.filterwarnings("ignore:The default of `Cascader.full_path` will change:FutureWarning")
-
 
 @pytest.fixture
 def managers_column_different_type():
@@ -1430,7 +1426,10 @@ class TestFilterPreBuildMethod:
         ],
     )
     def test_allowed_selectors_per_column_type(self, filtered_column, selector, managers_column_only_exists_in_some):
-        filter = vm.Filter(column=filtered_column, selector=selector())
+        # Cascader needs full_path set explicitly until its default flips in 1.0.0 (avoids the default-change warning);
+        # the other selectors take no such argument.
+        selector_kwargs = {"full_path": False} if selector is vm.Cascader else {}
+        filter = vm.Filter(column=filtered_column, selector=selector(**selector_kwargs))
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert isinstance(filter.selector, selector)

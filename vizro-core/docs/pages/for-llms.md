@@ -57,9 +57,7 @@ Every dashboard is a tree of these models. See the full [model reference](API-re
 | [`Checklist`][vizro.models.Checklist]     | Multi-select checkbox group selector.                                                              | [Selectors](user-guides/selectors.md)                    |
 | [`RadioItems`][vizro.models.RadioItems]   | Single-select radio button selector.                                                               | [Selectors](user-guides/selectors.md)                    |
 | [`Switch`][vizro.models.Switch]           | Boolean toggle selector.                                                                           | [Selectors](user-guides/selectors.md)                    |
-| [`Slider`][vizro.models.Slider]           | Single numeric slider.                                                                             | [Selectors](user-guides/selectors.md)                    |
-| [`RangeSlider`][vizro.models.RangeSlider] | Numeric range slider.                                                                              | [Selectors](user-guides/selectors.md)                    |
-| [`DatePicker`][vizro.models.DatePicker]   | Date / date-range picker.                                                                          | [Selectors](user-guides/selectors.md)                    |
+| [`Slider`][vizro.models.Slider]           | Single numeric slider, or a two-handle range with `range=True`.                                                                             | [Selectors](user-guides/selectors.md)                    || [`DatePicker`][vizro.models.DatePicker]   | Date / date-range picker.                                                                          | [Selectors](user-guides/selectors.md)                    |
 | [`TimePicker`][vizro.models.TimePicker]   | Time / time-range picker.                                                                          | [Selectors](user-guides/selectors.md)                    |
 | [`DateTimePicker`][vizro.models.DateTimePicker] | Combined date-and-time / date-and-time-range picker for `datetime` columns.                        | [Selectors](user-guides/selectors.md)                    |
 | [`Cascader`][vizro.models.Cascader]       | Cascading multi-level selector.                                                                    | [Selectors](user-guides/selectors.md)                    |
@@ -67,7 +65,7 @@ Every dashboard is a tree of these models. See the full [model reference](API-re
 | [`NavBar`][vizro.models.NavBar]           | Icon sidebar or horizontal bar of `NavLink`s.                                                      | [Navigation](user-guides/navigation.md)                  |
 | [`NavLink`][vizro.models.NavLink]         | Single icon-linked entry in a `NavBar`.                                                            | [Navigation](user-guides/navigation.md)                  |
 | [`Accordion`][vizro.models.Accordion]     | Grouped collapsible page list; default sidebar navigation.                                         | [Navigation](user-guides/navigation.md)                  |
-| [`Action`][vizro.models.Action]           | Wraps a callable with `function`, `inputs`, `outputs`.                                             | [Actions](user-guides/actions.md)                        |
+| [`Action`][vizro.models.Action]           | Wraps a custom callable with `function` and `outputs`.                                             | [Actions](user-guides/actions.md)                        |
 | [`VizroBaseModel`][vizro.models.VizroBaseModel] | Base class for custom components.                                                                  | [Custom components](user-guides/custom-components.md)    |
 
 ## Built-in actions (`vizro.actions`, alias `va`)
@@ -77,8 +75,8 @@ Use these instead of writing a custom action wherever the built-in fits.
 | Action                                                    | Purpose                                                                                                                             | Guide                                                            |
 | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | [`va.export_data()`][vizro.actions.export_data]           | Export filtered data of targeted components to CSV or XLSX.                                                                         | [Handle data](user-guides/data-actions.md)                       |
-| [`va.set_control()`][vizro.actions.set_control]           | Set one or more `Filter`/`Parameter` values (`control=` a single id or a list) from a graph or table click, row selection, or another source component. | [Graph and table interactions](user-guides/graph-table-actions.md) |
-| [`va.filter_interaction()`][vizro.actions.filter_interaction] | Legacy alias for cross-filter behavior. Prefer `va.set_control` in new code.                                                   | [Graph and table interactions](user-guides/graph-table-actions.md) |
+| [`va.set_controls()`][vizro.actions.set_controls]         | Set one or more `Filter`/`Parameter` values (`controls=` a single id or a list) from a graph or table click, row selection, or another source component. | [Graph and table interactions](user-guides/graph-table-actions.md) |
+| [`va.filter_interaction()`][vizro.actions.filter_interaction] | Deprecated alias for cross-filter behavior. Prefer `va.set_controls` in new code.                                              | [Graph and table interactions](user-guides/graph-table-actions.md) |
 | [`va.show_notification()`][vizro.actions.show_notification] | Show a toast notification.                                                                                                        | [Notifications](user-guides/notification-actions.md)              |
 | [`va.update_notification()`][vizro.actions.update_notification] | Update an already-visible toast (progress, success, error).                                                                   | [Notifications](user-guides/notification-actions.md)              |
 | [`va.update_targets()`][vizro.actions.update_targets]     | Refresh a page's figures on demand (e.g. on a `Button` click), re-applying the current filters and parameters.                      | [Actions](user-guides/actions.md)                                |
@@ -90,7 +88,7 @@ Use these instead of writing a custom action wherever the built-in fits.
 
 | Column dtype                       | Default selector          |
 | ---------------------------------- | ------------------------- |
-| numerical                          | `RangeSlider`             |
+| numerical                          | `Slider` (`range=True`)   |
 | categorical (object, string, cat)  | `Dropdown` (multi-select) |
 | date / datetime                    | `DatePicker`              |
 | time                               | `TimePicker`              |
