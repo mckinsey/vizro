@@ -190,6 +190,27 @@ class TestDropdownBuild:
 
         assert_component_equal(dropdown, expected_dropdown)
 
+    def test_dropdown_build_empty_options_single(self):
+        """A single-select dropdown with no options builds with value=None instead of crashing."""
+        dropdown = Dropdown(id="dropdown_id", multi=False).build()
+        expected_dropdown = html.Div(
+            [
+                None,
+                dcc.Dropdown(
+                    id="dropdown_id",
+                    options=[],
+                    value=None,
+                    multi=False,
+                    clearable=False,
+                    placeholder="Select option",
+                    persistence=True,
+                    persistence_type="session",
+                    className="",
+                ),
+            ]
+        )
+        assert_component_equal(dropdown, expected_dropdown)
+
     def test_dropdown_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
         dropdown = Dropdown(
@@ -292,3 +313,14 @@ class TestDropdownBuild:
         )
 
         assert_component_equal(dropdown, expected_dropdown)
+
+
+class TestDropdownGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""
+
+    @pytest.mark.parametrize("trigger", ["Europe", ["Europe", "Asia"], None])
+    def test_get_value_from_trigger_returns_trigger(self, trigger):
+        # A selector already holds the value to propagate, so _get_value_from_trigger ignores `value` and returns the
+        # raw trigger value unchanged (this is what powers syncing controls that target another control).
+        dropdown = Dropdown()
+        assert dropdown._get_value_from_trigger(value="ignored", trigger=trigger) == trigger

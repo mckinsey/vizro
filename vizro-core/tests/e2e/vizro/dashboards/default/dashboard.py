@@ -6,6 +6,7 @@ from pages.actions_properties_shortcut_page import (
 )
 from pages.ag_grid_interactions_page import ag_grid_interactions_page
 from pages.ag_grid_page import ag_grid_page
+from pages.cascader_pages import cascader_leaf_page, cascader_path_page
 from pages.collapsible_containers_pages import collapsible_containers_flex, collapsible_containers_grid
 from pages.conditional_notifications import conditional_notifications_page
 from pages.container_pages import container_variants_page
@@ -66,9 +67,18 @@ from pages.set_control_multi_select_pages import (
 )
 from pages.set_control_non_categorical_controls_page import (
     set_control_non_categorical_ag_grid,
+    set_control_non_categorical_datetimepicker_ag_grid,
     set_control_non_categorical_graph,
+    set_control_non_categorical_timepicker_graph,
 )
 from pages.switch_control_page import switch_control_page
+from pages.sync_controls_pages import (
+    sync_cross_page_source_page,
+    sync_cross_page_target_page,
+    sync_drill_through_source_page,
+    sync_drill_through_target_page,
+    sync_hidden_parameter_page,
+)
 from pages.table_interactions_page import table_interactions_page
 from pages.table_page import table_page
 from pages.timepicker_pages import timepicker_parameter, timepicker_range, timepicker_single
@@ -135,6 +145,8 @@ dashboard = vm.Dashboard(
         set_control_ag_grid_cellclicked,
         set_control_non_categorical_graph,
         set_control_non_categorical_ag_grid,
+        set_control_non_categorical_timepicker_graph,
+        set_control_non_categorical_datetimepicker_ag_grid,
         timepicker_range,
         timepicker_single,
         timepicker_parameter,
@@ -142,6 +154,13 @@ dashboard = vm.Dashboard(
         datetimepicker_single,
         datetimepicker_parameter,
         datetimepicker_range_url,
+        cascader_leaf_page,
+        cascader_path_page,
+        sync_hidden_parameter_page,
+        sync_cross_page_source_page,
+        sync_cross_page_target_page,
+        sync_drill_through_source_page,
+        sync_drill_through_target_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -169,6 +188,17 @@ dashboard = vm.Dashboard(
                 cnst.DATETIMEPICKER_SINGLE_PAGE,
                 cnst.DATETIMEPICKER_PARAMETER_PAGE,
                 cnst.DATETIMEPICKER_RANGE_URL_PAGE,
+            ],
+            cnst.CASCADER_ACCORDION: [
+                cnst.CASCADER_LEAF_PAGE,
+                cnst.CASCADER_PATH_PAGE,
+            ],
+            cnst.SYNC_CONTROLS_ACCORDION: [
+                cnst.SYNC_HIDDEN_PARAMETER_PAGE,
+                cnst.SYNC_CROSS_PAGE_SOURCE_PAGE,
+                cnst.SYNC_CROSS_PAGE_TARGET_PAGE,
+                cnst.SYNC_DRILL_THROUGH_SOURCE_PAGE,
+                cnst.SYNC_DRILL_THROUGH_TARGET_PAGE,
             ],
             cnst.AG_GRID_ACCORDION: [
                 cnst.TABLE_PAGE,
@@ -218,6 +248,8 @@ dashboard = vm.Dashboard(
                 cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_PAGE,
                 cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_PAGE_TITLE,
                 cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_PAGE_TITLE,
+                cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_PAGE_TITLE,
+                cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_PAGE_TITLE,
             ],
         }
     ),

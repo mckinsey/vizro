@@ -494,3 +494,14 @@ class TestCascaderCall:
         options = {"L": ["a", "b"]}
         cascader = Cascader(id="cascader_id", options=options, multi=False, value="a", title="Title")
         assert_component_equal(cascader.build(), cascader(options))
+
+
+class TestCascaderGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""
+
+    @pytest.mark.parametrize("trigger", ["a", ["a", "b"], None])
+    def test_get_value_from_trigger_returns_trigger(self, trigger):
+        # A selector already holds the value to propagate, so _get_value_from_trigger ignores `value` and returns the
+        # raw trigger value unchanged (this is what powers syncing controls that target another control).
+        cascader = Cascader(options={"L": ["a", "b"]})
+        assert cascader._get_value_from_trigger(value="ignored", trigger=trigger) == trigger

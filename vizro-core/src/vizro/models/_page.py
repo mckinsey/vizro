@@ -10,13 +10,15 @@ from pydantic import (
     AfterValidator,
     BeforeValidator,
     Field,
+    PrivateAttr,
     conlist,
     model_validator,
 )
 from typing_extensions import TypedDict
 
-from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
+from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX, RESET_CONTROLS_ACTION_PREFIX
 from vizro.actions._on_page_load import _on_page_load
+from vizro.actions._update_targets import update_targets
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import ControlGroup, Filter, Parameter, Tooltip, VizroBaseModel
@@ -79,6 +81,11 @@ class Page(VizroBaseModel):
     path: Annotated[str, Field(default="", description="Path to navigate to page.")]
     actions: ActionsType = []
 
+    # Internal action backing the "Reset all" button. It always refreshes every figure and dynamic filter on the page
+    # when controls are reset, independently of page's `actions`. Created in pre_build and lives outside the page's
+    # model tree, so it is wired up manually. See pre_build and build.
+    _reset_controls_action: update_targets | None = PrivateAttr(default=None)
+
     @model_validator(mode="after")
     def _make_actions_chain(self):
         return make_actions_chain(self)
@@ -111,6 +118,14 @@ class Page(VizroBaseModel):
         return {"__default__": f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}.data"}
 
     @property
+    def _actions_chain_fires_on_load(self) -> bool:
+        # Unlike other models (Button, controls, ...), a Page runs the first action in its chain when the page is first
+        # opened or reloaded. This is what makes both the default on-page-load refresh and any user-defined
+        # `Page.actions` execute on page load. A controls reset does not run this chain; see the reset-controls action
+        # in pre_build. See `make_actions_chain`.
+        return True
+
+    @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
         return {
             "title": f"{self.id}_title.children",
@@ -139,12 +154,31 @@ class Page(VizroBaseModel):
         ]
         targets = figure_targets + filter_targets
 
-        if targets:
+        # By default (when the user has not set `actions`) Vizro attaches an on-page-load action that refreshes all
+        # figures and dynamic filters whenever the page is opened. If the user has explicitly set `Page.actions` then we
+        # respect their chain instead: it runs on page load in place of the automatic refresh, so they can include
+        # `va.update_targets()` to keep refreshing figures. Setting `actions=[]` therefore disables the automatic
+        # refresh entirely, which is useful to defer loading expensive data until the user asks for it.
+        if "actions" not in self.model_fields_set and targets:
             self.actions = [_on_page_load(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}", targets=targets)]
 
         # Convert generator to list as it's going to be iterated multiple times.
         # Use "root_model=self" as controls can be defined inside a "Container.controls" under the "Page.components".
         controls = list(cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter), root_model=self)))
+
+        # The "Reset all" button always refreshes every figure and dynamic filter on the page, independently of
+        # `Page.actions`. This refresh is a dedicated action on its own trigger rather than a re-run of the page-load.
+        # It lives outside `Page.actions` and so does not go through `make_actions_chain`. The private attributes set
+        # below mirror that function's action-wiring contract and must be kept in sync with it.
+        if controls and targets:
+            reset_action_trigger = f"{RESET_CONTROLS_ACTION_PREFIX}_trigger_{self.id}.data"
+            reset_action = update_targets(id=f"{RESET_CONTROLS_ACTION_PREFIX}_{self.id}", targets=targets)
+            reset_action._trigger = reset_action_trigger
+            reset_action._first_in_chain_trigger = reset_action_trigger
+            # Unlike on-page-load, the reset action only runs when the user clicks "Reset all", never on initial render.
+            reset_action._prevent_initial_call_of_guard = True
+            reset_action._parent_model = self
+            self._reset_controls_action = reset_action
 
         if controls:
             # TODO-AV2 D: Think about merging this with the URL callback when start working on cross-page actions.
@@ -162,7 +196,7 @@ class Page(VizroBaseModel):
 
             clientside_callback(
                 ClientsideFunction(namespace="page", function_name="reset_controls"),
-                Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data", allow_duplicate=True),
+                Output(f"{RESET_CONTROLS_ACTION_PREFIX}_trigger_{self.id}", "data"),
                 *selector_outputs,
                 *selector_guard_outputs,
                 Input("reset-button", "n_clicks"),
@@ -172,22 +206,22 @@ class Page(VizroBaseModel):
                 hidden=True,
             )
 
-        # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
-        url_controls = [control for control in controls if control.show_in_url]
-
-        if url_controls:
+            # Define a clientside callback that keeps controls in sync across pages through `vizro_controls_store` and,
+            # for controls with show_in_url=True, mirrors their values in the URL query string. It runs for ALL
+            # controls on the page (not only show_in_url ones): every control's value is tracked in the store on change
+            # so it can be restored on whichever page syncs it (via set_control) when that page is opened.
             # Selector values as inputs. Use "__default__" as the key to get the main selector input prop.
             selector_values_inputs = [
-                Input(*control.selector._action_triggers["__default__"].split(".")) for control in url_controls
+                Input(*control.selector._action_triggers["__default__"].split(".")) for control in controls
             ]
             # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
             # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True.
-            control_ids_states = [State(control.id, "id") for control in url_controls]
+            control_ids_states = [State(control.id, "id") for control in controls]
             # `control_selector_ids_states` holds metadata needed for setting selector values
             # and their selector guard component via a clientside callback (`dash_clientside.set_props`).
             # SetProps is used to avoid sending selector values as callback outputs, which can cause unpredictable
             # triggering of the guard-actions-chain callback.
-            control_selector_ids_states = [State(control.selector.id, "id") for control in url_controls]
+            control_selector_ids_states = [State(control.selector.id, "id") for control in controls]
 
             # The URL is updated in the clientside callback with the `history.replaceState`, instead of using a
             # dcc.Location as a callback Output. Do it because the dcc.Location uses `history.pushState` under the hood
@@ -195,6 +229,9 @@ class Page(VizroBaseModel):
             # Similarly, we read the URL query parameters in the clientside callback with the window.location.pathname,
             # instead of using dcc.Location as a callback Input. Do it to align the behavior with the outputs and to
             # simplify the function inputs handling.
+            # `vizro_controls_store` is passed as a State (kept last so it is popped off the flexible-signature args in
+            # JS). It is a State rather than an Input so cross-page set_control writes to the store do not re-trigger
+            # this callback; the store is only read here to restore synced values when the page is opened.
             clientside_callback(
                 ClientsideFunction(namespace="page", function_name="sync_url_query_params_and_controls"),
                 Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", "data"),
@@ -202,6 +239,7 @@ class Page(VizroBaseModel):
                 *selector_values_inputs,
                 *control_ids_states,
                 *control_selector_ids_states,
+                State("vizro_controls_store", "data"),
                 hidden=True,
             )
 
@@ -226,12 +264,18 @@ class Page(VizroBaseModel):
             )
         )
 
+        # The reset-controls action lives outside the page's model tree (see pre_build), so its internal components are
+        # added here explicitly rather than being picked up by the traversal above.
+        if self._reset_controls_action is not None:
+            action_components.extend(self._reset_controls_action._dash_components)
+
         # Keep these components in components_container, moving them outside make them not work properly.
         components_container.children.extend(
             [
                 *action_components,
                 dcc.Store(id="vizro_logs_store", data=[], storage_type="session"),
                 dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"),
+                dcc.Store(id=f"{RESET_CONTROLS_ACTION_PREFIX}_trigger_{self.id}"),
                 dcc.Download(id="vizro_download"),
                 dcc.Location(id="vizro_url", refresh="callback-nav"),
                 dmc.NotificationContainer(

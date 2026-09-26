@@ -4,8 +4,10 @@ from e2e.asserts import decode_url_params, encode_url_params, get_url_params, pa
 from e2e.vizro.checkers import check_selected_categorical_component, check_selected_dropdown
 from e2e.vizro.navigation import (
     accordion_select,
+    clear_cascader_multi,
     clear_dropdown,
     page_select,
+    select_cascader_path,
     select_dropdown_value,
     select_range_datetime_picker_value,
     select_range_time_picker_value,
@@ -326,6 +328,48 @@ def test_url_params_encoding_and_page_refresh_datetimepicker(dash_br):
     # check url params still the same
     url_params_dict = get_url_params(dash_br)
     assert_that(url_params_dict, equal_to(enc_data))
+
+
+def test_url_params_encoding_and_page_refresh_cascader_leaf_multi(dash_br):
+    """Verifies multi leaf-mode Cascader URL params are encoded and restored after refresh."""
+    accordion_select(dash_br, accordion_name=cnst.CASCADER_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.CASCADER_LEAF_PAGE,
+        page_path=cnst.CASCADER_LEAF_PAGE_PATH,
+        graph_check=False,
+    )
+    clear_cascader_multi(dash_br, cnst.CASCADER_LEAF_MULTI_ID)
+    select_cascader_path(dash_br, cnst.CASCADER_LEAF_MULTI_ID, ["Americas", "South", "Brazil"], multi=True)
+    select_cascader_path(dash_br, cnst.CASCADER_LEAF_MULTI_ID, ["Asia", "South", "Japan"], multi=True)
+
+    selected_params = {cnst.CASCADER_LEAF_MULTI_FILTER_CONTROL_ID: ["Brazil", "Japan"]}
+    enc_data = encode_url_params(selected_params, apply_on_keys=cnst.CASCADER_LEAF_MULTI_FILTER_CONTROL_ID)
+    assert_that(get_url_params(dash_br), equal_to(enc_data))
+    dash_br.driver.refresh()
+    assert_that(get_url_params(dash_br), equal_to(enc_data))
+
+
+def test_url_params_encoding_and_page_refresh_cascader_path_multi(dash_br):
+    """Verifies multi path-mode Cascader URL params are encoded and restored after refresh."""
+    accordion_select(dash_br, accordion_name=cnst.CASCADER_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.CASCADER_PATH_PAGE,
+        page_path=cnst.CASCADER_PATH_PAGE_PATH,
+        graph_check=False,
+    )
+    clear_cascader_multi(dash_br, cnst.CASCADER_PATH_MULTI_ID)
+    select_cascader_path(dash_br, cnst.CASCADER_PATH_MULTI_ID, ["Oregon", "Portland"], multi=True)
+    select_cascader_path(dash_br, cnst.CASCADER_PATH_MULTI_ID, ["Maine", "Portland"], multi=True)
+
+    selected_params = {
+        cnst.CASCADER_PATH_MULTI_FILTER_CONTROL_ID: [["Oregon", "Portland"], ["Maine", "Portland"]],
+    }
+    enc_data = encode_url_params(selected_params, apply_on_keys=cnst.CASCADER_PATH_MULTI_FILTER_CONTROL_ID)
+    assert_that(get_url_params(dash_br), equal_to(enc_data))
+    dash_br.driver.refresh()
+    assert_that(get_url_params(dash_br), equal_to(enc_data))
 
 
 def test_url_params_encoding_and_page_refresh_switch(dash_br):

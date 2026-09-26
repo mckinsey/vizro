@@ -3,6 +3,7 @@ from time import sleep
 import e2e.vizro.constants as cnst
 import pandas as pd
 from pages.ag_grid_interactions_page import ag_grid_interactions_page
+from pages.cascader_pages import cascader_leaf_page, cascader_path_page
 from pages.conditional_notifications import conditional_notifications_page
 from pages.datetimepicker_pages import datetimepicker_range
 from pages.filters_inside_containters_page import filters_inside_containers_page
@@ -23,7 +24,15 @@ from pages.set_control_multi_select_pages import (
     filtered_graph_aggrid_trigger_set_control,
     self_filter_set_control_page,
 )
+from pages.sync_controls_pages import (
+    sync_cross_page_source_page,
+    sync_cross_page_target_page,
+    sync_drill_through_source_page,
+    sync_drill_through_target_page,
+    sync_hidden_parameter_page,
+)
 from pages.timepicker_pages import timepicker_range
+from pages.update_targets_page import apply_controls_on_button_click_page
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -310,6 +319,14 @@ dashboard = vm.Dashboard(
         conditional_notifications_page,
         timepicker_range,
         datetimepicker_range,
+        cascader_leaf_page,
+        cascader_path_page,
+        apply_controls_on_button_click_page,
+        sync_hidden_parameter_page,
+        sync_cross_page_source_page,
+        sync_cross_page_target_page,
+        sync_drill_through_source_page,
+        sync_drill_through_target_page,
     ]
 )
 

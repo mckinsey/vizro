@@ -127,7 +127,6 @@ def make_actions_chain(self):
     Table and AgGrid. Even though it's a model validator it is also run on assignment e.g. selector.actions = ...
     """
     from vizro.actions import export_data, filter_interaction
-    from vizro.actions._on_page_load import _on_page_load
 
     converted_actions = []
 
@@ -153,6 +152,13 @@ def make_actions_chain(self):
             converted_actions.append(action)
 
     model_action_trigger = self._action_triggers["__default__"]
+
+    # Models whose chain fires on page load (i.e. Page) run their first action on the initial page render. For every
+    # other model (Button, controls, ...) the chain only runs in response to a genuine user interaction. This used to be
+    # keyed off `isinstance(action, _on_page_load)`, but now that users can supply their own `Page.actions` the "run on
+    # load" behavior belongs to the triggering model, not to a specific action type.
+    fires_on_load = getattr(self, "_actions_chain_fires_on_load", False)
+
     for i, action in enumerate(converted_actions):
         # First action in the chain uses the model's specified trigger.
         # All subsequent actions in the chain are triggered by the previous action's completion.
@@ -163,8 +169,10 @@ def make_actions_chain(self):
         # Every action has to know about the model action trigger to properly set the action's builtin arg "_trigger".
         action._first_in_chain_trigger = model_action_trigger
 
-        # The actions chain guard should be called only for on page load.
-        action._prevent_initial_call_of_guard = not isinstance(action, _on_page_load)
+        # The guard prevents the initial call for every action except the first one in a chain that fires on page load,
+        # which must run when the page layout is first rendered. Subsequent actions in any chain are triggered by the
+        # previous action finishing rather than the initial render, so their guard always prevents the initial call.
+        action._prevent_initial_call_of_guard = not (i == 0 and fires_on_load)
 
         # Temporary workaround for lookups in filter_interaction and set_control. This should become unnecessary once
         # the model manager supports `parent_model` access for all Vizro models.
