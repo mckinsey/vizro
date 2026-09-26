@@ -734,7 +734,7 @@ categories:
 
           Vizro().build(vm.Dashboard(pages=[page])).run()
 
-      - id: set-control
+      - id: setcontrols
         name: "Graph & table interactions"
         aliases:
           [
@@ -745,6 +745,7 @@ categories:
             interaction,
             drill,
             drill down,
+            set_controls,
             set_control,
             linked,
             click filter,
@@ -762,7 +763,7 @@ categories:
         description: |
           In Vizro, interactions between components are enabled through an explicitly defined
           intermediate control. Cross-filtering, cross-parameter updates, and cross-highlighting
-          all use the <b>set_control</b> action, providing a flexible and powerful way to link
+          all use the <b>set_controls</b> action, providing a flexible and powerful way to link
           components.
         code: |
           import vizro.plotly.express as px
@@ -780,8 +781,8 @@ categories:
                       title="""Click on a row to use that row's
                       sex to filter graph""",
                       figure=dash_ag_grid(tips),
-                      actions=va.set_control(
-                          control="sex_filter", value="sex"
+                      actions=va.set_controls(
+                          controls="sex_filter", value="sex"
                       ),
                   ),
                   vm.Graph(

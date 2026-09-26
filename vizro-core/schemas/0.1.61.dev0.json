@@ -2303,9 +2303,6 @@
         "value": {
           "anyOf": [
             {
-              "type": "number"
-            },
-            {
               "items": {
                 "type": "number"
               },
@@ -2318,7 +2315,7 @@
             }
           ],
           "default": null,
-          "description": "Default value: a single number, or a `[start, end]` pair when `range=True`.",
+          "description": "Default value: a `[start, end]` pair.",
           "title": "Value"
         },
         "range": {

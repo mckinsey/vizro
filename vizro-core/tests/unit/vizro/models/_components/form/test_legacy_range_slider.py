@@ -207,7 +207,8 @@ class TestRangeSliderInstantiation:
         [
             ([0], "List should have at least 2 items after validation"),
             ([], "List should have at least 2 items after validation"),
-            (2, "Please set range=False if providing a single value."),
+            # RangeSlider narrows `value` to a two-item list, so a scalar is rejected at the field level.
+            (2, "Input should be a valid list"),
             ([0, None], "Input should be a valid number"),
             ([None, None], "Input should be a valid number"),
             ([-1, 11], "Please provide a valid value between the min and max value."),

@@ -214,7 +214,7 @@
                   <a href="#export-data" class="nav-link nav-link-sub">Export data</a>
                 </li>
                 <li class="nav-item">
-                  <a href="#set-control" class="nav-link nav-link-sub">Graph &amp; table interactions</a>
+                  <a href="#setcontrols" class="nav-link nav-link-sub">Graph &amp; table interactions</a>
                 </li>
                 <li class="nav-item">
                   <a href="#notifications" class="nav-link nav-link-sub">Notifications</a>
@@ -1598,7 +1598,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                     </div>
                   </div>
 
-                                    <div class="component" id="set-control" data-aliases="cross filter cross-filter cross highlight cross-highlight interaction drill drill down set_control linked click filter">
+                                    <div class="component" id="setcontrols" data-aliases="cross filter cross-filter cross highlight cross-highlight interaction drill drill down set_controls set_control linked click filter">
                     <div class="component_title">
                       <h4 class="component__name">Graph &amp; table interactions</h4>
                       <div class="component_title__actions">
@@ -1609,7 +1609,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
             </svg>
                           Docs
                         </a>
-                        <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F21TTU%2BEMBD9Kw0XIVn5ASYczBq9evKyENKFLtvYL9uCqPG%2FO9OyLkXbA%2B28mXlvOsNX1umeZXck49Jo68nEP60ujdBefJRsNpY5R6gjZq5V4kI7z7UK2EQ3mIScIkKyVierZQTI4vWClzVQenoUzF3wnrpzS4d2sLyvVa08N45UoKHsqaclXvMCAUMHBsAky2c45bUisDz3glV1trfaudsTF55ZErgCC%2FGaDJaac53tYkCngVYx5V11iBZckPR%2BeAIF%2BdW2To97L3j3SrQilFj9jplHBwRn6vF%2B49JIx2Z0WRQtGnDvUr8TH0bLqvUr5FhzsfFbWlBNtHTMt51W3mqxkRsLDAiIBglt5AdWaJwYWbSCjCRszbU%2Bw6s8ofANC%2B8hDWps06fdlAQdPHPnNTjJUNKOzDGwzoq%2FhM1vg4L%2BbXseQyH%2FKUnKTPFOi1GqS9Eb0FM7sDAGSTHNStpVGRypMTB%2BYZzzojyOXPQ5CHuAzh01tX2OAwrp8NMUBTx5ZtnbyC2TOG7434X5RwD0MrQcmu8f3wSNuZYDAAA%3D" target="_blank" rel="noopener noreferrer" class="utility-btn">
+                        <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F21TTU%2FEIBD9K6QX22TtDzDpwazRqycvS9OwLdslUkCgtWr8785A1y3VcijMm4%2F3mOEra3XHszuSicFo68kkPq0ujdRefpR8NpY7R5gjZqYqcWGtF1oFbGIbbICcMkIDVSerhwiQxesFD2ug9OwoubvgHXPnhvVNb0VHFVVeGEcq4FB2zLMSj3mBgGE9B2AaymfY5VQR%2BLzwklc021vt3O1JSM8tCbVCFeI16S0zZ5rtYkCroaziyrvqEC34QdL7%2FgkY5FfbOj2uvRTtK9GKMGL1O2YeHRQ4M4%2FnG5dGOj6jy8Jo4YBrl%2FqdRD9aXq1vIUfNxcZvaUE1sdJx37Raeaul2%2FCNCiMEtIFEExlAXWidHHm0ApEkbl1tvYd7eULqmzKigzTIskkvdyMKengWzmtwGoKoHZljIM2KvwXr3xYtAtIGPQYh%2FzFJZKZ4q%2BU4qIvoDeiZ7XkYhERMvaJ2ZQZbZgwMYBjovCiPo5BdDsQeoHdHzWyX44hCOvzVRQFXnln%2BNgrLBxw4fHnhBSAAfDlaDvX3DyR8j%2FWYAwAA" target="_blank" rel="noopener noreferrer" class="utility-btn">
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="5 3 19 12 5 21 5 3"></polygon>
             </svg>
@@ -1621,7 +1621,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                       <div class="component__visual">
                         <p class="component__description">In Vizro, interactions between components are enabled through an explicitly defined
 intermediate control. Cross-filtering, cross-parameter updates, and cross-highlighting
-all use the <b>set_control</b> action, providing a flexible and powerful way to link
+all use the <b>set_controls</b> action, providing a flexible and powerful way to link
 components.
 </p>
                         <img src="assets/images/cross_filter_from_graph_1.gif" alt="Graph &amp; table interactions" />
@@ -1650,8 +1650,8 @@ page = vm.Page(
             title=&#34;&#34;&#34;Click on a row to use that row&#39;s
             sex to filter graph&#34;&#34;&#34;,
             figure=dash_ag_grid(tips),
-            actions=va.set_control(
-                control=&#34;sex_filter&#34;, value=&#34;sex&#34;
+            actions=va.set_controls(
+                controls=&#34;sex_filter&#34;, value=&#34;sex&#34;
             ),
         ),
         vm.Graph(
