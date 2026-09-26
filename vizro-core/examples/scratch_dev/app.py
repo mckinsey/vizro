@@ -1,352 +1,1043 @@
 """This is a test app to test the dashboard layout."""
 
-import vizro.models as vm
-from vizro import Vizro
-from vizro.figures import kpi_card_reference, kpi_card
-from functools import reduce
-import numpy as np
-from typing import List, Optional
+import datetime as dt
+
 import pandas as pd
-import plotly.graph_objects as go
+
+import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.models.types import capture
+from vizro import Vizro
+from vizro.actions import set_control, update_targets
+from vizro.managers import data_manager
 
 
-# CUSTOM CHARTS ----------------------------------------------------------------
-@capture("graph")
-def bar(
-    x: str,
-    y: str,
-    data_frame: pd.DataFrame,
-    top_n: int = 15,
-    custom_data: Optional[List[str]] = None,
-):
-    """Custom bar chart implementation.
-    Based on [px.bar](https://plotly.com/python-api-reference/generated/plotly.express.bar).
-    """
-    df_agg = data_frame.groupby(y).agg({x: "count"}).sort_values(by=x, ascending=False).reset_index()
-    fig = px.bar(
-        data_frame=df_agg.head(top_n),
-        x=x,
-        y=y,
-        orientation="h",
-        text=x,
-        color_discrete_sequence=["#1A85FF"],
-        custom_data=custom_data,
-    )
-    fig.update_layout(xaxis_title="# of Complaints", yaxis={"title": "", "autorange": "reversed"})
-    return fig
+df = px.data.iris()
+data_manager["dynamic_iris"] = lambda number_of_points=10: df.head(number_of_points)
 
 
-@capture("graph")
-def area(x: str, y: str, data_frame: pd.DataFrame):
-    """Custom chart to create unstacked area chart.
-    Based on [go.Scatter](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Scatter.html).
-    """
-    df_agg = data_frame.groupby(["Year", "Month"]).agg({y: "count"}).reset_index()
-    df_agg_2019 = df_agg[df_agg["Year"] == "2018"]
-    df_agg_2020 = df_agg[df_agg["Year"] == "2019"]
-
-    fig = go.Figure()
-    fig.add_trace(
-        go.Scatter(x=df_agg_2020[x], y=df_agg_2020[y], fill="tozeroy", name="2019", marker={"color": "#1a85ff"})
-    )
-    fig.add_trace(go.Scatter(x=df_agg_2019[x], y=df_agg_2019[y], fill="tonexty", name="2018", marker={"color": "grey"}))
-    fig.update_layout(
-        title="Complaints over time",
-        xaxis_title="Date Received",
-        yaxis_title="# of Complaints",
-        title_pad_t=4,
-        xaxis={
-            "showgrid": False,
-            "tickmode": "array",
-            "tickvals": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-            "ticktext": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        },
-    )
-    return fig
+# A synthetic dataset with a column of every type, so page_3_9 can exercise syncing for *every* selector.
+_SYNC_N = 60
+_SYNC_HIER = [("North", "New York"), ("North", "Boston"), ("South", "Miami"), ("South", "Austin")]
 
 
-@capture("graph")
-def pie(
-    names: str,
-    values: str,
-    data_frame: pd.DataFrame = None,
-    title: Optional[str] = None,
-):
-    """Custom pie chart implementation.
-    Based on [px.pie](https://plotly.com/python-api-reference/generated/plotly.express.pie).
-    """
-    df_agg = data_frame.groupby(names).agg({values: "count"}).reset_index()
-    fig = px.pie(
-        data_frame=df_agg,
-        names=names,
-        values=values,
-        color=names,
-        color_discrete_map={
-            "Closed with explanation": "#1a85ff",
-            "Closed with monetary relief": "#d41159",
-            "Closed with non-monetary relief": "#adbedc",
-            "Closed without relief": "#7ea1ee",
-            "Closed with relief": "#df658c",
-            "Closed": "#1a85ff",
-        },
-        title=title,
-        hole=0.4,
-    )
-    fig.update_layout(legend_x=1, legend_y=1, title_pad_t=2, margin={"l": 0, "r": 0, "t": 60, "b": 0})
-    return fig
+def _cyc(values):
+    """Cycle ``values`` deterministically to length ``_SYNC_N`` (keeps the dataset reproducible)."""
+    return [values[i % len(values)] for i in range(_SYNC_N)]
 
 
-def fill_na_with_random(df, column):
-    """Fills missing values in a column with random values from the same column."""
-    non_na_values = df[column].dropna().values
-    df[column] = df[column].apply(lambda x: np.random.choice(non_na_values) if pd.isna(x) else x)
-    return df[column]
+sync_df = pd.DataFrame(
+    {
+        "x": [i % 10 for i in range(_SYNC_N)],
+        "y": [(i * 3) % 10 for i in range(_SYNC_N)],
+        "cat_dropdown": _cyc(["A", "B", "C"]),  # categorical -> Dropdown
+        "cat_checklist": _cyc(["X", "Y", "Z"]),  # categorical -> Checklist
+        "cat_radio": _cyc(["P", "Q", "R"]),  # categorical -> RadioItems
+        "num_slider": _cyc([0, 1, 2, 3, 4, 5]),  # numerical -> Slider
+        "num_range": _cyc([0, 20, 40, 60, 80, 100]),  # numerical -> RangeSlider
+        "date_col": pd.to_datetime(
+            _cyc(["2024-01-01", "2024-01-02", "2024-01-03", "2024-01-04"])
+        ),  # date -> DatePicker
+        "datetime_col": pd.to_datetime(  # datetime -> DateTimePicker
+            _cyc(["2024-01-01 06:00", "2024-01-01 09:00", "2024-01-01 12:00", "2024-01-01 15:00"])
+        ),
+        "time_col": _cyc([dt.time(8, 0), dt.time(10, 30), dt.time(13, 0), dt.time(16, 30)]),  # time -> TimePicker
+        "bool_col": _cyc([True, False]),  # boolean -> Switch
+        "region": [_SYNC_HIER[i % 4][0] for i in range(_SYNC_N)],  # hierarchical parent -> Cascader
+        "city": [_SYNC_HIER[i % 4][1] for i in range(_SYNC_N)],  # hierarchical leaf   -> Cascader
+    }
+)
 
 
-def clean_data_and_add_columns(data: pd.DataFrame):
-    """Tidies the original data set, adds new columns, and changes cell values for the purpose of this example."""
-    data = data.rename(
-        columns={
-            "Date Sumbited": "Date Submitted",
-            "Submitted via": "Channel",
-            "Company response to consumer": "Company response - detailed",
-        },
-    )
+SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
 
-    # Clean cell values and/or assign different values for the purpose of this example
-    data["Company response - detailed"] = data["Company response - detailed"].replace("Closed", "Closed without relief")
-    data["State"] = data["State"].replace("UNITED STATES MINOR OUTLYING ISLANDS", "UM")
-    data["State"] = fill_na_with_random(data, "State")
-    data["Consumer disputed?"] = data["Consumer disputed?"].fillna("No")
+vm.Page.add_type("controls", vm.Button)
 
-    # Convert to correct data type
-    data["Date Received"] = pd.to_datetime(data["Date Received"], format="%m/%d/%y").dt.strftime("%Y-%m-%d")
-
-    # Create additional columns
-    data["Month"] = pd.to_datetime(data["Date Received"], format="%Y-%m-%d").dt.strftime("%m")
-    data["Year"] = pd.to_datetime(data["Date Received"], format="%Y-%m-%d").dt.strftime("%Y")
-    data["Company response"] = np.where(
-        data["Company response - detailed"].str.contains("Closed"), "Closed", data["Company response - detailed"]
-    )
-    data["Company response - Closed"] = np.where(
-        data["Company response - detailed"].str.contains("Closed"), data["Company response - detailed"], "Not closed"
-    )
-
-    # Filter 2018 and 2019 only
-    data = data[(data["Year"].isin(["2018", "2019"]))]
-    return data
-
-
-def create_data_for_kpi_cards(data):
-    """Formats and aggregates the data for the KPI cards."""
-    total_complaints = (
-        data.groupby("Year")
-        .agg({"Complaint ID": "count"})
-        .rename(columns={"Complaint ID": "Total Complaints"})
-        .reset_index()
-    )
-    closed_complaints = (
-        data[data["Company response"] == "Closed"]
-        .groupby("Year")
-        .agg({"Complaint ID": "count"})
-        .rename(columns={"Complaint ID": "Closed Complaints"})
-        .reset_index()
-    )
-    timely_response = (
-        data[data["Timely response?"] == "Yes"]
-        .groupby("Year")
-        .agg({"Complaint ID": "count"})
-        .rename(columns={"Complaint ID": "Timely response"})
-        .reset_index()
-    )
-    closed_without_cost = (
-        data[data["Company response - Closed"] != "Closed with monetary relief"]
-        .groupby("Year")
-        .agg({"Complaint ID": "count"})
-        .rename(columns={"Complaint ID": "Closed w/o cost"})
-        .reset_index()
-    )
-    consumer_disputed = (
-        data[data["Consumer disputed?"] == "Yes"]
-        .groupby("Year")
-        .agg({"Complaint ID": "count"})
-        .rename(columns={"Complaint ID": "Consumer disputed"})
-        .reset_index()
-    )
-
-    # Merge all data frames into one
-    dfs_to_merge = [total_complaints, closed_complaints, timely_response, closed_without_cost, consumer_disputed]
-    df_kpi = reduce(lambda left, right: pd.merge(left, right, on="Year", how="outer"), dfs_to_merge)
-
-    # Calculate percentages
-    df_kpi.fillna(0, inplace=True)
-    df_kpi["Closed Complaints"] = df_kpi["Closed Complaints"] / df_kpi["Total Complaints"] * 100
-    df_kpi["Open Complaints"] = 100 - df_kpi["Closed Complaints"]
-    df_kpi["Timely response"] = df_kpi["Timely response"] / df_kpi["Total Complaints"] * 100
-    df_kpi["Closed w/o cost"] = df_kpi["Closed w/o cost"] / df_kpi["Total Complaints"] * 100
-    df_kpi["Consumer disputed"] = df_kpi["Consumer disputed"] / df_kpi["Total Complaints"] * 100
-
-    # Pivot the dataframe and flatten
-    df_kpi["index"] = 0
-    df_kpi = df_kpi.pivot(
-        index="index",
-        columns="Year",
-        values=[
-            "Total Complaints",
-            "Closed Complaints",
-            "Open Complaints",
-            "Timely response",
-            "Closed w/o cost",
-            "Consumer disputed",
-        ],
-    )
-    df_kpi.columns = [f"{kpi}_{year}" for kpi, year in df_kpi.columns]
-    return df_kpi
-
-
-# DATA --------------------------------------------------------------------------------------------
-df_complaints = pd.read_csv("https://query.data.world/s/glbdstahsuw3hjgunz3zssggk7dsfu?dws=00000")
-df_complaints = clean_data_and_add_columns(df_complaints)
-df_kpi_cards = create_data_for_kpi_cards(df_complaints)
-
-
-# SUB-SECTIONS ------------------------------------------------------------------------------------
-kpi_banner = vm.Container(
-    layout=vm.Flex(direction="row"),
+page_0_1 = vm.Page(
+    id="page_0_1",
+    title="Smoke test Page",
     components=[
-        vm.Figure(
-            id="kpi-reverse-coloring",
-            figure=kpi_card_reference(
-                df_kpi_cards,
-                value_column="Total Complaints_2019",
-                reference_column="Total Complaints_2018",
-                title="Total Complaints",
-                value_format="{value:,}",
-                reference_format="vs. 2018 ({reference:.0f})",
-                icon="person",
-                size="compact",
-                reverse_color=True,
-                units="%",
+        vm.Graph(
+            id="p01_graph",
+            figure=px.scatter(
+                "dynamic_iris", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
             ),
         ),
-        vm.Figure(
-            figure=kpi_card_reference(
-                df_kpi_cards,
-                value_column="Closed Complaints_2019",
-                reference_column="Closed Complaints_2018",
-                title="Closed Complaints",
-                value_format="{value:.1f}",
-                reference_format=" vs. 2018 ({reference:.1f}%)",
-                icon="inventory",
-                size="default",
-                units="%",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card_reference(
-                df_kpi_cards,
-                value_column="Timely response_2019",
-                reference_column="Timely response_2018",
-                title="Timely Response",
-                value_format="{value:.1f}",
-                reference_format="vs. 2018 ({reference:.1f}%)",
-                icon="timer",
-                size="large",
-                units="%",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=df_kpi_cards,
-                value_column="Total Complaints_2019",
-                value_format="{value:,}",
-                icon="person",
-                title="Total",
-                size="compact",
-                units="MWh",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=df_kpi_cards,
-                value_column="Total Complaints_2019",
-                value_format="{value:,}",
-                icon="person",
-                title="Total Complaints",
-                size="default",
-                units="MWh",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=df_kpi_cards,
-                value_column="Total Complaints_2019",
-                value_format="{value:,}",
-                icon="person",
-                title="Total Complaints",
-                size="large",
-                units="MWh",
-            )
+        vm.Text(id="p01_text", text="Placeholder"),
+    ],
+    controls=[
+        vm.Filter(id="p01_filter", column="species", selector=vm.RadioItems(), show_in_url=True),
+        vm.Parameter(
+            id="p01_parameter",
+            targets=["p01_graph.data_frame.number_of_points"],
+            selector=vm.Slider(min=10, max=150, step=10, value=10),
+            show_in_url=True,
         ),
     ],
 )
 
-bar_charts_tabbed = vm.Tabs(
-    tabs=[
+# ====== **FIX** vm.Filter/vm.Parameter always applied when targets refresh ======
+
+page_1_1 = vm.Page(
+    id="page_1_1",
+    title="Apply the filter on the parameter change",
+    components=[
+        vm.Graph(
+            id="p11_graph",
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+            targets=["p11_graph"],
+            selector=vm.RadioItems(
+                title="Filter that does NOT auto-apply, but is taken into account when its target Graph is updated.",
+                # actions=None (or actions=[]) opts out of the default "refresh on change" behavior.
+                actions=None,
+            ),
+        ),
+        vm.Parameter(targets=["p11_graph.x"], selector=vm.RadioItems(options=["sepal_width", "sepal_length"])),
+    ],
+)
+
+
+# ====== **NEW** Apply controls on button click ======
+
+
+page_2_1 = vm.Page(
+    id="page_2_1",
+    title="Apply controls on button click",
+    components=[
+        vm.Graph(
+            id="p21_graph",
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+            targets=["p21_graph"],
+            selector=vm.RadioItems(
+                title="Filter that does NOT auto-apply, but is taken into account when its target Graph is updated.",
+                actions=None,
+            ),
+        ),
+        vm.Parameter(
+            targets=["p21_graph.x"],
+            selector=vm.RadioItems(
+                title="Parameter that does NOT auto-apply, but is taken into account when its target Graph is updated.",
+                options=["sepal_width", "sepal_length"],
+                actions=[],
+            ),
+        ),
+        vm.Button(text="Apply controls", actions=update_targets()),
+    ],
+)
+
+# ====== **NEW** A Slider resizes the data and refreshes two filters; Button then applies them ======
+# The Slider is a data_frame Parameter, so its value resizes the graph's data. Its `update_targets` refreshes the two
+# dynamic filters below on value change - recomputing the RadioItems options and the Slider min/max from the resized
+# data - WITHOUT redrawing the graph (only the filters are targeted). The filters do NOT auto-apply; the Button
+# applies them to the graph on click. The slider->filters step targets only filters (no figure), exercising the fix.
+
+page_2_2 = vm.Page(
+    id="page_2_2",
+    title="Refresh filters with a slider, apply them with a button",
+    components=[
+        vm.Graph(
+            id="p22_graph",
+            figure=px.scatter(
+                "dynamic_iris", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            id="p22_master_slider",
+            targets=["p22_graph.data_frame.number_of_points"],
+            selector=vm.Slider(
+                min=10,
+                max=150,
+                step=10,
+                value=10,
+                title="Change me to resize the data and refresh the two filters below (graph is not redrawn).",
+                actions=update_targets(targets=["p22_radio_filter", "p22_range_filter"]),
+            ),
+        ),
+        vm.Filter(
+            id="p22_radio_filter",
+            column="species",
+            targets=["p22_graph"],
+            selector=vm.RadioItems(
+                title="Options refreshed by the slider; does NOT auto-apply.",
+                actions=None,
+            ),
+        ),
+        vm.Filter(
+            id="p22_range_filter",
+            column="petal_length",
+            targets=["p22_graph"],
+            selector=vm.RangeSlider(
+                title="min/max refreshed by the slider; does NOT auto-apply.",
+                actions=[],
+            ),
+        ),
+        vm.Button(text="Apply filters", actions=update_targets(targets=["p22_graph"])),
+    ],
+)
+
+# ====== **NEW** A deferred data_frame Parameter is still applied when its targets are refreshed ======
+# The Parameter (Slider) resizes the graph's data but has `actions=None`, so changing it does nothing on its own. The
+# Filter is likewise deferred (`actions=[]`). Clicking the Button refreshes the whole page (bare `update_targets()`):
+# the graph reloads with the new data size AND the filter's options recompute to match - proving the deferred
+# parameter's value is counted even though it never triggered a refresh itself.
+
+page_2_3 = vm.Page(
+    id="page_2_3",
+    title="Deferred parameter is still applied on refresh",
+    components=[
+        vm.Graph(
+            id="p23_graph",
+            figure=px.scatter(
+                "dynamic_iris", x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            id="p23_parameter",
+            targets=["p23_graph.data_frame.number_of_points"],
+            selector=vm.Slider(
+                min=10,
+                max=150,
+                step=10,
+                value=10,
+                title="Resizes the data but does NOT auto-apply; its value is honored on the next refresh.",
+                actions=None,
+            ),
+        ),
+        vm.Filter(
+            id="p23_filter",
+            column="species",
+            targets=["p23_graph"],
+            selector=vm.RadioItems(
+                title="Dynamic filter; options recompute from the resized data on refresh.",
+                actions=[],
+            ),
+        ),
+        vm.Button(text="Refresh Filter", actions=update_targets(targets=["p23_filter"])),
+        vm.Button(text="Refresh Graph", actions=update_targets(targets=["p23_graph"])),
+        vm.Button(text="Refresh everything on the page", actions=update_targets()),
+    ],
+)
+
+
+# ====== **NEW** Synced control values (chained actions) ======
+
+page_3_1 = vm.Page(
+    id="page_3_1",
+    title="Sync: By chaining builtin actions",
+    layout=vm.Grid(grid=[[0, 1]]),
+    components=[
         vm.Container(
-            title="By Product",
-            components=[
-                vm.Graph(
-                    figure=bar(
-                        data_frame=df_complaints,
-                        y="Product",
-                        x="Complaint ID",
+            controls=[
+                vm.Filter(
+                    id="p31_filter_1",
+                    column="species",
+                    selector=vm.Dropdown(
+                        actions=[
+                            update_targets(targets=["p31_graph_1"]),
+                            set_control(control="p31_filter_2", value=None),
+                        ]
                     ),
                 )
+            ],
+            components=[
+                vm.Graph(id="p31_graph_1", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+            ],
+        ),
+        vm.Container(
+            controls=[
+                vm.Filter(
+                    id="p31_filter_2",
+                    column="species",
+                    selector=vm.Checklist(
+                        actions=[
+                            update_targets(targets=["p31_graph_2"]),
+                            set_control(control="p31_filter_1", value=None),
+                        ]
+                    ),
+                ),
+            ],
+            components=[
+                vm.Graph(id="p31_graph_2", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
             ],
         ),
     ],
 )
 
-# PAGES --------------------------------------------------------------------------------------
-page_exec = vm.Page(
-    title="Executive View",
-    layout=vm.Grid(
-        grid=[
-            [0, 0],
-            [0, 0],
-            [0, 0],
-            [1, 2],
-            [1, 2],
-            [1, 2],
-            [1, 3],
-            [1, 3],
-            [1, 3],
-        ],
-    ),
+
+page_3_2 = vm.Page(
+    id="page_3_2",
+    title="Sync: By targeting a filter",
+    layout=vm.Grid(grid=[[0, 1]]),
     components=[
-        kpi_banner,
-        bar_charts_tabbed,
-        vm.Graph(figure=area(data_frame=df_complaints, y="Complaint ID", x="Month")),
+        vm.Container(
+            controls=[vm.Filter(id="p32_filter_1", column="species", targets=["p32_graph_1", "p32_filter_2"])],
+            components=[
+                vm.Graph(id="p32_graph_1", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+            ],
+        ),
+        vm.Container(
+            controls=[
+                vm.Filter(
+                    id="p32_filter_2",
+                    column="species",
+                    targets=["p32_graph_2", "p32_filter_1"],
+                    selector=vm.Checklist(),
+                ),
+            ],
+            components=[
+                vm.Graph(id="p32_graph_2", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+            ],
+        ),
+    ],
+)
+
+page_3_3 = vm.Page(
+    id="page_3_3",
+    title="Sync: By targeting a hidden parameter",
+    components=[
         vm.Graph(
-            figure=pie(
-                data_frame=df_complaints[df_complaints["Company response - Closed"] != "Not closed"],
-                values="Complaint ID",
-                names="Company response - Closed",
-                title="Closed company responses",
-            )
+            id="p33_graph_1",
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        )
+    ],
+    controls=[
+        vm.Filter(column="species", targets=["p33_graph_1", "p33_parameter_1"], selector=vm.RadioItems()),
+        vm.Parameter(
+            id="p33_parameter_1",
+            targets=["p33_graph_1.title"],
+            selector=vm.RadioItems(options=["setosa", "versicolor", "virginica"], value="setosa"),
+            visible=False,
+        ),
+    ],
+)
+
+
+page_3_4 = vm.Page(
+    id="page_3_4",
+    title="Sync: Filter targets a filter that targets a filter x4",
+    layout=vm.Grid(grid=[[0, 1], [2, 3]]),
+    components=[
+        vm.Container(
+            controls=[vm.Filter(id="p34_filter_1", column="species", targets=["p34_graph_1", "p34_filter_2"])],
+            components=[
+                vm.Graph(id="p34_graph_1", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+            ],
+        ),
+        vm.Container(
+            controls=[
+                vm.Filter(
+                    id="p34_filter_2",
+                    column="species",
+                    targets=["p34_graph_2", "p34_filter_3"],
+                    selector=vm.Checklist(),
+                ),
+            ],
+            components=[
+                vm.Graph(id="p34_graph_2", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+            ],
+        ),
+        vm.Container(
+            controls=[
+                vm.Filter(
+                    id="p34_filter_3",
+                    column="species",
+                    targets=["p34_graph_3", "p34_filter_4"],
+                    selector=vm.Checklist(),
+                ),
+            ],
+            components=[
+                vm.Graph(id="p34_graph_3", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+            ],
+        ),
+        vm.Container(
+            controls=[
+                vm.Filter(
+                    id="p34_filter_4",
+                    column="species",
+                    targets=["p34_graph_4", "p34_filter_1"],
+                    selector=vm.Checklist(),
+                ),
+            ],
+            components=[
+                vm.Graph(id="p34_graph_4", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+            ],
+        ),
+    ],
+)
+
+
+page_3_5 = vm.Page(
+    id="page_3_5",
+    title="Sync: Filter targets all filters x4",
+    layout=vm.Grid(grid=[[0, 1], [2, 3]]),
+    components=[
+        vm.Container(
+            controls=[
+                vm.Filter(
+                    id="p35_filter_1",
+                    column="species",
+                    targets=["p35_graph_1", "p35_filter_2", "p35_filter_3", "p35_filter_4"],
+                )
+            ],
+            components=[
+                vm.Graph(id="p35_graph_1", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+            ],
+        ),
+        vm.Container(
+            controls=[
+                vm.Filter(
+                    id="p35_filter_2",
+                    column="species",
+                    targets=["p35_graph_2", "p35_filter_1", "p35_filter_3", "p35_filter_4"],
+                    selector=vm.Checklist(),
+                ),
+            ],
+            components=[
+                vm.Graph(id="p35_graph_2", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+            ],
+        ),
+        vm.Container(
+            controls=[
+                vm.Filter(
+                    id="p35_filter_3",
+                    column="species",
+                    targets=["p35_graph_3", "p35_filter_1", "p35_filter_2", "p35_filter_4"],
+                    selector=vm.Checklist(),
+                ),
+            ],
+            components=[
+                vm.Graph(id="p35_graph_3", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+            ],
+        ),
+        vm.Container(
+            controls=[
+                vm.Filter(
+                    id="p35_filter_4",
+                    column="species",
+                    targets=["p35_graph_4", "p35_filter_1", "p35_filter_2", "p35_filter_3"],
+                    selector=vm.Checklist(),
+                ),
+            ],
+            components=[
+                vm.Graph(id="p35_graph_4", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"))
+            ],
+        ),
+    ],
+)
+
+
+page_3_6 = vm.Page(
+    id="page_3_6",
+    title="Sync: Parameter targets Filter and Parameter",
+    components=[
+        vm.Graph(
+            id="p36_graph_1",
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        )
+    ],
+    controls=[
+        vm.Filter(
+            id="p36_filter_1",
+            column="species",
+            targets=["p36_graph_1", "p36_parameter_1"],
+            selector=vm.RadioItems(title="Filter that targets parameter below"),
+        ),
+        vm.Parameter(
+            id="p36_parameter_1",
+            targets=["p36_graph_1.title", "p36_filter_1"],
+            selector=vm.RadioItems(
+                title="Parameter that targets filter above", options=["setosa", "versicolor", "virginica"]
+            ),
+        ),
+        vm.Parameter(
+            id="p36_parameter_2",
+            targets=["p36_graph_1.x", "p36_parameter_3"],
+            selector=vm.RadioItems(
+                title="Parameter that targets parameter below",
+                options=["sepal_length", "petal_length"],
+            ),
+        ),
+        vm.Parameter(
+            id="p36_parameter_3",
+            targets=["p36_graph_1.y", "p36_parameter_2"],
+            selector=vm.RadioItems(
+                title="Parameter that targets parameter above",
+                options=["sepal_length", "petal_length"],
+            ),
+        ),
+    ],
+)
+
+
+# ====== **NEW** Synced controls, applied to the graph on button click ======
+# Like page_3_6 (F<->P and P<->P sync) but with an extra F<->F pair, so all three sync kinds are present:
+#   F<->F: p37_filter_1    <-> p37_filter_2
+#   F<->P: p37_filter_3    <-> p37_parameter_1
+#   P<->P: p37_parameter_2 <-> p37_parameter_3
+# Each selector carries an explicit `set_control` action (and no auto `update_targets`), so changing a control syncs
+# its partner but does NOT redraw the graph. When the selector has explicit actions the sync is wired manually via
+# `set_control`, so the partner's id must NOT also be listed in `targets` (it would be stripped as dead config and
+# warn). A Filter needs no figure target here - it falls back to the page graph - but a Parameter must have a figure
+# target, so each parameter targets a `p37_graph_1` argument. The pairs stay in sync on change via `set_control`;
+# the "Apply to graph" button runs `update_targets()` to refresh the graph with the current (synced) control values.
+page_3_7 = vm.Page(
+    id="page_3_7",
+    title="Sync: Controls sync each other; graph applied on button click",
+    components=[
+        vm.Graph(
+            id="p37_graph_1",
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        )
+    ],
+    controls=[
+        # F <-> F
+        vm.Filter(
+            id="p37_filter_1",
+            column="species",
+            selector=vm.RadioItems(
+                title="F1 <-> F2 (syncs filter below; graph applied on button click)",
+                actions=[set_control(control="p37_filter_2", value=None)],
+            ),
+        ),
+        vm.Filter(
+            id="p37_filter_2",
+            column="species",
+            selector=vm.Checklist(
+                title="F2 <-> F1 (syncs filter above; graph applied on button click)",
+                actions=[set_control(control="p37_filter_1", value=None)],
+            ),
+        ),
+        # F <-> P
+        vm.Filter(
+            id="p37_filter_3",
+            column="species",
+            selector=vm.RadioItems(
+                title="F3 <-> P1 (syncs parameter below)",
+                actions=[set_control(control="p37_parameter_1", value=None)],
+            ),
+        ),
+        vm.Parameter(
+            id="p37_parameter_1",
+            targets=["p37_graph_1.title"],
+            selector=vm.RadioItems(
+                title="P1 <-> F3 (syncs filter above; graph title applied on button click)",
+                options=["setosa", "versicolor", "virginica"],
+                actions=[set_control(control="p37_filter_3", value=None)],
+            ),
+        ),
+        # P <-> P
+        vm.Parameter(
+            id="p37_parameter_2",
+            targets=["p37_graph_1.x"],
+            selector=vm.RadioItems(
+                title="P2 <-> P3 (syncs parameter below; graph x applied on button click)",
+                options=["sepal_length", "petal_length"],
+                actions=[set_control(control="p37_parameter_3", value=None)],
+            ),
+        ),
+        vm.Parameter(
+            id="p37_parameter_3",
+            targets=["p37_graph_1.y"],
+            selector=vm.RadioItems(
+                title="P3 <-> P2 (syncs parameter above; graph y applied on button click)",
+                options=["sepal_length", "petal_length"],
+                actions=[set_control(control="p37_parameter_2", value=None)],
+            ),
+        ),
+        vm.Button(text="Apply to graph", actions=update_targets()),
+    ],
+)
+
+
+page_3_8 = vm.Page(
+    id="page_3_8",
+    title="[Example from the PR description] Sync: Filters cross-target two graphs and each other",
+    # Schema (F-filter, G-graph):
+    #   F1 --> F2, F1 --> G1
+    #   F2 --> F1, F2 --> G2, F2 --> F3
+    #   F3 --> G2
+    # F1.targets=[F2, G1]; F2.targets=[F1, G2, F3]; F3.targets=[G2]
+    layout=vm.Grid(grid=[[0, 1]]),
+    components=[
+        vm.Graph(
+            id="p38_graph_1",
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
+        vm.Graph(
+            id="p38_graph_2",
+            figure=px.scatter(
+                df, x="sepal_width", y="sepal_length", color="species", color_discrete_map=SPECIES_COLORS
+            ),
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            id="p38_filter_1",
+            column="species",
+            targets=["p38_filter_2", "p38_graph_1"],
+            selector=vm.RadioItems(title="F1 -> [F2, G1]"),
+        ),
+        vm.Filter(
+            id="p38_filter_2",
+            column="species",
+            targets=["p38_filter_1", "p38_graph_2", "p38_filter_3"],
+            selector=vm.Checklist(title="F2 -> [F1, G2, F3]"),
+        ),
+        vm.Filter(
+            id="p38_filter_3",
+            column="species",
+            targets=["p38_graph_2"],
+            selector=vm.Checklist(title="F3 -> [G2]"),
+        ),
+    ],
+)
+
+
+# ====== **NEW** Every selector type syncing (manual test bench) ======
+# One pair of filters per selector type, each filter targeting its twin so the two stay in sync. Filters need no
+# figure target here - a control-only filter falls back to the page graph - so changing one selector both syncs its
+# twin and refreshes the graph. This is the page to eyeball that syncing works for *every* selector, including the
+# TimePicker / DateTimePicker / Cascader that only recently gained `_get_value_from_trigger`.
+page_3_9 = vm.Page(
+    id="page_3_9",
+    title="Sync: Every selector type (manual test bench)",
+    components=[vm.Graph(id="p39_graph_1", figure=px.scatter(sync_df, x="x", y="y"))],
+    controls=[
+        # Dropdown <-> Dropdown
+        vm.Filter(
+            id="p39_dropdown_1",
+            column="cat_dropdown",
+            targets=["p39_dropdown_2"],
+            selector=vm.Dropdown(title="Dropdown 1 (syncs Dropdown 2)"),
+        ),
+        vm.Filter(
+            id="p39_dropdown_2",
+            column="cat_dropdown",
+            targets=["p39_dropdown_1"],
+            selector=vm.Dropdown(title="Dropdown 2 (syncs Dropdown 1)"),
+        ),
+        # Checklist <-> Checklist
+        vm.Filter(
+            id="p39_checklist_1",
+            column="cat_checklist",
+            targets=["p39_checklist_2"],
+            selector=vm.Checklist(title="Checklist 1 (syncs Checklist 2)"),
+        ),
+        vm.Filter(
+            id="p39_checklist_2",
+            column="cat_checklist",
+            targets=["p39_checklist_1"],
+            selector=vm.Checklist(title="Checklist 2 (syncs Checklist 1)"),
+        ),
+        # RadioItems <-> RadioItems
+        vm.Filter(
+            id="p39_radio_1",
+            column="cat_radio",
+            targets=["p39_radio_2"],
+            selector=vm.RadioItems(title="RadioItems 1 (syncs RadioItems 2)"),
+        ),
+        vm.Filter(
+            id="p39_radio_2",
+            column="cat_radio",
+            targets=["p39_radio_1"],
+            selector=vm.RadioItems(title="RadioItems 2 (syncs RadioItems 1)"),
+        ),
+        # Slider <-> Slider
+        vm.Filter(
+            id="p39_slider_1",
+            column="num_slider",
+            targets=["p39_slider_2"],
+            selector=vm.Slider(title="Slider 1 (syncs Slider 2)"),
+        ),
+        vm.Filter(
+            id="p39_slider_2",
+            column="num_slider",
+            targets=["p39_slider_1"],
+            selector=vm.Slider(title="Slider 2 (syncs Slider 1)"),
+        ),
+        # RangeSlider <-> RangeSlider
+        vm.Filter(
+            id="p39_range_1",
+            column="num_range",
+            targets=["p39_range_2"],
+            selector=vm.RangeSlider(title="RangeSlider 1 (syncs RangeSlider 2)"),
+        ),
+        vm.Filter(
+            id="p39_range_2",
+            column="num_range",
+            targets=["p39_range_1"],
+            selector=vm.RangeSlider(title="RangeSlider 2 (syncs RangeSlider 1)"),
+        ),
+        # DatePicker <-> DatePicker
+        vm.Filter(
+            id="p39_date_1",
+            column="date_col",
+            targets=["p39_date_2"],
+            selector=vm.DatePicker(title="DatePicker 1 (syncs DatePicker 2)"),
+        ),
+        vm.Filter(
+            id="p39_date_2",
+            column="date_col",
+            targets=["p39_date_1"],
+            selector=vm.DatePicker(title="DatePicker 2 (syncs DatePicker 1)"),
+        ),
+        # DateTimePicker <-> DateTimePicker
+        vm.Filter(
+            id="p39_datetime_1",
+            column="datetime_col",
+            targets=["p39_datetime_2"],
+            selector=vm.DateTimePicker(title="DateTimePicker 1 (syncs DateTimePicker 2)"),
+        ),
+        vm.Filter(
+            id="p39_datetime_2",
+            column="datetime_col",
+            targets=["p39_datetime_1"],
+            selector=vm.DateTimePicker(title="DateTimePicker 2 (syncs DateTimePicker 1)"),
+        ),
+        # TimePicker <-> TimePicker
+        vm.Filter(
+            id="p39_time_1",
+            column="time_col",
+            targets=["p39_time_2"],
+            selector=vm.TimePicker(title="TimePicker 1 (syncs TimePicker 2)"),
+        ),
+        vm.Filter(
+            id="p39_time_2",
+            column="time_col",
+            targets=["p39_time_1"],
+            selector=vm.TimePicker(title="TimePicker 2 (syncs TimePicker 1)"),
+        ),
+        # Switch <-> Switch
+        vm.Filter(
+            id="p39_switch_1",
+            column="bool_col",
+            targets=["p39_switch_2"],
+            selector=vm.Switch(title="Switch 1 (syncs Switch 2)"),
+        ),
+        vm.Filter(
+            id="p39_switch_2",
+            column="bool_col",
+            targets=["p39_switch_1"],
+            selector=vm.Switch(title="Switch 2 (syncs Switch 1)"),
+        ),
+        # Cascader <-> Cascader (hierarchical: column is an ordered list of columns)
+        vm.Filter(
+            id="p39_cascader_1",
+            column=["region", "city"],
+            targets=["p39_cascader_2"],
+            selector=vm.Cascader(title="Cascader 1 (syncs Cascader 2)"),
+        ),
+        vm.Filter(
+            id="p39_cascader_2",
+            column=["region", "city"],
+            targets=["p39_cascader_1"],
+            selector=vm.Cascader(title="Cascader 2 (syncs Cascader 1)"),
+        ),
+    ],
+)
+
+
+# ====== **NEW** Pure selectors (no Filter/Parameter) drive filters across tabs via explicit set_control ======
+# A Filter/Parameter that targets no figure "is not a Filter/Parameter". So instead of a control-only Filter, a
+# dashboard creator can drop a *bare selector* (RadioItems, RangeSlider, ...) straight into the layout and attach an
+# explicit `set_control` to it: the selector then acts purely as a driver - on change it pushes its value to the
+# target controls, which do the actual figure filtering. Bare selectors are normally only allowed inside a
+# Filter/Parameter, so they must be whitelisted as components via the `add_type` hack.
+#
+# Layout: tab 1 = pure driver selectors (no figure); tabs 2 & 3 = the real Filters (one per selector type), each
+# filtering that tab's own graph. Each tab-1 selector `set_control`s the matching Filter on BOTH tab 2 and tab 3.
+_p310_specs = [
+    ("radio", "cat_radio", vm.RadioItems, {"options": ["P", "Q", "R"], "value": "P"}),
+    ("dropdown", "cat_dropdown", vm.Dropdown, {"options": ["A", "B", "C"], "value": ["A"]}),
+    ("checklist", "cat_checklist", vm.Checklist, {"options": ["X", "Y", "Z"], "value": ["X"]}),
+    ("slider", "num_slider", vm.Slider, {"min": 0, "max": 5, "step": 1, "value": 2}),
+    ("range", "num_range", vm.RangeSlider, {"min": 0, "max": 100, "value": [20, 80]}),
+    (
+        "date",
+        "date_col",
+        vm.DatePicker,
+        {"min": "2024-01-01", "max": "2024-01-04", "value": ["2024-01-02", "2024-01-03"]},
+    ),
+    (
+        "datetime",
+        "datetime_col",
+        vm.DateTimePicker,
+        {"min": "2024-01-01", "max": "2024-01-01", "value": ["2024-01-01", "2024-01-01"]},
+    ),
+    ("time", "time_col", vm.TimePicker, {"value": ["08:00", "16:30"]}),
+    ("switch", "bool_col", vm.Switch, {"value": True}),
+    (
+        "cascader",
+        ["region", "city"],
+        vm.Cascader,
+        {
+            "options": {"North": ["New York", "Boston"], "South": ["Miami", "Austin"]},
+            "multi": False,
+            "value": "New York",
+        },
+    ),
+]
+
+# Whitelist each bare selector type as an allowed Container component (they are normally only allowed as selectors).
+for _sel_type in {spec[2] for spec in _p310_specs}:
+    vm.Container.add_type("components", _sel_type)
+
+_p310_tab1, _p310_tab2, _p310_tab3 = [], [], []
+for _key, _column, _sel_type, _cfg in _p310_specs:
+    _t2_id, _t3_id = f"p310_t2_{_key}", f"p310_t3_{_key}"
+    _p310_tab1.append(
+        _sel_type(
+            id=f"p310_t1_{_key}",
+            title=f"{_key}: pure selector -> sets {_t2_id} & {_t3_id}",
+            # actions=[
+            #     set_control(control=_t2_id, value=None),
+            #     set_control(control=_t3_id, value=None)
+            # ],
+            actions=[set_control(control=[_t2_id, _t3_id], value=None)],
+            **_cfg,
+        )
+    )
+    _p310_tab2.append(vm.Filter(id=_t2_id, column=_column, selector=_sel_type()))
+    _p310_tab3.append(vm.Filter(id=_t3_id, column=_column, selector=_sel_type()))
+
+page_3_10 = vm.Page(
+    id="page_3_10",
+    title="Sync: Pure selectors drive filters across tabs",
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(title="Drivers (pure selectors, no Filter)", layout=vm.Flex(), components=_p310_tab1),
+                vm.Container(
+                    title="Target tab A",
+                    components=[vm.Graph(id="p310_graph_a", figure=px.scatter(sync_df, x="x", y="y"))],
+                    controls=_p310_tab2,
+                ),
+                vm.Container(
+                    title="Target tab B",
+                    components=[vm.Graph(id="p310_graph_b", figure=px.scatter(sync_df, x="x", y="y"))],
+                    controls=_p310_tab3,
+                ),
+            ]
+        )
+    ],
+)
+
+
+# ====== **NEW** Cross-page control sync to MULTIPLE pages (one set_control, no navigation) ======
+# page_40's Filter selector targets controls on TWO other pages (page_41 and page_42) as well as its own graph. The
+# syncing feature collapses this into a SINGLE set_control(control=["p41_species", "p42_species"], value=None). Because
+# the trigger is a control selector (not a figure) it is a sync, NOT a drill-through: no navigation happens; each target
+# picks up the value when its own page is opened. page_42's target additionally mirrors its value in the URL.
+
+page_40 = vm.Page(
+    id="page_40",
+    title="Cross-page sync source -> pages 41 & 42",
+    components=[
+        vm.Graph(id="p40_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        vm.Filter(
+            id="p40_species",
+            column="species",
+            # One selector change syncs BOTH other-page controls (via a single set_control) and filters this graph.
+            targets=["p41_species", "p42_species", "p40_graph"],
+            selector=vm.RadioItems(title="Species (syncs pages 41 & 42; no navigation)"),
+        ),
+    ],
+)
+
+page_41 = vm.Page(
+    id="page_41",
+    title="Cross-page sync target (no URL)",
+    components=[
+        vm.Graph(id="p41_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        vm.Filter(id="p41_species", column="species", targets=["p41_graph"], selector=vm.Checklist()),
+    ],
+)
+
+page_42 = vm.Page(
+    id="page_42",
+    title="Cross-page sync target (URL)",
+    components=[
+        vm.Graph(id="p42_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        # This synced target also mirrors its value in the URL query string (show_in_url=True).
+        vm.Filter(
+            id="p42_species",
+            column="species",
+            targets=["p42_graph"],
+            selector=vm.RadioItems(),
+            show_in_url=True,
+        ),
+    ],
+)
+
+
+# ====== **NEW** Drill-through to a SINGLE page, setting MULTIPLE controls there (navigates) ======
+# page_50's graph drill-through targets TWO controls that both live on page_51. Because every cross-page target resolves
+# to a single page, the destination is unambiguous: clicking a point writes both values to the store and navigates to
+# page_51, where both are applied on open. The second target (p51_species_url) also persists in the URL.
+
+page_50 = vm.Page(
+    id="page_50",
+    title="Drill-through source -> two controls on page 51",
+    components=[
+        vm.Graph(
+            id="p50_graph",
+            title="Click a point: sets two controls on page 51, then navigates there",
+            # custom_data carries the species so set_control can read the clicked point's species.
+            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data="species"),
+            actions=set_control(control=["p51_species", "p51_species_url"], value="species"),
+        ),
+    ],
+    controls=[vm.Filter(id="p50_species_url", column="species", show_in_url=True)],
+)
+
+page_51 = vm.Page(
+    id="page_51",
+    title="Drill-through target (two controls, one with URL)",
+    components=[
+        vm.Graph(id="p51_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+        vm.Graph(id="p51_graph_url", figure=px.scatter(df, x="petal_width", y="petal_length", color="species")),
+    ],
+    controls=[
+        vm.Filter(id="p51_species", column="species", targets=["p51_graph"], selector=vm.Dropdown()),
+        # Second drill-through target that ALSO reflects its value in the URL (bookmarkable).
+        vm.Filter(
+            id="p51_species_url",
+            column="species",
+            targets=["p51_graph_url"],
+            selector=vm.RadioItems(),
+            show_in_url=True,
+        ),
+    ],
+)
+
+
+# ====== **NEW** Drill-through mixing a same-page and a cross-page target (stays on this page) ======
+# page_60's graph drill-through targets one control on THIS page (p60_species, set live) and one on page_61
+# (p61_species). Because a same-page target is present, clicking a point does NOT navigate: it sets the same-page
+# control live (cross-filtering this page) and writes the page_61 value to the store, which is applied when you open
+# page_61. Both controls mirror their value in the URL.
+
+page_60 = vm.Page(
+    id="page_60",
+    title="Drill-through source -> same-page + page 61 (stays here)",
+    components=[
+        vm.Graph(
+            id="p60_graph",
+            title="Click a point: sets this page's control live AND page 61's (applied on open); stays on this page",
+            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data="species"),
+            actions=set_control(control=["p60_species", "p61_species"], value="species"),
+        ),
+    ],
+    controls=[
+        # Same-page target: updated live by the drill-through (cross-filters this page). Mirrored in the URL.
+        vm.Filter(
+            id="p60_species",
+            column="species",
+            targets=["p60_graph"],
+            selector=vm.Dropdown(),
+            show_in_url=True,
+        ),
+    ],
+)
+
+page_61 = vm.Page(
+    id="page_61",
+    title="Drill-through target (URL)",
+    components=[
+        vm.Graph(id="p61_graph", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        vm.Filter(
+            id="p61_species",
+            column="species",
+            targets=["p61_graph"],
+            selector=vm.RadioItems(),
+            show_in_url=True,
         ),
     ],
 )
 
 
 dashboard = vm.Dashboard(
-    pages=[page_exec],
-    title="Cumulus Financial Corp. - Fiscal Year 2019",
+    pages=[
+        page_0_1,
+        page_1_1,
+        page_2_1,
+        page_2_2,
+        page_2_3,
+        page_3_1,
+        page_3_2,
+        page_3_3,
+        page_3_4,
+        page_3_5,
+        page_3_6,
+        page_3_7,
+        page_3_8,
+        page_3_9,
+        page_3_10,
+        page_40,
+        page_41,
+        page_42,
+        page_50,
+        page_51,
+        page_60,
+        page_61,
+    ],
+    navigation=vm.Navigation(
+        pages={
+            "Playgrounds": ["page_0_1"],
+            "Apply filter on parameter change": ["page_1_1"],
+            "Apply controls on button click": ["page_2_1", "page_2_2", "page_2_3"],
+            "Syncing controls": [
+                "page_3_1",
+                "page_3_2",
+                "page_3_3",
+                "page_3_4",
+                "page_3_5",
+                "page_3_6",
+                "page_3_7",
+                "page_3_8",
+                "page_3_9",
+                "page_3_10",
+            ],
+            "Cross-page sync (multi-target)": ["page_40", "page_41", "page_42"],
+            "Drill-through to one page (multi-target)": ["page_50", "page_51"],
+            "Drill-through mixing same/cross page": ["page_60", "page_61"],
+        }
+    ),
 )
 
-app = Vizro().build(dashboard)
+
 if __name__ == "__main__":
-    app.run()
+    Vizro().build(dashboard).run()
