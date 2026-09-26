@@ -18,6 +18,60 @@ vm.Layout(grid=[[0, 1], [2, 3]])
 vm.Grid(grid=[[0, 1], [2, 3]])
 ```
 
+## `RangeSlider` model
+
+The [`RangeSlider`][vizro.models.RangeSlider] model is deprecated. Use [`Slider`][vizro.models.Slider] with `range=True`, which is functionally identical.
+
+```python
+# Before:
+vm.RangeSlider(min=0, max=10)
+
+# After:
+vm.Slider(min=0, max=10, range=True)
+```
+
+In YAML or JSON configuration, replace `type: range_slider` with `type: slider` and add `range: true`.
+
+See the [user guide on selectors](../user-guides/selectors.md#numerical-selectors) for more information.
+
+## `filter_interaction`
+
+`filter_interaction` is deprecated. Use the more powerful and flexible [`set_controls`][vizro.actions.set_controls].
+
+```python
+# Before:
+components = [
+    vm.AgGrid(..., actions=va.filter_interaction(targets=["target_chart"]),
+    vm.Graph(id="target_chart", ...)
+]
+
+# After:
+components = [
+    vm.AgGrid(..., actions=va.set_controls(controls=["my_filter"], value="species")),
+    vm.Graph(id="target_chart", ...)
+]
+# You must now explicitly specify a Filter in controls:
+controls = [vm.Filter(id="my_filter", targets=["target_chart"], column="species")]
+```
+
+See the [user guide on how to interact with graphs and tables](../user-guides/graph-table-actions.md) for more information.
+
+## `set_control` action
+
+The [`set_control`][vizro.actions.set_control] action is deprecated. Use [`set_controls`][vizro.actions.set_controls], which takes one or more control ids via `controls` (a single id or a list) and is otherwise identical.
+
+```python
+# Before:
+va.set_control(control="my_filter", value="species")
+va.set_control(control=["filter_1", "filter_2"], value="species")
+
+# After:
+va.set_controls(controls="my_filter", value="species")  # a single id
+va.set_controls(controls=["filter_1", "filter_2"], value="species")  # or a list of ids
+```
+
+See the [user guide on how to interact with graphs and tables](../user-guides/graph-table-actions.md) for more information.
+
 ## `Action` model `inputs` argument
 
 The `inputs` argument of the [`Action` model][vizro.models.Action] is deprecated. Pass references to runtime inputs directly as arguments of `function`.
@@ -62,60 +116,6 @@ va.export_data(file_format="xlsx")
 ```
 
 See the [user guide on built-in actions](../user-guides/actions.md) for more information.
-
-## `filter_interaction`
-
-`filter_interaction` is deprecated. Use the more powerful and flexible [`set_controls`][vizro.actions.set_controls].
-
-```python
-# Before:
-components = [
-    vm.AgGrid(..., actions=va.filter_interaction(targets=["target_chart"]),
-    vm.Graph(id="target_chart", ...)
-]
-
-# After:
-components = [
-    vm.AgGrid(..., actions=va.set_controls(controls=["my_filter"], value="species")),
-    vm.Graph(id="target_chart", ...)
-]
-# You must now explicitly specify a Filter in controls:
-controls = [vm.Filter(id="my_filter", targets=["target_chart"], column="species")]
-```
-
-See the [user guide on how to interact with graphs and tables](../user-guides/graph-table-actions.md) for more information.
-
-## `RangeSlider` model
-
-The [`RangeSlider`][vizro.models.RangeSlider] model is deprecated. Use [`Slider`][vizro.models.Slider] with `range=True`, which is functionally identical.
-
-```python
-# Before:
-vm.RangeSlider(min=0, max=10)
-
-# After:
-vm.Slider(min=0, max=10, range=True)
-```
-
-In YAML or JSON configuration, replace `type: range_slider` with `type: slider` and add `range: true`.
-
-See the [user guide on selectors](../user-guides/selectors.md#numerical-selectors) for more information.
-
-## `set_control` action
-
-The [`set_control`][vizro.actions.set_control] action is deprecated. Use [`set_controls`][vizro.actions.set_controls], which takes one or more control ids via `controls` (a single id or a list) and is otherwise identical.
-
-```python
-# Before:
-va.set_control(control="my_filter", value="species")
-va.set_control(control=["filter_1", "filter_2"], value="species")
-
-# After:
-va.set_controls(controls="my_filter", value="species")  # a single id
-va.set_controls(controls=["filter_1", "filter_2"], value="species")  # or a list of ids
-```
-
-See the [user guide on how to interact with graphs and tables](../user-guides/graph-table-actions.md) for more information.
 
 ## `Cascader` `full_path` default
 
