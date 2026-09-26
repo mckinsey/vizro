@@ -2322,6 +2322,7 @@
           "title": "Value"
         },
         "range": {
+          "const": true,
           "default": true,
           "description": "Boolean flag for displaying range slider.",
           "title": "Range",

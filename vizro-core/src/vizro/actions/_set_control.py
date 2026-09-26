@@ -332,7 +332,7 @@ class set_controls(_AbstractAction):
         Returns `no_update` when the value cannot be applied to this control (an incomplete range, or a multi-item
         list into a single-value selector), leaving that control unchanged without affecting the others.
         """
-        from vizro.models import AgGrid, Checklist, Graph, RangeSlider
+        from vizro.models import AgGrid, Checklist, Graph
 
         selector = cast(ControlType, model_manager[control_id]).selector
 
@@ -345,7 +345,7 @@ class set_controls(_AbstractAction):
             value = control_store.get("originalValue", selector.value)
 
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
-        is_range = getattr(selector, "range", isinstance(selector, RangeSlider))
+        is_range = getattr(selector, "range", False)
 
         # A leaf-mode Cascader (the only kind that reaches here — path mode is rejected at pre_build) reshapes
         # like a flat categorical selector: a multi-select value is a list of leaves, a single-select a scalar.

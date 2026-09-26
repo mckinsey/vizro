@@ -1,9 +1,8 @@
-from typing import Annotated, Literal
+from typing import Literal
 
-from pydantic import AfterValidator, Field
+from pydantic import Field
 from typing_extensions import deprecated
 
-from vizro.models._components.form._form_utils import validate_slider_range
 from vizro.models._components.form.slider import Slider
 
 
@@ -25,10 +24,6 @@ class RangeSlider(Slider):
     """
 
     type: Literal["range_slider"] = "range_slider"  # type: ignore[assignment]
-    # Force range mode. Redeclared (rather than a model validator) so the default is applied during field
-    # validation, before validate_slider_range runs on `value`.
-    range: Annotated[
-        bool,
-        AfterValidator(validate_slider_range),
-        Field(default=True, description="Boolean flag for displaying range slider.", validate_default=True),
-    ]
+    # Lock to range mode: RangeSlider is exactly Slider(range=True), so `range=False` must be rejected rather than
+    # silently building a single-handle slider still typed `range_slider`.
+    range: Literal[True] = Field(default=True, description="Boolean flag for displaying range slider.")

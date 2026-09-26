@@ -305,3 +305,14 @@ class TestSliderRange:
     def test_single_value_with_range_raises(self):
         with pytest.raises(ValidationError, match="Please set range=False if providing a single value"):
             vm.Slider(min=0, max=10, value=5, range=True)
+
+    def test_value_reassignment_enforces_range_shape(self):
+        # The value/range consistency check must also run on assignment (validate_assignment=True), not only at
+        # construction, so a scalar cannot leak into a range slider (or a list into a single-handle slider).
+        slider = vm.Slider(min=0, max=10, value=[2, 8], range=True)
+        with pytest.raises(ValidationError, match="Please set range=False if providing a single value"):
+            slider.value = 5
+
+        slider = vm.Slider(min=0, max=10, value=3)
+        with pytest.raises(ValidationError, match="Please set range=True if providing a list of values"):
+            slider.value = [2, 8]

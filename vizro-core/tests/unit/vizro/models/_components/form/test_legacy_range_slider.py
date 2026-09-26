@@ -19,6 +19,13 @@ def test_range_slider_deprecated():
         vm.RangeSlider()
 
 
+def test_range_slider_range_false_rejected():
+    # RangeSlider is exactly Slider(range=True): range is locked to True, so range=False must be rejected rather
+    # than silently building a single-handle slider still typed `range_slider`.
+    with pytest.raises(ValidationError, match="Input should be True"):
+        vm.RangeSlider(min=0, max=10, range=False)
+
+
 @pytest.fixture()
 def expected_range_slider():
     return html.Div(

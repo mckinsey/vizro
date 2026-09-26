@@ -199,7 +199,7 @@ def get_selector_default_value(selector: SelectorType) -> Any:  # noqa: PLR0911
         return selector.value
 
     if _is_numerical_or_date_selector(selector):
-        is_range = isinstance(selector, RangeSlider) or getattr(selector, "range", False)
+        is_range = getattr(selector, "range", False)
         return [selector.min, selector.max] if is_range else selector.min
     elif _is_categorical_selector(selector):
         is_multi = isinstance(selector, Checklist) or getattr(selector, "multi", False)

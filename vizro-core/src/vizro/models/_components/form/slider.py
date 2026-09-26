@@ -10,7 +10,6 @@ from vizro.models._components.form._form_utils import (
     to_int_if_whole,
     validate_max,
     validate_range_value,
-    validate_slider_range,
     validate_step,
 )
 from vizro.models._models_utils import (
@@ -20,6 +19,11 @@ from vizro.models._models_utils import (
 )
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionsType, _IdProperty
+
+# dcc.Slider and dcc.RangeSlider expose different sets of forwardable properties (RangeSlider adds count, allowCross,
+# pushable). Compute each once at import rather than reconstructing a throwaway component on every model validation.
+_SLIDER_PROPERTIES = dcc.Slider().available_properties
+_RANGE_SLIDER_PROPERTIES = dcc.RangeSlider().available_properties
 
 
 class Slider(VizroBaseModel):
@@ -54,15 +58,10 @@ class Slider(VizroBaseModel):
             description="Default value: a single number, or a `[start, end]` pair when `range=True`.",
         ),
     ]
-    range: Annotated[
-        bool,
-        AfterValidator(validate_slider_range),
-        Field(
-            default=False,
-            description="Whether to display a two-handle range slider. When True, `value` is a `[start, end]` pair.",
-            validate_default=True,
-        ),
-    ]
+    range: bool = Field(
+        default=False,
+        description="Whether to display a two-handle range slider. When True, `value` is a `[start, end]` pair.",
+    )
     title: str = Field(default="", description="Title to be displayed.")
     # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
     #  but this requires pydantic >= 2.9.
@@ -92,18 +91,28 @@ underlying component may change in the future.""",
     ]
 
     _dynamic: bool = PrivateAttr(False)
-    _inner_component_properties: list[str] = PrivateAttr(dcc.Slider().available_properties)
+    _inner_component_properties: list[str] = PrivateAttr(_SLIDER_PROPERTIES)
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
         return make_actions_chain(self)
 
     @model_validator(mode="after")
+    def _validate_range_value_shape(self):
+        # `value`'s shape must match `range`: a bare number when range=False, a `[start, end]` list when range=True.
+        # A model validator (rather than a field validator on `range`) so the check also runs when `value` alone is
+        # reassigned under validate_assignment=True; a field validator on `range` would be skipped in that case.
+        if self.range and self.value is not None and not isinstance(self.value, list):
+            raise ValueError("Please set range=False if providing a single value.")
+        if not self.range and isinstance(self.value, list):
+            raise ValueError("Please set range=True if providing a list of values.")
+        return self
+
+    @model_validator(mode="after")
     def _set_inner_component_properties(self):
         # In range mode the underlying component is dcc.RangeSlider, which exposes extra properties
         # (count, allowCross, pushable) that should be forwardable via `extra` and dynamic updates.
-        if self.range:
-            self._inner_component_properties = dcc.RangeSlider().available_properties
+        self._inner_component_properties = _RANGE_SLIDER_PROPERTIES if self.range else _SLIDER_PROPERTIES
         return self
 
     @property

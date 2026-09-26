@@ -293,12 +293,15 @@ underlying component may change in the future.""",
     _in_container: bool = PrivateAttr(False)
     _inner_component_properties: list[str] = PrivateAttr(vdc.Cascader().available_properties)
 
-    @model_validator(mode="after")
-    def _warn_full_path_default_change(self):
+    @model_validator(mode="before")
+    @classmethod
+    def _warn_full_path_default_change(cls, data):
         # full_path default will flip False -> True in Vizro 1.0.0. Warn users who rely on the default so they can
-        # opt in to the current behavior. Vizro's own auto-selected hierarchical Filter sets full_path explicitly
-        # (see DEFAULT_SELECTORS), so this only fires for a user-constructed Cascader.
-        if "full_path" not in self.model_fields_set:
+        # opt in to the current behavior. Emitted in `before` mode (not `after`) so it fires once at construction
+        # rather than on every field assignment under validate_assignment=True (e.g. Filter.pre_build reassigning
+        # title/options/value). Vizro's own auto-selected hierarchical Filter sets full_path explicitly (see
+        # DEFAULT_SELECTORS), so this only fires for a user-constructed Cascader.
+        if isinstance(data, dict) and "full_path" not in data:
             warnings.warn(
                 "The default of `Cascader.full_path` will change from `False` to `True` in Vizro 1.0.0 "
                 "(https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#cascader-full_path-default)."
@@ -306,7 +309,7 @@ underlying component may change in the future.""",
                 category=FutureWarning,
                 stacklevel=2,
             )
-        return self
+        return data
 
     @model_validator(mode="after")
     def _validate_value(self):

@@ -1,5 +1,6 @@
 """Unit tests for vizro.models.Cascader."""
 
+import warnings
 from datetime import date
 
 import dash_bootstrap_components as dbc
@@ -26,6 +27,24 @@ pytestmark = pytest.mark.filterwarnings("ignore:The default of `Cascader.full_pa
 def test_full_path_default_change_warning():
     with pytest.warns(FutureWarning, match="The default of `Cascader.full_path` will change"):
         Cascader(options={"Europe": ["France"]})
+
+
+def test_full_path_default_change_warning_not_emitted_when_set():
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", FutureWarning)
+        Cascader(options={"Europe": ["France"]}, full_path=False)
+
+
+def test_full_path_default_change_warning_fires_once_on_reassignment():
+    # The warning is emitted in `before` mode so it fires once at construction, not again on every field assignment
+    # under validate_assignment=True (e.g. when Filter.pre_build reassigns title/options/value).
+    with warnings.catch_warnings(record=True) as records:
+        warnings.simplefilter("always")
+        cascader = Cascader(options={"Europe": ["France"]})
+        cascader.title = "Region"
+        cascader.multi = False
+    full_path_warnings = [r for r in records if "Cascader.full_path" in str(r.message)]
+    assert len(full_path_warnings) == 1
 
 
 class TestCascaderInstantiation:
