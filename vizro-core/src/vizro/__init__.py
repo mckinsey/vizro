@@ -1,6 +1,8 @@
 import json
 import logging
 import os
+import sys
+import warnings
 from pathlib import Path
 
 import plotly.io as pio
@@ -18,6 +20,20 @@ pio.templates["vizro_light"] = json.loads((base_path / "vizro_light.json").read_
 
 __all__ = ["Vizro"]
 __version__ = "0.1.61.dev0"
+
+
+def _warn_deprecated_python_version():
+    # Python 3.10 support will be dropped in Vizro 1.0.0. Warn users still on 3.10 so they can upgrade in time.
+    if sys.version_info < (3, 11):
+        warnings.warn(
+            "Python 3.10 support will be removed in Vizro 1.0.0. Upgrade to Python 3.11 or later. See "
+            "https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#python-310.",
+            FutureWarning,
+            stacklevel=2,
+        )
+
+
+_warn_deprecated_python_version()
 
 # For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
 # to main instead, but this can be manually overridden to the current feature branch name if required.
