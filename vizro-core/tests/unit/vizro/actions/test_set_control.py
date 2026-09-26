@@ -810,11 +810,11 @@ class TestSetControlFunction:
         assert controls_store["filter_page_2_show_in_url_true"]["currentValue"] == ["Europe"]
         set_props_mock.assert_called_once_with("vizro_controls_store", {"data": controls_store})
 
-    def test_function_stop_internal_action_chaining_returns_guards(self):
+    def test_function_stop_implicit_actions_chaining_returns_guards(self):
         # With the flag set, every same-page control that actually changes also gets its guard raised (True), aligned
         # after the value outputs. Here both targets accept "Europe", so both guards are True.
         action = set_control(control=["filter_page_1", "filter_page_1_single_select"], value="Europe")
-        action._stop_internal_action_chaining = True
+        action._stop_implicit_actions_chaining = True
         model_manager["button_1"].actions = action
         action.pre_build()
 
@@ -823,11 +823,11 @@ class TestSetControlFunction:
         # [value_1, value_2, guard_1, guard_2]
         assert result == [["Europe"], "Europe", True, True]
 
-    def test_function_stop_internal_action_chaining_skips_guard_for_unchanged_control(self):
+    def test_function_stop_implicit_actions_chaining_skips_guard_for_unchanged_control(self):
         # A control we skip (no_update) must leave its guard untouched (no_update), so its value does not change and no
         # guard gets stuck True. Here a 2-item list cannot go into the single-value selector, so it is skipped.
         action = set_control(control=["filter_page_1", "filter_page_1_single_select"], value=["Asia", "Europe"])
-        action._stop_internal_action_chaining = True
+        action._stop_implicit_actions_chaining = True
         model_manager["button_1"].actions = action
         action.pre_build()
 
@@ -878,11 +878,11 @@ class TestSetControlOutputs:
 
         assert action.outputs == ["filter_page_1", "vizro_url.href"]
 
-    def test_outputs_stop_internal_action_chaining_adds_guards(self):
-        # With _stop_internal_action_chaining, each same-page target additionally outputs its guard store (so the
+    def test_outputs_stop_implicit_actions_chaining_adds_guards(self):
+        # With _stop_implicit_actions_chaining, each same-page target additionally outputs its guard store (so the
         # value update does not fire that control's own chain). Guards follow the value outputs, in the same order.
         action = set_control(control=["filter_page_1", "filter_page_1_single_select"], value="Europe")
-        action._stop_internal_action_chaining = True
+        action._stop_implicit_actions_chaining = True
         model_manager["button_1"].actions = action
 
         action.pre_build()
@@ -896,11 +896,11 @@ class TestSetControlOutputs:
             f"{selector_2}_guard_actions_chain.data",
         ]
 
-    def test_outputs_stop_internal_action_chaining_single_control_is_list(self):
+    def test_outputs_stop_implicit_actions_chaining_single_control_is_list(self):
         # A single same-page target normally returns a bare id (scalar Output). With the flag it also has a guard
         # output, so outputs becomes a two-element list rather than a scalar.
         action = set_control(control="filter_page_1", value="Europe")
-        action._stop_internal_action_chaining = True
+        action._stop_implicit_actions_chaining = True
         model_manager["button_1"].actions = action
 
         action.pre_build()
@@ -1031,7 +1031,7 @@ class TestControlSyncMeshFinalization:
         assert isinstance(set_control_action, set_control)
         assert set_control_action.control == ["mesh_f2", "mesh_f3"]
         # The flag suppresses each synced control's own chain (via its guard), so the mesh resolves in two requests.
-        assert set_control_action._stop_internal_action_chaining is True
+        assert set_control_action._stop_implicit_actions_chaining is True
         # Precise figure union: f1's own figure plus every same-page synced control's figures.
         assert isinstance(update_targets_action, update_targets)
         assert update_targets_action.id == "__filter_action_mesh_f1"
@@ -1041,7 +1041,7 @@ class TestControlSyncMeshFinalization:
         # From mesh_f2 the closure is mesh_f1 (direct) and mesh_f3 (direct); mesh_f1 back-edge to f2 is the source.
         set_control_action, update_targets_action = model_manager["mesh_f2"].selector.actions
         assert set_control_action.control == ["mesh_f1", "mesh_f3"]
-        assert set_control_action._stop_internal_action_chaining is True
+        assert set_control_action._stop_implicit_actions_chaining is True
         assert set(update_targets_action.targets) == {"mesh_g1", "mesh_g2", "mesh_g3"}
 
     def test_non_synced_control_unchanged(self):
@@ -1066,12 +1066,12 @@ class TestControlSyncCrossPageFinalization:
         # (on page 2) are not refreshed by cf1. cf1 therefore only sets cf2 and refreshes its own figure.
         set_control_action, update_targets_action = model_manager["cf1"].selector.actions
         assert set_control_action.control == ["cf2"]
-        assert set_control_action._stop_internal_action_chaining is True
+        assert set_control_action._stop_implicit_actions_chaining is True
         assert update_targets_action.targets == ["cp_g1"]
 
     def test_same_page_transitive_on_target_page(self):
         # On page 2, cf2 -> cf3 is a normal same-page sync and collapses independently.
         set_control_action, update_targets_action = model_manager["cf2"].selector.actions
         assert set_control_action.control == ["cf3"]
-        assert set_control_action._stop_internal_action_chaining is True
+        assert set_control_action._stop_implicit_actions_chaining is True
         assert update_targets_action.targets == ["cp_g2", "cp_g3"]

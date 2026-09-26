@@ -173,7 +173,7 @@ class set_control(_AbstractAction):
     # every transitively-synced control and a single update_targets refreshes every affected figure), so the whole
     # mesh resolves in two HTTP requests instead of cascading. Kept private (set post-construction) because it is not
     # part of the public API. See `guard_action_chain` in static/js/models/action.js.
-    _stop_internal_action_chaining: bool = PrivateAttr(default=False)
+    _stop_implicit_actions_chaining: bool = PrivateAttr(default=False)
 
     @property
     def _control_ids(self) -> list[ModelID]:
@@ -296,11 +296,11 @@ class set_control(_AbstractAction):
         ]
         results = list(shaped_values)
 
-        # When stopping the internal action chaining, raise the guard of every same-page control that actually changes
+        # When stopping the implicit actions chaining, raise the guard of every same-page control that actually changes
         # so its value update does not fire its own action chain (the source chain refreshes all affected figures
         # itself). Leave the guard untouched (no_update) for a control we skip, so its value is unchanged and no guard
         # gets stuck True. These guard outputs come right after the value outputs (see `outputs`).
-        if self._stop_internal_action_chaining:
+        if self._stop_implicit_actions_chaining:
             results.extend(True if shaped is not no_update else no_update for shaped in shaped_values)
 
         # Cross-page targets: selectors aren't mounted, so they can't be callback outputs. Persist each value into
@@ -412,14 +412,14 @@ class set_control(_AbstractAction):
         # browser URL. A `pathname`-only `callback-nav` then reconciles against that stale state and fails to navigate
         # (it re-asserts the current path); a full `href` navigates unambiguously regardless of the desync.
         value_outputs = list(self._same_page_controls)
-        # When stopping the internal action chaining, also output each same-page control's guard store so `function`
+        # When stopping the implicit actions chaining, also output each same-page control's guard store so `function`
         # can raise it. Guard outputs follow the value outputs and precede `vizro_url.href` (kept aligned there).
         guard_outputs = (
             [
                 f"{cast(ControlType, model_manager[control_id]).selector.id}_guard_actions_chain.data"
                 for control_id in self._same_page_controls
             ]
-            if self._stop_internal_action_chaining
+            if self._stop_implicit_actions_chaining
             else []
         )
         outputs = [*value_outputs, *guard_outputs]

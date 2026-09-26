@@ -228,7 +228,7 @@ def finalize_control_sync_chains() -> None:
     targets and ``_synced_control_targets`` are final) and rewrites each source's chain to cover the whole transitive
     mesh at once:
 
-    * a single ``set_control(control=<all transitively-synced controls>, _stop_internal_action_chaining=True)`` sets
+    * a single ``set_control(control=<all transitively-synced controls>, _stop_implicit_actions_chaining=True)`` sets
       every mesh control and raises their guards so their own chains do not fire, and
     * a single ``update_targets(targets=<precise figure union>)`` refreshes every affected figure.
 
@@ -263,7 +263,7 @@ def finalize_control_sync_chains() -> None:
         )
 
         new_set_control = next(action for action in source.selector.actions if isinstance(action, set_control))
-        new_set_control._stop_internal_action_chaining = True
+        new_set_control._stop_implicit_actions_chaining = True
 
         # Newly created actions must run their own pre_build (mirrors Parameter.pre_build).
         for action in source.selector.actions:
