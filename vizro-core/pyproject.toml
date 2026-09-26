@@ -92,10 +92,7 @@ filterwarnings = [
   # Ignore kedro warnings. Note you can't use kedro.*Warning as categories here since pytest would then import kedro#
   # and trigger the 3.14 error before it can be ignored.
   "ignore:`DataCatalog` has been deprecated and will be replaced by `KedroDataCatalog`",
-  "ignore:Kedro is not yet fully compatible with this Python version.",
-  # Vizro emits this on import when running on Python 3.10 (support removed in 1.0.0). The Python version is a
-  # property of the runtime, not something individual tests can avoid, so ignore it globally on the 3.10 CI job.
-  "ignore:Python 3.10 support will be removed in Vizro 1.0.0:FutureWarning"
+  "ignore:Kedro is not yet fully compatible with this Python version."
 ]
 markers = [
   "mobile_screenshots: marks tests for chrome mobile screenshots",
