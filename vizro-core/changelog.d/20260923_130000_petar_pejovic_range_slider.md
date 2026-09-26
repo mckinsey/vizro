@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- `Slider` now accepts `range=True` to render a two-handle range slider, replacing `RangeSlider`. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- `Slider` now accepts `range=True` to render a two-handle range slider, replacing `RangeSlider`. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
 
 <!--
 ### Changed
@@ -28,7 +28,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Deprecated
 
-- `RangeSlider` is deprecated and will be removed in Vizro `1.0.0`. Use `Slider` with `range=True` instead. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- `RangeSlider` is deprecated and will be removed in Vizro `1.0.0`. Use `Slider` with `range=True` instead. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
 
 <!--
 ### Fixed

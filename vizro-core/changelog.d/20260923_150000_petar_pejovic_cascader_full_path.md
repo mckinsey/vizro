@@ -30,7 +30,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Deprecated
 
-- The default of `Cascader.full_path` will change from `False` to `True` in Vizro `1.0.0`. Set `full_path` explicitly to avoid a change in behavior. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- The default of `Cascader.full_path` will change from `False` to `True` in Vizro `1.0.0`. Set `full_path` explicitly to avoid a change in behavior. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
 
 <!--
 ### Fixed

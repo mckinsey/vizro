@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Add the `set_controls` action, which sets one or more controls from `controls` (a single id or a list of ids). It replaces `set_control`. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- Add the `set_controls` action, which sets one or more controls from `controls` (a single id or a list of ids). It replaces `set_control`. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
 
 <!--
 ### Changed
@@ -28,7 +28,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Deprecated
 
-- `set_control` is deprecated and will be removed in Vizro `1.0.0`. Use `set_controls` with `controls` as a list of ids instead. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- `set_control` is deprecated and will be removed in Vizro `1.0.0`. Use `set_controls` with `controls` as a list of ids instead. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
 
 <!--
 ### Fixed

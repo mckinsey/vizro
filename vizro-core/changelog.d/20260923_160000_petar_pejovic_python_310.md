@@ -30,7 +30,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Deprecated
 
-- Python 3.10 support is deprecated and will be removed in Vizro `1.0.0`. Upgrade to Python 3.11 or later. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- Python 3.10 support is deprecated and will be removed in Vizro `1.0.0`. Upgrade to Python 3.11 or later. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
 
 <!--
 ### Fixed

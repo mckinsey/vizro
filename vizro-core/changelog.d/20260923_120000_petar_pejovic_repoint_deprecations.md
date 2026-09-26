@@ -24,7 +24,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Changed
 
-- Deprecation warnings and the deprecations documentation now reference the upcoming breaking release as `1.0.0`. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- Deprecation warnings and the deprecations documentation now reference the upcoming breaking release as `1.0.0`. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
 
 <!--
 ### Deprecated
