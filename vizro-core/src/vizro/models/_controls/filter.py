@@ -431,6 +431,11 @@ class Filter(VizroBaseModel):
     # default sync chain is built so the post-pre_build finalization (see `finalize_control_sync_chains`) can compute
     # the transitive mesh even though `extract_control_targets` removes them from `targets` in place.
     _synced_control_targets: list[ModelID] = PrivateAttr(default_factory=list)
+    # True only when the selector runs the framework-generated default action chain (i.e. `actions` was not set
+    # explicitly). Finalization may subsume such a control into another control's collapsed sync (guard its chain and
+    # fold its figures into the union). A control with explicit `actions` (custom or `[]`) has this False and is kept
+    # as a plain sync target - its value is set but its own chain is left to run (or not) as configured.
+    _has_default_selector_actions: bool = PrivateAttr(default=False)
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
@@ -646,6 +651,8 @@ class Filter(VizroBaseModel):
             # (they are removed from self.targets by extract_control_targets above). Only stashed on the auto-built
             # path: explicit selector actions (else branch) intentionally drop control targets.
             self._synced_control_targets = targeted_controls
+            # Mark this as running the generated default chain so finalization may subsume it (see the attribute doc).
+            self._has_default_selector_actions = True
             build_default_control_selector_actions(
                 selector=self.selector,
                 targeted_controls=targeted_controls,

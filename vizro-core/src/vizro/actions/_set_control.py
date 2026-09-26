@@ -167,12 +167,13 @@ class set_control(_AbstractAction):
         "used instead.",
     )
 
-    # Private, internal-only flag. When True, the action additionally raises each same-page target's
-    # `_guard_actions_chain` store so setting that target's value does NOT fire its own action chain. It is set by
-    # `build_default_control_selector_actions` for the collapsed selector-sync chain (where a single set_control sets
-    # every transitively-synced control and a single update_targets refreshes every affected figure), so the whole
-    # mesh resolves in two HTTP requests instead of cascading. Kept private (set post-construction) because it is not
-    # part of the public API. See `guard_action_chain` in static/js/models/action.js.
+    # Private, internal-only flag. When True, the action additionally raises the `_guard_actions_chain` store of each
+    # same-page target it subsumes (see `_guardable_same_page_controls`) so setting that target's value does NOT fire
+    # its own action chain. It is set by `finalize_control_sync_chains` for the collapsed selector-sync chain (where a
+    # single set_control sets every transitively-synced control and a single update_targets refreshes every affected
+    # figure), so the whole mesh resolves in two HTTP requests instead of cascading. Kept private (set
+    # post-construction) because it is not part of the public API. See `guard_action_chain` in
+    # static/js/models/action.js.
     _stop_implicit_actions_chaining: bool = PrivateAttr(default=False)
 
     @property
@@ -247,6 +248,17 @@ class set_control(_AbstractAction):
                 self._cross_page_controls.append(control_id)
                 cross_page_pages.append(control_model_page)
 
+        # Same-page controls this action may subsume when collapsing a sync mesh (only relevant when
+        # `_stop_implicit_actions_chaining` is set): those running the generated default chain, whose figures the
+        # collapsed `update_targets` refreshes and whose own chain must therefore be guarded. A same-page target with
+        # explicit actions (custom or `[]`) is set like any other but is NOT guarded, so its own chain runs (or not) as
+        # configured - preserving its behavior instead of silently swallowing it.
+        self._guardable_same_page_controls: list[ModelID] = [
+            control_id
+            for control_id in self._same_page_controls
+            if getattr(model_manager[control_id], "_has_default_selector_actions", False)
+        ]
+
         # The trigger decides cross-page behavior (see `function`): a control's own selector (Dropdown, Checklist, ...)
         # just "syncs" - stay put, apply on the target's next open; a figure/component (Graph, AgGrid, Button, ...)
         # "drills through" - navigate to the target's page.
@@ -296,12 +308,17 @@ class set_control(_AbstractAction):
         ]
         results = list(shaped_values)
 
-        # When stopping the implicit actions chaining, raise the guard of every same-page control that actually changes
-        # so its value update does not fire its own action chain (the source chain refreshes all affected figures
-        # itself). Leave the guard untouched (no_update) for a control we skip, so its value is unchanged and no guard
-        # gets stuck True. These guard outputs come right after the value outputs (see `outputs`).
+        # When stopping the implicit actions chaining, raise the guard of every subsumed same-page control that actually
+        # changes so its value update does not fire its own action chain (the source chain refreshes all affected
+        # figures itself). Leave the guard untouched (no_update) for a control we skip, so its value is unchanged and no
+        # guard gets stuck True. Only subsumed controls (default chain) are guarded - a target with explicit actions is
+        # not, so its own chain runs. These guard outputs come right after the value outputs (see `outputs`).
         if self._stop_implicit_actions_chaining:
-            results.extend(True if shaped is not no_update else no_update for shaped in shaped_values)
+            shaped_by_id = dict(zip(self._same_page_controls, shaped_values))
+            results.extend(
+                True if shaped_by_id[control_id] is not no_update else no_update
+                for control_id in self._guardable_same_page_controls
+            )
 
         # Cross-page targets: selectors aren't mounted, so they can't be callback outputs. Persist each value into
         # `vizro_controls_store` via set_props (it's only a State here); the target page's sync callback applies this
@@ -412,12 +429,13 @@ class set_control(_AbstractAction):
         # browser URL. A `pathname`-only `callback-nav` then reconciles against that stale state and fails to navigate
         # (it re-asserts the current path); a full `href` navigates unambiguously regardless of the desync.
         value_outputs = list(self._same_page_controls)
-        # When stopping the implicit actions chaining, also output each same-page control's guard store so `function`
-        # can raise it. Guard outputs follow the value outputs and precede `vizro_url.href` (kept aligned there).
+        # When stopping the implicit actions chaining, also output the guard store of each *subsumed* same-page control
+        # (default chain) so `function` can raise it. A same-page target with explicit actions is not guarded, so it is
+        # omitted here. Guard outputs follow the value outputs and precede `vizro_url.href` (kept aligned there).
         guard_outputs = (
             [
                 f"{cast(ControlType, model_manager[control_id]).selector.id}_guard_actions_chain.data"
-                for control_id in self._same_page_controls
+                for control_id in self._guardable_same_page_controls
             ]
             if self._stop_implicit_actions_chaining
             else []

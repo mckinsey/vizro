@@ -1122,3 +1122,64 @@ class TestControlSyncMixedFilterParameterFinalization:
         assert set_control_action.control == ["mix_f1"]
         assert set_control_action._stop_implicit_actions_chaining is True
         assert update_targets_action.targets == ["mix_g2", "mix_g1"]
+
+
+@pytest.fixture
+def managers_control_sync_explicit_action_targets(standard_px_chart):
+    """A default source syncing two same-page targets that have explicit selector actions.
+
+    ``expl_deferred`` opts out with ``actions=[]`` and ``expl_custom`` runs a custom chain. Neither runs the generated
+    default chain, so finalization must keep them as plain sync targets: their values are set, but they are not guarded
+    and their figures are not folded into the source's collapsed ``update_targets``.
+    """
+    vm.Page(
+        id="expl-page",
+        title="expl-page",
+        components=[
+            vm.Graph(id="expl_g_source", figure=standard_px_chart),
+            vm.Graph(id="expl_g_deferred", figure=standard_px_chart),
+            vm.Graph(id="expl_g_custom", figure=standard_px_chart),
+        ],
+        controls=[
+            vm.Filter(id="expl_source", column="continent", targets=["expl_g_source", "expl_deferred", "expl_custom"]),
+            vm.Filter(
+                id="expl_deferred",
+                column="continent",
+                targets=["expl_g_deferred"],
+                selector=vm.Checklist(actions=[]),
+            ),
+            vm.Filter(
+                id="expl_custom",
+                column="continent",
+                targets=["expl_g_custom"],
+                selector=vm.Checklist(actions=[update_targets(targets=["expl_g_custom"])]),
+            ),
+        ],
+    )
+    Vizro._pre_build()
+
+
+@pytest.mark.usefixtures("managers_control_sync_explicit_action_targets")
+class TestControlSyncExplicitActionTargetsPreserved:
+    """Targets with explicit actions (custom or `[]`) are synced but neither guarded nor subsumed into the union."""
+
+    def test_source_sets_but_does_not_subsume_explicit_targets(self):
+        # The source still sets both explicit-action targets (sync must happen), but its collapsed update_targets
+        # refreshes only its OWN figure - the targets' figures are left to their own chains.
+        set_control_action, update_targets_action = model_manager["expl_source"].selector.actions
+        assert set_control_action.control == ["expl_deferred", "expl_custom"]
+        assert set_control_action._stop_implicit_actions_chaining is True
+        assert update_targets_action.targets == ["expl_g_source"]
+
+    def test_no_guards_raised_for_explicit_targets(self):
+        # Neither explicit-action target is guarded, so its own chain still runs (or, for actions=[], stays inert).
+        set_control_action = model_manager["expl_source"].selector.actions[0]
+        assert set_control_action._guardable_same_page_controls == []
+        assert set_control_action.outputs == ["expl_deferred", "expl_custom"]
+
+    def test_explicit_targets_keep_their_own_chains(self):
+        # The targets are not sources (no default chain), so finalization leaves their selector actions untouched.
+        assert model_manager["expl_deferred"].selector.actions == []
+        [custom_action] = model_manager["expl_custom"].selector.actions
+        assert isinstance(custom_action, update_targets)
+        assert custom_action.targets == ["expl_g_custom"]

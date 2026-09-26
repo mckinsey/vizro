@@ -177,11 +177,13 @@ def get_sync_closure(source: ControlType) -> tuple[list[ModelID], list[ModelID]]
 
     * ``closure_controls`` - every control transitively kept in sync with ``source`` (a cycle-safe, order-preserving
       traversal of the ``_synced_control_targets`` edges, excluding ``source`` itself). The mesh is only expanded
-      through *same-page* controls; a cross-page target is included as a terminal node but its own edges are not
-      followed - its sync applies when its page is opened (see the `set_control` action).
+      through *same-page* controls that run the generated default chain; a cross-page target, or a same-page target
+      with explicit ``actions`` (custom or ``[]``), is a terminal node whose own edges are not followed - its value is
+      still set, but its sync applies when its page opens / its own chain runs (see the `set_control` action).
     * ``closure_figures`` - the precise union of figure targets that must be refreshed: ``source``'s own figures plus
-      those of every *same-page* synced control. Parameter targets use ``"<figure>.<argument>"`` notation, so they are
-      reduced to the figure id; Filter targets are already bare figure ids.
+      those of every *same-page* synced control that runs the default chain (a target with explicit ``actions`` is not
+      subsumed, so its figures are left to its own chain). Parameter targets use ``"<figure>.<argument>"`` notation, so
+      they are reduced to the figure id; Filter targets are already bare figure ids.
 
     Together these let one `set_control` set the whole mesh and one `update_targets` refresh every affected figure,
     collapsing the mesh into two HTTP requests (see `finalize_control_sync_chains`).
@@ -189,9 +191,10 @@ def get_sync_closure(source: ControlType) -> tuple[list[ModelID], list[ModelID]]
     source_page = model_manager._get_model_page(source)
 
     closure_controls: list[ModelID] = []
-    # Same-page subset of closure_controls, tracked during the BFS so the page lookup runs once per control (it is
-    # reused below to gather figures - only same-page controls contribute figures).
-    same_page_controls: list[ModelID] = []
+    # Subset of closure_controls that the collapsed action subsumes: same-page controls running the default chain.
+    # Tracked during the BFS so the page lookup runs once per control, and reused below to gather figures (only
+    # subsumed controls contribute figures; a terminal target's figures are left to its own chain).
+    subsumed_controls: list[ModelID] = []
     seen: set[ModelID] = {source.id}
     queue: deque[ModelID] = deque(source._synced_control_targets)
     while queue:
@@ -200,10 +203,14 @@ def get_sync_closure(source: ControlType) -> tuple[list[ModelID], list[ModelID]]
             continue
         seen.add(control_id)
         closure_controls.append(control_id)
-        # Only expand the mesh through same-page controls; a cross-page target is terminal (see docstring).
+        # Only expand the mesh through same-page controls that run the default chain; a cross-page target, or one with
+        # explicit actions, is terminal - its value is still set, but it is not subsumed (see docstring).
         target_control = cast(ControlType, model_manager[control_id])
-        if model_manager._get_model_page(target_control) is source_page:
-            same_page_controls.append(control_id)
+        if (
+            model_manager._get_model_page(target_control) is source_page
+            and target_control._has_default_selector_actions
+        ):
+            subsumed_controls.append(control_id)
             queue.extend(target_control._synced_control_targets)
 
     closure_figures: list[ModelID] = []
@@ -215,7 +222,7 @@ def get_sync_closure(source: ControlType) -> tuple[list[ModelID], list[ModelID]]
                 closure_figures.append(figure_id)
 
     _add_figure_targets(source)
-    for control_id in same_page_controls:
+    for control_id in subsumed_controls:
         _add_figure_targets(cast(ControlType, model_manager[control_id]))
 
     return closure_controls, closure_figures

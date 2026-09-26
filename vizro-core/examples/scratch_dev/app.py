@@ -7,8 +7,8 @@ import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.managers import data_manager
 from vizro.actions import set_control, update_targets
+from vizro.managers import data_manager
 
 
 df = px.data.iris()

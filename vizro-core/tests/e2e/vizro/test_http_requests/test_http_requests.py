@@ -581,6 +581,28 @@ def test_sync_hidden_parameter(page, http_requests_paths):
 
 
 @http_requests
+def test_sync_multiple_controls_same_page(page, http_requests_paths):
+    """A same-page mesh of three chained/cyclic controls resolves in exactly two requests, no matter its size."""
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.SYNC_MULTIPLE_CONTROLS_SAME_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # select 'versicolor' on the first filter (2 http: one `set_control` sets the whole transitive mesh - the other two
+    # filters - and raises their guards so their own chains do not fire, then one `update_targets` refreshes all three
+    # graphs). The mesh always resolves in two requests, no matter how many controls/figures it spans.
+    page.locator(f"div[id='{cnst.SYNC_MULTIPLE_CONTROLS_RADIO_ITEMS_1_ID}'] div:nth-of-type(2) input").click()
+    check_http_requests_count(page, http_requests_paths, 4)
+
+    # no additional (cascading) requests occur
+    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+    # final figure state: every graph is filtered to versicolor, so no setosa/virginica legend remains on any of them
+    page.wait_for_selector("text[class='legendtext'][data-unformatted='versicolor']")
+    assert page.locator("text[class='legendtext'][data-unformatted='setosa']").count() == 0
+    assert page.locator("text[class='legendtext'][data-unformatted='virginica']").count() == 0
+
+
+@http_requests
 def test_sync_cross_page(page, http_requests_paths):
     """Cross-page filter sync applies on target page open without navigation from source."""
     # open the source page (2 http)
