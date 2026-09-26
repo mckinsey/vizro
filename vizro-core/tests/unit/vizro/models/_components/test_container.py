@@ -147,6 +147,7 @@ class TestContainerPreBuildMethod:
                             selector=vm.Cascader(
                                 options={"Color": ["continent", "country"]},
                                 multi=False,
+                                full_path=False,
                             ),
                         ),
                         # Wrapped parameter to test that _in_container is correctly propagated to the selector:

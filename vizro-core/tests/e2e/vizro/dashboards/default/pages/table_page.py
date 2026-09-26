@@ -35,7 +35,7 @@ table_page = vm.Page(
         ),
         vm.Filter(
             column="pop",
-            selector=vm.RangeSlider(id=cnst.RANGESLIDER_TABLE_FILTER, step=1000000.0, min=1000000, max=10000000),
+            selector=vm.Slider(range=True, id=cnst.RANGESLIDER_TABLE_FILTER, step=1000000.0, min=1000000, max=10000000),
         ),
     ],
 )

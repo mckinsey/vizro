@@ -2,7 +2,7 @@ import e2e.vizro.constants as cnst
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import set_control
+from vizro.actions import set_controls
 from vizro.tables import dash_ag_grid
 
 iris = px.data.iris()
@@ -21,7 +21,7 @@ cross_filter_graph_page = vm.Page(
                 color="species",
                 custom_data=["species"],
             ),
-            actions=set_control(control="filter_interactions", value="species"),
+            actions=set_controls(controls=["filter_interactions"], value="species"),
         ),
         vm.Graph(
             id=cnst.BOX_SET_CONTROL_CROSS_FILTER_ID,
@@ -55,7 +55,7 @@ cross_filter_ag_grid_page = vm.Page(
                         id="set_control_ag_grid_table_country",
                         data_frame=gapminder[gapminder["year"] == 2007],
                     ),
-                    actions=set_control(control="filter_continent", value="continent"),
+                    actions=set_controls(controls=["filter_continent"], value="continent"),
                 ),
             ],
             variant="filled",
@@ -93,7 +93,7 @@ cross_filter_card_graph_page = vm.Page(
         vm.Card(
             id=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_CARD_ID,
             text="Continent to choose: Oceania",
-            actions=set_control(control="card-filter", value="Oceania"),
+            actions=set_controls(controls=["card-filter"], value="Oceania"),
         ),
         vm.Graph(
             id="box-card-graph-id",

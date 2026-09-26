@@ -196,12 +196,13 @@ class Dashboard(VizroBaseModel):
         # drill-through target. Only these have their value restored from the store when a page is opened; every other
         # control keeps its usual per-page behavior and resets when you navigate away. A single `set_control` can
         # target several controls across several pages, so collect every cross-page target it lists.
-        # `_cross_page_controls` is set in set_control.pre_build, which has run by now.
-        from vizro.actions import set_control
+        # `_cross_page_controls` is set in set_controls.pre_build, which has run by now. Fetching by the base
+        # `set_controls` also covers the deprecated `set_control` subclass.
+        from vizro.actions import set_controls
 
         cross_page_target_ids = {
             control_id
-            for action in cast(Iterable[set_control], model_manager._get_models(set_control))
+            for action in cast(Iterable[set_controls], model_manager._get_models(set_controls))
             for control_id in getattr(action, "_cross_page_controls", [])
         }
 

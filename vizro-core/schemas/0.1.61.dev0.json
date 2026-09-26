@@ -87,7 +87,7 @@
         },
         "inputs": {
           "default": [],
-          "description": "List of inputs provided to the action function. Each input can be specified as\n            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.\n            \u2757Deprecated: `inputs` is deprecated and [will not exist in Vizro 0.2.0](\n            deprecations.md#action-model-inputs-argument).",
+          "description": "List of inputs provided to the action function. Each input can be specified as\n            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.\n            \u2757Deprecated: `inputs` is deprecated and [will not exist in Vizro 1.0.0](\n            deprecations.md#action-model-inputs-argument).",
           "items": {
             "type": "string"
           },
@@ -161,6 +161,9 @@
                 "$ref": "#/$defs/set_control"
               },
               {
+                "$ref": "#/$defs/set_controls"
+              },
+              {
                 "$ref": "#/$defs/show_notification"
               },
               {
@@ -227,6 +230,9 @@
               },
               {
                 "$ref": "#/$defs/set_control"
+              },
+              {
+                "$ref": "#/$defs/set_controls"
               },
               {
                 "$ref": "#/$defs/show_notification"
@@ -333,6 +339,9 @@
                 "$ref": "#/$defs/set_control"
               },
               {
+                "$ref": "#/$defs/set_controls"
+              },
+              {
                 "$ref": "#/$defs/show_notification"
               },
               {
@@ -368,7 +377,7 @@
         },
         "full_path": {
           "default": false,
-          "description": "How a selection is identified. In leaf mode (False, default) `value` is a bare leaf scalar (single-select) or a list of leaf scalars (multi-select), and leaf labels must be unique across the tree. In path mode (True) `value` is a full root-to-leaf path (single-select) or a list of paths (multi-select), so duplicate leaf labels across different branches are addressed unambiguously. This attribute is immutable once set.",
+          "description": "How a selection is identified. In leaf mode (False, default) `value` is a bare leaf scalar (single-select) or a list of leaf scalars (multi-select), and leaf labels must be unique across the tree. In path mode (True) `value` is a full root-to-leaf path (single-select) or a list of paths (multi-select), so duplicate leaf labels across different branches are addressed unambiguously. This attribute is immutable once set. \u2757The default will change from `False` to `True` in Vizro 1.0.0; set `full_path` explicitly to keep the current behavior.",
           "title": "Full Path",
           "type": "boolean"
         },
@@ -485,6 +494,9 @@
               },
               {
                 "$ref": "#/$defs/set_control"
+              },
+              {
+                "$ref": "#/$defs/set_controls"
               },
               {
                 "$ref": "#/$defs/show_notification"
@@ -613,6 +625,9 @@
               },
               {
                 "$ref": "#/$defs/set_control"
+              },
+              {
+                "$ref": "#/$defs/set_controls"
               },
               {
                 "$ref": "#/$defs/show_notification"
@@ -961,6 +976,9 @@
                 "$ref": "#/$defs/set_control"
               },
               {
+                "$ref": "#/$defs/set_controls"
+              },
+              {
                 "$ref": "#/$defs/show_notification"
               },
               {
@@ -1092,6 +1110,9 @@
               },
               {
                 "$ref": "#/$defs/set_control"
+              },
+              {
+                "$ref": "#/$defs/set_controls"
               },
               {
                 "$ref": "#/$defs/show_notification"
@@ -1242,6 +1263,9 @@
                 "$ref": "#/$defs/set_control"
               },
               {
+                "$ref": "#/$defs/set_controls"
+              },
+              {
                 "$ref": "#/$defs/show_notification"
               },
               {
@@ -1290,6 +1314,9 @@
               },
               {
                 "$ref": "#/$defs/set_control"
+              },
+              {
+                "$ref": "#/$defs/set_controls"
               },
               {
                 "$ref": "#/$defs/show_notification"
@@ -1524,6 +1551,9 @@
               },
               {
                 "$ref": "#/$defs/set_control"
+              },
+              {
+                "$ref": "#/$defs/set_controls"
               },
               {
                 "$ref": "#/$defs/show_notification"
@@ -1969,6 +1999,9 @@
                 "$ref": "#/$defs/set_control"
               },
               {
+                "$ref": "#/$defs/set_controls"
+              },
+              {
                 "$ref": "#/$defs/show_notification"
               },
               {
@@ -2176,6 +2209,9 @@
                 "$ref": "#/$defs/set_control"
               },
               {
+                "$ref": "#/$defs/set_controls"
+              },
+              {
                 "$ref": "#/$defs/show_notification"
               },
               {
@@ -2195,7 +2231,8 @@
     },
     "RangeSlider": {
       "additionalProperties": false,
-      "description": "Numeric multi-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md#numerical-selectors)",
+      "deprecated": true,
+      "description": "Deprecated numeric range selector. Use [`Slider`][vizro.models.Slider] with `range=True` instead.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md#numerical-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2278,7 +2315,15 @@
             }
           ],
           "default": null,
+          "description": "Default value: a `[start, end]` pair.",
           "title": "Value"
+        },
+        "range": {
+          "const": true,
+          "default": true,
+          "description": "Boolean flag for displaying range slider.",
+          "title": "Range",
+          "type": "boolean"
         },
         "title": {
           "default": "",
@@ -2316,6 +2361,9 @@
                 "$ref": "#/$defs/set_control"
               },
               {
+                "$ref": "#/$defs/set_controls"
+              },
+              {
                 "$ref": "#/$defs/show_notification"
               },
               {
@@ -2335,7 +2383,7 @@
     },
     "Slider": {
       "additionalProperties": false,
-      "description": "Numeric single-option selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md#numerical-selectors)",
+      "description": "Numeric single-option or range selector.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter]. Set `range=True` for a two-handle range selector.\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md#numerical-selectors)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2409,12 +2457,26 @@
               "type": "number"
             },
             {
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2,
+              "type": "array"
+            },
+            {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Default value for slider.",
+          "description": "Default value: a single number, or a `[start, end]` pair when `range=True`.",
           "title": "Value"
+        },
+        "range": {
+          "default": false,
+          "description": "Whether to display a two-handle range slider. When True, `value` is a `[start, end]` pair.",
+          "title": "Range",
+          "type": "boolean"
         },
         "title": {
           "default": "",
@@ -2450,6 +2512,9 @@
               },
               {
                 "$ref": "#/$defs/set_control"
+              },
+              {
+                "$ref": "#/$defs/set_controls"
               },
               {
                 "$ref": "#/$defs/show_notification"
@@ -2524,6 +2589,9 @@
               },
               {
                 "$ref": "#/$defs/set_control"
+              },
+              {
+                "$ref": "#/$defs/set_controls"
               },
               {
                 "$ref": "#/$defs/show_notification"
@@ -2604,6 +2672,9 @@
               },
               {
                 "$ref": "#/$defs/set_control"
+              },
+              {
+                "$ref": "#/$defs/set_controls"
               },
               {
                 "$ref": "#/$defs/show_notification"
@@ -2782,6 +2853,9 @@
                 "$ref": "#/$defs/set_control"
               },
               {
+                "$ref": "#/$defs/set_controls"
+              },
+              {
                 "$ref": "#/$defs/show_notification"
               },
               {
@@ -2920,7 +2994,8 @@
     },
     "set_control": {
       "additionalProperties": false,
-      "description": "Sets the value of one or more controls, which then update their targets.\n\nAbstract: Usage documentation\n    [Graph and table interactions](../user-guides/graph-table-actions.md)\n\n`control` accepts a single control id or a list of control ids. Pass a list to set several controls from a single\ntrigger (for example, one graph click that cross-filters multiple filters, or one selector that syncs several\ncontrols). The same `value` is sent to every targeted control and is reshaped to each control's own selector.\n\nThe following Vizro models can be a source of `set_control`:\n\n* [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when `cellClicked` or `selectedRows` changes (for example\nafter a cell click or when the row selection changes). `value` can be:\n\n    * `\"cell\"`, `\"column\"`, or `\"row\"` to use the clicked cell's value, column id, or row id respectively.\n    * Any other string to treat as a column name, taking values from the selected row(s).\n* [`Graph`][vizro.models.Graph]: triggers `set_control` when the user clicks on data in the graph. `value` is a\nstring that can be used in two ways to specify how to set `control`:\n\n    * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.\n    * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the\n    trigger data [`clickData[\"points\"][0]`](https://dash.plotly.com/interactive-graphing). This is typically\n    useful for a positional variable, for example `\"x\"`, and does not require setting `custom_data`.\n\n* [`Figure`][vizro.models.Figure]: triggers `set_control` when the user clicks on the figure. `value` specifies a\nliteral value to set `control` to.\n* [`Button`][vizro.models.Button]: triggers `set_control` when the user clicks on the button. `value` specifies a\nliteral value to set `control` to.\n* [`Card`][vizro.models.Card]: triggers `set_control` when the user clicks on the card. `value` specifies a\nliteral value to set `control` to.\n\n`value` is required for `Graph` and `AgGrid` (it is the directive for what to extract from the click). For\n`Figure`, `Card`, and `Button` it is the literal to set, and `value=None` resets the target control(s) to their\ndefault value. `value` may be omitted only when a control's own selector syncs to another control (via that\ncontrol's `targets`): the sync uses the selector's live value and ignores `value`.\n\nExample: `AgGrid` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.AgGrid(\n        figure=dash_ag_grid(iris),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger with `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_control(control=\"target_control\", value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger without `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.box(iris, x=\"species\", y=\"sepal_length\"),\n        actions=va.set_control(control=\"target_control\", value=\"x\"),\n    )\n    ```\n\nExample: `Figure` as trigger\n    ```python\n    import vizro.actions as va\n    from vizro.figures import kpi_card\n\n    vm.Figure(\n        figure=kpi_card(tips, value_column=\"tip\", title=\"Click KPI to set control to A\"),\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: `Button` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Button(\n        text=\"Click to set control to A\",\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: `Card` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Card(\n        title=\"Click Card to set control to A\",\n        actions=va.set_control(control=\"target_control\", value=\"A\"),\n    )\n    ```\n\nExample: target multiple controls at once\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_control(control=[\"target_control_1\", \"target_control_2\"], value=\"species\"),\n    )\n    ```\n\nExample: a control selector as trigger (no `value` needed)\n    A control's own selector can be the source. Here a bare `RadioItems` (whitelisted as a page component with\n    `add_type`) syncs its selected value to two filters. `value` is omitted: a selector sync sends the selector's\n    own live value, so there is nothing to specify.\n    ```python\n    import vizro.models as vm\n    import vizro.actions as va\n\n    vm.Page.add_type(\"components\", vm.RadioItems)  # allow a bare selector as a page component\n\n    vm.RadioItems(\n        options=[\"setosa\", \"versicolor\", \"virginica\"],\n        actions=va.set_control(control=[\"species_filter_1\", \"species_filter_2\"]),\n    )\n    ```",
+      "deprecated": true,
+      "description": "Deprecated. Use [`set_controls`][vizro.actions.set_controls] with `controls` as a list of ids instead.",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2932,6 +3007,11 @@
           "default": "set_control",
           "title": "Type",
           "type": "string"
+        },
+        "value": {
+          "$ref": "#/$defs/JsonValue",
+          "default": null,
+          "description": "Value to take from the trigger and send to the target control(s). Its format depends on the triggering model (see the list above): for `Graph`/`AgGrid` it is an extraction directive (a column name or lookup) and is required; for `Figure`/`Card`/`Button` it is the literal value to set, and `value=None` resets the target control(s) to their default value. It may be omitted (defaults to `None`) only when a control's own selector syncs to another control, where `value` is ignored and the selector's live value is used instead."
         },
         "control": {
           "anyOf": [
@@ -2945,8 +3025,43 @@
               "type": "array"
             }
           ],
-          "description": "Filter or Parameter component id(s) to be affected by the trigger. Provide a single id to set one control, or a list of ids to set several controls at once. Each control can be on the same page as the trigger or on a different page: a different-page control is kept in sync through the internal `vizro_controls_store`, and its new value is applied when that page is opened.",
+          "description": "Filter or Parameter component id(s) to be affected by the trigger. Provide a single id or a list of ids. Deprecated: use `set_controls` with `controls` instead.",
           "title": "Control"
+        }
+      },
+      "required": ["control"],
+      "title": "set_control",
+      "type": "object"
+    },
+    "set_controls": {
+      "additionalProperties": false,
+      "description": "Sets the value of one or more controls, which then update their targets.\n\nAbstract: Usage documentation\n    [Graph and table interactions](../user-guides/graph-table-actions.md)\n\n`controls` is one or more control ids: pass a single id, or a list of ids to set several controls from a single\ntrigger (for example, one graph click that cross-filters multiple filters, or one selector that syncs several\ncontrols). A single id is normalized to a list internally. The same `value` is sent to every targeted control and\nis reshaped to each control's own selector.\n\nThe following Vizro models can be a source of `set_controls`:\n\n* [`AgGrid`][vizro.models.AgGrid]: triggers `set_controls` when `cellClicked` or `selectedRows` changes (for example\nafter a cell click or when the row selection changes). `value` can be:\n\n    * `\"cell\"`, `\"column\"`, or `\"row\"` to use the clicked cell's value, column id, or row id respectively.\n    * Any other string to treat as a column name, taking values from the selected row(s).\n* [`Graph`][vizro.models.Graph]: triggers `set_controls` when the user clicks on data in the graph. `value` is a\nstring that can be used in two ways to specify how to set `controls`:\n\n    * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.\n    * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the\n    trigger data [`clickData[\"points\"][0]`](https://dash.plotly.com/interactive-graphing). This is typically\n    useful for a positional variable, for example `\"x\"`, and does not require setting `custom_data`.\n\n* [`Figure`][vizro.models.Figure]: triggers `set_controls` when the user clicks on the figure. `value` specifies a\nliteral value to set `controls` to.\n* [`Button`][vizro.models.Button]: triggers `set_controls` when the user clicks on the button. `value` specifies a\nliteral value to set `controls` to.\n* [`Card`][vizro.models.Card]: triggers `set_controls` when the user clicks on the card. `value` specifies a\nliteral value to set `controls` to.\n\n`value` is required for `Graph` and `AgGrid` (it is the directive for what to extract from the click). For\n`Figure`, `Card`, and `Button` it is the literal to set, and `value=None` resets the target control(s) to their\ndefault value. `value` may be omitted only when a control's own selector syncs to another control (via that\ncontrol's `targets`): the sync uses the selector's live value and ignores `value`.\n\nExample: `AgGrid` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.AgGrid(\n        figure=dash_ag_grid(iris),\n        actions=va.set_controls(controls=[\"target_control\"], value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger with `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_controls(controls=[\"target_control\"], value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger without `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.box(iris, x=\"species\", y=\"sepal_length\"),\n        actions=va.set_controls(controls=[\"target_control\"], value=\"x\"),\n    )\n    ```\n\nExample: `Figure` as trigger\n    ```python\n    import vizro.actions as va\n    from vizro.figures import kpi_card\n\n    vm.Figure(\n        figure=kpi_card(tips, value_column=\"tip\", title=\"Click KPI to set control to A\"),\n        actions=va.set_controls(controls=[\"target_control\"], value=\"A\"),\n    )\n    ```\n\nExample: `Button` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Button(\n        text=\"Click to set control to A\",\n        actions=va.set_controls(controls=[\"target_control\"], value=\"A\"),\n    )\n    ```\n\nExample: `Card` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Card(\n        title=\"Click Card to set control to A\",\n        actions=va.set_controls(controls=[\"target_control\"], value=\"A\"),\n    )\n    ```\n\nExample: target multiple controls at once\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_controls(controls=[\"target_control_1\", \"target_control_2\"], value=\"species\"),\n    )\n    ```\n\nExample: a control selector as trigger (no `value` needed)\n    A control's own selector can be the source. Here a bare `RadioItems` (whitelisted as a page component with\n    `add_type`) syncs its selected value to two filters. `value` is omitted: a selector sync sends the selector's\n    own live value, so there is nothing to specify.\n    ```python\n    import vizro.models as vm\n    import vizro.actions as va\n\n    vm.Page.add_type(\"components\", vm.RadioItems)  # allow a bare selector as a page component\n\n    vm.RadioItems(\n        options=[\"setosa\", \"versicolor\", \"virginica\"],\n        actions=va.set_controls(controls=[\"species_filter_1\", \"species_filter_2\"]),\n    )\n    ```",
+      "properties": {
+        "id": {
+          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "set_controls",
+          "default": "set_controls",
+          "title": "Type",
+          "type": "string"
+        },
+        "controls": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ],
+          "description": "Filter or Parameter component id(s) to be affected by the trigger. Provide a single id, or a list of ids to set several controls at once. Each control can be on the same page as the trigger or on a different page: a different-page control is kept in sync through the internal `vizro_controls_store`, and its new value is applied when that page is opened.",
+          "title": "Controls"
         },
         "value": {
           "$ref": "#/$defs/JsonValue",
@@ -2954,8 +3069,8 @@
           "description": "Value to take from the trigger and send to the target control(s). Its format depends on the triggering model (see the list above): for `Graph`/`AgGrid` it is an extraction directive (a column name or lookup) and is required; for `Figure`/`Card`/`Button` it is the literal value to set, and `value=None` resets the target control(s) to their default value. It may be omitted (defaults to `None`) only when a control's own selector syncs to another control, where `value` is ignored and the selector's live value is used instead."
         }
       },
-      "required": ["control"],
-      "title": "set_control",
+      "required": ["controls"],
+      "title": "set_controls",
       "type": "object"
     },
     "show_notification": {

@@ -764,7 +764,7 @@ These steps add a filter to the dashboard:
 
         [![SecondPage5]][secondpage5]
 
-You'll see that a [`Dropdown`][vizro.models.Dropdown] is selected by default for categorical data, while a [`RangeSlider`][vizro.models.RangeSlider] is used for numerical data. Also, filters are applied to all components on the page.
+You'll see that a [`Dropdown`][vizro.models.Dropdown] is selected by default for categorical data, while a range [`Slider`][vizro.models.Slider] (`Slider(range=True)`) is used for numerical data. Also, filters are applied to all components on the page.
 
 If you want to apply a filter to specific components only, check out [How to use filters](../user-guides/filters.md).
 

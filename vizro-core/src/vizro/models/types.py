@@ -43,7 +43,7 @@ def _get_layout_discriminator(layout: Any) -> str | None:
             return layout["type"]
         except KeyError:
             warnings.warn(
-                "`layout` without an explicit `type` specified will not work in Vizro 0.2.0. Specify `type: grid` for "
+                "`layout` without an explicit `type` specified will not work in Vizro 1.0.0. Specify `type: grid` for "
                 "your `layout`.",
                 FutureWarning,
                 stacklevel=3,
@@ -66,7 +66,7 @@ def _get_action_discriminator(action: Any) -> str | None:
             return action["type"]
         except KeyError:
             warnings.warn(
-                "Action without an explicit `type` specified will not work in Vizro 0.2.0. Specify `type: action` for "
+                "Action without an explicit `type` specified will not work in Vizro 1.0.0. Specify `type: action` for "
                 "a custom action or, for example, `type: export_data` for a built-in action.",
                 FutureWarning,
                 stacklevel=3,
@@ -762,6 +762,7 @@ ActionType = Annotated[
     | Annotated["export_data", Tag("export_data")]
     | Annotated["filter_interaction", Tag("filter_interaction")]
     | Annotated["set_control", Tag("set_control")]
+    | Annotated["set_controls", Tag("set_controls")]
     | Annotated["show_notification", Tag("show_notification")]
     | Annotated["update_notification", Tag("update_notification")]
     | Annotated["update_targets", Tag("update_targets")]

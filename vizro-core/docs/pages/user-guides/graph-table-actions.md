@@ -1,5 +1,5 @@
 ---
-description: "Cross-filter, cross-parameter, and cross-highlight between graphs and tables via `set_control`, including multi-select, cross-container, cross-page, and pivoted-data variants."
+description: "Cross-filter, cross-parameter, and cross-highlight between graphs and tables via `set_controls`, including multi-select, cross-container, cross-page, and pivoted-data variants."
 ---
 
 # Graph and table interactions
@@ -10,7 +10,7 @@ In this guide we show you how to configure interactions between graphs and table
 - [Cross-parameter](#cross-parameter): a _source_ graph or table updates any argument other than `data_frame` of a _target_ graph or table. The source component sets a [parameter](parameters.md), which in turn updates the target component.
 - [Cross-highlight](#cross-highlight): a _source_ graph or table highlights data in a _target_ graph or table. This is an example of a [cross-parameter](#cross-parameter).
 
-All these interactions use the [`set_control` action][vizro.actions.set_control]. This gives very generic and powerful functionality thanks to the functionality of the intermediate control:
+All these interactions use the [`set_controls` action][vizro.actions.set_controls]. This gives very generic and powerful functionality thanks to the functionality of the intermediate control:
 
 - The target components can be anything that reacts to a control: [built-in graphs](graph.md), [custom graphs](custom-charts.md), [built-in tables](table.md), [custom tables](custom-tables.md), [built-in figures](figure.md) and [custom figures](custom-figures.md).
 - A single control can update any number of these target components, and a single source component can set any number of controls. Hence a single source component can interact with any number of target components.
@@ -21,7 +21,7 @@ All these interactions use the [`set_control` action][vizro.actions.set_control]
 
 !!! tip "Invisible controls"
 
-    If you prefer, you can make your control invisible by setting `visible=False`, for example `vm.Parameter(..., visible=False)`. The control can then only be set by `set_control`. This achieves a visually cleaner dashboard but can also make it less clear what graph and table interactions have been applied. We use `visible=False` in all our examples on [cross-highlighting](#cross-highlight).
+    If you prefer, you can make your control invisible by setting `visible=False`, for example `vm.Parameter(..., visible=False)`. The control can then only be set by `set_controls`. This achieves a visually cleaner dashboard but can also make it less clear what graph and table interactions have been applied. We use `visible=False` in all our examples on [cross-highlighting](#cross-highlight).
 
     A user can reset all controls on a page, including those with `visible=False`, by clicking the ["Reset controls" button](controls.md#reset-controls).
 
@@ -39,26 +39,26 @@ A cross-filter is when the user clicks on one _source_ graph or table to filter 
 
     1. Remember that if `targets` is not explicitly specified, a filter [targets all components on the page whose data source includes `column`](filters.md#basic-filters).
 
-1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-filter.
+1. Call `set_controls` in the `actions` argument of the source [`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-filter.
 
-    1. Set `control` to the ID of the filter.
-    1. Set `value`. The format of this depends on the source model and is given in the [API reference][vizro.actions.set_control], but it is often `column` of the filter. Think of it as an instruction for what to lookup in the source data: whatever value is fetched from this lookup is used to set `control`.
+    1. Set `controls` to a list with the ID of the filter.
+    1. Set `value`. The format of this depends on the source model and is given in the [API reference][vizro.actions.set_controls], but it is often `column` of the filter. Think of it as an instruction for what to lookup in the source data: whatever value is fetched from this lookup is used to set `controls`.
 
     ```python
     import vizro.actions as va
 
-    components = [vm.Graph(..., actions=va.set_control(control="my_filter", value="species"))]
+    components = [vm.Graph(..., actions=va.set_controls(controls=["my_filter"], value="species"))]
     ```
 
 1. If your source component is a `Graph` and you use a column name for `value` then this must be included in the `custom_data` of your graph's `figure` function, for example `figure=px.scatter(..., custom_data="species")`.
 
 !!! tip
 
-    Often the `value` of `set_control` is the same as the `column` of the filter, but this does not need to be the case. You can perform a cross-filter where the source component's column name given by `value` is different from the target component's column name, which is given by the filter's `column`.
+    Often the `value` of `set_controls` is the same as the `column` of the filter, but this does not need to be the case. You can perform a cross-filter where the source component's column name given by `value` is different from the target component's column name, which is given by the filter's `column`.
 
 ### Cross-filter from table
 
-The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking on a row, selecting a row's checkbox or clicking a cell in the table. The `value` argument of the [`set_control` action][vizro.actions.set_control] tells the action what to send to the `control`:
+The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking on a row, selecting a row's checkbox or clicking a cell in the table. The `value` argument of the [`set_controls` action][vizro.actions.set_controls] tells the action what to send to the `controls`:
 
 - `"cell"` uses the clicked cell’s value.
 - `"column"` uses the clicked cell’s column id, which corresponds to the DataFrame column name.
@@ -84,7 +84,7 @@ The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking o
                 vm.AgGrid(
                     title="Click on a row to use that row's sex to filter graph",
                     figure=dash_ag_grid(tips),
-                    actions=va.set_control(control="sex_filter", value="sex"),
+                    actions=va.set_controls(controls=["sex_filter"], value="sex"),
                 ),
                 vm.Graph(id="tips_graph", figure=px.histogram(tips, x="tip")),  # (1)!
             ],
@@ -96,7 +96,7 @@ The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking o
         ```
 
         1. We give the `vm.Graph` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
-        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_controls`.
 
     === "app.yaml"
 
@@ -106,8 +106,9 @@ The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking o
         pages:
           - components:
               - actions:
-                  - control: sex_filter
-                    type: set_control
+                  - controls:
+                      - sex_filter
+                    type: set_controls
                     value: sex
                 figure:
                   _target_: dash_ag_grid
@@ -141,14 +142,14 @@ In the [cross-filter from table example](#cross-filter-from-table), when you **s
 
     In full, what happens is as follows:
 
-    1. Changing row selection (for example, by clicking a row) triggers the `va.set_control` action. This uses the `sex` column value(s) for the selected row(s) (in other words, "Male" and/or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
+    1. Changing row selection (for example, by clicking a row) triggers the `va.set_controls` action. This uses the `sex` column value(s) for the selected row(s) (in other words, "Male" and/or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
     1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter to be re-applied on its `targets=["tips_graph"]` so that a filtered graph is shown.
 
-    The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
+    The mechanism for triggering the filter when its value is set by `va.set_controls` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
 When all rows are deselected, the control resets to its original value. This effectively clears any cross-filter or cross-parameter that was applied. You can also reset all controls on a page by clicking the ["Reset controls" button](controls.md#reset-controls).
 
-If you set the `set_control.value` argument to `value="cell"`, the value of the clicked cell propagates to the `control`.
+If you set the `set_controls.value` argument to `value="cell"`, the value of the clicked cell propagates to the `controls`.
 
 
 !!! example "Cross-filter from table to graph - propagating cell value"
@@ -170,7 +171,7 @@ If you set the `set_control.value` argument to `value="cell"`, the value of the 
                 vm.AgGrid(
                     title="Click on a cell to use that cell's value to filter graph",
                     figure=dash_ag_grid(tips),
-                    actions=va.set_control(control="sex_filter", value="cell"),
+                    actions=va.set_controls(controls=["sex_filter"], value="cell"),
                 ),
                 vm.Graph(id="tips_graph", figure=px.histogram(tips, x="tip")),  # (1)!
             ],
@@ -182,7 +183,7 @@ If you set the `set_control.value` argument to `value="cell"`, the value of the 
         ```
 
         1. We give the `vm.Graph` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
-        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_controls`.
 
     === "app.yaml"
 
@@ -192,8 +193,9 @@ If you set the `set_control.value` argument to `value="cell"`, the value of the 
         pages:
           - components:
               - actions:
-                  - control: sex_filter
-                    type: set_control
+                  - controls:
+                      - sex_filter
+                    type: set_controls
                     value: cell
                 figure:
                   _target_: dash_ag_grid
@@ -221,7 +223,7 @@ If you set the `set_control.value` argument to `value="cell"`, the value of the 
 
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_table_2.gif)
 
- Multi-select depends on how you set `value` in `set_control`:
+ Multi-select depends on how you set `value` in `set_controls`:
 
  - If `value` is a column name (values are taken from selected rows), multi-row selection is turned on by default, including checkboxes.
  - If `value` is `"cell"`, `"column"`, or `"row"`, multi-select is not available as interaction is driven by single cell clicks.
@@ -230,7 +232,7 @@ If you set the `set_control.value` argument to `value="cell"`, the value of the 
 
     You can still customize selection with `dashGridOptions` on `dash_ag_grid(...)`, for example `figure=dash_ag_grid(..., dashGridOptions={"rowSelection": {"mode": "singleRow"}})` when you use a column name and want only one row selected. The Dash AG Grid offers many [options to configure row selection](https://dash.plotly.com/dash-ag-grid/single-row-selection). These can be [passed directly](table.md#basic-usage) into `dash_ag_grid` as keyword arguments or set for multiple tables by creating a [custom table function](custom-tables.md).
 
-    When multi-row (or single-row) selection is enabled, click checkboxes or click any cell to select or deselect its row. Alternatively, `set_control` is also triggered by pressing ++space++ while focused on a row.
+    When multi-row (or single-row) selection is enabled, click checkboxes or click any cell to select or deselect its row. Alternatively, `set_controls` is also triggered by pressing ++space++ while focused on a row.
 
     Ranges of rows can be selected by holding down ++shift++ while clicking on rows. This behavior also applies when checkbox selection is disabled, and in group selection. Ranges of rows can be selected by holding down ++shift++ while clicking on rows.
 
@@ -242,16 +244,16 @@ If you set the `set_control.value` argument to `value="cell"`, the value of the 
 
 The trigger for a cross-filter from a [graph](graph.md) is clicking on data in the graph. A single click sends one value to the control. You can also use box/lasso select to select multiple data points at once; see [Cross-filter from graph - multi-select](#cross-filter-from-graph-multi-select) for details and examples.
 
-The `value` argument of the [`set_control` action][vizro.actions.set_control] can be used in two ways to specify what sets `control`:
+The `value` argument of the [`set_controls` action][vizro.actions.set_controls] can be used in two ways to specify what sets `controls`:
 
-- Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function. For example, for a graph `px.bar(..., color="country", custom_data="country")` you can use `va.set_control(value="country", ...)`.
-- As a shortcut, if the value is encoded by a _positional dimension_ such as `x` or `y` then you can use that variable directly and do not need to set `custom_data`. For example, for a graph `px.bar(x="country", ...)` you can use `va.set_control(value="x", ...)`. Positional dimensions include `x`, `y`, `z` for Cartesian plots and `lat`, `lon`, `location` for choropleth maps.
+- Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function. For example, for a graph `px.bar(..., color="country", custom_data="country")` you can use `va.set_controls(value="country", ...)`.
+- As a shortcut, if the value is encoded by a _positional dimension_ such as `x` or `y` then you can use that variable directly and do not need to set `custom_data`. For example, for a graph `px.bar(x="country", ...)` you can use `va.set_controls(value="x", ...)`. Positional dimensions include `x`, `y`, `z` for Cartesian plots and `lat`, `lon`, `location` for choropleth maps.
 
 ??? details "Behind the scenes mechanism"
 
     `value` is an instruction for what to lookup in [Plotly's `clickData`](https://dash.plotly.com/interactive-graphing), whose format and content depend on the type of chart clicked. Generally speaking, positional information is automatically included in `clickData` but other information such as `color` must be manually supplied using `custom_data` to make it available.
 
-    The rules for how `value` is interpreted by `set_control` are:
+    The rules for how `value` is interpreted by `set_controls` are:
 
     1. If the graph has `custom_data` then interpret the `value` as a column name and attempt to find it in `custom_data`.
     1. If the graph does not have `custom_data` or does not include `value` as a column in `custom_data` then perform a lookup inside `clickData["points"][0]`. For example:
@@ -281,7 +283,7 @@ We show an example of each of these in turn. Here is an example where we use `cu
                 vm.Graph(
                     title="Click on a box to use that box's sex to filter table",
                     figure=px.box(tips, x="tip", y="time", color="sex", custom_data="sex"),  # (1)!
-                    actions=va.set_control(control="sex_filter", value="sex"),
+                    actions=va.set_controls(controls=["sex_filter"], value="sex"),
                 ),
                 vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (2)!
             ],
@@ -294,7 +296,7 @@ We show an example of each of these in turn. Here is an example where we use `cu
 
         1. We encode the `sex` column as `color` in the plot and include it in `custom_data="sex"`.
         1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
-        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_controls`.
 
     === "app.yaml"
 
@@ -304,8 +306,9 @@ We show an example of each of these in turn. Here is an example where we use `cu
         pages:
           - components:
               - actions:
-                  - control: sex_filter
-                    type: set_control
+                  - controls:
+                      - sex_filter
+                    type: set_controls
                     value: sex
                 figure:
                   _target_: box
@@ -342,14 +345,14 @@ When you click on a box in the graph, the table is cross-filtered to show data f
 
     In full, what happens is as follows:
 
-    1. Clicking on the box (or using box/lasso select on multiple data points) triggers the `va.set_control` action. This uses the value of `sex` taken from the graph's `custom_data` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`. When multiple points are selected, unique values across all points are sent.
+    1. Clicking on the box (or using box/lasso select on multiple data points) triggers the `va.set_controls` action. This uses the value of `sex` taken from the graph's `custom_data` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`. When multiple points are selected, unique values across all points are sent.
     1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter to be re-applied on its `targets=["tips_table"]` so that a filtered table is shown.
 
-    The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
+    The mechanism for triggering the filter when its value is set by `va.set_controls` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
 !!! note "Cross-filter from custom chart"
 
-    If you cross-filter from a [custom chart](custom-charts.md) and wish to use a column supplied through `custom_data` for the `value` argument of `va.set_control` then you must explicitly include `custom_chart` in the function signature:
+    If you cross-filter from a [custom chart](custom-charts.md) and wish to use a column supplied through `custom_data` for the `value` argument of `va.set_controls` then you must explicitly include `custom_chart` in the function signature:
 
     ```py
     @capture("graph")
@@ -357,7 +360,7 @@ When you click on a box in the graph, the table is cross-filtered to show data f
         return px.scatter(data_grame, custom_data=custom_data, **kwargs)
     ```
 
-Here is an example where we do not need to use `custom_data` because the value used in `va.set_control` is positional: it corresponds to the `y` axis of the graph.
+Here is an example where we do not need to use `custom_data` because the value used in `va.set_controls` is positional: it corresponds to the `y` axis of the graph.
 
 !!! example "Cross-filter from graph without `custom_data` to table"
 
@@ -378,7 +381,7 @@ Here is an example where we do not need to use `custom_data` because the value u
                 vm.Graph(
                     title="Click on a box to use that box's sex to filter table",
                     figure=px.box(tips, x="tip", y="sex"),
-                    actions=va.set_control(control="sex_filter", value="y"),
+                    actions=va.set_controls(controls=["sex_filter"], value="y"),
                 ),
                 vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
             ],
@@ -390,7 +393,7 @@ Here is an example where we do not need to use `custom_data` because the value u
         ```
 
         1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
-        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_controls`.
 
     === "app.yaml"
 
@@ -400,8 +403,9 @@ Here is an example where we do not need to use `custom_data` because the value u
         pages:
           - components:
               - actions:
-                  - control: sex_filter
-                    type: set_control
+                  - controls:
+                      - sex_filter
+                    type: set_controls
                     value: y
                 figure:
                   _target_: box
@@ -436,10 +440,10 @@ When you click on a box in the graph, the table is cross-filtered to show data f
 
     In full, what happens is as follows:
 
-    1. Clicking on the box (or using box/lasso select on multiple data points) triggers the `va.set_control` action. This uses the value of `y` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`. When multiple points are selected, unique values across all points are sent.
+    1. Clicking on the box (or using box/lasso select on multiple data points) triggers the `va.set_controls` action. This uses the value of `y` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`. When multiple points are selected, unique values across all points are sent.
     1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter to be re-applied on its `targets=["tips_table"]` so that a filtered table is shown.
 
-    The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
+    The mechanism for triggering the filter when its value is set by `va.set_controls` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
 ### Cross-filter from graph - multi-select
 
@@ -466,7 +470,7 @@ Vizro automatically turns on click selection (`clickmode` is set to `"event+sele
                 vm.Graph(
                     title="Use box or lasso select to filter by day",
                     figure=px.scatter(tips, x="total_bill", y="tip", color="day", custom_data="day"),
-                    actions=va.set_control(control="day_filter", value="day"),
+                    actions=va.set_controls(controls=["day_filter"], value="day"),
                 ),
                 vm.Graph(
                     id="total_tips",
@@ -489,8 +493,9 @@ Vizro automatically turns on click selection (`clickmode` is set to `"event+sele
         pages:
           - components:
               - actions:
-                  - control: day_filter
-                    type: set_control
+                  - controls:
+                      - day_filter
+                    type: set_controls
                     value: day
                 figure:
                   _target_: scatter
@@ -533,10 +538,10 @@ When select multiple points in the scatter plot, the bar chart is cross-filtered
 
     1. A client-side callback combines the graph's `clickData` and `selectedData` into a single trigger. If box or lasso selection is used, the trigger contains all selected points; otherwise it contains the single clicked point.
     1. `Graph._get_value_from_trigger` iterates over all points in the trigger, extracts the unique values for the specified `value`, and returns a sorted list.
-    1. The `set_control` action receives this list and sets the control accordingly: for a multi-value selector the full list is used, for a range selector the min and max are used, and for a single-value selector the control only updates when exactly one value is present.
+    1. The `set_controls` action receives this list and sets the control accordingly: for a multi-value selector the full list is used, for a range selector the min and max are used, and for a single-value selector the control only updates when exactly one value is present.
     1. If no points are selected (deselection), `None` is returned, which resets the control to its original value.
 
-    The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
+    The mechanism for triggering the filter when its value is set by `va.set_controls` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
 !!! tip
 
@@ -548,7 +553,7 @@ When select multiple points in the scatter plot, the bar chart is cross-filtered
 
 A cross-filter often works best when used [inside a container](container.md#add-controls-to-container). This typically makes it clearer which components the filter applies to, especially when the [container is styled](container.md#styled-containers).
 
-For example, let us rearrange the [cross-filter from a table example](#cross-filter-from-table) into containers. Now the control appears directly above the table that it targets rather than on the left hand side of the page. The rearrangement here is purely visual to give a better user experience; `va.set_control` itself is configured exactly the same way and behaves identically while the dashboard is running.
+For example, let us rearrange the [cross-filter from a table example](#cross-filter-from-table) into containers. Now the control appears directly above the table that it targets rather than on the left hand side of the page. The rearrangement here is purely visual to give a better user experience; `va.set_controls` itself is configured exactly the same way and behaves identically while the dashboard is running.
 
 !!! example "Cross-filter between containers"
 
@@ -571,7 +576,7 @@ For example, let us rearrange the [cross-filter from a table example](#cross-fil
                         vm.AgGrid(
                             title="Click on a row to use that row's sex to filter graph",
                             figure=dash_ag_grid(tips),
-                            actions=va.set_control(control="sex_filter", value="sex"),
+                            actions=va.set_controls(controls=["sex_filter"], value="sex"),
                         )
                     ],
                     variant="filled",  # (1)!
@@ -601,8 +606,9 @@ For example, let us rearrange the [cross-filter from a table example](#cross-fil
           - components:
               - components:
                   - actions:
-                      - control: sex_filter
-                        type: set_control
+                      - controls:
+                          - sex_filter
+                        type: set_controls
                         value: sex
                     figure:
                       _target_: dash_ag_grid
@@ -634,7 +640,7 @@ For example, let us rearrange the [cross-filter from a table example](#cross-fil
 
 ### Cross-filter between pages
 
-You can perform a cross-filter where the target components are on a different page from the source. The use of [`va.set_control`][vizro.actions.set_control] is identical: clicking the source navigates to the target page and applies the value there.
+You can perform a cross-filter where the target components are on a different page from the source. The use of [`va.set_controls`][vizro.actions.set_controls] is identical: clicking the source navigates to the target page and applies the value there.
 
 For example, let us rearrange the [cross-filter from a table example](#cross-filter-from-table) so that the source table is on a different page from the target graph (and hence filter). When you click or press ++space++ on a row in the table, you are taken to the target page with the graph cross-filtered to show data only for one sex.
 
@@ -657,7 +663,7 @@ For example, let us rearrange the [cross-filter from a table example](#cross-fil
                 vm.AgGrid(
                     title="Click on a row to use that row's sex to filter graph",
                     figure=dash_ag_grid(tips),
-                    actions=va.set_control(control="sex_filter", value="sex"),
+                    actions=va.set_controls(controls=["sex_filter"], value="sex"),
                 )
             ],
         )
@@ -683,8 +689,9 @@ For example, let us rearrange the [cross-filter from a table example](#cross-fil
         pages:
           - components:
               - actions:
-                  - control: sex_filter
-                    type: set_control
+                  - controls:
+                      - sex_filter
+                    type: set_controls
                     value: sex
                 figure:
                   _target_: dash_ag_grid
@@ -716,14 +723,14 @@ For example, let us rearrange the [cross-filter from a table example](#cross-fil
 
 A single source component can trigger _multiple_ cross-filters. For example, [pivoted data](https://en.wikipedia.org/wiki/Pivot_table) can be visualized using a table or a [2-dimensional heatmap](https://plotly.com/python/heatmaps/).
 
-To perform multiple cross-filters, each dimension that is filtered must have its own `vm.Filter` that is set by `va.set_control` in the `actions` of the source component in an [actions chain](actions.md#multiple-actions). Here is a 2-dimensional example that [cross-filters from a graph](#cross-filter-from-graph) using the positional variables `x` and `y`.
+To perform multiple cross-filters, each dimension that is filtered must have its own `vm.Filter` that is set by `va.set_controls` in the `actions` of the source component in an [actions chain](actions.md#multiple-actions). Here is a 2-dimensional example that [cross-filters from a graph](#cross-filter-from-graph) using the positional variables `x` and `y`.
 
 !!! note "Setting several controls to the _same_ value"
 
-    Chaining one `va.set_control` per control (as below) is needed when each control receives a _different_ value — here `x` sets `day_filter` and `y` sets `sex_filter`. When several controls should instead receive the _same_ value from a single trigger, pass a list of control ids to one `va.set_control` (which then also triggers a single request to the server and shows a single confirmation notification):
+    Chaining one `va.set_controls` per control (as below) is needed when each control receives a _different_ value — here `x` sets `day_filter` and `y` sets `sex_filter`. When several controls should instead receive the _same_ value from a single trigger, pass a list of control ids to one `va.set_controls` (which then also triggers a single request to the server and shows a single confirmation notification):
 
     ```python
-    va.set_control(control=["filter_a", "filter_b"], value="species")
+    va.set_controls(controls=["filter_a", "filter_b"], value="species")
     ```
 
 !!! example "Cross-filter over 2 dimensions - from a graph"
@@ -751,8 +758,8 @@ To perform multiple cross-filters, each dimension that is filtered must have its
                         category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]},
                     ),
                     actions=[
-                        va.set_control(control="day_filter", value="x"),  # (2)!
-                        va.set_control(control="sex_filter", value="y"),
+                        va.set_controls(controls=["day_filter"], value="x"),  # (2)!
+                        va.set_controls(controls=["sex_filter"], value="y"),
                     ],
                 ),
                 vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),
@@ -768,7 +775,7 @@ To perform multiple cross-filters, each dimension that is filtered must have its
         ```
 
         1. We make a [2-dimensional histogram](https://plotly.com/python/2D-Histogram/) to show the number of rows in the `tips` data for each day and sex.
-        1. Each dimension has its own `va.set_control` to set the relevant `vm.Filter`.
+        1. Each dimension has its own `va.set_controls` to set the relevant `vm.Filter`.
         1. Each has its own `vm.Filter` to filter by the relevant `column`.
 
     === "app.yaml"
@@ -779,11 +786,13 @@ To perform multiple cross-filters, each dimension that is filtered must have its
         pages:
           - components:
               - actions:
-                  - control: day_filter
-                    type: set_control
+                  - controls:
+                      - day_filter
+                    type: set_controls
                     value: x
-                  - control: sex_filter
-                    type: set_control
+                  - controls:
+                      - sex_filter
+                    type: set_controls
                     value: y
                 figure:
                   _target_: density_heatmap
@@ -829,12 +838,12 @@ When you click on a colored cell in the heatmap, the table is cross-filtered to 
 
     In full, what happens is as follows:
 
-    1. Clicking on a cell triggers the first `va.set_control` action. This uses the value of `day` (in other words, "Thur", "Fri", "Sat" or "Sun") to set the selector underlying `vm.Filter(id="day_filter")`. When multiple points are selected, unique values across all points are sent.
-    1. When the `day_filter` has been set, the second `va.set_control` action runs. This uses the value of `sex` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
+    1. Clicking on a cell triggers the first `va.set_controls` action. This uses the value of `day` (in other words, "Thur", "Fri", "Sat" or "Sun") to set the selector underlying `vm.Filter(id="day_filter")`. When multiple points are selected, unique values across all points are sent.
+    1. When the `day_filter` has been set, the second `va.set_controls` action runs. This uses the value of `sex` (in other words, "Male" or "Female") to set the selector underlying `vm.Filter(id="sex_filter")`.
     1. The change in value of `vm.Filter(id="day_filter")` triggers the filter on its `targets=["tips_table"]` so that a filtered table is shown.
     1. The change in value of `vm.Filter(id="sex_filter")` triggers the filter on its `targets=["tips_table"]` so that a filtered table is shown.
 
-    The mechanism for triggering the filter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain), while the sequence of applying the two `va.set_control` is an [explicit actions chain](../tutorials/custom-actions-tutorial.md#explicit-actions-chain). In general, steps 2 and 3 above will execute in [parallel](../tutorials/custom-actions-tutorial.md#parallel-actions).
+    The mechanism for triggering the filter when its value is set by `va.set_controls` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain), while the sequence of applying the two `va.set_controls` is an [explicit actions chain](../tutorials/custom-actions-tutorial.md#explicit-actions-chain). In general, steps 2 and 3 above will execute in [parallel](../tutorials/custom-actions-tutorial.md#parallel-actions).
 
     When performing multiple filters with [dynamic data](data.md#dynamic-data), you should consider [configuring a cache](data.md#configure-cache) so that steps 3 and 4 above do not repeatedly perform a slow data load.
 
@@ -844,8 +853,8 @@ Multiple cross-filters are similarly possible [from a table](#cross-filter-from-
 vm.AgGrid(
     ...,
     actions=[
-        va.set_control(control="day_filter", value="day"),
-        va.set_control(control="sex_filter", value="sex"),
+        va.set_controls(controls=["day_filter"], value="day"),
+        va.set_controls(controls=["sex_filter"], value="sex"),
     ],
 )
 ```
@@ -874,11 +883,11 @@ vm.AgGrid(
             title="dash_ag_grid using cellClicked",
             components=[
                 vm.AgGrid(
-                    title="set_control.value=column",
+                    title="set_controls.value=column",
                     figure=dash_ag_grid(pivot_tips),   # (1)!
                     actions=[
-                        va.set_control(control="day_filter", value="column"),  # (2)!
-                        va.set_control(control="sex_filter", value="sex"),
+                        va.set_controls(controls=["day_filter"], value="column"),  # (2)!
+                        va.set_controls(controls=["sex_filter"], value="sex"),
                     ],
                 ),
                 vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),
@@ -894,7 +903,7 @@ vm.AgGrid(
         ```
 
         1. We make a 2-dimensional AgGrid to show the number of rows in the `tips` data for each day and sex.
-        1. Each dimension has its own `va.set_control` to set the relevant `vm.Filter`.
+        1. Each dimension has its own `va.set_controls` to set the relevant `vm.Filter`.
         1. Each has its own `vm.Filter` to filter by the relevant `column`.
 
     === "app.yaml"
@@ -905,16 +914,18 @@ vm.AgGrid(
         pages:
           - components:
               - actions:
-                  - control: day_filter
-                    type: set_control
+                  - controls:
+                      - day_filter
+                    type: set_controls
                     value: column
-                  - control: sex_filter
-                    type: set_control
+                  - controls:
+                      - sex_filter
+                    type: set_controls
                     value: sex
                 figure:
                   _target_: dash_ag_grid
                   data_frame: pivot_tips
-                title: set_control.value=column
+                title: set_controls.value=column
                 type: ag_grid
               - figure:
                   _target_: dash_ag_grid
@@ -943,7 +954,7 @@ vm.AgGrid(
 
 ### Cross-filter with non-categorical selectors
 
-The examples above use categorical selectors such as [`Dropdown`][vizro.models.Dropdown] and [`Checklist`][vizro.models.Checklist], but you can target non-categorical selectors as well with `set_control` action. The example below uses (`vm.DatePicker(range=True)`):
+The examples above use categorical selectors such as [`Dropdown`][vizro.models.Dropdown] and [`Checklist`][vizro.models.Checklist], but you can target non-categorical selectors as well with `set_controls` action. The example below uses (`vm.DatePicker(range=True)`):
 
 !!! example "Cross-filter from table with non-categorical selector"
 
@@ -967,7 +978,7 @@ The examples above use categorical selectors such as [`Dropdown`][vizro.models.D
                     id="stocks_graph",
                     title="GOOG vs AAPL Price Relationship",
                     figure=px.scatter(stocks, x="GOOG", y="AAPL", custom_data="date"),
-                    actions=va.set_control(control="date_filter", value="date"),
+                    actions=va.set_controls(controls=["date_filter"], value="date"),
                 ),
                 vm.Graph(
                     id="stocks_graph_2",
@@ -997,8 +1008,9 @@ The examples above use categorical selectors such as [`Dropdown`][vizro.models.D
         pages:
           - components:
               - actions:
-                  - control: date_filter
-                    type: set_control
+                  - controls:
+                      - date_filter
+                    type: set_controls
                     value: date
                 figure:
                   _target_: scatter
@@ -1057,15 +1069,15 @@ A cross-parameter is when the user clicks on one _source_ graph or table to upda
     ]
     ```
 
-1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-parameter.
+1. Call `set_controls` in the `actions` argument of the source [`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-parameter.
 
-    1. Set `control` to the ID of the parameter.
-    1. Set `value`. The format of this depends on the source model and is given in the [API reference][vizro.actions.set_control]. Think of it as an instruction for what to lookup in the source data: whatever value is fetched from this lookup is used to set `control`.
+    1. Set `controls` to a list with the ID of the parameter.
+    1. Set `value`. The format of this depends on the source model and is given in the [API reference][vizro.actions.set_controls]. Think of it as an instruction for what to lookup in the source data: whatever value is fetched from this lookup is used to set `controls`.
 
     ```python
     import vizro.actions as va
 
-    components = [vm.Graph(..., actions=va.set_control(control="my_parameter", value="country"))]
+    components = [vm.Graph(..., actions=va.set_controls(controls=["my_parameter"], value="country"))]
     ```
 
 ### Cross-highlight
@@ -1082,7 +1094,7 @@ In general, there are many different ways to visually highlight data in a graph.
 
 !!! tip Cross-highlight between containers and pages
 
-    All [cross-parameters](#cross-parameter), which includes cross-highlights, can operate across different containers and different pages. The use of [`va.set_control`][vizro.actions.set_control] is identical to when source and target are in the same container and page. For further examples and styling hints, see the sections on cross-filtering [between containers](#cross-filter-between-containers) and [between pages](#cross-filter-between-pages).
+    All [cross-parameters](#cross-parameter), which includes cross-highlights, can operate across different containers and different pages. The use of [`va.set_controls`][vizro.actions.set_controls] is identical to when source and target are in the same container and page. For further examples and styling hints, see the sections on cross-filtering [between containers](#cross-filter-between-containers) and [between pages](#cross-filter-between-pages).
 
 #### Cross-highlight from table
 
@@ -1103,20 +1115,20 @@ This example shows how to configure cross-highlighting where clicking on the row
     ]
     ```
 
-    1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
+    1. We give the parameter an `id` so that it can be set explicitly by `va.set_controls`.
     1. The parameter targets the argument `highlight_country` of `vm.Graph(id="scatter_chart")`.
     1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the target graph is initially unhighlighted.
     1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
 
-1. Call `set_control` in the `actions` argument of the source [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-highlight.
+1. Call `set_controls` in the `actions` argument of the source [`AgGrid`][vizro.models.AgGrid] component that triggers the cross-highlight.
 
-    1. Set `control` to the ID of the parameter.
+    1. Set `controls` to a list with the ID of the parameter.
     1. Set `value` to specify which column contains the value that sets the control when a row in the table is clicked.
 
     ```python
     import vizro.actions as va
 
-    components = [vm.AgGrid(..., actions=va.set_control(control="highlight_parameter", value="country"))]
+    components = [vm.AgGrid(..., actions=va.set_controls(controls=["highlight_parameter"], value="country"))]
     ```
 
 1. Create a [custom chart](custom-charts.md) that highlights the data corresponding to `highlight_country`.
@@ -1180,7 +1192,7 @@ The full code is given below. This shows a slightly more complicated highlightin
                 vm.AgGrid(
                     header="💡 Click on a row to highlight that country in the scatter plot",
                     figure=dash_ag_grid(data_frame=gapminder),
-                    actions=va.set_control(control="highlight_parameter", value="country"),  # (7)!
+                    actions=va.set_controls(controls=["highlight_parameter"], value="country"),  # (7)!
                 ),
                 vm.Graph(
                     id="scatter_chart",   # (8)!
@@ -1207,9 +1219,9 @@ The full code is given below. This shows a slightly more complicated highlightin
         1. When a country is highlighted, make [further modifications](https://plotly.com/python/creating-and-updating-figures/) to the [style of the highlighted point's marker](https://plotly.com/python/marker-style/) to make it stand out more.
         1. [`update_traces`](https://plotly.com/python-api-reference/generated/generated/plotly.graph_objects.Figure.update_traces.html) updates only the trace selected with index 1. The traces are ordered by `category_orders={"color": [False, True]}` and so this corresponds to `True`, in other words the trace that has `country_is_highlighted=True` and contains the highlighted point.
         1. We use a side-by-side [layout](layouts.md) with an 80px column gap to display the table and graph together.
-        1. The table's `va.set_control` sets `higlight_parameter` to the country from the clicked row.
+        1. The table's `va.set_controls` sets `higlight_parameter` to the country from the clicked row.
         1. We give the `vm.Graph` an `id` so that it can be targeted by `highlight_parameter`.
-        1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
+        1. We give the parameter an `id` so that it can be set explicitly by `va.set_controls`.
         1. The parameter targets the argument `highlight_country` of `vm.Graph(id="scatter_chart")`.
         1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the target graph is initially unhighlighted.
         1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
@@ -1222,8 +1234,9 @@ The full code is given below. This shows a slightly more complicated highlightin
         pages:
         - components:
           - actions:
-            - control: highlight_parameter
-              type: set_control
+            - controls:
+                - highlight_parameter
+              type: set_controls
               value: country
             figure:
               _target_: dash_ag_grid
@@ -1269,10 +1282,10 @@ When you click on a row in the table, the corresponding point is highlighted in 
 
     In full, what happens is as follows:
 
-    1. Clicking on a row triggers the `va.set_control` action. This uses the value of the `country` column for the selected row to set the selector underlying `vm.Parameter(id="highlight_parameter")`.
+    1. Clicking on a row triggers the `va.set_controls` action. This uses the value of the `country` column for the selected row to set the selector underlying `vm.Parameter(id="highlight_parameter")`.
     1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to update the `highlight_country` argument of the target component `scatter_chart` so that a highlighted graph is shown.
 
-    The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
+    The mechanism for triggering the parameter when its value is set by `va.set_controls` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
 
 #### Cross-highlight from graph
 
@@ -1293,14 +1306,14 @@ This example shows how to configure cross-highlighting where clicking on a point
     ]
     ```
 
-    1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
+    1. We give the parameter an `id` so that it can be set explicitly by `va.set_controls`.
     1. The parameter targets the argument `highlight_country` of `vm.Graph(id="bump_chart")`.
     1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the target graph is initially unhighlighted.
     1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
 
-1. Call `set_control` in the `actions` argument of the source [`Graph`][vizro.models.Graph] component that triggers the cross-highlight.
+1. Call `set_controls` in the `actions` argument of the source [`Graph`][vizro.models.Graph] component that triggers the cross-highlight.
 
-    1. Set `control` to the ID of the parameter.
+    1. Set `controls` to a list with the ID of the parameter.
     1. Set `value`. As with a [cross-filter from a graph](#cross-filter-from-graph), there are two different ways to specify this. However, often the value you require is encoded by a _positional dimension_ such as `x`, `y`, `z`. If the value is not encoded as a positional dimension (for example, it corresponds to `color`) then you should instead use `custom_data` as described in the instructions on [cross-filtering from a graph](#cross-filter-from-graph).
 
     ```python
@@ -1309,7 +1322,7 @@ This example shows how to configure cross-highlighting where clicking on a point
     components = [
         vm.Graph(
             figure=px.bar(data_frame, x=..., y="country"),
-            actions=va.set_control(control="highlight_parameter", value="y"),
+            actions=va.set_controls(controls=["highlight_parameter"], value="y"),
         )
     ]
     ```
@@ -1383,7 +1396,7 @@ The full code is given below. This includes the complete code for a bump chart w
                         labels={"lifeExp": "lifeExp in 2007"},
                     ),
                     header="💡 Click any bar to highlight that country in the bump chart",
-                    actions=va.set_control(control="highlight_parameter", value="y"),  # (7)!
+                    actions=va.set_controls(controls=["highlight_parameter"], value="y"),  # (7)!
                 ),
                 vm.Graph(
                     id="bump_chart",  # (8)!
@@ -1410,9 +1423,9 @@ The full code is given below. This includes the complete code for a bump chart w
         1. Style the lines for every country.
         1. When a country is highlighted, modify its [line's style](https://plotly.com/python/line-charts/#style-line-plots) to make it stand out more.
         1. [`update_traces`](https://plotly.com/python-api-reference/generated/generated/plotly.graph_objects.Figure.update_traces.html) updates only the trace selected, which is the `highlighted_country` one.
-        1. The graph's `va.set_control` sets `higlight_parameter` to the country from the clicked bar.
+        1. The graph's `va.set_controls` sets `higlight_parameter` to the country from the clicked bar.
         1. We give the `vm.Graph` an `id` so that it can be targeted by `highlight_parameter`.
-        1. We give the parameter an `id` so that it can be set explicitly by `va.set_control`.
+        1. We give the parameter an `id` so that it can be set explicitly by `va.set_controls`.
         1. The parameter targets the argument `highlight_country` of `vm.Graph(id="bump_chart")`.
         1. We add `"NONE"` as an option, corresponding to a parameter value `highlight_country=None`. This is used so the target graph is initially unhighlighted.
         1. We set `visible=False` to hide the parameter selector from the user interface while keeping the functionality active.
@@ -1434,8 +1447,9 @@ The full code is given below. This includes the complete code for a bump chart w
                   y: country
                 header: 💡 Click any bar to highlight that country in the bump chart
                 actions:
-                  - type: set_control
-                    control: highlight_parameter
+                  - type: set_controls
+                    controls:
+                      - highlight_parameter
                     value: y
               - type: graph
                 id: bump_chart
@@ -1475,7 +1489,7 @@ When you click on a bar in the bar chart, the corresponding line is highlighted 
 
     In full, what happens is as follows:
 
-    1. Clicking on a bar triggers the `va.set_control` action. This uses the value of `y` (in other words, the country) taken from the source graph to set the value of the `vm.Parameter(id="highlight_parameter")`.
+    1. Clicking on a bar triggers the `va.set_controls` action. This uses the value of `y` (in other words, the country) taken from the source graph to set the value of the `vm.Parameter(id="highlight_parameter")`.
     1. The change in value of `vm.Parameter(id="highlight_parameter")` triggers the parameter to update the `highlight_country` argument of the target component `bump_chart` so that a highlighted graph is shown.
 
-    The mechanism for triggering the parameter when its value is set by `va.set_control` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).
+    The mechanism for triggering the parameter when its value is set by `va.set_controls` is an [implicit actions chain](../tutorials/custom-actions-tutorial.md#implicit-actions-chain).

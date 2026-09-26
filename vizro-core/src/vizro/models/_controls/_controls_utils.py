@@ -16,7 +16,6 @@ from vizro.models import (
     DateTimePicker,
     Dropdown,
     RadioItems,
-    RangeSlider,
     Slider,
     Switch,
     TimePicker,
@@ -30,7 +29,7 @@ if TYPE_CHECKING:
     from vizro.models import Page
 
 SELECTORS: dict[str, tuple[type, ...]] = {
-    "numerical": (RangeSlider, Slider),
+    "numerical": (Slider,),  # Slider(range=True) supersedes the deprecated RangeSlider (a Slider subclass).
     "categorical": (Checklist, Dropdown, RadioItems),
     "date": (DatePicker,),
     "datetime": (DateTimePicker,),
@@ -41,7 +40,7 @@ SELECTORS: dict[str, tuple[type, ...]] = {
 
 
 # Type-narrowing functions to avoid needing to cast every time we do isinstance for a selector.
-def _is_numerical_or_date_selector(x: object) -> TypeIs[RangeSlider | Slider | DatePicker]:
+def _is_numerical_or_date_selector(x: object) -> TypeIs[Slider | DatePicker]:
     return isinstance(x, SELECTORS["numerical"] + SELECTORS["date"])
 
 
@@ -96,7 +95,7 @@ def get_control_parent(control: ControlType) -> Page | Container | None:
 def extract_control_targets(control: ControlType) -> list[ModelID]:
     """Split control (Filter/Parameter) targets out of ``control.targets``, validating and returning them.
 
-    A Filter/Parameter can target another control to keep the two in sync (see the `set_control` action). Such
+    A Filter/Parameter can target another control to keep the two in sync (see the `set_controls` action). Such
     "control targets" are validated and semantically different from "figure targets", so this removes them from
     ``control.targets`` in place and returns them separately. The remaining figure targets are validated later by
     `check_control_targets`.
@@ -104,7 +103,7 @@ def extract_control_targets(control: ControlType) -> list[ModelID]:
     A control target must be a *different* control: self-targeting would create a self-referential sync loop. The
     target may be on the same page as the control or on a different page. A same-page target's selector value is set
     directly; a different-page target is kept in sync through the internal ``vizro_controls_store`` and its value is
-    applied when that page is opened (see the `set_control` action).
+    applied when that page is opened (see the `set_controls` action).
     """
     from vizro.models._controls import Filter, Parameter
 
@@ -123,15 +122,15 @@ def extract_control_targets(control: ControlType) -> list[ModelID]:
         control.targets.remove(target)
         targeted_controls.append(target)
 
-    # Deduplicate (order-preserving) so a control listed more than once does not generate duplicate set_control
-    # sync actions, using the same idiom as elsewhere in the codebase (e.g. `set_control._control_ids`).
+    # Deduplicate (order-preserving) so a control listed more than once does not generate duplicate set_controls
+    # sync actions, using the same idiom as elsewhere in the codebase (e.g. `set_controls._control_ids`).
     return list(dict.fromkeys(targeted_controls))
 
 
 def warn_ignored_control_sync_targets(control: ControlType, targeted_controls: list[ModelID]) -> None:
     """Warn when control-sync targets are dropped because the selector has explicit ``actions``.
 
-    A Filter/Parameter keeps a control target in sync by generating a default `set_control` action on its selector
+    A Filter/Parameter keeps a control target in sync by generating a default `set_controls` action on its selector
     (see `build_default_control_selector_actions`). When the selector's `actions` are set explicitly, that default chain
     is not generated, so any control ids listed in `targets` are extracted and removed but never turned into a sync,
     silently doing nothing. Warn so the user knows to wire the sync themselves.
@@ -139,7 +138,7 @@ def warn_ignored_control_sync_targets(control: ControlType, targeted_controls: l
     if targeted_controls:
         warnings.warn(
             f"Control '{control.id}' lists control target(s) {targeted_controls} in `targets`, but its selector has "
-            f"explicit `actions`, so these targets are not kept in sync automatically. Add a `set_control` action to "
+            f"explicit `actions`, so these targets are not kept in sync automatically. Add a `set_controls` action to "
             f"the selector's `actions` for each one to sync them, and remove them from `targets`.",
             UserWarning,
         )
@@ -154,17 +153,17 @@ def build_default_control_selector_actions(
     """Set a control selector's default action chain: sync the targeted controls, then refresh its targets.
 
     Filter and Parameter share this: on selector change they first push the new value to every control they keep in
-    sync (via a single `set_control` that targets them all), then refresh their own targets (via `update_targets`).
-    The `set_control` action runs first so the latest value is applied before the refresh.
+    sync (via a single `set_controls` that targets them all), then refresh their own targets (via `update_targets`).
+    The `set_controls` action runs first so the latest value is applied before the refresh.
     """
     # Local import to avoid a circular import between this module and vizro.actions.
-    from vizro.actions import set_control, update_targets
+    from vizro.actions import set_controls, update_targets
 
-    # One `set_control` drives every synced control at once (one callback, one notification) instead of one action
+    # One `set_controls` drives every synced control at once (one callback, one notification) instead of one action
     # per control. `targeted_controls` is already de-duplicated and order-preserving (see `extract_control_targets`).
     # `value` is omitted: a selector-driven sync ignores it and propagates the selector's own live value.
     selector.actions = [
-        *([set_control(control=targeted_controls)] if targeted_controls else []),
+        *([set_controls(controls=targeted_controls)] if targeted_controls else []),
         update_targets(id=update_targets_action_id, targets=targeted_figures),
     ]
 
@@ -199,7 +198,7 @@ def get_selector_default_value(selector: SelectorType) -> Any:  # noqa: PLR0911
         return selector.value
 
     if _is_numerical_or_date_selector(selector):
-        is_range = isinstance(selector, RangeSlider) or getattr(selector, "range", False)
+        is_range = getattr(selector, "range", False)
         return [selector.min, selector.max] if is_range else selector.min
     elif _is_categorical_selector(selector):
         is_multi = isinstance(selector, Checklist) or getattr(selector, "multi", False)

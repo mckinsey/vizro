@@ -1,5 +1,5 @@
 ---
-description: "Cross-cutting control patterns: set a control's value programmatically via `set_control`, sync controls on the same page or across pages, reset controls to defaults, and group controls in the panel."
+description: "Cross-cutting control patterns: set a control's value programmatically via `set_controls`, sync controls on the same page or across pages, reset controls to defaults, and group controls in the panel."
 ---
 
 # Controls
@@ -27,7 +27,7 @@ All controls have an [argument `selector`](selectors.md) that configures the vis
 When the dashboard is running there are two ways for a user to set a control:
 
 - Direct user interaction with the underlying selector. For example, the user selects values from a checklist.
-- [User interaction with a graph or table](graph-table-actions.md) via the [`set_control` action][vizro.actions.set_control]. This enables functionality such as [cross-filtering](graph-table-actions.md#cross-filter) and [cross-highlighting](graph-table-actions.md#cross-highlight). To achieve a visually cleaner dashboard you might like to hide the control's underlying selector by setting the control's argument `visible=False`.
+- [User interaction with a graph or table](graph-table-actions.md) via the [`set_controls` action][vizro.actions.set_controls]. This enables functionality such as [cross-filtering](graph-table-actions.md#cross-filter) and [cross-highlighting](graph-table-actions.md#cross-highlight). To achieve a visually cleaner dashboard you might like to hide the control's underlying selector by setting the control's argument `visible=False`.
 
 !!! tip
 
@@ -135,9 +135,9 @@ To organize the control panel on a page into sections, you can group [filters](f
 
 You can keep two controls in sync so that changing one automatically applies the same value to the other. This is useful, for example, when you need to both filter and parametrize a chart from the same user selection, such as filtering a chart down to one species and also using that species to set the chart's title. The two controls can be on the same page or on [different pages](#sync-controls-across-pages).
 
-To sync controls, add another control's `id` to the `targets` of a [filter](filters.md) or [parameter](parameters.md). Whenever the control changes, Vizro sets the targeted control to the same value (using the [`set_control` action][vizro.actions.set_control] behind the scenes) and then refreshes the figure targets of both controls. All combinations work: filter with filter, parameter with parameter, and filter with parameter.
+To sync controls, add another control's `id` to the `targets` of a [filter](filters.md) or [parameter](parameters.md). Whenever the control changes, Vizro sets the targeted control to the same value (using the [`set_controls` action][vizro.actions.set_controls] behind the scenes) and then refreshes the figure targets of both controls. All combinations work: filter with filter, parameter with parameter, and filter with parameter.
 
-Syncing copies one control's value straight into the other, so the two controls must understand the same kind of value. Pair a categorical selector ([`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`Checklist`][vizro.models.Checklist]) with another categorical selector, a range numeric [`RangeSlider`][vizro.models.RangeSlider] with another range numeric one, and so on. A multi-select selector syncs into a single-select one only while one value is selected.
+Syncing copies one control's value straight into the other, so the two controls must understand the same kind of value. Pair a categorical selector ([`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`Checklist`][vizro.models.Checklist]) with another categorical selector, a range numeric [`Slider(range=True)`][vizro.models.Slider] with another range numeric one, and so on. A multi-select selector syncs into a single-select one only while one value is selected.
 
 !!! note "A parameter always needs a figure target"
 
@@ -147,20 +147,20 @@ Syncing copies one control's value straight into the other, so the two controls 
 
     By design a [filter](filters.md) and [parameter](parameters.md) always act on figures, so neither can exist purely to drive other controls. A filter with no figure target *is not a filter*, and a parameter with no figure target *is not a parameter*.
 
-    If a control that only sets other controls (and filters or parametrizes nothing itself) is exactly what you want, skip the filter/parameter wrapper: put a bare [selector](selectors.md) (for example a [`RadioItems`][vizro.models.RadioItems]) straight into the layout and give it an explicit [`set_control`][vizro.actions.set_control] action for each control it should drive. The targeted controls do the actual figure work when their value changes. A selector is normally only allowed inside a filter or parameter, so first whitelist it on its parent with the [`add_type`][vizro.models.VizroBaseModel.add_type] like:
+    If a control that only sets other controls (and filters or parametrizes nothing itself) is exactly what you want, skip the filter/parameter wrapper: put a bare [selector](selectors.md) (for example a [`RadioItems`][vizro.models.RadioItems]) straight into the layout and give it an explicit [`set_controls`][vizro.actions.set_controls] action for each control it should drive. The targeted controls do the actual figure work when their value changes. A selector is normally only allowed inside a filter or parameter, so first whitelist it on its parent with the [`add_type`][vizro.models.VizroBaseModel.add_type] like:
 
     ```python
     import vizro.models as vm
-    from vizro.actions import set_control
+    from vizro.actions import set_controls
 
     vm.Page.add_type("components", vm.RadioItems)  # allow a bare selector as a component (Container.add_type also works)
 
     # ...then, as a Page component:
     vm.RadioItems(
         options=["setosa", "versicolor", "virginica"],
-        # A single `set_control` can drive several controls at once by passing a list of ids to `control`.
+        # A single `set_controls` can drive several controls at once by passing a list of ids to `controls`.
         # `value` is omitted: a selector-driven sync sends its own live value to the targeted controls.
-        actions=[set_control(control=["species_filter_1", "species_filter_2"])],
+        actions=[set_controls(controls=["species_filter_1", "species_filter_2"])],
     )
     ```
 
@@ -332,7 +332,7 @@ The example below syncs one filter across two pages. Both controls are visible s
 
         [![SyncControlsAcrossPages]][synccontrolsacrosspages]
 
-The same mechanism powers **drill-through**: when a `set_control` is triggered from a figure or component (a [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid], [`Button`][vizro.models.Button], or [`Card`][vizro.models.Card]) rather than from a control's own selector, and its target control is on another page, Vizro navigates to that page and applies the value there. See [graph and table interactions](graph-table-actions.md) for more.
+The same mechanism powers **drill-through**: when a `set_controls` is triggered from a figure or component (a [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid], [`Button`][vizro.models.Button], or [`Card`][vizro.models.Card]) rather than from a control's own selector, and its target control is on another page, Vizro navigates to that page and applies the value there. See [graph and table interactions](graph-table-actions.md) for more.
 
 !!! note "Things to know about cross-page syncing"
 

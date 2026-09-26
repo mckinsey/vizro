@@ -2,7 +2,7 @@ import e2e.vizro.constants as cnst
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import set_control
+from vizro.actions import set_controls
 from vizro.tables import dash_ag_grid
 
 df = px.data.iris()
@@ -14,7 +14,7 @@ drill_through_filter_graph_source_page = vm.Page(
         vm.Graph(
             id=cnst.SCATTER_DRILL_THROUGH_FILTER_GRAPH_SOURCE_ID,
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-            actions=set_control(control="p2_filter_1", value="species"),
+            actions=set_controls(controls=["p2_filter_1"], value="species"),
         )
     ],
 )
@@ -44,7 +44,7 @@ drill_through_parameter_graph_source_page = vm.Page(
         vm.Graph(
             id=cnst.SCATTER_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE_ID,
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]),
-            actions=set_control(control="p2_parameter_1", value="species"),
+            actions=set_controls(controls=["p2_parameter_1"], value="species"),
         )
     ],
 )
@@ -77,7 +77,7 @@ drill_through_filter_ag_grid_source_page = vm.Page(
         vm.AgGrid(
             id=cnst.AG_GRID_DRILL_THROUGH_FILTER_AG_GRID_ID,
             figure=dash_ag_grid(df[df["species"] == "versicolor"]),
-            actions=set_control(control="p5_filter_1", value="species"),
+            actions=set_controls(controls=["p5_filter_1"], value="species"),
         ),
     ],
 )

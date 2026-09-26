@@ -51,6 +51,7 @@ EXCLUDED_MODELS = {
     "Dashboard",
     "Page",  # top-level structural config
     "Layout",  # legacy alias for Grid (Grid is already covered)
+    "RangeSlider",  # deprecated alias for Slider(range=True) (Slider is already covered)
     "Tooltip",  # utility attached to other components
     "ControlGroup",  # grouping utility, not a standalone visual component
     "Table",  # covered by AgGrid; vm.Table wraps Dash DataTable, less commonly used
@@ -59,6 +60,7 @@ EXCLUDED_MODELS = {
 # Actions in va.__all__ that are intentionally excluded from the compendium.
 EXCLUDED_ACTIONS = {
     "filter_interaction",  # implicit framework action, not directly user-invoked
+    "set_control",  # deprecated alias of set_controls, showcased by the setcontrols entry
     "update_notification",  # paired with show_notification, covered in the same entry
     # Shared low-level "refresh figures" mechanism behind Filter, Parameter and on-page-load; those user-facing
     # patterns are already showcased. A dedicated carousel entry (with demo gif) is deferred to the docs pass.
@@ -68,7 +70,6 @@ EXCLUDED_ACTIONS = {
 # Maps public API name → expected HTML id, for items whose id doesn't follow simple lowercasing.
 ID_OVERRIDES = {
     "export_data": "export-data",
-    "set_control": "set-control",
     "show_notification": "notifications",
 }
 

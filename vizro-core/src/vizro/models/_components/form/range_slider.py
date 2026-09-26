@@ -1,28 +1,20 @@
-from typing import Annotated, Any, Literal
+from typing import Annotated, Literal
 
-import dash_bootstrap_components as dbc
-from dash import dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, PrivateAttr, conlist, model_validator
-from pydantic.json_schema import SkipJsonSchema
+from pydantic import AfterValidator, Field, conlist
+from typing_extensions import deprecated
 
-from vizro.models import Tooltip, VizroBaseModel
-from vizro.models._components.form._form_utils import (
-    to_int_if_whole,
-    validate_max,
-    validate_range_value,
-    validate_step,
+from vizro.models._components.form._form_utils import validate_range_value
+from vizro.models._components.form.slider import Slider
+
+
+@deprecated(
+    "`RangeSlider` is deprecated and will not exist in Vizro 1.0.0 "
+    "(https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#rangeslider-model). "
+    "Use `Slider` with `range=True` instead.",
+    category=FutureWarning,
 )
-from vizro.models._models_utils import (
-    _log_call,
-    make_actions_chain,
-    warn_description_without_title,
-)
-from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionsType, _IdProperty
-
-
-class RangeSlider(VizroBaseModel):
-    """Numeric multi-option selector.
+class RangeSlider(Slider):
+    """Deprecated numeric range selector. Use [`Slider`][vizro.models.Slider] with `range=True` instead.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].
@@ -32,114 +24,14 @@ class RangeSlider(VizroBaseModel):
 
     """
 
-    type: Literal["range_slider"] = "range_slider"
-    min: float | None = Field(default=None, description="Start value for slider.")
-    max: Annotated[float | None, AfterValidator(validate_max), Field(default=None, description="End value for slider.")]
-    step: Annotated[
-        float | None,
-        AfterValidator(validate_step),
-        Field(default=None, description="Step-size for marks on slider."),
+    type: Literal["range_slider"] = "range_slider"  # type: ignore[assignment]
+    # Lock to range mode: RangeSlider is exactly Slider(range=True), so `range=False` must be rejected rather than
+    # silently building a single-handle slider still typed `range_slider`.
+    range: Literal[True] = Field(default=True, description="Boolean flag for displaying range slider.")
+    # Narrow the inherited `value` to the two-handle `[start, end]` form only. RangeSlider fixes range=True, so a scalar
+    # value is rejected at runtime by Slider._validate_range_value_shape; dropping it here keeps the JSON schema honest.
+    value: Annotated[  # type: ignore[valid-type]
+        conlist(float, min_length=2, max_length=2) | None,
+        AfterValidator(validate_range_value),
+        Field(default=None, description="Default value: a `[start, end]` pair."),
     ]
-    marks: Annotated[
-        dict[float, str] | None,
-        Field(default={}, description="Marks to be displayed on slider.", validate_default=True),
-    ]
-    # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for value field
-    value: Annotated[conlist(float, min_length=2, max_length=2), AfterValidator(validate_range_value)] | None = Field(  # type: ignore[valid-type]
-        default=None
-    )
-    title: str = Field(default="", description="Title to be displayed.")
-    # TODO: ideally description would have json_schema_input_type=str | Tooltip attached to the BeforeValidator,
-    #  but this requires pydantic >= 2.9.
-    description: Annotated[
-        Tooltip | None,
-        BeforeValidator(coerce_str_to_tooltip),
-        AfterValidator(warn_description_without_title),
-        Field(
-            default=None,
-            description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description.""",
-        ),
-    ]
-    actions: ActionsType = []
-    extra: SkipJsonSchema[
-        Annotated[
-            dict[str, Any],
-            Field(
-                default={},
-                description="""Extra keyword arguments that are passed to `dcc.RangeSlider` and overwrite any
-defaults chosen by the Vizro team. This may have unexpected behavior.
-Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/rangeslider)
-to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-underlying component may change in the future.""",
-            ),
-        ]
-    ]
-
-    _dynamic: bool = PrivateAttr(False)
-    _inner_component_properties: list[str] = PrivateAttr(dcc.RangeSlider().available_properties)
-
-    @model_validator(mode="after")
-    def _make_actions_chain(self):
-        return make_actions_chain(self)
-
-    @property
-    def _action_triggers(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}.value"}
-
-    @property
-    def _action_outputs(self) -> dict[str, _IdProperty]:
-        return {
-            "__default__": f"{self.id}.value",
-            **({"title": f"{self.id}_title.children"} if self.title else {}),
-            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
-        }
-
-    @property
-    def _action_inputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}.value"}
-
-    @staticmethod
-    def _get_value_from_trigger(value: JsonValue, trigger: JsonValue) -> JsonValue:
-        """Return the given `trigger` without modification."""
-        return trigger
-
-    def __call__(self, min, max):
-        # Overwrite default marks with min and max boundary marks if marks are not provided.
-        marks = self.marks if self.marks != {} else {min: str(to_int_if_whole(min)), max: str(to_int_if_whole(max))}
-
-        defaults = {
-            "id": self.id,
-            "min": min,
-            "max": max,
-            # Only include `step` when defined. Passing None prevents dcc.RangeSlider from displaying input values.
-            **({"step": self.step} if self.step is not None else {}),
-            "marks": marks,
-            "value": self.value or [min, max],
-            "persistence": True,
-            "persistence_type": "session",
-            "dots": True,
-        }
-
-        description = self.description.build().children if self.description else [None]
-        return html.Div(
-            children=[
-                dbc.Label(
-                    children=[html.Span(id=f"{self.id}_title", children=self.title), *description],
-                    html_for=self.id,
-                )
-                if self.title
-                else None,
-                dcc.RangeSlider(**(defaults | self.extra)),
-            ]
-        )
-
-    def _build_dynamic_placeholder(self):
-        if not self.value:
-            self.value = [self.min, self.max]
-
-        return self.__call__(self.min, self.max)
-
-    @_log_call
-    def build(self):
-        return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.min, self.max)

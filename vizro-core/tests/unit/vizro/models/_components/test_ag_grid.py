@@ -207,7 +207,7 @@ class TestAgGridGetValueFromTrigger:
         with pytest.raises(
             ValueError,
             match=re.escape(
-                "Couldn't find value column name: `unknown` in trigger for `set_control` action. "
+                "Couldn't find value column name: `unknown` in trigger for `set_controls` action. "
                 "This action was added to the AgGrid model with ID `ag_grid_id`. "
             ),
         ):
@@ -280,18 +280,18 @@ class TestDunderMethodsAgGrid:
             ([], {}, {}),
             ([], {"mode": "singleRow"}, {"mode": "singleRow"}),
             (
-                va.set_control(control="control_id", value="continent"),
+                va.set_controls(controls=["control_id"], value="continent"),
                 {},
                 {"mode": "multiRow", "checkboxes": True, "headerCheckbox": True, "enableClickSelection": True},
             ),
             (
-                va.set_control(control="control_id", value="continent"),
+                va.set_controls(controls=["control_id"], value="continent"),
                 {"mode": "singleRow"},
                 {"mode": "singleRow", "checkboxes": True, "headerCheckbox": True, "enableClickSelection": True},
             ),
         ],
     )
-    def test_call_row_selection_when_set_control_defined(
+    def test_call_row_selection_when_set_controls_defined(
         self,
         ag_grid_actions,
         row_selection_input,

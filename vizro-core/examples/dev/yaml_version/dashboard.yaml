@@ -20,7 +20,6 @@ pages:
           * Dropdown
           * Checklist
           * RadioItems
-          * RangeSlider
           * Slider
           * DatePicker
         href: /filters
@@ -274,7 +273,8 @@ pages:
         targets:
           - scatter_chart2
         selector:
-          type: range_slider
+          type: slider
+          range: true
         type: filter
     title: Filters
   - components:
@@ -403,8 +403,7 @@ pages:
           * Dropdown (**categorical** multi and single option selector)
           * Checklist (**categorical** multi option selector only)
           * RadioItems (**categorical** single option selector only)
-          * RangeSlider (**numerical** multi option selector only)
-          * Slider (**numerical** single option selector only)
+          * Slider (**numerical** single option selector, or a range selector with `range=True`)
           * DatePicker(**temporal** multi and single option selector)
         type: card
       - figure:
@@ -435,7 +434,8 @@ pages:
           marks: null
           step: 1
           title: Range Slider (Gapminder - lifeExp)
-          type: range_slider
+          type: slider
+          range: true
         targets:
           - table-gapminder
         type: filter
@@ -552,7 +552,8 @@ pages:
         type: filter
       - column: sepal_width
         selector:
-          type: range_slider
+          type: slider
+          range: true
           title: Sepal Width
           description: |
             Use the slider to filter flowers by sepal width.
@@ -854,9 +855,10 @@ pages:
           💡 Select one or more points to filter the histogram below
           (use Box Select or Lasso Select to select multiple points)
         actions:
-          - type: set_control
+          - type: set_controls
             value: species
-            control: species-filter
+            controls:
+              - species-filter
         type: graph
       - figure:
           _target_: histogram
@@ -890,18 +892,20 @@ pages:
         header: |
           💡 Click any bar to highlight that country in the bump chart (use Shift + click to add/remove bars)
         actions:
-          - type: set_control
+          - type: set_controls
             value: y
-            control: highlight_parameter
+            controls:
+              - highlight_parameter
         type: graph
       - figure:
           _target_: custom_charts.bump_chart_with_highlight
           data_frame: selected_countries_gapminder
           highlight_countries: null
         actions:
-          - type: set_control
+          - type: set_controls
             value: y
-            control: highlight_parameter
+            controls:
+              - highlight_parameter
         id: bump_chart
         type: graph
     controls:

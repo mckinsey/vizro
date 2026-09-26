@@ -530,7 +530,18 @@ categories:
 
           - id: slider
             name: Slider
-            aliases: [range input, single slider, numeric, vm.Slider]
+            aliases:
+              [
+                range input,
+                single slider,
+                range slider,
+                min max,
+                interval,
+                two-handle,
+                numeric,
+                vm.Slider,
+                vm.RangeSlider,
+              ]
             image: assets/images/slider.png
             code: |
               controls=[
@@ -542,23 +553,6 @@ categories:
                           value=2
                       ),
                   ),
-              ]
-
-          - id: rangeslider
-            name: RangeSlider
-            aliases:
-              [range slider, min max, interval, two-handle, vm.RangeSlider]
-            image: assets/images/rangeslider.png
-            code: |
-              controls=[
-                  vm.Filter(
-                      column="lifeExp",
-                      selector=vm.RangeSlider(
-                          title="Range Slider (Gapminder - lifeExp)",
-                          step=1,
-                          marks=None
-                      ),
-                  )
               ]
 
           - id: datepicker
@@ -688,6 +682,7 @@ categories:
                       column=["continent", "country"],
                       selector=vm.Cascader(
                           title="Continent",
+                          full_path=True,
                           options={
                               "Asia": ["Japan", "India"],
                               "Europe": ["West", "North"],
@@ -734,7 +729,7 @@ categories:
 
           Vizro().build(vm.Dashboard(pages=[page])).run()
 
-      - id: set-control
+      - id: setcontrols
         name: "Graph & table interactions"
         aliases:
           [
@@ -745,6 +740,7 @@ categories:
             interaction,
             drill,
             drill down,
+            set_controls,
             set_control,
             linked,
             click filter,
@@ -762,7 +758,7 @@ categories:
         description: |
           In Vizro, interactions between components are enabled through an explicitly defined
           intermediate control. Cross-filtering, cross-parameter updates, and cross-highlighting
-          all use the <b>set_control</b> action, providing a flexible and powerful way to link
+          all use the <b>set_controls</b> action, providing a flexible and powerful way to link
           components.
         code: |
           import vizro.plotly.express as px
@@ -780,8 +776,8 @@ categories:
                       title="""Click on a row to use that row's
                       sex to filter graph""",
                       figure=dash_ag_grid(tips),
-                      actions=va.set_control(
-                          control="sex_filter", value="sex"
+                      actions=va.set_controls(
+                          controls="sex_filter", value="sex"
                       ),
                   ),
                   vm.Graph(

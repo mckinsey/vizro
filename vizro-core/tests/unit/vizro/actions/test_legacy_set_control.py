@@ -9,6 +9,17 @@ from vizro import Vizro
 from vizro.actions import set_control
 from vizro.managers import model_manager
 
+# set_control is deprecated in favor of set_controls. Silence the warning for the legacy behavior tests below
+# (test_set_control_deprecated asserts the warning itself).
+pytestmark = [
+    pytest.mark.filterwarnings("ignore:`set_control` is deprecated:FutureWarning"),
+]
+
+
+def test_set_control_deprecated():
+    with pytest.warns(FutureWarning, match="`set_control` is deprecated"):
+        set_control(control="x")
+
 
 @pytest.fixture
 def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid, standard_dash_table):
@@ -45,7 +56,7 @@ def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid, stan
                 id="filter_page_1_range_slider",
                 targets=["table_1"],
                 column="lifeExp",
-                selector=vm.RangeSlider(),
+                selector=vm.Slider(range=True),
             ),
             vm.Filter(
                 id="filter_page_1_boolean",
@@ -68,12 +79,12 @@ def managers_two_pages_for_set_control(standard_px_chart, standard_ag_grid, stan
             vm.Parameter(
                 id="cascade_param_single",
                 targets=["scatter_chart_1.x"],
-                selector=vm.Cascader(multi=False, options={"K": ["leaf_a", "leaf_b"]}),
+                selector=vm.Cascader(multi=False, options={"K": ["leaf_a", "leaf_b"]}, full_path=False),
             ),
             vm.Parameter(
                 id="cascade_param_multi",
                 targets=["scatter_chart_1.y"],
-                selector=vm.Cascader(multi=True, options={"K": ["leaf_a", "leaf_b", "leaf_c"]}),
+                selector=vm.Cascader(multi=True, options={"K": ["leaf_a", "leaf_b", "leaf_c"]}, full_path=False),
             ),
         ],
     )
@@ -141,7 +152,7 @@ def managers_page_hierarchical_filter_set_control(standard_px_chart):
                 id="hier_set_filter",
                 targets=["hier_set_chart"],
                 column=["continent", "country"],
-                selector=vm.Cascader(multi=False),
+                selector=vm.Cascader(multi=False, full_path=False),
             ),
         ],
     )
@@ -316,18 +327,18 @@ class TestSetControlPreBuild:
         with pytest.raises(
             ValueError,
             match=re.escape(
-                "Model with ID `invalid_id` used as a `control` in `set_control` action not found in the dashboard. "
+                "Model with ID `invalid_id` used as a `control` in `set_controls` action not found in the dashboard. "
                 "Please provide a valid control ID that exists in the dashboard."
             ),
         ):
             action.pre_build()
 
     def test_pre_build_empty_control_list_raises(self):
-        # An empty `control` has nothing to set and would produce zero callback outputs; reject it at build time.
+        # An empty `controls` has nothing to set and would produce zero callback outputs; reject it at build time.
         action = set_control(control=[], value="Europe")
         model_manager["button_1"].actions = action
 
-        with pytest.raises(ValueError, match="has an empty `control`"):
+        with pytest.raises(ValueError, match="has an empty `controls`"):
             action.pre_build()
 
     def test_pre_build_parent_model_does_not_support_set_control(self):
@@ -339,11 +350,11 @@ class TestSetControlPreBuild:
         with pytest.raises(
             ValueError,
             match=re.escape(
-                "`set_control` action was added to the model with ID `table_1`, "
+                "`set_controls` action was added to the model with ID `table_1`, "
                 "but this action can only be used with models that support it "
                 "(for example, Graph, AgGrid, Figure, and so on). "
-                "See all models that can source a `set_control` at "
-                "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_control"
+                "See all models that can source a `set_controls` at "
+                "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_controls"
             ),
         ):
             action.pre_build()
@@ -356,7 +367,7 @@ class TestSetControlPreBuild:
         with pytest.raises(
             ValueError,
             match=re.escape(
-                "Model with ID `invalid_id` used as a `control` in `set_control` action not found in the dashboard. "
+                "Model with ID `invalid_id` used as a `control` in `set_controls` action not found in the dashboard. "
                 "Please provide a valid control ID that exists in the dashboard."
             ),
         ):
@@ -373,7 +384,7 @@ class TestSetControlPreBuild:
         with pytest.raises(
             ValueError,
             match=re.escape(
-                "Model with ID `filter_not_in_page` used as a `control` in `set_control` action not found in the "
+                "Model with ID `filter_not_in_page` used as a `control` in `set_controls` action not found in the "
                 "dashboard. Please provide a valid control ID that exists in the dashboard."
             ),
         ):
@@ -387,7 +398,7 @@ class TestSetControlPreBuild:
         with pytest.raises(
             TypeError,
             match=re.escape(
-                "Model with ID `scatter_chart_2` used as a `control` in `set_control` action must be a control model "
+                "Model with ID `scatter_chart_2` used as a `control` in `set_controls` action must be a control model "
                 "(for example, Filter, Parameter)."
             ),
         ):
@@ -402,7 +413,7 @@ class TestSetControlPreBuild:
         with pytest.raises(
             ValueError,
             match=re.escape(
-                "`set_control` triggered by `Graph` model `scatter_chart_1` requires a `value`: a column name "
+                "`set_controls` triggered by `Graph` model `scatter_chart_1` requires a `value`: a column name "
                 'present in the figure\'s `custom_data`, or a positional lookup such as "x" or "y".'
             ),
         ):
@@ -417,7 +428,7 @@ class TestSetControlPreBuild:
         with pytest.raises(
             ValueError,
             match=re.escape(
-                '`set_control` triggered by `AgGrid` model `ag_grid_1` requires a `value`: "cell", "column", '
+                '`set_controls` triggered by `AgGrid` model `ag_grid_1` requires a `value`: "cell", "column", '
                 '"row", or a column name.'
             ),
         ):
