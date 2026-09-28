@@ -513,7 +513,10 @@ class Filter(VizroBaseModel):
 
         if _is_categorical_selector(selector):
             selector_call_obj = selector(options=self._get_options(targeted_data, current_value))
-        elif _is_numerical_or_date_selector(selector):
+        elif _is_numerical_or_date_selector(selector) or _is_datetime_selector(selector):
+            # DateTimePicker joins the numerical/date selectors here: only its date portion is dynamic, and
+            # selector.__call__(min, max) rebuilds it with the refreshed date bounds (min/max are coerced to
+            # dates inside). The always-static time portion is unaffected.
             _min, _max = self._get_min_max(targeted_data, current_value)
             selector_call_obj = selector(min=_min, max=_max)
         elif _is_hierarchical_selector(selector):
@@ -588,7 +591,9 @@ class Filter(VizroBaseModel):
         # Note: min or max = 0 are falsey but must not be treated as "not set".
         if (
             self._column_type in _DYNAMIC_COLUMN_TYPES
-            and not isinstance(self.selector, (TimePicker, DateTimePicker))
+            # TimePicker stays static (a time-of-day has no min/max bounds to derive from data). DateTimePicker
+            # is dynamic through its date portion only; its time portion is likewise always the full day.
+            and not isinstance(self.selector, TimePicker)
             and not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None
@@ -688,9 +693,16 @@ class Filter(VizroBaseModel):
         # Temporarily hide the selector during the filter reloading process. Other components, such as the title,
         # remain visible because of the configuration: overlay_style={"visibility": "visible"} in dcc.Loading.
         # If the selector is a Checklist with show_select_all=True, then hide the select all checkbox too.
-        selector_build_obj[selector.id].className = "invisible"
-        if isinstance(selector, Checklist) and selector.show_select_all:
-            selector_build_obj[f"{selector.id}_select_all"].className = "invisible"
+        if isinstance(selector, DateTimePicker):
+            # DateTimePicker's selector.id is a non-visual proxy dcc.Store, which silently ignores className. Its
+            # visible date/time inputs live in a sibling wrapper Div; append (not overwrite) "invisible" so its
+            # layout class is kept, and the title (outside the wrapper) stays visible during reload.
+            wrapper = selector_build_obj[f"{selector.id}_datetime_wrapper"]
+            wrapper.className = f"{wrapper.className} invisible"
+        else:
+            selector_build_obj[selector.id].className = "invisible"
+            if isinstance(selector, Checklist) and selector.show_select_all:
+                selector_build_obj[f"{selector.id}_select_all"].className = "invisible"
 
         # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
         #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
