@@ -22,7 +22,6 @@ kpi_sparkline_page = vm.Page(
                 title="Google",
                 icon="trending_up",
                 value_format="{value:.2f}",
-                units="MWh",
             )
         ),
         vm.Figure(

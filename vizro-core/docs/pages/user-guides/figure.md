@@ -318,18 +318,9 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
 
 !!! example "KPI sparkline card variations"
 
-    === "my_css_file.css"
-
-        ```css
-        /* We define a fixed height and width to ensure uniform styling for all KPI cards. */
-        .flex-item .card-kpi {
-            height: 180px;
-        }
-        ```
-
     === "app.py"
 
-        ```py
+        ```{.py hl_lines="19 25 31"}
         import pandas as pd
         import vizro.models as vm
         from vizro import Vizro
@@ -338,32 +329,30 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
         df_kpi_sparkline = pd.DataFrame(
             {
                 "Date": pd.date_range("2024-01-01", periods=6, freq="MS"),
-                "Revenue": [120, 130, 125, 140, 160, 155],
+                "Rising": [100, 88, 55, 92, 140, 170],  # last value higher than first -> positive trend
+                "Falling": [180, 140, 122, 135, 108, 100],  # last value lower than first -> negative trend
+                "Steady": [120, 125, 118, 130, 122, 120],  # last value equal to first -> neutral trend
             }
         )
 
         example_sparkline_cards = [
             kpi_sparkline_card(
                 data_frame=df_kpi_sparkline,
-                value_column="Revenue",
-                x_column="Date",
-                title="KPI sparkline (area)",
-                icon="Trending Up",
+                value_column="Rising",
+                x_column="Date",  # (3)!
+                title="KPI sparkline (positive trend)",
             ),
             kpi_sparkline_card(
                 data_frame=df_kpi_sparkline,
-                value_column="Revenue",
+                value_column="Falling",
                 x_column="Date",
-                title="KPI sparkline (line)",
-                chart_type="line",
-                icon="Trending Up",
+                title="KPI sparkline (negative trend)",
             ),
             kpi_sparkline_card(
                 data_frame=df_kpi_sparkline,
-                value_column="Revenue",
+                value_column="Steady",
                 x_column="Date",
-                title="KPI sparkline with formatting",
-                value_format="${value:.2f} ({delta_relative:+.1%})",
+                title="KPI sparkline (neutral trend)",
             ),
         ]
 
@@ -379,6 +368,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
 
         1. For more information, refer to the API reference for [`kpi_sparkline_card`][vizro.figures.kpi_sparkline_card].
         1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout with `direction=row` and `wrap=True` to allow KPI cards to wrap to the next line when needed.
+        1. `x_column` determines the chronological/sequential order of the data. It's used both to draw the sparkline's x-axis and to compute the trend direction, which is based on comparing the first and last `value_column` entries once sorted by `x_column`.
 
     === "app.yaml"
 
@@ -390,27 +380,23 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
               - figure:
                   _target_: kpi_sparkline_card
                   data_frame: df_kpi_sparkline
-                  value_column: Revenue
+                  value_column: Rising
                   x_column: Date
-                  title: KPI sparkline (area)
-                  icon: Trending Up
+                  title: KPI sparkline (positive trend)
                 type: figure
               - figure:
                   _target_: kpi_sparkline_card
                   data_frame: df_kpi_sparkline
-                  value_column: Revenue
+                  value_column: Falling
                   x_column: Date
-                  title: KPI sparkline (line)
-                  chart_type: line
-                  icon: Trending Up
+                  title: KPI sparkline (negative trend)
                 type: figure
               - figure:
                   _target_: kpi_sparkline_card
                   data_frame: df_kpi_sparkline
-                  value_column: Revenue
+                  value_column: Steady
                   x_column: Date
-                  title: KPI sparkline with formatting
-                  value_format: '${value:.2f} ({delta_relative:+.1%})'
+                  title: KPI sparkline (neutral trend)
                 type: figure
             layout:
               direction: row
