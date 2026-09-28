@@ -187,13 +187,13 @@ def get_sync_closure(source: ControlType) -> tuple[list[ModelID], list[ModelID]]
       traversal of the ``_synced_control_targets`` edges, excluding ``source`` itself). The mesh is only expanded
       through *same-page* controls that run the generated default chain; a cross-page target, or a same-page target
       with explicit ``actions`` (custom or ``[]``), is a terminal node whose own edges are not followed - its value is
-      still set, but its sync applies when its page opens / its own chain runs (see the `set_control` action).
+      still set, but its sync applies when its page opens / its own chain runs (see the `set_controls` action).
     * ``closure_figures`` - the precise union of figure targets that must be refreshed: ``source``'s own figures plus
       those of every *same-page* synced control that runs the default chain (a target with explicit ``actions`` is not
       subsumed, so its figures are left to its own chain). Parameter targets use ``"<figure>.<argument>"`` notation, so
       they are reduced to the figure id; Filter targets are already bare figure ids.
 
-    Together these let one `set_control` set the whole mesh and one `update_targets` refresh every affected figure,
+    Together these let one `set_controls` set the whole mesh and one `update_targets` refresh every affected figure,
     collapsing the mesh into two HTTP requests (see `finalize_control_sync_chains`).
     """
     source_page = model_manager._get_model_page(source)
@@ -245,14 +245,14 @@ def finalize_control_sync_chains() -> None:
     targets and ``_synced_control_targets`` are final) and rewrites each source's chain to cover the whole transitive
     mesh at once:
 
-    * a single ``set_control(control=<all transitively-synced controls>, _stop_implicit_actions_chaining=True)`` sets
+    * a single ``set_controls(controls=<all transitively-synced controls>, _stop_implicit_actions_chaining=True)`` sets
       every mesh control and raises their guards so their own chains do not fire, and
     * a single ``update_targets(targets=<precise figure union>)`` refreshes every affected figure.
 
     The superseded per-control actions are removed from the model_manager first, otherwise their callbacks would still
     be registered in ``Dashboard.build`` and reusing the ``update_targets`` id would raise ``DuplicateIDError``.
     """
-    from vizro.actions import set_control, update_targets
+    from vizro.actions import set_controls, update_targets
     from vizro.models import Filter, Parameter
 
     # Materialize before mutating: rebuilding the chains adds/removes models from the model_manager.
@@ -265,20 +265,22 @@ def finalize_control_sync_chains() -> None:
     for source in sources:
         closure_controls, closure_figures = get_sync_closure(source)
 
-        old_set_control = next((action for action in source.selector.actions if isinstance(action, set_control)), None)
+        old_set_controls = next(
+            (action for action in source.selector.actions if isinstance(action, set_controls)), None
+        )
         old_update_targets = next(
             (action for action in source.selector.actions if isinstance(action, update_targets)), None
         )
         # A finalized source always has both: a non-empty `_synced_control_targets` means the default chain was built
-        # with a `set_control` alongside its `update_targets`. Fail with a clear message (rather than a bare
+        # with a `set_controls` alongside its `update_targets`. Fail with a clear message (rather than a bare
         # StopIteration) if that coupling ever drifts.
-        if old_set_control is None or old_update_targets is None:
+        if old_set_controls is None or old_update_targets is None:
             raise RuntimeError(
                 f"Cannot collapse the control-sync mesh for '{source.id}': its selector chain is missing the expected "
-                f"set_control/update_targets actions."
+                f"set_controls/update_targets actions."
             )
         update_targets_action_id = old_update_targets.id
-        del model_manager[old_set_control.id]
+        del model_manager[old_set_controls.id]
         del model_manager[old_update_targets.id]
 
         # Reassigning selector.actions re-runs make_actions_chain (validate_assignment) so the new chain is wired.
@@ -289,8 +291,8 @@ def finalize_control_sync_chains() -> None:
             update_targets_action_id=update_targets_action_id,
         )
 
-        new_set_control = next(action for action in source.selector.actions if isinstance(action, set_control))
-        new_set_control._stop_implicit_actions_chaining = True
+        new_set_controls = next(action for action in source.selector.actions if isinstance(action, set_controls))
+        new_set_controls._stop_implicit_actions_chaining = True
 
         # Newly created actions must run their own pre_build (mirrors Parameter.pre_build).
         for action in source.selector.actions:

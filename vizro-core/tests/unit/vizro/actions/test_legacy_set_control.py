@@ -6,7 +6,7 @@ from dash import no_update
 import vizro.actions._set_control as set_control_module
 import vizro.models as vm
 from vizro import Vizro
-from vizro.actions import set_control, update_targets
+from vizro.actions import set_control, set_controls, update_targets
 from vizro.managers import model_manager
 
 # set_control is deprecated in favor of set_controls. Silence the warning for the legacy behavior tests below
@@ -1041,8 +1041,10 @@ class TestControlSyncMeshFinalization:
         # mesh_f1 syncs mesh_f2 directly and mesh_f3 transitively (via mesh_f2). The mutual f1<->f2 edge does not loop:
         # f2->f1 points back at the source, which is excluded.
         set_control_action, update_targets_action = model_manager["mesh_f1"].selector.actions
-        assert isinstance(set_control_action, set_control)
-        assert set_control_action.control == ["mesh_f2", "mesh_f3"]
+        # The collapsed mesh action is the canonical (non-deprecated) `set_controls`, regardless of how the sync was
+        # declared - the internal machinery never emits the deprecated `set_control`.
+        assert isinstance(set_control_action, set_controls)
+        assert set_control_action.controls == ["mesh_f2", "mesh_f3"]
         # The flag suppresses each synced control's own chain (via its guard), so the mesh resolves in two requests.
         assert set_control_action._stop_implicit_actions_chaining is True
         # Precise figure union: f1's own figure plus every same-page synced control's figures.
@@ -1053,7 +1055,7 @@ class TestControlSyncMeshFinalization:
     def test_symmetric_source(self):
         # From mesh_f2 the closure is mesh_f1 (direct) and mesh_f3 (direct); mesh_f1 back-edge to f2 is the source.
         set_control_action, update_targets_action = model_manager["mesh_f2"].selector.actions
-        assert set_control_action.control == ["mesh_f1", "mesh_f3"]
+        assert set_control_action.controls == ["mesh_f1", "mesh_f3"]
         assert set_control_action._stop_implicit_actions_chaining is True
         assert set(update_targets_action.targets) == {"mesh_g1", "mesh_g2", "mesh_g3"}
 
@@ -1066,8 +1068,8 @@ class TestControlSyncMeshFinalization:
 
     def test_no_stale_actions_left_in_model_manager(self):
         # Finalization deletes the per-control actions it supersedes, so only the two collapsed set_controls remain.
-        set_control_ids = [action.id for action in model_manager._get_models(set_control)]
-        assert len(set_control_ids) == 2
+        set_controls_ids = [action.id for action in model_manager._get_models(set_controls)]
+        assert len(set_controls_ids) == 2
 
 
 @pytest.mark.usefixtures("managers_control_sync_cross_page")
@@ -1078,14 +1080,14 @@ class TestControlSyncCrossPageFinalization:
         # cf1 (page 1) syncs cf2 (page 2). cf2 is cross-page, so its own edge to cf3 is NOT followed, and its figures
         # (on page 2) are not refreshed by cf1. cf1 therefore only sets cf2 and refreshes its own figure.
         set_control_action, update_targets_action = model_manager["cf1"].selector.actions
-        assert set_control_action.control == ["cf2"]
+        assert set_control_action.controls == ["cf2"]
         assert set_control_action._stop_implicit_actions_chaining is True
         assert update_targets_action.targets == ["cp_g1"]
 
     def test_same_page_transitive_on_target_page(self):
         # On page 2, cf2 -> cf3 is a normal same-page sync and collapses independently.
         set_control_action, update_targets_action = model_manager["cf2"].selector.actions
-        assert set_control_action.control == ["cf3"]
+        assert set_control_action.controls == ["cf3"]
         assert set_control_action._stop_implicit_actions_chaining is True
         assert update_targets_action.targets == ["cp_g2", "cp_g3"]
 
@@ -1124,7 +1126,7 @@ class TestControlSyncMixedFilterParameterFinalization:
         # From the Filter: it syncs the Parameter, and the union is the Filter's own figure (mix_g1) plus the
         # Parameter's figure - reduced from "mix_g2.x" to "mix_g2".
         set_control_action, update_targets_action = model_manager["mix_f1"].selector.actions
-        assert set_control_action.control == ["mix_p1"]
+        assert set_control_action.controls == ["mix_p1"]
         assert set_control_action._stop_implicit_actions_chaining is True
         assert update_targets_action.targets == ["mix_g1", "mix_g2"]
 
@@ -1132,7 +1134,7 @@ class TestControlSyncMixedFilterParameterFinalization:
         # From the Parameter: it syncs the Filter, and the union is the Parameter's own figure ("mix_g2.x" -> "mix_g2")
         # plus the Filter's figure (mix_g1).
         set_control_action, update_targets_action = model_manager["mix_p1"].selector.actions
-        assert set_control_action.control == ["mix_f1"]
+        assert set_control_action.controls == ["mix_f1"]
         assert set_control_action._stop_implicit_actions_chaining is True
         assert update_targets_action.targets == ["mix_g2", "mix_g1"]
 
@@ -1180,7 +1182,7 @@ class TestControlSyncExplicitActionTargetsPreserved:
         # The source still sets both explicit-action targets (sync must happen), but its collapsed update_targets
         # refreshes only its OWN figure - the targets' figures are left to their own chains.
         set_control_action, update_targets_action = model_manager["expl_source"].selector.actions
-        assert set_control_action.control == ["expl_deferred", "expl_custom"]
+        assert set_control_action.controls == ["expl_deferred", "expl_custom"]
         assert set_control_action._stop_implicit_actions_chaining is True
         assert update_targets_action.targets == ["expl_g_source"]
 

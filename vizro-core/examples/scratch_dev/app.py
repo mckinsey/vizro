@@ -2,12 +2,13 @@
 
 import datetime as dt
 
+import functools
 import pandas as pd
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import set_control, update_targets
+from vizro.actions import set_controls, update_targets
 from vizro.managers import data_manager
 
 
@@ -181,7 +182,8 @@ page_2_2 = vm.Page(
             id="p22_range_filter",
             column="petal_length",
             targets=["p22_graph"],
-            selector=vm.RangeSlider(
+            selector=vm.Slider(
+                range=True,
                 title="min/max refreshed by the slider; does NOT auto-apply.",
                 actions=[],
             ),
@@ -251,7 +253,7 @@ page_3_1 = vm.Page(
                     selector=vm.Dropdown(
                         actions=[
                             update_targets(targets=["p31_graph_1"]),
-                            set_control(control="p31_filter_2", value=None),
+                            set_controls(controls="p31_filter_2", value=None),
                         ]
                     ),
                 )
@@ -268,7 +270,7 @@ page_3_1 = vm.Page(
                     selector=vm.Checklist(
                         actions=[
                             update_targets(targets=["p31_graph_2"]),
-                            set_control(control="p31_filter_1", value=None),
+                            set_controls(controls="p31_filter_1", value=None),
                         ]
                     ),
                 ),
@@ -495,11 +497,11 @@ page_3_6 = vm.Page(
 #   F<->F: p37_filter_1    <-> p37_filter_2
 #   F<->P: p37_filter_3    <-> p37_parameter_1
 #   P<->P: p37_parameter_2 <-> p37_parameter_3
-# Each selector carries an explicit `set_control` action (and no auto `update_targets`), so changing a control syncs
+# Each selector carries an explicit `set_controls` action (and no auto `update_targets`), so changing a control syncs
 # its partner but does NOT redraw the graph. When the selector has explicit actions the sync is wired manually via
-# `set_control`, so the partner's id must NOT also be listed in `targets` (it would be stripped as dead config and
+# `set_controls`, so the partner's id must NOT also be listed in `targets` (it would be stripped as dead config and
 # warn). A Filter needs no figure target here - it falls back to the page graph - but a Parameter must have a figure
-# target, so each parameter targets a `p37_graph_1` argument. The pairs stay in sync on change via `set_control`;
+# target, so each parameter targets a `p37_graph_1` argument. The pairs stay in sync on change via `set_controls`;
 # the "Apply to graph" button runs `update_targets()` to refresh the graph with the current (synced) control values.
 page_3_7 = vm.Page(
     id="page_3_7",
@@ -519,7 +521,7 @@ page_3_7 = vm.Page(
             column="species",
             selector=vm.RadioItems(
                 title="F1 <-> F2 (syncs filter below; graph applied on button click)",
-                actions=[set_control(control="p37_filter_2", value=None)],
+                actions=[set_controls(controls="p37_filter_2", value=None)],
             ),
         ),
         vm.Filter(
@@ -527,7 +529,7 @@ page_3_7 = vm.Page(
             column="species",
             selector=vm.Checklist(
                 title="F2 <-> F1 (syncs filter above; graph applied on button click)",
-                actions=[set_control(control="p37_filter_1", value=None)],
+                actions=[set_controls(controls="p37_filter_1", value=None)],
             ),
         ),
         # F <-> P
@@ -536,7 +538,7 @@ page_3_7 = vm.Page(
             column="species",
             selector=vm.RadioItems(
                 title="F3 <-> P1 (syncs parameter below)",
-                actions=[set_control(control="p37_parameter_1", value=None)],
+                actions=[set_controls(controls="p37_parameter_1", value=None)],
             ),
         ),
         vm.Parameter(
@@ -545,7 +547,7 @@ page_3_7 = vm.Page(
             selector=vm.RadioItems(
                 title="P1 <-> F3 (syncs filter above; graph title applied on button click)",
                 options=["setosa", "versicolor", "virginica"],
-                actions=[set_control(control="p37_filter_3", value=None)],
+                actions=[set_controls(controls="p37_filter_3", value=None)],
             ),
         ),
         # P <-> P
@@ -555,7 +557,7 @@ page_3_7 = vm.Page(
             selector=vm.RadioItems(
                 title="P2 <-> P3 (syncs parameter below; graph x applied on button click)",
                 options=["sepal_length", "petal_length"],
-                actions=[set_control(control="p37_parameter_3", value=None)],
+                actions=[set_controls(controls="p37_parameter_3", value=None)],
             ),
         ),
         vm.Parameter(
@@ -564,7 +566,7 @@ page_3_7 = vm.Page(
             selector=vm.RadioItems(
                 title="P3 <-> P2 (syncs parameter above; graph y applied on button click)",
                 options=["sepal_length", "petal_length"],
-                actions=[set_control(control="p37_parameter_2", value=None)],
+                actions=[set_controls(controls="p37_parameter_2", value=None)],
             ),
         ),
         vm.Button(text="Apply to graph", actions=update_targets()),
@@ -685,13 +687,13 @@ page_3_9 = vm.Page(
             id="p39_range_1",
             column="num_range",
             targets=["p39_range_2"],
-            selector=vm.RangeSlider(title="RangeSlider 1 (syncs RangeSlider 2)"),
+            selector=vm.Slider(range=True, title="RangeSlider 1 (syncs RangeSlider 2)"),
         ),
         vm.Filter(
             id="p39_range_2",
             column="num_range",
             targets=["p39_range_1"],
-            selector=vm.RangeSlider(title="RangeSlider 2 (syncs RangeSlider 1)"),
+            selector=vm.Slider(range=True, title="RangeSlider 2 (syncs RangeSlider 1)"),
         ),
         # DatePicker <-> DatePicker
         vm.Filter(
@@ -750,33 +752,33 @@ page_3_9 = vm.Page(
             id="p39_cascader_1",
             column=["region", "city"],
             targets=["p39_cascader_2"],
-            selector=vm.Cascader(title="Cascader 1 (syncs Cascader 2)"),
+            selector=vm.Cascader(full_path=False, title="Cascader 1 (syncs Cascader 2)"),
         ),
         vm.Filter(
             id="p39_cascader_2",
             column=["region", "city"],
             targets=["p39_cascader_1"],
-            selector=vm.Cascader(title="Cascader 2 (syncs Cascader 1)"),
+            selector=vm.Cascader(full_path=False, title="Cascader 2 (syncs Cascader 1)"),
         ),
     ],
 )
 
 
-# ====== **NEW** Pure selectors (no Filter/Parameter) drive filters across tabs via explicit set_control ======
+# ====== **NEW** Pure selectors (no Filter/Parameter) drive filters across tabs via explicit set_controls ======
 # A Filter/Parameter that targets no figure "is not a Filter/Parameter". So instead of a control-only Filter, a
 # dashboard creator can drop a *bare selector* (RadioItems, RangeSlider, ...) straight into the layout and attach an
-# explicit `set_control` to it: the selector then acts purely as a driver - on change it pushes its value to the
+# explicit `set_controls` to it: the selector then acts purely as a driver - on change it pushes its value to the
 # target controls, which do the actual figure filtering. Bare selectors are normally only allowed inside a
 # Filter/Parameter, so they must be whitelisted as components via the `add_type` hack.
 #
 # Layout: tab 1 = pure driver selectors (no figure); tabs 2 & 3 = the real Filters (one per selector type), each
-# filtering that tab's own graph. Each tab-1 selector `set_control`s the matching Filter on BOTH tab 2 and tab 3.
+# filtering that tab's own graph. Each tab-1 selector `set_controls`s the matching Filter on BOTH tab 2 and tab 3.
 _p310_specs = [
     ("radio", "cat_radio", vm.RadioItems, {"options": ["P", "Q", "R"], "value": "P"}),
     ("dropdown", "cat_dropdown", vm.Dropdown, {"options": ["A", "B", "C"], "value": ["A"]}),
     ("checklist", "cat_checklist", vm.Checklist, {"options": ["X", "Y", "Z"], "value": ["X"]}),
     ("slider", "num_slider", vm.Slider, {"min": 0, "max": 5, "step": 1, "value": 2}),
-    ("range", "num_range", vm.RangeSlider, {"min": 0, "max": 100, "value": [20, 80]}),
+    ("range", "num_range", functools.partial(vm.Slider, range=True), {"min": 0, "max": 100, "value": [20, 80]}),
     (
         "date",
         "date_col",
@@ -794,7 +796,7 @@ _p310_specs = [
     (
         "cascader",
         ["region", "city"],
-        vm.Cascader,
+        functools.partial(vm.Cascader, full_path=False),
         {
             "options": {"North": ["New York", "Boston"], "South": ["Miami", "Austin"]},
             "multi": False,
@@ -803,8 +805,9 @@ _p310_specs = [
     ),
 ]
 
-# Whitelist each bare selector type as an allowed Container component (they are normally only allowed as selectors).
-for _sel_type in {spec[2] for spec in _p310_specs}:
+# Whitelist each selector type as an allowed Container component (they are normally only allowed as selectors).
+# `spec[2]` may be a functools.partial (the range Slider), so unwrap it to the concrete class that add_type needs.
+for _sel_type in {getattr(spec[2], "func", spec[2]) for spec in _p310_specs}:
     vm.Container.add_type("components", _sel_type)
 
 _p310_tab1, _p310_tab2, _p310_tab3 = [], [], []
@@ -815,10 +818,10 @@ for _key, _column, _sel_type, _cfg in _p310_specs:
             id=f"p310_t1_{_key}",
             title=f"{_key}: pure selector -> sets {_t2_id} & {_t3_id}",
             # actions=[
-            #     set_control(control=_t2_id, value=None),
-            #     set_control(control=_t3_id, value=None)
+            #     set_controls(controls=_t2_id, value=None),
+            #     set_controls(controls=_t3_id, value=None)
             # ],
-            actions=[set_control(control=[_t2_id, _t3_id], value=None)],
+            actions=[set_controls(controls=[_t2_id, _t3_id], value=None)],
             **_cfg,
         )
     )
@@ -848,9 +851,9 @@ page_3_10 = vm.Page(
 )
 
 
-# ====== **NEW** Cross-page control sync to MULTIPLE pages (one set_control, no navigation) ======
+# ====== **NEW** Cross-page control sync to MULTIPLE pages (one set_controls, no navigation) ======
 # page_40's Filter selector targets controls on TWO other pages (page_41 and page_42) as well as its own graph. The
-# syncing feature collapses this into a SINGLE set_control(control=["p41_species", "p42_species"], value=None). Because
+# syncing feature collapses this into a SINGLE set_controls(controls=["p41_species", "p42_species"], value=None). Because
 # the trigger is a control selector (not a figure) it is a sync, NOT a drill-through: no navigation happens; each target
 # picks up the value when its own page is opened. page_42's target additionally mirrors its value in the URL.
 
@@ -864,7 +867,7 @@ page_40 = vm.Page(
         vm.Filter(
             id="p40_species",
             column="species",
-            # One selector change syncs BOTH other-page controls (via a single set_control) and filters this graph.
+            # One selector change syncs BOTH other-page controls (via a single set_controls) and filters this graph.
             targets=["p41_species", "p42_species", "p40_graph"],
             selector=vm.RadioItems(title="Species (syncs pages 41 & 42; no navigation)"),
         ),
@@ -913,9 +916,9 @@ page_50 = vm.Page(
         vm.Graph(
             id="p50_graph",
             title="Click a point: sets two controls on page 51, then navigates there",
-            # custom_data carries the species so set_control can read the clicked point's species.
+            # custom_data carries the species so set_controls can read the clicked point's species.
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data="species"),
-            actions=set_control(control=["p51_species", "p51_species_url"], value="species"),
+            actions=set_controls(controls=["p51_species", "p51_species_url"], value="species"),
         ),
     ],
     controls=[vm.Filter(id="p50_species_url", column="species", show_in_url=True)],
@@ -956,7 +959,7 @@ page_60 = vm.Page(
             id="p60_graph",
             title="Click a point: sets this page's control live AND page 61's (applied on open); stays on this page",
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species", custom_data="species"),
-            actions=set_control(control=["p60_species", "p61_species"], value="species"),
+            actions=set_controls(controls=["p60_species", "p61_species"], value="species"),
         ),
     ],
     controls=[
