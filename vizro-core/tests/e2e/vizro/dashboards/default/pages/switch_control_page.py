@@ -30,8 +30,8 @@ df_numeric = pd.DataFrame(data)
 switch_control_page = vm.Page(
     title=cnst.SWITCH_CONTROL_PAGE,
     components=[
-        vm.AgGrid(id=cnst.AG_GRID_INACTIVE, figure=dash_ag_grid(df)),
-        vm.AgGrid(id=cnst.AG_GRID_ACTIVE, figure=dash_ag_grid(df_numeric)),
+        vm.Table(id=cnst.AG_GRID_INACTIVE, figure=dash_ag_grid(df)),
+        vm.Table(id=cnst.AG_GRID_ACTIVE, figure=dash_ag_grid(df_numeric)),
     ],
     controls=[
         vm.Filter(

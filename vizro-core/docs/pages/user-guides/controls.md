@@ -263,7 +263,7 @@ The example below syncs one filter across two pages. Both controls are visible s
         overview_page = vm.Page(
             title="Overview",
             components=[
-                vm.AgGrid(id="overview_table", figure=dash_ag_grid(iris)),
+                vm.Table(id="overview_table", figure=dash_ag_grid(iris)),
             ],
             controls=[
                 vm.Filter(
@@ -300,7 +300,7 @@ The example below syncs one filter across two pages. Both controls are visible s
           - title: Overview
             components:
               - id: overview_table
-                type: ag_grid
+                type: table
                 figure:
                   _target_: dash_ag_grid
                   data_frame: iris

@@ -87,7 +87,7 @@ pages:
           #### An Interactive Exploration of Global Health, Wealth, and Population
         footer: |
           SOURCE: **Plotly gapminder data set, 2024**
-        type: ag_grid
+        type: table
     title: AG Grid
   - components:
       - text: |

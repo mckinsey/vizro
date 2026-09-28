@@ -23,25 +23,25 @@ set_control_ag_grid_cellclicked = vm.Page(
     title=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_PAGE,
     layout=vm.Grid(grid=[[0, 1], [2, 3], [4, 4]]),
     components=[
-        vm.AgGrid(
+        vm.Table(
             title="set_control.value=column",
             id=cnst.SET_CONTROL_AG_GRID_COLUMN_CLICKED_ID,
             figure=dash_ag_grid(iris),
             actions=set_controls(controls=["set_control_column"], value="column"),
         ),
-        vm.AgGrid(
+        vm.Table(
             title="set_control.value=cell",
             id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_ID,
             figure=dash_ag_grid(iris),
             actions=set_controls(controls=["set_control_cell"], value="cell"),
         ),
-        vm.AgGrid(
+        vm.Table(
             title="set_control.value=row",
             id=cnst.SET_CONTROL_AG_GRID_ROW_CLICKED_ID,
             figure=dash_ag_grid(iris),
             actions=set_controls(controls=["set_control_row"], value="row"),
         ),
-        vm.AgGrid(
+        vm.Table(
             title="set_control.value=mixed",
             id=cnst.SET_CONTROL_AG_GRID_MIXED_CLICKED_ID,
             figure=dash_ag_grid(iris),
@@ -50,7 +50,7 @@ set_control_ag_grid_cellclicked = vm.Page(
                 set_controls(controls=["set_control_cell"], value="cell"),
             ],
         ),
-        vm.AgGrid(
+        vm.Table(
             title="AG Grid Cell Clicked Target",
             id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID,
             figure=dash_ag_grid(target_ag_grid_df),

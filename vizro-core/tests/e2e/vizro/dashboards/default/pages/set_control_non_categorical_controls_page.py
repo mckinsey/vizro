@@ -112,7 +112,7 @@ set_control_non_categorical_ag_grid = vm.Page(
         vm.Container(
             title="Click set_control",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL,
                     figure=dash_ag_grid(df),
                     title="Click on row to set the filters below",
@@ -196,7 +196,7 @@ set_control_non_categorical_timepicker_graph = vm.Page(
                 ),
                 vm.Container(
                     components=[
-                        vm.AgGrid(
+                        vm.Table(
                             id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_TARGET,
                             figure=dash_ag_grid(temporal_df),
                         ),
@@ -221,7 +221,7 @@ set_control_non_categorical_datetimepicker_ag_grid = vm.Page(
         vm.Container(
             title="Click set_control",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER,
                     figure=dash_ag_grid(temporal_df),
                     title="Click on row to set the datetime filter below",
@@ -234,7 +234,7 @@ set_control_non_categorical_datetimepicker_ag_grid = vm.Page(
                 ),
                 vm.Container(
                     components=[
-                        vm.AgGrid(
+                        vm.Table(
                             id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_TARGET,
                             figure=dash_ag_grid(temporal_df),
                         ),

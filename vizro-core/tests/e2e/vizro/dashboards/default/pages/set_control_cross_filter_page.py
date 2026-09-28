@@ -48,7 +48,7 @@ cross_filter_ag_grid_page = vm.Page(
     components=[
         vm.Container(
             components=[
-                vm.AgGrid(
+                vm.Table(
                     id=cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_ID,
                     title="Table Country",
                     figure=dash_ag_grid(

@@ -188,7 +188,7 @@ graphs = vm.Page(
 ag_grid = vm.Page(
     title="AG Grid",
     components=[
-        vm.AgGrid(
+        vm.Table(
             figure=dash_ag_grid(data_frame=gapminder_2007, dashGridOptions={"pagination": True}),
             title="Gapminder Data Insights",
             header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",

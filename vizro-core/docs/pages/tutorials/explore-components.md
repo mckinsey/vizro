@@ -115,7 +115,7 @@ To start, let's get an overview of the data by displaying it in a table using [`
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -175,7 +175,7 @@ These steps add an export data button:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -235,7 +235,7 @@ To achieve this, we'll switch to the `Flex` layout and set a `height` for the `A
             title="Data",
             layout=vm.Flex(),
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips, style= {"height": "600px"}),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -303,7 +303,7 @@ These steps add a histogram to the page:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -394,7 +394,7 @@ These steps add two KPI cards to the second page:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -490,7 +490,7 @@ These steps place the two histograms in separate tabs:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -605,7 +605,7 @@ Run the code below to apply the layout to the dashboard page:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -702,7 +702,7 @@ These steps add a filter to the dashboard:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -841,7 +841,7 @@ These steps should feel familiar, as they add three charts to the new page.
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -969,7 +969,7 @@ Run the code below to apply the layout to the dashboard page:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -1097,7 +1097,7 @@ These steps add a parameter to the dashboard:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -1242,7 +1242,7 @@ For more information on when to create a custom chart, check out [How to create 
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -1396,7 +1396,7 @@ Your directory structure should look like this:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -1546,7 +1546,7 @@ The following steps create a navigation bar:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.

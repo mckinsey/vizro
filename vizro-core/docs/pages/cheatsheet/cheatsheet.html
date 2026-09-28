@@ -235,7 +235,7 @@ from vizro.tables import dash_ag_grid
 
 df = px.data.iris()
 
-ag_grid = vm.AgGrid(
+ag_grid = vm.Table(
     title="Dash AG Grid",
     figure=dash_ag_grid(data_frame=df),
 )</code></pre>
@@ -1409,7 +1409,7 @@ df = px.data.iris()
 
 page = vm.Page(
     components=[
-        vm.AgGrid(
+        vm.Table(
             figure=dash_ag_grid(df),
             actions=va.set_controls(controls="filter_id", value="species"),
         ),
@@ -1510,7 +1510,7 @@ def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
     )
 
 # Use in AgGrid component
-vm.AgGrid(
+vm.Table(
     figure=custom_table(
         data_frame=df,
         chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"]

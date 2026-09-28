@@ -81,7 +81,7 @@ The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking o
         page = vm.Page(
             title="Cross-filter from table to graph",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     title="Click on a row to use that row's sex to filter graph",
                     figure=dash_ag_grid(tips),
                     actions=va.set_controls(controls=["sex_filter"], value="sex"),
@@ -114,7 +114,7 @@ The trigger for a cross-filter from an [AG Grid](table.md#ag-grid) is clicking o
                   _target_: dash_ag_grid
                   data_frame: tips
                 title: Click on a row to use that row's sex to filter graph
-                type: ag_grid
+                type: table
               - figure:
                   _target_: histogram
                   data_frame: tips
@@ -168,7 +168,7 @@ If you set the `set_controls.value` argument to `value="cell"`, the value of the
         page = vm.Page(
             title="Cross-filter from table to graph",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     title="Click on a cell to use that cell's value to filter graph",
                     figure=dash_ag_grid(tips),
                     actions=va.set_controls(controls=["sex_filter"], value="cell"),
@@ -201,7 +201,7 @@ If you set the `set_controls.value` argument to `value="cell"`, the value of the
                   _target_: dash_ag_grid
                   data_frame: tips
                 title: Click on a row to use that row's value to filter graph
-                type: ag_grid
+                type: table
               - figure:
                   _target_: histogram
                   data_frame: tips
@@ -285,7 +285,7 @@ We show an example of each of these in turn. Here is an example where we use `cu
                     figure=px.box(tips, x="tip", y="time", color="sex", custom_data="sex"),  # (1)!
                     actions=va.set_controls(controls=["sex_filter"], value="sex"),
                 ),
-                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (2)!
+                vm.Table(id="tips_table", figure=dash_ag_grid(tips)),  # (2)!
             ],
             controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_table"])],  # (3)!
         )
@@ -295,7 +295,7 @@ We show an example of each of these in turn. Here is an example where we use `cu
         ```
 
         1. We encode the `sex` column as `color` in the plot and include it in `custom_data="sex"`.
-        1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
+        1. We give the `vm.Table` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
         1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_controls`.
 
     === "app.yaml"
@@ -323,7 +323,7 @@ We show an example of each of these in turn. Here is an example where we use `cu
                   _target_: dash_ag_grid
                   data_frame: tips
                 id: tips_table
-                type: ag_grid
+                type: table
             controls:
               - column: sex
                 id: sex_filter
@@ -383,7 +383,7 @@ Here is an example where we do not need to use `custom_data` because the value u
                     figure=px.box(tips, x="tip", y="sex"),
                     actions=va.set_controls(controls=["sex_filter"], value="y"),
                 ),
-                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
+                vm.Table(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
             ],
             controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_table"])],  # (2)!
         )
@@ -392,7 +392,7 @@ Here is an example where we do not need to use `custom_data` because the value u
         Vizro().build(dashboard).run()
         ```
 
-        1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
+        1. We give the `vm.Table` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
         1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_controls`.
 
     === "app.yaml"
@@ -418,7 +418,7 @@ Here is an example where we do not need to use `custom_data` because the value u
                   _target_: dash_ag_grid
                   data_frame: tips
                 id: tips_table
-                type: ag_grid
+                type: table
             controls:
               - column: sex
                 id: sex_filter
@@ -573,7 +573,7 @@ For example, let us rearrange the [cross-filter from a table example](#cross-fil
             components=[
                 vm.Container(
                     components=[
-                        vm.AgGrid(
+                        vm.Table(
                             title="Click on a row to use that row's sex to filter graph",
                             figure=dash_ag_grid(tips),
                             actions=va.set_controls(controls=["sex_filter"], value="sex"),
@@ -614,7 +614,7 @@ For example, let us rearrange the [cross-filter from a table example](#cross-fil
                       _target_: dash_ag_grid
                       data_frame: tips
                     title: Click on a row to use that row's sex to filter graph
-                    type: ag_grid
+                    type: table
                 type: container
                 variant: filled
               - components:
@@ -660,7 +660,7 @@ For example, let us rearrange the [cross-filter from a table example](#cross-fil
         page_1 = vm.Page(
             title="Cross-filter source table",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     title="Click on a row to use that row's sex to filter graph",
                     figure=dash_ag_grid(tips),
                     actions=va.set_controls(controls=["sex_filter"], value="sex"),
@@ -697,7 +697,7 @@ For example, let us rearrange the [cross-filter from a table example](#cross-fil
                   _target_: dash_ag_grid
                   data_frame: tips
                 title: Click on a row to use that row's sex to filter graph
-                type: ag_grid
+                type: table
             title: Cross-filter source table
           - components:
               - figure:
@@ -762,7 +762,7 @@ To perform multiple cross-filters, each dimension that is filtered must have its
                         va.set_controls(controls=["sex_filter"], value="y"),
                     ],
                 ),
-                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),
+                vm.Table(id="tips_table", figure=dash_ag_grid(tips)),
             ],
             controls=[
                 vm.Filter(id="day_filter", column="day", targets=["tips_table"]),  # (3)!
@@ -811,7 +811,7 @@ To perform multiple cross-filters, each dimension that is filtered must have its
                   _target_: dash_ag_grid
                   data_frame: tips
                 id: tips_table
-                type: ag_grid
+                type: table
             controls:
               - column: day
                 id: day_filter
@@ -850,7 +850,7 @@ When you click on a colored cell in the heatmap, the table is cross-filtered to 
 Multiple cross-filters are similarly possible [from a table](#cross-filter-from-table):
 
 ```python
-vm.AgGrid(
+vm.Table(
     ...,
     actions=[
         va.set_controls(controls=["day_filter"], value="day"),
@@ -882,7 +882,7 @@ vm.AgGrid(
         page = vm.Page(
             title="dash_ag_grid using cellClicked",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     title="set_controls.value=column",
                     figure=dash_ag_grid(pivot_tips),   # (1)!
                     actions=[
@@ -890,7 +890,7 @@ vm.AgGrid(
                         va.set_controls(controls=["sex_filter"], value="sex"),
                     ],
                 ),
-                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),
+                vm.Table(id="tips_table", figure=dash_ag_grid(tips)),
             ],
             controls=[
                 vm.Filter(id="day_filter", column="day", targets=["tips_table"]),  # (3)!
@@ -926,12 +926,12 @@ vm.AgGrid(
                   _target_: dash_ag_grid
                   data_frame: pivot_tips
                 title: set_controls.value=column
-                type: ag_grid
+                type: table
               - figure:
                   _target_: dash_ag_grid
                   data_frame: tips
                 id: tips_table
-                type: ag_grid
+                type: table
             controls:
               - column: day
                 id: day_filter
@@ -1128,7 +1128,7 @@ This example shows how to configure cross-highlighting where clicking on the row
     ```python
     import vizro.actions as va
 
-    components = [vm.AgGrid(..., actions=va.set_controls(controls=["highlight_parameter"], value="country"))]
+    components = [vm.Table(..., actions=va.set_controls(controls=["highlight_parameter"], value="country"))]
     ```
 
 1. Create a [custom chart](custom-charts.md) that highlights the data corresponding to `highlight_country`.
@@ -1189,7 +1189,7 @@ The full code is given below. This shows a slightly more complicated highlightin
             title="Cross-highlight from table",
             layout=vm.Grid(grid=[[0, 1]], col_gap="80px"),  # (6)!
             components=[
-                vm.AgGrid(
+                vm.Table(
                     header="💡 Click on a row to highlight that country in the scatter plot",
                     figure=dash_ag_grid(data_frame=gapminder),
                     actions=va.set_controls(controls=["highlight_parameter"], value="country"),  # (7)!
@@ -1242,7 +1242,7 @@ The full code is given below. This shows a slightly more complicated highlightin
               _target_: dash_ag_grid
               data_frame: gapminder
             header: 💡 Click on a row to highlight that country in the scatter plot
-            type: ag_grid
+            type: table
           - figure:
               _target_: __main__.scatter_with_highlight
               data_frame: gapminder

@@ -41,13 +41,13 @@ See the [user guide on selectors](../user-guides/selectors.md#numerical-selector
 ```python
 # Before:
 components = [
-    vm.AgGrid(..., actions=va.filter_interaction(targets=["target_chart"])),
+    vm.Table(..., actions=va.filter_interaction(targets=["target_chart"])),
     vm.Graph(id="target_chart", ...)
 ]
 
 # After:
 components = [
-    vm.AgGrid(..., actions=va.set_controls(controls=["my_filter"], value="species")),
+    vm.Table(..., actions=va.set_controls(controls=["my_filter"], value="species")),
     vm.Graph(id="target_chart", ...)
 ]
 # You must now explicitly specify a Filter in controls:

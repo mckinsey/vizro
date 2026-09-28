@@ -126,7 +126,7 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
                     figure=px.box(tips, x="tip", y="sex"),
                     actions=va.set_controls(controls=["sex_filter"], value="y"),
                 ),
-                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
+                vm.Table(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
             ],
             controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_table"])],  # (2)!
         )
@@ -135,7 +135,7 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
         Vizro().build(dashboard).run()
         ```
 
-        1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
+        1. We give the `vm.Table` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
         1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_controls`.
 
     === "app.yaml"
@@ -161,7 +161,7 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
                   _target_: dash_ag_grid
                   data_frame: tips
                 id: tips_table
-                type: ag_grid
+                type: table
             controls:
               - column: sex
                 id: sex_filter

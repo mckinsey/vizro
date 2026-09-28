@@ -16,11 +16,11 @@ There are two ways to visualize tables in Vizro, using either [AG Grid](#ag-grid
 
 ## Choose between AG Grid and Dash DataTable
 
-Vizro offers two models - the [`AgGrid`][vizro.models.AgGrid] model and the [`Table`][vizro.models.Table] model - for the AG Grid and Dash DataTable approaches respectively. They both visualize tabular data in similar ways.
+Vizro provides a single [`Table`][vizro.models.Table] model for tabular data. You choose the underlying grid by the `figure` you pass it: `dash_ag_grid` for a [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) (recommended) or `dash_data_table` for a [Dash DataTable](https://dash.plotly.com/datatable).
 
-The main difference between the two is that the [`AgGrid`][vizro.models.AgGrid] model is based on Plotly's [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) component, while the [`Table`][vizro.models.Table] model is based on the [Dash DataTable](https://dash.plotly.com/datatable) component.
+AG Grid offers more advanced features out-of-the-box, is more customizable, and ships a powerful enterprise version, so it is Vizro's recommended table implementation.
 
-Both approaches have similar base features, and are configurable in similar ways. However, the AG Grid offers more advanced features out-of-the-box, is more customizable and also ships a powerful enterprise version. This is why it is Vizro's recommended table implementation. At the same time, the Dash DataTable can be used if developers are already familiar with it, or if some custom functionality is easier to implement using the Dash DataTable.
+**Deprecated:** The separate [`AgGrid`][vizro.models.AgGrid] model and the Dash DataTable backing (`dash_data_table`) are deprecated and will be removed in Vizro 1.0.0, where `Table` will support only a `dash_ag_grid` figure. Replace `vm.AgGrid(figure=dash_ag_grid(...))` with `vm.Table(figure=dash_ag_grid(...))`. See the [migration notes](../API-reference/deprecations.md#aggrid-model).
 
 ## AG Grid
 
@@ -55,7 +55,7 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
 
         page = vm.Page(
             title="Default Dash AG Grid",
-            components=[vm.AgGrid(figure=dash_ag_grid(data_frame=df))]
+            components=[vm.Table(figure=dash_ag_grid(data_frame=df))]
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -72,7 +72,7 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
               - figure:
                   _target_: dash_ag_grid
                   data_frame: gapminder
-                type: ag_grid
+                type: table
             title: Default Dash AG Grid
         ```
 
@@ -104,7 +104,7 @@ By default, pagination is enabled in AG Grid to improve performance and usabilit
 
         page = vm.Page(
             title="Dash AG Grid with pagination",
-            components=[vm.AgGrid(figure=dash_ag_grid(data_frame=df, dashGridOptions={"pagination": False}))]
+            components=[vm.Table(figure=dash_ag_grid(data_frame=df, dashGridOptions={"pagination": False}))]
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -123,7 +123,7 @@ By default, pagination is enabled in AG Grid to improve performance and usabilit
                   data_frame: gapminder
                   dashGridOptions:
                     pagination: false
-                type: ag_grid
+                type: table
             title: Dash AG Grid with pagination
         ```
 
@@ -167,7 +167,7 @@ In the example below we select and format some columns of the gapminder data.
         page = vm.Page(
             title="Example of AG Grid with formatted columns",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     title="AG Grid with formatted columns",
                     figure=dash_ag_grid(
                         data_frame=df,
@@ -201,7 +201,7 @@ In the example below we select and format some columns of the gapminder data.
                     - field: pop
                       cellDataType: numeric
                 title: AG Grid with formatted columns
-                type: ag_grid
+                type: table
             title: Example of AG Grid with formatted columns
         ```
 
@@ -223,7 +223,7 @@ No specific formatting is available for custom objects and strings, however you 
 
 The [`AgGrid`][vizro.models.AgGrid] provides automatic column sizing options through the `columnSize` property. This feature allows you to control how columns are sized within the grid to optimize the display of your data.
 
-You can configure column sizing by setting the `columnSize` parameter in your `dash_ag_grid` function call. By default, the `columnSize` is set to `responsiveSizeToFit` within the `vm.AgGrid`. The available options are:
+You can configure column sizing by setting the `columnSize` parameter in your `dash_ag_grid` function call. By default, the `columnSize` is set to `responsiveSizeToFit` within the `vm.Table`. The available options are:
 
 - **`autoSize`**: Automatically adjusts column widths to fit their content. This is particularly useful when you have varying content lengths and want each column to be sized appropriately for readability.
 
@@ -249,7 +249,7 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
 
         page = vm.Page(
             title="AG Grid with Column Sizing",
-            components=[vm.AgGrid(id="ag-grid", figure=dash_ag_grid(data_frame=df, columnSize="responsiveSizeToFit"))],
+            components=[vm.Table(id="ag-grid", figure=dash_ag_grid(data_frame=df, columnSize="responsiveSizeToFit"))],
             controls=[
                 vm.Parameter(
                     targets=["ag-grid.columnSize"],
@@ -283,7 +283,7 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
                   data_frame: gapminder
                   columnSize: responsiveSizeToFit
                 id: ag-grid
-                type: ag_grid
+                type: table
             controls:
               - selector:
                     # Automatically adjusts column widths
@@ -370,7 +370,7 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
         page = vm.Page(
             title="Example of Modified Dash AG Grid",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     title="Modified Dash AG Grid",
                     figure=dash_ag_grid(
                         data_frame=df,
@@ -428,7 +428,7 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
                     filter: false
                     editable: true
                 title: Dash AG Grid
-                type: ag_grid
+                type: table
             title: Example of a Dash AG Grid
         ```
 
@@ -455,7 +455,7 @@ To add sticky headers to your AG Grid, add the following CSS to your custom CSS 
 }
 ```
 
-If your dashboard contains multiple AG Grids, you can scope this CSS to a specific grid by assigning an ID to the corresponding `vm.AgGrid` model and targeting it in your CSS. For example:
+If your dashboard contains multiple AG Grids, you can scope this CSS to a specific grid by assigning an ID to the corresponding `vm.Table` model and targeting it in your CSS. For example:
 
 ```css
 #my-aggrid .ag-header {
@@ -473,6 +473,8 @@ If your dashboard contains multiple AG Grids, you can scope this CSS to a specif
     This approach works reliably only when the `AgGrid` is positioned in the non-scrollable page.
 
 ## Dash DataTable
+
+**Deprecated:** The Dash DataTable backing (`dash_data_table`) is deprecated and will be removed in Vizro 1.0.0. Use `vm.Table(figure=dash_ag_grid(...))` ([AG Grid](#ag-grid)) instead. See the [migration notes](../API-reference/deprecations.md#dash-datatable-backing).
 
 Similar to AG Grid, the [Dash DataTable](https://dash.plotly.com/datatable) is an interactive table/grid component designed for viewing, editing, and exploring large datasets.
 
@@ -703,7 +705,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
         page = vm.Page(
             title="Formatted AgGrid",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(data_frame=gapminder_2007, dashGridOptions={"pagination": True}),
                     title="Gapminder Data Insights",
                     header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
@@ -742,7 +744,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
                   The Gapminder dataset tracks the development of countries over time using indicators like life expectancy, income per person, and population size.
 
                   It helps reveal broad global trends, such as how health and wealth have improved in many regions, although progress hasn’t been even across all countries.
-                type: ag_grid
+                type: table
             title: Formatted AgGrid
         ```
 

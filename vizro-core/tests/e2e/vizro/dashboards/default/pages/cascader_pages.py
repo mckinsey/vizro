@@ -60,15 +60,15 @@ _cities = pd.DataFrame(
 cascader_leaf_page = vm.Page(
     title=cnst.CASCADER_LEAF_PAGE,
     components=[
-        vm.AgGrid(
+        vm.Table(
             id=cnst.CASCADER_LEAF_AG_GRID_ID,
             figure=dash_ag_grid(data_frame=_gapminder),
         ),
-        vm.AgGrid(
+        vm.Table(
             id=cnst.CASCADER_LEAF_MULTI_AG_GRID_ID,
             figure=dash_ag_grid(data_frame=_gapminder),
         ),
-        vm.AgGrid(
+        vm.Table(
             id=cnst.CASCADER_LEAF_SET_CONTROL_AG_GRID_SOURCE_ID,
             title="set_control source",
             figure=dash_ag_grid(data_frame=_gapminder),
@@ -112,11 +112,11 @@ cascader_leaf_page = vm.Page(
 cascader_path_page = vm.Page(
     title=cnst.CASCADER_PATH_PAGE,
     components=[
-        vm.AgGrid(
+        vm.Table(
             id=cnst.CASCADER_PATH_AG_GRID_ID,
             figure=dash_ag_grid(data_frame=_cities),
         ),
-        vm.AgGrid(
+        vm.Table(
             id=cnst.CASCADER_PATH_MULTI_AG_GRID_ID,
             figure=dash_ag_grid(data_frame=_cities),
         ),

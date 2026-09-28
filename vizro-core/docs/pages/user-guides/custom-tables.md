@@ -160,7 +160,7 @@ The following examples show a possible version of a custom table. In this case t
         page = vm.Page(
             title="Example of a custom Dash AgGrid",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     id="custom_ag_grid",
                     title="Custom Dash AgGrid",
                     figure=my_custom_aggrid(
@@ -198,7 +198,7 @@ The following examples show a possible version of a custom table. In this case t
                   data_frame: gapminder_2007
                 id: custom_ag_grid
                 title: Custom Dash AgGrid
-                type: ag_grid
+                type: table
             controls:
               - selector:
                   options:

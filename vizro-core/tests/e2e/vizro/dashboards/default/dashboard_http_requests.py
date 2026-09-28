@@ -177,7 +177,7 @@ page_chart_with_filter_interaction = vm.Page(
 page_ag_grid_with_filter_interaction = vm.Page(
     title=cnst.PAGE_AG_GRID_WITH_FILTER_INTERACTION,
     components=[
-        vm.AgGrid(
+        vm.Table(
             id=f"{cnst.PAGE_AG_GRID_WITH_FILTER_INTERACTION}_grid",
             figure=dash_ag_grid(data_frame=df_gapminder),
             actions=filter_interaction(targets=[f"{cnst.PAGE_AG_GRID_WITH_FILTER_INTERACTION}_graph"]),
@@ -205,7 +205,7 @@ page_ag_grid_with_filter_interaction = vm.Page(
 page_dynamic_parametrisation = vm.Page(
     title=cnst.PAGE_DYNAMIC_PARAMETRISATION,
     components=[
-        vm.AgGrid(
+        vm.Table(
             id=f"{cnst.PAGE_DYNAMIC_PARAMETRISATION}_grid",
             figure=dash_ag_grid(data_frame="dynamic_df_gapminder_arg"),
             actions=[filter_interaction(targets=[f"{cnst.PAGE_DYNAMIC_PARAMETRISATION}_graph"])],

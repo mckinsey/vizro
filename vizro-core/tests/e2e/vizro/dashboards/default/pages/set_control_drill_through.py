@@ -74,7 +74,7 @@ drill_through_parameter_graph_target_page = vm.Page(
 drill_through_filter_ag_grid_source_page = vm.Page(
     title=cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_SOURCE,
     components=[
-        vm.AgGrid(
+        vm.Table(
             id=cnst.AG_GRID_DRILL_THROUGH_FILTER_AG_GRID_ID,
             figure=dash_ag_grid(df[df["species"] == "versicolor"]),
             actions=set_controls(controls=["p5_filter_1"], value="species"),

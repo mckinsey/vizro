@@ -52,7 +52,7 @@ cross_filter_multi_select_page = vm.Page(
                 set_controls(controls=["ri_filter"], value="species"),
             ],
         ),
-        vm.AgGrid(
+        vm.Table(
             id=cnst.TABLE_SET_CONTROL_MULTI_SELECT,
             figure=dash_ag_grid(iris_species_cycle),
             actions=[
@@ -120,7 +120,7 @@ button_card_trigger_set_control = vm.Page(
                 set_controls(controls=["ri_bc_filter"], value=["virginica", "versicolor"]),
             ],
         ),
-        vm.AgGrid(
+        vm.Table(
             id=cnst.TABLE_SET_CONTROL_BUTTON_CARD,
             figure=dash_ag_grid(iris_species_cycle),
         ),
@@ -173,7 +173,7 @@ filtered_graph_aggrid_trigger_set_control = vm.Page(
                         vm.Filter(column="species", selector=vm.Checklist(id=cnst.CHECKLIST_FT_AGGRID_SET_CONTROL))
                     ],
                     components=[
-                        vm.AgGrid(
+                        vm.Table(
                             id=cnst.FILTERED_AGGRID_TRIGGER_SET_CONTROL_ID,
                             figure=dash_ag_grid(iris_species_cycle),
                             actions=set_controls(controls=["chl_ft_filter"], value="species"),
@@ -182,7 +182,7 @@ filtered_graph_aggrid_trigger_set_control = vm.Page(
                 ),
             ]
         ),
-        vm.AgGrid(id=cnst.TARGETED_AGGRID_FROM_FILTERED_GRAPH, figure=dash_ag_grid(iris)),
+        vm.Table(id=cnst.TARGETED_AGGRID_FROM_FILTERED_GRAPH, figure=dash_ag_grid(iris)),
     ],
     controls=[
         vm.Filter(

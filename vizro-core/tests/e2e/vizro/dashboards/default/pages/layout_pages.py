@@ -102,7 +102,7 @@ layout_flex_with_gap_param_and_table = vm.Page(
 layout_flex_with_wrap_param_and_ag_grid = vm.Page(
     title=cnst.LAYOUT_FLEX_WRAP_AND_AG_GRID,
     layout=vm.Flex(wrap=True),
-    components=[vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 1000})) for i in range(3)],
+    components=[vm.Table(figure=dash_ag_grid(tips, style={"width": 1000})) for i in range(3)],
 )
 
 buttons_page = vm.Page(
