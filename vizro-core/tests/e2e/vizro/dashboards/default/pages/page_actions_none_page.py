@@ -6,7 +6,6 @@ from vizro.actions import update_targets
 
 _gapminder = px.data.gapminder().query("year == 2007")
 
-vm.Page.add_type("controls", vm.Button)
 
 page_actions_none = vm.Page(
     title=cnst.PAGE_ACTIONS_NONE,

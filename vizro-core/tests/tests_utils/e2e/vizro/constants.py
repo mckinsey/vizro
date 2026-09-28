@@ -253,11 +253,6 @@ BAR_DYNAMIC_DATEPICKER_FILTER_ID = "bar_dynamic_datepicker"
 DATEPICKER_DYNAMIC_RANGE_ID = "datepicker dynamic range"
 DATEPICKER_DYNAMIC_SINGLE_ID = "datepicker dynamic single"
 
-DYNAMIC_FILTERS_SWITCH_PAGE = "dynamic-filters-switch"
-BAR_DYNAMIC_SWITCH_FILTER_ID = "bar_dynamic_switch"
-SWITCH_DYNAMIC_FILTER_CONTROL_ID = "switch_dynamic_filter_control_id"
-SWITCH_DYNAMIC_FILTER_ID = "switch_dynamic"
-
 DYNAMIC_FILTERS_TEMPORAL_PAGE = "dynamic-filters-temporal"
 BAR_DYNAMIC_TIME_FILTER_ID = "bar_dynamic_time"
 BAR_DYNAMIC_DATETIME_FILTER_ID = "bar_dynamic_datetime"
@@ -266,7 +261,9 @@ DATETIMEPICKER_DYNAMIC_FILTER_ID = "datetimepicker_dynamic"
 
 DYNAMIC_FILTERS_CASCADER_PAGE = "dynamic-filters-cascader"
 AG_GRID_DYNAMIC_CASCADER_ID = "ag_grid_dynamic_cascader"
+AG_GRID_DYNAMIC_CASCADER_PATH_MULTI_ID = "ag_grid_dynamic_cascader_path_multi"
 CASCADER_DYNAMIC_FILTER_ID = "cascader_dynamic"
+CASCADER_DYNAMIC_PATH_MULTI_ID = "cascader_dynamic_path_multi"
 
 CUSTOM_COMPONENTS_PAGE = "custom-components-page"
 SCATTER_CUSTOM_COMPONENTS_ID = "scatter_custom_id"

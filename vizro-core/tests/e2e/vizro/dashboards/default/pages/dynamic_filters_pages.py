@@ -101,9 +101,6 @@ def load_from_file(filter_column=None, parametrized_species=None):
 
     if filter_column == "species":
         final_df = _species_subset(df, data)
-    elif filter_column == "is_setosa":
-        final_df = _species_subset(df, data)
-        final_df["is_setosa"] = final_df["species"] == "setosa"
     elif filter_column == "sepal_length":
         final_df = df[df[filter_column].between(data.get("min"), data.get("max"), inclusive="both")]
     elif filter_column == "date_column":
@@ -141,8 +138,6 @@ data_manager["load_from_file_sepal_length"] = partial(load_from_file, filter_col
 data_manager["load_from_file_sepal_length"].timeout = -1
 data_manager["load_from_file_date_column"] = partial(load_from_file, filter_column="date_column")
 data_manager["load_from_file_date_column"].timeout = -1
-data_manager["load_from_file_is_setosa"] = partial(load_from_file, filter_column="is_setosa")
-data_manager["load_from_file_is_setosa"].timeout = -1
 data_manager["load_from_file_time_hh_mm_ss"] = partial(load_from_file, filter_column="time_hh_mm_ss")
 data_manager["load_from_file_time_hh_mm_ss"].timeout = -1
 data_manager["load_from_file_datetime_utc"] = partial(load_from_file, filter_column="datetime_utc")
@@ -224,24 +219,6 @@ dynamic_filters_datepicker_page = vm.Page(
     ],
 )
 
-dynamic_filters_switch_page = vm.Page(
-    title=cnst.DYNAMIC_FILTERS_SWITCH_PAGE,
-    components=[
-        vm.Graph(
-            id=cnst.BAR_DYNAMIC_SWITCH_FILTER_ID,
-            figure=px.bar(data_frame="load_from_file_is_setosa", **BAR_CHART_CONF),
-        ),
-    ],
-    controls=[
-        vm.Filter(
-            id=cnst.SWITCH_DYNAMIC_FILTER_CONTROL_ID,
-            column="is_setosa",
-            targets=[cnst.BAR_DYNAMIC_SWITCH_FILTER_ID],
-            selector=vm.Switch(id=cnst.SWITCH_DYNAMIC_FILTER_ID, value=True, title="Show setosa"),
-        ),
-    ],
-)
-
 dynamic_filters_temporal_page = vm.Page(
     title=cnst.DYNAMIC_FILTERS_TEMPORAL_PAGE,
     components=[
@@ -275,6 +252,10 @@ dynamic_filters_cascader_page = vm.Page(
             id=cnst.AG_GRID_DYNAMIC_CASCADER_ID,
             figure=dash_ag_grid(data_frame="load_from_file_hierarchical"),
         ),
+        vm.AgGrid(
+            id=cnst.AG_GRID_DYNAMIC_CASCADER_PATH_MULTI_ID,
+            figure=dash_ag_grid(data_frame="load_from_file_hierarchical"),
+        ),
     ],
     controls=[
         vm.Filter(
@@ -286,6 +267,17 @@ dynamic_filters_cascader_page = vm.Page(
                 full_path=False,
                 value="United States",
                 title="Country (dynamic)",
+            ),
+        ),
+        vm.Filter(
+            column=["continent", "region", "country"],
+            targets=[cnst.AG_GRID_DYNAMIC_CASCADER_PATH_MULTI_ID],
+            selector=vm.Cascader(
+                id=cnst.CASCADER_DYNAMIC_PATH_MULTI_ID,
+                multi=True,
+                full_path=True,
+                value=[["Americas", "North", "United States"], ["Asia", "South", "China"]],
+                title="Countries (dynamic, path multi)",
             ),
         ),
     ],
