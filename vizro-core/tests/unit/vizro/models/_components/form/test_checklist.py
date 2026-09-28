@@ -146,6 +146,18 @@ class TestChecklistInstantiation:
         [action] = checklist.actions
         assert action._trigger == "checklist-id.value"
 
+    @pytest.mark.parametrize(
+        "show_select_all, expected_ids",
+        [
+            (True, ["checklist-id", "checklist-id_select_all"]),
+            (False, ["checklist-id"]),
+        ],
+    )
+    def test_checklist_dynamic_reload_hidden_ids(self, show_select_all, expected_ids):
+        """A dynamic Filter hides the checklist and, when shown, its separate select-all box during reload."""
+        checklist = Checklist(id="checklist-id", show_select_all=show_select_all)
+        assert checklist._dynamic_reload_hidden_ids == expected_ids
+
 
 class TestChecklistBuild:
     """Tests model build method."""

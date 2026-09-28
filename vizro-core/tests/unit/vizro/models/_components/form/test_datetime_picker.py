@@ -420,6 +420,20 @@ class TestDynamicBuildMethod:
         # The visible inputs wrapper carries the hide-target id used by dynamic Filter.build.
         assert "vizro_datetime_picker_range" in component["dtp_datetime_wrapper"].className
 
+    @pytest.mark.parametrize("range_mode, expected_value", [(True, ["", ""]), (False, "")])
+    def test_datetimepicker_dynamic_build_none_bounds_fallback(self, range_mode, expected_value):
+        """Dynamic build with unset min/max must fall back to empty strings, never the literal 'None' string."""
+        datetime_picker = vm.DateTimePicker(id="dtp", range=range_mode)
+        datetime_picker._dynamic = True
+        datetime_picker.build()  # must not raise a ValidationError on the "None" f-string
+        assert datetime_picker.value == expected_value
+
+    @pytest.mark.parametrize("range_mode", [True, False])
+    def test_datetimepicker_dynamic_reload_hidden_ids(self, range_mode):
+        """Filter hides the inputs wrapper (not the non-visual proxy dcc.Store) during reload."""
+        datetime_picker = vm.DateTimePicker(id="dtp", range=range_mode)
+        assert datetime_picker._dynamic_reload_hidden_ids == ["dtp_datetime_wrapper"]
+
 
 class TestDateTimePickerGetValueFromTrigger:
     """Tests _get_value_from_trigger models method."""

@@ -1212,6 +1212,49 @@ class TestFilterCall:
         assert date_start.minDate == date(2024, 1, 1)
         assert date_start.maxDate == date(2024, 1, 3)
 
+    @pytest.mark.parametrize("range_mode", [True, False])
+    def test_filter_call_datetime_picker_reload_to_all_midnight(self, range_mode):
+        """Reloading a datetime column to all-midnight values makes _validate_column_type report "date".
+
+        That date<->datetime flip is value-based (same datetime64 dtype), not a schema change, so the reload
+        must tolerate it rather than raising "has changed type from datetime to date".
+        """
+        filter = vm.Filter(
+            column="column_datetime",
+            targets=["column_datetime_exists_1", "column_datetime_exists_2"],
+            selector=vm.DateTimePicker(id="test_selector_id", range=range_mode),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter._column_type == "datetime"
+
+        all_midnight = {
+            "column_datetime_exists_1": pd.DataFrame({"column_datetime": [datetime(2024, 1, 1), datetime(2024, 1, 2)]}),
+            "column_datetime_exists_2": pd.DataFrame({"column_datetime": [datetime(2024, 1, 2), datetime(2024, 1, 5)]}),
+        }
+        current_value = ["2024-01-01", "2024-01-05"] if range_mode else "2024-01-01"
+        selector_build = filter(target_to_data_frame=all_midnight, current_value=current_value)
+        date_input = selector_build["test_selector_id-date-start" if range_mode else "test_selector_id-date"]
+        assert date_input.minDate == date(2024, 1, 1)
+        assert date_input.maxDate == date(2024, 1, 5)
+
+    def test_filter_call_datetime_column_genuine_type_change_still_raises(self, target_to_data_frame):
+        """Only the date<->datetime flip is tolerated; a real type change (datetime -> categorical) must still raise."""
+        filter = vm.Filter(
+            column="column_datetime",
+            targets=["column_datetime_exists_1", "column_datetime_exists_2"],
+            selector=vm.DateTimePicker(id="test_selector_id"),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        categorical_reload = {
+            "column_datetime_exists_1": pd.DataFrame({"column_datetime": ["a", "b"]}),
+            "column_datetime_exists_2": pd.DataFrame({"column_datetime": ["b", "c"]}),
+        }
+        with pytest.raises(ValueError, match=r"column_datetime has changed type from datetime to categorical\."):
+            filter(target_to_data_frame=categorical_reload, current_value=["2024-01-01", "2024-01-05"])
+
     def test_filter_call_hierarchical_selector_valid(self):
         filter = vm.Filter(
             column=["column_hierarchical_parent", "column_hierarchical_leaf"],

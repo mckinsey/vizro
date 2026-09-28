@@ -198,6 +198,15 @@ change in the future.""",
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.data"}
 
+    @property
+    def _dynamic_reload_hidden_ids(self) -> list[str]:
+        """Component id(s) a dynamic `Filter` hides while reloading (see `Filter.build`).
+
+        `self.id` is the non-visual proxy `dcc.Store`, so hide the wrapper holding the visible date/time
+        inputs instead; the title sits outside the wrapper and stays visible during reload.
+        """
+        return [f"{self.id}_datetime_wrapper"]
+
     @staticmethod
     def _get_value_from_trigger(value: JsonValue, trigger: JsonValue) -> JsonValue:
         """Return the given `trigger` without modification."""
@@ -349,12 +358,16 @@ change in the future.""",
         )
 
     def _build_dynamic_placeholder(self, min, max):
-        # Mirror DatePicker: guarantee a value so the initial (pre-reload) placeholder renders the full
-        # available range. Filter.pre_build already sets this via get_selector_default_value (date-only
-        # ISO strings, so the inline time shows as cleared), so this is a defensive fallback for a dynamic
-        # selector built outside that flow.
+        # Guarantee a value so the initial (pre-reload) placeholder renders the full available range.
+        # Filter.pre_build already sets this via get_selector_default_value, so this is a defensive fallback
+        # for a dynamic selector built outside that flow. Mirror get_selector_default_value exactly: date-only
+        # ISO strings so the inline time shows as cleared, and empty strings when a bound is missing - never
+        # the literal "None" (which f"{None}" would produce and which fails value validation).
         if not self.value:
-            self.value = [f"{min}", f"{max}"] if self.range else f"{min}"
+            if self.range:
+                self.value = [f"{min}", f"{max}"] if min is not None and max is not None else ["", ""]
+            else:
+                self.value = f"{min}" if min is not None else ""
 
         return self.__call__(min, max)
 
