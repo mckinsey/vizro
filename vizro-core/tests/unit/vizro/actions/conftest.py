@@ -1,3 +1,5 @@
+import warnings
+
 import pytest
 
 import vizro.models as vm
@@ -82,17 +84,22 @@ def managers_one_page_two_graphs_one_table_one_aggrid_one_button(
     box_chart, scatter_chart, dash_data_table_with_id, ag_grid_with_id
 ):
     """Instantiates a simple model_manager and data_manager with: page, graphs, table, aggrid and button component."""
-    vm.Page(
-        id="test_page",
-        title="My first dashboard",
-        components=[
-            vm.Graph(id="box_chart", figure=box_chart),
-            vm.Graph(id="scatter_chart", figure=scatter_chart),
-            vm.Table(id="vizro_table", figure=dash_data_table_with_id),
-            vm.AgGrid(id="ag_grid", figure=ag_grid_with_id),
-            vm.Button(id="button"),
-        ],
-    )
+    # This fixture intentionally builds the deprecated `vm.AgGrid` and a Dash DataTable-backed `vm.Table` to exercise
+    # existing behavior, so suppress their deprecation FutureWarnings here; the warnings themselves are asserted in the
+    # dedicated table tests.
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", FutureWarning)
+        vm.Page(
+            id="test_page",
+            title="My first dashboard",
+            components=[
+                vm.Graph(id="box_chart", figure=box_chart),
+                vm.Graph(id="scatter_chart", figure=scatter_chart),
+                vm.Table(id="vizro_table", figure=dash_data_table_with_id),
+                vm.AgGrid(id="ag_grid", figure=ag_grid_with_id),
+                vm.Button(id="button"),
+            ],
+        )
     Vizro._pre_build()
 
 

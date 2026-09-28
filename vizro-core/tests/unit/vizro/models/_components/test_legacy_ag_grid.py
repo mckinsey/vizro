@@ -21,6 +21,18 @@ from vizro.models._components.ag_grid import DAG_AG_GRID_PROPERTIES
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
+# `AgGrid` is deprecated in favour of `Table` with a `dash_ag_grid` figure. `AgGrid` now subclasses `Table`; these tests
+# keep exercising the legacy model, and test_ag_grid_deprecated asserts the deprecation warning itself.
+pytestmark = [
+    pytest.mark.filterwarnings("ignore:`AgGrid` is deprecated:FutureWarning"),
+    pytest.mark.filterwarnings("ignore:The Dash DataTable backing:FutureWarning"),
+]
+
+
+def test_ag_grid_deprecated():
+    with pytest.warns(FutureWarning, match="`AgGrid` is deprecated"):
+        vm.AgGrid(figure=dash_ag_grid(data_frame=px.data.gapminder()))
+
 
 @pytest.fixture
 def dash_ag_grid_with_id():

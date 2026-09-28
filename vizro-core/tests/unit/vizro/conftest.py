@@ -1,5 +1,7 @@
 """Fixtures to be shared across several tests."""
 
+import warnings
+
 import pandas as pd
 import plotly.graph_objects as go
 import pytest
@@ -265,13 +267,18 @@ def manager_for_testing_actions_output_input_prop(ag_grid_with_id):
     """Instantiates the model_manager using a Dropdown (has default input and output properties)."""
     # We have to use one of the selectors as the known-model as currently only the selectors have both
     # input and output properties defined. Therefore, the configuration currently requires components and controls.
-    vm.Page(
-        id="test_page",
-        title="My first dashboard",
-        components=[
-            MockCardWithNoActionProps(id="known_model_with_no_default_props", text="My Card"),
-            vm.AgGrid(id="known_ag_grid_id", figure=ag_grid_with_id),
-        ],
-        controls=[vm.Filter(column="continent", selector=vm.Dropdown(id="known_dropdown_filter_id"))],
-    )
+    # `vm.AgGrid` is deprecated in favor of `vm.Table` with a `dash_ag_grid` figure. This fixture intentionally builds
+    # one to exercise existing behavior, so suppress the deprecation FutureWarning here; the warning itself is asserted
+    # in test_legacy_ag_grid.py.
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", FutureWarning)
+        vm.Page(
+            id="test_page",
+            title="My first dashboard",
+            components=[
+                MockCardWithNoActionProps(id="known_model_with_no_default_props", text="My Card"),
+                vm.AgGrid(id="known_ag_grid_id", figure=ag_grid_with_id),
+            ],
+            controls=[vm.Filter(column="continent", selector=vm.Dropdown(id="known_dropdown_filter_id"))],
+        )
     Vizro._pre_build()

@@ -114,7 +114,7 @@
                   <a href="#card" class="nav-link nav-link-sub">Card</a>
                 </li>
                 <li class="nav-item">
-                  <a href="#aggrid" class="nav-link nav-link-sub">AgGrid</a>
+                  <a href="#table" class="nav-link nav-link-sub">Table</a>
                 </li>
                 <li class="nav-item">
                   <a href="#button" class="nav-link nav-link-sub">Button</a>
@@ -495,9 +495,9 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                     </div>
                   </div>
 
-                                    <div class="component" id="aggrid" data-aliases="table grid ag grid ag-grid dash_ag_grid datatable">
+                                    <div class="component" id="table" data-aliases="table grid ag grid ag-grid dash_ag_grid datatable aggrid vm.Table vm.AgGrid">
                     <div class="component_title">
-                      <h4 class="component__name">AgGrid</h4>
+                      <h4 class="component__name">Table</h4>
                       <div class="component_title__actions">
                         <a href="https://vizro.readthedocs.io/en/stable/pages/user-guides/table/" target="_blank" rel="noopener noreferrer" class="utility-btn">
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -506,7 +506,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
             </svg>
                           Docs
                         </a>
-                        <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F1VRTWvDMAz9K8YnB4p%2FwCCHQqHXnXapQ1BqOzP4a7YTuo3990lJRztdLL%2F3LD3J3%2FyatOEvjLuQU2lsdV8lyexT85%2FS3HIxtTKoLN9U%2FCcJ%2BM5v1BpUtCWFnWB31RtdngnZYPKm%2FvEa6vsI8zgXp1VUUVvWYxepoYGcIQcXtSmiIy7DbJBdg3zFTKjIMJpr3vSKn4yFxTd2woLseGZnKsgPu%2BiasFs0sdX%2BsiMUWOg4k048MArr5qWY%2FtmaID%2BjLRAQt91Df08HFTeLkDM63IYWnZwW57XANmRqSlC0oBnQBB1D1%2FED48V8LK6YQO7oB7YtEWEd7gmRy%2FDzC9D3qE%2BgAQAA" target="_blank" rel="noopener noreferrer" class="utility-btn">
+                        <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F1VRTWvDMAz9K8YnB4p%2FwCCHQaHXHcYudQhKbWcGf812Qrex%2Fz4p6Wini%2BX3nqUn%2BZtfkjb8iXEXciqNre6rJJl9av5TmmsuplYGleWriv8kAd%2F5jVqDiraksBPspnqjyyMhG0ze1D9eQ30fYR7n4rSKKmrLeuwiNTSQM%2BTgojZFdMRlmA2ya5AvmAkVGUZzzZte8aOxsPjGjliQPZ%2FYiQrywy66JOwWTWy1P%2B8IBRZ6JTPiDlFYNy%2FF9I%2FOBNkZbYGAuO3u%2Bls6qLg5hJzR4Daz6OS0OK8FdiFPU4KiBY2AHugYuo4fGC%2FmY3HFBDJHH7AtiQjrcE2InIefXwIUf0GfAQAA" target="_blank" rel="noopener noreferrer" class="utility-btn">
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="5 3 19 12 5 21 5 3"></polygon>
             </svg>
@@ -516,7 +516,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
                     </div>
                     <div class="component-body">
                       <div class="component__visual">
-                        <img src="assets/images/aggrid.png" alt="AgGrid" />
+                        <img src="assets/images/aggrid.png" alt="Table" />
                       </div>
                       <div class="component__content">
                         <div class="code-block">
@@ -537,7 +537,7 @@ df = px.data.gapminder()
 page = vm.Page(
     title=&#34;Default Dash AG Grid&#34;,
     components=[
-        vm.AgGrid(
+        vm.Table(
             figure=dash_ag_grid(data_frame=df)
         )
     ]
@@ -1581,7 +1581,7 @@ Vizro().build(vm.Dashboard(pages=[page])).run()</code></pre>
             </svg>
                           Docs
                         </a>
-                        <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F21TTU%2FEIBD9K6QX22TtDzDpwazRqycvS9OwLdslUkCgtWr8785A1y3VcijMm4%2F3mOEra3XHszuSicFo68kkPq0ujdRefpR8NpY7R5gjZqYqcWGtF1oFbGIbbICcMkIDVSerhwiQxesFD2ug9OwoubvgHXPnhvVNb0VHFVVeGEcq4FB2zLMSj3mBgGE9B2AaymfY5VQR%2BLzwklc021vt3O1JSM8tCbVCFeI16S0zZ5rtYkCroaziyrvqEC34QdL7%2FgkY5FfbOj2uvRTtK9GKMGL1O2YeHRQ4M4%2FnG5dGOj6jy8Jo4YBrl%2FqdRD9aXq1vIUfNxcZvaUE1sdJx37Raeaul2%2FCNCiMEtIFEExlAXWidHHm0ApEkbl1tvYd7eULqmzKigzTIskkvdyMKengWzmtwGoKoHZljIM2KvwXr3xYtAtIGPQYh%2FzFJZKZ4q%2BU4qIvoDeiZ7XkYhERMvaJ2ZQZbZgwMYBjovCiPo5BdDsQeoHdHzWyX44hCOvzVRQFXnln%2BNgrLBxw4fHnhBSAAfDlaDvX3DyR8j%2FWYAwAA" target="_blank" rel="noopener noreferrer" class="utility-btn">
+                        <a href="https://py.cafe/snippet/vizro/v1?c=H4sIAAAAAAAC%2F21TTU%2FEIBD9K6QX22TtDzDpaY1ePRgvS9OwLdslUkCgtWr8785A1y3VcijMm4%2F3mOEra3XHszuSicFo68kkPq0ujdRefpR8NpY7R5gjZqYqcWGtF1oFbGIbbICcMkIDVSerhwiQxesFD2ug9OwoubvgHXPnhvVNb0VHFVVeGEcq4FB2zLMSj3mBgGE9B2AayifY5VQR%2BLzwklc021vt3O1JSM8tCbVCFeI16S0zZ5rtYkCroaziyrvqEC34QdJn9M%2BvpnV2XHsp2leiFWHE6ndMPDrIf2YezzcujXR8RpeF0EIB1y71O4l%2BtLxaX0KOkouN39KBamKl475ptfJWS7fhGwVGCGgDiSYygLrQOTnyaAUiSdy62noP1%2FKI1DdlRAdpkGWT3u1GFLTwLJzX4DQEUTsyx0CaFX8L1r8dWgSk%2FXkIQv5jkshM8VbLcVAX0RvQM9vzMAeJmHpF7coMtswYmL8wz3lRHkchuxyI3UPvjprZLscJhXT4q4sCrjyz%2FG0Ulg84b%2FjwwgNAAPhytBzq7x%2F6N2RDlwMAAA%3D%3D" target="_blank" rel="noopener noreferrer" class="utility-btn">
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="5 3 19 12 5 21 5 3"></polygon>
             </svg>
@@ -1618,7 +1618,7 @@ tips = px.data.tips()
 page = vm.Page(
     title=&#34;Cross-filter from table to graph&#34;,
     components=[
-        vm.AgGrid(
+        vm.Table(
             title=&#34;&#34;&#34;Click on a row to use that row&#39;s
             sex to filter graph&#34;&#34;&#34;,
             figure=dash_ag_grid(tips),

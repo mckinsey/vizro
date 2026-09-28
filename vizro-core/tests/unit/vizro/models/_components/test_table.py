@@ -1,6 +1,7 @@
 """Unit tests for vizro.models.Table."""
 
 import re
+import warnings
 
 import dash_bootstrap_components as dbc
 import pytest
@@ -15,7 +16,35 @@ from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models._action._action import Action
-from vizro.tables import dash_data_table
+from vizro.tables import dash_ag_grid, dash_data_table
+
+# The Dash DataTable backing is deprecated in favor of a `dash_ag_grid` figure. Existing tests below keep exercising
+# it; test_dash_data_table_backing_deprecated asserts the deprecation warning itself.
+pytestmark = pytest.mark.filterwarnings("ignore:The Dash DataTable backing:FutureWarning")
+
+
+def test_dash_data_table_backing_deprecated():
+    with pytest.warns(FutureWarning, match="The Dash DataTable backing"):
+        vm.Table(figure=dash_data_table(data_frame=px.data.gapminder()))
+
+
+class TestTableAgGrid:
+    """`vm.Table` with a `dash_ag_grid` figure — the recommended, warning-free table."""
+
+    def test_ag_grid_figure_is_warning_free(self):
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", FutureWarning)
+            table = vm.Table(figure=dash_ag_grid(data_frame=px.data.gapminder()))
+        assert table._is_ag_grid is True
+
+    def test_ag_grid_action_triggers(self):
+        table = vm.Table(id="ag_table", figure=dash_ag_grid(data_frame=px.data.gapminder()))
+        assert table._action_triggers == {"__default__": "ag_table_action_trigger.data"}
+
+    def test_ag_grid_exposes_inner_properties_as_action_io(self):
+        table = vm.Table(id="ag_table", figure=dash_ag_grid(data_frame=px.data.gapminder()))
+        assert "cellClicked" in table._action_inputs
+        assert "cellClicked" in table._action_outputs
 
 
 @pytest.fixture
@@ -89,20 +118,10 @@ class TestTableInstantiation:
             ValidationError,
             match=re.escape(
                 "Invalid CapturedCallable. Supply a function imported from vizro.tables or "
-                "defined with decorator @capture('table')."
+                "defined with decorator @capture('ag_grid') or @capture('table')."
             ),
         ):
             vm.Table(figure=standard_go_chart)
-
-    def test_captured_callable_wrong_mode(self, standard_ag_grid):
-        with pytest.raises(
-            ValidationError,
-            match=re.escape(
-                "CapturedCallable was defined with @capture('ag_grid') rather than @capture('table') and so "
-                "is not compatible with the model."
-            ),
-        ):
-            vm.Table(figure=standard_ag_grid)
 
     def test_is_model_inheritable(self, standard_dash_table):
         class MyTable(vm.Table):

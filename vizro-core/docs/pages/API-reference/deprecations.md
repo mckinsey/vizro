@@ -130,3 +130,33 @@ vm.Cascader(options=..., full_path=False)
 ```
 
 See the [user guide on selectors](../user-guides/selectors.md#hierarchical-selectors) for more information.
+
+## `AgGrid` model
+
+The [`AgGrid`][vizro.models.AgGrid] model is deprecated. Use [`Table`][vizro.models.Table] with a `dash_ag_grid` figure, which is functionally identical.
+
+```python
+# Before:
+vm.AgGrid(figure=dash_ag_grid(data_frame=df))
+
+# After:
+vm.Table(figure=dash_ag_grid(data_frame=df))
+```
+
+In YAML or JSON configuration, replace `type: ag_grid` with `type: table` (keeping the `dash_ag_grid` figure).
+
+See the [user guide on how to use tables](../user-guides/table.md) for more information.
+
+## Dash DataTable backing
+
+Backing a [`Table`][vizro.models.Table] with a Dash `DataTable` (via `dash_data_table`) is deprecated. From Vizro 1.0.0, `Table` supports only a `dash_ag_grid` figure, which renders an interactive AG Grid.
+
+```python
+# Before:
+vm.Table(figure=dash_data_table(data_frame=df))
+
+# After:
+vm.Table(figure=dash_ag_grid(data_frame=df))
+```
+
+See the [user guide on how to use tables](../user-guides/table.md) for more information.

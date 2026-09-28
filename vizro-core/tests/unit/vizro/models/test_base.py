@@ -659,6 +659,8 @@ class TestPydanticPython:
         result = card._to_python(extra_callable_defs={extra_callable})
         assert result == expected_code_with_extra_callable
 
+    @pytest.mark.filterwarnings("ignore:`AgGrid` is deprecated:FutureWarning")
+    @pytest.mark.filterwarnings("ignore:The Dash DataTable backing:FutureWarning")
     def test_to_python_complete_dashboard(self, complete_dashboard):
         # Test more complete and nested model
         result = complete_dashboard._to_python()

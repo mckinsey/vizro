@@ -13,6 +13,8 @@ from vizro.managers import model_manager
 # (test_set_control_deprecated asserts the warning itself).
 pytestmark = [
     pytest.mark.filterwarnings("ignore:`set_control` is deprecated:FutureWarning"),
+    pytest.mark.filterwarnings("ignore:`AgGrid` is deprecated:FutureWarning"),
+    pytest.mark.filterwarnings("ignore:The Dash DataTable backing:FutureWarning"),
 ]
 
 

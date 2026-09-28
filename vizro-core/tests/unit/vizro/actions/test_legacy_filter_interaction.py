@@ -13,6 +13,8 @@ pytestmark = [
         "ignore:Using the `Action` model for the built-in action `filter_interaction`:FutureWarning"
     ),
     pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning"),
+    pytest.mark.filterwarnings("ignore:`AgGrid` is deprecated:FutureWarning"),
+    pytest.mark.filterwarnings("ignore:The Dash DataTable backing:FutureWarning"),
 ]
 
 

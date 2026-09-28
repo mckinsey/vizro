@@ -10,6 +10,8 @@ from vizro.actions import export_data
 from vizro.models._models_utils import make_actions_chain, warn_description_without_title
 from vizro.models.types import ActionsType, _IdProperty
 
+pytestmark = pytest.mark.filterwarnings("ignore:`AgGrid` is deprecated:FutureWarning")
+
 
 @dataclass
 class MockValidationInfo:
@@ -46,7 +48,7 @@ class TestSharedValidators:
             ),
             (
                 "standard_ag_grid",
-                "A callable of mode `ag_grid` has been provided. Please wrap it inside `vm.AgGrid(figure=...)`",
+                "A callable of mode `ag_grid` has been provided. Please wrap it inside `vm.Table(figure=...)`",
             ),
             (
                 "standard_dash_table",

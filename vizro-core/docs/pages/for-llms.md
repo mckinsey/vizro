@@ -43,8 +43,8 @@ Every dashboard is a tree of these models. See the full [model reference](API-re
 | [`Flex`][vizro.models.Flex]               | Flexible-box layout.                                                                               | [Layouts](user-guides/layouts.md#flex-layout)            |
 | [`Layout`][vizro.models.Layout]           | Deprecated alias for `Grid`. Prefer `Grid` in new code.                                            | [Deprecations](API-reference/deprecations.md)            |
 | [`Graph`][vizro.models.Graph]             | Plotly Express or custom Plotly chart.                                                             | [Graph](user-guides/graph.md)                            |
-| [`AgGrid`][vizro.models.AgGrid]           | Dash AG Grid (recommended for tables).                                                             | [Table](user-guides/table.md#ag-grid)                    |
-| [`Table`][vizro.models.Table]             | Dash DataTable.                                                                                    | [Table](user-guides/table.md#dash-datatable)             |
+| [`AgGrid`][vizro.models.AgGrid]           | Deprecated — use `Table` with a `dash_ag_grid` figure.                                                             | [Table](user-guides/table.md#ag-grid)                    |
+| [`Table`][vizro.models.Table]             | Table backed by a Dash AG Grid (recommended) or Dash DataTable (deprecated).                        | [Table](user-guides/table.md)                            |
 | [`Figure`][vizro.models.Figure]           | Any reactive Dash component (includes built-in KPI cards).                                         | [Figure](user-guides/figure.md)                          |
 | [`Card`][vizro.models.Card]               | Bordered Markdown callout or navigation tile.                                                      | [Card](user-guides/card.md)                              |
 | [`Text`][vizro.models.Text]               | Plain, unstyled Markdown text.                                                                     | [Text](user-guides/text.md)                              |
@@ -104,7 +104,7 @@ Every user-supplied callable that goes into a Vizro model must be wrapped with `
 | Mode                    | Wraps                                                     | Used in                                                                 | Guide                                                       |
 | ----------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------- |
 | `@capture("graph")`     | A function that returns a Plotly `Figure`.                | `Graph(figure=...)`                                                     | [Custom charts](user-guides/custom-charts.md)               |
-| `@capture("table")`     | A function that returns a Dash DataTable or AG Grid.      | `Table(figure=...)` or `AgGrid(figure=...)`                             | [Custom tables](user-guides/custom-tables.md)               |
+| `@capture("table")`     | A function that returns a Dash AG Grid (or deprecated Dash DataTable). | `Table(figure=...)`                                                    | [Custom tables](user-guides/custom-tables.md)               |
 | `@capture("figure")`    | A function that returns any Dash component.               | `Figure(figure=...)`                                                    | [Custom figures](user-guides/custom-figures.md)             |
 | `@capture("action")`    | A function that runs on user interaction and returns outputs. | `vm.Action(function=your_fn(...))`                                  | [Custom actions](user-guides/custom-actions.md)             |
 

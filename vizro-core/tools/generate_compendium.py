@@ -54,7 +54,7 @@ EXCLUDED_MODELS = {
     "RangeSlider",  # deprecated alias for Slider(range=True) (Slider is already covered)
     "Tooltip",  # utility attached to other components
     "ControlGroup",  # grouping utility, not a standalone visual component
-    "Table",  # covered by AgGrid; vm.Table wraps Dash DataTable, less commonly used
+    "AgGrid",  # deprecated alias for Table with a dash_ag_grid figure (Table is already covered)
 }
 
 # Actions in va.__all__ that are intentionally excluded from the compendium.

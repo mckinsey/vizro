@@ -64,11 +64,11 @@ class set_controls(_AbstractAction):
     default value. `value` may be omitted only when a control's own selector syncs to another control (via that
     control's `targets`): the sync uses the selector's live value and ignores `value`.
 
-    Example: `AgGrid` as trigger
+    Example: an AG Grid `Table` as trigger
         ```python
         import vizro.actions as va
 
-        vm.AgGrid(
+        vm.Table(
             figure=dash_ag_grid(iris),
             actions=va.set_controls(controls=["target_control"], value="species"),
         )
@@ -187,8 +187,14 @@ class set_controls(_AbstractAction):
 
     @_log_call
     def pre_build(self):
-        # Parent model must be able to source set_controls.
-        if not isinstance(self._parent_model, _SupportsSetControl):
+        # Parent model must be able to source set_controls. A Dash DataTable-backed `Table` has a
+        # `_get_value_from_trigger` method (shared with the AG Grid path) but cannot source set_controls, so exclude it.
+        from vizro.models import Table
+
+        table_is_dash_datatable = (
+            isinstance(self._parent_model, Table) and getattr(self._parent_model.figure, "_mode", None) == "table"
+        )
+        if not isinstance(self._parent_model, _SupportsSetControl) or table_is_dash_datatable:
             raise ValueError(
                 f"`set_controls` action was added to the model with ID `{self._parent_model.id}`, "
                 "but this action can only be used with models that support it "
@@ -204,7 +210,7 @@ class set_controls(_AbstractAction):
                 "Provide at least one Filter or Parameter id to set."
             )
 
-        from vizro.models import AgGrid, Graph
+        from vizro.models import Graph, Table
         from vizro.models._controls._controls_utils import SELECTORS, _is_hierarchical_selector
 
         # Validate each target and split by page (order-preserving): same-page controls are updated via the callback
@@ -259,7 +265,10 @@ class set_controls(_AbstractAction):
         # value None" at click time. Catch it here with a message tailored to the trigger. It is intentionally
         # optional elsewhere: Figure/Card/Button treat `value=None` as "reset the target(s) to their default", and a
         # selector-driven sync ignores `value` entirely (the selector's own live value is used).
-        if self.value is None and isinstance(self._parent_model, (Graph, AgGrid)):
+        parent_is_ag_grid = isinstance(self._parent_model, Table) and (
+            getattr(self._parent_model.figure, "_mode", None) == "ag_grid"
+        )
+        if self.value is None and (isinstance(self._parent_model, Graph) or parent_is_ag_grid):
             value_hint = (
                 'a column name present in the figure\'s `custom_data`, or a positional lookup such as "x" or "y"'
                 if isinstance(self._parent_model, Graph)
@@ -332,7 +341,7 @@ class set_controls(_AbstractAction):
         Returns `no_update` when the value cannot be applied to this control (an incomplete range, or a multi-item
         list into a single-value selector), leaving that control unchanged without affecting the others.
         """
-        from vizro.models import AgGrid, Checklist, Graph
+        from vizro.models import Checklist, Graph, Table
 
         selector = cast(ControlType, model_manager[control_id]).selector
 
@@ -358,7 +367,9 @@ class set_controls(_AbstractAction):
             # AgGrid/Graph emit values in selection (click) order, so a multi-value trigger can arrive out of order;
             # reorder into [min, max]. A range selector emits an authoritative positional [start, end], kept as-is (its
             # ends aren't always ordered). See `_normalize_range_value`.
-            reorder_range = isinstance(self._parent_model, (AgGrid, Graph))
+            reorder_range = isinstance(self._parent_model, Graph) or (
+                isinstance(self._parent_model, Table) and getattr(self._parent_model.figure, "_mode", None) == "ag_grid"
+            )
             normalized = self._normalize_range_value(value, reorder=reorder_range)
             # An incomplete/empty range must not be synced (see `_normalize_range_value`); skip just this control.
             return no_update if normalized is None else normalized

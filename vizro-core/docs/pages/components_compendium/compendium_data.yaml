@@ -90,9 +90,20 @@ categories:
 
           Vizro().build(vm.Dashboard(pages=[page])).run()
 
-      - id: aggrid
-        name: AgGrid
-        aliases: [table, grid, ag grid, ag-grid, dash_ag_grid, datatable]
+      - id: table
+        name: Table
+        aliases:
+          [
+            table,
+            grid,
+            ag grid,
+            ag-grid,
+            dash_ag_grid,
+            datatable,
+            aggrid,
+            vm.Table,
+            vm.AgGrid,
+          ]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/table/
         image: assets/images/aggrid.png
         highlight_lines: "11-13"
@@ -107,7 +118,7 @@ categories:
           page = vm.Page(
               title="Default Dash AG Grid",
               components=[
-                  vm.AgGrid(
+                  vm.Table(
                       figure=dash_ag_grid(data_frame=df)
                   )
               ]
@@ -772,7 +783,7 @@ categories:
           page = vm.Page(
               title="Cross-filter from table to graph",
               components=[
-                  vm.AgGrid(
+                  vm.Table(
                       title="""Click on a row to use that row's
                       sex to filter graph""",
                       figure=dash_ag_grid(tips),

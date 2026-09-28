@@ -14,7 +14,11 @@ from vizro.managers import data_manager, model_manager
 
 # TODO: Remove dependence on filter_interaction from these tests. Probably should rewrite export_data tests
 # in general now we can test pure function more easily.
-pytestmark = [pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning")]
+pytestmark = [
+    pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning"),
+    pytest.mark.filterwarnings("ignore:`AgGrid` is deprecated:FutureWarning"),
+    pytest.mark.filterwarnings("ignore:The Dash DataTable backing:FutureWarning"),
+]
 
 
 @pytest.fixture
