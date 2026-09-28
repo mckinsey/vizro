@@ -30,6 +30,51 @@ sync_hidden_parameter_page = vm.Page(
     ],
 )
 
+sync_multiple_controls_same_page = vm.Page(
+    title=cnst.SYNC_MULTIPLE_CONTROLS_SAME_PAGE,
+    # A same-page sync mesh: filter_1 <-> filter_2, filter_2 -> filter_3 (transitive), each filtering its own graph.
+    # Changing any one filter must sync all three and refresh all three graphs in exactly two HTTP requests.
+    layout=vm.Grid(grid=[[0, 1, 2]]),
+    components=[
+        vm.Graph(
+            id=cnst.SYNC_MULTIPLE_CONTROLS_GRAPH_1_ID,
+            figure=px.scatter(_df, x="sepal_width", y="sepal_length", color="species"),
+        ),
+        vm.Graph(
+            id=cnst.SYNC_MULTIPLE_CONTROLS_GRAPH_2_ID,
+            figure=px.scatter(_df, x="sepal_width", y="sepal_length", color="species"),
+        ),
+        vm.Graph(
+            id=cnst.SYNC_MULTIPLE_CONTROLS_GRAPH_3_ID,
+            figure=px.scatter(_df, x="sepal_width", y="sepal_length", color="species"),
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            id=cnst.SYNC_MULTIPLE_CONTROLS_FILTER_1_ID,
+            column="species",
+            targets=[cnst.SYNC_MULTIPLE_CONTROLS_GRAPH_1_ID, cnst.SYNC_MULTIPLE_CONTROLS_FILTER_2_ID],
+            selector=vm.RadioItems(id=cnst.SYNC_MULTIPLE_CONTROLS_RADIO_ITEMS_1_ID),
+        ),
+        vm.Filter(
+            id=cnst.SYNC_MULTIPLE_CONTROLS_FILTER_2_ID,
+            column="species",
+            targets=[
+                cnst.SYNC_MULTIPLE_CONTROLS_GRAPH_2_ID,
+                cnst.SYNC_MULTIPLE_CONTROLS_FILTER_1_ID,
+                cnst.SYNC_MULTIPLE_CONTROLS_FILTER_3_ID,
+            ],
+            selector=vm.RadioItems(id=cnst.SYNC_MULTIPLE_CONTROLS_RADIO_ITEMS_2_ID),
+        ),
+        vm.Filter(
+            id=cnst.SYNC_MULTIPLE_CONTROLS_FILTER_3_ID,
+            column="species",
+            targets=[cnst.SYNC_MULTIPLE_CONTROLS_GRAPH_3_ID],
+            selector=vm.RadioItems(id=cnst.SYNC_MULTIPLE_CONTROLS_RADIO_ITEMS_3_ID),
+        ),
+    ],
+)
+
 sync_cross_page_source_page = vm.Page(
     title=cnst.SYNC_CROSS_PAGE_SOURCE_PAGE,
     components=[
