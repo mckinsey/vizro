@@ -60,6 +60,15 @@ def _is_hierarchical_selector(x: object) -> TypeIs[Cascader]:
     return isinstance(x, SELECTORS["hierarchical"])
 
 
+def _is_range_selector(x: object) -> bool:
+    """Whether a selector renders in range mode (a two-ended `Slider`, i.e. `range=True`).
+
+    This is a value check, not a type guard: a range and a non-range `Slider` are the same type, distinguished only by
+    the `range` field. Centralizing it here keeps every call site in sync with the rule.
+    """
+    return bool(getattr(x, "range", False))
+
+
 def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
     component_figures: Generator[VizroBaseModel] = model_manager._get_models(FIGURE_MODELS, root_model)
     component_figure_ids = [model.id for model in component_figures]
@@ -198,7 +207,7 @@ def get_selector_default_value(selector: SelectorType) -> Any:  # noqa: PLR0911
         return selector.value
 
     if _is_numerical_or_date_selector(selector):
-        is_range = getattr(selector, "range", False)
+        is_range = _is_range_selector(selector)
         return [selector.min, selector.max] if is_range else selector.min
     elif _is_categorical_selector(selector):
         is_multi = isinstance(selector, Checklist) or getattr(selector, "multi", False)

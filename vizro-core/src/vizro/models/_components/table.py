@@ -118,24 +118,6 @@ class Table(VizroBaseModel):
         """Whether the provided `figure` renders a Dash AG Grid (vs the deprecated Dash DataTable)."""
         return getattr(self.figure, "_mode", None) == "ag_grid"
 
-    @model_validator(mode="before")
-    @classmethod
-    def _warn_dash_data_table_backing(cls, data):
-        # The Dash DataTable backing is deprecated; from Vizro 1.0.0 only a `dash_ag_grid` figure is supported.
-        # Emitted in `before` mode (not `after`) so it fires once at construction rather than on every field
-        # assignment under validate_assignment=True. Vizro's own components use `dash_ag_grid`, so this only fires
-        # for a user table built on a Dash DataTable figure. (A figure supplied as a JSON/YAML `_target_` dict has
-        # no `_mode` here, so it is treated as unknown and not warned about.)
-        if isinstance(data, dict) and getattr(data.get("figure"), "_mode", None) == "table":
-            warnings.warn(
-                "The Dash DataTable backing for `Table` (e.g. `dash_data_table`) is deprecated and will not exist in "
-                "Vizro 1.0.0 "
-                "(https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#dash-datatable-backing). "
-                "Use a `dash_ag_grid` figure instead: `vm.Table(figure=dash_ag_grid(...))`.",
-                category=FutureWarning,
-            )
-        return data
-
     @model_validator(mode="after")
     def _make_actions_chain(self):
         return make_actions_chain(self)
@@ -143,6 +125,23 @@ class Table(VizroBaseModel):
     def model_post_init(self, context) -> None:
         super().model_post_init(context)
         self._inner_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
+        self._warn_dash_data_table_backing()
+
+    def _warn_dash_data_table_backing(self) -> None:
+        # The Dash DataTable backing is deprecated; from Vizro 1.0.0 only a `dash_ag_grid` figure is supported.
+        # Checked in `model_post_init` - which runs once per construction, after `figure` has been resolved to a
+        # CapturedCallable - so the warning fires for both Python (`dash_data_table(...)`) and YAML/JSON
+        # (`{"_target_": "dash_data_table"}`) configs, but not on later field assignments. A figure whose `_mode` is
+        # still unresolved (e.g. `allow_undefined_captured_callable`) is treated as unknown and left unwarned.
+        # `AgGrid` restricts `figure` to ag_grid mode, so a DataTable figure raises during validation before this runs.
+        if getattr(self.figure, "_mode", None) == "table":
+            warnings.warn(
+                "The Dash DataTable backing for `Table` (e.g. `dash_data_table`) is deprecated and will not exist in "
+                "Vizro 1.0.0 "
+                "(https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#dash-datatable-backing). "
+                "Use a `dash_ag_grid` figure instead: `vm.Table(figure=dash_ag_grid(...))`.",
+                category=FutureWarning,
+            )
 
     @property
     def _action_triggers(self) -> dict[str, _IdProperty]:

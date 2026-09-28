@@ -49,3 +49,11 @@ class AgGrid(Table):
             description="Function that returns a `Dash AG Grid`.",
         ),
     ]
+
+    @property
+    def _is_ag_grid(self) -> bool:
+        # `AgGrid` locks `figure` to ag_grid mode (see the field override above), so it is always an AG Grid - even
+        # when the figure is an unresolved CapturedCallable whose `_mode` is None (e.g. when
+        # `allow_undefined_captured_callable` is used). This overrides `Table._is_ag_grid`, which infers the backing
+        # from `figure._mode` and would otherwise misclassify such an `AgGrid` as a Dash DataTable.
+        return True

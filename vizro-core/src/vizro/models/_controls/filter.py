@@ -38,6 +38,7 @@ from vizro.models._controls._controls_utils import (
     _is_datetime_selector,
     _is_hierarchical_selector,
     _is_numerical_or_date_selector,
+    _is_range_selector,
     build_default_control_selector_actions,
     check_control_targets,
     extract_control_targets,
@@ -617,7 +618,7 @@ class Filter(VizroBaseModel):
         # locals) so the filtering logic can always be reapplied when the targets are refreshed, independently of
         # the selector's actions. Note self.column is deliberately left untouched: it holds the user-provided config
         # and is relied on elsewhere (e.g. _validate_column_type, _get_options) to detect hierarchical filters.
-        if getattr(self.selector, "range", False):
+        if _is_range_selector(self.selector):
             self._filter_function = _filter_between
             self._filter_column = self._single_filter_column
         elif _is_hierarchical_selector(self.selector) and self.selector.full_path:
