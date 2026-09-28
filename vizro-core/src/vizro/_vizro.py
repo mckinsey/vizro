@@ -307,6 +307,8 @@ Provide a valid import path for these in your dashboard configuration."""
     @staticmethod
     def _pre_build():
         """Runs pre_build method on all models in the model_manager."""
+        from vizro.models._controls._controls_utils import finalize_control_sync_chains
+
         # Note that a pre_build method can itself add a model (e.g. an Action) to the model manager, and so we need to
         # iterate through set(model_manager) rather than model_manager itself or we loop through something that
         # changes size.
@@ -326,6 +328,11 @@ Provide a valid import path for these in your dashboard configuration."""
             model = model_manager[model_id]
             if hasattr(model, "pre_build") and not isinstance(model, Filter):
                 model.pre_build()
+
+        # All controls are now pre-built (figure targets and control-sync edges are final), so collapse each same-page
+        # control-sync mesh into a single set_control + update_targets (two HTTP requests). This must run after both
+        # loops above because it needs every synced control's finalized targets. See finalize_control_sync_chains.
+        finalize_control_sync_chains()
 
     def __call__(self, environ: WSGIEnvironment, start_response: StartResponse) -> Iterable[bytes]:
         """Implements WSGI application interface.
