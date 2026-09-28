@@ -6,7 +6,7 @@ from typing import Annotated, Any, Literal, cast
 import dash_bootstrap_components as dbc
 import vizro_dash_components as vdc
 from dash import html
-from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, model_validator
+from pydantic import BeforeValidator, Field, JsonValue, PrivateAttr, TypeAdapter, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
@@ -338,6 +338,11 @@ underlying component may change in the future.""",
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.value"}
+
+    @staticmethod
+    def _get_value_from_trigger(value: JsonValue, trigger: JsonValue) -> JsonValue:
+        """Return the given `trigger` without modification."""
+        return trigger
 
     def __call__(self, options):
         # Fill the first-leaf/path default when unset (mirrors Dropdown). Otherwise pass the stored value straight

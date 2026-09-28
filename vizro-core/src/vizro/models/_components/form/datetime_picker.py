@@ -5,7 +5,7 @@ from typing import Annotated, Any, Literal, cast
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
@@ -192,6 +192,11 @@ change in the future.""",
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.data"}
+
+    @staticmethod
+    def _get_value_from_trigger(value: JsonValue, trigger: JsonValue) -> JsonValue:
+        """Return the given `trigger` without modification."""
+        return trigger
 
     def _split_extra(self) -> tuple[dict[str, Any], dict[str, Any]]:
         """Split ``self.extra`` into (date_picker_extra, time_picker_extra) by component prop set."""

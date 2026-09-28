@@ -43,6 +43,9 @@ repos:
       - id: pretty-format-toml
         args: [--autofix]
         exclude: zensical\.toml$
+        # Pin toml-sort: v0.25.0 (2026-09-12) changed default formatting (inline-table brace spacing, array
+        # indent 4->2) and would reformat every TOML repo-wide. Remove the pin only alongside that reformat.
+        additional_dependencies: [toml-sort==0.24.4]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.16.1

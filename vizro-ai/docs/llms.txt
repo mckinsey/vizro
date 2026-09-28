@@ -6,7 +6,10 @@ It is built on [Pydantic AI](https://ai.pydantic.dev/) and exposes a flexible `c
 Note: from version `0.4.0` Vizro-AI supports only chart generation. Dashboard generation has been superseded by [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/).
 Users must connect their own LLM; review the [disclaimer](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/disclaimer/), [safety guidelines](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safety-in-vizro-ai/), and [code-execution safeguarding](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/explanation/safeguard/) before use.
 
-All documentation pages return clean markdown when fetched with the `Accept: text/markdown` request header.
+Documentation pages return clean markdown when fetched with the
+`Accept: text/markdown, text/html;q=0.9` request header. Always include the `text/html;q=0.9`
+fallback: any page exceeding the upstream HTML-to-markdown conversion size limit is served as
+HTML instead, and a markdown-only request for it would return HTTP 406.
 
 ## TUTORIALS
 

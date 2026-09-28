@@ -14,7 +14,6 @@ from pandas.api.types import is_bool_dtype, is_datetime64_any_dtype, is_numeric_
 from pydantic import Field, PrivateAttr, model_validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
-from vizro.actions import update_targets
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
@@ -39,9 +38,12 @@ from vizro.models._controls._controls_utils import (
     _is_datetime_selector,
     _is_hierarchical_selector,
     _is_numerical_or_date_selector,
+    build_default_control_selector_actions,
     check_control_targets,
+    extract_control_targets,
     get_control_parent,
     get_selector_default_value,
+    warn_ignored_control_sync_targets,
     warn_missing_id_for_url_control,
 )
 from vizro.models._models_utils import _log_call
@@ -425,6 +427,15 @@ class Filter(VizroBaseModel):
     _column_type: Literal["hierarchical", "numerical", "categorical", "date", "datetime", "time", "boolean"] = (
         PrivateAttr()
     )
+    # Direct control-sync targets (other Filter/Parameter ids this control keeps in sync), stashed here when the
+    # default sync chain is built so the post-pre_build finalization (see `finalize_control_sync_chains`) can compute
+    # the transitive mesh even though `extract_control_targets` removes them from `targets` in place.
+    _synced_control_targets: list[ModelID] = PrivateAttr(default_factory=list)
+    # True only when the selector runs the framework-generated default action chain (i.e. `actions` was not set
+    # explicitly). Finalization may subsume such a control into another control's collapsed sync (guard its chain and
+    # fold its figures into the union). A control with explicit `actions` (custom or `[]`) has this False and is kept
+    # as a plain sync target - its value is set but its own chain is left to run (or not) as configured.
+    _has_default_selector_actions: bool = PrivateAttr(default=False)
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
@@ -523,6 +534,10 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):  # noqa: PLR0912
+        # Split control targets (used to sync this filter with another control) out of self.targets; they are
+        # validated and handled differently to the figure targets that remain.
+        targeted_controls = extract_control_targets(control=self)
+
         # If it's a page filter, validate that targets are present on the page where the filter is defined.
         # If it's a container filter, validate that targets are present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
@@ -632,7 +647,22 @@ class Filter(VizroBaseModel):
         # default. The filter value is still applied whenever its targets are refreshed by something else (e.g. a
         # Button running update_targets).
         if "actions" not in self.selector.model_fields_set:
-            self.selector.actions = [update_targets(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
+            # Stash the direct control-sync targets so the post-pre_build finalization can compute the transitive mesh
+            # (they are removed from self.targets by extract_control_targets above). Only stashed on the auto-built
+            # path: explicit selector actions (else branch) intentionally drop control targets.
+            self._synced_control_targets = targeted_controls
+            # Mark this as running the generated default chain so finalization may subsume it (see the attribute doc).
+            self._has_default_selector_actions = True
+            build_default_control_selector_actions(
+                selector=self.selector,
+                targeted_controls=targeted_controls,
+                targeted_figures=self.targets,
+                update_targets_action_id=f"{FILTER_ACTION_PREFIX}_{self.id}",
+            )
+        else:
+            # Explicit selector actions bypass the default sync chain, so any control targets were stripped without
+            # generating a set_control. Warn rather than silently drop them.
+            warn_ignored_control_sync_targets(self, targeted_controls)
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.

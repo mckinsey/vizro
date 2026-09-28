@@ -5,6 +5,7 @@ from datetime import datetime
 
 import e2e.vizro.constants as cnst
 from e2e.vizro.paths import (
+    cascader_trigger_value_path,
     categorical_components_value_name_path,
     categorical_components_value_path,
     dropdown_id_path,
@@ -330,6 +331,27 @@ def check_table_ag_grid_rows_number(driver, table_id, expected_rows_num):
         equal_to(expected_rows_num),
         reason=f"Rows number is '{actual_rows_num}', but expected number is '{expected_rows_num}'",
     )
+
+
+def check_table_ag_grid_column_values(driver, table_id, col_id, expected_values):
+    """Assert visible AgGrid rows contain exactly the expected values in `col_id` (order-independent)."""
+    rows = driver.find_elements(f"div[id='{table_id}'] div[class='ag-center-cols-container'] div[role='row']")
+    actual_values = []
+    for row in rows:
+        row_index = row.get_attribute("row-index")
+        cell_text = driver.find_element(
+            table_ag_grid_cell_path_by_row(table_id, row_index=row_index, col_id=col_id)
+        ).text
+        actual_values.append(cell_text)
+    assert_that(
+        sorted(actual_values),
+        equal_to(sorted(expected_values)),
+        reason=f"Column '{col_id}' values are {actual_values}, expected {expected_values}",
+    )
+
+
+def check_cascader_trigger_value(driver, cascader_id, expected_value):
+    driver.wait_for_text_to_equal(cascader_trigger_value_path(cascader_id), expected_value)
 
 
 def _parse_ag_grid_cell_time(text, col_id):

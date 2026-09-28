@@ -66,4 +66,4 @@ When you click the "Export data" button, the data for all graphs, tables and fig
 
 Exported data includes the effect of [controls](controls.md) such as [filters](filters.md) and [dynamic data parameters](parameters.md#dynamic-data-parameters). Modifications from the chart, table or figure itself are not included (for example, AG Grid filters, graph zoom and data transformations performed inside a [custom chart functions](custom-charts.md)).
 
-[exportdata]: ../../assets/user_guides/actions/actions_export.png
+[exportdata]: ../../assets/user_guides/actions/actions_export.gif

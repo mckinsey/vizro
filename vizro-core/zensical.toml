@@ -52,6 +52,7 @@ nav = [
       {"Handle data" = "pages/user-guides/data-actions.md"},
       {"Graph and table interactions" = "pages/user-guides/graph-table-actions.md"},
       {"Notifications" = "pages/user-guides/notification-actions.md"},
+      {"Actions on page load" = "pages/user-guides/page-actions.md"},
     ]},
     {"Visual formatting" = [
       {"Overview" = "pages/user-guides/visual-formatting.md"},
@@ -150,7 +151,11 @@ repo = "fontawesome/brands/github"
 # markdown_extensions
 # -------------------------
 [project.markdown_extensions.pymdownx.highlight]
-anchor_linenums = true
+pygments_lang_class = true
+# Keep false: no page uses `linenums`, so these anchors render nothing but do emit an empty
+# <a id="__codelineno-..."> per code line, which becomes `[](#__codelineno-0-1)` noise in the
+# markdown that AI agents fetch.
+anchor_linenums = false
 
 [project.markdown_extensions.pymdownx.inlinehilite]
 
@@ -228,7 +233,7 @@ show_signature_annotations = true
 filters = ["!^_"]
 show_root_heading = true
 extensions = [
-  {"docs/griffe_extensions.py:DynamicallyInspect" = {paths = ["vizro.figures.kpi_card", "vizro.figures.kpi_card_reference"]}},
+  {"docs/griffe_extensions.py:DynamicallyInspect" = {paths = ["vizro.figures.kpi_card", "vizro.figures.kpi_card_reference", "vizro.figures.kpi_sparkline_card"]}},
   {griffe_warnings_deprecated = {kind = "danger", title = "Deprecated"}},
   {griffe_pydantic = {schema = true}},
   "docs/griffe_extensions.py:PydanticDocsCleaner"

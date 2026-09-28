@@ -1,6 +1,7 @@
 import e2e.vizro.constants as cnst
 from e2e.vizro.checkers import check_http_requests_count
 from e2e.vizro.navigation import (
+    select_cascader_path_playwright,
     select_range_datetime_picker_value_playwright,
     select_range_time_picker_value_playwright,
 )
@@ -494,7 +495,7 @@ def test_timepicker_range_filters_ag_grid(page, http_requests_paths):
     page.locator(f"a[href='{cnst.TIMEPICKER_RANGE_PAGE_PATH}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # filter ag grid with range timepicker (2 http: setting start time and setting end time)
+    # filter ag grid with range timepicker
     select_range_time_picker_value_playwright(
         page,
         elem_id=cnst.TIMEPICKER_TIME_ISO_RANGE_ID,
@@ -503,10 +504,10 @@ def test_timepicker_range_filters_ag_grid(page, http_requests_paths):
         end_hour="06",
         end_minute="00",
     )
-    check_http_requests_count(page, http_requests_paths, 4)
+    check_http_requests_count(page, http_requests_paths, 3)
 
     # checking that no additional http has occurred
-    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
 
 
 @http_requests
@@ -526,3 +527,128 @@ def test_datetimepicker_range_filters_ag_grid(page, http_requests_paths):
 
     # checking that no additional http has occurred
     check_http_requests_count(page, http_requests_paths, 6, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_cascader_leaf_single_filters_ag_grid(page, http_requests_paths):
+    """Page with single leaf-mode Cascader filter triggers one HTTP request on selection."""
+    page.locator(f"a[href='{cnst.CASCADER_LEAF_PAGE_PATH}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    select_cascader_path_playwright(page, cnst.CASCADER_LEAF_ID, ["Asia", "South", "China"], multi=False)
+    check_http_requests_count(page, http_requests_paths, 3)
+
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_apply_controls_on_button_click(page, http_requests_paths):
+    """Page with deferred filter and parameter applied together via update_targets button."""
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.PAGE_APPLY_CONTROLS_ON_BUTTON_CLICK}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # select filter (0 http)
+    page.get_by_text("Americas").nth(0).click()
+    check_http_requests_count(page, http_requests_paths, 2, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+    # select parameter (0 http)
+    page.get_by_text("lifeExp").nth(0).click()
+    check_http_requests_count(page, http_requests_paths, 2, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+    # click apply controls button (1 http)
+    page.get_by_text("Apply controls").click()
+    check_http_requests_count(page, http_requests_paths, 3)
+
+    # checking that no additional http has occurred
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_sync_hidden_parameter(page, http_requests_paths):
+    """Filter sync to hidden parameter refreshes the graph on selection."""
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.SYNC_HIDDEN_PARAMETER_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # select filter (2 http: a single `set_control` sets the parameter and raises its guard so the parameter's own
+    # chain does not fire, then a single `update_targets` refreshes the figures shared by the filter and parameter).
+    # The mesh always resolves in two requests, no matter how many controls/figures it spans.
+    page.get_by_text("versicolor").nth(0).click()
+    check_http_requests_count(page, http_requests_paths, 4)
+
+    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_sync_multiple_controls_same_page(page, http_requests_paths):
+    """A same-page mesh of three chained/cyclic controls resolves in exactly two requests, no matter its size."""
+    # open the page (2 http)
+    page.locator(f"a[href='/{cnst.SYNC_MULTIPLE_CONTROLS_SAME_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # select 'versicolor' on the first filter (2 http: one `set_control` sets the whole transitive mesh - the other two
+    # filters - and raises their guards so their own chains do not fire, then one `update_targets` refreshes all three
+    # graphs). The mesh always resolves in two requests, no matter how many controls/figures it spans.
+    page.locator(f"div[id='{cnst.SYNC_MULTIPLE_CONTROLS_RADIO_ITEMS_1_ID}'] div:nth-of-type(2) input").click()
+    check_http_requests_count(page, http_requests_paths, 4)
+
+    # no additional (cascading) requests occur
+    check_http_requests_count(page, http_requests_paths, 4, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+    # final figure state: every graph is filtered to versicolor, so no setosa/virginica legend remains on any of them
+    page.wait_for_selector("text[class='legendtext'][data-unformatted='versicolor']")
+    assert page.locator("text[class='legendtext'][data-unformatted='setosa']").count() == 0
+    assert page.locator("text[class='legendtext'][data-unformatted='virginica']").count() == 0
+
+
+@http_requests
+def test_sync_cross_page(page, http_requests_paths):
+    """Cross-page filter sync applies on target page open without navigation from source."""
+    # open the source page (2 http)
+    page.locator(f"a[href='/{cnst.SYNC_CROSS_PAGE_SOURCE_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # select filter on source page (2 http)
+    page.get_by_text("versicolor").nth(0).click()
+    check_http_requests_count(page, http_requests_paths, 4)
+
+    # open the target page (2 http)
+    page.locator(f"a[href='/{cnst.SYNC_CROSS_PAGE_TARGET_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 6)
+
+    check_http_requests_count(page, http_requests_paths, 6, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_sync_drill_through_same_page_and_target(page, http_requests_paths):
+    """Drill-through with same-page target stays on source; target page loads on navigation."""
+    # open the source page (2 http)
+    page.locator(f"a[href='/{cnst.SYNC_DRILL_THROUGH_SOURCE_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    # click scatter point: same-page control live, cross-page value stored (2 http)
+    element = page.locator(
+        f"div[id='{cnst.SYNC_DRILL_THROUGH_SOURCE_GRAPH_ID}'] path[class='point plotly-customdata']"
+    ).nth(20)
+    box = element.bounding_box()
+    page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    check_http_requests_count(page, http_requests_paths, 4)
+
+    # open the target page (2 http)
+    page.locator(f"a[href='/{cnst.SYNC_DRILL_THROUGH_TARGET_PAGE}']").click()
+    check_http_requests_count(page, http_requests_paths, 6)
+
+    check_http_requests_count(page, http_requests_paths, 6, sleep=cnst.HTTP_TIMEOUT_LONG)
+
+
+@http_requests
+def test_cascader_path_multi_filters_ag_grid(page, http_requests_paths):
+    """Page with multi path-mode Cascader filter triggers one HTTP request on selection."""
+    page.locator(f"a[href='{cnst.CASCADER_PATH_PAGE_PATH}']").click()
+    check_http_requests_count(page, http_requests_paths, 2)
+
+    select_cascader_path_playwright(page, cnst.CASCADER_PATH_MULTI_ID, ["Oregon", "Portland"], multi=True)
+    check_http_requests_count(page, http_requests_paths, 3)
+
+    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)

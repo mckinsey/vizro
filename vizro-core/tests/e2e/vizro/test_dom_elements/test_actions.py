@@ -8,7 +8,9 @@ from e2e.vizro.checkers import (
     check_exported_file_exists,
     check_graph_y_axis_value,
     check_range_date_picker_value,
+    check_range_datetime_picker_value,
     check_range_slider_value,
+    check_range_time_picker_value,
     check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
@@ -161,6 +163,68 @@ def test_set_control_cross_filter_graph_non_categorical(dash_br):
         categorical_components_value_path(elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SWITCH, value=1)
     )
     assert_that(status.is_selected(), equal_to(False))
+
+
+def test_set_control_cross_filter_graph_non_categorical_timepicker(dash_br):
+    """Test set_control from graph to range TimePicker filtering a target AgGrid."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_PAGE_TITLE,
+    )
+
+    # 19:00 selected in scatter graph, check that timepicker value changed accordingly
+    dash_br.click_at_coord_fractions(
+        scatter_point_path(cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER, point_number=2), 0, 0
+    )
+    # 20:00 selected in scatter graph, check that timepicker value changed accordingly
+    modifier_click(
+        dash_br,
+        selector=scatter_point_path(cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER, point_number=16),
+        key=Keys.SHIFT,
+    )
+
+    check_range_time_picker_value(
+        dash_br,
+        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_ID,
+        start_hour="19",
+        start_minute="00",
+        end_hour="20",
+        end_minute="00",
+    )
+    check_table_ag_grid_rows_number(
+        dash_br,
+        table_id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_TARGET,
+        expected_rows_num=12,
+    )
+
+
+def test_set_control_cross_filter_aggrid_non_categorical_datetimepicker(dash_br):
+    """Test set_control from AgGrid to range DateTimePicker filtering a target AgGrid."""
+    accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_PAGE_TITLE,
+    )
+
+    dash_br.multiple_click(
+        table_ag_grid_checkbox_path_by_row(cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER, row_index=2), 1
+    )
+    dash_br.multiple_click(
+        table_ag_grid_checkbox_path_by_row(cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER, row_index=1), 1
+    )
+
+    check_range_datetime_picker_value(
+        dash_br,
+        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_ID,
+        start=("Jan 1, 2024", "01", "00"),
+        end=("Jan 1, 2024", "02", "00"),
+    )
+    check_table_ag_grid_rows_number(
+        dash_br,
+        table_id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_TARGET,
+        expected_rows_num=2,
+    )
 
 
 def test_set_control_cross_filter_ag_grid(dash_br):
