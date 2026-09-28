@@ -30,6 +30,7 @@ from pages.sync_controls_pages import (
     sync_drill_through_source_page,
     sync_drill_through_target_page,
     sync_hidden_parameter_page,
+    sync_multiple_controls_same_page,
 )
 from pages.timepicker_pages import timepicker_range
 from pages.update_targets_page import apply_controls_on_button_click_page
@@ -323,6 +324,7 @@ dashboard = vm.Dashboard(
         cascader_path_page,
         apply_controls_on_button_click_page,
         sync_hidden_parameter_page,
+        sync_multiple_controls_same_page,
         sync_cross_page_source_page,
         sync_cross_page_target_page,
         sync_drill_through_source_page,
