@@ -46,8 +46,54 @@ from vizro.tables import dash_ag_grid
 
 df_gapminder = px.data.gapminder().query("year == 2007")
 df_gapminder["date_column"] = pd.date_range(start=pd.to_datetime("2025-01-01"), periods=len(df_gapminder), freq="D")
+df_gapminder["datetime_utc"] = pd.to_datetime(df_gapminder["date_column"], utc=True) + pd.to_timedelta(
+    df_gapminder.index % 24, unit="h"
+)
+df_gapminder["time_hh_mm_ss"] = df_gapminder["datetime_utc"].dt.time
 df_gapminder["number_column"] = range(len(df_gapminder))
 df_gapminder["is_europe"] = df_gapminder["continent"] == "Europe"
+_gapminder_regions = {
+    "North": {
+        "Canada",
+        "United States",
+        "Denmark",
+        "Finland",
+        "Norway",
+        "Sweden",
+        "Iceland",
+        "Ireland",
+        "United Kingdom",
+    },
+    "South": {
+        "Argentina",
+        "Brazil",
+        "Australia",
+        "New Zealand",
+        "India",
+        "China",
+        "Japan",
+    },
+    "West": {
+        "Mexico",
+        "Germany",
+        "France",
+        "Spain",
+        "Italy",
+        "Nigeria",
+        "Egypt",
+    },
+    "East": {
+        "Poland",
+        "Ethiopia",
+        "Kenya",
+        "Korea, Rep.",
+        "Thailand",
+        "Indonesia",
+    },
+}
+df_gapminder["region"] = df_gapminder["country"].map(
+    {country: region for region, countries in _gapminder_regions.items() for country in countries}
+)
 
 
 def load_dynamic_gapminder_data(continent: str = "Europe"):
@@ -267,6 +313,18 @@ page_all_selectors = vm.Page(
         vm.Filter(
             column="date_column",
             selector=vm.DatePicker(id=cnst.PAGE_ALL_SELECTORS_FILTER_DATEPICKER_ID),
+        ),
+        vm.Filter(
+            column="time_hh_mm_ss",
+            selector=vm.TimePicker(id=cnst.PAGE_ALL_SELECTORS_FILTER_TIMEPICKER_ID, title="Time"),
+        ),
+        vm.Filter(
+            column="datetime_utc",
+            selector=vm.DateTimePicker(id=cnst.PAGE_ALL_SELECTORS_FILTER_DATETIMEPICKER_ID, title="Datetime"),
+        ),
+        vm.Filter(
+            column=["continent", "region", "country"],
+            selector=vm.Cascader(id=cnst.PAGE_ALL_SELECTORS_FILTER_CASCADER_ID, title="Country"),
         ),
         vm.Filter(
             id=cnst.PAGE_ALL_SELECTORS_FILTER_SWITCH_CONTROL_ID,
