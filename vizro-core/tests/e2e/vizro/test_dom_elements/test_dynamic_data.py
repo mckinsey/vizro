@@ -812,6 +812,8 @@ def test_datetimepicker_filter(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_TEMPORAL_PAGE,
     )
+    # The persisted value is still Mar 5 - Mar 10. Filter._get_min_max always widens the picker bounds to include
+    # the current value, so the selectable range still spans Mar 5 - Mar 10 even though the data now stops at Mar 9.
     check_range_datetime_picker_value(
         dash_br,
         elem_id=cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID,
@@ -819,7 +821,36 @@ def test_datetimepicker_filter(dash_br):
         end=("Mar 10, 2024", None, None),
     )
 
-    # open the calendar and check if '5 March' and '10 March' are disabled
+    # Move the selected range inside the narrowed data (Mar 6 - Mar 9) so the value no longer widens the bounds,
+    # then reload so the bounds recompute over the narrowed data alone (same pattern as test_datepicker_range_filters).
+
+    # Select 6 March 2024
+    dash_br.multiple_click(f'button[id="{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-start"]', 1)
+    dash_br.wait_for_element('div[data-calendar="true"]')
+    dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
+
+    # Check 6 March 2024 is selected
+    check_date_picker_value(dash_br, f"{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-start", "Mar 6, 2024")
+
+    # Select 9 March 2024
+    dash_br.multiple_click(f'button[id="{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-end"]', 1)
+    dash_br.wait_for_element('div[data-calendar="true"]')
+    dash_br.multiple_click('button[aria-label="9 March 2024"]', 1)
+
+    # Check 9 March 2024
+    check_date_picker_value(dash_br, f"{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-end", "Mar 9, 2024")
+
+    # Reload the page
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+    )
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_TEMPORAL_PAGE,
+    )
+
+    # Now Mar 5 and Mar 10 sit outside the reloaded bounds and are disabled in the calendar.
     dash_br.multiple_click(f'button[id="{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-start"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.wait_for_element('button[aria-label="5 March 2024"][data-disabled="true"]')
