@@ -634,3 +634,9 @@ PAGE_ACTIONS_NONE_GRAPH_ID = "page_actions_none_graph"
 
 HTTP_TIMEOUT_SHORT = 200
 HTTP_TIMEOUT_LONG = 1000
+# Maximum time to wait for the expected number of HTTP requests to arrive before asserting. On a busy CI runner a
+# request can land noticeably later than HTTP_TIMEOUT_SHORT, so the checker polls up to this deadline instead of
+# waiting a single fixed window (which made the count assertions flaky).
+HTTP_TIMEOUT_REACH = 5000
+# Polling granularity while waiting for the expected number of requests to arrive.
+HTTP_POLL_INTERVAL = 100
