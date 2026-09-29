@@ -6,24 +6,34 @@ import yaml
 from e2e.asserts import assert_image_not_equal, assert_pixelmatch
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
+    check_cascader_trigger_value,
     check_date_picker_value,
+    check_empty_time_picker_value,
     check_graph_is_empty,
     check_graph_x_axis_value,
     check_graph_y_axis_value,
     check_range_date_picker_value,
+    check_range_datetime_picker_value,
     check_range_slider_value,
     check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
+    check_table_ag_grid_column_values,
+    check_table_ag_grid_rows_number,
 )
 from e2e.vizro.navigation import (
     accordion_select,
+    clear_cascader_multi,
     clear_dropdown,
     page_select,
+    select_cascader_path,
     select_dropdown_value,
     select_slider_value,
 )
-from e2e.vizro.paths import actions_progress_indicator_path, categorical_components_value_path
+from e2e.vizro.paths import (
+    actions_progress_indicator_path,
+    categorical_components_value_path,
+)
 from e2e.vizro.waiters import callbacks_finish_waiter
 
 
@@ -45,11 +55,19 @@ def rewrite_dynamic_filters_data_config(func):
         data = {
             "date_max": "2024-03-10",
             "date_min": "2024-03-05",
+            "datetime_max": "2024-03-10T18:00:00",
+            "datetime_min": "2024-03-05T08:00:00",
             "max": 7,
             "min": 6,
             "setosa": 5,
             "versicolor": 10,
             "virginica": 15,
+            "time_min": "08:00:00",
+            "time_max": "18:00:00",
+            "china": 1,
+            "japan": 0,
+            "brazil": 0,
+            "united_states": 1,
         }
         with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG, "w") as file:
             yaml.dump(data, file)
@@ -747,6 +765,186 @@ def test_datepicker_single_filters(dash_br):
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.wait_for_element('button[aria-label="5 March 2024"][data-disabled="true"]')
+
+
+@rewrite_dynamic_filters_data_config
+def test_timepicker_filter(dash_br):
+    """TimePicker is static and empty on page load (not populated from dynamic_filters_data.yml)."""
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_TEMPORAL_PAGE,
+    )
+
+    check_empty_time_picker_value(dash_br, f"{cnst.TIMEPICKER_DYNAMIC_FILTER_ID}-start")
+    check_empty_time_picker_value(dash_br, f"{cnst.TIMEPICKER_DYNAMIC_FILTER_ID}-end")
+
+
+@rewrite_dynamic_filters_data_config
+def test_datetimepicker_filter(dash_br):
+    """DateTimePicker time is static; date range should follow dynamic_filters_data.yml."""
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_TEMPORAL_PAGE,
+    )
+
+    check_empty_time_picker_value(dash_br, f"{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-time-start")
+    check_empty_time_picker_value(dash_br, f"{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-time-end")
+
+    # Date bounds should reload from datetime_min/datetime_max in dynamic_filters_data.yml (like DatePicker).
+    check_range_datetime_picker_value(
+        dash_br,
+        elem_id=cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID,
+        start=("Mar 5, 2024", None, None),
+        end=("Mar 10, 2024", None, None),
+    )
+
+    # Set "datetime_min" option to "2024-03-06T08:00:00" and "datetime_max" option to "2024-03-09T18:00:00"
+    # for the dynamic data and simulate refreshing the page
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+    )
+    dynamic_filters_data_config_manipulation(key="datetime_min", set_value="2024-03-06T08:00:00")
+    dynamic_filters_data_config_manipulation(key="datetime_max", set_value="2024-03-09T18:00:00")
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_TEMPORAL_PAGE,
+    )
+    check_range_datetime_picker_value(
+        dash_br,
+        elem_id=cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID,
+        start=("Mar 5, 2024", None, None),
+        end=("Mar 10, 2024", None, None),
+    )
+
+    # open the calendar and check if '5 March' and '10 March' are disabled
+    dash_br.multiple_click(f'button[id="{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-start"]', 1)
+    dash_br.wait_for_element('div[data-calendar="true"]')
+    dash_br.wait_for_element('button[aria-label="5 March 2024"][data-disabled="true"]')
+    dash_br.wait_for_element('button[aria-label="10 March 2024"][data-disabled="true"]')
+
+
+@rewrite_dynamic_filters_data_config
+def test_cascader_filter(dash_br):
+    """Cascader options refresh when dynamic hierarchical data changes."""
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CASCADER_PAGE,
+    )
+
+    check_cascader_trigger_value(dash_br, cnst.CASCADER_DYNAMIC_FILTER_ID, "United States")
+    check_table_ag_grid_rows_number(dash_br, table_id=cnst.AG_GRID_DYNAMIC_CASCADER_ID, expected_rows_num=1)
+
+    page_select(dash_br, page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE)
+    dynamic_filters_data_config_manipulation(key="japan", set_value=1)
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CASCADER_PAGE,
+    )
+
+    select_cascader_path(
+        dash_br,
+        cnst.CASCADER_DYNAMIC_FILTER_ID,
+        ["Asia", "South", "Japan"],
+        multi=False,
+    )
+    check_cascader_trigger_value(dash_br, cnst.CASCADER_DYNAMIC_FILTER_ID, "Japan")
+    check_table_ag_grid_rows_number(dash_br, table_id=cnst.AG_GRID_DYNAMIC_CASCADER_ID, expected_rows_num=1)
+    check_table_ag_grid_column_values(
+        dash_br, table_id=cnst.AG_GRID_DYNAMIC_CASCADER_ID, col_id="country", expected_values=["Japan"]
+    )
+
+    page_select(dash_br, page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE)
+    dynamic_filters_data_config_manipulation(key="japan", set_value=0)
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CASCADER_PAGE,
+    )
+
+    check_cascader_trigger_value(dash_br, cnst.CASCADER_DYNAMIC_FILTER_ID, "Select option")
+    check_table_ag_grid_rows_number(dash_br, table_id=cnst.AG_GRID_DYNAMIC_CASCADER_ID, expected_rows_num=0)
+
+    select_cascader_path(
+        dash_br,
+        cnst.CASCADER_DYNAMIC_FILTER_ID,
+        ["Americas", "North", "United States"],
+        multi=False,
+    )
+    check_cascader_trigger_value(dash_br, cnst.CASCADER_DYNAMIC_FILTER_ID, "United States")
+    check_table_ag_grid_rows_number(dash_br, table_id=cnst.AG_GRID_DYNAMIC_CASCADER_ID, expected_rows_num=1)
+
+
+@rewrite_dynamic_filters_data_config
+def test_cascader_path_multi_filter(dash_br):
+    """Path-mode multi Cascader options refresh when dynamic hierarchical data changes."""
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CASCADER_PAGE,
+    )
+
+    check_table_ag_grid_rows_number(dash_br, table_id=cnst.AG_GRID_DYNAMIC_CASCADER_PATH_MULTI_ID, expected_rows_num=2)
+    check_table_ag_grid_column_values(
+        dash_br,
+        table_id=cnst.AG_GRID_DYNAMIC_CASCADER_PATH_MULTI_ID,
+        col_id="country",
+        expected_values=["China", "United States"],
+    )
+
+    page_select(dash_br, page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE)
+    dynamic_filters_data_config_manipulation(key="japan", set_value=1)
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CASCADER_PAGE,
+    )
+
+    clear_cascader_multi(dash_br, cnst.CASCADER_DYNAMIC_PATH_MULTI_ID)
+    select_cascader_path(
+        dash_br,
+        cnst.CASCADER_DYNAMIC_PATH_MULTI_ID,
+        ["Asia", "South", "Japan"],
+        multi=True,
+    )
+    check_table_ag_grid_rows_number(dash_br, table_id=cnst.AG_GRID_DYNAMIC_CASCADER_PATH_MULTI_ID, expected_rows_num=1)
+    check_table_ag_grid_column_values(
+        dash_br,
+        table_id=cnst.AG_GRID_DYNAMIC_CASCADER_PATH_MULTI_ID,
+        col_id="country",
+        expected_values=["Japan"],
+    )
+
+    page_select(dash_br, page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE)
+    dynamic_filters_data_config_manipulation(key="japan", set_value=0)
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_FILTERS_CASCADER_PAGE,
+    )
+
+    check_table_ag_grid_rows_number(dash_br, table_id=cnst.AG_GRID_DYNAMIC_CASCADER_PATH_MULTI_ID, expected_rows_num=0)
+
+    clear_cascader_multi(dash_br, cnst.CASCADER_DYNAMIC_PATH_MULTI_ID)
+    select_cascader_path(
+        dash_br,
+        cnst.CASCADER_DYNAMIC_PATH_MULTI_ID,
+        ["Americas", "North", "United States"],
+        multi=True,
+    )
+    select_cascader_path(
+        dash_br,
+        cnst.CASCADER_DYNAMIC_PATH_MULTI_ID,
+        ["Asia", "South", "China"],
+        multi=True,
+    )
+    check_table_ag_grid_rows_number(dash_br, table_id=cnst.AG_GRID_DYNAMIC_CASCADER_PATH_MULTI_ID, expected_rows_num=2)
+    check_table_ag_grid_column_values(
+        dash_br,
+        table_id=cnst.AG_GRID_DYNAMIC_CASCADER_PATH_MULTI_ID,
+        col_id="country",
+        expected_values=["China", "United States"],
+    )
 
 
 def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
