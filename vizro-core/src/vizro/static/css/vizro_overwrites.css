@@ -215,7 +215,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --bs-right-side-bg: #141721;
   --bs-left-side-bg: #181b26;
   --bs-container-bg: #141721;
-  --bs-container-nested-bg: #1f222e;
+  --bs-container-nested-bg: #181b26;
   --bs-nav-link-highlight: #1f222e;
   --bs-dropdown-bg-color: #10121b;
   --bs-outer-border-color: #141721;
@@ -225,6 +225,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --text-fg-trend-negative: #fb7185;
   --bs-kpi-card-bg: #1f222e;
   --text-fg-primary: rgba(255, 255, 255, 0.88);
+  --bg-fill-onsurface: #1f222e;
 }
 
 [data-bs-theme="light"] {
@@ -250,6 +251,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --text-fg-trend-negative: #be123c;
   --bs-kpi-card-bg: #fafafb;
   --text-fg-primary: rgba(20, 23, 33, 0.88);
+  --bg-fill-onsurface: #fafafb;
 
   /* When plugging in other bootstrap variables, surfaces-bg-card does not exist and it will just default to white. */
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
