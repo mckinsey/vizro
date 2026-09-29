@@ -608,10 +608,6 @@ COLOR_SEQUENTIAL_MID = "rgb(9, 125, 254)"  # Middle position (0.5) in sequential
 DYNAMIC_FILTERS_DATA_CONFIG = "tests/e2e/vizro/dashboards/default/dynamic_filters_data.yaml"
 PIXELMATCH_THRESHOLD = "0.18"
 SELENIUM_WAITERS_TIMEOUT = 10
-# WebDriverWait's default poll interval is 0.5s, which is too coarse to reliably catch a short-lived state such as
-# the transient `data-dash-is-loading='true'` attribute (present only while a callback is in flight). Polling more
-# frequently makes those checks far less flaky.
-SELENIUM_POLL_FREQUENCY = 0.05
 
 # HTTP requests configs
 

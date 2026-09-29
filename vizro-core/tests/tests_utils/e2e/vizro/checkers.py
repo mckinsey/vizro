@@ -41,13 +41,8 @@ def browser_console_warnings_checker(log_level, log_levels):
 
 
 def check_graph_is_loading_selenium(driver, graph_id, timeout=cnst.SELENIUM_WAITERS_TIMEOUT):
-    """Waiting for graph to start reloading for pure selenium.
-
-    The `data-dash-is-loading='true'` attribute is only present while the graph's callback is in flight, which can be
-    a very short window for a fast reload. The default WebDriverWait poll interval (0.5s) can step right over it,
-    causing a spurious timeout, so poll frequently to reliably catch the transient loading state.
-    """
-    WebDriverWait(driver, timeout, poll_frequency=cnst.SELENIUM_POLL_FREQUENCY).until(
+    """Waiting for graph to start reloading for pure selenium."""
+    WebDriverWait(driver, timeout).until(
         expected_conditions.presence_of_element_located(
             (By.CSS_SELECTOR, f"div[id='{graph_id}'][data-dash-is-loading='true']")
         )
