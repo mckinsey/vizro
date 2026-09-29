@@ -78,6 +78,7 @@ from pages.sync_controls_pages import (
     sync_drill_through_source_page,
     sync_drill_through_target_page,
     sync_hidden_parameter_page,
+    sync_multiple_controls_same_page,
 )
 from pages.table_interactions_page import table_interactions_page
 from pages.table_page import table_page
@@ -157,6 +158,7 @@ dashboard = vm.Dashboard(
         cascader_leaf_page,
         cascader_path_page,
         sync_hidden_parameter_page,
+        sync_multiple_controls_same_page,
         sync_cross_page_source_page,
         sync_cross_page_target_page,
         sync_drill_through_source_page,
@@ -195,6 +197,7 @@ dashboard = vm.Dashboard(
             ],
             cnst.SYNC_CONTROLS_ACCORDION: [
                 cnst.SYNC_HIDDEN_PARAMETER_PAGE,
+                cnst.SYNC_MULTIPLE_CONTROLS_SAME_PAGE,
                 cnst.SYNC_CROSS_PAGE_SOURCE_PAGE,
                 cnst.SYNC_CROSS_PAGE_TARGET_PAGE,
                 cnst.SYNC_DRILL_THROUGH_SOURCE_PAGE,

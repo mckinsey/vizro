@@ -67,6 +67,10 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   margin-top: 0.5rem;
 }
 
+.card-kpi .card-body .material-symbols-outlined {
+  font-size: 1.25rem;
+}
+
 /* Sized in em so it scales automatically with the value's font-size across card-kpi-compact/-large. */
 .card-kpi .card-kpi-units {
   color: var(--bs-secondary-color);
@@ -101,6 +105,14 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   font-size: 1.1rem;
 }
 
+.card-kpi .color-pos {
+  color: var(--bs-success);
+}
+
+.card-kpi .color-neg {
+  color: var(--bs-danger);
+}
+
 .card-kpi-large .card-kpi-delta-chip {
   font-size: 20px;
 }
@@ -129,6 +141,20 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 .card-kpi .card-kpi-reference-text {
   color: var(--bs-secondary-color);
   font-weight: 400;
+}
+
+.card-kpi.card-kpi-sparkline {
+  padding: 1rem;
+}
+
+/* `.card-kpi .card-footer` above sets `width: fit-content` for the delta-chip footer of kpi_card/
+   kpi_card_reference. The sparkline footer instead hosts a graph that must fill the card's width. */
+.card-kpi-sparkline .card-footer {
+  width: 100%;
+}
+
+.card-kpi-sparkline-graph {
+  height: 3rem;
 }
 
 .is-clickable > .card-kpi {
@@ -176,4 +202,17 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 .card-kpi-header {
   display: flex;
   justify-content: space-between;
+}
+
+.card-kpi-sparkline .card-body {
+  align-items: center;
+  font-size: 24px;
+  gap: 8px;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.card-kpi-sparkline .card-kpi-units {
+  font-size: 18px;
+  margin-left: 0;
 }
