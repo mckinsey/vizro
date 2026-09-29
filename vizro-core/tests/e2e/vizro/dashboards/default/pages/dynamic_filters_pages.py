@@ -116,9 +116,9 @@ def load_from_file(filter_column=None, parametrized_species=None):
         time_max = _parse_time(data["time_max"])
         final_df = df[df["time_hh_mm_ss"].apply(lambda value: time_min <= value <= time_max)]
     elif filter_column == "datetime_utc":
-        df["datetime_utc"] = pd.date_range(start="2024-03-05 08:00", periods=len(df), freq="30min", tz="UTC")
-        datetime_min = pd.to_datetime(data["datetime_min"], utc=True)
-        datetime_max = pd.to_datetime(data["datetime_max"], utc=True)
+        df["datetime_utc"] = pd.date_range(start="2024-03-05 08:00", periods=len(df), freq="30min")
+        datetime_min = pd.to_datetime(data["datetime_min"])
+        datetime_max = pd.to_datetime(data["datetime_max"])
         final_df = df[df["datetime_utc"].between(datetime_min, datetime_max, inclusive="both")]
     elif filter_column == "hierarchical":
         gapminder = _gapminder_with_regions()

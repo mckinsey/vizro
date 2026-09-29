@@ -46,7 +46,7 @@ from vizro.tables import dash_ag_grid
 
 df_gapminder = px.data.gapminder().query("year == 2007")
 df_gapminder["date_column"] = pd.date_range(start=pd.to_datetime("2025-01-01"), periods=len(df_gapminder), freq="D")
-df_gapminder["datetime_utc"] = pd.to_datetime(df_gapminder["date_column"], utc=True) + pd.to_timedelta(
+df_gapminder["datetime_utc"] = pd.to_datetime(df_gapminder["date_column"]) + pd.to_timedelta(
     df_gapminder.index % 24, unit="h"
 )
 df_gapminder["time_hh_mm_ss"] = df_gapminder["datetime_utc"].dt.time
