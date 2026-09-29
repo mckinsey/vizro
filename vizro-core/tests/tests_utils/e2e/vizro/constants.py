@@ -263,6 +263,18 @@ BAR_DYNAMIC_DATEPICKER_FILTER_ID = "bar_dynamic_datepicker"
 DATEPICKER_DYNAMIC_RANGE_ID = "datepicker dynamic range"
 DATEPICKER_DYNAMIC_SINGLE_ID = "datepicker dynamic single"
 
+DYNAMIC_FILTERS_TEMPORAL_PAGE = "dynamic-filters-temporal"
+BAR_DYNAMIC_TIME_FILTER_ID = "bar_dynamic_time"
+BAR_DYNAMIC_DATETIME_FILTER_ID = "bar_dynamic_datetime"
+TIMEPICKER_DYNAMIC_FILTER_ID = "timepicker_dynamic"
+DATETIMEPICKER_DYNAMIC_FILTER_ID = "datetimepicker_dynamic"
+
+DYNAMIC_FILTERS_CASCADER_PAGE = "dynamic-filters-cascader"
+AG_GRID_DYNAMIC_CASCADER_ID = "ag_grid_dynamic_cascader"
+AG_GRID_DYNAMIC_CASCADER_PATH_MULTI_ID = "ag_grid_dynamic_cascader_path_multi"
+CASCADER_DYNAMIC_FILTER_ID = "cascader_dynamic"
+CASCADER_DYNAMIC_PATH_MULTI_ID = "cascader_dynamic_path_multi"
+
 CUSTOM_COMPONENTS_PAGE = "custom-components-page"
 SCATTER_CUSTOM_COMPONENTS_ID = "scatter_custom_id"
 CUSTOM_DROPDOWN_ID = "dropdown_custom"
@@ -607,8 +619,24 @@ PAGE_CHART_WITH_FILTER_INTERACTION = "page-chart-with-filter-interaction"
 PAGE_AG_GRID_WITH_FILTER_INTERACTION = "page-ag-grid-with-filter-interaction"
 PAGE_DYNAMIC_PARAMETRISATION = "page-dynamic-parametrisation"
 PAGE_ALL_SELECTORS = "page-all-selectors"
+PAGE_ALL_SELECTORS_GRAPH_ID = "page-all-selectors_graph"
+PAGE_ALL_SELECTORS_FILTER_SLIDER_ID = "page_all_selectors_filter_slider"
+PAGE_ALL_SELECTORS_FILTER_RANGE_SLIDER_ID = "page_all_selectors_filter_range_slider"
+PAGE_ALL_SELECTORS_FILTER_DATEPICKER_ID = "page_all_selectors_filter_datepicker"
+PAGE_ALL_SELECTORS_FILTER_TIMEPICKER_ID = "page_all_selectors_filter_timepicker"
+PAGE_ALL_SELECTORS_FILTER_DATETIMEPICKER_ID = "page_all_selectors_filter_datetimepicker"
+PAGE_ALL_SELECTORS_FILTER_CASCADER_ID = "page_all_selectors_filter_cascader"
+PAGE_ALL_SELECTORS_FILTER_SWITCH_CONTROL_ID = "page_all_selectors_filter_switch_control_id"
 PAGE_ALL_SELECTORS_IN_URL = "page-all-selectors-in-url"
 PAGE_APPLY_CONTROLS_ON_BUTTON_CLICK = "page-apply-controls-on-button-click"
+PAGE_ACTIONS_NONE = "page-actions-none"
+PAGE_ACTIONS_NONE_GRAPH_ID = "page_actions_none_graph"
 
 HTTP_TIMEOUT_SHORT = 200
 HTTP_TIMEOUT_LONG = 1000
+# Maximum time to wait for the expected number of HTTP requests to arrive before asserting. On a busy CI runner a
+# request can land noticeably later than HTTP_TIMEOUT_SHORT, so the checker polls up to this deadline instead of
+# waiting a single fixed window (which made the count assertions flaky).
+HTTP_TIMEOUT_REACH = 5000
+# Polling granularity while waiting for the expected number of requests to arrive.
+HTTP_POLL_INTERVAL = 100

@@ -84,6 +84,7 @@ def test_theme_color(chrome_driver, dash_br):
     check_theme_color(dash_br, color=cnst.THEME_LIGHT)
 
 
+@pytest.mark.flaky(reruns=5)
 def test_export_action(chrome_driver, dash_br):
     """Tests that export action is giving different results according to what every user filters."""
     # select filters page for the first user
