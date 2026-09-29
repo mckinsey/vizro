@@ -824,23 +824,21 @@ def test_datetimepicker_filter(dash_br):
     # Move the selected range inside the narrowed data (Mar 6 - Mar 9) so the value no longer widens the bounds,
     # then reload so the bounds recompute over the narrowed data alone (same pattern as test_datepicker_range_filters).
 
-    # Select 6 March 2024
+    # Select 6 March 2024 for the start date
     dash_br.multiple_click(f'button[id="{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-start"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
-
-    # Check 6 March 2024 is selected
     check_date_picker_value(dash_br, f"{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-start", "Mar 6, 2024")
+    check_date_picker_value(dash_br, f"{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-end", "Mar 10, 2024")
 
-    # Select 9 March 2024
+    # Select 9 March 2024 for the end date
     dash_br.multiple_click(f'button[id="{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-end"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="9 March 2024"]', 1)
-
-    # Check 9 March 2024
+    check_date_picker_value(dash_br, f"{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-start", "Mar 6, 2024")
     check_date_picker_value(dash_br, f"{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-end", "Mar 9, 2024")
 
-    # Reload the page
+    # Reload
     page_select(
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
@@ -849,6 +847,9 @@ def test_datetimepicker_filter(dash_br):
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_TEMPORAL_PAGE,
     )
+
+    check_date_picker_value(dash_br, f"{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-start", "Mar 6, 2024")
+    check_date_picker_value(dash_br, f"{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-end", "Mar 10, 2024")
 
     # Now Mar 5 and Mar 10 sit outside the reloaded bounds and are disabled in the calendar.
     dash_br.multiple_click(f'button[id="{cnst.DATETIMEPICKER_DYNAMIC_FILTER_ID}-date-start"]', 1)
