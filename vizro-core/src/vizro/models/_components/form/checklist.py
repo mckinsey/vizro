@@ -93,6 +93,14 @@ underlying component may change in the future.""",
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.value"}
 
+    @property
+    def _dynamic_reload_hidden_ids(self) -> list[str]:
+        """Component id(s) a dynamic `Filter` hides while reloading (see `Filter.build`).
+
+        The checklist itself plus, when shown, its separate 'Select All' checkbox.
+        """
+        return [self.id, *([f"{self.id}_select_all"] if self.show_select_all else [])]
+
     @staticmethod
     def _get_value_from_trigger(value: JsonValue, trigger: JsonValue) -> JsonValue:
         """Return the given `trigger` without modification."""

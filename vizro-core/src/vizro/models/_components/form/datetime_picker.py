@@ -99,6 +99,11 @@ class DateTimePicker(VizroBaseModel):
     the range start and end-of-day for the range end. Clearing the time therefore widens
     the filter to the whole day rather than disabling it.
 
+    When used in a [dynamic filter](../user-guides/data.md#filters), the *date* portion is
+    dynamic: `min` and `max` bound the date picker and refresh to the overall range found in
+    the data on every reload, exactly like [`DatePicker`][vizro.models.DatePicker]. The time
+    portion is always the full 00:00-23:59 day, so it has no dynamic bounds to update.
+
     Abstract: Usage documentation
         [How to use temporal selectors](../user-guides/selectors.md#temporal-selectors)
 
@@ -193,6 +198,15 @@ change in the future.""",
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.data"}
 
+    @property
+    def _dynamic_reload_hidden_ids(self) -> list[str]:
+        """Component id(s) a dynamic `Filter` hides while reloading (see `Filter.build`).
+
+        `self.id` is the non-visual proxy `dcc.Store`, so hide the wrapper holding the visible date/time
+        inputs instead; the title sits outside the wrapper and stays visible during reload.
+        """
+        return [f"{self.id}_datetime_wrapper"]
+
     @staticmethod
     def _get_value_from_trigger(value: JsonValue, trigger: JsonValue) -> JsonValue:
         """Return the given `trigger` without modification."""
@@ -204,8 +218,26 @@ change in the future.""",
         time_extra = {k: v for k, v in self.extra.items() if k in _TIME_PICKER_PROPS}
         return date_extra, time_extra
 
-    @_log_call
-    def build(self):
+    def __call__(self, min, max):
+        """Build the DateTimePicker component tree, bounding the date portion by ``min``/``max``.
+
+        ``min``/``max`` bound the *date* portion only (the time portion is always the full 00:00-23:59
+        day), so they are coerced to plain dates for the underlying ``dmc.DatePickerInput``. They accept
+        ``date``/``datetime``/``pandas.Timestamp``/ISO string/``None``; a dynamic
+        [`Filter`][vizro.models.Filter] passes ``pandas.Timestamp`` bounds computed from the reloaded
+        data on every refresh.
+
+        This does NOT register the clientside callbacks that glue the sub-components to the proxy
+        ``dcc.Store`` — those are registered once in ``build`` (see the class docstring). Re-rendering the
+        same-id sub-components re-binds them to that single registration, so a dynamic ``Filter`` can call
+        this on every data reload without duplicating callback registration (which is why the date portion
+        of the picker can be dynamic while the always-static time portion is unaffected).
+        """
+        # Coerce the bounds to plain dates: only the date sub-picker is bounded, and a runtime reload
+        # supplies pandas.Timestamp values (carrying a time-of-day) which dmc would otherwise reject.
+        min_date = _coerce_datetime_to_date(min)
+        max_date = _coerce_datetime_to_date(max)
+
         description = self.description.build().children if self.description else [None]
         label_target_id = f"{self.id}-date-start" if self.range else f"{self.id}-date"
         label = (
@@ -218,8 +250,8 @@ change in the future.""",
         )
 
         date_defaults: dict[str, Any] = {
-            "minDate": self.min,
-            "maxDate": self.max,
+            "minDate": min_date,
+            "maxDate": max_date,
             "valueFormat": "MMM D, YYYY",
             "persistence": True,
             "persistence_type": "session",
@@ -234,8 +266,6 @@ change in the future.""",
         date_extra, time_extra = self._split_extra()
 
         if self.range:
-            self._register_range_callback()
-
             _value = cast(list[Any], [None, None] if self.value is None else self.value)
             start_date, start_time = _split_iso_value(_value[0])
             end_date, end_time = _split_iso_value(_value[1])
@@ -244,6 +274,9 @@ change in the future.""",
                 children=[
                     label,
                     html.Div(
+                        # A wrapper id so a dynamic Filter can grey out only the inputs during reload while
+                        # keeping the title visible. selector.id is the proxy dcc.Store (no visual output).
+                        id=f"{self.id}_datetime_wrapper",
                         children=[
                             html.Div(
                                 children=[
@@ -296,8 +329,6 @@ change in the future.""",
                 ]
             )
 
-        self._register_single_callback()
-
         _value_single = cast(Any, self.value)
         date_part, time_part = _split_iso_value(_value_single)
 
@@ -305,6 +336,8 @@ change in the future.""",
             children=[
                 label,
                 html.Div(
+                    # See the range branch: hide-target wrapper id, distinct from the proxy dcc.Store.
+                    id=f"{self.id}_datetime_wrapper",
                     children=[
                         dmc.DatePickerInput(
                             id=f"{self.id}-date",
@@ -322,6 +355,35 @@ change in the future.""",
                 ),
                 dcc.Store(id=self.id, data=_value_single, storage_type="session"),
             ]
+        )
+
+    def _build_dynamic_placeholder(self, min, max):
+        # Guarantee a value so the initial (pre-reload) placeholder renders the full available range.
+        # Filter.pre_build already sets this via get_selector_default_value, so this is a defensive fallback
+        # for a dynamic selector built outside that flow. Mirror get_selector_default_value exactly: date-only
+        # ISO strings so the inline time shows as cleared, and empty strings when a bound is missing - never
+        # the literal "None" (which f"{None}" would produce and which fails value validation).
+        if not self.value:
+            if self.range:
+                self.value = [f"{min}", f"{max}"] if min is not None and max is not None else ["", ""]
+            else:
+                self.value = f"{min}" if min is not None else ""
+
+        return self.__call__(min, max)
+
+    @_log_call
+    def build(self):
+        # Register the clientside store-sync callback exactly once, at app startup. A dynamic Filter
+        # re-renders this selector on every data reload through __call__ (never build), so the callback
+        # must live here and not in __call__ — otherwise each reload would re-register it. The re-rendered
+        # same-id sub-components re-bind to this single registration.
+        if self.range:
+            self._register_range_callback()
+        else:
+            self._register_single_callback()
+
+        return (
+            self._build_dynamic_placeholder(self.min, self.max) if self._dynamic else self.__call__(self.min, self.max)
         )
 
     def _register_range_callback(self):

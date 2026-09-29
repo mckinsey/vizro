@@ -1,18 +1,27 @@
 import e2e.vizro.constants as cnst
 from e2e.vizro.checkers import (
+    check_cascader_trigger_value,
+    check_empty_time_picker_value,
     check_range_date_picker_value,
+    check_range_datetime_picker_value,
     check_range_slider_value,
+    check_range_time_picker_value,
     check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
+    check_table_ag_grid_column_values,
+    check_table_ag_grid_rows_number,
 )
 from e2e.vizro.navigation import (
     accordion_select,
     clear_dropdown,
     hover_over_element_by_xpath_selenium,
     page_select,
+    select_cascader_path,
     select_dropdown_select_all,
     select_dropdown_value,
+    select_range_datetime_picker_value,
+    select_range_time_picker_value,
     select_slider_value,
 )
 from e2e.vizro.paths import (
@@ -159,4 +168,103 @@ def test_reset_controls_page(dash_br):
             {"value": 2, "selected": False, "value_name": "Africa"},
             {"value": 3, "selected": False, "value_name": "Americas"},
         ],
+    )
+
+
+def test_reset_controls_timepicker(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.TIMEPICKER_RANGE_PAGE,
+        page_path=cnst.TIMEPICKER_RANGE_PAGE_PATH,
+        graph_check=False,
+    )
+
+    select_range_time_picker_value(
+        dash_br,
+        elem_id=cnst.TIMEPICKER_TIME_HH_MM_SS_RANGE_ID,
+        start_hour="10",
+        start_minute="43",
+        end_hour="10",
+        end_minute="44",
+    )
+    check_range_time_picker_value(
+        dash_br,
+        elem_id=cnst.TIMEPICKER_TIME_HH_MM_SS_RANGE_ID,
+        start_hour="10",
+        start_minute="43",
+        end_hour="10",
+        end_minute="44",
+    )
+
+    dash_br.multiple_click("button[id$='reset-button']", 1, delay=0.1)
+
+    check_empty_time_picker_value(dash_br, f"{cnst.TIMEPICKER_TIME_HH_MM_SS_RANGE_ID}-start")
+    check_empty_time_picker_value(dash_br, f"{cnst.TIMEPICKER_TIME_HH_MM_SS_RANGE_ID}-end")
+
+
+def test_reset_controls_datetimepicker(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.DATETIMEPICKER_RANGE_PAGE,
+        page_path=cnst.DATETIMEPICKER_RANGE_PAGE_PATH,
+        graph_check=False,
+    )
+
+    # dynamic DateTimePicker defaults to the column min/max date range
+    default_range = (("Jan 3, 2026", None, None), ("Dec 29, 2026", None, None))
+    check_range_datetime_picker_value(
+        dash_br,
+        elem_id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_ID,
+        start=default_range[0],
+        end=default_range[1],
+    )
+
+    select_range_datetime_picker_value(
+        dash_br,
+        elem_id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_ID,
+        start=("2026-06-10", "04", "34"),
+        end=("2026-06-11", "20", "18"),
+    )
+    check_range_datetime_picker_value(
+        dash_br,
+        elem_id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_ID,
+        start=("Jun 10, 2026", "04", "34"),
+        end=("Jun 11, 2026", "20", "18"),
+    )
+
+    dash_br.multiple_click("button[id$='reset-button']", 1, delay=0.1)
+
+    check_range_datetime_picker_value(
+        dash_br,
+        elem_id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_ID,
+        start=default_range[0],
+        end=default_range[1],
+    )
+
+
+def test_reset_controls_cascader(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.CASCADER_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.CASCADER_LEAF_PAGE,
+        page_path=cnst.CASCADER_LEAF_PAGE_PATH,
+        graph_check=False,
+    )
+
+    select_cascader_path(
+        dash_br,
+        cnst.CASCADER_LEAF_ID,
+        ["Asia", "South", "China"],
+        multi=False,
+    )
+    check_cascader_trigger_value(dash_br, cnst.CASCADER_LEAF_ID, "China")
+
+    dash_br.multiple_click("button[id$='reset-button']", 1, delay=0.1)
+
+    check_cascader_trigger_value(dash_br, cnst.CASCADER_LEAF_ID, "United States")
+    check_table_ag_grid_rows_number(dash_br, table_id=cnst.CASCADER_LEAF_AG_GRID_ID, expected_rows_num=1)
+    check_table_ag_grid_column_values(
+        dash_br, table_id=cnst.CASCADER_LEAF_AG_GRID_ID, col_id="country", expected_values=["United States"]
     )
