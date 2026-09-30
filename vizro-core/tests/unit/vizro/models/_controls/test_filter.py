@@ -198,6 +198,36 @@ def target_to_data_frame():
 
 
 @pytest.fixture
+def managers_datetime_dynamic_data():
+    """Page with a graph backed by a dynamic datetime data source (a datetime column with a time-of-day).
+
+    The time-of-day component makes the column type "datetime" (not "date"), so a DateTimePicker is allowed
+    and, because the data source is dynamic, the filter becomes dynamic through the picker's date portion.
+    """
+
+    def _load(first_n=None):
+        df = pd.DataFrame(
+            {
+                "column_datetime": [
+                    datetime(2024, 1, 1, 8, 0),
+                    datetime(2024, 1, 2, 10, 0),
+                    datetime(2024, 1, 3, 20, 0),
+                ],
+                "y": [1, 2, 3],
+            }
+        )
+        return df.head(first_n) if first_n else df
+
+    data_manager["dynamic_datetime"] = _load
+    vm.Page(
+        id="test_page",
+        title="Page Title",
+        components=[vm.Graph(id="dt_graph", figure=px.scatter("dynamic_datetime", x="column_datetime", y="y"))],
+    )
+    Vizro._pre_build()
+
+
+@pytest.fixture
 def managers_hierarchical_page():
     """Page with a single graph whose dataframe has hierarchical continent/country columns plus a datetime leaf."""
     df = pd.DataFrame(
@@ -1147,6 +1177,84 @@ class TestFilterCall:
         assert selector_build.minDate == datetime(2024, 1, 1, 10, 0)
         assert selector_build.maxDate == datetime(2024, 1, 4)
 
+    def test_filter_call_datetime_picker_selector_valid(self, target_to_data_frame):
+        """Runtime rebuild updates the date portion's minDate/maxDate (coerced to plain dates)."""
+        filter = vm.Filter(
+            column="column_datetime",
+            targets=["column_datetime_exists_1", "column_datetime_exists_2"],
+            selector=vm.DateTimePicker(id="test_selector_id"),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        # current_value carries date-only ISO strings (the default shape) and its end date (2024-01-04) lies
+        # beyond the data's own max (2024-01-03), so the bounds must widen to keep the selection valid.
+        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["2024-01-03", "2024-01-04"])
+        date_start = selector_build["test_selector_id-date-start"]
+        date_end = selector_build["test_selector_id-date-end"]
+        assert date_start.minDate == date(2024, 1, 1)
+        assert date_start.maxDate == date(2024, 1, 4)
+        assert date_end.minDate == date(2024, 1, 1)
+        assert date_end.maxDate == date(2024, 1, 4)
+
+    def test_filter_call_datetime_picker_cleared_value(self, target_to_data_frame):
+        """A fully-cleared current value must not crash; bounds fall back to the data's own min/max dates."""
+        filter = vm.Filter(
+            column="column_datetime",
+            targets=["column_datetime_exists_1", "column_datetime_exists_2"],
+            selector=vm.DateTimePicker(id="test_selector_id"),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["", ""])
+        date_start = selector_build["test_selector_id-date-start"]
+        assert date_start.minDate == date(2024, 1, 1)
+        assert date_start.maxDate == date(2024, 1, 3)
+
+    @pytest.mark.parametrize("range_mode", [True, False])
+    def test_filter_call_datetime_picker_reload_to_all_midnight(self, range_mode):
+        """Reloading a datetime column to all-midnight values makes _validate_column_type report "date".
+
+        That date<->datetime flip is value-based (same datetime64 dtype), not a schema change, so the reload
+        must tolerate it rather than raising "has changed type from datetime to date".
+        """
+        filter = vm.Filter(
+            column="column_datetime",
+            targets=["column_datetime_exists_1", "column_datetime_exists_2"],
+            selector=vm.DateTimePicker(id="test_selector_id", range=range_mode),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter._column_type == "datetime"
+
+        all_midnight = {
+            "column_datetime_exists_1": pd.DataFrame({"column_datetime": [datetime(2024, 1, 1), datetime(2024, 1, 2)]}),
+            "column_datetime_exists_2": pd.DataFrame({"column_datetime": [datetime(2024, 1, 2), datetime(2024, 1, 5)]}),
+        }
+        current_value = ["2024-01-01", "2024-01-05"] if range_mode else "2024-01-01"
+        selector_build = filter(target_to_data_frame=all_midnight, current_value=current_value)
+        date_input = selector_build["test_selector_id-date-start" if range_mode else "test_selector_id-date"]
+        assert date_input.minDate == date(2024, 1, 1)
+        assert date_input.maxDate == date(2024, 1, 5)
+
+    def test_filter_call_datetime_column_genuine_type_change_still_raises(self, target_to_data_frame):
+        """Only the date<->datetime flip is tolerated; a real type change (datetime -> categorical) must still raise."""
+        filter = vm.Filter(
+            column="column_datetime",
+            targets=["column_datetime_exists_1", "column_datetime_exists_2"],
+            selector=vm.DateTimePicker(id="test_selector_id"),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        categorical_reload = {
+            "column_datetime_exists_1": pd.DataFrame({"column_datetime": ["a", "b"]}),
+            "column_datetime_exists_2": pd.DataFrame({"column_datetime": ["b", "c"]}),
+        }
+        with pytest.raises(ValueError, match=r"column_datetime has changed type from datetime to categorical\."):
+            filter(target_to_data_frame=categorical_reload, current_value=["2024-01-01", "2024-01-05"])
+
     def test_filter_call_hierarchical_selector_valid(self):
         filter = vm.Filter(
             column=["column_hierarchical_parent", "column_hierarchical_leaf"],
@@ -1562,6 +1670,42 @@ class TestFilterPreBuildMethod:
     ):
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
         filter = vm.Filter(column=test_column, selector=test_selector)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert not filter._dynamic
+        assert not filter.selector._dynamic
+
+    @pytest.mark.parametrize("test_selector", [vm.DateTimePicker(), vm.DateTimePicker(range=False)])
+    def test_filter_datetime_picker_is_dynamic(self, test_selector, managers_datetime_dynamic_data):
+        """A DateTimePicker on a dynamic datetime column is dynamic (its date portion tracks the data)."""
+        filter = vm.Filter(column="column_datetime", selector=test_selector)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter._dynamic
+        assert filter.selector._dynamic
+
+    @pytest.mark.parametrize(
+        "test_selector",
+        [
+            vm.DateTimePicker(min="2024-01-01"),
+            vm.DateTimePicker(max="2024-01-03"),
+            vm.DateTimePicker(min="2024-01-01", max="2024-01-03"),
+        ],
+    )
+    def test_filter_datetime_picker_is_not_dynamic_with_min_max_specified(
+        self, test_selector, managers_datetime_dynamic_data
+    ):
+        """Manually setting min or max opts a DateTimePicker out of dynamic behavior, like DatePicker."""
+        filter = vm.Filter(column="column_datetime", selector=test_selector)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert not filter._dynamic
+        assert not filter.selector._dynamic
+
+    @pytest.mark.parametrize("test_selector", [vm.TimePicker(), vm.TimePicker(range=False)])
+    def test_filter_time_picker_is_never_dynamic(self, test_selector, managers_datetime_dynamic_data):
+        """A TimePicker stays static even on dynamic data: a time-of-day has no min/max bounds to derive."""
+        filter = vm.Filter(column="column_datetime", selector=test_selector)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert not filter._dynamic
@@ -2425,3 +2569,28 @@ class TestFilterBuild:
         )
 
         assert_component_equal(result, expected, keys_to_strip={"children"})
+
+    @pytest.mark.parametrize("range_mode", [True, False])
+    def test_dynamic_datetime_filter_build(self, range_mode, managers_datetime_dynamic_data):
+        """A dynamic DateTimePicker filter wraps in dcc.Loading and hides only the visible inputs on reload."""
+        filter = vm.Filter(
+            id="filter_id", column="column_datetime", selector=vm.DateTimePicker(id="dtp", range=range_mode)
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter._dynamic
+
+        result = filter.build()
+        assert isinstance(result, dcc.Loading)
+
+        # The reload-hide targets the inputs wrapper (not the non-visual proxy dcc.Store at selector.id): the
+        # layout class is preserved (append, not overwrite) and the title, which sits outside the wrapper, stays
+        # visible during reload.
+        layout_class = "vizro_datetime_picker_range" if range_mode else "vizro_datetime_picker_single"
+        wrapper = result["dtp_datetime_wrapper"]
+        assert wrapper.className == f"{layout_class} invisible"
+
+        # The proxy dcc.Store keeps selector.id and has no className applied to it (it renders nothing).
+        assert not getattr(result["dtp"], "className", None)
+        # The guard store starts False, matching every other dynamic selector.
+        assert result["dtp_guard_actions_chain"].data is False

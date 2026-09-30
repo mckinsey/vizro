@@ -49,6 +49,11 @@ def _is_datetime_selector(x: object) -> TypeIs[DateTimePicker]:
     return isinstance(x, SELECTORS["datetime"])
 
 
+def _is_numerical_date_or_datetime_selector(x: object) -> TypeIs[RangeSlider | Slider | DatePicker | DateTimePicker]:
+    """Selectors whose available values are expressed as ``min``/``max`` bounds (numerical, date or datetime)."""
+    return _is_numerical_or_date_selector(x) or _is_datetime_selector(x)
+
+
 def _is_categorical_selector(x: object) -> TypeIs[Checklist | Dropdown | RadioItems]:
     return isinstance(x, SELECTORS["categorical"])
 

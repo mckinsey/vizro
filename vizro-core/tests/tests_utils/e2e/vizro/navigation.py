@@ -348,6 +348,35 @@ def select_cascader_path_playwright(page, cascader_id, path_labels, *, multi=Fal
     page.locator("body").click()
 
 
+def select_slider_value_playwright(page, elem_id, *, min_value=None, max_value=None):
+    """Set a Slider or RangeSlider value via its min/max input fields."""
+    if min_value is not None:
+        min_input = page.locator(f"div[id='{elem_id}'] input[class$='dash-range-slider-min-input']")
+        min_input.fill(str(min_value))
+        min_input.press("Tab")
+    if max_value is not None:
+        max_input = page.locator(f"div[id='{elem_id}'] input[class$='dash-range-slider-max-input']")
+        max_input.fill(str(max_value))
+        max_input.press("Tab")
+
+
+def select_date_picker_range_playwright(page, elem_id, start_iso_date, end_iso_date):
+    """Select a date range on a range DatePicker."""
+    start = datetime.strptime(start_iso_date, "%Y-%m-%d")
+    end = datetime.strptime(end_iso_date, "%Y-%m-%d")
+    page.locator(f'button[id="{elem_id}"]').click()
+    page.wait_for_selector('div[data-calendar="true"]')
+    page.wait_for_timeout(300)
+    _navigate_calendar_to_month_playwright(page, start.year, start.month)
+    _click_displayed_calendar_control_playwright(
+        page, f'button[aria-label="{_iso_date_to_aria_label(start_iso_date)}"]'
+    )
+    page.wait_for_timeout(200)
+    _navigate_calendar_to_month_playwright(page, end.year, end.month)
+    _click_displayed_calendar_control_playwright(page, f'button[aria-label="{_iso_date_to_aria_label(end_iso_date)}"]')
+    page.wait_for_timeout(200)
+
+
 def select_slider_value(driver, elem_id, min_value=None, max_value=None):
     if min_value:
         min_value_elem = driver.find_element(f"div[id='{elem_id}'] input[class$='dash-range-slider-min-input']")
