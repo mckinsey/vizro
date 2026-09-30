@@ -20,7 +20,6 @@ from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import (
     DatePicker,
-    DateTimePicker,
     Dropdown,
     Slider,
     Switch,
