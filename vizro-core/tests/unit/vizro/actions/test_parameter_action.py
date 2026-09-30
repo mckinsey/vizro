@@ -94,7 +94,6 @@ def ctx_parameter_y(request):
         "args_grouping": {
             "external": {
                 "_controls": {
-                    "filter_interaction": [],
                     "filters": [],
                     "parameters": [
                         CallbackTriggerDict(
@@ -121,7 +120,6 @@ def ctx_parameter_dimensions(request):
         "args_grouping": {
             "external": {
                 "_controls": {
-                    "filter_interaction": [],
                     "filters": [],
                     "parameters": [
                         CallbackTriggerDict(
@@ -148,7 +146,6 @@ def ctx_parameter_hover_data(request):
         "args_grouping": {
             "external": {
                 "_controls": {
-                    "filter_interaction": [],
                     "filters": [],
                     "parameters": [
                         CallbackTriggerDict(
@@ -175,7 +172,6 @@ def ctx_parameter_y_and_x(request):
         "args_grouping": {
             "external": {
                 "_controls": {
-                    "filter_interaction": [],
                     "filters": [],
                     "parameters": [
                         CallbackTriggerDict(
@@ -240,9 +236,7 @@ def ctx_parameter_data_frame_argument(request):
         )
 
     mock_ctx = {
-        "args_grouping": {
-            "external": {"_controls": {"filters": dynamic_filters, "filter_interaction": [], "parameters": parameters}}
-        },
+        "args_grouping": {"external": {"_controls": {"filters": dynamic_filters, "parameters": parameters}}},
         "outputs_list": [
             {"id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"}, "property": "data"}
             for target in targets

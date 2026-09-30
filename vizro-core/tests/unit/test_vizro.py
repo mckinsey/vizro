@@ -223,7 +223,6 @@ class TestActionLogDevtool:
 
 
 class TestRun:
-    @pytest.mark.filterwarnings("ignore:`AgGrid` is deprecated:FutureWarning")
     def test_run_block_with_undefined_captured_callables(self):
         dashboard_config = {
             "title": "Test dashboard",
@@ -232,7 +231,7 @@ class TestRun:
                     "title": "Page 1",
                     "components": [
                         {
-                            "type": "ag_grid",
+                            "type": "table",
                             "figure": {"_target_": "llm_generated_grid", "data_frame": "iris"},
                         },
                     ],

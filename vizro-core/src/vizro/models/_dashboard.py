@@ -192,12 +192,12 @@ class Dashboard(VizroBaseModel):
                 hidden=True,
             )
 
-        # Controls that are the target of a cross-page `set_control` - i.e. a control synced from another page, or a
+        # Controls that are the target of a cross-page `set_controls` - i.e. a control synced from another page, or a
         # drill-through target. Only these have their value restored from the store when a page is opened; every other
-        # control keeps its usual per-page behavior and resets when you navigate away. A single `set_control` can
+        # control keeps its usual per-page behavior and resets when you navigate away. A single `set_controls` can
         # target several controls across several pages, so collect every cross-page target it lists.
         # `_cross_page_controls` is set in set_controls.pre_build, which has run by now. Fetching by the base
-        # `set_controls` also covers the deprecated `set_control` subclass.
+        # `set_controls` also covers the deprecated `set_controls` subclass.
         from vizro.actions import set_controls
 
         cross_page_target_ids = {
@@ -217,11 +217,12 @@ class Dashboard(VizroBaseModel):
                         "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
                     },
                 ),
-                # Holds every control's state so controls can be synced across pages (see set_control) and reset.
-                # `currentValue` is kept up to date clientside as controls change and by cross-page set_control. On page
-                # open it is applied only to controls with `crossPageTarget=True` (targets of a cross-page set_control),
-                # so unrelated controls keep their usual per-page behavior. `showInURL` mirrors control.show_in_url so
-                # the clientside sync callback knows which controls to write into the URL query string.
+                # Holds every control's state so controls can be synced across pages (see set_controls) and reset.
+                # `currentValue` is kept up to date clientside as controls change and by cross-page set_controls. On
+                # page open it is applied only to controls with `crossPageTarget=True` (targets of a cross-page
+                # set_controls), so unrelated controls keep their usual per-page behavior. `showInURL` mirrors
+                # control.show_in_url so the clientside sync callback knows which controls to write into the URL
+                # query string.
                 # storage_type="session" so synced values also survive a full browser refresh within the session.
                 dcc.Store(
                     id="vizro_controls_store",

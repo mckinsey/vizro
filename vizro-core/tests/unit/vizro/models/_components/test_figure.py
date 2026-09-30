@@ -49,7 +49,7 @@ class TestFigureInstantiation:
         with pytest.raises(
             ValidationError,
             match=re.escape(
-                "CapturedCallable was defined with @capture('table') rather than @capture('figure') and so "
+                "CapturedCallable was defined with @capture('ag_grid') rather than @capture('figure') and so "
                 "is not compatible with the model."
             ),
         ):

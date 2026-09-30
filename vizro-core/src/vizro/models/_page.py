@@ -209,7 +209,7 @@ class Page(VizroBaseModel):
             # Define a clientside callback that keeps controls in sync across pages through `vizro_controls_store` and,
             # for controls with show_in_url=True, mirrors their values in the URL query string. It runs for ALL
             # controls on the page (not only show_in_url ones): every control's value is tracked in the store on change
-            # so it can be restored on whichever page syncs it (via set_control) when that page is opened.
+            # so it can be restored on whichever page syncs it (via set_controls) when that page is opened.
             # Selector values as inputs. Use "__default__" as the key to get the main selector input prop.
             selector_values_inputs = [
                 Input(*control.selector._action_triggers["__default__"].split(".")) for control in controls
@@ -230,7 +230,7 @@ class Page(VizroBaseModel):
             # instead of using dcc.Location as a callback Input. Do it to align the behavior with the outputs and to
             # simplify the function inputs handling.
             # `vizro_controls_store` is passed as a State (kept last so it is popped off the flexible-signature args in
-            # JS). It is a State rather than an Input so cross-page set_control writes to the store do not re-trigger
+            # JS). It is a State rather than an Input so cross-page set_controls writes to the store do not re-trigger
             # this callback; the store is only read here to restore synced values when the page is opened.
             clientside_callback(
                 ClientsideFunction(namespace="page", function_name="sync_url_query_params_and_controls"),

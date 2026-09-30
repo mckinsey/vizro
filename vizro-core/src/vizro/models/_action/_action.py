@@ -4,20 +4,18 @@ import inspect
 import logging
 import re
 import time
-import warnings
 from collections import ChainMap
 from collections.abc import Callable, Collection, Iterable, Mapping
 from datetime import datetime, timezone
 from pprint import pformat
 from types import SimpleNamespace
-from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
+from typing import Annotated, Any, ClassVar, Literal, cast
 
 from dash import ClientsideFunction, Input, Output, Patch, State, callback, clientside_callback, dcc, no_update
 from dash.development.base_component import Component
 from dash.exceptions import PreventUpdate
 from pydantic import (
     BaseModel,
-    BeforeValidator,
     Field,
     PrivateAttr,
     TypeAdapter,
@@ -31,12 +29,11 @@ from typing_extensions import TypedDict
 
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import _log_call, make_deprecated_field_warning
+from vizro.models._models_utils import _log_call
 from vizro.models.types import (
     ActionNotificationType,
     CapturedCallable,
     ControlType,
-    FigureWithFilterInteractionType,
     OutputsType,
     _IdOrIdProperty,
     _IdProperty,
@@ -45,16 +42,11 @@ from vizro.models.types import (
 
 logger = logging.getLogger(__name__)
 
-if TYPE_CHECKING:
-    from vizro.actions import export_data, filter_interaction
-
 
 # TODO-AV2 A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
-# Remember filter_interaction won't be here in future.
 class ControlsStates(TypedDict):
     filters: list[State]
     parameters: list[State]
-    filter_interaction: list[dict[str, State]]
 
 
 class NotificationPayload(BaseModel):
@@ -97,8 +89,8 @@ class _BaseAction(VizroBaseModel):
     _first_in_chain_trigger: _IdProperty = PrivateAttr()
     _prevent_initial_call_of_guard: bool = PrivateAttr()
 
-    # Temporary workaround for lookups in filter_interaction and set_control. This should become unnecessary once
-    # the model manager supports `parent_model` access for all Vizro models.
+    # Temporary workaround for lookups in set_controls. This should become unnecessary once the model manager supports
+    # `parent_model` access for all Vizro models.
     _parent_model: VizroBaseModel = PrivateAttr()
 
     @property
@@ -141,10 +133,6 @@ class _BaseAction(VizroBaseModel):
         return dash_components
 
     @property
-    def _legacy(self):
-        raise NotImplementedError
-
-    @property
     def _parameters(self) -> set[str]:
         raise NotImplementedError
 
@@ -176,23 +164,6 @@ class _BaseAction(VizroBaseModel):
         return [
             State(*control.selector._action_inputs["__default__"].split("."))
             for control in cast(Iterable[ControlType], model_manager._get_models(control_type, page))
-        ]
-
-    def _get_filter_interaction_states(self) -> list[dict[str, State]]:
-        """Gets list of `States` for selected chart interaction `filter_interaction`."""
-        from vizro.actions import filter_interaction
-
-        page = model_manager._get_model_page(self)
-
-        # States are stored in the parent model (e.g. AgGrid) whose actions contains the filter_interaction rather than
-        # the filter_interaction model itself, hence needing to lookup action._parent_model.
-        # This is also needed to trigger the parent model's `_get_value_from_trigger` method in set_control.
-        # After work on the model_manager we should be able to tidy this to directly get the parent model
-        # from inside the action.
-        # Maybe want to revisit this as part of TODO-AV2 A 1.
-        return [
-            cast(FigureWithFilterInteractionType, action._parent_model)._filter_interaction_input
-            for action in model_manager._get_models(filter_interaction, page)
         ]
 
     @staticmethod
@@ -270,28 +241,19 @@ class _BaseAction(VizroBaseModel):
             ) from exc
 
     @property
-    def _transformed_inputs(self) -> list[State] | dict[str, State | ControlsStates]:
+    def _transformed_inputs(self) -> dict[str, State | ControlsStates]:
         """Creates Dash States given the user-specified runtime arguments and built in ones.
 
-        Return type is list only for legacy actions. Otherwise, it will always be a dictionary (unlike
-        for _transformed_outputs, where new behavior can still give a list). Keys are the parameter names. For
-        user-specified inputs, values are Dash States. For built-in inputs, values can be more complicated nested
-        structure of states.
+        The return value is always a dictionary (unlike for _transformed_outputs, where new behavior can still give a
+        list). Keys are the parameter names. For user-specified inputs, values are Dash States. For built-in inputs,
+        values can be more complicated nested structure of states.
         """
-        if self._legacy:
-            # Must be an Action rather than _AbstractAction, so has already been validated by pydantic field annotation.
-            return [
-                State(*self._transform_dependency(input, type="input").split("."))
-                for input in cast(Action, self).inputs
-            ]
-
         from vizro.models import Filter, Parameter
 
         builtin_args = {
             "_controls": {
                 "filters": self._get_control_states(control_type=Filter),
                 "parameters": self._get_control_states(control_type=Parameter),
-                "filter_interaction": self._get_filter_interaction_states(),
             },
             "_trigger": State(*self._first_in_chain_trigger.split(".")),
             "_controls_store": State("vizro_controls_store", "data"),
@@ -302,10 +264,8 @@ class _BaseAction(VizroBaseModel):
             arg_name: arg_value for arg_name, arg_value in builtin_args.items() if arg_name in self._parameters
         }
 
-        # Validate that the runtime arguments are in the same form as the legacy Action.inputs field (str).
-        # Currently, this code only runs for subclasses of _AbstractAction but not vm.Action instances because a
-        # vm.Action that does not pass this check will have already been classified as legacy in Action._legacy.
-        # In future when vm.Action.inputs is removed then this will be used for vm.Action instances also.
+        # Validate that the runtime arguments are all strings (`<component_id>.<property>` or a model id). Passing a
+        # static (non-string) argument to a custom action is not supported and fails here.
         TypeAdapter(dict[str, str]).validate_python(self._runtime_args)
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
@@ -406,10 +366,7 @@ class _BaseAction(VizroBaseModel):
             logger.debug("Action inputs:\n%s", pformat(inputs, depth=3, width=200))
             logger.debug("Action outputs:\n%s", pformat(outputs, width=200))
 
-        if self._legacy:
-            return_value = cast(Action, self).function(*inputs)  # type: ignore[operator]
-        else:
-            return_value = self.function(**inputs)  # type: ignore[arg-type]
+        return_value = self.function(**inputs)  # type: ignore[arg-type]
 
         notification_payload = None
 
@@ -735,70 +692,14 @@ class Action(_BaseAction):
     #  for user-defined actions.
 
     type: Literal["action"] = "action"
-    # export_data and filter_interaction are here just so that legacy vm.Action(function=filter_interaction(...)) and
-    # vm.Action(function=export_data(...)) work. They are always replaced with the new implementation by extracting
-    # actions.function in _make_actions_chain. It's done as a forward ref here to avoid circular imports and resolved
-    # with Dashboard.model_rebuild() later.
-    function: Annotated[  # type: ignore[misc, assignment]
-        SkipJsonSchema[CapturedCallable | export_data | filter_interaction],
+    function: Annotated[  # type: ignore[misc]
+        SkipJsonSchema[CapturedCallable],
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
-    ]
-    # inputs is deprecated and must only be used when _legacy = True. We don't use deprecated=True here because it only
-    # affects the JSON schema and raises unwanted warnings when looking through model attributes. We use our own
-    # make_deprecated_field_warning validator instead.
-    # The type hint str here really means _IdOrIdProperty. We might change it in future for clearer API docs, but the
-    # validation to check string format (presence of 0 or 1 . characters) does not need to be included in the
-    # annotation. Options for good public API might be:
-    # ModelID | str - where str refers to IdProperty, but ModelID is also str so this doesn't fully  make sense
-    # ModelID | IdProperty - means making IdProperty public, which is ok but maybe overkill
-    inputs: Annotated[
-        list[str],
-        Field(
-            default=[],
-            description="""List of inputs provided to the action function. Each input can be specified as
-            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.
-            ❗Deprecated: `inputs` is deprecated and [will not exist in Vizro 1.0.0](
-            deprecations.md#action-model-inputs-argument).""",
-        ),
-        BeforeValidator(
-            make_deprecated_field_warning(
-                "Pass references to runtime inputs directly as arguments of `function`. See "
-                "https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#action-model-inputs-argument."
-            )
-        ),
     ]
 
     outputs: OutputsType  # type: ignore[misc]
 
     notifications: ActionNotificationType  # type: ignore[misc]
-
-    @property
-    def _legacy(self) -> bool:
-        if "inputs" in self.model_fields_set:
-            # Deprecation warning has already been raised by make_deprecated_field_warning.
-            legacy = True
-        else:
-            # If all supplied arguments look like states `<component_id>.<property>` or are model IDs then assume it's
-            # a new type of action. For the case that there's no arguments and no inputs, this gives legacy=False.
-            try:
-                legacy = not all(
-                    re.fullmatch("[^.]+[.][^.]+", arg_val) or arg_val in model_manager
-                    for arg_val in self._runtime_args.values()
-                )
-            except TypeError:
-                # arg_val isn't a string so it must be treated as a legacy action.
-                legacy = True
-
-            if legacy:
-                warnings.warn(
-                    "Passing a static argument to a custom action is deprecated and will not be possible in "
-                    "Vizro 1.0.0. See https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#static"
-                    "-argument-for-custom-action.",
-                    category=FutureWarning,
-                )
-
-        logger.debug("Action with id %s, function %s, has legacy=%s", self.id, self._action_name, legacy)
-        return legacy
 
     _validate_function = field_validator("function", mode="before")(_validate_captured_callable)
 
@@ -809,7 +710,7 @@ class Action(_BaseAction):
         #  this _parameters property from both Action and _AbstractAction. Possibly also the _action_name one.
         #  Try and get IDE completion to work for action arguments.
         # Note order of parameters doesn't matter since we always handle things with keyword arguments.
-        return set(inspect.signature(self.function._function).parameters)  # type:ignore[union-attr]
+        return set(inspect.signature(self.function._function).parameters)
 
     @property
     def _runtime_args(self) -> dict[str, _IdOrIdProperty]:
@@ -819,11 +720,11 @@ class Action(_BaseAction):
         # bound in CapturedCallable.
         # Currently, this does not use default values of function parameters. To do so, we would need to
         # use inspect.BoundArguments.apply_defaults.
-        return self.function._arguments  # type:ignore[union-attr]
+        return self.function._arguments
 
     @property
     def _action_name(self) -> str:
-        return self.function._function.__name__  # type:ignore[union-attr]
+        return self.function._function.__name__
 
     @property
     def _validated_outputs(self) -> OutputsType:
