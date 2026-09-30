@@ -1,12 +1,12 @@
 ---
-description: "Decision table for picking between `Graph`, `Table`, `AgGrid`, `Figure`, `Card`, `Text`, `Button`, `Container`, and `Tabs` for a piece of page content."
+description: "Decision table for picking between `Graph`, `Table`, `Figure`, `Card`, `Text`, `Button`, `Container`, and `Tabs` for a piece of page content."
 ---
 
 # Components
 
 Components are the visual building blocks of a Vizro dashboard page. You add them to the `components` argument of a [`Page`][vizro.models.Page] (or [`Container`][vizro.models.Container]) to display charts and tables, present text, group related content into sections, or expose interactive elements such as buttons.
 
-Vizro ships with [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`AgGrid`][vizro.models.AgGrid], [`Figure`][vizro.models.Figure], [`Card`][vizro.models.Card], [`Text`][vizro.models.Text], [`Button`][vizro.models.Button], [`Container`][vizro.models.Container], and [`Tabs`][vizro.models.Tabs] components. You can also [extend Vizro with your own components](extensions.md).
+Vizro ships with [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Figure`][vizro.models.Figure], [`Card`][vizro.models.Card], [`Text`][vizro.models.Text], [`Button`][vizro.models.Button], [`Container`][vizro.models.Container], and [`Tabs`][vizro.models.Tabs] components. You can also [extend Vizro with your own components](extensions.md).
 
 ## When to use which component
 
@@ -14,10 +14,9 @@ Use this table to pick the right component for a given piece of content. Every c
 
 | Component                                     | Choose it when you need to…                                                                | Prefer instead…                                                                                                                                                     |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`Graph`](graph.md)                           | Render a Plotly Express chart or a [custom Plotly figure](custom-charts.md).               | [`AgGrid`/`Table`](table.md) for tables; [`Figure`](figure.md) for other reactive Dash components.                                                                  |
-| [`AgGrid`](table.md#ag-grid)                  | Display an interactive tabular grid (recommended default for tables).                      | [`Table`](table.md#dash-datatable) if you specifically need a Dash DataTable; [`Graph`](graph.md) for a chart.                                                      |
-| [`Table`](table.md#dash-datatable)            | Display a Dash DataTable.                                                                  | [`AgGrid`](table.md#ag-grid) is recommended for most tables.                                                                                                        |
-| [`Figure`](figure.md)                         | Wrap any other reactive Dash component (including built-in [KPI cards](figure.md#key-performance-indicator-kpi-cards)). | [`Graph`](graph.md), [`AgGrid`/`Table`](table.md) for the common cases; [custom components](custom-components.md) if the component doesn't need to react to controls. |
+| [`Graph`](graph.md)                           | Render a Plotly Express chart or a [custom Plotly figure](custom-charts.md).               | [`Table`](table.md) for tables; [`Figure`](figure.md) for other reactive Dash components.                                                                           |
+| [`Table`](table.md)                           | Display tabular data — an interactive [AG Grid](table.md#ag-grid) (recommended) via `dash_ag_grid`, or a [Dash DataTable](table.md#dash-datatable) via `dash_data_table`. | [`Graph`](graph.md) for a chart; [`Figure`](figure.md) for other reactive Dash components.                                                                          |
+| [`Figure`](figure.md)                         | Wrap any other reactive Dash component (including built-in [KPI cards](figure.md#key-performance-indicator-kpi-cards)). | [`Graph`](graph.md), [`Table`](table.md) for the common cases; [custom components](custom-components.md) if the component doesn't need to react to controls.         |
 | [`Card`](card.md)                             | Show a bordered, attention-drawing Markdown callout or a clickable [navigation tile](card.md#create-a-navigation-card). | [`Text`](text.md) for plain Markdown; a [KPI card figure](figure.md#key-performance-indicator-kpi-cards) for KPI tiles; [`Button`](button.md) to trigger an action. |
 | [`Text`](text.md)                             | Show plain Markdown text with no border or background.                                     | [`Card`](card.md) if you want it to stand out.                                                                                                                      |
 | [`Button`](button.md)                         | Let users trigger an [action](actions.md), submit a form, or navigate to a URL.            | [`Filter`](filters.md) / [`Parameter`](parameters.md) for control-like behavior; [`Card`'s navigation tile](card.md#create-a-navigation-card) for click-to-navigate. |

@@ -114,9 +114,13 @@ underlying component may change in the future.""",
             return data
         range_ = data.get("range", cls.model_fields["range"].get_default())
         value = data.get("value")
-        if range_ and value is not None and not isinstance(value, list):
+        # Treat a tuple as range-shaped too: the legacy `RangeSlider` accepted inputs like `value=(2, 8)`, and the
+        # `value` field validator coerces the tuple to the declared `[start, end]` list, so `Slider(range=True)` must
+        # accept it as well for the migration to stay functionally identical.
+        is_range_shaped = isinstance(value, (list, tuple))
+        if range_ and value is not None and not is_range_shaped:
             raise ValueError("Please set range=False if providing a single value.")
-        if not range_ and isinstance(value, list):
+        if not range_ and is_range_shaped:
             raise ValueError("Please set range=True if providing a list of values.")
         return data
 

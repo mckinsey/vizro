@@ -485,6 +485,15 @@ class TestSliderRange:
     def test_range_true_with_list_value(self):
         assert vm.Slider(min=0, max=10, value=[2, 8], range=True).value == [2, 8]
 
+    def test_range_true_with_tuple_value(self):
+        # The deprecated RangeSlider accepted tuple values (e.g. value=(2, 8)), so the Slider(range=True) migration
+        # target must too: a tuple is range-shaped and the field validator coerces it to the [start, end] list.
+        assert vm.Slider(min=0, max=10, value=(2, 8), range=True).value == [2, 8]
+
+    def test_tuple_value_without_range_raises(self):
+        with pytest.raises(ValidationError, match="Please set range=True if providing a list of values"):
+            vm.Slider(min=0, max=10, value=(2, 8))
+
     def test_range_true_inner_component_properties(self):
         # dcc.RangeSlider exposes extra properties (allowCross, count, pushable) that must be forwardable.
         assert "allowCross" in vm.Slider(range=True)._inner_component_properties
