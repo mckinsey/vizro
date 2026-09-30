@@ -1,7 +1,7 @@
 """Deprecated `set_control` action alias. Use [`set_controls`][vizro.actions.set_controls] instead.
 
-This alias is isolated in its own module (like `ag_grid.py` and `range_slider.py` for the deprecated models) so that
-removing it in Vizro 1.0.0 is deleting a file rather than editing shared code.
+This alias is isolated in its own module (like `ag_grid_legacy.py` and `range_slider_legacy.py` for the deprecated
+models) so that removing it in Vizro 1.0.0 is deleting a file rather than editing shared code.
 """
 
 # TODO[1.0.0]: delete this entire file (the deprecated `set_control` alias). Also drop its import + `__all__` entry in
@@ -14,7 +14,7 @@ from pydantic import Field, model_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import deprecated
 
-from vizro.actions._set_control import set_controls
+from vizro.actions._set_controls import set_controls
 from vizro.models.types import ModelID
 
 

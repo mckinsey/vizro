@@ -17,7 +17,7 @@ from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models._action._action import Action
-from vizro.models._components.ag_grid import DAG_AG_GRID_PROPERTIES
+from vizro.models._components.ag_grid_legacy import DAG_AG_GRID_PROPERTIES
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 

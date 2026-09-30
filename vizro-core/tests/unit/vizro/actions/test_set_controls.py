@@ -13,7 +13,7 @@ from dash import no_update
 from pydantic import ValidationError
 
 import vizro.actions as va
-import vizro.actions._set_control as set_controls_module
+import vizro.actions._set_controls as set_controls_module
 import vizro.models as vm
 from vizro import Vizro
 from vizro.actions import set_controls, update_targets

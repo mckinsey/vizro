@@ -3,7 +3,7 @@ import re
 import pytest
 from dash import no_update
 
-import vizro.actions._set_control as set_control_module
+import vizro.actions._set_controls as set_control_module
 import vizro.models as vm
 from vizro import Vizro
 from vizro.actions import set_control

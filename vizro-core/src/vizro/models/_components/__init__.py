@@ -1,7 +1,7 @@
 """Components that are placed according to the `layout` of the `Page`."""
 
 # TODO[1.0.0]: remove the `AgGrid` import and its `__all__` entry — the deprecated model is deleted.
-from vizro.models._components.ag_grid import AgGrid
+from vizro.models._components.ag_grid_legacy import AgGrid
 from vizro.models._components.button import Button
 from vizro.models._components.card import Card
 from vizro.models._components.container import Container

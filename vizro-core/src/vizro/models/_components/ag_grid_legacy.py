@@ -3,7 +3,7 @@
 # TODO[1.0.0]: delete this entire file. Also remove the `AgGrid` import + `__all__` entry in
 #  `models/_components/__init__.py` and `models/__init__.py`. The re-exports below (Table/Trigger/CellClicked/
 #  SelectedRow/CELL_CLICKED_MAPPING/DAG_AG_GRID_PROPERTIES) have no in-repo importers (they import from `table.py`)
-#  so nothing internal breaks; keep them only if external back-compat for `from ...ag_grid import X` is still wanted.
+#  so nothing internal breaks; keep them only if external back-compat for `from ...ag_grid_legacy import X` is wanted.
 
 from typing import Annotated, Literal
 
@@ -14,7 +14,7 @@ from typing_extensions import deprecated
 from vizro.models._components._components_utils import _process_callable_data_frame
 
 # The canonical implementation now lives in table.py. These are re-exported for backwards compatibility with any code
-# importing them from `vizro.models._components.ag_grid`.
+# importing them from `vizro.models._components.ag_grid_legacy`.
 from vizro.models._components.table import (  # noqa: F401
     CELL_CLICKED_MAPPING,
     DAG_AG_GRID_PROPERTIES,
