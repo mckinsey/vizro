@@ -109,6 +109,7 @@ underlying component may change in the future.""",
             return data
         # Subclasses that lock `range` (e.g. RangeSlider fixes range=True) narrow `value` at the field level, which
         # gives a clearer error than this cross-field message, so skip the check for them.
+        # TODO[1.0.0]: remove this escape hatch — the only subclass locking `range` is the deprecated `RangeSlider`.
         if cls.model_fields["range"].annotation is not bool:
             return data
         range_ = data.get("range", cls.model_fields["range"].get_default())

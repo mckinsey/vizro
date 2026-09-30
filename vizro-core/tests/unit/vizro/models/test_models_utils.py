@@ -10,8 +10,6 @@ from vizro.actions import export_data
 from vizro.models._models_utils import make_actions_chain, warn_description_without_title
 from vizro.models.types import ActionsType, _IdProperty
 
-pytestmark = pytest.mark.filterwarnings("ignore:`AgGrid` is deprecated:FutureWarning")
-
 
 @dataclass
 class MockValidationInfo:

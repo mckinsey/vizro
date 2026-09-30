@@ -1,5 +1,10 @@
 """Deprecated `AgGrid` model. Use [`Table`][vizro.models.Table] with a `dash_ag_grid` figure instead."""
 
+# TODO[1.0.0]: delete this entire file. Also remove the `AgGrid` import + `__all__` entry in
+#  `models/_components/__init__.py` and `models/__init__.py`. The re-exports below (Table/Trigger/CellClicked/
+#  SelectedRow/CELL_CLICKED_MAPPING/DAG_AG_GRID_PROPERTIES) have no in-repo importers (they import from `table.py`)
+#  so nothing internal breaks; keep them only if external back-compat for `from ...ag_grid import X` is still wanted.
+
 from typing import Annotated, Literal
 
 from pydantic import AfterValidator, Field

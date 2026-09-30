@@ -169,6 +169,8 @@ class _JsonSchemaExtraType(TypedDict):
 
     import_path: str
     # A single accepted mode, or a collection of accepted modes (e.g. `Table` accepts both "ag_grid" and "table").
+    # TODO[1.0.0]: revert to `mode: str`. The tuple form exists only because `Table` accepts two backings; once Table
+    #  is AG-Grid-only there is a single accepted mode again.
     mode: Union[str, tuple[str, ...]]
 
 
@@ -452,6 +454,8 @@ class CapturedCallable:
         import_path = json_schema_extra["import_path"]
         # `mode` may be a single mode or a collection of accepted modes. Normalize to a tuple so the check and the
         # error messages handle either (e.g. `Table` accepts both "ag_grid" and "table").
+        # TODO[1.0.0]: `mode` is always a single str once Table is AG-Grid-only; drop this tuple normalization and
+        #  compare `captured_callable._mode` against the scalar `expected_mode` directly.
         expected_modes = (expected_mode,) if isinstance(expected_mode, str) else tuple(expected_mode)
         allowed_decorators = " or ".join(f"@capture('{expected}')" for expected in expected_modes)
 
@@ -704,6 +708,7 @@ OptionsType: TypeAlias = list[SingleValueType | _OptionsDictType]
 
 # All the below types rely on models and so must use ForwardRef (that is, "Checklist" rather than actual
 # Checklist class).
+# TODO[1.0.0]: drop `RangeSlider` from this union and from the docstring list below — the deprecated model is deleted.
 SelectorType = Annotated[
     "Cascader | Checklist | DatePicker | DateTimePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch | TimePicker",  # noqa: E501
     Field(discriminator="type", description="Selectors to be used inside a control."),
@@ -766,6 +771,7 @@ ActionType = Annotated[
     Annotated["Action", Tag("action")]
     | Annotated["export_data", Tag("export_data")]
     | Annotated["filter_interaction", Tag("filter_interaction")]
+    # TODO[1.0.0]: remove this line — the deprecated `set_control` action alias is deleted.
     | Annotated["set_control", Tag("set_control")]
     | Annotated["set_controls", Tag("set_controls")]
     | Annotated["show_notification", Tag("show_notification")]

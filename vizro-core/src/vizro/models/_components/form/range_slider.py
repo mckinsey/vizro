@@ -1,3 +1,6 @@
+# TODO[1.0.0]: delete this entire file. Also remove the `RangeSlider` import + `__all__` entry in
+#  `models/_components/form/__init__.py` and `models/__init__.py`, and drop `RangeSlider` from the `SelectorType`
+#  union + docs list in `types.py`. Users migrate to `Slider(range=True)`.
 from typing import Annotated, Literal
 
 from pydantic import AfterValidator, Field, conlist

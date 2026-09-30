@@ -293,6 +293,7 @@ underlying component may change in the future.""",
     _in_container: bool = PrivateAttr(False)
     _inner_component_properties: list[str] = PrivateAttr(vdc.Cascader().available_properties)
 
+    # TODO[1.0.0]: remove this warning validator and flip the `full_path` field default from False to True.
     @model_validator(mode="before")
     @classmethod
     def _warn_full_path_default_change(cls, data):

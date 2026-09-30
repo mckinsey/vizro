@@ -7,7 +7,10 @@ Abstract: Usage documentation
 from vizro.actions._export_data import export_data
 from vizro.actions._filter_interaction import filter_interaction
 from vizro.actions._notifications import show_notification, update_notification
-from vizro.actions._set_control import set_control, set_controls
+from vizro.actions._set_control import set_controls
+
+# TODO[1.0.0]: remove this import and the `set_control` `__all__` entry — the deprecated alias module is deleted.
+from vizro.actions._set_control_legacy import set_control
 from vizro.actions._update_targets import update_targets
 
 __all__ = [

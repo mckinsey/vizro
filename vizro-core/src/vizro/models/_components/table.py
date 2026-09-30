@@ -16,6 +16,7 @@ from pydantic import (
 )
 from pydantic.json_schema import SkipJsonSchema
 
+# TODO[1.0.0]: drop `filter_interaction` from this import when it is removed (see B7 / `_filter_interaction*` below).
 from vizro.actions import filter_interaction, set_controls
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_triggered_model
 from vizro.managers import data_manager, model_manager
@@ -80,6 +81,8 @@ class Table(VizroBaseModel):
         SkipJsonSchema[CapturedCallable],
         AfterValidator(_process_callable_data_frame),
         Field(
+            # TODO[1.0.0]: narrow `mode` back to "ag_grid" and drop "(deprecated) Dash DataTable" from the description
+            #  once the DataTable backing is removed.
             json_schema_extra={"mode": ("ag_grid", "table"), "import_path": "vizro.tables"},
             description="Function that returns a `Dash AG Grid` (recommended) or a `Dash DataTable` (deprecated).",
         ),
@@ -113,6 +116,10 @@ class Table(VizroBaseModel):
 
     _validate_figure = field_validator("figure", mode="before")(_validate_captured_callable)
 
+    # TODO[1.0.0]: remove this property entirely. `Table` becomes AG-Grid-only, so `_is_ag_grid` is always True: delete
+    #  it, then inline every `if self._is_ag_grid:` guard below (make the AG-Grid body unconditional) and delete every
+    #  `if not self._is_ag_grid:` / `else` DataTable branch. Sites: `_action_triggers`, `_action_outputs`,
+    #  `_action_inputs`, `_get_value_from_trigger`, `__call__`, `build` (see per-site markers).
     @property
     def _is_ag_grid(self) -> bool:
         """Whether the provided `figure` renders a Dash AG Grid (vs the deprecated Dash DataTable)."""
@@ -135,6 +142,7 @@ class Table(VizroBaseModel):
         self._inner_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
         self._warn_dash_data_table_backing()
 
+    # TODO[1.0.0]: remove this method and its call above — the Dash DataTable backing is gone in 1.0.0.
     def _warn_dash_data_table_backing(self) -> None:
         # The Dash DataTable backing is deprecated; from Vizro 1.0.0 only a `dash_ag_grid` figure is supported.
         # Checked in `model_post_init` - which runs once per construction, after `figure` has been resolved to a
@@ -282,6 +290,8 @@ class Table(VizroBaseModel):
         return self.figure[arg_name]
 
     # Interaction methods
+    # TODO[1.0.0]: delete `_filter_interaction_input` and `_filter_interaction` together with the `filter_interaction`
+    #  action (see B7). Both exist solely to serve it.
     @property
     def _filter_interaction_input(self):
         """Required properties when using `filter_interaction`."""

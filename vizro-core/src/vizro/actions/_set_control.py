@@ -5,9 +5,7 @@ from functools import cached_property
 from typing import Literal, Protocol, cast, runtime_checkable
 
 from dash import get_relative_path, no_update, set_props
-from pydantic import Field, JsonValue, PrivateAttr, field_validator, model_validator
-from pydantic.json_schema import SkipJsonSchema
-from typing_extensions import deprecated
+from pydantic import Field, JsonValue, PrivateAttr, field_validator
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
@@ -196,6 +194,7 @@ class set_controls(_AbstractAction):
         # string after a post-construction assignment to another field (its `mode="before"` validator re-copies
         # `control` into `controls` without the `controls` field-validator re-running), and iterating a string here
         # would split it into individual characters.
+        # TODO[1.0.0]: drop this coercion, iterate `self.controls` directly — it guards only the `set_control` alias.
         controls = [self.controls] if isinstance(self.controls, str) else self.controls
         return list(dict.fromkeys(controls))
 
@@ -507,34 +506,3 @@ class set_controls(_AbstractAction):
         # cached_property builds the notification models once per action instead of re-minting them (with fresh
         # model_manager entries) on every callback run.
         return _normalize_action_notifications({"success": "Controls updated.", "error": "Setting controls failed."})
-
-
-@deprecated(
-    "`set_control` is deprecated and will not exist in Vizro 1.0.0 "
-    "(https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#set_control-action). "
-    "Use `set_controls` with `controls` as a list of ids instead.",
-    category=FutureWarning,
-)
-class set_control(set_controls):
-    """Deprecated. Use [`set_controls`][vizro.actions.set_controls] with `controls` as a list of ids instead."""
-
-    type: Literal["set_control"] = "set_control"  # type: ignore[assignment]
-    control: ModelID | list[ModelID] = Field(
-        description="Filter or Parameter component id(s) to be affected by the trigger. Provide a single id or a list "
-        "of ids. Deprecated: use `set_controls` with `controls` instead."
-    )
-    # `controls` is required on `set_controls`, but this deprecated alias derives it from `control` (see below), so keep
-    # it optional here and hide it from this alias's schema: users configure `control`, not `controls`.
-    controls: SkipJsonSchema[ModelID | list[ModelID]] = Field(
-        default=[], description="Populated from the deprecated `control` argument."
-    )
-
-    @model_validator(mode="before")
-    @classmethod
-    def _map_control_to_controls(cls, data):
-        # Map the legacy `control` (single id or list) onto the canonical `controls` field before validation, so
-        # `set_control(control=...)` satisfies the now-required `controls` without `set_controls` itself exposing an
-        # optional `controls` default (which would let `set_controls()` validate only to fail later in pre_build).
-        if isinstance(data, dict) and "control" in data:
-            data = {**data, "controls": data["control"]}
-        return data
