@@ -46,6 +46,27 @@ class TestTableAgGrid:
         assert "cellClicked" in table._action_inputs
         assert "cellClicked" in table._action_outputs
 
+    def test_undefined_dash_ag_grid_figure_is_recognized_as_ag_grid(self):
+        # On the `allow_undefined_captured_callable` path (used by vizro-mcp for not-yet-importable configs) the
+        # figure's `_mode` is unresolved, so `_is_ag_grid` must fall back to the `dash_ag_grid` function name. Otherwise
+        # the figure is misclassified as a Dash DataTable and rejected as a `set_controls` source, breaking the promise
+        # that `vm.Table(figure=dash_ag_grid(...))` is functionally identical to the deprecated `vm.AgGrid`.
+        table = vm.Table.model_validate(
+            {"figure": {"_target_": "dash_ag_grid", "data_frame": "gapminder"}},
+            context={"allow_undefined_captured_callable": ["dash_ag_grid"]},
+        )
+        assert table.figure._mode is None
+        assert table._is_ag_grid is True
+
+    def test_undefined_dash_data_table_figure_is_not_ag_grid(self):
+        # The deprecated Dash DataTable backing must stay classified as a DataTable on the undefined path too.
+        table = vm.Table.model_validate(
+            {"figure": {"_target_": "dash_data_table", "data_frame": "gapminder"}},
+            context={"allow_undefined_captured_callable": ["dash_data_table"]},
+        )
+        assert table.figure._mode is None
+        assert table._is_ag_grid is False
+
 
 @pytest.fixture
 def dash_table_with_arguments():

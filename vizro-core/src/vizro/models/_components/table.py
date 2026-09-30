@@ -116,7 +116,15 @@ class Table(VizroBaseModel):
     @property
     def _is_ag_grid(self) -> bool:
         """Whether the provided `figure` renders a Dash AG Grid (vs the deprecated Dash DataTable)."""
-        return getattr(self.figure, "_mode", None) == "ag_grid"
+        if (mode := getattr(self.figure, "_mode", None)) is not None:
+            return mode == "ag_grid"
+        # `_mode` is unresolved - e.g. an undefined CapturedCallable created via `allow_undefined_captured_callable`
+        # (the not-yet-importable-config path vizro-mcp uses), where `_function` holds the raw `_target_` string rather
+        # than the decorated callable. Fall back to the function name so a `dash_ag_grid` figure is still recognized as
+        # an AG Grid, keeping `vm.Table(figure=dash_ag_grid(...))` functionally identical to the deprecated `vm.AgGrid`
+        # on that path too (otherwise it would be misclassified as a Dash DataTable and rejected as a set_controls
+        # source). `AgGrid` doesn't rely on this - it overrides `_is_ag_grid` to always be True (see ag_grid.py).
+        return getattr(self.figure, "_function", None) == "dash_ag_grid"
 
     @model_validator(mode="after")
     def _make_actions_chain(self):
