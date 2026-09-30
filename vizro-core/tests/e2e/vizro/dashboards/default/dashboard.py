@@ -82,6 +82,9 @@ from pages.sync_controls_pages import (
     sync_hidden_parameter_page,
     sync_multiple_controls_same_page,
 )
+
+# TODO[1.0.0]: remove these two Dash-DataTable page imports (and their entries in the pages list and the
+#  AG_GRID_ACCORDION nav below) when dash_data_table e2e coverage is deleted.
 from pages.table_interactions_page import table_interactions_page
 from pages.table_page import table_page
 from pages.timepicker_pages import timepicker_parameter, timepicker_range, timepicker_single
@@ -106,6 +109,7 @@ dashboard = vm.Dashboard(
         datepicker_parameters_page,
         ag_grid_page,
         ag_grid_interactions_page,
+        # TODO[1.0.0]: remove table_page + table_interactions_page (Dash DataTable pages) - see import note above.
         table_page,
         table_interactions_page,
         dynamic_data_page,
@@ -208,6 +212,7 @@ dashboard = vm.Dashboard(
                 cnst.SYNC_DRILL_THROUGH_TARGET_PAGE,
             ],
             cnst.AG_GRID_ACCORDION: [
+                # TODO[1.0.0]: remove TABLE_PAGE + TABLE_INTERACTIONS_PAGE (Dash DataTable pages) from this nav.
                 cnst.TABLE_PAGE,
                 cnst.TABLE_INTERACTIONS_PAGE,
                 cnst.TABLE_AG_GRID_PAGE,

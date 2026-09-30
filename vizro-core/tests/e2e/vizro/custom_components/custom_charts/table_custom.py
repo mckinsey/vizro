@@ -1,3 +1,5 @@
+# TODO[1.0.0]: delete this file - a Dash DataTable custom chart. Its only consumer, parameters_multi_page.py, moves
+#  to a dash_ag_grid table (or drops these table components) when dash_data_table e2e coverage is removed.
 from dash import dash_table
 
 from vizro.models.types import capture

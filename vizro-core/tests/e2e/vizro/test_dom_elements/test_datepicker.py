@@ -30,6 +30,8 @@ def test_single_date(dash_br):
 
     # check that date in the row is correct
     # we're using 'row_number=2' because the first row is a header
+    # TODO[1.0.0]: the TABLE_POP_DATE_ID / TABLE_POP_RANGE_ID assertions here read a Dash DataTable (removed in
+    #  1.0.0). Retarget them to the dash_ag_grid table that replaces those DataTables in datepicker_page.py.
     dash_br.wait_for_text_to_equal(
         table_cell_value_path(table_id=cnst.TABLE_POP_DATE_ID, row_number=2, column_number=1), "2016-05-17T00:00:00"
     )

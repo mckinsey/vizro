@@ -72,6 +72,8 @@ PARAMS_PAGE_APPLY_ON_KEYS = [SLIDER_PARAM_CONTROL_ID, RANGE_SLIDER_PARAM_CONTROL
 
 PARAMETERS_MULTI_PAGE = "parameters_p@ge! (multi selectors)"
 PARAMETERS_MULTI_PAGE_PATH = "/parameters_pge-multi-selectors"
+# TODO[1.0.0]: delete TABLE_DROPDOWN/TABLE_CHECKLIST - they back the Dash DataTable custom chart used in
+#  parameters_multi_page.py (removed with dash_data_table e2e coverage).
 TABLE_DROPDOWN = "table_dropdown"
 TABLE_CHECKLIST = "table_checklist"
 DROPDOWN_PARAM_MULTI = "dropdown_multi_param"
@@ -100,6 +102,8 @@ UNFILTERED_BASE_CSV = "tests/tests_utils/e2e/vizro/files/unfiltered_line_base.cs
 DATEPICKER_PAGE = "datepicker-page"
 BAR_POP_RANGE_ID = "bar pop range"
 BAR_POP_DATE_ID = "bar pop date"
+# TODO[1.0.0]: delete TABLE_POP_RANGE_ID/TABLE_POP_DATE_ID - Dash DataTables in datepicker_page.py; retarget the
+#  datepicker assertions in test_datepicker.py to a dash_ag_grid table instead.
 TABLE_POP_RANGE_ID = "table pop range"
 TABLE_POP_DATE_ID = "table pop date"
 DATEPICKER_RANGE_ID = "datepicker range"
@@ -204,6 +208,12 @@ SYNC_MULTIPLE_CONTROLS_RADIO_ITEMS_1_ID = "sync_multiple_controls_radio_items_1_
 SYNC_MULTIPLE_CONTROLS_RADIO_ITEMS_2_ID = "sync_multiple_controls_radio_items_2_id"
 SYNC_MULTIPLE_CONTROLS_RADIO_ITEMS_3_ID = "sync_multiple_controls_radio_items_3_id"
 
+# TODO[1.0.0]: AG Grid is the only "table" in 1.0.0 (Dash DataTable backing is removed), so drop the AG_GRID/ag_grid
+#  naming across e2e. The DataTable-only names (TABLE_PAGE/TABLE_ID/TABLE_INTERACTIONS_* below, TABLE_POP_* and
+#  TABLE_DROPDOWN/TABLE_CHECKLIST above) are deleted with their pages, which frees the plain TABLE_* names; the
+#  AG_GRID_*/TABLE_AG_GRID_* names then rename to TABLE_*. Files to rename ag_grid->table (+ their vars/ids/fixtures/
+#  test fns): pages/ag_grid_page.py, pages/ag_grid_interactions_page.py, pages/set_control_ag_grid_cellclicked.py,
+#  test_dom_elements/test_table_ag_grid.py, and the golden main_ag_grid_page/main_flex_layout_wrap_and_ag_grid PNGs.
 TABLE_AG_GRID_PAGE = "table-ag-grid-page"
 TABLE_AG_GRID_ID = "123_ag_grid_table"
 BOX_AG_GRID_PAGE_ID = "B@x on ag grid page"
@@ -220,6 +230,8 @@ LINE_AG_GRID_INTERACTIONS_ID = "line_ag_grid_inter"
 DROPDOWN_AG_GRID_INTERACTIONS_ID = "dropdown-ag-grid-interactions"
 RADIOITEMS_AG_GRID_INTERACTIONS_ID = "radioitems-ag-grid-interactions"
 
+# TODO[1.0.0]: delete this TABLE_PAGE block and the TABLE_INTERACTIONS_* block below - the Dash DataTable pages
+#  they name (table_page.py / table_interactions_page.py) are removed in 1.0.0.
 TABLE_PAGE = "table-page"
 TABLE_ID = "123_table"
 TABLE_CONTAINER = "table container"

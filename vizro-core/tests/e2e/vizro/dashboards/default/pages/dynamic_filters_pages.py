@@ -248,6 +248,8 @@ dynamic_filters_temporal_page = vm.Page(
 dynamic_filters_cascader_page = vm.Page(
     title=cnst.DYNAMIC_FILTERS_CASCADER_PAGE,
     components=[
+        # TODO[1.0.0]: `vm.AgGrid` is removed in 1.0.0 - this is the only remaining `vm.AgGrid` model use in e2e.
+        #  Replace both with `vm.Table(id=..., figure=dash_ag_grid(data_frame="load_from_file_hierarchical"))`.
         vm.AgGrid(
             id=cnst.AG_GRID_DYNAMIC_CASCADER_ID,
             figure=dash_ag_grid(data_frame="load_from_file_hierarchical"),
