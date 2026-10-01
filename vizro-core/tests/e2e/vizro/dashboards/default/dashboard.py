@@ -35,6 +35,7 @@ from pages.filters_inside_containters_page import filters_inside_containers_page
 from pages.filters_page import filters_page
 from pages.homepage import homepage
 from pages.kpi_indicators_page import kpi_indicators_page
+from pages.kpi_sparkline_page import kpi_sparkline_page
 from pages.layout_pages import (
     buttons_page,
     layout_flex_with_all_params_and_card,
@@ -101,6 +102,7 @@ dashboard = vm.Dashboard(
         filter_interactions_page,
         switch_control_page,
         kpi_indicators_page,
+        kpi_sparkline_page,
         export_action_page,
         datepicker_page,
         datepicker_parameters_page,
@@ -179,6 +181,7 @@ dashboard = vm.Dashboard(
                 cnst.FILTER_INTERACTIONS_PAGE,
                 cnst.SWITCH_CONTROL_PAGE,
                 cnst.KPI_INDICATORS_PAGE,
+                cnst.KPI_SPARKLINE_PAGE,
                 cnst.EXPORT_PAGE,
                 cnst.CUSTOM_COMPONENTS_PAGE,
                 cnst.FILTER_AND_PARAM_PAGE,
