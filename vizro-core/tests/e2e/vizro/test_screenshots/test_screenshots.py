@@ -11,11 +11,14 @@ from e2e.vizro.navigation import (
     hover_over_element_by_xpath_selenium,
     page_select,
     select_dropdown_select_all,
+    select_dropdown_value,
 )
 from e2e.vizro.paths import (
     button_id_path,
     dropdown_id_path,
     kpi_card_path,
+    kpi_sparkline_card_path,
+    kpi_sparkline_graph_path,
     nav_card_link_path,
     scatter_point_path,
     switch_path_using_filter_control_id,
@@ -50,6 +53,17 @@ def test_kpi_indicators_page_theme_switch(dash_br):
 
     # switch theme to dark (delay is needed to fully load the layout)
     dash_br.multiple_click(theme_toggle_path(), 1, delay=1.5)
+
+
+@image_assertion
+def test_kpi_sparkline_page(dash_br):
+    page_select(dash_br, page_name=cnst.KPI_SPARKLINE_PAGE, graph_check=False)
+
+    dash_br.wait_for_text_to_equal(kpi_sparkline_card_path(), cnst.KPI_SPARKLINE_GOOG_VALUE)
+    dash_br.wait_for_element(kpi_sparkline_graph_path())
+
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_KPI_SPARKLINE_PAGE, value="2019")
+    dash_br.wait_for_text_to_equal(kpi_sparkline_card_path(), cnst.KPI_SPARKLINE_GOOG_VALUE_2019)
 
 
 @image_assertion
