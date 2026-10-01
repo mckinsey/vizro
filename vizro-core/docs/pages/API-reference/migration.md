@@ -1,14 +1,14 @@
 ---
-description: "Migration notes for deprecations ahead of Vizro 1.0.0: `Layout` renamed to `Grid`, changes to `Action.inputs`, static custom-action arguments, and `filter_interaction`."
+description: "Migration guide for Vizro 1.0.0: how to update code that used APIs removed or changed in the 1.0.0 breaking release (`Layout`→`Grid`, `RangeSlider`→`Slider(range=True)`, `AgGrid`/Dash DataTable→`Table` with `dash_ag_grid`, `set_control`/`filter_interaction`→`set_controls`, `Action.inputs`, and the `Cascader.full_path` default)."
 ---
 
-# Deprecations and breaking changes
+# Migration guide
 
-This page lists Vizro features that are now deprecated and forthcoming breaking changes for Vizro 1.0.0.
+This page documents the APIs removed or changed in the Vizro 1.0.0 breaking release and how to migrate your code. Each section shows the before/after.
 
 ## `Layout` model
 
-The [`Layout`][vizro.models.Layout] model has been renamed [`Grid`][vizro.models.Grid]. Replace your references to `Layout` with `Grid`.
+The `Layout` model has been renamed [`Grid`][vizro.models.Grid]. Replace your references to `Layout` with `Grid`.
 
 ```python
 # Before:
@@ -20,7 +20,7 @@ vm.Grid(grid=[[0, 1], [2, 3]])
 
 ## `RangeSlider` model
 
-The [`RangeSlider`][vizro.models.RangeSlider] model is deprecated. Use [`Slider`][vizro.models.Slider] with `range=True`, which is functionally identical.
+The `RangeSlider` model has been removed. Use [`Slider`][vizro.models.Slider] with `range=True`, which is functionally identical.
 
 ```python
 # Before:
@@ -58,7 +58,7 @@ See the [user guide on how to interact with graphs and tables](../user-guides/gr
 
 ## `set_control` action
 
-The [`set_control`][vizro.actions.set_control] action is deprecated. Use [`set_controls`][vizro.actions.set_controls], which takes one or more control ids via `controls` (a single id or a list) and is otherwise identical.
+The `set_control` action has been removed. Use [`set_controls`][vizro.actions.set_controls], which takes one or more control ids via `controls` (a single id or a list) and is otherwise identical.
 
 ```python
 # Before:
@@ -133,7 +133,7 @@ See the [user guide on selectors](../user-guides/selectors.md#hierarchical-selec
 
 ## `AgGrid` model
 
-The [`AgGrid`][vizro.models.AgGrid] model is deprecated. Use [`Table`][vizro.models.Table] with a `dash_ag_grid` figure, which is functionally identical.
+The `AgGrid` model has been removed. Use [`Table`][vizro.models.Table] with a `dash_ag_grid` figure, which is functionally identical.
 
 ```python
 # Before:

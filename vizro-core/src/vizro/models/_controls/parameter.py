@@ -255,7 +255,7 @@ class Parameter(VizroBaseModel):
                 action.pre_build()
         else:
             # Explicit selector actions bypass the default sync chain, so any control targets were stripped without
-            # generating a set_control. Warn rather than silently drop them.
+            # generating a set_controls. Warn rather than silently drop them.
             warn_ignored_control_sync_targets(self, targeted_controls)
 
     @_log_call

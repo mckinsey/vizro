@@ -209,18 +209,18 @@ options = {
 }
 ```
 
-By default, a selection is identified by its **leaf** value and `value` is set according to the first group at the top of the tree:
+By default, a selection is identified by its full root-to-leaf **path** and `value` is set according to the first group at the top of the tree:
 
-- If `multi=False`, by default `value` is the _first_ leaf listed under the first group. Here the first group is `Asia`, and its first country is `Japan`, so `value="Japan"`.
-- If `multi=True`, by default `value` is _all_ leaves listed under the first group. Here the first group is `Asia`, so `value=["Japan", "India"]`.
+- If `multi=False`, by default `value` is the _first_ path under the first group. Here the first group is `Asia` and its first country is `Japan`, so `value=["Asia", "Japan"]`.
+- If `multi=True`, by default `value` is _all_ paths under the first group. Here the first group is `Asia`, so `value=[["Asia", "Japan"], ["Asia", "India"]]`.
 
-You can pick a different starting selection by setting `value` on [`Cascader`][vizro.models.Cascader]. In this default **leaf mode** (`full_path=False`), leaf labels must be unique across the whole tree, since a bare leaf identifies the selection.
+You can pick a different starting selection by setting `value` on [`Cascader`][vizro.models.Cascader]. In this default **path mode** (`full_path=True`), each selection is a full root-to-leaf path, so the same leaf label appearing under different branches (for example a city name shared by two countries) is addressed unambiguously.
 
-!!! note "Addressing duplicate leaf labels with `full_path=True`"
+!!! note "Selecting by bare leaf with `full_path=False`"
 
-    If the same leaf label appears under more than one group (for example a city name shared by two countries), set `full_path=True` on the [`Cascader`][vizro.models.Cascader] to switch to **path mode**. A selection is then a full root-to-leaf **path** (the list of node values from the root down to the leaf) instead of a bare leaf, so each duplicate is addressed unambiguously: `value=["Asia", "Japan"]` for single-select, or `value=[["Asia", "Japan"], ["Asia", "India"]]` for multi-select. Path mode does not support setting the control from a chart click (see [`set_controls`](actions.md)).
+    If every leaf label is unique across the whole tree, you can set `full_path=False` on the [`Cascader`][vizro.models.Cascader] to switch to **leaf mode**. A selection is then identified by its bare **leaf** value instead of a full path, so `value="Japan"` for single-select, or `value=["Japan", "India"]` for multi-select. Leaf mode is also required when the control is a target of [`set_controls`](actions.md), because a single chart click supplies a leaf value that cannot be reconstructed into a full root-to-leaf path (path mode does not support setting the control from a chart click).
 
-In a hierarchical [`Filter`][vizro.models.Filter], leaf mode matches rows on the last column of `Filter.column` (like a flat filter on the leaf), and `options` may be arbitrarily deep. In path mode, every level of the path is matched against the corresponding column, so every path in `options` must be exactly as deep as `Filter.column` is long. (A [`Parameter`][vizro.models.Parameter] does not match against columns, so it accepts arbitrarily nested trees in either mode.)
+In a hierarchical [`Filter`][vizro.models.Filter], path mode matches every level of a selected path against the corresponding column, so every path in `options` must be exactly as deep as `Filter.column` is long. Leaf mode instead matches rows on the last column of `Filter.column` (like a flat filter on the leaf), and `options` may be arbitrarily deep. (A [`Parameter`][vizro.models.Parameter] does not match against columns, so it accepts arbitrarily nested trees in either mode.)
 
 !!! example "Hierarchical selector multi vs single"
 

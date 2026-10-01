@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
 from copy import deepcopy
 from typing import Any, Literal, TypedDict, cast
 
@@ -11,10 +10,8 @@ import pandas as pd
 from vizro._constants import NONE_OPTION
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName
-from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models.types import (
     FigureType,
-    FigureWithFilterInteractionType,
     ModelID,
     MultiValueType,
     SelectorType,
@@ -68,44 +65,6 @@ def _apply_filter_controls(
         selector_value = ctd["value"]
         mask = parent_filter._filter_function(data_frame[parent_filter._filter_column], selector_value)
         data_frame = data_frame[mask]
-
-    return data_frame
-
-
-def _get_triggered_model(input_component_id: str) -> FigureType:
-    # Goes directly from input_component_id to the model (like AgGrid).
-    for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS)):
-        if hasattr(model, "_inner_component_id") and model._inner_component_id == input_component_id:
-            return model
-    raise KeyError(f"No triggered Vizro model found for {input_component_id=}.")
-
-
-def _apply_filter_interaction(
-    data_frame: pd.DataFrame, ctds_filter_interaction: list[dict[str, CallbackTriggerDict]], target: ModelID
-) -> pd.DataFrame:
-    """Applies filters from a filter_interaction.
-
-    This will be removed in future when filter interactions are implemented using controls.
-
-    Args:
-        data_frame: unfiltered DataFrame.
-        ctds_filter_interaction: structure containing CallbackTriggerDict for filter interactions.
-        target: id of targeted Figure.
-
-    Returns: filtered DataFrame.
-    """
-    # The filter_interaction model actually contains the id we require in its _parent_model field.
-    # We could use that if we had the action_id available here. Alternatively we could explicitly pass the
-    # input_component_id as a state and then use _get_triggered_model to look up the parent model. Both these methods
-    # would mean we can remove modelID from the states, but given that filter_interaction will be removed it's not worth
-    # rewriting now.
-    for ctd_filter_interaction in ctds_filter_interaction:
-        triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
-        data_frame = cast(FigureWithFilterInteractionType, triggered_model)._filter_interaction(
-            data_frame=data_frame,
-            target=target,
-            ctd_filter_interaction=ctd_filter_interaction,
-        )
 
     return data_frame
 
@@ -199,17 +158,12 @@ def _get_parametrized_config(
 def _apply_filters(
     data: pd.DataFrame,
     ctds_filter: list[CallbackTriggerDict],
-    ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
     target: ModelID,
 ):
     # Takes in just one target, so dataframe is filtered repeatedly for every target that uses it.
     # Potentially this could be de-duplicated but it's not so important since filtering is a relatively fast
     # operation (compared to data loading).
-    filtered_data = _apply_filter_controls(data_frame=data, ctds_filter=ctds_filter, target=target)
-    filtered_data = _apply_filter_interaction(
-        data_frame=filtered_data, ctds_filter_interaction=ctds_filter_interaction, target=target
-    )
-    return filtered_data
+    return _apply_filter_controls(data_frame=data, ctds_filter=ctds_filter, target=target)
 
 
 def _get_unfiltered_data(
@@ -233,7 +187,6 @@ def _get_unfiltered_data(
 
 def _get_modified_page_figures(
     ctds_filter: list[CallbackTriggerDict],
-    ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
     ctds_parameter: list[CallbackTriggerDict],
     targets: list[ModelID],
 ) -> dict[ModelID, Any]:
@@ -267,7 +220,7 @@ def _get_modified_page_figures(
     #  so you could do apply_filters on a target a pass only the ctds relevant for that target.
     #  Consider restructuring ctds to a more convenient form to make this possible.
     for target in figure_targets:
-        filtered_data = _apply_filters(target_to_data_frame[target], ctds_filter, ctds_filter_interaction, target)
+        filtered_data = _apply_filters(target_to_data_frame[target], ctds_filter, target)
         outputs[target] = cast(FigureType, model_manager[target])(
             data_frame=filtered_data,
             **_get_parametrized_config(ctds_parameter=ctds_parameter, target=target, data_frame=False),

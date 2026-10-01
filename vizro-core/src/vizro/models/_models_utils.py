@@ -1,13 +1,11 @@
 import logging
 import warnings
 from functools import wraps
-from typing import Any
 
 from dash import html
 from dash.development.base_component import Component
 from pydantic import ValidationInfo
 
-from vizro.managers import model_manager
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 
 logger = logging.getLogger(__name__)
@@ -95,28 +93,6 @@ def warn_description_without_title(description, info: ValidationInfo):
     return description
 
 
-# We use this as a validator to deprecate a field, instead of setting deprecate=True, which only affects the JSON schema
-# and raises unwanted warnings when looking through model attributes. deprecate=True wouldn't be sufficient anyway,
-# since:
-# - the warning isn't raised on model instantiation, just on field access
-# - the warning category can't be changed from the default DeprecationWarning to FutureWarning and so will not be
-# visible to most users
-# These are known limitations with pydantic's current implementation; see
-# https://github.com/pydantic/pydantic/issues/8922 and https://docs.pydantic.dev/latest/concepts/fields/.
-# This only runs if the field is explicitly set since validate_default=False by default.
-# This does not add anything to the API docs. You must add a note to the field docstring manually.
-def make_deprecated_field_warning(message: str, /):
-    def deprecate_field(value: Any, info: ValidationInfo):
-        warnings.warn(
-            f"The `{info.field_name}` argument is deprecated and will not exist in Vizro 1.0.0. {message}.",
-            category=FutureWarning,
-            stacklevel=3,
-        )
-        return value
-
-    return deprecate_field
-
-
 def make_actions_chain(self):
     """Creates an actions chain from a list of actions.
 
@@ -124,33 +100,8 @@ def make_actions_chain(self):
     action_triggers property, which needs the parent model instance. Hence, it must be done as a model validator.
 
     This runs after model_post_init so that self._inner_component_id will have already been set correctly in
-    Table and AgGrid. Even though it's a model validator it is also run on assignment e.g. selector.actions = ...
+    Table. Even though it's a model validator it is also run on assignment e.g. selector.actions = ...
     """
-    from vizro.actions import export_data, filter_interaction
-
-    converted_actions = []
-
-    # Convert any built in actions written in the legacy style vm.Action(function=filter_interaction(...)) or
-    # vm.Action(function=export_data(...)) to the new style filter_interaction(...) or export_data(...).
-    # We need to delete the old action models from the model manager so they don't get built. After that,
-    # built in actions are always handled in the new way.
-    for action in self.actions:
-        if isinstance(action.function, (export_data, filter_interaction)):
-            action_name = action.function._action_name
-            warnings.warn(
-                f"Using the `Action` model for the built-in action `{action_name}` is deprecated and will not be"
-                f" possible in Vizro 1.0.0. Call the action directly with `actions=va.{action_name}(...)`. See "
-                "https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#action-model-for-built-in"
-                "-action.",
-                category=FutureWarning,
-                stacklevel=4,
-            )
-
-            del model_manager[action.id]
-            converted_actions.append(action.function)
-        else:
-            converted_actions.append(action)
-
     model_action_trigger = self._action_triggers["__default__"]
 
     # Models whose chain fires on page load (i.e. Page) run their first action on the initial page render. For every
@@ -159,12 +110,12 @@ def make_actions_chain(self):
     # load" behavior belongs to the triggering model, not to a specific action type.
     fires_on_load = getattr(self, "_actions_chain_fires_on_load", False)
 
-    for i, action in enumerate(converted_actions):
+    for i, action in enumerate(self.actions):
         # First action in the chain uses the model's specified trigger.
         # All subsequent actions in the chain are triggered by the previous action's completion.
         # In the future, we would permit multiple keys in the _action_triggers dictionary, and then we'd need to look up
         # the relevant entry here. For now there's just __default__ so we always use that.
-        action._trigger = model_action_trigger if i == 0 else f"{converted_actions[i - 1].id}_finished.data"
+        action._trigger = model_action_trigger if i == 0 else f"{self.actions[i - 1].id}_finished.data"
 
         # Every action has to know about the model action trigger to properly set the action's builtin arg "_trigger".
         action._first_in_chain_trigger = model_action_trigger
@@ -174,11 +125,8 @@ def make_actions_chain(self):
         # previous action finishing rather than the initial render, so their guard always prevents the initial call.
         action._prevent_initial_call_of_guard = not (i == 0 and fires_on_load)
 
-        # Temporary workaround for lookups in filter_interaction and set_control. This should become unnecessary once
-        # the model manager supports `parent_model` access for all Vizro models.
+        # Temporary workaround for lookups in set_controls. This should become unnecessary once the model manager
+        # supports `parent_model` access for all Vizro models.
         action._parent_model = self
 
-    # We should do self.actions = converted_actions but this leads to a recursion error. The below is a workaround
-    # until the pydantic bug is fixed. See https://github.com/pydantic/pydantic/issues/6597.
-    self.__dict__["actions"] = converted_actions
     return self

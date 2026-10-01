@@ -48,17 +48,17 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
 
 DEFAULT_SELECTORS: dict[str, Callable[..., SelectorType]] = {
-    # A numerical column defaults to a range slider, now expressed as Slider(range=True) rather than the
-    # deprecated RangeSlider so that auto-selected filters do not emit a deprecation warning.
+    # A numerical column defaults to a range slider, expressed as Slider(range=True).
     "numerical": functools.partial(Slider, range=True),
     "categorical": Dropdown,
     "date": DatePicker,
     "datetime": DatePicker,
     "time": TimePicker,
     "boolean": Switch,
-    # Set full_path explicitly so an auto-selected hierarchical filter does not emit the full_path default-change
-    # warning and keeps the current (leaf-mode) behavior. TODO[1.0.0]: revisit when the full_path default flips to True.
-    "hierarchical": functools.partial(Cascader, full_path=False),
+    # A hierarchical column defaults to a path-mode Cascader (full_path=True, the Cascader default): auto-generated
+    # options can repeat leaf labels across branches, and path mode addresses each selection by its full
+    # root-to-leaf path unambiguously.
+    "hierarchical": Cascader,
 }
 
 # This disallowed selectors for each column type map is based on the discussion at the following link:
@@ -673,7 +673,7 @@ class Filter(VizroBaseModel):
             )
         else:
             # Explicit selector actions bypass the default sync chain, so any control targets were stripped without
-            # generating a set_control. Warn rather than silently drop them.
+            # generating a set_controls. Warn rather than silently drop them.
             warn_ignored_control_sync_targets(self, targeted_controls)
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).

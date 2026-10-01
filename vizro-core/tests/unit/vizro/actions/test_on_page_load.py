@@ -41,7 +41,6 @@ def ctx_on_page_load(request):
         "args_grouping": {
             "external": {
                 "_controls": {
-                    "filter_interaction": [],
                     "filters": [
                         CallbackTriggerDict(
                             id="continent_filter",

@@ -98,8 +98,7 @@ To get a feeling of what it generally looks like, we have provided a simplified 
                   "Button",
                   "Container",
                   "Graph",
-                  "Table",
-                  "AgGrid"
+                  "Table"
                 ],
                 "type": "string"
               },

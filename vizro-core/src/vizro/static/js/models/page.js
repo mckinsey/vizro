@@ -85,7 +85,7 @@ function decodeUrlParams(encodedMap, applyOnKeys) {
 Keeps controls in sync across pages through `vizro_controls_store` and mirrors show_in_url controls in the URL query
 string. Runs for every control on the page (not only show_in_url ones) so that:
   - on page open, each control's selector is restored from the store's `currentValue`. This applies values that were
-    set while on another page (a cross-page `set_control` target) and values that persisted from an earlier visit;
+    set while on another page (a cross-page `set_controls` target) and values that persisted from an earlier visit;
   - on control change, the store's `currentValue` is refreshed so the value is available to other pages and on the
     next visit;
   - show_in_url controls additionally have their value written into the URL query string.
@@ -133,7 +133,7 @@ Received input: ${JSON.stringify(values_ids)}`,
   if (isPageOpened) {
     console.debug("sync_url_query_params_and_controls: Page opened");
 
-    // Restore from the store only the controls that are targets of a cross-page set_control (a synced control from
+    // Restore from the store only the controls that are targets of a cross-page set_controls (a synced control from
     // another page, or a drill-through target). Other controls keep their usual per-page behavior (they reset on
     // navigation) and are only restored from the URL below when they have show_in_url.
     controlIds.forEach((id, index) => {

@@ -37,8 +37,8 @@ class set_controls(_AbstractAction):
 
     The following Vizro models can be a source of `set_controls`:
 
-    * [`AgGrid`][vizro.models.AgGrid]: triggers `set_controls` when `cellClicked` or `selectedRows` changes (for example
-    after a cell click or when the row selection changes). `value` can be:
+    * [`Table`][vizro.models.Table] (an AG Grid): triggers `set_controls` when `cellClicked` or `selectedRows` changes
+    (for example after a cell click or when the row selection changes). `value` can be:
 
         * `"cell"`, `"column"`, or `"row"` to use the clicked cell's value, column id, or row id respectively.
         * Any other string to treat as a column name, taking values from the selected row(s).
@@ -57,7 +57,7 @@ class set_controls(_AbstractAction):
     * [`Card`][vizro.models.Card]: triggers `set_controls` when the user clicks on the card. `value` specifies a
     literal value to set `controls` to.
 
-    `value` is required for `Graph` and `AgGrid` (it is the directive for what to extract from the click). For
+    `value` is required for `Graph` and `Table` (it is the directive for what to extract from the click). For
     `Figure`, `Card`, and `Button` it is the literal to set, and `value=None` resets the target control(s) to their
     default value. `value` may be omitted only when a control's own selector syncs to another control (via that
     control's `targets`): the sync uses the selector's live value and ignores `value`.
@@ -161,7 +161,7 @@ class set_controls(_AbstractAction):
     value: JsonValue = Field(
         default=None,
         description="Value to take from the trigger and send to the target control(s). Its format depends on the "
-        "triggering model (see the list above): for `Graph`/`AgGrid` it is an extraction directive (a column name or "
+        "triggering model (see the list above): for `Graph`/`Table` it is an extraction directive (a column name or "
         "lookup) and is required; for `Figure`/`Card`/`Button` it is the literal value to set, and `value=None` "
         "resets the target control(s) to their default value. It may be omitted (defaults to `None`) only when a "
         "control's own selector syncs to another control, where `value` is ignored and the selector's live value is "
@@ -171,7 +171,7 @@ class set_controls(_AbstractAction):
     # Private, internal-only flag. When True, the action additionally raises the `_guard_actions_chain` store of each
     # same-page target it subsumes (see `_guardable_same_page_controls`) so setting that target's value does NOT fire
     # its own action chain. It is set by `finalize_control_sync_chains` for the collapsed selector-sync chain (where a
-    # single set_control sets every transitively-synced control and a single update_targets refreshes every affected
+    # single set_controls sets every transitively-synced control and a single update_targets refreshes every affected
     # figure), so the whole mesh resolves in two HTTP requests instead of cascading. Kept private (set
     # post-construction) because it is not part of the public API. See `guard_action_chain` in
     # static/js/models/action.js.
@@ -190,28 +190,20 @@ class set_controls(_AbstractAction):
 
         Duplicates are collapsed because two Dash `Output`s on the same component in one callback is an error.
         """
-        # Coerce a bare id to a list defensively: the deprecated `set_control` alias can leave `controls` as a raw
-        # string after a post-construction assignment to another field (its `mode="before"` validator re-copies
-        # `control` into `controls` without the `controls` field-validator re-running), and iterating a string here
-        # would split it into individual characters.
-        # TODO[1.0.0]: drop this coercion, iterate `self.controls` directly — it guards only the `set_control` alias.
-        controls = [self.controls] if isinstance(self.controls, str) else self.controls
-        return list(dict.fromkeys(controls))
+        # `controls` is normalized to a list by the `_coerce_controls_to_list` field validator (which re-runs on
+        # assignment), so iterate it directly.
+        return list(dict.fromkeys(self.controls))
 
     @_log_call
     def pre_build(self):
         from vizro.models import Graph, Table
 
-        # Parent model must be able to source set_controls. Only an AG Grid `Table` implements a meaningful
-        # `_get_value_from_trigger`; a Dash DataTable-backed (or as-yet-unresolved) `Table` shares the method but
-        # cannot source set_controls, so exclude any non-AG-Grid `Table`. Using `_is_ag_grid` keeps this consistent
-        # with the `value` and reorder checks below (and with the deprecated `AgGrid`, which is always an AG Grid).
-        parent_is_non_ag_grid_table = isinstance(self._parent_model, Table) and not self._parent_model._is_ag_grid
-        if not isinstance(self._parent_model, _SupportsSetControl) or parent_is_non_ag_grid_table:
+        # Parent model must be able to source set_controls, i.e. implement `_get_value_from_trigger`.
+        if not isinstance(self._parent_model, _SupportsSetControl):
             raise ValueError(
                 f"`set_controls` action was added to the model with ID `{self._parent_model.id}`, "
                 "but this action can only be used with models that support it "
-                "(for example, Graph, AgGrid, Figure, and so on). "
+                "(for example, Graph, Table, Figure, and so on). "
                 "See all models that can source a `set_controls` at "
                 "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_controls"
             )
@@ -250,8 +242,9 @@ class set_controls(_AbstractAction):
                 )
 
             # A path-mode Cascader (full_path=True) identifies a selection by its full root-to-leaf path. A trigger
-            # (Graph/AgGrid) only supplies a single column value, which cannot reconstruct a path, so `set_controls`
-            # is disabled for it. Leaf mode (full_path=False) works like a flat selector and is supported.
+            # (Graph or an AG Grid Table) only supplies a single column value, which cannot reconstruct a path,
+            # so `set_controls` is disabled for it. Leaf mode (full_path=False) works like a flat selector and is
+            # supported.
             selector = getattr(control_model, "selector", None)
             if _is_hierarchical_selector(selector) and getattr(selector, "full_path", False):
                 raise ValueError(
@@ -278,18 +271,17 @@ class set_controls(_AbstractAction):
         ]
 
         # The trigger decides cross-page behavior (see `function`): a control's own selector (Dropdown, Checklist, ...)
-        # just "syncs" - stay put, apply on the target's next open; a figure/component (Graph, AgGrid, Button, ...)
+        # just "syncs" - stay put, apply on the target's next open; a figure/component (Graph, Table, Button, ...)
         # "drills through" - navigate to the target's page.
         selector_types = tuple(selector for selectors in SELECTORS.values() for selector in selectors)
         self._is_drill_through = not isinstance(self._parent_model, selector_types)
 
-        # `value` is an extraction directive for Graph/AgGrid (a column name or lookup used to pull the value out of
+        # `value` is an extraction directive for Graph/Table (a column name or lookup used to pull the value out of
         # the click), so it is required for them: a missing value would only surface as a confusing "couldn't find
         # value None" at click time. Catch it here with a message tailored to the trigger. It is intentionally
         # optional elsewhere: Figure/Card/Button treat `value=None` as "reset the target(s) to their default", and a
         # selector-driven sync ignores `value` entirely (the selector's own live value is used).
-        parent_is_ag_grid = isinstance(self._parent_model, Table) and self._parent_model._is_ag_grid
-        if self.value is None and (isinstance(self._parent_model, Graph) or parent_is_ag_grid):
+        if self.value is None and isinstance(self._parent_model, (Graph, Table)):
             value_hint = (
                 'a column name present in the figure\'s `custom_data`, or a positional lookup such as "x" or "y"'
                 if isinstance(self._parent_model, Graph)
@@ -399,12 +391,10 @@ class set_controls(_AbstractAction):
                 return []
             return value if isinstance(value, list) else [value]
         if is_range:
-            # AgGrid/Graph emit values in selection (click) order, so a multi-value trigger can arrive out of order;
-            # reorder into [min, max]. A range selector emits an authoritative positional [start, end], kept as-is (its
-            # ends aren't always ordered). See `_normalize_range_value`.
-            reorder_range = isinstance(self._parent_model, Graph) or (
-                isinstance(self._parent_model, Table) and self._parent_model._is_ag_grid
-            )
+            # An AG Grid or Graph emits values in selection (click) order, so a multi-value trigger can arrive
+            # out of order; reorder into [min, max]. A range selector emits an authoritative positional
+            # [start, end], kept as-is (its ends aren't always ordered). See `_normalize_range_value`.
+            reorder_range = isinstance(self._parent_model, (Graph, Table))
             normalized = self._normalize_range_value(value, reorder=reorder_range)
             # An incomplete/empty range must not be synced (see `_normalize_range_value`); skip just this control.
             return no_update if normalized is None else normalized
@@ -478,7 +468,7 @@ class set_controls(_AbstractAction):
         error) and, for "", would drop the single set value into the wrong slot (["10:00", ""] -> ["", "10:00"], so
         the start lands in the end). The sync then happens once the second value is selected, exactly as the source.
 
-        ``reorder`` controls the two-element case. A selection-order source (an AgGrid row selection or a Graph
+        ``reorder`` controls the two-element case. A selection-order source (an AG Grid row selection or a Graph
         point selection) can emit the two ends in the order they were clicked, so ``reorder=True`` sorts them into
         [min, max] to avoid an inverted [start > end] range that filters to nothing. A range selector emits an
         authoritative positional [start, end] (``reorder=False``) that is kept as-is, because its ends are not

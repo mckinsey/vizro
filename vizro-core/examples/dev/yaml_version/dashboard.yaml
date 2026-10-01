@@ -67,7 +67,7 @@ pages:
     title: Graphs
   - components:
       - figure:
-          _target_: dash_data_table
+          _target_: dash_ag_grid
           data_frame: gapminder_2007
         title: Gapminder Data Insights
         header: |
@@ -407,16 +407,18 @@ pages:
           * DatePicker(**temporal** multi and single option selector)
         type: card
       - figure:
-          _target_: dash_data_table
+          _target_: dash_ag_grid
           data_frame: gapminder_2007
-          page_size: 10
+          dashGridOptions:
+            paginationPageSize: 10
         id: table-gapminder
         title: Gapminder Data
         type: table
       - figure:
-          _target_: dash_data_table
+          _target_: dash_ag_grid
           data_frame: tips
-          page_size: 10
+          dashGridOptions:
+            paginationPageSize: 10
         id: table-tips
         title: Tips Data
         type: table

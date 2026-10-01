@@ -112,7 +112,6 @@ class TestUpdateTargetsRuntime:
                     id=selector_id, property="value", value=["Europe"], str_id=selector_id, triggered=False
                 )
             ],
-            ctds_filter_interaction=[],
             ctds_parameter=[],
             targets=["dynamic_filter"],
         )
@@ -153,7 +152,6 @@ class TestUpdateTargetsRuntime:
                     triggered=False,
                 )
             ],
-            ctds_filter_interaction=[],
             ctds_parameter=[],
             targets=["graph"],
         )
@@ -177,9 +175,7 @@ class TestUpdateTargetsRuntime:
         Vizro._pre_build()
 
         builds["n"] = 0
-        outputs = _get_modified_page_figures(
-            ctds_filter=[], ctds_filter_interaction=[], ctds_parameter=[], targets=["g", "g"]
-        )
+        outputs = _get_modified_page_figures(ctds_filter=[], ctds_parameter=[], targets=["g", "g"])
         assert set(outputs) == {"g"}
         assert builds["n"] == 1
 
