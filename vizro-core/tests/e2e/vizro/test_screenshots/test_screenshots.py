@@ -82,6 +82,8 @@ def test_ag_grid_page(dash_br):
     dash_br.wait_for_element(table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_ID, row_index=0, col_id="country"))
 
 
+# TODO[1.0.0]: delete test_table_page + test_table_interactions_page (and test_flex_layout_gap_and_table below) and
+#  their golden PNGs - the Dash DataTable backing those pages is removed in 1.0.0.
 @image_assertion
 def test_tabs_parameters_page(dash_br):
     page_select(

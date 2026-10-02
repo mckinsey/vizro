@@ -168,7 +168,9 @@ set_controls_non_categorical_ag_grid = vm.Page(
                         ),
                         # Boolean Single
                         vm.Filter(
-                            id=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_SWITCH, column="is_setosa", selector=vm.Switch()
+                            id=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_SWITCH,
+                            column="is_setosa",
+                            selector=vm.Switch(),
                         ),
                     ],
                 ),
@@ -206,7 +208,9 @@ set_controls_non_categorical_timepicker_graph = vm.Page(
                             id=cnst.SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_FILTER,
                             column="time_column",
                             targets=[cnst.AG_GRID_SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_TARGET],
-                            selector=vm.TimePicker(id=cnst.SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_ID, range=True),
+                            selector=vm.TimePicker(
+                                id=cnst.SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_ID, range=True
+                            ),
                         ),
                     ],
                 ),
