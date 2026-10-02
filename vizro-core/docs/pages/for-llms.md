@@ -43,8 +43,7 @@ Every dashboard is a tree of these models. See the full [model reference](API-re
 | [`Flex`][vizro.models.Flex]               | Flexible-box layout.                                                                               | [Layouts](user-guides/layouts.md#flex-layout)            |
 | [`Layout`][vizro.models.Layout]           | Deprecated alias for `Grid`. Prefer `Grid` in new code.                                            | [Deprecations](API-reference/deprecations.md)            |
 | [`Graph`][vizro.models.Graph]             | Plotly Express or custom Plotly chart.                                                             | [Graph](user-guides/graph.md)                            |
-| [`AgGrid`][vizro.models.AgGrid]           | Dash AG Grid (recommended for tables).                                                             | [Table](user-guides/table.md#ag-grid)                    |
-| [`Table`][vizro.models.Table]             | Dash DataTable.                                                                                    | [Table](user-guides/table.md#dash-datatable)             |
+| [`Table`][vizro.models.Table]             | Table backed by a Dash AG Grid (recommended) or Dash DataTable (deprecated).                        | [Table](user-guides/table.md)                            |
 | [`Figure`][vizro.models.Figure]           | Any reactive Dash component (includes built-in KPI cards).                                         | [Figure](user-guides/figure.md)                          |
 | [`Card`][vizro.models.Card]               | Bordered Markdown callout or navigation tile.                                                      | [Card](user-guides/card.md)                              |
 | [`Text`][vizro.models.Text]               | Plain, unstyled Markdown text.                                                                     | [Text](user-guides/text.md)                              |
@@ -57,8 +56,7 @@ Every dashboard is a tree of these models. See the full [model reference](API-re
 | [`Checklist`][vizro.models.Checklist]     | Multi-select checkbox group selector.                                                              | [Selectors](user-guides/selectors.md)                    |
 | [`RadioItems`][vizro.models.RadioItems]   | Single-select radio button selector.                                                               | [Selectors](user-guides/selectors.md)                    |
 | [`Switch`][vizro.models.Switch]           | Boolean toggle selector.                                                                           | [Selectors](user-guides/selectors.md)                    |
-| [`Slider`][vizro.models.Slider]           | Single numeric slider.                                                                             | [Selectors](user-guides/selectors.md)                    |
-| [`RangeSlider`][vizro.models.RangeSlider] | Numeric range slider.                                                                              | [Selectors](user-guides/selectors.md)                    |
+| [`Slider`][vizro.models.Slider]           | Single numeric slider, or a two-handle range with `range=True`.                                                                             | [Selectors](user-guides/selectors.md)                    |
 | [`DatePicker`][vizro.models.DatePicker]   | Date / date-range picker.                                                                          | [Selectors](user-guides/selectors.md)                    |
 | [`TimePicker`][vizro.models.TimePicker]   | Time / time-range picker.                                                                          | [Selectors](user-guides/selectors.md)                    |
 | [`DateTimePicker`][vizro.models.DateTimePicker] | Combined date-and-time / date-and-time-range picker for `datetime` columns.                        | [Selectors](user-guides/selectors.md)                    |
@@ -67,7 +65,7 @@ Every dashboard is a tree of these models. See the full [model reference](API-re
 | [`NavBar`][vizro.models.NavBar]           | Icon sidebar or horizontal bar of `NavLink`s.                                                      | [Navigation](user-guides/navigation.md)                  |
 | [`NavLink`][vizro.models.NavLink]         | Single icon-linked entry in a `NavBar`.                                                            | [Navigation](user-guides/navigation.md)                  |
 | [`Accordion`][vizro.models.Accordion]     | Grouped collapsible page list; default sidebar navigation.                                         | [Navigation](user-guides/navigation.md)                  |
-| [`Action`][vizro.models.Action]           | Wraps a callable with `function`, `inputs`, `outputs`.                                             | [Actions](user-guides/actions.md)                        |
+| [`Action`][vizro.models.Action]           | Wraps a custom callable with `function` and `outputs`.                                             | [Actions](user-guides/actions.md)                        |
 | [`VizroBaseModel`][vizro.models.VizroBaseModel] | Base class for custom components.                                                                  | [Custom components](user-guides/custom-components.md)    |
 
 ## Built-in actions (`vizro.actions`, alias `va`)
@@ -77,8 +75,8 @@ Use these instead of writing a custom action wherever the built-in fits.
 | Action                                                    | Purpose                                                                                                                             | Guide                                                            |
 | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | [`va.export_data()`][vizro.actions.export_data]           | Export filtered data of targeted components to CSV or XLSX.                                                                         | [Handle data](user-guides/data-actions.md)                       |
-| [`va.set_control()`][vizro.actions.set_control]           | Set one or more `Filter`/`Parameter` values (`control=` a single id or a list) from a graph or table click, row selection, or another source component. | [Graph and table interactions](user-guides/graph-table-actions.md) |
-| [`va.filter_interaction()`][vizro.actions.filter_interaction] | Legacy alias for cross-filter behavior. Prefer `va.set_control` in new code.                                                   | [Graph and table interactions](user-guides/graph-table-actions.md) |
+| [`va.set_controls()`][vizro.actions.set_controls]         | Set one or more `Filter`/`Parameter` values (`controls=` a single id or a list) from a graph or table click, row selection, or another source component. | [Graph and table interactions](user-guides/graph-table-actions.md) |
+| [`va.filter_interaction()`][vizro.actions.filter_interaction] | Deprecated alias for cross-filter behavior. Prefer `va.set_controls` in new code.                                              | [Graph and table interactions](user-guides/graph-table-actions.md) |
 | [`va.show_notification()`][vizro.actions.show_notification] | Show a toast notification.                                                                                                        | [Notifications](user-guides/notification-actions.md)              |
 | [`va.update_notification()`][vizro.actions.update_notification] | Update an already-visible toast (progress, success, error).                                                                   | [Notifications](user-guides/notification-actions.md)              |
 | [`va.update_targets()`][vizro.actions.update_targets]     | Refresh a page's figures on demand (e.g. on a `Button` click), re-applying the current filters and parameters.                      | [Actions](user-guides/actions.md)                                |
@@ -90,7 +88,7 @@ Use these instead of writing a custom action wherever the built-in fits.
 
 | Column dtype                       | Default selector          |
 | ---------------------------------- | ------------------------- |
-| numerical                          | `RangeSlider`             |
+| numerical                          | `Slider` (`range=True`)   |
 | categorical (object, string, cat)  | `Dropdown` (multi-select) |
 | date / datetime                    | `DatePicker`              |
 | time                               | `TimePicker`              |
@@ -106,13 +104,14 @@ Every user-supplied callable that goes into a Vizro model must be wrapped with `
 | Mode                    | Wraps                                                     | Used in                                                                 | Guide                                                       |
 | ----------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------- |
 | `@capture("graph")`     | A function that returns a Plotly `Figure`.                | `Graph(figure=...)`                                                     | [Custom charts](user-guides/custom-charts.md)               |
-| `@capture("table")`     | A function that returns a Dash DataTable or AG Grid.      | `Table(figure=...)` or `AgGrid(figure=...)`                             | [Custom tables](user-guides/custom-tables.md)               |
+| `@capture("ag_grid")`   | A function that returns a Dash AG Grid.                   | `Table(figure=...)`                                                     | [Custom tables](user-guides/custom-tables.md)               |
+| `@capture("table")`     | A function that returns a Dash DataTable (deprecated; use `ag_grid`). | `Table(figure=...)`                                                     | [Custom tables](user-guides/custom-tables.md)               |
 | `@capture("figure")`    | A function that returns any Dash component.               | `Figure(figure=...)`                                                    | [Custom figures](user-guides/custom-figures.md)             |
 | `@capture("action")`    | A function that runs on user interaction and returns outputs. | `vm.Action(function=your_fn(...))`                                  | [Custom actions](user-guides/custom-actions.md)             |
 
 Every `@capture`-decorated function receives its first positional argument as data:
 
-- `@capture("graph"|"table"|"figure")` → first argument is a `data_frame: pandas.DataFrame`.
+- `@capture("graph"|"ag_grid"|"table"|"figure")` → first argument is a `data_frame: pandas.DataFrame`.
 - `@capture("action")` → arguments are the values of the referenced Vizro model inputs; returns are mapped to the referenced outputs.
 
 ## What only works in Python configuration

@@ -2,7 +2,7 @@ import e2e.vizro.constants as cnst
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import set_control
+from vizro.actions import set_controls
 from vizro.models.types import capture
 
 df = px.data.iris()
@@ -22,8 +22,8 @@ drill_down_graph_page = vm.Page(
                 data_frame=df, x="sepal_width", y="sepal_length", color="species", custom_data=["species"]
             ),
             actions=[
-                set_control(control="p3-filter-1", value="species"),
-                set_control(control="p3-parameter-1", value="species"),
+                set_controls(controls=["p3-filter-1"], value="species"),
+                set_controls(controls=["p3-parameter-1"], value="species"),
             ],
         )
     ],

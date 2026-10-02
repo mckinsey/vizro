@@ -73,7 +73,7 @@ filters_inside_containers_page = vm.Page(
                         ),
                         vm.Filter(
                             column="sepal_length",
-                            selector=vm.RangeSlider(id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, step=1.0),
+                            selector=vm.Slider(range=True, id=cnst.RANGE_SLIDER_INSIDE_CONTAINERS, step=1.0),
                         ),
                         vm.Filter(
                             column="date_column",

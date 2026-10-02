@@ -108,7 +108,7 @@ def warn_description_without_title(description, info: ValidationInfo):
 def make_deprecated_field_warning(message: str, /):
     def deprecate_field(value: Any, info: ValidationInfo):
         warnings.warn(
-            f"The `{info.field_name}` argument is deprecated and will not exist in Vizro 0.2.0. {message}.",
+            f"The `{info.field_name}` argument is deprecated and will not exist in Vizro 1.0.0. {message}.",
             category=FutureWarning,
             stacklevel=3,
         )
@@ -139,7 +139,7 @@ def make_actions_chain(self):
             action_name = action.function._action_name
             warnings.warn(
                 f"Using the `Action` model for the built-in action `{action_name}` is deprecated and will not be"
-                f" possible in Vizro 0.2.0. Call the action directly with `actions=va.{action_name}(...)`. See "
+                f" possible in Vizro 1.0.0. Call the action directly with `actions=va.{action_name}(...)`. See "
                 "https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#action-model-for-built-in"
                 "-action.",
                 category=FutureWarning,

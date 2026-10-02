@@ -19,6 +19,8 @@ dashboard = vm.Dashboard(
                 vm.NavLink(
                     pages={
                         # configured accordion here to see that it is not shown with one page inside
+                        # TODO[1.0.0]: TABLE_PAGE (Dash DataTable) is removed in 1.0.0 - swap it for another single
+                        #  page so this "one page inside" nav case still holds.
                         cnst.AG_GRID_ACCORDION: [
                             cnst.TABLE_PAGE,
                         ],

@@ -1,17 +1,17 @@
+# TODO[1.0.0]: delete this entire file. `filter_interaction` is removed in Vizro 1.0.0 (users migrate to
+#  `set_controls`); this file holds its full legacy behavioral coverage until then. Also remove
+#  `Table._filter_interaction*` and the `filter_interaction` handling in `test_export_data.py` and the actions
+#  conftest fixtures (see B7).
 import plotly.express as px
 import pytest
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
 
-import vizro.models as vm
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict
 from vizro.managers import model_manager
 
 pytestmark = [
-    pytest.mark.filterwarnings(
-        "ignore:Using the `Action` model for the built-in action `filter_interaction`:FutureWarning"
-    ),
     pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning"),
 ]
 
@@ -126,22 +126,12 @@ def target_box_filtered_continent(request, gapminder_2007, box_params):
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs_one_table_one_aggrid_one_button")
 class TestFilterInteraction:
-    def test_filter_interaction_in_action_deprecated(self):
-        actions = vm.Action(function=filter_interaction())
-        with pytest.warns(FutureWarning, match="Using the `Action` model for the built-in action `filter_interaction`"):
-            # make_actions_chain is what raises the warning, so it only happens when the action is used inside a model.
-            vm.Button(actions=actions)
-
-    def test_filter_interaction_deprecated(self):
-        with pytest.warns(FutureWarning, match="`filter_interaction` is deprecated "):
-            filter_interaction()
-
     @pytest.mark.parametrize("ctx_filter_interaction", [("Africa", None, None), ("Europe", None, None)], indirect=True)
     def test_filter_interaction_without_targets_temporary_behavior(  # temporary fix, see below test
         self, ctx_filter_interaction
     ):
         # Add action to relevant component - here component[0] is the source_chart
-        model_manager["box_chart"].actions = [vm.Action(function=filter_interaction(id="test_action"))]
+        model_manager["box_chart"].actions = [filter_interaction(id="test_action")]
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function(_controls=None)
@@ -163,7 +153,7 @@ class TestFilterInteraction:
         self, ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent
     ):
         # Add action to relevant component - here component[0] is the source_chart
-        model_manager["box_chart"].actions = [vm.Action(function=filter_interaction(id="test_action"))]
+        model_manager["box_chart"].actions = [filter_interaction(id="test_action")]
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function(_controls=None)
@@ -182,9 +172,7 @@ class TestFilterInteraction:
     )
     def test_filter_interaction_with_one_target(self, ctx_filter_interaction, target_scatter_filtered_continent):
         # Add action to relevant component - here component[0] is the source_chart
-        model_manager["box_chart"].actions = [
-            vm.Action(function=filter_interaction(id="test_action", targets=["scatter_chart"]))
-        ]
+        model_manager["box_chart"].actions = [filter_interaction(id="test_action", targets=["scatter_chart"])]
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function(_controls=None)
@@ -206,7 +194,7 @@ class TestFilterInteraction:
     ):
         # Add action to relevant component - here component[0] is the source_chart
         model_manager["box_chart"].actions = [
-            vm.Action(function=filter_interaction(id="test_action", targets=["scatter_chart", "box_chart"]))
+            filter_interaction(id="test_action", targets=["scatter_chart", "box_chart"])
         ]
 
         # Run action by picking the above added action function and executing it with ()
@@ -222,9 +210,7 @@ class TestFilterInteraction:
     def test_filter_interaction_with_invalid_targets(self, target, ctx_filter_interaction):
         with pytest.raises(ValueError, match=r"Target invalid_target not found in model_manager."):
             # Add action to relevant component - here component[0] is the source_chart
-            model_manager["box_chart"].actions = [
-                vm.Action(function=filter_interaction(id="test_action", targets=target))
-            ]
+            model_manager["box_chart"].actions = [filter_interaction(id="test_action", targets=target)]
 
     @pytest.mark.parametrize(
         "ctx_filter_interaction,target_scatter_filtered_continent",
@@ -236,11 +222,9 @@ class TestFilterInteraction:
         indirect=True,
     )
     def test_table_filter_interaction_with_one_target(self, ctx_filter_interaction, target_scatter_filtered_continent):
-        model_manager["box_chart"].actions = [
-            vm.Action(function=filter_interaction(id="test_action", targets=["scatter_chart"]))
-        ]
+        model_manager["box_chart"].actions = [filter_interaction(id="test_action", targets=["scatter_chart"])]
 
-        model_manager["vizro_table"].actions = [vm.Action(function=filter_interaction(targets=["scatter_chart"]))]
+        model_manager["vizro_table"].actions = [filter_interaction(targets=["scatter_chart"])]
         model_manager["vizro_table"].pre_build()
 
         # Run action by picking the above added action function and executing it with ()
@@ -261,12 +245,10 @@ class TestFilterInteraction:
     def test_table_filter_interaction_with_two_targets(
         self, ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent
     ):
-        model_manager["box_chart"].actions = [
-            vm.Action(function=filter_interaction(targets=["scatter_chart", "box_chart"]))
-        ]
+        model_manager["box_chart"].actions = [filter_interaction(targets=["scatter_chart", "box_chart"])]
 
         model_manager["vizro_table"].actions = [
-            vm.Action(function=filter_interaction(id="test_action", targets=["scatter_chart", "box_chart"]))
+            filter_interaction(id="test_action", targets=["scatter_chart", "box_chart"])
         ]
         model_manager["vizro_table"].pre_build()
 
@@ -291,12 +273,10 @@ class TestFilterInteraction:
     ):
         # To not overcrowd these tests with duplication, we use one general case here for the AG Grid
         # Functionality should be similar enough to the Dash Datatable that this suffices
-        model_manager["box_chart"].actions = [
-            vm.Action(function=filter_interaction(targets=["scatter_chart", "box_chart"]))
-        ]
+        model_manager["box_chart"].actions = [filter_interaction(targets=["scatter_chart", "box_chart"])]
 
         model_manager["ag_grid"].actions = [
-            vm.Action(function=filter_interaction(id="test_action", targets=["scatter_chart", "box_chart"]))
+            filter_interaction(id="test_action", targets=["scatter_chart", "box_chart"])
         ]
         model_manager["ag_grid"].pre_build()
 
@@ -320,12 +300,10 @@ class TestFilterInteraction:
         self, ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent
     ):
         model_manager["box_chart"].actions = [
-            vm.Action(function=filter_interaction(id="test_action", targets=["scatter_chart", "box_chart"]))
+            filter_interaction(id="test_action", targets=["scatter_chart", "box_chart"])
         ]
 
-        model_manager["vizro_table"].actions = [
-            vm.Action(function=filter_interaction(targets=["scatter_chart", "box_chart"]))
-        ]
+        model_manager["vizro_table"].actions = [filter_interaction(targets=["scatter_chart", "box_chart"])]
         model_manager["vizro_table"].pre_build()
 
         # Run action by picking the above added action function and executing it with ()

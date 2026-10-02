@@ -13,9 +13,9 @@ from vizro.models.types import FigureType, ModelID, _Controls
 
 
 @deprecated(
-    "`filter_interaction` is deprecated and [will not exist in Vizro 0.2.0]("
+    "`filter_interaction` is deprecated and [will not exist in Vizro 1.0.0]("
     "https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#filter-interaction). Use the more "
-    "powerful and flexible [`set_control`][vizro.actions.set_control].",
+    "powerful and flexible [`set_controls`][vizro.actions.set_controls].",
     category=FutureWarning,
 )
 class filter_interaction(_AbstractAction):

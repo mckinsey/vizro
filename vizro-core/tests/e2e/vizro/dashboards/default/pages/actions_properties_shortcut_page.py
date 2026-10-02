@@ -40,7 +40,7 @@ action_model_field_shortcut_page = vm.Page(
             footer=cnst.ACTION_MODEL_FIELD_DEFAULT_FIGURE_TEXT,
             figure=px.scatter(df_3_rows, x="sepal_width", y="sepal_length", color="species"),
         ),
-        vm.AgGrid(
+        vm.Table(
             id=cnst.ACTION_MODEL_FIELD_SHORTCUT_AG_GRID_ID,
             title=cnst.ACTION_MODEL_FIELD_DEFAULT_FIGURE_TEXT,
             description=cnst.ACTION_MODEL_FIELD_DEFAULT_FIGURE_TEXT,
@@ -80,14 +80,14 @@ action_ag_grid_underlying_id_shortcut_page = vm.Page(
     title=cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
     id=cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
     components=[
-        vm.AgGrid(
+        vm.Table(
             id=cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_AG_GRID_ID,
             title="Click button to update the figure",
             figure=dash_ag_grid(df_3_rows),
             actions=[
                 # Lambda action that takes `AgGrid.selectedRows` JSON and pastes it to the Card output.
                 vm.Action(
-                    # Uses the parent `vm.AgGrid.id` instead of the actual `dag.AgGrid` ID created by `dash_ag_grid`.
+                    # Uses the parent `vm.Table.id` instead of the actual `dag.AgGrid` ID created by `dash_ag_grid`.
                     function=capture("action")(lambda x: str(x))(  # noqa: PLW0108
                         f"{cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_AG_GRID_ID}.selectedRows"
                     ),

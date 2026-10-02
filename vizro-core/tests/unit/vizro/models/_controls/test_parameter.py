@@ -4,7 +4,7 @@ from dash import dcc, html
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions._set_control import set_control
+from vizro.actions import set_controls
 from vizro.actions._update_targets import update_targets
 from vizro.managers import data_manager, model_manager
 from vizro.models._controls.parameter import Parameter
@@ -183,7 +183,7 @@ class TestPreBuildMethod:
         "test_input",
         [
             vm.Slider(),
-            vm.RangeSlider(),
+            vm.Slider(range=True),
             vm.DatePicker(),
             vm.DateTimePicker(),
             vm.DateTimePicker(range=False),
@@ -305,7 +305,7 @@ class TestPreBuildMethod:
 
     def test_target_control_sync_actions(self, managers_one_page_two_graphs):
         # A Parameter can target another control (a Filter or Parameter) to keep it in sync. The control target is
-        # extracted out of self.targets and turned into a `set_control` action that runs *before* the default
+        # extracted out of self.targets and turned into a `set_controls` action that runs *before* the default
         # `update_targets` action so the synced value is applied first.
         target_filter = vm.Filter(id="target_filter", column="continent")
         parameter = vm.Parameter(
@@ -320,17 +320,17 @@ class TestPreBuildMethod:
         # The control target is removed from self.targets, leaving only the figure-argument target.
         assert parameter.targets == ["scatter_chart.x"]
 
-        set_control_action, update_targets_action = parameter.selector.actions
-        assert isinstance(set_control_action, set_control)
-        # A single set_control targets all synced controls (here just one), as a list.
-        assert set_control_action.control == ["target_filter"]
-        assert set_control_action.value is None
+        set_controls_action, update_targets_action = parameter.selector.actions
+        assert isinstance(set_controls_action, set_controls)
+        # A single set_controls targets all synced controls (here just one), as a list.
+        assert set_controls_action.controls == ["target_filter"]
+        assert set_controls_action.value is None
         assert isinstance(update_targets_action, update_targets)
         assert update_targets_action.id == "__parameter_action_source_parameter"
         assert update_targets_action.targets == ["scatter_chart"]
 
     def test_target_multiple_controls_sync_actions(self, managers_one_page_two_graphs):
-        # A Parameter can target several controls at once; a single set_control action targets them all (in order),
+        # A Parameter can target several controls at once; a single set_controls action targets them all (in order),
         # before the single update_targets action.
         target_filter = vm.Filter(id="target_filter", column="continent")
         target_parameter = vm.Parameter(
@@ -349,10 +349,10 @@ class TestPreBuildMethod:
         parameter.pre_build()
 
         assert parameter.targets == ["scatter_chart.x"]
-        set_control_action, update_targets_action = parameter.selector.actions
-        assert isinstance(set_control_action, set_control)
-        assert set_control_action.control == ["target_filter", "target_parameter"]
-        assert set_control_action.value is None
+        set_controls_action, update_targets_action = parameter.selector.actions
+        assert isinstance(set_controls_action, set_controls)
+        assert set_controls_action.controls == ["target_filter", "target_parameter"]
+        assert set_controls_action.value is None
         assert isinstance(update_targets_action, update_targets)
         assert update_targets_action.targets == ["scatter_chart"]
 
@@ -376,13 +376,13 @@ class TestPreBuildMethod:
         parameter_1.pre_build()
         parameter_2.pre_build()
 
-        assert parameter_1.selector.actions[0].control == ["shared_filter"]
-        assert parameter_2.selector.actions[0].control == ["shared_filter"]
+        assert parameter_1.selector.actions[0].controls == ["shared_filter"]
+        assert parameter_2.selector.actions[0].controls == ["shared_filter"]
 
     def test_target_control_ignored_with_explicit_actions_warns(
         self, managers_one_page_two_graphs, identity_action_function
     ):
-        # A control target is synced by generating a default set_control action on the selector. When the selector
+        # A control target is synced by generating a default set_controls action on the selector. When the selector
         # has explicit actions, that default chain is skipped, so a control target listed in `targets` is stripped
         # without being synced. This must warn rather than silently do nothing.
         custom_action = vm.Action(function=identity_action_function())
@@ -417,7 +417,7 @@ class TestPreBuildMethod:
             parameter.pre_build()
 
     def test_target_control_different_page_valid(self, gapminder):
-        # A Parameter can target a control on a *different* page: the control target is extracted and a set_control
+        # A Parameter can target a control on a *different* page: the control target is extracted and a set_controls
         # sync action is generated, while its figure target(s) remain. The cross-page value is carried through
         # vizro_controls_store and applied when the target's page is opened.
         vm.Page(
@@ -444,14 +444,14 @@ class TestPreBuildMethod:
         param_a = model_manager["param_a"]
         # The cross-page control target is stripped, leaving only the figure-argument target.
         assert param_a.targets == ["graph_a.x"]
-        # A single set_control sync action is generated for the cross-page target.
-        set_control_actions = [action for action in param_a.selector.actions if isinstance(action, set_control)]
-        assert len(set_control_actions) == 1
-        assert set_control_actions[0].control == ["filter_b"]
+        # A single set_controls sync action is generated for the cross-page target.
+        set_controls_actions = [action for action in param_a.selector.actions if isinstance(action, set_controls)]
+        assert len(set_controls_actions) == 1
+        assert set_controls_actions[0].controls == ["filter_b"]
         # Different page + control-selector trigger => a sync, not a drill-through: it does not navigate.
-        assert set_control_actions[0]._same_page_controls == []
-        assert set_control_actions[0]._cross_page_controls == ["filter_b"]
-        assert set_control_actions[0]._is_drill_through is False
+        assert set_controls_actions[0]._same_page_controls == []
+        assert set_controls_actions[0]._cross_page_controls == ["filter_b"]
+        assert set_controls_actions[0]._is_drill_through is False
 
     def test_target_only_controls_invalid(self, managers_one_page_two_graphs):
         # A Parameter must have at least one figure target: its value is applied to figures only through its

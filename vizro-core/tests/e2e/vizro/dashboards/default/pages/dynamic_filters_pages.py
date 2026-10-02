@@ -186,7 +186,7 @@ dynamic_filters_numerical_page = vm.Page(
         ),
         vm.Filter(
             column="sepal_length",
-            selector=vm.RangeSlider(id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, step=0.5),
+            selector=vm.Slider(range=True, id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, step=0.5),
         ),
     ],
 )
@@ -248,6 +248,8 @@ dynamic_filters_temporal_page = vm.Page(
 dynamic_filters_cascader_page = vm.Page(
     title=cnst.DYNAMIC_FILTERS_CASCADER_PAGE,
     components=[
+        # TODO[1.0.0]: `vm.AgGrid` is removed in 1.0.0 - this is the only remaining `vm.AgGrid` model use in e2e.
+        #  Replace both with `vm.Table(id=..., figure=dash_ag_grid(data_frame="load_from_file_hierarchical"))`.
         vm.AgGrid(
             id=cnst.AG_GRID_DYNAMIC_CASCADER_ID,
             figure=dash_ag_grid(data_frame="load_from_file_hierarchical"),

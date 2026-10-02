@@ -31,7 +31,7 @@ dff = pd.DataFrame(
 
 datetimepicker_range = vm.Page(
     title=cnst.DATETIMEPICKER_RANGE_PAGE,
-    components=[vm.AgGrid(id=cnst.DATETIMEPICKER_RANGE_AG_GRID_ID, figure=dash_ag_grid(data_frame=dff))],
+    components=[vm.Table(id=cnst.DATETIMEPICKER_RANGE_AG_GRID_ID, figure=dash_ag_grid(data_frame=dff))],
     controls=[
         vm.Filter(
             column="datetime_utc",
@@ -46,7 +46,7 @@ datetimepicker_range = vm.Page(
 
 datetimepicker_range_url = vm.Page(
     title=cnst.DATETIMEPICKER_RANGE_URL_PAGE,
-    components=[vm.AgGrid(id=cnst.DATETIMEPICKER_RANGE_URL_AG_GRID_ID, figure=dash_ag_grid(data_frame=dff))],
+    components=[vm.Table(id=cnst.DATETIMEPICKER_RANGE_URL_AG_GRID_ID, figure=dash_ag_grid(data_frame=dff))],
     controls=[
         vm.Filter(
             id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_FILTER_CONTROL_ID,
@@ -63,7 +63,7 @@ datetimepicker_range_url = vm.Page(
 
 datetimepicker_single = vm.Page(
     title=cnst.DATETIMEPICKER_SINGLE_PAGE,
-    components=[vm.AgGrid(id=cnst.DATETIMEPICKER_SINGLE_AG_GRID_ID, figure=dash_ag_grid(data_frame=dff))],
+    components=[vm.Table(id=cnst.DATETIMEPICKER_SINGLE_AG_GRID_ID, figure=dash_ag_grid(data_frame=dff))],
     controls=[
         vm.Filter(column="datetime_utc"),
         vm.Filter(

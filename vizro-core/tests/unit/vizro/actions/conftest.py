@@ -1,3 +1,5 @@
+import warnings
+
 import pytest
 
 import vizro.models as vm
@@ -82,17 +84,24 @@ def managers_one_page_two_graphs_one_table_one_aggrid_one_button(
     box_chart, scatter_chart, dash_data_table_with_id, ag_grid_with_id
 ):
     """Instantiates a simple model_manager and data_manager with: page, graphs, table, aggrid and button component."""
-    vm.Page(
-        id="test_page",
-        title="My first dashboard",
-        components=[
-            vm.Graph(id="box_chart", figure=box_chart),
-            vm.Graph(id="scatter_chart", figure=scatter_chart),
-            vm.Table(id="vizro_table", figure=dash_data_table_with_id),
-            vm.AgGrid(id="ag_grid", figure=ag_grid_with_id),
-            vm.Button(id="button"),
-        ],
-    )
+    # The DataTable-backed `vm.Table` is intentional: it exercises the Dash DataTable `filter_interaction` path
+    # (active_cell / derived_viewport_data), which lives on until `filter_interaction` and the DataTable backing are
+    # both removed in Vizro 1.0.0 (see B7). It emits the deprecated-backing FutureWarning at construction, so suppress
+    # it here; the warning itself is asserted in the dedicated table tests.
+    # TODO[1.0.0]: remove this fixture together with `filter_interaction` (the only consumer of the DataTable path).
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", FutureWarning)
+        vm.Page(
+            id="test_page",
+            title="My first dashboard",
+            components=[
+                vm.Graph(id="box_chart", figure=box_chart),
+                vm.Graph(id="scatter_chart", figure=scatter_chart),
+                vm.Table(id="vizro_table", figure=dash_data_table_with_id),
+                vm.Table(id="ag_grid", figure=ag_grid_with_id),
+                vm.Button(id="button"),
+            ],
+        )
     Vizro._pre_build()
 
 

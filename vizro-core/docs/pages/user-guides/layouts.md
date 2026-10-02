@@ -11,7 +11,7 @@ The [`Page`][vizro.models.Page] and [`Container`][vizro.models.Container] models
 
 !!! note
 
-    The `Grid` model used to be called `Layout`, and the name `Layout` will no longer exist in Vizro 0.2.0. See our [full list of deprecations and breaking changes](../API-reference/deprecations.md).
+    The `Grid` model used to be called `Layout`, and the name `Layout` will no longer exist in Vizro 1.0.0. See our [full list of deprecations and breaking changes](../API-reference/deprecations.md).
 
 ## Layout options: Grid and Flex
 
@@ -709,7 +709,7 @@ You can achieve this by:
 The syntax for setting `width` and `height` varies between components. Refer to the component's documentation for the correct syntax and usage, such as:
 
 - `Graph`: See the documentation on [Plotly - Adjust Graph Size in Python](https://plotly.com/python/setting-graph-size/). For example, `vm.Graph(figure=px.violin(..., width=300))`.
-- `AgGrid`: See the documentation on [Dash - Change Grid Size](https://dash.plotly.com/dash-ag-grid/grid-size). For example, `vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 1000}))`.
+- `AgGrid`: See the documentation on [Dash - Change Grid Size](https://dash.plotly.com/dash-ag-grid/grid-size). For example, `vm.Table(figure=dash_ag_grid(tips, style={"width": 1000}))`.
 - `DataTable`: See the documentation on [Dash - Setting Table Height](https://dash.plotly.com/datatable/height#setting-table-height-with-vertical-scroll). For example, `vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"}))`.
 - `Card`: See our documentation on [Card - The extra argument](https://vizro.readthedocs.io/en/stable/pages/user-guides/card/#the-extra-argument). For example, `vm.Card(..., extra={"style": {"height": "200px"}})`.
 

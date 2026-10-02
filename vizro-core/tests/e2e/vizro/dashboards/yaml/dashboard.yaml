@@ -74,7 +74,7 @@ pages:
             pagination: true
         id: 123_ag_grid_table
         title: Equal Title One
-        type: ag_grid
+        type: table
       - figure:
           _target_: box
           data_frame: gapminder

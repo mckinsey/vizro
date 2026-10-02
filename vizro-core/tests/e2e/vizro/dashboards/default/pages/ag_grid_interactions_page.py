@@ -10,7 +10,7 @@ gapminder = px.data.gapminder()
 ag_grid_interactions_page = vm.Page(
     title=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
     components=[
-        vm.AgGrid(
+        vm.Table(
             id=cnst.TABLE_AG_GRID_INTERACTIONS_ID,
             title="Table Country",
             figure=dash_ag_grid(

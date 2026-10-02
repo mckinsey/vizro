@@ -1,3 +1,6 @@
+# TODO[1.0.0]: delete this file. It is Dash-DataTable-backed e2e coverage (dash_data_table), removed in 1.0.0.
+#  Also unwire it from dashboard.py (import + pages list + AG_GRID_ACCORDION nav) and dashboard_navbar_navlink.py,
+#  and drop the golden screenshot for test_table_page.
 import e2e.vizro.constants as cnst
 
 import vizro.models as vm
@@ -35,7 +38,7 @@ table_page = vm.Page(
         ),
         vm.Filter(
             column="pop",
-            selector=vm.RangeSlider(id=cnst.RANGESLIDER_TABLE_FILTER, step=1000000.0, min=1000000, max=10000000),
+            selector=vm.Slider(range=True, id=cnst.RANGESLIDER_TABLE_FILTER, step=1000000.0, min=1000000, max=10000000),
         ),
     ],
 )

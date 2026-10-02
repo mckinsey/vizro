@@ -24,7 +24,7 @@ def get_dict_options_and_value(
     return dict_options, value if value is not None else default_value  # type: ignore[return-value]
 
 
-# Util for vm.Slider and vm.RangeSlider
+# Util for vm.Slider
 def to_int_if_whole(value: float | int) -> float | int:
     return int(value) if isinstance(value, float) and value.is_integer() else value
 

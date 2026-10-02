@@ -103,6 +103,100 @@ def expected_slider_with_description():
     )
 
 
+@pytest.fixture()
+def expected_range_slider():
+    return html.Div(
+        [
+            dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
+            dcc.RangeSlider(
+                id="range_slider",
+                min=0.0,
+                max=10.0,
+                step=1.0,
+                marks={0.0: "0", 10.0: "10"},
+                value=[0.0, 10.0],
+                persistence=True,
+                persistence_type="session",
+                dots=True,
+            ),
+        ]
+    )
+
+
+@pytest.fixture()
+def expected_range_slider_with_marks_none():
+    return html.Div(
+        [
+            dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
+            dcc.RangeSlider(
+                id="range_slider",
+                min=0.0,
+                max=10.0,
+                step=1.0,
+                marks=None,
+                value=[0, 10],
+                persistence=True,
+                persistence_type="session",
+                dots=True,
+            ),
+        ]
+    )
+
+
+@pytest.fixture()
+def expected_range_slider_with_extra():
+    return html.Div(
+        [
+            dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
+            dcc.RangeSlider(
+                id="overridden_id",
+                min=0.0,
+                max=10.0,
+                step=2.0,
+                marks={1.0: "1", 5.0: "5", 10.0: "10"},
+                value=[0, 10],
+                persistence=True,
+                persistence_type="session",
+                dots=True,
+                tooltip={"placement": "bottom", "always_visible": True},
+                pushable=20,
+            ),
+        ]
+    )
+
+
+@pytest.fixture()
+def expected_range_slider_with_description():
+    expected_description = [
+        html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+        dbc.Tooltip(
+            children=vdc.Markdown("Test description", id="info-text", className="card-text"),
+            id="info",
+            target="info-icon",
+            autohide=False,
+        ),
+    ]
+    return html.Div(
+        [
+            dbc.Label(
+                [html.Span("Title", id="range_slider_title"), *expected_description],
+                html_for="range_slider",
+            ),
+            dcc.RangeSlider(
+                id="range_slider",
+                min=0.0,
+                max=10.0,
+                step=2.0,
+                marks={1.0: "1", 5.0: "5", 10.0: "10"},
+                value=[0, 10],
+                dots=True,
+                persistence=True,
+                persistence_type="session",
+            ),
+        ]
+    )
+
+
 class TestSliderInstantiation:
     """Tests model instantiation."""
 
@@ -152,12 +246,15 @@ class TestSliderInstantiation:
         }
         assert slider._action_inputs == {"__default__": "slider_id.value"}
 
-    @pytest.mark.parametrize("min, max", [(0, None), (None, 10), (0, 10)])
-    def test_valid_min_max(self, min, max):
+    @pytest.mark.parametrize(
+        "min, max, expected_min, expected_max",
+        [(0, None, 0, None), (None, 10, None, 10), (0, 10, 0, 10), ("1", "10", 1, 10)],
+    )
+    def test_valid_min_max(self, min, max, expected_min, expected_max):
         slider = vm.Slider(min=min, max=max)
 
-        assert slider.min == min
-        assert slider.max == max
+        assert slider.min == expected_min
+        assert slider.max == expected_max
 
     def test_validate_max_invalid(self):
         with pytest.raises(
@@ -165,16 +262,55 @@ class TestSliderInstantiation:
         ):
             vm.Slider(min=10, max=0)
 
-    @pytest.mark.parametrize("value", [5, -5, 0, 6.5, -10, 10])
-    def test_validate_slider_value_valid(self, value):
-        slider = vm.Slider(min=-10, max=10, value=value)
+    @pytest.mark.parametrize(
+        "range, value, expected",
+        [
+            # Scalar values for range=False.
+            (False, 5, 5),
+            (False, -5, -5),
+            (False, 0, 0),
+            (False, 6.5, 6.5),
+            (False, -10, -10),
+            (False, 10, 10),
+            # [start, end] pairs for range=True.
+            (True, None, None),
+            (True, [1, 2], [1, 2]),
+            (True, [0.1, 1.1], [0.1, 1.1]),
+            (True, [-10, 10], [-10, 10]),
+            (True, [10, 10], [10, 10]),  # equal endpoints
+            (True, ["1", "10"], [1, 10]),  # string coercion
+        ],
+    )
+    def test_validate_slider_value_valid(self, range, value, expected):
+        slider = vm.Slider(min=-10, max=10, value=value, range=range)
 
-        assert slider.value == value
+        assert slider.value == expected
 
-    @pytest.mark.parametrize("value", [11, -1])
-    def test_validate_slider_value_invalid(self, value):
+    @pytest.mark.parametrize(
+        "range, value",
+        [
+            (False, 11),
+            (False, -1),
+            (True, [-1, 11]),  # both endpoints out of bounds
+        ],
+    )
+    def test_validate_slider_value_invalid(self, range, value):
         with pytest.raises(ValidationError, match=r"Please provide a valid value between the min and max value."):
-            vm.Slider(min=0, max=10, value=value)
+            vm.Slider(min=0, max=10, value=value, range=range)
+
+    @pytest.mark.parametrize(
+        "value, match",
+        [
+            ([0], "List should have at least 2 items after validation"),  # too few
+            ([], "List should have at least 2 items after validation"),  # too few
+            ([1, 2, 3], "List should have at most 2 items after validation, not 3"),  # too many
+            ([0, None], "Input should be a valid number"),  # non-number
+            ([None, None], "Input should be a valid number"),  # non-number
+        ],
+    )
+    def test_validate_range_slider_value_invalid_shape(self, value, match):
+        with pytest.raises(ValidationError, match=match):
+            vm.Slider(min=0, max=10, value=value, range=True)
 
     @pytest.mark.parametrize("step, expected", [(1, 1), (2.5, 2.5), (10, 10), (None, None), ("1", 1.0)])
     def test_validate_step_valid(self, step, expected):
@@ -261,13 +397,135 @@ class TestBuildMethod:
 
         assert_component_equal(slider, expected_slider_with_description)
 
+    def test_range_slider_build(self, expected_range_slider):
+        range_slider = vm.Slider(id="range_slider", min=0, max=10, step=1, title="Title", range=True).build()
+
+        assert_component_equal(range_slider, expected_range_slider)
+
+    def test_range_slider_build_with_marks_none(self, expected_range_slider_with_marks_none):
+        range_slider = vm.Slider(
+            id="range_slider",
+            min=0,
+            max=10,
+            step=1,
+            marks=None,
+            value=[0, 10],
+            title="Title",
+            range=True,
+        ).build()
+
+        assert_component_equal(range_slider, expected_range_slider_with_marks_none)
+
+    def test_range_slider_build_with_extra(self, expected_range_slider_with_extra):
+        """Test that extra arguments (including RangeSlider-only props like pushable) correctly override defaults."""
+        range_slider = vm.Slider(
+            id="range_slider",
+            min=0.0,
+            max=10.0,
+            step=2,
+            marks={1: "1", 5: "5", 10: "10"},
+            value=[0, 10],
+            title="Title",
+            range=True,
+            extra={
+                "tooltip": {"placement": "bottom", "always_visible": True},
+                "pushable": 20,
+                "id": "overridden_id",
+            },
+        ).build()
+
+        assert_component_equal(range_slider, expected_range_slider_with_extra)
+
+    def test_range_slider_build_with_description(self, expected_range_slider_with_description):
+        """Test that description arguments correctly builds icon and tooltip."""
+        range_slider = vm.Slider(
+            id="range_slider",
+            min=0.0,
+            max=10.0,
+            step=2,
+            marks={1: "1", 5: "5", 10: "10"},
+            value=[0, 10],
+            title="Title",
+            range=True,
+            description=vm.Tooltip(text="Test description", icon="Info", id="info"),
+        ).build()
+
+        assert_component_equal(range_slider, expected_range_slider_with_description)
+
 
 class TestSliderGetValueFromTrigger:
     """Tests _get_value_from_trigger models method."""
 
-    @pytest.mark.parametrize("trigger", [5, None])
+    @pytest.mark.parametrize("trigger", [5, [1, 10], None])
     def test_get_value_from_trigger_returns_trigger(self, trigger):
         # A selector already holds the value to propagate, so _get_value_from_trigger ignores `value` and returns the
-        # raw trigger value unchanged (this is what powers syncing controls that target another control).
+        # raw trigger value unchanged (this is what powers syncing controls that target another control). A scalar
+        # trigger corresponds to range=False, a [start, end] list to range=True.
         slider = vm.Slider()
         assert slider._get_value_from_trigger(value="ignored", trigger=trigger) == trigger
+
+
+class TestSliderRange:
+    """Tests for Slider(range=True), which replaces the deprecated RangeSlider."""
+
+    def test_range_defaults_to_false(self):
+        assert vm.Slider().range is False
+
+    def test_range_true_builds_range_slider(self):
+        slider = vm.Slider(id="s", min=0, max=10, range=True)
+        component = slider.build().children[1]
+        assert isinstance(component, dcc.RangeSlider)
+        assert component.value == [0, 10]
+
+    def test_range_false_builds_slider(self):
+        component = vm.Slider(id="s", min=0, max=10).build().children[1]
+        assert isinstance(component, dcc.Slider)
+        assert not isinstance(component, dcc.RangeSlider)
+
+    def test_range_true_with_list_value(self):
+        assert vm.Slider(min=0, max=10, value=[2, 8], range=True).value == [2, 8]
+
+    def test_range_true_with_tuple_value(self):
+        # The deprecated RangeSlider accepted tuple values (e.g. value=(2, 8)), so the Slider(range=True) migration
+        # target must too: a tuple is range-shaped and the field validator coerces it to the [start, end] list.
+        assert vm.Slider(min=0, max=10, value=(2, 8), range=True).value == [2, 8]
+
+    def test_tuple_value_without_range_raises(self):
+        with pytest.raises(ValidationError, match="Please set range=True if providing a list of values"):
+            vm.Slider(min=0, max=10, value=(2, 8))
+
+    def test_range_true_inner_component_properties(self):
+        # dcc.RangeSlider exposes extra properties (allowCross, count, pushable) that must be forwardable.
+        assert "allowCross" in vm.Slider(range=True)._inner_component_properties
+        assert "allowCross" not in vm.Slider()._inner_component_properties
+
+    def test_list_value_without_range_raises(self):
+        with pytest.raises(ValidationError, match="Please set range=True if providing a list of values"):
+            vm.Slider(min=0, max=10, value=[2, 8])
+
+    def test_single_value_with_range_raises(self):
+        with pytest.raises(ValidationError, match="Please set range=False if providing a single value"):
+            vm.Slider(min=0, max=10, value=5, range=True)
+
+    def test_value_reassignment_enforces_range_shape(self):
+        # The value/range consistency check must also run on assignment (validate_assignment=True), not only at
+        # construction, so a scalar cannot leak into a range slider (or a list into a single-handle slider). The check
+        # runs in "before" mode, so a rejected assignment must leave the original value untouched (no partial mutation).
+        slider = vm.Slider(min=0, max=10, value=[2, 8], range=True)
+        with pytest.raises(ValidationError, match="Please set range=False if providing a single value"):
+            slider.value = 5
+        assert slider.value == [2, 8]
+
+        slider = vm.Slider(min=0, max=10, value=3)
+        with pytest.raises(ValidationError, match="Please set range=True if providing a list of values"):
+            slider.value = [2, 8]
+        assert slider.value == 3
+
+    def test_range_reassignment_enforces_range_shape(self):
+        # Flipping `range` so it no longer matches the current `value` is rejected, and the rejected assignment must not
+        # mutate the model (range stays as it was).
+        slider = vm.Slider(min=0, max=10, value=3)
+        with pytest.raises(ValidationError, match="Please set range=False if providing a single value"):
+            slider.range = True
+        assert slider.range is False
+        assert slider.value == 3

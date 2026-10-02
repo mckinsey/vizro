@@ -14,7 +14,10 @@ from vizro.managers import data_manager, model_manager
 
 # TODO: Remove dependence on filter_interaction from these tests. Probably should rewrite export_data tests
 # in general now we can test pure function more easily.
-pytestmark = [pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning")]
+# TODO[1.0.0]: remove this pytestmark together with `filter_interaction` (see B7); these tests depend on it.
+pytestmark = [
+    pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning"),
+]
 
 
 @pytest.fixture
@@ -200,7 +203,7 @@ def config_for_testing_all_components_with_actions(request, standard_px_chart, a
                 figure=standard_px_chart,
                 actions=[filter_interaction(id="graph_filter_interaction", targets=["ag_grid"])],
             ),
-            vm.AgGrid(id="ag_grid", figure=ag_grid_with_id),
+            vm.Table(id="ag_grid", figure=ag_grid_with_id),
             vm.Button(
                 id="export_data_button",
                 actions=[
@@ -453,7 +456,7 @@ class TestExportDataFunction:
         self, ctx_export_data, target_data_filter_and_filter_interaction, target_data_filtered_pop
     ):
         # Creating and adding a Filter object to the existing Page
-        pop_filter = vm.Filter(column="pop", selector=vm.RangeSlider(id="pop_filter"))
+        pop_filter = vm.Filter(column="pop", selector=vm.Slider(range=True, id="pop_filter"))
         model_manager["test_page"].controls = [pop_filter]
         # Adds a default _filter Action to the filter selector objects
         pop_filter.pre_build()
@@ -505,7 +508,7 @@ class TestExportDataFunction:
         self, ctx_export_data, target_data_filter_and_filter_interaction, target_data_filtered_pop
     ):
         # Creating and adding a Filter object to the existing Page
-        pop_filter = vm.Filter(column="pop", selector=vm.RangeSlider(id="pop_filter"))
+        pop_filter = vm.Filter(column="pop", selector=vm.Slider(range=True, id="pop_filter"))
         model_manager["test_page"].controls = [pop_filter]
         # Adds a default _filter Action to the filter selector objects
         pop_filter.pre_build()
@@ -568,7 +571,7 @@ class TestExportDataFunction:
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
 
         # Creating and adding a Filter object to the existing Page
-        pop_filter = vm.Filter(column="pop", selector=vm.RangeSlider(id="pop_filter"))
+        pop_filter = vm.Filter(column="pop", selector=vm.Slider(range=True, id="pop_filter"))
         model_manager["test_page"].controls = [pop_filter]
         # Adds a default _filter Action to the filter selector objects
         pop_filter.pre_build()

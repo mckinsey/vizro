@@ -46,7 +46,7 @@ class TestSharedValidators:
             ),
             (
                 "standard_ag_grid",
-                "A callable of mode `ag_grid` has been provided. Please wrap it inside `vm.AgGrid(figure=...)`",
+                "A callable of mode `ag_grid` has been provided. Please wrap it inside `vm.Table(figure=...)`",
             ),
             (
                 "standard_dash_table",

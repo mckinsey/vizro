@@ -166,7 +166,7 @@ underlying component may change in the future.""",
                 unique_points.add(val[0] if isinstance(val, list) else val)
         except (KeyError, IndexError, TypeError):
             raise ValueError(
-                f"Couldn't find value `{value}` in trigger for `set_control` action. "
+                f"Couldn't find value `{value}` in trigger for `set_controls` action. "
                 f"This action was added to the Graph model with ID `{self.id}`. "
                 "If you expected the value to come from custom data, add it in the figure's custom_data signature."
             )

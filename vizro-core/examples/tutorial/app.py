@@ -25,7 +25,7 @@ def bar_mean(data_frame, x, y):
 first_page = vm.Page(
     title="Data",
     components=[
-        vm.AgGrid(
+        vm.Table(
             figure=dash_ag_grid(tips),
             footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
             Practical Data Analysis: Case Studies in Business Statistics.
