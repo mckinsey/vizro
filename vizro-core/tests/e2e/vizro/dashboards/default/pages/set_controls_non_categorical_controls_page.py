@@ -33,69 +33,69 @@ timepicker_scatter = px.scatter(
 )
 
 
-set_control_non_categorical_graph = vm.Page(
-    title=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_PAGE_TITLE,
+set_controls_non_categorical_graph = vm.Page(
+    title=cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_PAGE_TITLE,
     components=[
         vm.Container(
-            title="Click set_control",
+            title="Click set_controls",
             components=[
                 vm.Graph(
-                    id=cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL,
+                    id=cnst.SCATTER_SET_CONTROLS_NON_CATEGORICAL,
                     figure=custom_scatter,
                     title="Click on points to set the filters below",
                     actions=[
-                        set_controls(controls=[cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SLIDER], value="sepal_length"),
+                        set_controls(controls=[cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_SLIDER], value="sepal_length"),
                         set_controls(
-                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_RANGE_SLIDER], value="sepal_length"
+                            controls=[cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_RANGE_SLIDER], value="sepal_length"
                         ),
                         set_controls(
-                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE], value="date_column"
+                            controls=[cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE], value="date_column"
                         ),
                         set_controls(
-                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE], value="date_column"
+                            controls=[cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE], value="date_column"
                         ),
-                        set_controls(controls=[cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SWITCH], value="is_setosa"),
+                        set_controls(controls=[cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_SWITCH], value="is_setosa"),
                     ],
                 ),
                 vm.Container(
                     components=[
                         vm.Graph(
-                            id=cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL_TARGET,
+                            id=cnst.SCATTER_SET_CONTROLS_NON_CATEGORICAL_TARGET,
                             figure=px.scatter(df, x="sepal_width", y="petal_length", color="species"),
                         ),
                     ],
                     controls=[
                         # Numeric-Single
                         vm.Filter(
-                            id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SLIDER,
+                            id=cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_SLIDER,
                             column="sepal_length",
                             selector=vm.Slider(),
                         ),
                         # Numeric-Range
                         vm.Filter(
-                            id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_RANGE_SLIDER,
+                            id=cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_RANGE_SLIDER,
                             column="sepal_length",
                             selector=vm.Slider(range=True),
                         ),
                         # Temporal-Single
                         vm.Filter(
-                            id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE,
+                            id=cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE,
                             column="date_column",
                             selector=vm.DatePicker(
-                                id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE_ID, range=False
+                                id=cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE_ID, range=False
                             ),
                         ),
                         # Temporal-Range
                         vm.Filter(
-                            id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE,
+                            id=cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE,
                             column="date_column",
                             selector=vm.DatePicker(
-                                id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE_ID, range=True
+                                id=cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE_ID, range=True
                             ),
                         ),
                         # Boolean Single
                         vm.Filter(
-                            id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SWITCH,
+                            id=cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_SWITCH,
                             column="is_setosa",
                             selector=vm.Switch(value=True),
                         ),
@@ -106,69 +106,69 @@ set_control_non_categorical_graph = vm.Page(
     ],
 )
 
-set_control_non_categorical_ag_grid = vm.Page(
-    title=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_PAGE_TITLE,
+set_controls_non_categorical_ag_grid = vm.Page(
+    title=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_PAGE_TITLE,
     components=[
         vm.Container(
-            title="Click set_control",
+            title="Click set_controls",
             components=[
                 vm.Table(
-                    id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL,
+                    id=cnst.AG_GRID_SET_CONTROLS_NON_CATEGORICAL,
                     figure=dash_ag_grid(df),
                     title="Click on row to set the filters below",
                     actions=[
-                        set_controls(controls=[cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SLIDER], value="sepal_length"),
+                        set_controls(controls=[cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_SLIDER], value="sepal_length"),
                         set_controls(
-                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_RANGE_SLIDER], value="sepal_length"
+                            controls=[cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_RANGE_SLIDER], value="sepal_length"
                         ),
                         set_controls(
-                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE], value="date_column"
+                            controls=[cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE], value="date_column"
                         ),
                         set_controls(
-                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE], value="date_column"
+                            controls=[cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE], value="date_column"
                         ),
-                        set_controls(controls=[cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SWITCH], value="is_setosa"),
+                        set_controls(controls=[cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_SWITCH], value="is_setosa"),
                     ],
                 ),
                 vm.Container(
                     components=[
                         vm.Graph(
-                            id=cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL_TARGET_AG_GRID,
+                            id=cnst.SCATTER_SET_CONTROLS_NON_CATEGORICAL_TARGET_AG_GRID,
                             figure=px.scatter(df, x="sepal_width", y="petal_length", color="species"),
                         ),
                     ],
                     controls=[
                         # Numeric-Single
                         vm.Filter(
-                            id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SLIDER,
+                            id=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_SLIDER,
                             column="sepal_length",
                             selector=vm.Slider(),
                         ),
                         # Numeric-Range
                         vm.Filter(
-                            id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_RANGE_SLIDER,
+                            id=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_RANGE_SLIDER,
                             column="sepal_length",
                             selector=vm.Slider(range=True),
                         ),
                         # Temporal-Single
                         vm.Filter(
-                            id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE,
+                            id=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE,
                             column="date_column",
                             selector=vm.DatePicker(
-                                id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE_ID, range=False
+                                id=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE_ID, range=False
                             ),
                         ),
                         # Temporal-Range
                         vm.Filter(
-                            id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE,
+                            id=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE,
                             column="date_column",
                             selector=vm.DatePicker(
-                                id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE_ID, range=True
+                                id=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE_ID, range=True
                             ),
                         ),
                         # Boolean Single
                         vm.Filter(
-                            id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SWITCH, column="is_setosa", selector=vm.Switch()
+                            id=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_SWITCH, column="is_setosa", selector=vm.Switch()
                         ),
                     ],
                 ),
@@ -177,19 +177,19 @@ set_control_non_categorical_ag_grid = vm.Page(
     ],
 )
 
-set_control_non_categorical_timepicker_graph = vm.Page(
-    title=cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_PAGE_TITLE,
+set_controls_non_categorical_timepicker_graph = vm.Page(
+    title=cnst.SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_PAGE_TITLE,
     components=[
         vm.Container(
-            title="Click set_control",
+            title="Click set_controls",
             components=[
                 vm.Graph(
-                    id=cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER,
+                    id=cnst.SCATTER_SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER,
                     figure=timepicker_scatter,
                     title="Click on points to set the time filter below",
                     actions=[
                         set_controls(
-                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_FILTER],
+                            controls=[cnst.SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_FILTER],
                             value="time_column",
                         ),
                     ],
@@ -197,16 +197,16 @@ set_control_non_categorical_timepicker_graph = vm.Page(
                 vm.Container(
                     components=[
                         vm.Table(
-                            id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_TARGET,
+                            id=cnst.AG_GRID_SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_TARGET,
                             figure=dash_ag_grid(temporal_df),
                         ),
                     ],
                     controls=[
                         vm.Filter(
-                            id=cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_FILTER,
+                            id=cnst.SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_FILTER,
                             column="time_column",
-                            targets=[cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_TARGET],
-                            selector=vm.TimePicker(id=cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_ID, range=True),
+                            targets=[cnst.AG_GRID_SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_TARGET],
+                            selector=vm.TimePicker(id=cnst.SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_ID, range=True),
                         ),
                     ],
                 ),
@@ -215,19 +215,19 @@ set_control_non_categorical_timepicker_graph = vm.Page(
     ],
 )
 
-set_control_non_categorical_datetimepicker_ag_grid = vm.Page(
-    title=cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_PAGE_TITLE,
+set_controls_non_categorical_datetimepicker_ag_grid = vm.Page(
+    title=cnst.SET_CONTROLS_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_PAGE_TITLE,
     components=[
         vm.Container(
-            title="Click set_control",
+            title="Click set_controls",
             components=[
                 vm.Table(
-                    id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER,
+                    id=cnst.AG_GRID_SET_CONTROLS_NON_CATEGORICAL_DATETIMEPICKER,
                     figure=dash_ag_grid(temporal_df),
                     title="Click on row to set the datetime filter below",
                     actions=[
                         set_controls(
-                            controls=[cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_FILTER],
+                            controls=[cnst.SET_CONTROLS_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_FILTER],
                             value="datetime_column",
                         ),
                     ],
@@ -235,17 +235,17 @@ set_control_non_categorical_datetimepicker_ag_grid = vm.Page(
                 vm.Container(
                     components=[
                         vm.Table(
-                            id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_TARGET,
+                            id=cnst.AG_GRID_SET_CONTROLS_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_TARGET,
                             figure=dash_ag_grid(temporal_df),
                         ),
                     ],
                     controls=[
                         vm.Filter(
-                            id=cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_FILTER,
+                            id=cnst.SET_CONTROLS_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_FILTER,
                             column="datetime_column",
-                            targets=[cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_TARGET],
+                            targets=[cnst.AG_GRID_SET_CONTROLS_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_TARGET],
                             selector=vm.DateTimePicker(
-                                id=cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_ID, range=True
+                                id=cnst.SET_CONTROLS_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_ID, range=True
                             ),
                         ),
                     ],

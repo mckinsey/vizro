@@ -2,7 +2,6 @@ import e2e.vizro.constants as cnst
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import filter_interaction
 from vizro.tables import dash_ag_grid
 
 gapminder = px.data.gapminder()
@@ -17,7 +16,6 @@ ag_grid_interactions_page = vm.Page(
                 id="ag_grid_table_country",
                 data_frame=gapminder,
             ),
-            actions=filter_interaction(targets=[cnst.LINE_AG_GRID_INTERACTIONS_ID]),
         ),
         vm.Graph(
             id=cnst.LINE_AG_GRID_INTERACTIONS_ID,
