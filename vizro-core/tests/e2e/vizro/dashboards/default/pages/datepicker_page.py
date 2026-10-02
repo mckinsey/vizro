@@ -7,7 +7,7 @@ from flask_caching import Cache
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro.managers import data_manager
-from vizro.tables import dash_data_table
+from vizro.tables import dash_ag_grid
 
 datepicker_df = pd.DataFrame(
     [
@@ -116,14 +116,14 @@ datepicker_page = vm.Page(
         vm.Table(
             id=cnst.TABLE_POP_RANGE_ID,
             title="Table Pop Range",
-            figure=dash_data_table(
+            figure=dash_ag_grid(
                 data_frame="datepicker_df",
             ),
         ),
         vm.Table(
             id=cnst.TABLE_POP_DATE_ID,
             title="Table Pop Date",
-            figure=dash_data_table(
+            figure=dash_ag_grid(
                 data_frame="datepicker_df",
             ),
         ),

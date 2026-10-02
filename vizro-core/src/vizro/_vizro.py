@@ -330,7 +330,7 @@ Provide a valid import path for these in your dashboard configuration."""
                 model.pre_build()
 
         # All controls are now pre-built (figure targets and control-sync edges are final), so collapse each same-page
-        # control-sync mesh into a single set_control + update_targets (two HTTP requests). This must run after both
+        # control-sync mesh into a single set_controls + update_targets (two HTTP requests). This must run after both
         # loops above because it needs every synced control's finalized targets. See finalize_control_sync_chains.
         finalize_control_sync_chains()
 

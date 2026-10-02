@@ -1,5 +1,5 @@
 ---
-description: "Reference for the `dash_ag_grid` and `dash_data_table` callables in `vizro.tables`, passed to a `Table` or `AgGrid` component's `figure` argument."
+description: "Reference for the `dash_ag_grid` callable in `vizro.tables`, passed to a `Table` component's `figure` argument."
 ---
 
 <!-- vale off -->

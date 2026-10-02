@@ -3,10 +3,10 @@ from e2e.vizro.checkers import (
     check_date_picker_value,
     check_graph_x_axis_value,
     check_range_date_picker_value,
-    check_table_rows_number,
+    check_table_ag_grid_rows_number,
 )
 from e2e.vizro.navigation import accordion_select, page_select
-from e2e.vizro.paths import table_cell_value_path
+from e2e.vizro.paths import table_ag_grid_cell_value_path
 
 
 def test_single_date(dash_br):
@@ -28,17 +28,14 @@ def test_single_date(dash_br):
         f"div[id='{cnst.BAR_POP_DATE_ID}'] path[style*='{cnst.COLOR_SEQUENTIAL_MID}']:nth-of-type(1)"
     )
 
-    # check that date in the row is correct
-    # we're using 'row_number=2' because the first row is a header
-    # TODO[1.0.0]: the TABLE_POP_DATE_ID / TABLE_POP_RANGE_ID assertions here read a Dash DataTable (removed in
-    #  1.0.0). Retarget them to the dash_ag_grid table that replaces those DataTables in datepicker_page.py.
+    # check that date in the row is correct (AG Grid data rows are 1-indexed; there is no header row to offset)
     dash_br.wait_for_text_to_equal(
-        table_cell_value_path(table_id=cnst.TABLE_POP_DATE_ID, row_number=2, column_number=1), "2016-05-17T00:00:00"
+        table_ag_grid_cell_value_path(table_id=cnst.TABLE_POP_DATE_ID, row_number=1, column_number=1),
+        "2016-05-17T00:00:00",
     )
 
     # check that we have only 1 row in the table
-    # we're using 'expected_rows_num=2' because the first row is a header
-    check_table_rows_number(dash_br, table_id=cnst.TABLE_POP_DATE_ID, expected_rows_num=2)
+    check_table_ag_grid_rows_number(dash_br, table_id=cnst.TABLE_POP_DATE_ID, expected_rows_num=1)
 
 
 def test_date_range(dash_br):
@@ -64,21 +61,22 @@ def test_date_range(dash_br):
         expected_max_date_value="May 18, 2016",
     )
 
-    # check that dates in the rows are within the chosen range
-    # we're starting from 'row_number=2' because the first row is a header
+    # check that dates in the rows are within the chosen range (AG Grid data rows are 1-indexed)
     dash_br.wait_for_text_to_equal(
-        table_cell_value_path(table_id=cnst.TABLE_POP_RANGE_ID, row_number=2, column_number=1), "2016-05-17T00:00:00"
+        table_ag_grid_cell_value_path(table_id=cnst.TABLE_POP_RANGE_ID, row_number=1, column_number=1),
+        "2016-05-17T00:00:00",
     )
     dash_br.wait_for_text_to_equal(
-        table_cell_value_path(table_id=cnst.TABLE_POP_RANGE_ID, row_number=3, column_number=1), "2016-05-18T00:00:00"
+        table_ag_grid_cell_value_path(table_id=cnst.TABLE_POP_RANGE_ID, row_number=2, column_number=1),
+        "2016-05-18T00:00:00",
     )
     dash_br.wait_for_text_to_equal(
-        table_cell_value_path(table_id=cnst.TABLE_POP_RANGE_ID, row_number=4, column_number=1), "2016-05-18T00:00:00"
+        table_ag_grid_cell_value_path(table_id=cnst.TABLE_POP_RANGE_ID, row_number=3, column_number=1),
+        "2016-05-18T00:00:00",
     )
 
     # check that we have only 3 rows in the table
-    # we're using 'expected_rows_num=4' because the first row is a header
-    check_table_rows_number(dash_br, table_id=cnst.TABLE_POP_RANGE_ID, expected_rows_num=4)
+    check_table_ag_grid_rows_number(dash_br, table_id=cnst.TABLE_POP_RANGE_ID, expected_rows_num=3)
 
 
 def test_single_date_param(dash_br):

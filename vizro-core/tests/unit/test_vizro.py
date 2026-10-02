@@ -232,7 +232,7 @@ class TestRun:
                     "title": "Page 1",
                     "components": [
                         {
-                            "type": "ag_grid",
+                            "type": "table",
                             "figure": {"_target_": "llm_generated_grid", "data_frame": "iris"},
                         },
                     ],

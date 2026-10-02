@@ -9,7 +9,7 @@ df = px.data.iris()
 
 
 drill_through_filter_graph_source_page = vm.Page(
-    title=cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_SOURCE,
+    title=cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_GRAPH_SOURCE,
     components=[
         vm.Graph(
             id=cnst.SCATTER_DRILL_THROUGH_FILTER_GRAPH_SOURCE_ID,
@@ -20,7 +20,7 @@ drill_through_filter_graph_source_page = vm.Page(
 )
 
 drill_through_filter_graph_target_page = vm.Page(
-    title=cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_TARGET,
+    title=cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_GRAPH_TARGET,
     components=[
         vm.Graph(
             id=cnst.SCATTER_DRILL_THROUGH_FILTER_GRAPH_TARGET_ID,
@@ -39,7 +39,7 @@ drill_through_filter_graph_target_page = vm.Page(
 
 
 drill_through_parameter_graph_source_page = vm.Page(
-    title=cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE,
+    title=cnst.SET_CONTROLS_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE,
     components=[
         vm.Graph(
             id=cnst.SCATTER_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE_ID,
@@ -50,7 +50,7 @@ drill_through_parameter_graph_source_page = vm.Page(
 )
 
 drill_through_parameter_graph_target_page = vm.Page(
-    title=cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_TARGET,
+    title=cnst.SET_CONTROLS_DRILL_THROUGH_PARAMETER_GRAPH_TARGET,
     components=[
         vm.Graph(
             id=cnst.SCATTER_DRILL_THROUGH_PARAMETER_GRAPH_TARGET_ID,
@@ -72,7 +72,7 @@ drill_through_parameter_graph_target_page = vm.Page(
 )
 
 drill_through_filter_ag_grid_source_page = vm.Page(
-    title=cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_SOURCE,
+    title=cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_AG_GRID_SOURCE,
     components=[
         vm.Table(
             id=cnst.AG_GRID_DRILL_THROUGH_FILTER_AG_GRID_ID,
@@ -83,7 +83,7 @@ drill_through_filter_ag_grid_source_page = vm.Page(
 )
 
 drill_through_filter_ag_grid_target_page = vm.Page(
-    title=cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_TARGET,
+    title=cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_AG_GRID_TARGET,
     components=[
         vm.Graph(
             id=cnst.SCATTER_SECOND_DRILL_THROUGH_FILTER_AG_GRID_TARGET_ID,

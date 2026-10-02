@@ -332,7 +332,7 @@ The example below syncs one filter across two pages. Both controls are visible s
 
         [![SyncControlsAcrossPages]][synccontrolsacrosspages]
 
-The same mechanism powers **drill-through**: when a `set_controls` is triggered from a figure or component (a [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid], [`Button`][vizro.models.Button], or [`Card`][vizro.models.Card]) rather than from a control's own selector, and its target control is on another page, Vizro navigates to that page and applies the value there. See [graph and table interactions](graph-table-actions.md) for more.
+The same mechanism powers **drill-through**: when a `set_controls` is triggered from a figure or component (a [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Button`][vizro.models.Button], or [`Card`][vizro.models.Card]) rather than from a control's own selector, and its target control is on another page, Vizro navigates to that page and applies the value there. See [graph and table interactions](graph-table-actions.md) for more.
 
 !!! note "Things to know about cross-page syncing"
 

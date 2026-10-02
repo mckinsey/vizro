@@ -94,99 +94,101 @@ def test_actions_progress_indicator(dash_br):
     dash_br.wait_for_text_to_equal("span[class='material-symbols-outlined progress-indicator']", "progress_activity")
 
 
-def test_set_control_cross_filter_graph(dash_br):
+def test_set_controls_cross_filter_graph(dash_br):
     """Test cross filter between two graphs."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_GRAPH_CROSS_FILTER_PAGE,
+        page_name=cnst.SET_CONTROLS_GRAPH_CROSS_FILTER_PAGE,
     )
 
     # click on the 'versicolor' data in scatter graph and check result for box graph
     dash_br.click_at_coord_fractions(
-        scatter_point_path(cnst.SCATTER_SET_CONTROL_CROSS_FILTER_ID, point_number=20), 0, 0
+        scatter_point_path(cnst.SCATTER_SET_CONTROLS_CROSS_FILTER_ID, point_number=20), 0, 0
     )
-    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_SET_CONTROL_CROSS_FILTER_ID, tick_index="5", value="1.8")
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_SET_CONTROLS_CROSS_FILTER_ID, tick_index="5", value="1.8")
     check_selected_dropdown(
         dash_br,
-        dropdown_id=cnst.DROPDOWN_SET_CONTROL_CROSS_FILTER,
+        dropdown_id=cnst.DROPDOWN_SET_CONTROLS_CROSS_FILTER,
         expected_selected_options=["versicolor"],
         expected_unselected_options=["setosa", "virginica"],
     )
 
 
-def test_set_control_cross_filter_graph_non_categorical(dash_br):
+def test_set_controls_cross_filter_graph_non_categorical(dash_br):
     """Test cross filter between two graphs with multi select and non categorical controls."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_PAGE_TITLE,
+        page_name=cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_PAGE_TITLE,
     )
 
     # select versicolor point in scatter graph
     dash_br.click_at_coord_fractions(
-        scatter_point_path(cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL, point_number=21), 0, 0
+        scatter_point_path(cnst.SCATTER_SET_CONTROLS_NON_CATEGORICAL, point_number=21), 0, 0
     )
 
     # select second versicolor point with SHIFT key
     modifier_click(
-        dash_br, selector=scatter_point_path(cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL, point_number=22), key=Keys.SHIFT
+        dash_br, selector=scatter_point_path(cnst.SCATTER_SET_CONTROLS_NON_CATEGORICAL, point_number=22), key=Keys.SHIFT
     )
 
     # check that graph y axis value changed according to selected points in scatter graph
     check_graph_y_axis_value(
-        dash_br, graph_id=cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL_TARGET, tick_index="4", value="5.5"
+        dash_br, graph_id=cnst.SCATTER_SET_CONTROLS_NON_CATEGORICAL_TARGET, tick_index="4", value="5.5"
     )
 
     # check that appropriate values were selected in non categorical controls
     check_slider_value(
         dash_br,
-        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SLIDER,
+        elem_id=cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_SLIDER,
         expected_max_value="5.9",
     )
     check_range_slider_value(
         dash_br,
-        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_RANGE_SLIDER,
+        elem_id=cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_RANGE_SLIDER,
         expected_min_value="5.9",
         expected_max_value="6.1",
     )
     check_date_picker_value(
-        dash_br, elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE_ID, expected_date_value="Mar 11, 2024"
+        dash_br,
+        elem_id=cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_DATEPICKER_SINGLE_ID,
+        expected_date_value="Mar 11, 2024",
     )
     check_range_date_picker_value(
         dash_br,
-        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE_ID,
+        elem_id=cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_DATEPICKER_RANGE_ID,
         expected_min_date_value="Mar 11, 2024",
         expected_max_date_value="Mar 14, 2024",
     )
     status = dash_br.find_element(
-        categorical_components_value_path(elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_SWITCH, value=1)
+        categorical_components_value_path(elem_id=cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_SWITCH, value=1)
     )
     assert_that(status.is_selected(), equal_to(False))
 
 
-def test_set_control_cross_filter_graph_non_categorical_timepicker(dash_br):
-    """Test set_control from graph to range TimePicker filtering a target AgGrid."""
+def test_set_controls_cross_filter_graph_non_categorical_timepicker(dash_br):
+    """Test set_controls from graph to range TimePicker filtering a target AgGrid."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_PAGE_TITLE,
+        page_name=cnst.SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_PAGE_TITLE,
     )
 
     # 19:00 selected in scatter graph, check that timepicker value changed accordingly
     dash_br.click_at_coord_fractions(
-        scatter_point_path(cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER, point_number=2), 0, 0
+        scatter_point_path(cnst.SCATTER_SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER, point_number=2), 0, 0
     )
     # 20:00 selected in scatter graph, check that timepicker value changed accordingly
     modifier_click(
         dash_br,
-        selector=scatter_point_path(cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER, point_number=16),
+        selector=scatter_point_path(cnst.SCATTER_SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER, point_number=16),
         key=Keys.SHIFT,
     )
 
     check_range_time_picker_value(
         dash_br,
-        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_ID,
+        elem_id=cnst.SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_ID,
         start_hour="19",
         start_minute="00",
         end_hour="20",
@@ -194,108 +196,113 @@ def test_set_control_cross_filter_graph_non_categorical_timepicker(dash_br):
     )
     check_table_ag_grid_rows_number(
         dash_br,
-        table_id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_TARGET,
+        table_id=cnst.AG_GRID_SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_TARGET,
         expected_rows_num=12,
     )
 
 
-def test_set_control_cross_filter_aggrid_non_categorical_datetimepicker(dash_br):
-    """Test set_control from AgGrid to range DateTimePicker filtering a target AgGrid."""
+def test_set_controls_cross_filter_aggrid_non_categorical_datetimepicker(dash_br):
+    """Test set_controls from AgGrid to range DateTimePicker filtering a target AgGrid."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_PAGE_TITLE,
+        page_name=cnst.SET_CONTROLS_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_PAGE_TITLE,
     )
 
     dash_br.multiple_click(
-        table_ag_grid_checkbox_path_by_row(cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER, row_index=2), 1
+        table_ag_grid_checkbox_path_by_row(cnst.AG_GRID_SET_CONTROLS_NON_CATEGORICAL_DATETIMEPICKER, row_index=2), 1
     )
     dash_br.multiple_click(
-        table_ag_grid_checkbox_path_by_row(cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER, row_index=1), 1
+        table_ag_grid_checkbox_path_by_row(cnst.AG_GRID_SET_CONTROLS_NON_CATEGORICAL_DATETIMEPICKER, row_index=1), 1
     )
 
     check_range_datetime_picker_value(
         dash_br,
-        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_ID,
+        elem_id=cnst.SET_CONTROLS_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_ID,
         start=("Jan 1, 2024", "01", "00"),
         end=("Jan 1, 2024", "02", "00"),
     )
     check_table_ag_grid_rows_number(
         dash_br,
-        table_id=cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_TARGET,
+        table_id=cnst.AG_GRID_SET_CONTROLS_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_TARGET,
         expected_rows_num=2,
     )
 
 
-def test_set_control_cross_filter_ag_grid(dash_br):
+def test_set_controls_cross_filter_ag_grid(dash_br):
     """Test cross filter between ag_grid and line graph."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_PAGE,
+        page_name=cnst.SET_CONTROLS_TABLE_AG_GRID_CROSS_FILTER_PAGE,
     )
 
     # check if column 'country' is available
     dash_br.wait_for_element(
-        table_ag_grid_cell_path_by_row(cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_ID, row_index=0, col_id="country")
+        table_ag_grid_cell_path_by_row(cnst.SET_CONTROLS_TABLE_AG_GRID_CROSS_FILTER_ID, row_index=0, col_id="country")
     )
 
     # click on Albania country
     dash_br.multiple_click(
-        table_ag_grid_cell_path_by_row(cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_ID, row_index=1, col_id="country"), 1
+        table_ag_grid_cell_path_by_row(cnst.SET_CONTROLS_TABLE_AG_GRID_CROSS_FILTER_ID, row_index=1, col_id="country"),
+        1,
     )
     check_graph_y_axis_value(
-        dash_br, graph_id=cnst.SET_CONTROL_LINE_AG_GRID_CROSS_FILTER_ID, tick_index="6", value="50k"
+        dash_br, graph_id=cnst.SET_CONTROLS_LINE_AG_GRID_CROSS_FILTER_ID, tick_index="6", value="50k"
     )
 
 
-def test_set_control_cross_filter_aggrid_non_categorical(dash_br):
+def test_set_controls_cross_filter_aggrid_non_categorical(dash_br):
     """Test cross filter between AgGrid and graph with checkbox multi select and non categorical controls."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_PAGE_TITLE,
+        page_name=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_PAGE_TITLE,
     )
 
     # select 3rd and 2nd row in ag_grid with checkbox click
-    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL, row_index=2), 1)
-    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.AG_GRID_SET_CONTROL_NON_CATEGORICAL, row_index=1), 1)
+    dash_br.multiple_click(
+        table_ag_grid_checkbox_path_by_row(cnst.AG_GRID_SET_CONTROLS_NON_CATEGORICAL, row_index=2), 1
+    )
+    dash_br.multiple_click(
+        table_ag_grid_checkbox_path_by_row(cnst.AG_GRID_SET_CONTROLS_NON_CATEGORICAL, row_index=1), 1
+    )
 
     # check that appropriate values were selected in target graph
     check_graph_y_axis_value(
-        dash_br, graph_id=cnst.SCATTER_SET_CONTROL_NON_CATEGORICAL_TARGET_AG_GRID, tick_index="4", value="2"
+        dash_br, graph_id=cnst.SCATTER_SET_CONTROLS_NON_CATEGORICAL_TARGET_AG_GRID, tick_index="4", value="2"
     )
 
     # check that appropriate values were selected in non categorical controls
     check_slider_value(
         dash_br,
-        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SLIDER,
+        elem_id=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_SLIDER,
         expected_max_value="4.7",
     )
     check_range_slider_value(
         dash_br,
-        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_RANGE_SLIDER,
+        elem_id=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_RANGE_SLIDER,
         expected_min_value="4.7",
         expected_max_value="4.9",
     )
     check_date_picker_value(
         dash_br,
-        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE_ID,
+        elem_id=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_DATEPICKER_SINGLE_ID,
         expected_date_value="Jan 3, 2024",
     )
     check_range_date_picker_value(
         dash_br,
-        elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE_ID,
+        elem_id=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_DATEPICKER_RANGE_ID,
         expected_min_date_value="Jan 2, 2024",
         expected_max_date_value="Jan 3, 2024",
     )
     status = dash_br.find_element(
-        categorical_components_value_path(elem_id=cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_SWITCH, value=1)
+        categorical_components_value_path(elem_id=cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_SWITCH, value=1)
     )
     assert_that(status.is_selected(), equal_to(True))
 
 
-def test_set_control_filter_kpi_card(dash_br):
+def test_set_controls_filter_kpi_card(dash_br):
     """Test filter by clicking kpi_card."""
     page_select(dash_br, page_name=cnst.KPI_INDICATORS_PAGE)
 
@@ -366,12 +373,12 @@ def test_set_control_filter_kpi_card(dash_br):
     )
 
 
-def test_set_control_filter_button(dash_br):
+def test_set_controls_filter_button(dash_br):
     """Test filter by clicking button."""
     page_select(dash_br, page_name=cnst.FILTERS_PAGE, page_path=cnst.FILTERS_PAGE_PATH)
 
     # click filter button sets the radioitems value to "versicolor"
-    dash_br.multiple_click(button_id_path(btn_id=cnst.FILTERS_PAGE_SET_CONTROL_FILTER_BUTTON), 1, delay=0.1)
+    dash_br.multiple_click(button_id_path(btn_id=cnst.FILTERS_PAGE_SET_CONTROLS_FILTER_BUTTON), 1, delay=0.1)
 
     # check radio button filter value
     check_selected_categorical_component(
@@ -386,21 +393,21 @@ def test_set_control_filter_button(dash_br):
     check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_GRAPH_ID, tick_index="5", value="1.8")
 
 
-def test_set_control_filter_card(dash_br):
+def test_set_controls_filter_card(dash_br):
     """Test filter by clicking card."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_PAGE,
+        page_name=cnst.SET_CONTROLS_CARD_GRAPH_CROSS_FILTER_PAGE,
     )
 
     # click filter card sets the radioitems value to "Oceania"
-    dash_br.multiple_click(f"#{cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_CARD_ID}", 1, delay=0.1)
+    dash_br.multiple_click(f"#{cnst.SET_CONTROLS_CARD_GRAPH_CROSS_FILTER_CARD_ID}", 1, delay=0.1)
 
     # check radio button filter value
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_CONTOL_ID,
+        component_id=cnst.SET_CONTROLS_CARD_GRAPH_CROSS_FILTER_CONTOL_ID,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "Africa"},
             {"value": 2, "selected": False, "value_name": "Americas"},
@@ -418,7 +425,7 @@ def test_drill_through_filter_graph(dash_br):
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_SOURCE,
+        page_name=cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_GRAPH_SOURCE,
     )
 
     # click on the 'versicolor' data in scatter graph
@@ -427,7 +434,7 @@ def test_drill_through_filter_graph(dash_br):
     )
 
     # check that new page is opened
-    dash_br.wait_for_text_to_equal(page_title_path(), cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_TARGET)
+    dash_br.wait_for_text_to_equal(page_title_path(), cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_GRAPH_TARGET)
 
     # check that appropriate filter selected on the new page
     check_selected_categorical_component(
@@ -448,7 +455,7 @@ def test_drill_through_parameter_graph(dash_br):
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE,
+        page_name=cnst.SET_CONTROLS_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE,
     )
 
     # click on the 'versicolor' data in scatter graph
@@ -457,7 +464,7 @@ def test_drill_through_parameter_graph(dash_br):
     )
 
     # check that new page is opened
-    dash_br.wait_for_text_to_equal(page_title_path(), cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_TARGET)
+    dash_br.wait_for_text_to_equal(page_title_path(), cnst.SET_CONTROLS_DRILL_THROUGH_PARAMETER_GRAPH_TARGET)
 
     # check that appropriate parameter selected on the new page
     check_selected_categorical_component(
@@ -479,7 +486,7 @@ def test_drill_through_filter_ag_grid(dash_br):
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_SOURCE,
+        page_name=cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_AG_GRID_SOURCE,
     )
 
     # check if column 'Sepal_length' is available
@@ -493,7 +500,7 @@ def test_drill_through_filter_ag_grid(dash_br):
     )
 
     # check that new page is opened
-    dash_br.wait_for_text_to_equal(page_title_path(), cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_TARGET)
+    dash_br.wait_for_text_to_equal(page_title_path(), cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_AG_GRID_TARGET)
 
     # check that appropriate filter selected on the new page
     check_selected_categorical_component(
@@ -518,7 +525,7 @@ def test_drill_down_graph(dash_br):
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_DRILL_DOWN_GRAPH_PAGE,
+        page_name=cnst.SET_CONTROLS_DRILL_DOWN_GRAPH_PAGE,
     )
 
     # click on the 'versicolor' data in scatter graph
@@ -633,29 +640,29 @@ def test_default_property_controls(dash_br):
     dash_br.wait_for_element('text[class="xtitle"][data-unformatted="petal_length"]')
 
 
-def test_set_control_clickmode_event_select(dash_br):
+def test_set_controls_clickmode_event_select(dash_br):
     """Test cross filter between two graphs with multi select."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
+        page_name=cnst.SET_CONTROLS_MULTI_SELECT_PAGE,
     )
 
     # select virginica - this causes both: checklist and radioitems to be set
-    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21), 0, 0)
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROLS_EVENT_SELECT, point_number=21), 0, 0)
 
     # select versicolor with SHIFT key - this causes only checklist to be set and radioitems
     # stays unchanged as multiple values are selected and radioItems is single-select control
     modifier_click(
-        dash_br, selector=scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=22), key=Keys.SHIFT
+        dash_br, selector=scatter_point_path(cnst.SCATTER_SET_CONTROLS_EVENT_SELECT, point_number=22), key=Keys.SHIFT
     )
-    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT, tick_index="6", value="2.4")
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_SET_CONTROLS_TARGET_MULTI_SELECT, tick_index="6", value="2.4")
 
     # check selected values in checklist and radioitems
     check_selected_categorical_component(
         dash_br,
         checklist=True,
-        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": True, "value_name": "versicolor"},
@@ -664,7 +671,7 @@ def test_set_control_clickmode_event_select(dash_br):
     )
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.RADIOITEMS_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -673,15 +680,15 @@ def test_set_control_clickmode_event_select(dash_br):
     )
 
     # unselect all values - this causes target control values to reset
-    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21), 0, 0)
-    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21), 0, 0)
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROLS_EVENT_SELECT, point_number=21), 0, 0)
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROLS_EVENT_SELECT, point_number=21), 0, 0)
 
     # check all values are selected for checklist and setosa is selected for radioitems
     check_selected_categorical_component(
         dash_br,
         checklist=True,
         select_all_status=True,
-        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": True, "value_name": "setosa"},
             {"value": 2, "selected": True, "value_name": "versicolor"},
@@ -690,7 +697,7 @@ def test_set_control_clickmode_event_select(dash_br):
     )
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.RADIOITEMS_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": True, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -699,23 +706,23 @@ def test_set_control_clickmode_event_select(dash_br):
     )
 
 
-def test_set_control_clickmode_event(dash_br):
+def test_set_controls_clickmode_event(dash_br):
     """Test cross filter between two graphs without multi select."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
+        page_name=cnst.SET_CONTROLS_MULTI_SELECT_PAGE,
     )
 
     # select virginica - this causes both: checklist and radioitems to be set
-    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=21), 0, 0)
-    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT, tick_index="6", value="2.4")
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROLS_EVENT, point_number=21), 0, 0)
+    check_graph_y_axis_value(dash_br, graph_id=cnst.BOX_SET_CONTROLS_TARGET_MULTI_SELECT, tick_index="6", value="2.4")
 
     # check selected values in checklist and radioitems
     check_selected_categorical_component(
         dash_br,
         checklist=True,
-        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -724,7 +731,7 @@ def test_set_control_clickmode_event(dash_br):
     )
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.RADIOITEMS_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -735,14 +742,14 @@ def test_set_control_clickmode_event(dash_br):
     # select versicolor with SHIFT key - this causes that only versicolor is selected as source graph
     # has clickmode="event"
     modifier_click(
-        dash_br, selector=scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=22), key=Keys.SHIFT
+        dash_br, selector=scatter_point_path(cnst.SCATTER_SET_CONTROLS_EVENT, point_number=22), key=Keys.SHIFT
     )
 
     # check that only versicolor is selected in checklist and radioitems
     check_selected_categorical_component(
         dash_br,
         checklist=True,
-        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": True, "value_name": "versicolor"},
@@ -751,7 +758,7 @@ def test_set_control_clickmode_event(dash_br):
     )
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.RADIOITEMS_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": True, "value_name": "versicolor"},
@@ -760,23 +767,23 @@ def test_set_control_clickmode_event(dash_br):
     )
 
 
-def test_set_control_clickmode_aggrid_checkbox_click(dash_br):
+def test_set_controls_clickmode_aggrid_checkbox_click(dash_br):
     """Test cross filter between AgGrid and graph with checkbox multi select."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
+        page_name=cnst.SET_CONTROLS_MULTI_SELECT_PAGE,
     )
 
     # select virginica and versicolor in ag_grid with checkbox click
-    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=2), 1)
-    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=1), 1)
+    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROLS_MULTI_SELECT, row_index=2), 1)
+    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROLS_MULTI_SELECT, row_index=1), 1)
 
     # check selected values in checklist and radioitems
     check_selected_categorical_component(
         dash_br,
         checklist=True,
-        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": True, "value_name": "versicolor"},
@@ -785,7 +792,7 @@ def test_set_control_clickmode_aggrid_checkbox_click(dash_br):
     )
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.RADIOITEMS_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -794,13 +801,13 @@ def test_set_control_clickmode_aggrid_checkbox_click(dash_br):
     )
 
     # unselect virginica in ag_grid with checkbox click
-    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=2), 1)
+    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROLS_MULTI_SELECT, row_index=2), 1)
 
     # check selected values in checklist and radioitems
     check_selected_categorical_component(
         dash_br,
         checklist=True,
-        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": True, "value_name": "versicolor"},
@@ -809,7 +816,7 @@ def test_set_control_clickmode_aggrid_checkbox_click(dash_br):
     )
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.RADIOITEMS_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": True, "value_name": "versicolor"},
@@ -818,14 +825,14 @@ def test_set_control_clickmode_aggrid_checkbox_click(dash_br):
     )
 
     # unselect all rows in ag_grid with checkbox click
-    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=1), 1)
+    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROLS_MULTI_SELECT, row_index=1), 1)
 
     # check all values are selected for checklist and setosa is selected for radioitems
     check_selected_categorical_component(
         dash_br,
         checklist=True,
         select_all_status=True,
-        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": True, "value_name": "setosa"},
             {"value": 2, "selected": True, "value_name": "versicolor"},
@@ -834,7 +841,7 @@ def test_set_control_clickmode_aggrid_checkbox_click(dash_br):
     )
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.RADIOITEMS_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": True, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -843,23 +850,23 @@ def test_set_control_clickmode_aggrid_checkbox_click(dash_br):
     )
 
 
-def test_set_control_clickmode_aggrid_command_and_shift_click(dash_br):
+def test_set_controls_clickmode_aggrid_command_and_shift_click(dash_br):
     """Test cross filter between AgGrid and graph with command and shift multi select."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
+        page_name=cnst.SET_CONTROLS_MULTI_SELECT_PAGE,
     )
 
     # select virginica by clicking on cell
     dash_br.multiple_click(
-        table_ag_grid_cell_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=2, col_id="sepal_length"), 1
+        table_ag_grid_cell_path_by_row(cnst.TABLE_SET_CONTROLS_MULTI_SELECT, row_index=2, col_id="sepal_length"), 1
     )
     # select versicolor with SHIFT key
     modifier_click(
         dash_br,
         selector=table_ag_grid_cell_path_by_row(
-            cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=1, col_id="sepal_length"
+            cnst.TABLE_SET_CONTROLS_MULTI_SELECT, row_index=1, col_id="sepal_length"
         ),
         key=Keys.SHIFT,
     )
@@ -868,7 +875,7 @@ def test_set_control_clickmode_aggrid_command_and_shift_click(dash_br):
     check_selected_categorical_component(
         dash_br,
         checklist=True,
-        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": True, "value_name": "versicolor"},
@@ -877,7 +884,7 @@ def test_set_control_clickmode_aggrid_command_and_shift_click(dash_br):
     )
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.RADIOITEMS_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -889,7 +896,7 @@ def test_set_control_clickmode_aggrid_command_and_shift_click(dash_br):
     modifier_click(
         dash_br,
         selector=table_ag_grid_cell_path_by_row(
-            cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=2, col_id="sepal_length"
+            cnst.TABLE_SET_CONTROLS_MULTI_SELECT, row_index=2, col_id="sepal_length"
         ),
         key=Keys.COMMAND,
     )
@@ -898,7 +905,7 @@ def test_set_control_clickmode_aggrid_command_and_shift_click(dash_br):
     check_selected_categorical_component(
         dash_br,
         checklist=True,
-        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": True, "value_name": "versicolor"},
@@ -907,7 +914,7 @@ def test_set_control_clickmode_aggrid_command_and_shift_click(dash_br):
     )
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.RADIOITEMS_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": True, "value_name": "versicolor"},
@@ -919,7 +926,7 @@ def test_set_control_clickmode_aggrid_command_and_shift_click(dash_br):
     modifier_click(
         dash_br,
         selector=table_ag_grid_cell_path_by_row(
-            cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=1, col_id="sepal_length"
+            cnst.TABLE_SET_CONTROLS_MULTI_SELECT, row_index=1, col_id="sepal_length"
         ),
         key=Keys.COMMAND,
     )
@@ -929,7 +936,7 @@ def test_set_control_clickmode_aggrid_command_and_shift_click(dash_br):
         dash_br,
         checklist=True,
         select_all_status=True,
-        component_id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": True, "value_name": "setosa"},
             {"value": 2, "selected": True, "value_name": "versicolor"},
@@ -938,7 +945,7 @@ def test_set_control_clickmode_aggrid_command_and_shift_click(dash_br):
     )
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER,
+        component_id=cnst.RADIOITEMS_SET_CONTROLS_MULTI_SELECT_FILTER,
         options_value_status=[
             {"value": 1, "selected": True, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -947,19 +954,19 @@ def test_set_control_clickmode_aggrid_command_and_shift_click(dash_br):
     )
 
 
-def test_set_control_button_card_variants(dash_br):
-    """Test set_control action from button and card with different variants."""
+def test_set_controls_button_card_variants(dash_br):
+    """Test set_controls action from button and card with different variants."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
-    page_select(dash_br, page_name=cnst.SET_CONTROL_BUTTON_CARD_PAGE)
+    page_select(dash_br, page_name=cnst.SET_CONTROLS_BUTTON_CARD_PAGE)
 
-    # set_control card single value
+    # set_controls card single value
     # Click the card to set virginica value to filters
-    dash_br.multiple_click(f"#{cnst.SET_CONTROL_CARD_SINGLE_VALUE}", 1)
+    dash_br.multiple_click(f"#{cnst.SET_CONTROLS_CARD_SINGLE_VALUE}", 1)
 
     # Check checklist and radioitems values
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_BUTTON_CARD,
         checklist=True,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
@@ -970,7 +977,7 @@ def test_set_control_button_card_variants(dash_br):
 
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
+        component_id=cnst.RADIOITEMS_SET_CONTROLS_BUTTON_CARD,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -978,14 +985,14 @@ def test_set_control_button_card_variants(dash_br):
         ],
     )
 
-    # set_control card multi value
+    # set_controls card multi value
     # Click the card to set versicolor and virginica value to filters
-    dash_br.multiple_click(f"#{cnst.SET_CONTROL_CARD_MULTI_VALUE}", 1)
+    dash_br.multiple_click(f"#{cnst.SET_CONTROLS_CARD_MULTI_VALUE}", 1)
 
     # Check checklist and radioitems values
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_BUTTON_CARD,
         checklist=True,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
@@ -996,7 +1003,7 @@ def test_set_control_button_card_variants(dash_br):
 
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
+        component_id=cnst.RADIOITEMS_SET_CONTROLS_BUTTON_CARD,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -1004,14 +1011,14 @@ def test_set_control_button_card_variants(dash_br):
         ],
     )
 
-    # set_control button empty list
+    # set_controls button empty list
     # Click the button to set [] value to filters
-    dash_br.multiple_click(button_id_path(btn_id=cnst.SET_CONTROL_BUTTON_EMPTY_LIST), 1)
+    dash_br.multiple_click(button_id_path(btn_id=cnst.SET_CONTROLS_BUTTON_EMPTY_LIST), 1)
 
     # Check checklist and radioitems values
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_BUTTON_CARD,
         checklist=True,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
@@ -1022,7 +1029,7 @@ def test_set_control_button_card_variants(dash_br):
 
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
+        component_id=cnst.RADIOITEMS_SET_CONTROLS_BUTTON_CARD,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -1030,14 +1037,14 @@ def test_set_control_button_card_variants(dash_br):
         ],
     )
 
-    # set_control button none
+    # set_controls button none
     # Click the button to set none value to filters (reset filters)
-    dash_br.multiple_click(button_id_path(btn_id=cnst.SET_CONTROL_BUTTON_NONE), 1)
+    dash_br.multiple_click(button_id_path(btn_id=cnst.SET_CONTROLS_BUTTON_NONE), 1)
 
     # Check checklist and radioitems values
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_BUTTON_CARD,
         select_all_status=True,
         checklist=True,
         options_value_status=[
@@ -1049,7 +1056,7 @@ def test_set_control_button_card_variants(dash_br):
 
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD,
+        component_id=cnst.RADIOITEMS_SET_CONTROLS_BUTTON_CARD,
         options_value_status=[
             {"value": 1, "selected": True, "value_name": "setosa"},
             {"value": 2, "selected": False, "value_name": "versicolor"},
@@ -1058,26 +1065,26 @@ def test_set_control_button_card_variants(dash_br):
     )
 
 
-def test_filtered_graph_does_not_trigger_set_control(dash_br):
-    """Test filtered graph does not trigger the set_control again."""
+def test_filtered_graph_does_not_trigger_set_controls(dash_br):
+    """Test filtered graph does not trigger the set_controls again."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE,
+        page_name=cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROLS_PAGE,
     )
 
     # select versicolor in scatter graph
     dash_br.click_at_coord_fractions(
-        scatter_point_path(cnst.FILTERED_SCATTER_TRIGGER_SET_CONTROL_ID, point_number=21), 0, 0
+        scatter_point_path(cnst.FILTERED_SCATTER_TRIGGER_SET_CONTROLS_ID, point_number=21), 0, 0
     )
 
-    # unselect all in checklist that filters a set_control source graph
-    dash_br.multiple_click(select_all_path(elem_id=cnst.CHECKLIST_FT_GRAPH_SET_CONTROL), 1, delay=0.5)
+    # unselect all in checklist that filters a set_controls source graph
+    dash_br.multiple_click(select_all_path(elem_id=cnst.CHECKLIST_FT_GRAPH_SET_CONTROLS), 1, delay=0.5)
 
     # check selected value in checklist for targeted aggrid did not change
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.CHECKLIST_FILTERED_GRAPH_TARGET_AGGRID_SET_CONTROL,
+        component_id=cnst.CHECKLIST_FILTERED_GRAPH_TARGET_AGGRID_SET_CONTROLS,
         checklist=True,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
@@ -1087,12 +1094,12 @@ def test_filtered_graph_does_not_trigger_set_control(dash_br):
     )
 
 
-def test_filtered_aggrid_does_not_trigger_set_control(dash_br):
-    """Test filtered ag_grid does not trigger the set_control again."""
+def test_filtered_aggrid_does_not_trigger_set_controls(dash_br):
+    """Test filtered ag_grid does not trigger the set_controls again."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE,
+        page_name=cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROLS_PAGE,
     )
 
     # navigate to AgGrid tab
@@ -1100,18 +1107,20 @@ def test_filtered_aggrid_does_not_trigger_set_control(dash_br):
 
     # select virginica by clicking on cell
     dash_br.multiple_click(
-        table_ag_grid_cell_path_by_row(cnst.FILTERED_AGGRID_TRIGGER_SET_CONTROL_ID, row_index=2, col_id="sepal_length"),
+        table_ag_grid_cell_path_by_row(
+            cnst.FILTERED_AGGRID_TRIGGER_SET_CONTROLS_ID, row_index=2, col_id="sepal_length"
+        ),
         1,
         delay=0.5,
     )
 
-    # unselect all in checklist that filters a set_control source ag_grid
-    dash_br.multiple_click(select_all_path(elem_id=cnst.CHECKLIST_FT_AGGRID_SET_CONTROL), 1)
+    # unselect all in checklist that filters a set_controls source ag_grid
+    dash_br.multiple_click(select_all_path(elem_id=cnst.CHECKLIST_FT_AGGRID_SET_CONTROLS), 1)
 
     # check selected value in checklist for targeted aggrid did not change
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.CHECKLIST_FILTERED_GRAPH_TARGET_AGGRID_SET_CONTROL,
+        component_id=cnst.CHECKLIST_FILTERED_GRAPH_TARGET_AGGRID_SET_CONTROLS,
         checklist=True,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
@@ -1126,17 +1135,17 @@ def test_self_filtered_graph(dash_br):
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SELF_FILTER_SET_CONTROL_PAGE,
+        page_name=cnst.SELF_FILTER_SET_CONTROLS_PAGE,
     )
 
     # select virginica in scatter graph
-    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21), 0, 0)
-    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_SET_CONTROL_SELF_FILTER, tick_index="6", value="2.4")
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROLS_SELF_FILTER, point_number=21), 0, 0)
+    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_SET_CONTROLS_SELF_FILTER, tick_index="6", value="2.4")
 
     # check selected value in checklist
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.CHECKLIST_SET_CONTROL_SELF_FILTER,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_SELF_FILTER,
         checklist=True,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
@@ -1149,23 +1158,23 @@ def test_self_filtered_graph(dash_br):
     # number of clicks needed for resetting such a graph will eventually be reduced to 2.
     # this click results with additional "self-filtering".
     dash_br.click_at_coord_fractions(
-        scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 0
+        scatter_point_path(cnst.SCATTER_SET_CONTROLS_SELF_FILTER, point_number=21, trace_index=1), 0, 0
     )
     # after first click delay is needed to ensure that the graph is loaded so its point can be clicked again.
     time.sleep(0.5)
     # this click does not apply "self-filtering" and it only highlights clicked point.
     dash_br.click_at_coord_fractions(
-        scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 0
+        scatter_point_path(cnst.SCATTER_SET_CONTROLS_SELF_FILTER, point_number=21, trace_index=1), 0, 0
     )
     # this step "unclicks" selected point and applies "self-filtering" with reset filter value.
     dash_br.click_at_coord_fractions(
-        scatter_point_path(cnst.SCATTER_SET_CONTROL_SELF_FILTER, point_number=21, trace_index=1), 0, 0
+        scatter_point_path(cnst.SCATTER_SET_CONTROLS_SELF_FILTER, point_number=21, trace_index=1), 0, 0
     )
 
     # check that all values are selected in checklist
     check_selected_categorical_component(
         dash_br,
-        component_id=cnst.CHECKLIST_SET_CONTROL_SELF_FILTER,
+        component_id=cnst.CHECKLIST_SET_CONTROLS_SELF_FILTER,
         checklist=True,
         select_all_status=True,
         options_value_status=[
@@ -1174,7 +1183,7 @@ def test_self_filtered_graph(dash_br):
             {"value": 3, "selected": True, "value_name": "virginica"},
         ],
     )
-    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_SET_CONTROL_SELF_FILTER, tick_index="6", value="2.5")
+    check_graph_y_axis_value(dash_br, graph_id=cnst.SCATTER_SET_CONTROLS_SELF_FILTER, tick_index="6", value="2.5")
 
 
 @pytest.mark.parametrize(
@@ -1182,13 +1191,13 @@ def test_self_filtered_graph(dash_br):
     "expected_column_vals, expected_cell_vals, expected_row_vals, expected_rows_num",
     [
         # filter by column value (petal_width)
-        (cnst.SET_CONTROL_AG_GRID_COLUMN_CLICKED_ID, 1, "petal_width", "petal_width", "0.4", "3", 1),
+        (cnst.SET_CONTROLS_AG_GRID_COLUMN_CLICKED_ID, 1, "petal_width", "petal_width", "0.4", "3", 1),
         # filter by cell value (3)
-        (cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_ID, 1, "sepal_width", "sepal_width", "3", "1", 1),
+        (cnst.SET_CONTROLS_AG_GRID_CELL_CLICKED_ID, 1, "sepal_width", "sepal_width", "3", "1", 1),
         # filter by row value (2)
-        (cnst.SET_CONTROL_AG_GRID_ROW_CLICKED_ID, 2, "species", "petal_length", "5.7", "2", 1),
+        (cnst.SET_CONTROLS_AG_GRID_ROW_CLICKED_ID, 2, "species", "petal_length", "5.7", "2", 1),
         # filter by column and cell values (sepal_length and 4.9)
-        (cnst.SET_CONTROL_AG_GRID_MIXED_CLICKED_ID, 1, "sepal_length", "sepal_length", "4.9", "0", 1),
+        (cnst.SET_CONTROLS_AG_GRID_MIXED_CLICKED_ID, 1, "sepal_length", "sepal_length", "4.9", "0", 1),
     ],
     ids=[
         "column",
@@ -1197,7 +1206,7 @@ def test_self_filtered_graph(dash_br):
         "mixed",
     ],
 )
-def test_set_control_cellclicked(  # noqa
+def test_set_controls_cellclicked(  # noqa
     dash_br,
     source_table_id,
     source_row_index,
@@ -1207,11 +1216,11 @@ def test_set_control_cellclicked(  # noqa
     expected_row_vals,
     expected_rows_num,
 ):
-    """Test set_control action is using value of the clicked cell, column and row according to configuration."""
+    """Test set_controls action is using value of the clicked cell, column and row according to configuration."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_PAGE,
+        page_name=cnst.SET_CONTROLS_AG_GRID_CELL_CLICKED_PAGE,
     )
 
     # click on the parametrized ag_grid cell for the current test case
@@ -1222,24 +1231,24 @@ def test_set_control_cellclicked(  # noqa
     # check the targeted ag_grid values were filtered according to clicked cell
     dash_br.wait_for_text_to_equal(
         table_ag_grid_cell_value_path(
-            table_id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID, row_number=1, column_number=1
+            table_id=cnst.SET_CONTROLS_AG_GRID_CELL_CLICKED_TARGET_ID, row_number=1, column_number=1
         ),
         expected_column_vals,
     )
     dash_br.wait_for_text_to_equal(
         table_ag_grid_cell_value_path(
-            table_id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID, row_number=1, column_number=2
+            table_id=cnst.SET_CONTROLS_AG_GRID_CELL_CLICKED_TARGET_ID, row_number=1, column_number=2
         ),
         expected_cell_vals,
     )
     dash_br.wait_for_text_to_equal(
         table_ag_grid_cell_value_path(
-            table_id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID, row_number=1, column_number=3
+            table_id=cnst.SET_CONTROLS_AG_GRID_CELL_CLICKED_TARGET_ID, row_number=1, column_number=3
         ),
         expected_row_vals,
     )
 
     # check that number of rows with data is 1
     check_table_ag_grid_rows_number(
-        dash_br, table_id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID, expected_rows_num=expected_rows_num
+        dash_br, table_id=cnst.SET_CONTROLS_AG_GRID_CELL_CLICKED_TARGET_ID, expected_rows_num=expected_rows_num
     )

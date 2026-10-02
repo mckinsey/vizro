@@ -73,7 +73,7 @@ class ModelManager:
         import vizro.models as vm
 
         if model_type is FIGURE_MODELS:
-            model_type = (vm.Graph, vm.AgGrid, vm.Table, vm.Figure)  # type: ignore[assignment]
+            model_type = (vm.Graph, vm.Table, vm.Figure)  # type: ignore[assignment]
         models = self.__get_model_children(root_model) if root_model is not None else self.__models.values()  # type: ignore[type-var]
 
         # Convert to list to avoid changing size when looping through at runtime.
