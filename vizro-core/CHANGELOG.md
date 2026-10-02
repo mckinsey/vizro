@@ -11,6 +11,29 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.62'></a>
+# 0.1.62 — 2026-10-02
+
+## Added
+
+- `Slider` now accepts `range=True` to render a two-handle range slider, replacing `RangeSlider`. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+- Add the `set_controls` action, which sets one or more controls from `controls` (a single id or a list of ids). It replaces `set_control`. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+- `Table` now renders an interactive Dash AG Grid when given a `dash_ag_grid` figure (`vm.Table(figure=dash_ag_grid(...))`). This replaces `AgGrid`. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+## Deprecated
+
+- `RangeSlider` is deprecated and will be removed in Vizro `1.0.0`. Use `Slider` with `range=True` instead. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+- `set_control` is deprecated and will be removed in Vizro `1.0.0`. Use `set_controls` with `controls` as a list of ids instead. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+- The default of `Cascader.full_path` will change from `False` to `True` in Vizro `1.0.0`. Set `full_path` explicitly to avoid a change in behavior. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+- `AgGrid` is deprecated and will be removed in Vizro `1.0.0`. Use `Table` with a `dash_ag_grid` figure instead (`vm.Table(figure=dash_ag_grid(...))`). ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+- The Dash DataTable backing for `Table` (via `dash_data_table`) is deprecated and will be removed in Vizro `1.0.0`. Use a `dash_ag_grid` figure instead. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
 <a id='changelog-0.1.61'></a>
 # 0.1.61 — 2026-10-01
 
