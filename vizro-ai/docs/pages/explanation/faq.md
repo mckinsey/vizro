@@ -45,6 +45,7 @@ This error occurs due to conflicts between Jupyter's event loop and Pydantic AI'
 
 ```py
 import nest_asyncio
+
 nest_asyncio.apply()
 ```
 

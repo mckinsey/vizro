@@ -413,11 +413,16 @@ The target chart must be a custom `@capture("graph")` function with a `highlight
 from vizro.models.types import capture
 import vizro.plotly.express as px
 
+
 @capture("graph")
 def scatter_with_highlight(data_frame, highlight_country=None):
     is_highlighted = data_frame["country"] == highlight_country
     fig = px.scatter(
-        data_frame, x="gdpPercap", y="lifeExp", size="pop", size_max=60,
+        data_frame,
+        x="gdpPercap",
+        y="lifeExp",
+        size="pop",
+        size_max=60,
         opacity=0.3,
         color=is_highlighted,
         category_orders={"color": [False, True]},  # locks highlighted trace at index 1
@@ -426,6 +431,7 @@ def scatter_with_highlight(data_frame, highlight_country=None):
         fig.update_traces(selector=1, marker={"line_width": 2, "opacity": 1})
     fig.update_layout(showlegend=False)
     return fig
+
 
 # Variant B — name selector (line / bump): each entity is its own trace
 @capture("graph")

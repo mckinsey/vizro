@@ -79,13 +79,13 @@ The below example uses the Iris data saved to a file `iris.csv` in the same dire
         import vizro.plotly.express as px
         import vizro.models as vm
 
-        iris = pd.read_csv("iris.csv") # (1)!
+        iris = pd.read_csv("iris.csv")  # (1)!
 
         page = vm.Page(
             title="Static data example",
             components=[
                 vm.Graph(figure=px.box(iris, x="species", y="petal_width", color="species")),
-            ]
+            ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -123,7 +123,7 @@ If you would like to specify your dashboard configuration through YAML then you 
         import pandas as pd
         from vizro.managers import data_manager
 
-        data_manager["iris"] = pd.read_csv("iris.csv") # (1)!
+        data_manager["iris"] = pd.read_csv("iris.csv")  # (1)!
 
         dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
         dashboard = Dashboard(**dashboard)
@@ -178,16 +178,18 @@ The example below shows how data is fetched dynamically every time the page is r
 
         from vizro.managers import data_manager
 
-        def load_iris_data():
-            iris = pd.read_csv("iris.csv") # (1)!
-            return iris.sample(50) # (2)!
 
-        data_manager["iris"] = load_iris_data # (3)!
+        def load_iris_data():
+            iris = pd.read_csv("iris.csv")  # (1)!
+            return iris.sample(50)  # (2)!
+
+
+        data_manager["iris"] = load_iris_data  # (3)!
 
         page = vm.Page(
             title="Update the chart on page refresh",
             components=[
-                vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species")) # (4)!
+                vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species"))  # (4)!
             ],
         )
 
@@ -229,18 +231,18 @@ In a development environment the easiest way to enable caching is to use a [simp
 
     from vizro.managers import data_manager
 
+
     def load_iris_data():
         iris = pd.read_csv("iris.csv")
         return iris.sample(50)
+
 
     data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
     data_manager["iris"] = load_iris_data
 
     page = vm.Page(
         title="Update the chart on page refresh",
-        components=[
-            vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species"))
-        ],
+        components=[vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species"))],
     )
 
     dashboard = vm.Dashboard(pages=[page])
@@ -264,7 +266,9 @@ data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_T
     data_manager.cache = Cache(config={"CACHE_TYPE": "FileSystemCache", "CACHE_DIR": "cache"})
 
     # Use Redis key-value store
-    data_manager.cache = Cache(config={"CACHE_TYPE": "RedisCache", "CACHE_REDIS_HOST": "localhost", "CACHE_REDIS_PORT": 6379})
+    data_manager.cache = Cache(
+        config={"CACHE_TYPE": "RedisCache", "CACHE_REDIS_HOST": "localhost", "CACHE_REDIS_PORT": 6379}
+    )
     ```
 
     Since Flask-Caching relies on [`pickle`](https://docs.python.org/3/library/pickle.html), which can execute arbitrary code during unpickling, you should not cache data from untrusted sources. Doing so [could be unsafe](https://github.com/pallets-eco/flask-caching/pull/209).
@@ -328,20 +332,22 @@ For example, let us extend the [dynamic data example](#dynamic-data) above into 
 
         from vizro.managers import data_manager
 
-        def load_iris_data(number_of_points=10): # (1)!
-            iris = pd.read_csv("iris.csv") # (2)!
-            return iris.sample(number_of_points) # (3)!
 
-        data_manager["iris"] = load_iris_data # (4)!
+        def load_iris_data(number_of_points=10):  # (1)!
+            iris = pd.read_csv("iris.csv")  # (2)!
+            return iris.sample(number_of_points)  # (3)!
+
+
+        data_manager["iris"] = load_iris_data  # (4)!
 
         page = vm.Page(
             title="Update the chart on page refresh",
             components=[
-                vm.Graph(id="graph", figure=px.box("iris", x="species", y="petal_width", color="species")) # (5)!
+                vm.Graph(id="graph", figure=px.box("iris", x="species", y="petal_width", color="species"))  # (5)!
             ],
             controls=[
                 vm.Parameter(
-                    targets=["graph.data_frame.number_of_points"], # (6)!
+                    targets=["graph.data_frame.number_of_points"],  # (6)!
                     selector=vm.Slider(min=10, max=100, step=10, value=10),
                 )
             ],
@@ -401,23 +407,23 @@ For example, let us extend the [parametrized dynamic data example](#parametrize-
 
         from vizro.managers import data_manager
 
+
         def load_iris_data(number_of_points=10):
             iris = pd.read_csv("iris.csv")
             return iris.sample(number_of_points)
+
 
         data_manager["iris"] = load_iris_data
 
         page = vm.Page(
             title="Update the chart on page refresh or when the Parameter changes",
-            components=[
-                vm.Graph(id="graph", figure=px.box("iris", x="species", y="petal_width", color="species"))
-            ],
+            components=[vm.Graph(id="graph", figure=px.box("iris", x="species", y="petal_width", color="species"))],
             controls=[
                 vm.Filter(column="species", selector=vm.RadioItems()),  # (1)!
                 vm.Parameter(
                     targets=["graph.data_frame.number_of_points"],
                     selector=vm.Slider(min=1, max=10, step=1, value=1),
-                )
+                ),
             ],
         )
 

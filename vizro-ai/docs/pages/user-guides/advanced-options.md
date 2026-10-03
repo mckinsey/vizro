@@ -8,6 +8,7 @@ This guide shows you how to use the [`chart_agent`][vizro_ai.agents.chart_agent]
 
     ```py
     import nest_asyncio
+
     nest_asyncio.apply()
     ```
 
@@ -103,9 +104,7 @@ Returns the generated chart code formatted for use in Vizro dashboards. The func
         @capture("graph")
         def custom_chart(data_frame):
             us_data = data_frame[data_frame["country"] == "United States"]
-            fig = px.line(
-                us_data, x="year", y="gdpPercap", title="GDP per Capita Over Years in the US"
-            )
+            fig = px.line(us_data, x="year", y="gdpPercap", title="GDP per Capita Over Years in the US")
             return fig
         ```
 
@@ -131,9 +130,7 @@ Returns the generated chart code as a pure Plotly code string. The function will
 
         def custom_chart(data_frame):
             us_data = data_frame[data_frame["country"] == "United States"]
-            fig = px.line(
-                us_data, x="year", y="gdpPercap", title="GDP per Capita Over Years in the US"
-            )
+            fig = px.line(us_data, x="year", y="gdpPercap", title="GDP per Capita Over Years in the US")
             return fig
         ```
 
@@ -250,12 +247,7 @@ from vizro_ai.agents import chart_agent
 from vizro_ai.agents.response_models import ChartPlan, ChartPlanFactory
 # For model and data setup, see setup note above.
 
-result = chart_agent.run_sync(
-    model=model,
-    user_prompt="create a bar chart",
-    deps=df,
-    output_type=ChartPlan
-)
+result = chart_agent.run_sync(model=model, user_prompt="create a bar chart", deps=df, output_type=ChartPlan)
 print(result.output.chart_insights)
 ```
 
@@ -271,6 +263,7 @@ Use `chart_agent.run()` for async execution instead of `run_sync()`:
 import asyncio
 # ... model and data setup (see setup note above) ...
 
+
 async def main():
     result = await chart_agent.run(
         model=model,
@@ -279,6 +272,7 @@ async def main():
     )
     fig = result.output.chart_function(df)
     fig.show()
+
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -292,6 +286,7 @@ Stream responses as they're generated:
 import asyncio
 # ... model and data setup (see setup note above) ...
 
+
 async def main():
     async with chart_agent.run_stream(
         model=model,
@@ -303,6 +298,7 @@ async def main():
         result = await response.get_output()
     fig = result.chart_function(df)
     fig.show()
+
 
 if __name__ == "__main__":
     asyncio.run(main())
