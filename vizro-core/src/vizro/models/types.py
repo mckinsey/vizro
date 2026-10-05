@@ -5,12 +5,11 @@ from __future__ import annotations
 # ruff: noqa: F821
 import functools
 import inspect
-import warnings
 from collections import OrderedDict
 from collections.abc import Callable
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, Protocol, TypeAlias, cast, runtime_checkable
+from typing import Annotated, Any, Literal, Protocol, TypeAlias, Union, cast, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
@@ -44,29 +43,6 @@ def _get_layout_discriminator(layout: Any) -> str | None:
     # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
     # union_tag_not_found error is raised.
     return getattr(layout, "type", None)
-
-
-def _get_action_discriminator(action: Any) -> str | None:
-    """Helper function for callable discriminator used for ActionType."""
-    # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
-    # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle the legacy case.
-    if isinstance(action, dict):
-        # If type is supplied then use that (like saying discriminator="type"). Otherwise, it's the legacy case where
-        # type is not specified, in which case we want to use vm.Action, which has type="action".
-        try:
-            return action["type"]
-        except KeyError:
-            warnings.warn(
-                "Action without an explicit `type` specified will not work in Vizro 1.0.0. Specify `type: action` for "
-                "a custom action or, for example, `type: export_data` for a built-in action.",
-                FutureWarning,
-                stacklevel=3,
-            )
-            return "action"
-
-    # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
-    # union_tag_not_found error is raised.
-    return getattr(action, "type", None)
 
 
 def _clean_module_string(module_string: str) -> str:
@@ -324,7 +300,7 @@ class CapturedCallable:
     @classmethod
     def _validate_captured_callable(
         cls,
-        captured_callable_config: Union[dict[str, Any], _SupportsCapturedCallable, CapturedCallable],
+        captured_callable_config: dict[str, Any] | _SupportsCapturedCallable | CapturedCallable,
         json_schema_extra: _JsonSchemaExtraType,
         allow_undefined_captured_callable: list[str],
     ):
@@ -358,10 +334,10 @@ class CapturedCallable:
     @classmethod
     def _parse_json(
         cls,
-        captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, dict[str, Any]],
+        captured_callable_config: _SupportsCapturedCallable | CapturedCallable | dict[str, Any],
         json_schema_extra: _JsonSchemaExtraType,
         allow_undefined_captured_callable: list[str],
-    ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
+    ) -> CapturedCallable | _SupportsCapturedCallable:
         """Parses captured_callable_config specification from JSON/YAML.
 
         If captured_callable_config is already _SupportCapturedCallable or CapturedCallable then it just passes through
@@ -410,7 +386,7 @@ class CapturedCallable:
 
     @classmethod
     def _extract_from_attribute(
-        cls, captured_callable: Union[_SupportsCapturedCallable, CapturedCallable]
+        cls, captured_callable: _SupportsCapturedCallable | CapturedCallable
     ) -> CapturedCallable:
         """Extracts CapturedCallable from _SupportCapturedCallable (e.g. _DashboardReadyFigure).
 
@@ -444,7 +420,7 @@ class CapturedCallable:
 
     @staticmethod
     def _format_args(
-        args_for_repr: Optional[Union[list[Any], tuple[Any, ...]]] = None, arguments: Optional[dict[str, Any]] = None
+        args_for_repr: Optional[list[Any] | tuple[Any, ...]] = None, arguments: Optional[dict[str, Any]] = None
     ) -> str:
         """Format arguments for string representation."""
         return ", ".join(
@@ -731,14 +707,16 @@ LayoutType = Annotated[
 # JSONSchema should be skipped for private actions that are not part of the public API. `_on_page_load` is the
 # internal default action attached to every `Page`; it subclasses the public `update_targets`.
 ActionType = Annotated[
-    Annotated["Action", Tag("action")]
-    | Annotated["export_data", Tag("export_data")]
-    | Annotated["set_controls", Tag("set_controls")]
-    | Annotated["show_notification", Tag("show_notification")]
-    | Annotated["update_notification", Tag("update_notification")]
-    | Annotated["update_targets", Tag("update_targets")]
-    | SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
-    Field(discriminator=Discriminator(_get_action_discriminator), description="Action."),
+    Union[
+        "Action",
+        "export_data",
+        "set_controls",
+        "show_notification",
+        "update_notification",
+        "update_targets",
+        SkipJsonSchema["_on_page_load"],
+    ],
+    Field(discriminator="type", description="Action."),
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action],
 [`export_data`][vizro.actions.export_data] or [`set_controls`][vizro.actions.set_controls]."""

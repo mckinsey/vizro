@@ -10,7 +10,7 @@ from pydantic import ValidationError
 
 from vizro.actions import show_notification, update_notification
 from vizro.models._action._action import Action, NotificationPayload
-from vizro.models.types import _get_action_discriminator, capture
+from vizro.models.types import capture
 
 
 @capture("action")
@@ -42,14 +42,18 @@ def action_with_mock_return_value(request):
     return _action_with_mock_return_value
 
 
-def test_action_deprecated_yaml():
-    # Test dictionary configuration of an action without discriminator "type" specified. The behavior here should
-    # be equivalent to specifying vm.Action but with an extra warning. Ideally we would test this using the higher
-    # level ActionsType, but that means resolving lots of ForwardRefs here which is not worth the effort.
-    with pytest.warns(FutureWarning, match="Action without an explicit `type` specified"):
-        action_tag = _get_action_discriminator({"function": {"_target_": "export_data"}})
+def test_action_requires_explicit_type():
+    # A dict-configured action must declare an explicit discriminator `type` (e.g. `type: action` for a custom
+    # action, or `type: export_data` for a built-in). Without it the discriminated union cannot resolve which
+    # action to build, so it is rejected - consistent with every other discriminated union (components, selectors).
+    import vizro.models as vm
 
-    assert action_tag == "action"
+    with pytest.raises(ValidationError, match="Unable to extract tag using discriminator 'type'"):
+        vm.Button(id="btn", text="x", actions=[{"function": {"_target_": "export_data"}}])
+
+    # With an explicit type the built-in action resolves correctly.
+    button = vm.Button(id="btn2", text="x", actions=[{"type": "export_data"}])
+    assert button.actions[0].type == "export_data"
 
 
 class TestActionInstantiation:

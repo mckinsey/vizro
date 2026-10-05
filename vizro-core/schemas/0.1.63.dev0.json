@@ -126,6 +126,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -227,6 +238,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -378,6 +400,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -503,6 +536,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -839,6 +883,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -969,6 +1024,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -1114,6 +1180,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -1161,6 +1238,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -1388,6 +1476,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -1762,6 +1861,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -1962,6 +2072,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -2109,6 +2230,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -2180,6 +2312,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -2257,6 +2400,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -2430,6 +2584,17 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"

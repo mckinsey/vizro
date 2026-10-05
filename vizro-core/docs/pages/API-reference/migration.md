@@ -117,6 +117,25 @@ va.export_data(file_format="xlsx")
 
 See the [user guide on built-in actions](../user-guides/actions.md) for more information.
 
+## Action `type` required in dict / YAML / JSON
+
+When an action is configured as a dictionary (or in YAML/JSON), it must now declare an explicit `type`, like every other model. Previously a custom action could omit `type` and was assumed to be an `Action`; that fallback has been removed.
+
+```yaml
+# Before (type omitted, implicitly treated as a custom action):
+actions:
+  - function:
+      _target_: my_custom_function
+
+# After:
+actions:
+  - type: action
+    function:
+      _target_: my_custom_function
+```
+
+Built-in actions already required their `type` (for example `type: export_data`), so they are unaffected, and Python configuration is unaffected because each action object already carries its `type`.
+
 ## `Cascader` `full_path` default
 
 The default of [`Cascader`][vizro.models.Cascader]'s `full_path` argument will change from `False` to `True` in Vizro 1.0.0. To keep the current behavior, set `full_path=False` explicitly.

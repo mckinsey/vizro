@@ -22,6 +22,8 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Removed support for using the `Action` model to wrap a built-in action. Call the built-in action directly, for example `actions=va.export_data(...)`. ([#1877](https://github.com/mckinsey/vizro/pull/1877))
 
+- Removed the fallback that let an action specified as a dictionary or in YAML/JSON omit its `type`. Every action must now declare an explicit `type` (for example `type: action` for a custom action, or `type: export_data` for a built-in action), consistent with all other models. ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
 ### Changed
 
 - The default of `Cascader.full_path` is now `True` (path mode). Set `full_path=False` explicitly to keep the previous leaf-mode behavior. ([#1877](https://github.com/mckinsey/vizro/pull/1877))
