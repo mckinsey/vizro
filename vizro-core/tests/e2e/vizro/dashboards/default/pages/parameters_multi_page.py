@@ -10,8 +10,6 @@ gapminder_2007 = px.data.gapminder().query("year == 2007")
 parameters_multi_page = vm.Page(
     title=cnst.PARAMETERS_MULTI_PAGE,
     components=[
-        # TODO[1.0.0]: these vm.Table components use the Dash DataTable custom chart (custom_charts/table_custom.py),
-        #  removed with dash_data_table e2e coverage in 1.0.0. Retarget to dash_ag_grid or drop this page's tables.
         vm.Table(
             id=cnst.TABLE_DROPDOWN,
             title="Dropdown",

@@ -93,8 +93,6 @@ layout_flex_with_direction_param_and_graph = vm.Page(
     ],
 )
 
-# TODO[1.0.0]: this page uses dash_data_table (removed in 1.0.0). Switch it to dash_ag_grid and drop `dash_data_table`
-#  from the import at the top of this file (keep dash_ag_grid). Also drop the golden test_flex_layout_gap_and_table.
 layout_flex_with_gap_param_and_table = vm.Page(
     title=cnst.LAYOUT_FLEX_GAP_AND_TABLE,
     layout=vm.Flex(gap="40px"),

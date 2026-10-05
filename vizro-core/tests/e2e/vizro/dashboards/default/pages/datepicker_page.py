@@ -110,9 +110,6 @@ datepicker_page = vm.Page(
                 color="age",
             ),
         ),
-        # TODO[1.0.0]: these two vm.Table(dash_data_table(...)) components verify the datepicker filter, but Dash
-        #  DataTable backing is removed in 1.0.0. Switch them (and the matching assertions in test_datepicker.py)
-        #  to dash_ag_grid, and drop `dash_data_table` from the import at the top of this file.
         vm.Table(
             id=cnst.TABLE_POP_RANGE_ID,
             title="Table Pop Range",
