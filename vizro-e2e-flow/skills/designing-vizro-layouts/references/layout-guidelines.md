@@ -18,7 +18,7 @@ Vizro provides two layout options:
 - **Grid**: Precise control over placement and sizing (recommended for pages)
 - **Flex**: Flexible stacking — `direction="column"` (default) for vertical, `direction="row"` for horizontal. Best used inside a `Container` for simple component groups.
 
-Use `type: grid` in YAML (not `vm.Layout`, which is deprecated).
+Use `type: grid` in YAML (not `vm.Layout`, which was removed in Vizro 1.0.0).
 
 ### Key principles
 
@@ -145,9 +145,9 @@ Use component **size to indicate importance** — larger cells signal higher pri
 1. **Page navigation**: Automatic sidebar (built-in)
 1. **Page filters/parameters**: MUST be in collapsible left sidebar
 1. **Layouts**: Grid or Flex only (no absolute positioning)
-1. **Components**: Graph, AgGrid, Card, Figure
+1. **Components**: Graph, Table, Card, Figure
 1. **Containers**: Can use Tabs for organizing content
-1. **Actions**: Two built-in actions — `va.export_data()` (Button-triggered CSV download) and `va.set_control()` (Graph/AgGrid-triggered cross-filter, cross-highlight, cross-parameter). All advanced interactions follow Source → Control → Target. Load the **wiring-vizro-actions** skill for named patterns. Cross-page drill-through targets MUST use `layout=vm.Flex(direction="column")` so the back button takes natural height — a Grid would waste a 140px+ row.
+1. **Actions**: Two built-in actions — `va.export_data()` (Button-triggered CSV download) and `va.set_controls()` (Graph/Table-triggered cross-filter, cross-highlight, cross-parameter). All advanced interactions follow Source → Control → Target. Load the **wiring-vizro-actions** skill for named patterns. Cross-page drill-through targets MUST use `layout=vm.Flex(direction="column")` so the back button takes natural height — a Grid would waste a 140px+ row.
 
 ## References
 
