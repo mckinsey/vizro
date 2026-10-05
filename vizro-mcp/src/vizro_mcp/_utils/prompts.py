@@ -66,7 +66,7 @@ class HasNameAndDoc(Protocol):
 
 # This dict is used to give the model and overview of what is available in the vizro.models namespace.
 # It helps it to narrow down the choices when asking for a model.
-# Intentionally omitted: Accordion, Action, Table, Layout and VizroBaseModel
+# Intentionally omitted: Accordion, Action and VizroBaseModel
 MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
     "main": [vm.Dashboard, vm.Page],
     "static components": [
@@ -76,7 +76,7 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
         vm.Container,
         vm.Tabs,
     ],
-    "dynamic components - that is, reactive to controls": [vm.Figure, vm.Graph, vm.AgGrid],
+    "dynamic components - that is, reactive to controls": [vm.Figure, vm.Graph, vm.Table],
     "layouts": [vm.Grid, vm.Flex],
     "controls - control display of dynamic components": [vm.Filter, vm.Parameter],
     "selectors - input mechanisms for controls": [
@@ -85,7 +85,6 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
         vm.Checklist,
         vm.DatePicker,
         vm.Slider,
-        vm.RangeSlider,
         vm.Switch,
     ],
     "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
@@ -170,7 +169,7 @@ You MUST follow the user context. If you diverge or add, then communicate this t
     FALLBACK_INSTRUCTIONS = """
 3. Create a Vizro dashboard that follows the below specifications:
 - Make a homepage that uses the Card component to create navigation to the other pages.
-- Overview page: Summary of the dataset using the Text component and the dataset itself using the plain AgGrid component.
+- Overview page: Summary of the dataset using the Text component and the dataset itself using the plain Table component.
 - Distribution page: Visualizing the distribution of all numeric columns using the Graph component with a histogram.
     - use a Parameter that targets the Graph component and the x argument, and you can select the column to be displayed
     - IMPORTANT:remember that you target the chart like: <graph_id>.x and NOT <graph_id>.figure.x
@@ -178,7 +177,7 @@ You MUST follow the user context. If you diverge or add, then communicate this t
     - add filters for all categorical columns
 - Advanced analysis page:
     - use the `custom_charts` feature of the `validate_dashboard_config` tool to create 4 interesting charts
-    - put them in a 2x2 Layout, and ensure they look good
+    - put them in a 2x2 Grid, and ensure they look good
     - do not use any color schemes, but ensure that if you use hover, that it works on explicitly light and dark mode
     - use the `Graph` model `title`, but do NOT give the charts a title, that would be redundant
 - Finally, ensure that the Navigation is with a Navbar, and that you select nice icons for the Navbar.
@@ -186,7 +185,7 @@ You MUST follow the user context. If you diverge or add, then communicate this t
     return f"""
 Create a dashboard based on the following dataset: `{file_path_or_url}`. Proceed as follows:
 1. Analyze the data using the `load_and_analyze_data` tool first, passing the file path or github url `{file_path_or_url}` to the tool OR by any other data analysis means available to you.
-2. Get some knowledge about the Vizro dashboard process by calling the `get_vizro_chart_or_dashboard_plan` tool AND the `get_model_json_schema` (start with `Graph`, `AgGrid`, `Card`, `Navigation`) tool.
+2. Get some knowledge about the Vizro dashboard process by calling the `get_vizro_chart_or_dashboard_plan` tool AND the `get_model_json_schema` (start with `Graph`, `Table`, `Card`, `Navigation`) tool.
 {USER_INSTRUCTIONS if user_context else FALLBACK_INSTRUCTIONS}
 """
 
