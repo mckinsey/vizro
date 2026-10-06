@@ -55,24 +55,15 @@ def test_components_tooltip_and_icon(dash_br, icon, tooltip_text):
     dash_br.wait_for_text_to_equal(".tooltip-inner p", tooltip_text)
 
 
-@pytest.mark.parametrize(
-    "accordion_name, page_name, icon, tooltip_text",
-    [
-        (cnst.AG_GRID_ACCORDION, cnst.TABLE_AG_GRID_PAGE, cnst.AG_GRID_TOOLTIP_ICON, cnst.AG_GRID_TOOLTIP_TEXT),
-    ],
-    ids=[
-        "Table",
-    ],
-)
-def test_components_tooltip_and_icon_tables(dash_br, accordion_name, page_name, icon, tooltip_text):
-    accordion_select(dash_br, accordion_name=accordion_name)
-    page_select(dash_br, page_name=page_name, graph_check=False)
+def test_components_tooltip_and_icon_tables(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
+    page_select(dash_br, page_name=cnst.TABLE_AG_GRID_PAGE, graph_check=False)
 
     # hover over dropdown icon and wait for the tooltip appear
     hover_over_element_by_xpath_selenium(
-        dash_br.driver, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{icon}']"
+        dash_br.driver, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.AG_GRID_TOOLTIP_ICON}']"
     )
-    dash_br.wait_for_text_to_equal(".tooltip-inner p", tooltip_text)
+    dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.AG_GRID_TOOLTIP_TEXT)
 
 
 @pytest.mark.parametrize(
