@@ -224,6 +224,7 @@ TABLE_AG_GRID_INTERACTIONS_ID = "ag grid inter id"
 LINE_AG_GRID_INTERACTIONS_ID = "line_ag_grid_inter"
 DROPDOWN_AG_GRID_INTERACTIONS_ID = "dropdown-ag-grid-interactions"
 RADIOITEMS_AG_GRID_INTERACTIONS_ID = "radioitems-ag-grid-interactions"
+FILTER_CONTINENT_AG_GRID_INTERACTIONS_ID = "filter-continent-ag-grid-interactions"
 
 DYNAMIC_DATA_PAGE = "dynamic-data-page"
 SCATTER_DYNAMIC_CACHED_ID = "scatter_dynamic_cached"
