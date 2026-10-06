@@ -266,7 +266,7 @@ class TestControlSyncExplicitActionTargetsPreserved:
 
 
 @pytest.fixture
-def managers_two_pages_for_set_controls(standard_px_chart, standard_ag_grid, standard_dash_table):
+def managers_two_pages_for_set_controls(standard_px_chart, standard_ag_grid):
     """Instantiates the model_manager and the data_manager with two pages."""
     vm.Page(
         id="test-page-1",
@@ -276,8 +276,8 @@ def managers_two_pages_for_set_controls(standard_px_chart, standard_ag_grid, sta
             vm.Graph(id="scatter_chart_1", figure=standard_px_chart),
             # An AG-Grid-backed Table is a valid set_controls trigger (its `_is_ag_grid` is True).
             vm.Table(id="ag_grid_1", figure=standard_ag_grid),
-            # A Dash DataTable-backed Table cannot source set_controls; used for the "unsupported parent" test.
-            vm.Table(id="table_1", figure=standard_dash_table),
+            # A second Table used only as a Filter target (not a set_controls source).
+            vm.Table(id="table_1", figure=standard_ag_grid),
         ],
         controls=[
             vm.Filter(

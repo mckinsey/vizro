@@ -99,13 +99,8 @@ def dash_ag_grid_with_str_dataframe():
     return dash_ag_grid(data_frame="gapminder")
 
 
-# `Table` is AG-Grid-only from 1.0.0. These fixtures previously returned a Dash DataTable; they now return an AG Grid
-# figure so that tests which just need "a table figure" keep working. (Names kept to avoid churn across call sites.)
-@pytest.fixture
-def standard_dash_table(gapminder):
-    return dash_ag_grid(data_frame=gapminder)
-
-
+# `Table` is AG-Grid-only from 1.0.0. This fixture previously returned a Dash DataTable; it now returns an AG Grid
+# figure with a distinct underlying id so that tests needing two separate table figures keep working.
 @pytest.fixture
 def dash_data_table_with_id(gapminder):
     return dash_ag_grid(id="underlying_table_id", data_frame=gapminder)

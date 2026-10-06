@@ -53,6 +53,9 @@ def _apply_filter_controls(
 
     Returns: filtered DataFrame.
     """
+    # Takes in just one target, so dataframe is filtered repeatedly for every target that uses it.
+    # Potentially this could be de-duplicated but it's not so important since filtering is a relatively fast
+    # operation (compared to data loading).
     from vizro.models import Filter
     from vizro.models._controls._controls_utils import get_selector_parent_control
 
@@ -155,17 +158,6 @@ def _get_parametrized_config(
 
 
 # Helper functions used in pre-defined actions ----
-def _apply_filters(
-    data: pd.DataFrame,
-    ctds_filter: list[CallbackTriggerDict],
-    target: ModelID,
-):
-    # Takes in just one target, so dataframe is filtered repeatedly for every target that uses it.
-    # Potentially this could be de-duplicated but it's not so important since filtering is a relatively fast
-    # operation (compared to data loading).
-    return _apply_filter_controls(data_frame=data, ctds_filter=ctds_filter, target=target)
-
-
 def _get_unfiltered_data(
     ctds_parameter: list[CallbackTriggerDict], targets: list[ModelID]
 ) -> dict[ModelID, pd.DataFrame]:
@@ -220,7 +212,9 @@ def _get_modified_page_figures(
     #  so you could do apply_filters on a target a pass only the ctds relevant for that target.
     #  Consider restructuring ctds to a more convenient form to make this possible.
     for target in figure_targets:
-        filtered_data = _apply_filters(target_to_data_frame[target], ctds_filter, target)
+        filtered_data = _apply_filter_controls(
+            data_frame=target_to_data_frame[target], ctds_filter=ctds_filter, target=target
+        )
         outputs[target] = cast(FigureType, model_manager[target])(
             data_frame=filtered_data,
             **_get_parametrized_config(ctds_parameter=ctds_parameter, target=target, data_frame=False),

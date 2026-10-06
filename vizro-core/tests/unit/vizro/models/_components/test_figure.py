@@ -45,7 +45,7 @@ class TestFigureInstantiation:
         ):
             vm.Figure(figure=standard_go_chart)
 
-    def test_captured_callable_wrong_mode(self, standard_dash_table):
+    def test_captured_callable_wrong_mode(self, standard_ag_grid):
         with pytest.raises(
             ValidationError,
             match=re.escape(
@@ -53,7 +53,7 @@ class TestFigureInstantiation:
                 "is not compatible with the model."
             ),
         ):
-            vm.Figure(figure=standard_dash_table)
+            vm.Figure(figure=standard_ag_grid)
 
     def test_is_model_inheritable(self, standard_kpi_card):
         class MyFigure(vm.Figure):

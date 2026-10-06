@@ -77,10 +77,6 @@ class _AbstractAction(_BaseAction, abc.ABC):
         return TypeAdapter(OutputsType).validate_python(self.outputs)
 
     @property
-    def _legacy(self) -> bool:
-        return False
-
-    @property
     def _parameters(self) -> set[str]:
         # Note order of parameters doesn't matter since we always handle things with keyword arguments.
         return set(inspect.signature(self.function).parameters)

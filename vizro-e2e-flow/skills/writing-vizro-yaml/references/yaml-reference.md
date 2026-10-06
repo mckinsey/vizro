@@ -235,7 +235,7 @@ def my_kpi(
       data_frame: my_data
       dashGridOptions:
         pagination: true
-    type: ag_grid
+    type: table
     title: Data Table
 ```
 
@@ -248,7 +248,7 @@ def my_kpi(
   - figure:
       _target_: custom_tables.heatmap_grid
       data_frame: pivot_data
-    type: ag_grid
+    type: table
 ```
 
 ```python
@@ -300,7 +300,7 @@ def heatmap_grid(data_frame):
   - figure:
       _target_: custom_tables.table_with_bars
       data_frame: product_data
-    type: ag_grid
+    type: table
     title: Product Summary
 ```
 
@@ -524,7 +524,7 @@ _target_: custom_charts.my_chart
 
 KPI titles go inside the `_target_: kpi_card` arguments.
 
-### 5. `type: ag_grid` requires `_target_: dash_ag_grid`
+### 5. `type: table` requires `_target_: dash_ag_grid`
 
 ### 6. Parameter targets use argument names
 

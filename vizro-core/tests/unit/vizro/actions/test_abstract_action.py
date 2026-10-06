@@ -110,7 +110,6 @@ class TestAbstractActionInstantiation:
         assert hasattr(action, "function")
         assert action.outputs == []
 
-        assert not action._legacy
         assert action._transformed_inputs == {}
         assert action._transformed_outputs == []
         assert_component_equal(
@@ -131,7 +130,6 @@ class TestAbstractActionInstantiation:
         assert hasattr(action, "function")
         assert action.outputs == []
 
-        assert not action._legacy
         assert action._transformed_inputs == {}
         assert action._transformed_outputs == []
         assert_component_equal(action._dash_components, [dcc.Store(id="action-id_finished")])

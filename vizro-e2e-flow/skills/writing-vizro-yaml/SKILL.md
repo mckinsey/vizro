@@ -13,7 +13,7 @@ Each mistake below is expanded with code examples and fixes in [yaml-reference.m
 1. **`data_manager` is not subscriptable** — pre-process on raw DataFrame, then register.
 1. **Custom `_target_` needs module prefix** — `_target_: custom_charts.my_chart`, not `_target_: my_chart`.
 1. **`type: figure` has no `title` field** — KPI titles go in `_target_: kpi_card` args.
-1. **`type: ag_grid` requires `_target_: dash_ag_grid`**.
+1. **`type: table` requires `_target_: dash_ag_grid`**.
 1. **Parameter targets** — format: `"component_id.argument_name"`, not `"component_id.figure"`.
 1. **Quote YAML special chars in column names** — `column: "Version #"` (unquoted `#` starts a comment).
 1. **Filter `targets:`** — omit when you want to apply it to all components on the page whose data source includes defined filter `column`.
@@ -45,7 +45,7 @@ Each mistake below is expanded with code examples and fixes in [yaml-reference.m
 - figure:
     _target_: dash_ag_grid
     data_frame: sales_data
-  type: ag_grid
+  type: table
   title: Sales Data
 
 # Filter with targets
