@@ -2,7 +2,7 @@ import e2e.vizro.constants as cnst
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import export_data, set_control
+from vizro.actions import export_data, set_controls
 
 iris = px.data.iris()
 
@@ -54,7 +54,9 @@ filters_page = vm.Page(
                                 vm.Button(
                                     id=cnst.FILTERS_PAGE_SET_CONTROL_FILTER_BUTTON,
                                     text="Set versicolor",
-                                    actions=set_control(control=cnst.RADIO_ITEMS_FILTER_CONTROL_ID, value="versicolor"),
+                                    actions=set_controls(
+                                        controls=[cnst.RADIO_ITEMS_FILTER_CONTROL_ID], value="versicolor"
+                                    ),
                                 ),
                             ],
                         )
@@ -105,7 +107,7 @@ filters_page = vm.Page(
         vm.Filter(
             column="sepal_length",
             targets=[cnst.SCATTER_GRAPH_ID, cnst.BOX_GRAPH_ID],
-            selector=vm.RangeSlider(id=cnst.RANGE_SLIDER_FILTER_FILTERS_PAGE, step=1.0),
+            selector=vm.Slider(range=True, id=cnst.RANGE_SLIDER_FILTER_FILTERS_PAGE, step=1.0),
         ),
     ],
 )

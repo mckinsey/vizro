@@ -65,6 +65,7 @@ use the per-model files listed below.
 - [Handle data](https://vizro.readthedocs.io/en/stable/pages/user-guides/data-actions.md): Data actions
 - [Graph and table interactions](https://vizro.readthedocs.io/en/stable/pages/user-guides/graph-table-actions.md): Graph and table interaction actions
 - [Notifications](https://vizro.readthedocs.io/en/stable/pages/user-guides/notification-actions.md): Notification actions
+- [Actions on page load](https://vizro.readthedocs.io/en/stable/pages/user-guides/page-actions.md): Customize what runs when a page opens with `Page.actions`
 
 ## VISUAL FORMATTING
 

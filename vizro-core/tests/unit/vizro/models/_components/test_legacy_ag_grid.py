@@ -17,9 +17,21 @@ from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models._action._action import Action
-from vizro.models._components.ag_grid import DAG_AG_GRID_PROPERTIES
+from vizro.models._components.ag_grid_legacy import DAG_AG_GRID_PROPERTIES
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
+
+# `AgGrid` is deprecated in favor of `Table` with a `dash_ag_grid` figure. `AgGrid` now subclasses `Table`; these tests
+# keep exercising the legacy model, and test_ag_grid_deprecated asserts the deprecation warning itself.
+pytestmark = [
+    pytest.mark.filterwarnings("ignore:`AgGrid` is deprecated:FutureWarning"),
+    pytest.mark.filterwarnings("ignore:The Dash DataTable backing:FutureWarning"),
+]
+
+
+def test_ag_grid_deprecated():
+    with pytest.warns(FutureWarning, match="`AgGrid` is deprecated"):
+        vm.AgGrid(figure=dash_ag_grid(data_frame=px.data.gapminder()))
 
 
 @pytest.fixture
@@ -207,7 +219,7 @@ class TestAgGridGetValueFromTrigger:
         with pytest.raises(
             ValueError,
             match=re.escape(
-                "Couldn't find value column name: `unknown` in trigger for `set_control` action. "
+                "Couldn't find value column name: `unknown` in trigger for `set_controls` action. "
                 "This action was added to the AgGrid model with ID `ag_grid_id`. "
             ),
         ):
@@ -280,18 +292,18 @@ class TestDunderMethodsAgGrid:
             ([], {}, {}),
             ([], {"mode": "singleRow"}, {"mode": "singleRow"}),
             (
-                va.set_control(control="control_id", value="continent"),
+                va.set_controls(controls=["control_id"], value="continent"),
                 {},
                 {"mode": "multiRow", "checkboxes": True, "headerCheckbox": True, "enableClickSelection": True},
             ),
             (
-                va.set_control(control="control_id", value="continent"),
+                va.set_controls(controls=["control_id"], value="continent"),
                 {"mode": "singleRow"},
                 {"mode": "singleRow", "checkboxes": True, "headerCheckbox": True, "enableClickSelection": True},
             ),
         ],
     )
-    def test_call_row_selection_when_set_control_defined(
+    def test_call_row_selection_when_set_controls_defined(
         self,
         ag_grid_actions,
         row_selection_input,

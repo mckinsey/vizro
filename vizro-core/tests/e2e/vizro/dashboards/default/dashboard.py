@@ -21,9 +21,11 @@ from pages.datetimepicker_pages import (
 )
 from pages.dynamic_data_page import dynamic_data_df_parameter_page, dynamic_data_page
 from pages.dynamic_filters_pages import (
+    dynamic_filters_cascader_page,
     dynamic_filters_categorical_page,
     dynamic_filters_datepicker_page,
     dynamic_filters_numerical_page,
+    dynamic_filters_temporal_page,
 )
 from pages.export_action_page import export_action_page
 from pages.extras_page import extras_page
@@ -33,6 +35,7 @@ from pages.filters_inside_containters_page import filters_inside_containers_page
 from pages.filters_page import filters_page
 from pages.homepage import homepage
 from pages.kpi_indicators_page import kpi_indicators_page
+from pages.kpi_sparkline_page import kpi_sparkline_page
 from pages.layout_pages import (
     buttons_page,
     layout_flex_with_all_params_and_card,
@@ -72,6 +75,17 @@ from pages.set_control_non_categorical_controls_page import (
     set_control_non_categorical_timepicker_graph,
 )
 from pages.switch_control_page import switch_control_page
+from pages.sync_controls_pages import (
+    sync_cross_page_source_page,
+    sync_cross_page_target_page,
+    sync_drill_through_source_page,
+    sync_drill_through_target_page,
+    sync_hidden_parameter_page,
+    sync_multiple_controls_same_page,
+)
+
+# TODO[1.0.0]: remove these two Dash-DataTable page imports (and their entries in the pages list and the
+#  AG_GRID_ACCORDION nav below) when dash_data_table e2e coverage is deleted.
 from pages.table_interactions_page import table_interactions_page
 from pages.table_page import table_page
 from pages.timepicker_pages import timepicker_parameter, timepicker_range, timepicker_single
@@ -91,11 +105,13 @@ dashboard = vm.Dashboard(
         filter_interactions_page,
         switch_control_page,
         kpi_indicators_page,
+        kpi_sparkline_page,
         export_action_page,
         datepicker_page,
         datepicker_parameters_page,
         ag_grid_page,
         ag_grid_interactions_page,
+        # TODO[1.0.0]: remove table_page + table_interactions_page (Dash DataTable pages) - see import note above.
         table_page,
         table_interactions_page,
         dynamic_data_page,
@@ -103,6 +119,8 @@ dashboard = vm.Dashboard(
         dynamic_filters_categorical_page,
         dynamic_filters_numerical_page,
         dynamic_filters_datepicker_page,
+        dynamic_filters_temporal_page,
+        dynamic_filters_cascader_page,
         custom_components_page,
         filter_and_param_page,
         container_variants_page,
@@ -149,6 +167,12 @@ dashboard = vm.Dashboard(
         datetimepicker_range_url,
         cascader_leaf_page,
         cascader_path_page,
+        sync_hidden_parameter_page,
+        sync_multiple_controls_same_page,
+        sync_cross_page_source_page,
+        sync_cross_page_target_page,
+        sync_drill_through_source_page,
+        sync_drill_through_target_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -161,6 +185,7 @@ dashboard = vm.Dashboard(
                 cnst.FILTER_INTERACTIONS_PAGE,
                 cnst.SWITCH_CONTROL_PAGE,
                 cnst.KPI_INDICATORS_PAGE,
+                cnst.KPI_SPARKLINE_PAGE,
                 cnst.EXPORT_PAGE,
                 cnst.CUSTOM_COMPONENTS_PAGE,
                 cnst.FILTER_AND_PARAM_PAGE,
@@ -181,7 +206,16 @@ dashboard = vm.Dashboard(
                 cnst.CASCADER_LEAF_PAGE,
                 cnst.CASCADER_PATH_PAGE,
             ],
+            cnst.SYNC_CONTROLS_ACCORDION: [
+                cnst.SYNC_HIDDEN_PARAMETER_PAGE,
+                cnst.SYNC_MULTIPLE_CONTROLS_SAME_PAGE,
+                cnst.SYNC_CROSS_PAGE_SOURCE_PAGE,
+                cnst.SYNC_CROSS_PAGE_TARGET_PAGE,
+                cnst.SYNC_DRILL_THROUGH_SOURCE_PAGE,
+                cnst.SYNC_DRILL_THROUGH_TARGET_PAGE,
+            ],
             cnst.AG_GRID_ACCORDION: [
+                # TODO[1.0.0]: remove TABLE_PAGE + TABLE_INTERACTIONS_PAGE (Dash DataTable pages) from this nav.
                 cnst.TABLE_PAGE,
                 cnst.TABLE_INTERACTIONS_PAGE,
                 cnst.TABLE_AG_GRID_PAGE,
@@ -193,6 +227,8 @@ dashboard = vm.Dashboard(
                 cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
                 cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
                 cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
+                cnst.DYNAMIC_FILTERS_TEMPORAL_PAGE,
+                cnst.DYNAMIC_FILTERS_CASCADER_PAGE,
             ],
             cnst.CONTAINER_ACCORDION: [cnst.CONTAINER_VARIANTS_PAGE],
             cnst.LAYOUT_ACCORDION: [

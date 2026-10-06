@@ -43,7 +43,7 @@ def _get_layout_discriminator(layout: Any) -> str | None:
             return layout["type"]
         except KeyError:
             warnings.warn(
-                "`layout` without an explicit `type` specified will not work in Vizro 0.2.0. Specify `type: grid` for "
+                "`layout` without an explicit `type` specified will not work in Vizro 1.0.0. Specify `type: grid` for "
                 "your `layout`.",
                 FutureWarning,
                 stacklevel=3,
@@ -66,7 +66,7 @@ def _get_action_discriminator(action: Any) -> str | None:
             return action["type"]
         except KeyError:
             warnings.warn(
-                "Action without an explicit `type` specified will not work in Vizro 0.2.0. Specify `type: action` for "
+                "Action without an explicit `type` specified will not work in Vizro 1.0.0. Specify `type: action` for "
                 "a custom action or, for example, `type: export_data` for a built-in action.",
                 FutureWarning,
                 stacklevel=3,
@@ -168,7 +168,10 @@ class _JsonSchemaExtraType(TypedDict):
     """Type that specifies the extra information needed to parse a CapturedCallable from JSON/YAML."""
 
     import_path: str
-    mode: str
+    # A single accepted mode, or a collection of accepted modes (e.g. `Table` accepts both "ag_grid" and "table").
+    # TODO[1.0.0]: revert to `mode: str`. The tuple form exists only because `Table` accepts two backings; once Table
+    #  is AG-Grid-only there is a single accepted mode again.
+    mode: Union[str, tuple[str, ...]]
 
 
 def _validate_captured_callable(cls, value: Any, info: ValidationInfo):
@@ -449,15 +452,21 @@ class CapturedCallable:
 
         expected_mode = json_schema_extra["mode"]
         import_path = json_schema_extra["import_path"]
+        # `mode` may be a single mode or a collection of accepted modes. Normalize to a tuple so the check and the
+        # error messages handle either (e.g. `Table` accepts both "ag_grid" and "table").
+        # TODO[1.0.0]: `mode` is always a single str once Table is AG-Grid-only; drop this tuple normalization and
+        #  compare `captured_callable._mode` against the scalar `expected_mode` directly.
+        expected_modes = (expected_mode,) if isinstance(expected_mode, str) else tuple(expected_mode)
+        allowed_decorators = " or ".join(f"@capture('{expected}')" for expected in expected_modes)
 
         if not isinstance(captured_callable, CapturedCallable):
             raise ValueError(
                 f"Invalid CapturedCallable. Supply a function imported from {import_path} or defined with "
-                f"decorator @capture('{expected_mode}')."
+                f"decorator {allowed_decorators}."
             )
-        if (mode := captured_callable._mode) and mode != expected_mode:
+        if (mode := captured_callable._mode) and mode not in expected_modes:
             raise ValueError(
-                f"CapturedCallable was defined with @capture('{mode}') rather than @capture('{expected_mode}') and so "
+                f"CapturedCallable was defined with @capture('{mode}') rather than {allowed_decorators} and so "
                 "is not compatible with the model."
             )
 
@@ -570,7 +579,7 @@ class capture:
             "graph": "vm.Graph(figure=...)",
             "action": "vm.Action(function=...)",
             "table": "vm.Table(figure=...)",
-            "ag_grid": "vm.AgGrid(figure=...)",
+            "ag_grid": "vm.Table(figure=...)",
             "figure": "vm.Figure(figure=...)",
         }
         self._model_example = model_examples[mode]
@@ -699,6 +708,7 @@ OptionsType: TypeAlias = list[SingleValueType | _OptionsDictType]
 
 # All the below types rely on models and so must use ForwardRef (that is, "Checklist" rather than actual
 # Checklist class).
+# TODO[1.0.0]: drop `RangeSlider` from this union and from the docstring list below — the deprecated model is deleted.
 SelectorType = Annotated[
     "Cascader | Checklist | DatePicker | DateTimePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch | TimePicker",  # noqa: E501
     Field(discriminator="type", description="Selectors to be used inside a control."),
@@ -761,7 +771,9 @@ ActionType = Annotated[
     Annotated["Action", Tag("action")]
     | Annotated["export_data", Tag("export_data")]
     | Annotated["filter_interaction", Tag("filter_interaction")]
+    # TODO[1.0.0]: remove this line — the deprecated `set_control` action alias is deleted.
     | Annotated["set_control", Tag("set_control")]
+    | Annotated["set_controls", Tag("set_controls")]
     | Annotated["show_notification", Tag("show_notification")]
     | Annotated["update_notification", Tag("update_notification")]
     | Annotated["update_targets", Tag("update_targets")]

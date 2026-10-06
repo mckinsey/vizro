@@ -15,7 +15,12 @@ class TestKPICard:
         assert_component_equal(
             result,
             dbc.Card(
-                [dbc.CardHeader([None, html.H4("Sum Actual", className="card-kpi-title")]), dbc.CardBody("6")],
+                [
+                    dbc.CardHeader(
+                        [html.H4("Sum Actual", className="card-kpi-title"), None], className="card-kpi-header"
+                    ),
+                    dbc.CardBody(["6", None]),
+                ],
                 class_name="card-kpi",
             ),
         )
@@ -28,6 +33,7 @@ class TestKPICard:
             title="sales",
             value_format="${value:0.2f}",
             agg_func="mean",
+            units="USD",
         )()
         assert_component_equal(
             result,
@@ -35,11 +41,27 @@ class TestKPICard:
                 [
                     dbc.CardHeader(
                         [
-                            html.P("shopping_cart", className="material-symbols-outlined"),
                             html.H4("sales", className="card-kpi-title"),
-                        ]
+                            html.P("shopping_cart", className="material-symbols-outlined"),
+                        ],
+                        className="card-kpi-header",
                     ),
-                    dbc.CardBody("$2.00"),
+                    dbc.CardBody(["$2.00", html.Span("USD", className="card-kpi-units")]),
+                ],
+                class_name="card-kpi",
+            ),
+        )
+
+    def test_kpi_card_units_not_provided(self):
+        result = kpi_card(data_frame=df, value_column="Actual", value_format="{value}%")()
+        assert_component_equal(
+            result,
+            dbc.Card(
+                [
+                    dbc.CardHeader(
+                        [html.H4("Sum Actual", className="card-kpi-title"), None], className="card-kpi-header"
+                    ),
+                    dbc.CardBody(["6%", None]),
                 ],
                 class_name="card-kpi",
             ),
@@ -56,18 +78,28 @@ class TestKPICard:
         with pytest.raises(KeyError, match="reference"):
             kpi_card(data_frame=df, value_column="Actual", value_format="{reference.2f}}")()
 
+    def test_invalid_size(self):
+        with pytest.raises(ValueError, match=r"Invalid size 'huge'\. size must be one of"):
+            kpi_card(data_frame=df, value_column="Actual", size="huge")()
+
 
 class TestKPICardReference:
     def test_kpi_card_reference_mandatory_delta_negative(self):
         result = kpi_card_reference(data_frame=df, value_column="Actual", reference_column="Reference")()
         expected = dbc.Card(
             [
-                dbc.CardHeader([None, html.H4("Sum Actual", className="card-kpi-title")]),
-                dbc.CardBody("6"),
+                dbc.CardHeader([html.H4("Sum Actual", className="card-kpi-title"), None], className="card-kpi-header"),
+                dbc.CardBody(["6", None]),
                 dbc.CardFooter(
                     [
-                        html.Span("arrow_circle_down", className="material-symbols-outlined"),
-                        html.Span("-50.0% vs. reference (12)"),
+                        html.Span(
+                            [
+                                html.Span("arrow_circle_down", className="material-symbols-outlined"),
+                                html.Span("-50.0%"),
+                            ],
+                            className="card-kpi-delta-chip",
+                        ),
+                        html.Span("vs. reference (12)", className="card-kpi-reference-text"),
                     ],
                     class_name="color-neg",
                 ),
@@ -80,12 +112,20 @@ class TestKPICardReference:
         result = kpi_card_reference(data_frame=df, value_column="Reference", reference_column="Actual")()
         expected = dbc.Card(
             [
-                dbc.CardHeader([None, html.H4("Sum Reference", className="card-kpi-title")]),
-                dbc.CardBody("12"),
+                dbc.CardHeader(
+                    [html.H4("Sum Reference", className="card-kpi-title"), None], className="card-kpi-header"
+                ),
+                dbc.CardBody(["12", None]),
                 dbc.CardFooter(
                     [
-                        html.Span("arrow_circle_up", className="material-symbols-outlined"),
-                        html.Span("+100.0% vs. reference (6)"),
+                        html.Span(
+                            [
+                                html.Span("arrow_circle_up", className="material-symbols-outlined"),
+                                html.Span("+100.0%"),
+                            ],
+                            className="card-kpi-delta-chip",
+                        ),
+                        html.Span("vs. reference (6)", className="card-kpi-reference-text"),
                     ],
                     class_name="color-pos",
                 ),
@@ -98,12 +138,18 @@ class TestKPICardReference:
         result = kpi_card_reference(data_frame=df, value_column="Actual", reference_column="Actual")()
         expected = dbc.Card(
             [
-                dbc.CardHeader([None, html.H4("Sum Actual", className="card-kpi-title")]),
-                dbc.CardBody("6"),
+                dbc.CardHeader([html.H4("Sum Actual", className="card-kpi-title"), None], className="card-kpi-header"),
+                dbc.CardBody(["6", None]),
                 dbc.CardFooter(
                     [
-                        html.Span("arrow_circle_right", className="material-symbols-outlined"),
-                        html.Span("+0.0% vs. reference (6)"),
+                        html.Span(
+                            [
+                                html.Span("do_not_disturb_on", className="material-symbols-outlined"),
+                                html.Span("+0.0%"),
+                            ],
+                            className="card-kpi-delta-chip",
+                        ),
+                        html.Span("vs. reference (6)", className="card-kpi-reference-text"),
                     ],
                     class_name="",
                 ),
@@ -116,12 +162,18 @@ class TestKPICardReference:
         result = kpi_card_reference(data_frame=df, value_column="Actual", reference_column="Reference Zero")()
         expected = dbc.Card(
             [
-                dbc.CardHeader([None, html.H4("Sum Actual", className="card-kpi-title")]),
-                dbc.CardBody("6"),
+                dbc.CardHeader([html.H4("Sum Actual", className="card-kpi-title"), None], className="card-kpi-header"),
+                dbc.CardBody(["6", None]),
                 dbc.CardFooter(
                     [
-                        html.Span("arrow_circle_up", className="material-symbols-outlined"),
-                        html.Span("+nan% vs. reference (0)"),
+                        html.Span(
+                            [
+                                html.Span("arrow_circle_up", className="material-symbols-outlined"),
+                                html.Span("+nan%"),
+                            ],
+                            className="card-kpi-delta-chip",
+                        ),
+                        html.Span("vs. reference (0)", className="card-kpi-reference-text"),
                     ],
                     class_name="color-pos",
                 ),
@@ -141,21 +193,33 @@ class TestKPICardReference:
             value_format="A {value} is +{delta:.1f} ({delta_relative}:%) vs. {reference:.1f}",
             reference_format="B {value} is +{delta:.1f} ({delta_relative}:%) vs. {reference:.1f}",
             agg_func="mean",
+            units="EUR",
             reverse_color=True,
         )()
         expected = dbc.Card(
             [
                 dbc.CardHeader(
                     [
-                        html.P("shopping_cart", className="material-symbols-outlined"),
                         html.H4("sales", className="card-kpi-title"),
-                    ]
+                        html.P("shopping_cart", className="material-symbols-outlined"),
+                    ],
+                    className="card-kpi-header",
                 ),
-                dbc.CardBody("A 2.0 is +-2.0 (-0.5:%) vs. 4.0"),
+                dbc.CardBody(["A 2.0 is +-2.0 (-0.5:%) vs. 4.0", html.Span("EUR", className="card-kpi-units")]),
                 dbc.CardFooter(
                     [
-                        html.Span("arrow_circle_down", className="material-symbols-outlined"),
-                        html.Span("B 2.0 is +-2.0 (-0.5:%) vs. 4.0"),
+                        html.Span(
+                            [
+                                html.Span("arrow_circle_down", className="material-symbols-outlined"),
+                                # delta_format is not overridden here, so it keeps its default format.
+                                html.Span("-50.0%"),
+                            ],
+                            className="card-kpi-delta-chip",
+                        ),
+                        html.Span(
+                            "B 2.0 is +-2.0 (-0.5:%) vs. 4.0",
+                            className="card-kpi-reference-text",
+                        ),
                     ],
                     class_name="color-pos",
                 ),

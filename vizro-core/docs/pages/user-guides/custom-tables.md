@@ -6,7 +6,7 @@ description: "Wrap AG Grid or Dash DataTable options with `@capture('ag_grid')` 
 
 In cases where the available arguments for the [`dash_ag_grid`][vizro.tables.dash_ag_grid] or [`dash_data_table`][vizro.tables.dash_data_table] models are not sufficient, you can create a custom Dash AG Grid or Dash DataTable.
 
-The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] model accept the `figure` argument, where you can enter _any_ [`dash_ag_grid`][vizro.tables.dash_ag_grid] or [`dash_data_table`][vizro.tables.dash_data_table] chart as explained in the [user guide on tables](table.md).
+The [`Table`][vizro.models.Table] model accepts the `figure` argument, where you can enter _any_ [`dash_ag_grid`][vizro.tables.dash_ag_grid] or [`dash_data_table`][vizro.tables.dash_data_table] chart as explained in the [user guide on tables](table.md).
 
 !!! note "More examples of AG Grid"
 
@@ -20,7 +20,7 @@ One reason to customize could be that you want to create a table/grid that requi
 1. Decorate it with `@capture("ag_grid")` or `@capture("table")`.
 1. The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
 1. The table should be derived from and require only one `pandas.DataFrame`. Dataframes from other arguments will not react to dashboard controls such as [`Filter`](filters.md).
-1. Pass your function to the `figure` argument of the [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid] model.
+1. Pass your function to the `figure` argument of the [`Table`][vizro.models.Table] model.
 
 The following examples show a possible version of a custom table. In this case the argument `chosen_columns` was added, which you can control with a parameter:
 
@@ -160,7 +160,7 @@ The following examples show a possible version of a custom table. In this case t
         page = vm.Page(
             title="Example of a custom Dash AgGrid",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     id="custom_ag_grid",
                     title="Custom Dash AgGrid",
                     figure=my_custom_aggrid(
@@ -198,7 +198,7 @@ The following examples show a possible version of a custom table. In this case t
                   data_frame: gapminder_2007
                 id: custom_ag_grid
                 title: Custom Dash AgGrid
-                type: ag_grid
+                type: table
             controls:
               - selector:
                   options:

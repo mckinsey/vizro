@@ -11,7 +11,7 @@ from dash import dcc, html
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions._set_control import set_control
+from vizro.actions import set_controls
 from vizro.actions._update_targets import update_targets
 from vizro.managers import data_manager, model_manager
 from vizro.models._controls.filter import (
@@ -195,6 +195,36 @@ def target_to_data_frame():
             }
         ),
     }
+
+
+@pytest.fixture
+def managers_datetime_dynamic_data():
+    """Page with a graph backed by a dynamic datetime data source (a datetime column with a time-of-day).
+
+    The time-of-day component makes the column type "datetime" (not "date"), so a DateTimePicker is allowed
+    and, because the data source is dynamic, the filter becomes dynamic through the picker's date portion.
+    """
+
+    def _load(first_n=None):
+        df = pd.DataFrame(
+            {
+                "column_datetime": [
+                    datetime(2024, 1, 1, 8, 0),
+                    datetime(2024, 1, 2, 10, 0),
+                    datetime(2024, 1, 3, 20, 0),
+                ],
+                "y": [1, 2, 3],
+            }
+        )
+        return df.head(first_n) if first_n else df
+
+    data_manager["dynamic_datetime"] = _load
+    vm.Page(
+        id="test_page",
+        title="Page Title",
+        components=[vm.Graph(id="dt_graph", figure=px.scatter("dynamic_datetime", x="column_datetime", y="y"))],
+    )
+    Vizro._pre_build()
 
 
 @pytest.fixture
@@ -1108,7 +1138,7 @@ class TestFilterCall:
         filter = vm.Filter(
             column="column_numerical",
             targets=["column_numerical_exists_1", "column_numerical_exists_2"],
-            selector=vm.RangeSlider(id="test_selector_id"),
+            selector=vm.Slider(range=True, id="test_selector_id"),
         )
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -1146,6 +1176,84 @@ class TestFilterCall:
         ]
         assert selector_build.minDate == datetime(2024, 1, 1, 10, 0)
         assert selector_build.maxDate == datetime(2024, 1, 4)
+
+    def test_filter_call_datetime_picker_selector_valid(self, target_to_data_frame):
+        """Runtime rebuild updates the date portion's minDate/maxDate (coerced to plain dates)."""
+        filter = vm.Filter(
+            column="column_datetime",
+            targets=["column_datetime_exists_1", "column_datetime_exists_2"],
+            selector=vm.DateTimePicker(id="test_selector_id"),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        # current_value carries date-only ISO strings (the default shape) and its end date (2024-01-04) lies
+        # beyond the data's own max (2024-01-03), so the bounds must widen to keep the selection valid.
+        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["2024-01-03", "2024-01-04"])
+        date_start = selector_build["test_selector_id-date-start"]
+        date_end = selector_build["test_selector_id-date-end"]
+        assert date_start.minDate == date(2024, 1, 1)
+        assert date_start.maxDate == date(2024, 1, 4)
+        assert date_end.minDate == date(2024, 1, 1)
+        assert date_end.maxDate == date(2024, 1, 4)
+
+    def test_filter_call_datetime_picker_cleared_value(self, target_to_data_frame):
+        """A fully-cleared current value must not crash; bounds fall back to the data's own min/max dates."""
+        filter = vm.Filter(
+            column="column_datetime",
+            targets=["column_datetime_exists_1", "column_datetime_exists_2"],
+            selector=vm.DateTimePicker(id="test_selector_id"),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["", ""])
+        date_start = selector_build["test_selector_id-date-start"]
+        assert date_start.minDate == date(2024, 1, 1)
+        assert date_start.maxDate == date(2024, 1, 3)
+
+    @pytest.mark.parametrize("range_mode", [True, False])
+    def test_filter_call_datetime_picker_reload_to_all_midnight(self, range_mode):
+        """Reloading a datetime column to all-midnight values makes _validate_column_type report "date".
+
+        That date<->datetime flip is value-based (same datetime64 dtype), not a schema change, so the reload
+        must tolerate it rather than raising "has changed type from datetime to date".
+        """
+        filter = vm.Filter(
+            column="column_datetime",
+            targets=["column_datetime_exists_1", "column_datetime_exists_2"],
+            selector=vm.DateTimePicker(id="test_selector_id", range=range_mode),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter._column_type == "datetime"
+
+        all_midnight = {
+            "column_datetime_exists_1": pd.DataFrame({"column_datetime": [datetime(2024, 1, 1), datetime(2024, 1, 2)]}),
+            "column_datetime_exists_2": pd.DataFrame({"column_datetime": [datetime(2024, 1, 2), datetime(2024, 1, 5)]}),
+        }
+        current_value = ["2024-01-01", "2024-01-05"] if range_mode else "2024-01-01"
+        selector_build = filter(target_to_data_frame=all_midnight, current_value=current_value)
+        date_input = selector_build["test_selector_id-date-start" if range_mode else "test_selector_id-date"]
+        assert date_input.minDate == date(2024, 1, 1)
+        assert date_input.maxDate == date(2024, 1, 5)
+
+    def test_filter_call_datetime_column_genuine_type_change_still_raises(self, target_to_data_frame):
+        """Only the date<->datetime flip is tolerated; a real type change (datetime -> categorical) must still raise."""
+        filter = vm.Filter(
+            column="column_datetime",
+            targets=["column_datetime_exists_1", "column_datetime_exists_2"],
+            selector=vm.DateTimePicker(id="test_selector_id"),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        categorical_reload = {
+            "column_datetime_exists_1": pd.DataFrame({"column_datetime": ["a", "b"]}),
+            "column_datetime_exists_2": pd.DataFrame({"column_datetime": ["b", "c"]}),
+        }
+        with pytest.raises(ValueError, match=r"column_datetime has changed type from datetime to categorical\."):
+            filter(target_to_data_frame=categorical_reload, current_value=["2024-01-01", "2024-01-05"])
 
     def test_filter_call_hierarchical_selector_valid(self):
         filter = vm.Filter(
@@ -1358,7 +1466,7 @@ class TestFilterPreBuildMethod:
     @pytest.mark.parametrize(
         "filtered_column, expected_selector",
         [
-            ("column_numerical", vm.RangeSlider),
+            ("column_numerical", vm.Slider),
             ("column_categorical", vm.Dropdown),
             ("column_boolean", vm.Switch),
             ("column_date", vm.DatePicker),
@@ -1372,6 +1480,14 @@ class TestFilterPreBuildMethod:
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert isinstance(filter.selector, expected_selector)
+
+    def test_numerical_default_selector_is_range(self, managers_column_only_exists_in_some):
+        # Numerical columns default to a range slider, now Slider(range=True) since RangeSlider is deprecated.
+        filter = vm.Filter(column="column_numerical")
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert isinstance(filter.selector, vm.Slider)
+        assert filter.selector.range is True
 
     @pytest.mark.parametrize("filtered_column", ["country", "year", "lifeExp"])
     def test_selector_specific_selector(self, filtered_column, managers_one_page_two_graphs):
@@ -1390,7 +1506,6 @@ class TestFilterPreBuildMethod:
             ("column_categorical", vm.Checklist),
             # numerical column - numerical + categorical selectors
             ("column_numerical", vm.Slider),
-            ("column_numerical", vm.RangeSlider),
             ("column_numerical", vm.Dropdown),
             ("column_numerical", vm.RadioItems),
             ("column_numerical", vm.Checklist),
@@ -1419,7 +1534,10 @@ class TestFilterPreBuildMethod:
         ],
     )
     def test_allowed_selectors_per_column_type(self, filtered_column, selector, managers_column_only_exists_in_some):
-        filter = vm.Filter(column=filtered_column, selector=selector())
+        # Cascader needs full_path set explicitly until its default flips in 1.0.0 (avoids the default-change warning);
+        # the other selectors take no such argument.
+        selector_kwargs = {"full_path": False} if selector is vm.Cascader else {}
+        filter = vm.Filter(column=filtered_column, selector=selector(**selector_kwargs))
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert isinstance(filter.selector, selector)
@@ -1429,7 +1547,6 @@ class TestFilterPreBuildMethod:
         [
             # categorical column
             ("column_categorical", vm.Slider, "Slider", "categorical"),
-            ("column_categorical", vm.RangeSlider, "RangeSlider", "categorical"),
             ("column_categorical", vm.DatePicker, "DatePicker", "categorical"),
             ("column_categorical", vm.TimePicker, "TimePicker", "categorical"),
             # Also disallowed for categorical binary columns such as Off/On etc.
@@ -1441,23 +1558,19 @@ class TestFilterPreBuildMethod:
             ("column_numerical", vm.DateTimePicker, "DateTimePicker", "numerical"),
             # boolean column
             ("column_boolean", vm.Slider, "Slider", "boolean"),
-            ("column_boolean", vm.RangeSlider, "RangeSlider", "boolean"),
             ("column_boolean", vm.DatePicker, "DatePicker", "boolean"),
             ("column_boolean", vm.TimePicker, "TimePicker", "boolean"),
             ("column_boolean", vm.DateTimePicker, "DateTimePicker", "boolean"),
             # date column
             ("column_date", vm.Slider, "Slider", "date"),
-            ("column_date", vm.RangeSlider, "RangeSlider", "date"),
             ("column_date", vm.Switch, "Switch", "date"),
             ("column_date", vm.TimePicker, "TimePicker", "date"),
             ("column_date", vm.DateTimePicker, "DateTimePicker", "date"),
             # datetime column
             ("column_datetime", vm.Slider, "Slider", "datetime"),
-            ("column_datetime", vm.RangeSlider, "RangeSlider", "datetime"),
             ("column_datetime", vm.Switch, "Switch", "datetime"),
             # time column
             ("column_time", vm.Slider, "Slider", "time"),
-            ("column_time", vm.RangeSlider, "RangeSlider", "time"),
             ("column_time", vm.Switch, "Switch", "time"),
             ("column_time", vm.DatePicker, "DatePicker", "time"),
             ("column_time", vm.DateTimePicker, "DateTimePicker", "time"),
@@ -1518,9 +1631,9 @@ class TestFilterPreBuildMethod:
             ("continent", vm.Dropdown()),
             ("continent", vm.RadioItems()),
             ("pop", vm.Slider()),
-            ("pop", vm.RangeSlider()),
+            ("pop", vm.Slider(range=True)),
             ("year", vm.DatePicker()),
-            (["continent", "country"], vm.Cascader()),
+            (["continent", "country"], vm.Cascader(full_path=False)),
         ],
     )
     def test_filter_is_dynamic_with_dynamic_selectors(
@@ -1544,9 +1657,9 @@ class TestFilterPreBuildMethod:
             ("pop", vm.Slider(min=10**6)),
             ("pop", vm.Slider(max=10**7)),
             ("pop", vm.Slider(min=10**6, max=10**7)),
-            ("pop", vm.RangeSlider(min=10**6)),
-            ("pop", vm.RangeSlider(max=10**7)),
-            ("pop", vm.RangeSlider(min=10**6, max=10**7)),
+            ("pop", vm.Slider(range=True, min=10**6)),
+            ("pop", vm.Slider(range=True, max=10**7)),
+            ("pop", vm.Slider(range=True, min=10**6, max=10**7)),
             ("year", vm.DatePicker(min="2002-01-01")),
             ("year", vm.DatePicker(max="2007-01-01")),
             ("year", vm.DatePicker(min="2002-01-01", max="2007-01-01")),
@@ -1562,7 +1675,43 @@ class TestFilterPreBuildMethod:
         assert not filter._dynamic
         assert not filter.selector._dynamic
 
-    @pytest.mark.parametrize("selector", [vm.Slider, vm.RangeSlider])
+    @pytest.mark.parametrize("test_selector", [vm.DateTimePicker(), vm.DateTimePicker(range=False)])
+    def test_filter_datetime_picker_is_dynamic(self, test_selector, managers_datetime_dynamic_data):
+        """A DateTimePicker on a dynamic datetime column is dynamic (its date portion tracks the data)."""
+        filter = vm.Filter(column="column_datetime", selector=test_selector)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter._dynamic
+        assert filter.selector._dynamic
+
+    @pytest.mark.parametrize(
+        "test_selector",
+        [
+            vm.DateTimePicker(min="2024-01-01"),
+            vm.DateTimePicker(max="2024-01-03"),
+            vm.DateTimePicker(min="2024-01-01", max="2024-01-03"),
+        ],
+    )
+    def test_filter_datetime_picker_is_not_dynamic_with_min_max_specified(
+        self, test_selector, managers_datetime_dynamic_data
+    ):
+        """Manually setting min or max opts a DateTimePicker out of dynamic behavior, like DatePicker."""
+        filter = vm.Filter(column="column_datetime", selector=test_selector)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert not filter._dynamic
+        assert not filter.selector._dynamic
+
+    @pytest.mark.parametrize("test_selector", [vm.TimePicker(), vm.TimePicker(range=False)])
+    def test_filter_time_picker_is_never_dynamic(self, test_selector, managers_datetime_dynamic_data):
+        """A TimePicker stays static even on dynamic data: a time-of-day has no min/max bounds to derive."""
+        filter = vm.Filter(column="column_datetime", selector=test_selector)
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert not filter._dynamic
+        assert not filter.selector._dynamic
+
+    @pytest.mark.parametrize("selector", [vm.Slider, functools.partial(vm.Slider, range=True)])
     def test_numerical_min_max_default(self, selector, gapminder, managers_one_page_two_graphs):
         filter = vm.Filter(column="lifeExp", selector=selector())
         model_manager["test_page"].controls = [filter]
@@ -1584,7 +1733,7 @@ class TestFilterPreBuildMethod:
         assert filter.selector.min == gapminder.year.min().to_pydatetime().date()
         assert filter.selector.max == gapminder.year.max().to_pydatetime().date()
 
-    @pytest.mark.parametrize("selector", [vm.Slider, vm.RangeSlider])
+    @pytest.mark.parametrize("selector", [vm.Slider, functools.partial(vm.Slider, range=True)])
     @pytest.mark.parametrize("min, max", [(3, 5), (0, 5), (-5, 0)])
     def test_numerical_min_max_specific(self, selector, min, max, managers_one_page_two_graphs):
         filter = vm.Filter(column="lifeExp", selector=selector(min=min, max=max))
@@ -1738,7 +1887,7 @@ class TestFilterPreBuildMethod:
     # This is difficult to fix fully by un-importing vizro.models though, since we use `import vizro.models as vm` - see
     # https://stackoverflow.com/questions/437589/how-do-i-unload-reload-a-python-module.
     def test_numerical_custom_selector(self, gapminder, managers_one_page_two_graphs):
-        class RangeSliderNonCross(vm.RangeSlider):
+        class RangeSliderNonCross(vm.Slider):
             """Custom numerical multi-selector `RangeSliderNonCross` to be provided to `Filter`."""
 
             type: Literal["range_slider_non_cross"] = "range_slider_non_cross"
@@ -1752,7 +1901,7 @@ class TestFilterPreBuildMethod:
         selector = RangeSliderNonCross
         vm.Filter.add_type("selector", selector)
 
-        filter = vm.Filter(column=filtered_column, selector=selector())
+        filter = vm.Filter(column=filtered_column, selector=selector(range=True))
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
@@ -1841,7 +1990,7 @@ class TestFilterPreBuildMethod:
 
     def test_target_control_sync_actions(self, managers_one_page_two_graphs):
         # A Filter can target another control (a Filter or Parameter) to keep it in sync. The control target is
-        # extracted out of self.targets and turned into a `set_control` action that runs *before* the default
+        # extracted out of self.targets and turned into a `set_controls` action that runs *before* the default
         # `update_targets` action so the synced value is applied first.
         target_filter = vm.Filter(id="target_filter", column="continent", selector=vm.Checklist())
         source_filter = vm.Filter(id="source_filter", column="continent", targets=["target_filter", "scatter_chart"])
@@ -1852,17 +2001,17 @@ class TestFilterPreBuildMethod:
         # The control target is removed from self.targets, leaving only the figure target.
         assert source_filter.targets == ["scatter_chart"]
 
-        set_control_action, update_targets_action = source_filter.selector.actions
-        assert isinstance(set_control_action, set_control)
-        # A single set_control targets all synced controls (here just one), as a list.
-        assert set_control_action.control == ["target_filter"]
-        assert set_control_action.value is None
+        set_controls_action, update_targets_action = source_filter.selector.actions
+        assert isinstance(set_controls_action, set_controls)
+        # A single set_controls targets all synced controls (here just one), as a list.
+        assert set_controls_action.controls == ["target_filter"]
+        assert set_controls_action.value is None
         assert isinstance(update_targets_action, update_targets)
         assert update_targets_action.id == "__filter_action_source_filter"
         assert update_targets_action.targets == ["scatter_chart"]
 
     def test_target_control_duplicate_ids_deduplicated(self, managers_one_page_two_graphs):
-        # A control listed more than once as a target must only generate a single set_control sync action (the
+        # A control listed more than once as a target must only generate a single set_controls sync action (the
         # duplicate is redundant), while the figure target is preserved.
         target_filter = vm.Filter(id="target_filter", column="continent", selector=vm.Checklist())
         source_filter = vm.Filter(
@@ -1873,14 +2022,14 @@ class TestFilterPreBuildMethod:
         source_filter.pre_build()
 
         assert source_filter.targets == ["scatter_chart"]
-        set_control_actions = [action for action in source_filter.selector.actions if isinstance(action, set_control)]
-        assert len(set_control_actions) == 1
-        # The duplicate is collapsed inside the single set_control's (de-duplicated) control list.
-        assert set_control_actions[0].control == ["target_filter"]
+        set_controls_actions = [action for action in source_filter.selector.actions if isinstance(action, set_controls)]
+        assert len(set_controls_actions) == 1
+        # The duplicate is collapsed inside the single set_controls action's (de-duplicated) controls list.
+        assert set_controls_actions[0].controls == ["target_filter"]
 
     def test_target_control_only_falls_back_to_all_figures(self, managers_one_page_two_graphs):
         # When a Filter targets *only* another control, the figure targets fall back to all figures on the page that
-        # contain the column, exactly as if no targets were provided - but the sync set_control action is still added.
+        # contain the column, exactly as if no targets were provided - but the sync set_controls action is still added.
         target_filter = vm.Filter(id="target_filter", column="continent", selector=vm.Checklist())
         source_filter = vm.Filter(id="source_filter", column="continent", targets=["target_filter"])
         model_manager["test_page"].controls = [target_filter, source_filter]
@@ -1888,16 +2037,16 @@ class TestFilterPreBuildMethod:
         source_filter.pre_build()
 
         assert source_filter.targets == ["scatter_chart", "bar_chart"]
-        set_control_action, update_targets_action = source_filter.selector.actions
-        assert isinstance(set_control_action, set_control)
-        assert set_control_action.control == ["target_filter"]
+        set_controls_action, update_targets_action = source_filter.selector.actions
+        assert isinstance(set_controls_action, set_controls)
+        assert set_controls_action.controls == ["target_filter"]
         assert isinstance(update_targets_action, update_targets)
         assert update_targets_action.targets == ["scatter_chart", "bar_chart"]
 
     def test_target_control_ignored_with_explicit_actions_warns(
         self, managers_one_page_two_graphs, identity_action_function
     ):
-        # A control target is synced by generating a default set_control action on the selector. When the selector
+        # A control target is synced by generating a default set_controls action on the selector. When the selector
         # has explicit actions, that default chain is skipped, so a control target listed in `targets` is stripped
         # without being synced. This must warn rather than silently do nothing.
         custom_action = vm.Action(function=identity_action_function())
@@ -1925,7 +2074,7 @@ class TestFilterPreBuildMethod:
             source_filter.pre_build()
 
     def test_target_control_different_page_valid(self, gapminder):
-        # A control can target a control on a *different* page: the target is extracted and a set_control sync action
+        # A control can target a control on a *different* page: the target is extracted and a set_controls sync action
         # is generated. The cross-page value is carried through vizro_controls_store and applied when the target's
         # page is opened, so unlike a same-page target it does not need show_in_url.
         vm.Page(
@@ -1946,10 +2095,10 @@ class TestFilterPreBuildMethod:
         filter_a = model_manager["filter_a"]
         # The cross-page control target is stripped from targets (which fall back to the page's figures).
         assert "filter_b" not in filter_a.targets
-        # A single set_control sync action is generated for the cross-page target.
-        set_control_actions = [action for action in filter_a.selector.actions if isinstance(action, set_control)]
-        assert len(set_control_actions) == 1
-        assert set_control_actions[0].control == ["filter_b"]
+        # A single set_controls sync action is generated for the cross-page target.
+        set_controls_actions = [action for action in filter_a.selector.actions if isinstance(action, set_controls)]
+        assert len(set_controls_actions) == 1
+        assert set_controls_actions[0].controls == ["filter_b"]
 
     def test_filter_action_properties(self, managers_column_only_exists_in_some):
         filter = Filter(
@@ -2000,7 +2149,7 @@ class TestFilterHierarchicalColumn:
 
     def test_str_column_rejects_cascader(self):
         with pytest.raises(TypeError, match="list of column names"):
-            vm.Filter(column="continent", selector=vm.Cascader(options={"K": ["a"]}))
+            vm.Filter(column="continent", selector=vm.Cascader(full_path=False, options={"K": ["a"]}))
 
     def test_dataframe_path_to_cascader_options(self):
         df = pd.DataFrame({"a": ["X", "X", "Y"], "b": ["p", "q", "p"], "c": [1, 2, 3]})
@@ -2145,7 +2294,7 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["hier_graph"],
-            selector=vm.Cascader(multi=True),
+            selector=vm.Cascader(full_path=False, multi=True),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -2181,7 +2330,7 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["hier_graph"],
-            selector=vm.Cascader(multi=True, options={"Eu": {"West": ["FR"]}}, value=["FR"]),
+            selector=vm.Cascader(full_path=False, multi=True, options={"Eu": {"West": ["FR"]}}, value=["FR"]),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()  # does not raise
@@ -2196,7 +2345,7 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["scatter_chart"],
-            selector=vm.Cascader(multi=False),
+            selector=vm.Cascader(full_path=False, multi=False),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -2213,7 +2362,7 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["scatter_chart"],
-            selector=vm.Cascader(multi=False, options={"Oceania": ["NZ"], "Europe": ["DE"]}),
+            selector=vm.Cascader(full_path=False, multi=False, options={"Oceania": ["NZ"], "Europe": ["DE"]}),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -2226,7 +2375,7 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["column_categorical_exists_1"],
-            selector=vm.Cascader(multi=False),
+            selector=vm.Cascader(full_path=False, multi=False),
         )
         model_manager["test_page"].controls = [f]
         with pytest.raises(ValueError, match="continent"):
@@ -2249,7 +2398,7 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["hier_graph"],
-            selector=vm.Cascader(id="test_selector_id", multi=True),
+            selector=vm.Cascader(full_path=False, id="test_selector_id", multi=True),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -2302,7 +2451,9 @@ class TestFilterHierarchicalColumn:
         f = vm.Filter(
             column=["continent", "country"],
             targets=["hier_graph"],
-            selector=vm.Cascader(id="test_selector_id", multi=True, options={"Eu": ["DE", "FR"], "As": ["JP"]}),
+            selector=vm.Cascader(
+                full_path=False, id="test_selector_id", multi=True, options={"Eu": ["DE", "FR"], "As": ["JP"]}
+            ),
         )
         model_manager["test_page"].controls = [f]
         f.pre_build()
@@ -2325,7 +2476,7 @@ class TestFilterBuild:
             ("column_categorical", vm.Dropdown(multi=False)),
             ("column_categorical", vm.RadioItems()),
             ("column_numerical", vm.Slider()),
-            ("column_numerical", vm.RangeSlider()),
+            ("column_numerical", vm.Slider(range=True)),
             ("column_boolean", vm.Switch()),
             ("column_boolean", vm.Switch(value=True)),
             ("column_date", vm.DatePicker()),
@@ -2335,8 +2486,8 @@ class TestFilterBuild:
             ("column_datetime", vm.TimePicker(range=False)),
             ("column_time", vm.TimePicker()),
             ("column_time", vm.TimePicker(range=False)),
-            (["column_hierarchical_parent", "column_hierarchical_leaf"], vm.Cascader()),
-            (["column_hierarchical_parent", "column_hierarchical_leaf"], vm.Cascader(multi=False)),
+            (["column_hierarchical_parent", "column_hierarchical_leaf"], vm.Cascader(full_path=False)),
+            (["column_hierarchical_parent", "column_hierarchical_leaf"], vm.Cascader(full_path=False, multi=False)),
         ],
     )
     def test_filter_build(self, test_column, test_selector):
@@ -2364,10 +2515,10 @@ class TestFilterBuild:
             ("continent", vm.Dropdown(multi=False)),
             ("continent", vm.RadioItems()),
             ("pop", vm.Slider()),
-            ("pop", vm.RangeSlider()),
+            ("pop", vm.Slider(range=True)),
             ("year", vm.DatePicker()),
             ("year", vm.DatePicker(range=False)),
-            (["continent", "country"], vm.Cascader()),
+            (["continent", "country"], vm.Cascader(full_path=False)),
         ],
     )
     def test_dynamic_filter_build(self, test_column, test_selector, gapminder_dynamic_first_n_last_n_function):
@@ -2418,3 +2569,28 @@ class TestFilterBuild:
         )
 
         assert_component_equal(result, expected, keys_to_strip={"children"})
+
+    @pytest.mark.parametrize("range_mode", [True, False])
+    def test_dynamic_datetime_filter_build(self, range_mode, managers_datetime_dynamic_data):
+        """A dynamic DateTimePicker filter wraps in dcc.Loading and hides only the visible inputs on reload."""
+        filter = vm.Filter(
+            id="filter_id", column="column_datetime", selector=vm.DateTimePicker(id="dtp", range=range_mode)
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter._dynamic
+
+        result = filter.build()
+        assert isinstance(result, dcc.Loading)
+
+        # The reload-hide targets the inputs wrapper (not the non-visual proxy dcc.Store at selector.id): the
+        # layout class is preserved (append, not overwrite) and the title, which sits outside the wrapper, stays
+        # visible during reload.
+        layout_class = "vizro_datetime_picker_range" if range_mode else "vizro_datetime_picker_single"
+        wrapper = result["dtp_datetime_wrapper"]
+        assert wrapper.className == f"{layout_class} invisible"
+
+        # The proxy dcc.Store keeps selector.id and has no className applied to it (it renders nothing).
+        assert not getattr(result["dtp"], "className", None)
+        # The guard store starts False, matching every other dynamic selector.
+        assert result["dtp_guard_actions_chain"].data is False

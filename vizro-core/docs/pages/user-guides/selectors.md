@@ -98,12 +98,11 @@ You can customize two predefined dropdown styles that can be customized using th
 
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
-- [`Slider`][vizro.models.Slider] based on [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider)
-- [`RangeSlider`][vizro.models.RangeSlider] based on [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider)
+- [`Slider`][vizro.models.Slider] (single value, or a range with `range=True`) based on [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) (or [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) when `range=True`)
 
 !!! note "Using float values and `step` with an integer value"
 
-    When configuring the [`Slider`][vizro.models.Slider] and the [`RangeSlider`][vizro.models.RangeSlider] with float values, and using `step` with an integer value, you may notice unexpected behavior, such as the drag value being outside its indicated marks. To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size as needed.
+    When configuring the [`Slider`][vizro.models.Slider] (in either single-value or `range=True` mode) with float values, and using `step` with an integer value, you may notice unexpected behavior, such as the drag value being outside its indicated marks. To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size as needed.
 
 ## Temporal selectors
 
@@ -219,7 +218,7 @@ You can pick a different starting selection by setting `value` on [`Cascader`][v
 
 !!! note "Addressing duplicate leaf labels with `full_path=True`"
 
-    If the same leaf label appears under more than one group (for example a city name shared by two countries), set `full_path=True` on the [`Cascader`][vizro.models.Cascader] to switch to **path mode**. A selection is then a full root-to-leaf **path** (the list of node values from the root down to the leaf) instead of a bare leaf, so each duplicate is addressed unambiguously: `value=["Asia", "Japan"]` for single-select, or `value=[["Asia", "Japan"], ["Asia", "India"]]` for multi-select. Path mode does not support setting the control from a chart click (see [`set_control`](actions.md)).
+    If the same leaf label appears under more than one group (for example a city name shared by two countries), set `full_path=True` on the [`Cascader`][vizro.models.Cascader] to switch to **path mode**. A selection is then a full root-to-leaf **path** (the list of node values from the root down to the leaf) instead of a bare leaf, so each duplicate is addressed unambiguously: `value=["Asia", "Japan"]` for single-select, or `value=[["Asia", "Japan"], ["Asia", "India"]]` for multi-select. Path mode does not support setting the control from a chart click (see [`set_controls`](actions.md)).
 
 In a hierarchical [`Filter`][vizro.models.Filter], leaf mode matches rows on the last column of `Filter.column` (like a flat filter on the leaf), and `options` may be arbitrarily deep. In path mode, every level of the path is matched against the corresponding column, so every path in `options` must be exactly as deep as `Filter.column` is long. (A [`Parameter`][vizro.models.Parameter] does not match against columns, so it accepts arbitrarily nested trees in either mode.)
 
@@ -254,8 +253,8 @@ In a hierarchical [`Filter`][vizro.models.Filter], leaf mode matches rows on the
                 ),
             ],
             controls=[
-                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options)),
-                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, multi=False, value="France"))
+                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, full_path=False)),
+                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, multi=False, value="France", full_path=False))
             ],
         )
 

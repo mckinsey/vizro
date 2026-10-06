@@ -234,6 +234,7 @@ class TestBuildMethod:
             children=[
                 dbc.Label([html.Span("Title", id="dtp_title"), None], html_for="dtp-date-start"),
                 html.Div(
+                    id="dtp_datetime_wrapper",
                     children=[
                         html.Div(
                             children=[
@@ -291,6 +292,7 @@ class TestBuildMethod:
             children=[
                 dbc.Label([html.Span("Title", id="dtp_title"), None], html_for="dtp-date"),
                 html.Div(
+                    id="dtp_datetime_wrapper",
                     children=[
                         dmc.DatePickerInput(id="dtp-date", type="default", value="2026-03-01", **date_defaults),
                         dmc.TimePicker(id="dtp-time", value="09:00", **time_defaults),
@@ -366,6 +368,71 @@ class TestBuildMethod:
         assert not hasattr(time_input, "numberOfColumns") or time_input.numberOfColumns is None
         assert time_input.withSeconds is True
         assert not hasattr(date_input, "withSeconds") or date_input.withSeconds is None
+
+
+class TestDynamicBuildMethod:
+    """Tests __call__ and the dynamic build path (only the date portion of the picker is dynamic)."""
+
+    @pytest.mark.parametrize(
+        "min_bound, max_bound",
+        [
+            # __call__ bounds only the date portion, so any date/datetime/Timestamp/ISO bound is coerced to a
+            # plain date for the underlying dmc.DatePickerInput. A dynamic Filter passes pandas.Timestamp bounds.
+            (date(2024, 1, 1), date(2024, 12, 31)),
+            (datetime(2024, 1, 1, 8, 30), datetime(2024, 12, 31, 20, 0)),
+            (pd.Timestamp("2024-01-01 08:30"), pd.Timestamp("2024-12-31 20:00")),
+            ("2024-01-01T08:30", "2024-12-31T20:00"),
+        ],
+    )
+    def test_datetimepicker_call_coerces_bounds_to_date(self, min_bound, max_bound):
+        datetime_picker = vm.DateTimePicker(id="dtp", range=True, value=["2024-03-01T09:00", "2024-04-01T17:00"])
+        component = datetime_picker(min=min_bound, max=max_bound)
+
+        date_start = component["dtp-date-start"]
+        date_end = component["dtp-date-end"]
+        assert date_start.minDate == date(2024, 1, 1)
+        assert date_start.maxDate == date(2024, 12, 31)
+        assert date_end.minDate == date(2024, 1, 1)
+        assert date_end.maxDate == date(2024, 12, 31)
+
+    def test_datetimepicker_call_does_not_register_callbacks(self):
+        """__call__ (used for dynamic reload) must NOT register clientside callbacks; only build() does."""
+        import dash
+
+        datetime_picker = vm.DateTimePicker(id="dtp", range=True)
+        datetime_picker.build()  # registers the store-sync callback exactly once
+        count_after_build = len(dash._callback.GLOBAL_CALLBACK_LIST)
+
+        datetime_picker(min=date(2024, 1, 1), max=date(2024, 12, 31))
+        datetime_picker(min=date(2024, 2, 1), max=date(2024, 11, 30))
+        assert len(dash._callback.GLOBAL_CALLBACK_LIST) == count_after_build
+
+    def test_datetimepicker_dynamic_build_uses_value_and_bounds(self):
+        """A dynamic DateTimePicker renders through __call__ and defaults its value from min/max when unset."""
+        datetime_picker = vm.DateTimePicker(id="dtp", range=True, min="2024-01-01", max="2024-12-31")
+        datetime_picker._dynamic = True
+        component = datetime_picker.build()
+
+        # _build_dynamic_placeholder fills a missing value with date-only ISO strings derived from min/max.
+        assert datetime_picker.value == ["2024-01-01", "2024-12-31"]
+        assert component["dtp-date-start"].minDate == date(2024, 1, 1)
+        assert component["dtp-date-start"].maxDate == date(2024, 12, 31)
+        # The visible inputs wrapper carries the hide-target id used by dynamic Filter.build.
+        assert "vizro_datetime_picker_range" in component["dtp_datetime_wrapper"].className
+
+    @pytest.mark.parametrize("range_mode, expected_value", [(True, ["", ""]), (False, "")])
+    def test_datetimepicker_dynamic_build_none_bounds_fallback(self, range_mode, expected_value):
+        """Dynamic build with unset min/max must fall back to empty strings, never the literal 'None' string."""
+        datetime_picker = vm.DateTimePicker(id="dtp", range=range_mode)
+        datetime_picker._dynamic = True
+        datetime_picker.build()  # must not raise a ValidationError on the "None" f-string
+        assert datetime_picker.value == expected_value
+
+    @pytest.mark.parametrize("range_mode", [True, False])
+    def test_datetimepicker_dynamic_reload_hidden_ids(self, range_mode):
+        """Filter hides the inputs wrapper (not the non-visual proxy dcc.Store) during reload."""
+        datetime_picker = vm.DateTimePicker(id="dtp", range=range_mode)
+        assert datetime_picker._dynamic_reload_hidden_ids == ["dtp_datetime_wrapper"]
 
 
 class TestDateTimePickerGetValueFromTrigger:

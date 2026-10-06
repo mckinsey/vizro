@@ -1,5 +1,6 @@
 """Unit tests for vizro.models.Cascader."""
 
+import warnings
 from datetime import date
 
 import dash_bootstrap_components as dbc
@@ -18,12 +19,39 @@ from vizro.models._components.form.cascader import (
     get_cascader_default_value,
 )
 
+# Cascader.full_path default will change False -> True in Vizro 1.0.0. The three tests below manage the default-change
+# FutureWarning locally; every other construction sets `full_path` explicitly so the suite stays warning-free without a
+# blanket module-level `filterwarnings` ignore (and so these tests survive the 1.0.0 default flip unchanged).
+
+
+def test_full_path_default_change_warning():
+    with pytest.warns(FutureWarning, match="The default of `Cascader.full_path` will change"):
+        Cascader(options={"Europe": ["France"]})
+
+
+def test_full_path_default_change_warning_not_emitted_when_set():
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", FutureWarning)
+        Cascader(options={"Europe": ["France"]}, full_path=False)
+
+
+def test_full_path_default_change_warning_fires_once_on_reassignment():
+    # The warning is emitted in `before` mode so it fires once at construction, not again on every field assignment
+    # under validate_assignment=True (e.g. when Filter.pre_build reassigns title/options/value).
+    with warnings.catch_warnings(record=True) as records:
+        warnings.simplefilter("always")
+        cascader = Cascader(options={"Europe": ["France"]})
+        cascader.title = "Region"
+        cascader.multi = False
+    full_path_warnings = [r for r in records if "Cascader.full_path" in str(r.message)]
+    assert len(full_path_warnings) == 1
+
 
 class TestCascaderInstantiation:
     """Tests model instantiation."""
 
     def test_cascader_empty_options_allowed_for_deferred_fill(self):
-        cascader = Cascader(options={})
+        cascader = Cascader(options={}, full_path=False)
         assert cascader.options == {}
 
     def test_get_cascader_default_value_empty_options_raises(self):
@@ -31,7 +59,7 @@ class TestCascaderInstantiation:
             get_cascader_default_value({}, multi=False)
 
     def test_create_cascader_mandatory_only(self):
-        cascader = Cascader(options={"L": ["a"]})
+        cascader = Cascader(options={"L": ["a"]}, full_path=False)
 
         assert hasattr(cascader, "id")
         assert cascader.type == "cascader"
@@ -54,6 +82,7 @@ class TestCascaderInstantiation:
             options=options,
             value=2,
             multi=False,
+            full_path=False,
             title="Title",
             description=Tooltip(id="tooltip-id", text="Test description", icon="info"),
         )
@@ -82,7 +111,7 @@ class TestCascaderInstantiation:
         assert cascader.full_path is True
 
     def test_full_path_is_frozen(self):
-        cascader = Cascader(options={"L": ["a"]}, value="a", multi=False)
+        cascader = Cascader(options={"L": ["a"]}, value="a", multi=False, full_path=False)
         with pytest.raises(ValidationError, match="frozen"):
             cascader.full_path = True
 
@@ -95,7 +124,7 @@ class TestCascaderInstantiation:
         ],
     )
     def test_create_cascader_valid_options(self, test_options, expected):
-        cascader = Cascader(options=test_options)
+        cascader = Cascader(options=test_options, full_path=False)
         assert cascader.options == expected
         assert cascader.value is None
 
@@ -111,7 +140,7 @@ class TestCascaderInstantiation:
     )
     def test_create_cascader_invalid_options(self, test_options, match):
         with pytest.raises(ValidationError, match=match):
-            Cascader(options=test_options)
+            Cascader(options=test_options, full_path=False)
 
     # --- Leaf mode (full_path=False, default) -------------------------------------------------------------------
 
@@ -129,14 +158,14 @@ class TestCascaderInstantiation:
         ],
     )
     def test_create_cascader_leaf_valid_value(self, test_value, options, multi):
-        cascader = Cascader(options=options, value=test_value, multi=multi)
+        cascader = Cascader(options=options, value=test_value, multi=multi, full_path=False)
         assert cascader.value == test_value
         assert cascader.multi == multi
 
     def test_create_cascader_leaf_multi_scalar_normalized_to_list(self):
         # A bare scalar under multi=True is normalized to a single-element list so the stored value (and the
         # "Reset controls" original value) matches the multi component shape.
-        cascader = Cascader(options={"L": ["a", "b"]}, value="a", multi=True)
+        cascader = Cascader(options={"L": ["a", "b"]}, value="a", multi=True, full_path=False)
         assert cascader.value == ["a"]
 
     @pytest.mark.parametrize(
@@ -150,12 +179,12 @@ class TestCascaderInstantiation:
     )
     def test_create_cascader_leaf_invalid_value(self, test_value, options, multi):
         with pytest.raises(ValidationError, match=r"Please provide a valid value from `options`."):
-            Cascader(value=test_value, options=options, multi=multi)
+            Cascader(value=test_value, options=options, multi=multi, full_path=False)
 
     def test_create_cascader_leaf_duplicate_leaves_raises(self):
         # In leaf mode, duplicate leaf labels are ambiguous and rejected regardless of value.
         with pytest.raises(ValidationError, match="must not contain duplicate leaf values"):
-            Cascader(options={"A": ["x"], "B": ["x"]}, multi=True)
+            Cascader(options={"A": ["x"], "B": ["x"]}, multi=True, full_path=False)
 
     @pytest.mark.parametrize(
         "test_value, multi, match",
@@ -168,7 +197,7 @@ class TestCascaderInstantiation:
     )
     def test_create_cascader_leaf_rejects_path_shape(self, test_value, multi, match):
         with pytest.raises(ValidationError, match=match):
-            Cascader(value=test_value, options={"L": ["a", "b"]}, multi=multi)
+            Cascader(value=test_value, options={"L": ["a", "b"]}, multi=multi, full_path=False)
 
     # --- Path mode (full_path=True) -----------------------------------------------------------------------------
 
@@ -234,12 +263,12 @@ class TestCascaderInstantiation:
 
     def test_create_cascader_empty_list_value_passthrough(self):
         # An empty list means "no selection" and passes through unchanged (not filled with a default).
-        cascader = Cascader(value=[], options={"L": ["a", "b"]}, multi=True)
+        cascader = Cascader(value=[], options={"L": ["a", "b"]}, multi=True, full_path=False)
         assert cascader.value == []
 
     def test_create_cascader_leaf_coerces_datetime_leaves_to_date(self):
         ts = pd.Timestamp("2024-03-30")
-        cascader = Cascader(options={"Asia": [ts]}, value=ts, multi=True)
+        cascader = Cascader(options={"Asia": [ts]}, value=ts, multi=True, full_path=False)
         assert cascader.options == {"Asia": [date(2024, 3, 30)]}
         # Leaf coerced to date like the options leaves, and the bare multi scalar normalized to a list.
         assert cascader.value == [date(2024, 3, 30)]
@@ -254,6 +283,7 @@ class TestCascaderInstantiation:
         cascader = Cascader(
             id="cascader-id",
             options={"L": ["a"]},
+            full_path=False,
             actions=[Action(function=identity_action_function())],
         )
         [action] = cascader.actions
@@ -291,7 +321,9 @@ class TestCascaderBuild:
 
     def test_cascader_build_leaf_single(self):
         options = {"Region": {"East": [1, 2], "West": [3]}}
-        built = Cascader(id="cascader_id", options=options, multi=False, title="Title", value=None).build()
+        built = Cascader(
+            id="cascader_id", options=options, multi=False, full_path=False, title="Title", value=None
+        ).build()
         expected = html.Div(
             [
                 dbc.Label([html.Span("Title", id="cascader_id_title"), None], html_for="cascader_id"),
@@ -341,6 +373,7 @@ class TestCascaderBuild:
             title="Title",
             id="cascader_id",
             multi=False,
+            full_path=False,
             extra={"clearable": True, "id": "overridden_id"},
         ).build()
         expected = html.Div(
@@ -368,6 +401,7 @@ class TestCascaderBuild:
             multi=False,
             title="Title",
             id="cascader_id",
+            full_path=False,
             description=Tooltip(text="Test description", icon="Info", id="info"),
         ).build()
 
@@ -401,7 +435,7 @@ class TestCascaderBuild:
 
     def test_cascader_build_no_title_leaf_multi(self):
         options = {"L": ["a"]}
-        built = Cascader(id="cascader_id", options=options, title="").build()
+        built = Cascader(id="cascader_id", options=options, full_path=False, title="").build()
         expected = html.Div(
             [
                 None,
@@ -424,7 +458,7 @@ class TestCascaderBuild:
     def test_cascader_build_leaf_multi_wraps_scalar(self):
         # A bare scalar under multi=True is wrapped into a single-element list in __call__.
         options = {"L": ["a", "b"]}
-        built = Cascader(id="cascader_id", options=options, multi=True, value="a", title="").build()
+        built = Cascader(id="cascader_id", options=options, multi=True, value="a", full_path=False, title="").build()
         expected = html.Div(
             [
                 None,
@@ -467,7 +501,7 @@ class TestCascaderCall:
     """Tests model __call__ method — the runtime rebuild entry point used by Filter.__call__ on dynamic reloads."""
 
     def test_cascader_call_uses_supplied_options_leaf(self):
-        cascader = Cascader(id="cascader_id", options={"L": ["a"]}, multi=False, value=None, title="")
+        cascader = Cascader(id="cascader_id", options={"L": ["a"]}, multi=False, value=None, full_path=False, title="")
         new_options = {"Region": {"East": [1, 2], "West": [3]}}
         built = cascader(new_options)
         expected = html.Div(
@@ -492,7 +526,7 @@ class TestCascaderCall:
     def test_cascader_build_equals_call_with_self_options(self):
         # build() delegates to __call__(self.options); guard that they produce equivalent output.
         options = {"L": ["a", "b"]}
-        cascader = Cascader(id="cascader_id", options=options, multi=False, value="a", title="Title")
+        cascader = Cascader(id="cascader_id", options=options, multi=False, value="a", full_path=False, title="Title")
         assert_component_equal(cascader.build(), cascader(options))
 
 
@@ -503,5 +537,5 @@ class TestCascaderGetValueFromTrigger:
     def test_get_value_from_trigger_returns_trigger(self, trigger):
         # A selector already holds the value to propagate, so _get_value_from_trigger ignores `value` and returns the
         # raw trigger value unchanged (this is what powers syncing controls that target another control).
-        cascader = Cascader(options={"L": ["a", "b"]})
+        cascader = Cascader(options={"L": ["a", "b"]}, full_path=False)
         assert cascader._get_value_from_trigger(value="ignored", trigger=trigger) == trigger

@@ -22,6 +22,8 @@ from e2e.vizro.navigation import (
 from e2e.vizro.paths import (
     categorical_components_value_path,
     kpi_card_path,
+    kpi_sparkline_card_path,
+    kpi_sparkline_graph_path,
     select_all_path,
     switch_path_using_filter_control_id,
     table_ag_grid_cell_value_path,
@@ -326,6 +328,19 @@ def test_dropdown_multi_false_homepage(dash_br):
     check_selected_dropdown(
         dash_br, dropdown_id=cnst.DROPDOWN_FILTER_HOMEPAGEPAGE, expected_selected_options=["versicolor"], multi=False
     )
+
+
+def test_dropdown_kpi_sparkline_page(dash_br):
+    """Test dropdown to filter kpi sparkline cards."""
+    page_select(dash_br, page_name=cnst.KPI_SPARKLINE_PAGE, graph_check=False)
+
+    dash_br.wait_for_text_to_equal(kpi_sparkline_card_path(), cnst.KPI_SPARKLINE_GOOG_VALUE)
+    dash_br.wait_for_element(kpi_sparkline_graph_path())
+
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_KPI_SPARKLINE_PAGE, value="2019")
+
+    dash_br.wait_for_text_to_equal(kpi_sparkline_card_path(), cnst.KPI_SPARKLINE_GOOG_VALUE_2019)
+    dash_br.wait_for_element(kpi_sparkline_graph_path())
 
 
 def test_dropdown_kpi_indicators_page(dash_br):

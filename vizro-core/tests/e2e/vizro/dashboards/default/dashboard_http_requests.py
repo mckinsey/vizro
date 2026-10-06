@@ -7,6 +7,7 @@ from pages.cascader_pages import cascader_leaf_page, cascader_path_page
 from pages.conditional_notifications import conditional_notifications_page
 from pages.datetimepicker_pages import datetimepicker_range
 from pages.filters_inside_containters_page import filters_inside_containers_page
+from pages.page_actions_none_page import page_actions_none
 from pages.set_control_cross_filter_page import (
     cross_filter_ag_grid_page,
     cross_filter_graph_page,
@@ -24,6 +25,14 @@ from pages.set_control_multi_select_pages import (
     filtered_graph_aggrid_trigger_set_control,
     self_filter_set_control_page,
 )
+from pages.sync_controls_pages import (
+    sync_cross_page_source_page,
+    sync_cross_page_target_page,
+    sync_drill_through_source_page,
+    sync_drill_through_target_page,
+    sync_hidden_parameter_page,
+    sync_multiple_controls_same_page,
+)
 from pages.timepicker_pages import timepicker_range
 from pages.update_targets_page import apply_controls_on_button_click_page
 
@@ -37,8 +46,54 @@ from vizro.tables import dash_ag_grid
 
 df_gapminder = px.data.gapminder().query("year == 2007")
 df_gapminder["date_column"] = pd.date_range(start=pd.to_datetime("2025-01-01"), periods=len(df_gapminder), freq="D")
+df_gapminder["datetime_utc"] = pd.to_datetime(df_gapminder["date_column"]) + pd.to_timedelta(
+    df_gapminder.index % 24, unit="h"
+)
+df_gapminder["time_hh_mm_ss"] = df_gapminder["datetime_utc"].dt.time
 df_gapminder["number_column"] = range(len(df_gapminder))
 df_gapminder["is_europe"] = df_gapminder["continent"] == "Europe"
+_gapminder_regions = {
+    "North": {
+        "Canada",
+        "United States",
+        "Denmark",
+        "Finland",
+        "Norway",
+        "Sweden",
+        "Iceland",
+        "Ireland",
+        "United Kingdom",
+    },
+    "South": {
+        "Argentina",
+        "Brazil",
+        "Australia",
+        "New Zealand",
+        "India",
+        "China",
+        "Japan",
+    },
+    "West": {
+        "Mexico",
+        "Germany",
+        "France",
+        "Spain",
+        "Italy",
+        "Nigeria",
+        "Egypt",
+    },
+    "East": {
+        "Poland",
+        "Ethiopia",
+        "Kenya",
+        "Korea, Rep.",
+        "Thailand",
+        "Indonesia",
+    },
+}
+df_gapminder["region"] = df_gapminder["country"].map(
+    {country: region for region, countries in _gapminder_regions.items() for country in countries}
+)
 
 
 def load_dynamic_gapminder_data(continent: str = "Europe"):
@@ -170,7 +225,7 @@ page_chart_with_filter_interaction = vm.Page(
 page_ag_grid_with_filter_interaction = vm.Page(
     title=cnst.PAGE_AG_GRID_WITH_FILTER_INTERACTION,
     components=[
-        vm.AgGrid(
+        vm.Table(
             id=f"{cnst.PAGE_AG_GRID_WITH_FILTER_INTERACTION}_grid",
             figure=dash_ag_grid(data_frame=df_gapminder),
             actions=filter_interaction(targets=[f"{cnst.PAGE_AG_GRID_WITH_FILTER_INTERACTION}_graph"]),
@@ -198,7 +253,7 @@ page_ag_grid_with_filter_interaction = vm.Page(
 page_dynamic_parametrisation = vm.Page(
     title=cnst.PAGE_DYNAMIC_PARAMETRISATION,
     components=[
-        vm.AgGrid(
+        vm.Table(
             id=f"{cnst.PAGE_DYNAMIC_PARAMETRISATION}_grid",
             figure=dash_ag_grid(data_frame="dynamic_df_gapminder_arg"),
             actions=[filter_interaction(targets=[f"{cnst.PAGE_DYNAMIC_PARAMETRISATION}_graph"])],
@@ -230,14 +285,14 @@ page_all_selectors = vm.Page(
     title=cnst.PAGE_ALL_SELECTORS,
     components=[
         vm.Graph(
-            id=f"{cnst.PAGE_ALL_SELECTORS}_graph",
+            id=cnst.PAGE_ALL_SELECTORS_GRAPH_ID,
             figure=px.scatter("dynamic_df_gapminder_arg", x="gdpPercap", y="lifeExp", size="pop", color="continent"),
         ),
     ],
     controls=[
         vm.Parameter(
             targets=[
-                f"{cnst.PAGE_ALL_SELECTORS}_graph.data_frame.continent",
+                f"{cnst.PAGE_ALL_SELECTORS_GRAPH_ID}.data_frame.continent",
             ],
             selector=vm.RadioItems(
                 options=list(set(df_gapminder["continent"])),
@@ -247,10 +302,35 @@ page_all_selectors = vm.Page(
         vm.Filter(column="continent", selector=vm.Dropdown()),
         vm.Filter(column="continent", selector=vm.RadioItems()),
         vm.Filter(column="continent", selector=vm.Checklist()),
-        vm.Filter(column="number_column", selector=vm.Slider()),
-        vm.Filter(column="number_column", selector=vm.RangeSlider()),
-        vm.Filter(column="date_column", selector=vm.DatePicker()),
-        vm.Filter(column="is_europe", selector=vm.Switch(title="Is Europe?")),
+        vm.Filter(
+            column="number_column",
+            selector=vm.Slider(id=cnst.PAGE_ALL_SELECTORS_FILTER_SLIDER_ID),
+        ),
+        vm.Filter(
+            column="number_column",
+            selector=vm.Slider(range=True, id=cnst.PAGE_ALL_SELECTORS_FILTER_RANGE_SLIDER_ID),
+        ),
+        vm.Filter(
+            column="date_column",
+            selector=vm.DatePicker(id=cnst.PAGE_ALL_SELECTORS_FILTER_DATEPICKER_ID),
+        ),
+        vm.Filter(
+            column="time_hh_mm_ss",
+            selector=vm.TimePicker(id=cnst.PAGE_ALL_SELECTORS_FILTER_TIMEPICKER_ID, title="Time"),
+        ),
+        vm.Filter(
+            column="datetime_utc",
+            selector=vm.DateTimePicker(id=cnst.PAGE_ALL_SELECTORS_FILTER_DATETIMEPICKER_ID, title="Datetime"),
+        ),
+        vm.Filter(
+            column=["continent", "region", "country"],
+            selector=vm.Cascader(id=cnst.PAGE_ALL_SELECTORS_FILTER_CASCADER_ID, title="Country"),
+        ),
+        vm.Filter(
+            id=cnst.PAGE_ALL_SELECTORS_FILTER_SWITCH_CONTROL_ID,
+            column="is_europe",
+            selector=vm.Switch(title="Is Europe?"),
+        ),
     ],
 )
 
@@ -278,7 +358,7 @@ page_all_selectors_in_url = vm.Page(
         vm.Filter(column="continent", selector=vm.RadioItems(), show_in_url=True),
         vm.Filter(column="continent", selector=vm.Checklist(), show_in_url=True),
         vm.Filter(column="number_column", selector=vm.Slider(), show_in_url=True),
-        vm.Filter(column="number_column", selector=vm.RangeSlider(), show_in_url=True),
+        vm.Filter(column="number_column", selector=vm.Slider(range=True), show_in_url=True),
         vm.Filter(column="date_column", selector=vm.DatePicker(), show_in_url=True),
         vm.Filter(column="is_europe", selector=vm.Switch(title="Is Europe?"), show_in_url=True),
     ],
@@ -315,6 +395,13 @@ dashboard = vm.Dashboard(
         cascader_leaf_page,
         cascader_path_page,
         apply_controls_on_button_click_page,
+        page_actions_none,
+        sync_hidden_parameter_page,
+        sync_multiple_controls_same_page,
+        sync_cross_page_source_page,
+        sync_cross_page_target_page,
+        sync_drill_through_source_page,
+        sync_drill_through_target_page,
     ]
 )
 

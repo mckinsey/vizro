@@ -72,6 +72,8 @@ PARAMS_PAGE_APPLY_ON_KEYS = [SLIDER_PARAM_CONTROL_ID, RANGE_SLIDER_PARAM_CONTROL
 
 PARAMETERS_MULTI_PAGE = "parameters_p@ge! (multi selectors)"
 PARAMETERS_MULTI_PAGE_PATH = "/parameters_pge-multi-selectors"
+# TODO[1.0.0]: delete TABLE_DROPDOWN/TABLE_CHECKLIST - they back the Dash DataTable custom chart used in
+#  parameters_multi_page.py (removed with dash_data_table e2e coverage).
 TABLE_DROPDOWN = "table_dropdown"
 TABLE_CHECKLIST = "table_checklist"
 DROPDOWN_PARAM_MULTI = "dropdown_multi_param"
@@ -85,6 +87,11 @@ DROPDOWN_INTER_FILTER = "dropdown_inter_filter"
 RADIOITEM_INTER_PARAM = "radio_inter_param"
 
 KPI_INDICATORS_PAGE = "kpi-indicators-page"
+KPI_SPARKLINE_PAGE = "kpi-sparkline-page"
+KPI_SPARKLINE_GOOG_CARD_ID = "kpi-sparkline-goog"
+KPI_SPARKLINE_GOOG_VALUE = "53.42"
+KPI_SPARKLINE_GOOG_VALUE_2019 = "56.43"
+DROPDOWN_FILTER_KPI_SPARKLINE_PAGE = "drop-kpi-sparkline-page"
 DROPDOWN_FILTER_KPI_PAGE = "drop-kpi-page"
 CLICKABLE_KPI_CARD_ID = "clickable-kpi-card"
 CLICKABLE_KPI_CARD_REFERENCE_ID = "clickable-kpi-card-reference"
@@ -100,6 +107,8 @@ UNFILTERED_BASE_CSV = "tests/tests_utils/e2e/vizro/files/unfiltered_line_base.cs
 DATEPICKER_PAGE = "datepicker-page"
 BAR_POP_RANGE_ID = "bar pop range"
 BAR_POP_DATE_ID = "bar pop date"
+# TODO[1.0.0]: delete TABLE_POP_RANGE_ID/TABLE_POP_DATE_ID - Dash DataTables in datepicker_page.py; retarget the
+#  datepicker assertions in test_datepicker.py to a dash_ag_grid table instead.
 TABLE_POP_RANGE_ID = "table pop range"
 TABLE_POP_DATE_ID = "table pop date"
 DATEPICKER_RANGE_ID = "datepicker range"
@@ -171,6 +180,45 @@ CASCADER_PATH_ID = "cascader path selector"
 CASCADER_PATH_MULTI_FILTER_CONTROL_ID = "cascader_path_multi_filter_control_id"
 CASCADER_PATH_MULTI_ID = "cascader path multi selector"
 
+SYNC_CONTROLS_ACCORDION = "Sync controls"
+SYNC_HIDDEN_PARAMETER_PAGE = "sync-by-targeting-hidden-parameter"
+SYNC_HIDDEN_PARAMETER_GRAPH_ID = "sync hidden parameter graph"
+SYNC_HIDDEN_PARAMETER_FILTER_ID = "sync_hidden_parameter_filter_id"
+SYNC_HIDDEN_PARAMETER_RADIO_ITEMS_ID = "sync_hidden_parameter_radio_items_id"
+SYNC_HIDDEN_PARAMETER_PARAMETER_ID = "sync_hidden_parameter_parameter_id"
+SYNC_CROSS_PAGE_SOURCE_PAGE = "cross-page-sync-source"
+SYNC_CROSS_PAGE_SOURCE_GRAPH_ID = "sync cross page source graph"
+SYNC_CROSS_PAGE_SOURCE_FILTER_ID = "sync_cross_page_source_filter_id"
+SYNC_CROSS_PAGE_SOURCE_RADIO_ITEMS_ID = "sync_cross_page_source_radio_items_id"
+SYNC_CROSS_PAGE_TARGET_PAGE = "cross-page-sync-target-no-url"
+SYNC_CROSS_PAGE_TARGET_GRAPH_ID = "sync cross page target graph"
+SYNC_CROSS_PAGE_TARGET_FILTER_ID = "sync_cross_page_target_filter_id"
+SYNC_CROSS_PAGE_TARGET_CHECKLIST_ID = "sync_cross_page_target_checklist_id"
+SYNC_DRILL_THROUGH_SOURCE_PAGE = "drill-through-source-same-page-plus-target"
+SYNC_DRILL_THROUGH_SOURCE_GRAPH_ID = "sync drill through source graph"
+SYNC_DRILL_THROUGH_SOURCE_FILTER_ID = "sync_drill_through_source_filter_id"
+SYNC_DRILL_THROUGH_SOURCE_DROPDOWN_ID = "sync_drill_through_source_dropdown_id"
+SYNC_DRILL_THROUGH_TARGET_PAGE = "drill-through-target-url"
+SYNC_DRILL_THROUGH_TARGET_GRAPH_ID = "sync drill through target graph"
+SYNC_DRILL_THROUGH_TARGET_FILTER_ID = "sync_drill_through_target_filter_id"
+SYNC_DRILL_THROUGH_TARGET_RADIO_ITEMS_ID = "sync_drill_through_target_radio_items_id"
+SYNC_MULTIPLE_CONTROLS_SAME_PAGE = "sync-multiple-controls-same-page"
+SYNC_MULTIPLE_CONTROLS_GRAPH_1_ID = "sync multiple controls graph 1"
+SYNC_MULTIPLE_CONTROLS_GRAPH_2_ID = "sync multiple controls graph 2"
+SYNC_MULTIPLE_CONTROLS_GRAPH_3_ID = "sync multiple controls graph 3"
+SYNC_MULTIPLE_CONTROLS_FILTER_1_ID = "sync_multiple_controls_filter_1_id"
+SYNC_MULTIPLE_CONTROLS_FILTER_2_ID = "sync_multiple_controls_filter_2_id"
+SYNC_MULTIPLE_CONTROLS_FILTER_3_ID = "sync_multiple_controls_filter_3_id"
+SYNC_MULTIPLE_CONTROLS_RADIO_ITEMS_1_ID = "sync_multiple_controls_radio_items_1_id"
+SYNC_MULTIPLE_CONTROLS_RADIO_ITEMS_2_ID = "sync_multiple_controls_radio_items_2_id"
+SYNC_MULTIPLE_CONTROLS_RADIO_ITEMS_3_ID = "sync_multiple_controls_radio_items_3_id"
+
+# TODO[1.0.0]: AG Grid is the only "table" in 1.0.0 (Dash DataTable backing is removed), so drop the AG_GRID/ag_grid
+#  naming across e2e. The DataTable-only names (TABLE_PAGE/TABLE_ID/TABLE_INTERACTIONS_* below, TABLE_POP_* and
+#  TABLE_DROPDOWN/TABLE_CHECKLIST above) are deleted with their pages, which frees the plain TABLE_* names; the
+#  AG_GRID_*/TABLE_AG_GRID_* names then rename to TABLE_*. Files to rename ag_grid->table (+ their vars/ids/fixtures/
+#  test fns): pages/ag_grid_page.py, pages/ag_grid_interactions_page.py, pages/set_control_ag_grid_cellclicked.py,
+#  test_dom_elements/test_table_ag_grid.py, and the golden main_ag_grid_page/main_flex_layout_wrap_and_ag_grid PNGs.
 TABLE_AG_GRID_PAGE = "table-ag-grid-page"
 TABLE_AG_GRID_ID = "123_ag_grid_table"
 BOX_AG_GRID_PAGE_ID = "B@x on ag grid page"
@@ -187,6 +235,8 @@ LINE_AG_GRID_INTERACTIONS_ID = "line_ag_grid_inter"
 DROPDOWN_AG_GRID_INTERACTIONS_ID = "dropdown-ag-grid-interactions"
 RADIOITEMS_AG_GRID_INTERACTIONS_ID = "radioitems-ag-grid-interactions"
 
+# TODO[1.0.0]: delete this TABLE_PAGE block and the TABLE_INTERACTIONS_* block below - the Dash DataTable pages
+#  they name (table_page.py / table_interactions_page.py) are removed in 1.0.0.
 TABLE_PAGE = "table-page"
 TABLE_ID = "123_table"
 TABLE_CONTAINER = "table container"
@@ -229,6 +279,18 @@ BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID = "bar_dynamic_single_datepicker"
 BAR_DYNAMIC_DATEPICKER_FILTER_ID = "bar_dynamic_datepicker"
 DATEPICKER_DYNAMIC_RANGE_ID = "datepicker dynamic range"
 DATEPICKER_DYNAMIC_SINGLE_ID = "datepicker dynamic single"
+
+DYNAMIC_FILTERS_TEMPORAL_PAGE = "dynamic-filters-temporal"
+BAR_DYNAMIC_TIME_FILTER_ID = "bar_dynamic_time"
+BAR_DYNAMIC_DATETIME_FILTER_ID = "bar_dynamic_datetime"
+TIMEPICKER_DYNAMIC_FILTER_ID = "timepicker_dynamic"
+DATETIMEPICKER_DYNAMIC_FILTER_ID = "datetimepicker_dynamic"
+
+DYNAMIC_FILTERS_CASCADER_PAGE = "dynamic-filters-cascader"
+AG_GRID_DYNAMIC_CASCADER_ID = "ag_grid_dynamic_cascader"
+AG_GRID_DYNAMIC_CASCADER_PATH_MULTI_ID = "ag_grid_dynamic_cascader_path_multi"
+CASCADER_DYNAMIC_FILTER_ID = "cascader_dynamic"
+CASCADER_DYNAMIC_PATH_MULTI_ID = "cascader_dynamic_path_multi"
 
 CUSTOM_COMPONENTS_PAGE = "custom-components-page"
 SCATTER_CUSTOM_COMPONENTS_ID = "scatter_custom_id"
@@ -574,8 +636,24 @@ PAGE_CHART_WITH_FILTER_INTERACTION = "page-chart-with-filter-interaction"
 PAGE_AG_GRID_WITH_FILTER_INTERACTION = "page-ag-grid-with-filter-interaction"
 PAGE_DYNAMIC_PARAMETRISATION = "page-dynamic-parametrisation"
 PAGE_ALL_SELECTORS = "page-all-selectors"
+PAGE_ALL_SELECTORS_GRAPH_ID = "page-all-selectors_graph"
+PAGE_ALL_SELECTORS_FILTER_SLIDER_ID = "page_all_selectors_filter_slider"
+PAGE_ALL_SELECTORS_FILTER_RANGE_SLIDER_ID = "page_all_selectors_filter_range_slider"
+PAGE_ALL_SELECTORS_FILTER_DATEPICKER_ID = "page_all_selectors_filter_datepicker"
+PAGE_ALL_SELECTORS_FILTER_TIMEPICKER_ID = "page_all_selectors_filter_timepicker"
+PAGE_ALL_SELECTORS_FILTER_DATETIMEPICKER_ID = "page_all_selectors_filter_datetimepicker"
+PAGE_ALL_SELECTORS_FILTER_CASCADER_ID = "page_all_selectors_filter_cascader"
+PAGE_ALL_SELECTORS_FILTER_SWITCH_CONTROL_ID = "page_all_selectors_filter_switch_control_id"
 PAGE_ALL_SELECTORS_IN_URL = "page-all-selectors-in-url"
 PAGE_APPLY_CONTROLS_ON_BUTTON_CLICK = "page-apply-controls-on-button-click"
+PAGE_ACTIONS_NONE = "page-actions-none"
+PAGE_ACTIONS_NONE_GRAPH_ID = "page_actions_none_graph"
 
 HTTP_TIMEOUT_SHORT = 200
 HTTP_TIMEOUT_LONG = 1000
+# Maximum time to wait for the expected number of HTTP requests to arrive before asserting. On a busy CI runner a
+# request can land noticeably later than HTTP_TIMEOUT_SHORT, so the checker polls up to this deadline instead of
+# waiting a single fixed window (which made the count assertions flaky).
+HTTP_TIMEOUT_REACH = 5000
+# Polling granularity while waiting for the expected number of requests to arrive.
+HTTP_POLL_INTERVAL = 100

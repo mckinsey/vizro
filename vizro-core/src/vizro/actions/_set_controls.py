@@ -5,7 +5,7 @@ from functools import cached_property
 from typing import Literal, Protocol, cast, runtime_checkable
 
 from dash import get_relative_path, no_update, set_props
-from pydantic import Field, JsonValue
+from pydantic import Field, JsonValue, PrivateAttr, field_validator
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import model_manager
@@ -18,56 +18,57 @@ logger = logging.getLogger(__name__)
 _RANGE_VALUE_LEN = 2
 
 
-# What a model must implement to be a set_control trigger.
+# What a model must implement to be a set_controls trigger.
 @runtime_checkable
 class _SupportsSetControl(Protocol):
     def _get_value_from_trigger(self, value: JsonValue, trigger: JsonValue) -> JsonValue: ...
 
 
-class set_control(_AbstractAction):
+class set_controls(_AbstractAction):
     """Sets the value of one or more controls, which then update their targets.
 
     Abstract: Usage documentation
         [Graph and table interactions](../user-guides/graph-table-actions.md)
 
-    `control` accepts a single control id or a list of control ids. Pass a list to set several controls from a single
+    `controls` is one or more control ids: pass a single id, or a list of ids to set several controls from a single
     trigger (for example, one graph click that cross-filters multiple filters, or one selector that syncs several
-    controls). The same `value` is sent to every targeted control and is reshaped to each control's own selector.
+    controls). A single id is normalized to a list internally. The same `value` is sent to every targeted control and
+    is reshaped to each control's own selector.
 
-    The following Vizro models can be a source of `set_control`:
+    The following Vizro models can be a source of `set_controls`:
 
-    * [`AgGrid`][vizro.models.AgGrid]: triggers `set_control` when `cellClicked` or `selectedRows` changes (for example
+    * [`AgGrid`][vizro.models.AgGrid]: triggers `set_controls` when `cellClicked` or `selectedRows` changes (for example
     after a cell click or when the row selection changes). `value` can be:
 
         * `"cell"`, `"column"`, or `"row"` to use the clicked cell's value, column id, or row id respectively.
         * Any other string to treat as a column name, taking values from the selected row(s).
-    * [`Graph`][vizro.models.Graph]: triggers `set_control` when the user clicks on data in the graph. `value` is a
-    string that can be used in two ways to specify how to set `control`:
+    * [`Graph`][vizro.models.Graph]: triggers `set_controls` when the user clicks on data in the graph. `value` is a
+    string that can be used in two ways to specify how to set `controls`:
 
         * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.
         * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the
         trigger data [`clickData["points"][0]`](https://dash.plotly.com/interactive-graphing). This is typically
         useful for a positional variable, for example `"x"`, and does not require setting `custom_data`.
 
-    * [`Figure`][vizro.models.Figure]: triggers `set_control` when the user clicks on the figure. `value` specifies a
-    literal value to set `control` to.
-    * [`Button`][vizro.models.Button]: triggers `set_control` when the user clicks on the button. `value` specifies a
-    literal value to set `control` to.
-    * [`Card`][vizro.models.Card]: triggers `set_control` when the user clicks on the card. `value` specifies a
-    literal value to set `control` to.
+    * [`Figure`][vizro.models.Figure]: triggers `set_controls` when the user clicks on the figure. `value` specifies a
+    literal value to set `controls` to.
+    * [`Button`][vizro.models.Button]: triggers `set_controls` when the user clicks on the button. `value` specifies a
+    literal value to set `controls` to.
+    * [`Card`][vizro.models.Card]: triggers `set_controls` when the user clicks on the card. `value` specifies a
+    literal value to set `controls` to.
 
     `value` is required for `Graph` and `AgGrid` (it is the directive for what to extract from the click). For
     `Figure`, `Card`, and `Button` it is the literal to set, and `value=None` resets the target control(s) to their
     default value. `value` may be omitted only when a control's own selector syncs to another control (via that
     control's `targets`): the sync uses the selector's live value and ignores `value`.
 
-    Example: `AgGrid` as trigger
+    Example: an AG Grid `Table` as trigger
         ```python
         import vizro.actions as va
 
-        vm.AgGrid(
+        vm.Table(
             figure=dash_ag_grid(iris),
-            actions=va.set_control(control="target_control", value="species"),
+            actions=va.set_controls(controls=["target_control"], value="species"),
         )
         ```
 
@@ -77,7 +78,7 @@ class set_control(_AbstractAction):
 
         vm.Graph(
             figure=px.scatter(iris, x="sepal_width", y="sepal_length", custom_data="species"),
-            actions=va.set_control(control="target_control", value="species"),
+            actions=va.set_controls(controls=["target_control"], value="species"),
         )
         ```
 
@@ -87,7 +88,7 @@ class set_control(_AbstractAction):
 
         vm.Graph(
             figure=px.box(iris, x="species", y="sepal_length"),
-            actions=va.set_control(control="target_control", value="x"),
+            actions=va.set_controls(controls=["target_control"], value="x"),
         )
         ```
 
@@ -98,7 +99,7 @@ class set_control(_AbstractAction):
 
         vm.Figure(
             figure=kpi_card(tips, value_column="tip", title="Click KPI to set control to A"),
-            actions=va.set_control(control="target_control", value="A"),
+            actions=va.set_controls(controls=["target_control"], value="A"),
         )
         ```
 
@@ -108,7 +109,7 @@ class set_control(_AbstractAction):
 
         vm.Button(
             text="Click to set control to A",
-            actions=va.set_control(control="target_control", value="A"),
+            actions=va.set_controls(controls=["target_control"], value="A"),
         )
         ```
 
@@ -118,7 +119,7 @@ class set_control(_AbstractAction):
 
         vm.Card(
             title="Click Card to set control to A",
-            actions=va.set_control(control="target_control", value="A"),
+            actions=va.set_controls(controls=["target_control"], value="A"),
         )
         ```
 
@@ -128,7 +129,7 @@ class set_control(_AbstractAction):
 
         vm.Graph(
             figure=px.scatter(iris, x="sepal_width", y="sepal_length", custom_data="species"),
-            actions=va.set_control(control=["target_control_1", "target_control_2"], value="species"),
+            actions=va.set_controls(controls=["target_control_1", "target_control_2"], value="species"),
         )
         ```
 
@@ -144,17 +145,17 @@ class set_control(_AbstractAction):
 
         vm.RadioItems(
             options=["setosa", "versicolor", "virginica"],
-            actions=va.set_control(control=["species_filter_1", "species_filter_2"]),
+            actions=va.set_controls(controls=["species_filter_1", "species_filter_2"]),
         )
         ```
     """
 
-    type: Literal["set_control"] = "set_control"
-    control: ModelID | list[ModelID] = Field(
-        description="Filter or Parameter component id(s) to be affected by the trigger. Provide a single id to set "
-        "one control, or a list of ids to set several controls at once. Each control can be on the same page as the "
-        "trigger or on a different page: a different-page control is kept in sync through the internal "
-        "`vizro_controls_store`, and its new value is applied when that page is opened."
+    type: Literal["set_controls"] = "set_controls"
+    controls: ModelID | list[ModelID] = Field(
+        description="Filter or Parameter component id(s) to be affected by the trigger. Provide a single id, or a list "
+        "of ids to set several controls at once. Each control can be on the same page as the trigger or on a different "
+        "page: a different-page control is kept in sync through the internal `vizro_controls_store`, and its new value "
+        "is applied when that page is opened.",
     )
 
     value: JsonValue = Field(
@@ -167,35 +168,61 @@ class set_control(_AbstractAction):
         "used instead.",
     )
 
+    # Private, internal-only flag. When True, the action additionally raises the `_guard_actions_chain` store of each
+    # same-page target it subsumes (see `_guardable_same_page_controls`) so setting that target's value does NOT fire
+    # its own action chain. It is set by `finalize_control_sync_chains` for the collapsed selector-sync chain (where a
+    # single set_control sets every transitively-synced control and a single update_targets refreshes every affected
+    # figure), so the whole mesh resolves in two HTTP requests instead of cascading. Kept private (set
+    # post-construction) because it is not part of the public API. See `guard_action_chain` in
+    # static/js/models/action.js.
+    _stop_implicit_actions_chaining: bool = PrivateAttr(default=False)
+
+    @field_validator("controls", mode="after")
+    @classmethod
+    def _coerce_controls_to_list(cls, controls: ModelID | list[ModelID]) -> list[ModelID]:
+        # Accept a single control id and normalize it to a list immediately, so the rest of the action only ever
+        # works with a list of ids.
+        return [controls] if isinstance(controls, str) else controls
+
     @property
     def _control_ids(self) -> list[ModelID]:
-        """Normalize `control` (single id or list) to a de-duplicated, order-preserving list of ids.
+        """Return `controls` as a de-duplicated, order-preserving list of ids.
 
         Duplicates are collapsed because two Dash `Output`s on the same component in one callback is an error.
         """
-        control_ids = [self.control] if isinstance(self.control, str) else list(self.control)
-        return list(dict.fromkeys(control_ids))
+        # Coerce a bare id to a list defensively: the deprecated `set_control` alias can leave `controls` as a raw
+        # string after a post-construction assignment to another field (its `mode="before"` validator re-copies
+        # `control` into `controls` without the `controls` field-validator re-running), and iterating a string here
+        # would split it into individual characters.
+        # TODO[1.0.0]: drop this coercion, iterate `self.controls` directly — it guards only the `set_control` alias.
+        controls = [self.controls] if isinstance(self.controls, str) else self.controls
+        return list(dict.fromkeys(controls))
 
     @_log_call
     def pre_build(self):
-        # Parent model must be able to source set_control.
-        if not isinstance(self._parent_model, _SupportsSetControl):
+        from vizro.models import Graph, Table
+
+        # Parent model must be able to source set_controls. Only an AG Grid `Table` implements a meaningful
+        # `_get_value_from_trigger`; a Dash DataTable-backed (or as-yet-unresolved) `Table` shares the method but
+        # cannot source set_controls, so exclude any non-AG-Grid `Table`. Using `_is_ag_grid` keeps this consistent
+        # with the `value` and reorder checks below (and with the deprecated `AgGrid`, which is always an AG Grid).
+        parent_is_non_ag_grid_table = isinstance(self._parent_model, Table) and not self._parent_model._is_ag_grid
+        if not isinstance(self._parent_model, _SupportsSetControl) or parent_is_non_ag_grid_table:
             raise ValueError(
-                f"`set_control` action was added to the model with ID `{self._parent_model.id}`, "
+                f"`set_controls` action was added to the model with ID `{self._parent_model.id}`, "
                 "but this action can only be used with models that support it "
                 "(for example, Graph, AgGrid, Figure, and so on). "
-                "See all models that can source a `set_control` at "
-                "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_control"
+                "See all models that can source a `set_controls` at "
+                "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_controls"
             )
 
-        # An empty `control` (e.g. []) produces zero callback outputs and fails at runtime; reject it at build time.
+        # An empty `controls` (e.g. []) produces zero callback outputs and fails at runtime; reject it at build time.
         if not self._control_ids:
             raise ValueError(
-                f"`set_control` action on model `{self._parent_model.id}` has an empty `control`. "
+                f"`set_controls` action on model `{self._parent_model.id}` has an empty `controls`. "
                 "Provide at least one Filter or Parameter id to set."
             )
 
-        from vizro.models import AgGrid, Graph
         from vizro.models._controls._controls_utils import SELECTORS, _is_hierarchical_selector
 
         # Validate each target and split by page (order-preserving): same-page controls are updated via the callback
@@ -211,26 +238,26 @@ class set_control(_AbstractAction):
             control_model_page = model_manager._get_model_page(control_model) if control_model else None
             if control_model is None or control_model_page is None:
                 raise ValueError(
-                    f"Model with ID `{control_id}` used as a `control` in `set_control` action not found in the "
+                    f"Model with ID `{control_id}` used as a `control` in `set_controls` action not found in the "
                     f"dashboard. Please provide a valid control ID that exists in the dashboard."
                 )
 
             # Target must be a control model (Filter/Parameter).
             if not hasattr(control_model, "selector"):
                 raise TypeError(
-                    f"Model with ID `{control_id}` used as a `control` in `set_control` action must be a control "
+                    f"Model with ID `{control_id}` used as a `control` in `set_controls` action must be a control "
                     f"model (for example, Filter, Parameter)."
                 )
 
             # A path-mode Cascader (full_path=True) identifies a selection by its full root-to-leaf path. A trigger
-            # (Graph/AgGrid) only supplies a single column value, which cannot reconstruct a path, so `set_control`
+            # (Graph/AgGrid) only supplies a single column value, which cannot reconstruct a path, so `set_controls`
             # is disabled for it. Leaf mode (full_path=False) works like a flat selector and is supported.
             selector = getattr(control_model, "selector", None)
             if _is_hierarchical_selector(selector) and getattr(selector, "full_path", False):
                 raise ValueError(
-                    f"`set_control` cannot target control `{control_id}` because its Cascader selector uses "
+                    f"`set_controls` cannot target control `{control_id}` because its Cascader selector uses "
                     f"full_path=True. A trigger supplies a single leaf value that cannot be resolved to a full "
-                    f"root-to-leaf path. Use a Cascader with full_path=False (leaf mode) to enable `set_control`."
+                    f"root-to-leaf path. Use a Cascader with full_path=False (leaf mode) to enable `set_controls`."
                 )
 
             if control_model_page == action_page:
@@ -238,6 +265,17 @@ class set_control(_AbstractAction):
             else:
                 self._cross_page_controls.append(control_id)
                 cross_page_pages.append(control_model_page)
+
+        # Same-page controls this action may subsume when collapsing a sync mesh (only relevant when
+        # `_stop_implicit_actions_chaining` is set): those running the generated default chain, whose figures the
+        # collapsed `update_targets` refreshes and whose own chain must therefore be guarded. A same-page target with
+        # explicit actions (custom or `[]`) is set like any other but is NOT guarded, so its own chain runs (or not) as
+        # configured - preserving its behavior instead of silently swallowing it.
+        self._guardable_same_page_controls: list[ModelID] = [
+            control_id
+            for control_id in self._same_page_controls
+            if getattr(model_manager[control_id], "_has_default_selector_actions", False)
+        ]
 
         # The trigger decides cross-page behavior (see `function`): a control's own selector (Dropdown, Checklist, ...)
         # just "syncs" - stay put, apply on the target's next open; a figure/component (Graph, AgGrid, Button, ...)
@@ -250,16 +288,17 @@ class set_control(_AbstractAction):
         # value None" at click time. Catch it here with a message tailored to the trigger. It is intentionally
         # optional elsewhere: Figure/Card/Button treat `value=None` as "reset the target(s) to their default", and a
         # selector-driven sync ignores `value` entirely (the selector's own live value is used).
-        if self.value is None and isinstance(self._parent_model, (Graph, AgGrid)):
+        parent_is_ag_grid = isinstance(self._parent_model, Table) and self._parent_model._is_ag_grid
+        if self.value is None and (isinstance(self._parent_model, Graph) or parent_is_ag_grid):
             value_hint = (
                 'a column name present in the figure\'s `custom_data`, or a positional lookup such as "x" or "y"'
                 if isinstance(self._parent_model, Graph)
                 else '"cell", "column", "row", or a column name'
             )
             raise ValueError(
-                f"`set_control` triggered by `{type(self._parent_model).__name__}` model "
+                f"`set_controls` triggered by `{type(self._parent_model).__name__}` model "
                 f"`{self._parent_model.id}` requires a `value`: {value_hint}. See "
-                "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_control"
+                "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_controls"
             )
 
         # Resolve the navigation target once (a control's page is fixed at build time). A drill-through navigates only
@@ -283,9 +322,22 @@ class set_control(_AbstractAction):
 
         # Same-page targets: selectors are mounted, so update them directly via the callback outputs. Each value is
         # reshaped per selector; one that can't accept it contributes no_update so the others still update.
-        results = [
+        shaped_values = [
             self._shape_value_for_control(control_id, value, _controls_store) for control_id in self._same_page_controls
         ]
+        results = list(shaped_values)
+
+        # When stopping the implicit actions chaining, raise the guard of every subsumed same-page control that actually
+        # changes so its value update does not fire its own action chain (the source chain refreshes all affected
+        # figures itself). Leave the guard untouched (no_update) for a control we skip, so its value is unchanged and no
+        # guard gets stuck True. Only subsumed controls (default chain) are guarded - a target with explicit actions is
+        # not, so its own chain runs. These guard outputs come right after the value outputs (see `outputs`).
+        if self._stop_implicit_actions_chaining:
+            shaped_by_id = dict(zip(self._same_page_controls, shaped_values))
+            results.extend(
+                True if shaped_by_id[control_id] is not no_update else no_update
+                for control_id in self._guardable_same_page_controls
+            )
 
         # Cross-page targets: selectors aren't mounted, so they can't be callback outputs. Persist each value into
         # `vizro_controls_store` via set_props (it's only a State here); the target page's sync callback applies this
@@ -323,7 +375,8 @@ class set_control(_AbstractAction):
         Returns `no_update` when the value cannot be applied to this control (an incomplete range, or a multi-item
         list into a single-value selector), leaving that control unchanged without affecting the others.
         """
-        from vizro.models import AgGrid, Checklist, Graph, RangeSlider
+        from vizro.models import Checklist, Graph, Table
+        from vizro.models._controls._controls_utils import _is_range_selector
 
         selector = cast(ControlType, model_manager[control_id]).selector
 
@@ -336,7 +389,7 @@ class set_control(_AbstractAction):
             value = control_store.get("originalValue", selector.value)
 
         is_multi = getattr(selector, "multi", isinstance(selector, Checklist))
-        is_range = getattr(selector, "range", isinstance(selector, RangeSlider))
+        is_range = _is_range_selector(selector)
 
         # A leaf-mode Cascader (the only kind that reaches here — path mode is rejected at pre_build) reshapes
         # like a flat categorical selector: a multi-select value is a list of leaves, a single-select a scalar.
@@ -349,7 +402,9 @@ class set_control(_AbstractAction):
             # AgGrid/Graph emit values in selection (click) order, so a multi-value trigger can arrive out of order;
             # reorder into [min, max]. A range selector emits an authoritative positional [start, end], kept as-is (its
             # ends aren't always ordered). See `_normalize_range_value`.
-            reorder_range = isinstance(self._parent_model, (AgGrid, Graph))
+            reorder_range = isinstance(self._parent_model, Graph) or (
+                isinstance(self._parent_model, Table) and self._parent_model._is_ag_grid
+            )
             normalized = self._normalize_range_value(value, reorder=reorder_range)
             # An incomplete/empty range must not be synced (see `_normalize_range_value`); skip just this control.
             return no_update if normalized is None else normalized
@@ -358,7 +413,7 @@ class set_control(_AbstractAction):
             if len(value) == 1:
                 return value[0]
             logger.debug(
-                "set_control %s received list with %d items but targets a single-value %s %s; skipping this control",
+                "set_controls %s received list with %d items but targets a single-value %s %s; skipping this control",
                 self.id,
                 len(value),
                 type(selector).__name__,
@@ -373,7 +428,7 @@ class set_control(_AbstractAction):
         If the entry is missing (a session-persisted store can be stale after a control was added/renamed), rebuild the
         full entry - mirroring Dashboard._make_page_layout - so cross-page sync keeps working (the sync callback needs
         `crossPageTarget`, `selectorId`, etc.), not merely avoid a KeyError. `crossPageTarget` is True by construction:
-        this control is the target of a cross-page set_control.
+        this control is the target of a cross-page set_controls.
         """
         if control_id not in controls_store:
             control_model = cast(ControlType, model_manager[control_id])
@@ -395,10 +450,23 @@ class set_control(_AbstractAction):
         # control, `page.js` rewrites the query string with `history.replaceState`, which desyncs `vizro_url` from the
         # browser URL. A `pathname`-only `callback-nav` then reconciles against that stale state and fails to navigate
         # (it re-asserts the current path); a full `href` navigates unambiguously regardless of the desync.
+        value_outputs = list(self._same_page_controls)
+        # When stopping the implicit actions chaining, also output the guard store of each *subsumed* same-page control
+        # (default chain) so `function` can raise it. A same-page target with explicit actions is not guarded, so it is
+        # omitted here. Guard outputs follow the value outputs and precede `vizro_url.href` (kept aligned there).
+        guard_outputs = (
+            [
+                f"{cast(ControlType, model_manager[control_id]).selector.id}_guard_actions_chain.data"
+                for control_id in self._guardable_same_page_controls
+            ]
+            if self._stop_implicit_actions_chaining
+            else []
+        )
+        outputs = [*value_outputs, *guard_outputs]
         if self._cross_page_controls:
-            return [*self._same_page_controls, "vizro_url.href"]
-        # All targets on the same page: a single target returns a bare id (one Output); several return a list.
-        return self._same_page_controls[0] if len(self._same_page_controls) == 1 else self._same_page_controls
+            return [*outputs, "vizro_url.href"]
+        # All same-page: a single value output (no guards) returns a bare id (one Output); otherwise a list.
+        return outputs[0] if len(outputs) == 1 else outputs
 
     @staticmethod
     def _normalize_range_value(value, *, reorder):
@@ -434,7 +502,7 @@ class set_control(_AbstractAction):
 
     @cached_property
     def notifications(self):  # type: ignore[override]
-        # set_control's only visual cue is the control value changing, so surface a success notification.
+        # set_controls's only visual cue is the control value changing, so surface a success notification.
         # cached_property builds the notification models once per action instead of re-minting them (with fresh
         # model_manager entries) on every callback run.
         return _normalize_action_notifications({"success": "Controls updated.", "error": "Setting controls failed."})

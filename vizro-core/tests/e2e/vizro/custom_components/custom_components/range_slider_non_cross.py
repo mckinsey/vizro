@@ -4,7 +4,7 @@ import vizro.models as vm
 
 
 # Custom component based on existing component
-class RangeSliderNonCross(vm.RangeSlider):
+class RangeSliderNonCross(vm.Slider):
     """Custom numeric multi-selector `RangeSliderNonCross` to be provided to `Filter`."""
 
     type: Literal["other_range_slider"] = "other_range_slider"

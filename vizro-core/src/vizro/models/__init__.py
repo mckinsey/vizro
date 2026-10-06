@@ -5,6 +5,8 @@ from ._base import VizroBaseModel  # noqa: I001
 from ._tooltip import Tooltip
 from ._action import Action
 from ._components import Card, Container, Graph, Text, Table, Tabs, Figure, ControlGroup
+
+# TODO[1.0.0]: remove the `AgGrid` import and its `__all__` entry — the deprecated model is deleted.
 from ._components import AgGrid
 from ._components.form import (
     Button,
@@ -14,6 +16,7 @@ from ._components.form import (
     DateTimePicker,
     Dropdown,
     RadioItems,
+    # TODO[1.0.0]: remove the `RangeSlider` import and its `__all__` entry — the deprecated model is deleted.
     RangeSlider,
     Slider,
     Switch,
@@ -73,7 +76,8 @@ __all__ = [
 from vizro.actions import (
     export_data,
     filter_interaction,
-    set_control,
+    set_control,  # TODO[1.0.0]: remove — deprecated action alias deleted.
+    set_controls,
     show_notification,
     update_notification,
     update_targets,

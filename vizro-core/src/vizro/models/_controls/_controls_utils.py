@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import warnings
+from collections import deque
 from collections.abc import Generator, Iterable
 from typing import TYPE_CHECKING, Any, cast
 
@@ -16,7 +17,6 @@ from vizro.models import (
     DateTimePicker,
     Dropdown,
     RadioItems,
-    RangeSlider,
     Slider,
     Switch,
     TimePicker,
@@ -30,7 +30,7 @@ if TYPE_CHECKING:
     from vizro.models import Page
 
 SELECTORS: dict[str, tuple[type, ...]] = {
-    "numerical": (RangeSlider, Slider),
+    "numerical": (Slider,),  # Slider(range=True) supersedes the deprecated RangeSlider (a Slider subclass).
     "categorical": (Checklist, Dropdown, RadioItems),
     "date": (DatePicker,),
     "datetime": (DateTimePicker,),
@@ -41,12 +41,17 @@ SELECTORS: dict[str, tuple[type, ...]] = {
 
 
 # Type-narrowing functions to avoid needing to cast every time we do isinstance for a selector.
-def _is_numerical_or_date_selector(x: object) -> TypeIs[RangeSlider | Slider | DatePicker]:
+def _is_numerical_or_date_selector(x: object) -> TypeIs[Slider | DatePicker]:
     return isinstance(x, SELECTORS["numerical"] + SELECTORS["date"])
 
 
 def _is_datetime_selector(x: object) -> TypeIs[DateTimePicker]:
     return isinstance(x, SELECTORS["datetime"])
+
+
+def _is_numerical_date_or_datetime_selector(x: object) -> TypeIs[Slider | DatePicker | DateTimePicker]:
+    """Selectors whose available values are expressed as ``min``/``max`` bounds (numerical, date or datetime)."""
+    return _is_numerical_or_date_selector(x) or _is_datetime_selector(x)
 
 
 def _is_categorical_selector(x: object) -> TypeIs[Checklist | Dropdown | RadioItems]:
@@ -59,6 +64,15 @@ def _is_boolean_selector(x: object) -> TypeIs[Switch]:
 
 def _is_hierarchical_selector(x: object) -> TypeIs[Cascader]:
     return isinstance(x, SELECTORS["hierarchical"])
+
+
+def _is_range_selector(x: object) -> bool:
+    """Whether a selector renders in range mode (a two-ended `Slider`, i.e. `range=True`).
+
+    This is a value check, not a type guard: a range and a non-range `Slider` are the same type, distinguished only by
+    the `range` field. Centralizing it here keeps every call site in sync with the rule.
+    """
+    return bool(getattr(x, "range", False))
 
 
 def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
@@ -96,7 +110,7 @@ def get_control_parent(control: ControlType) -> Page | Container | None:
 def extract_control_targets(control: ControlType) -> list[ModelID]:
     """Split control (Filter/Parameter) targets out of ``control.targets``, validating and returning them.
 
-    A Filter/Parameter can target another control to keep the two in sync (see the `set_control` action). Such
+    A Filter/Parameter can target another control to keep the two in sync (see the `set_controls` action). Such
     "control targets" are validated and semantically different from "figure targets", so this removes them from
     ``control.targets`` in place and returns them separately. The remaining figure targets are validated later by
     `check_control_targets`.
@@ -104,7 +118,7 @@ def extract_control_targets(control: ControlType) -> list[ModelID]:
     A control target must be a *different* control: self-targeting would create a self-referential sync loop. The
     target may be on the same page as the control or on a different page. A same-page target's selector value is set
     directly; a different-page target is kept in sync through the internal ``vizro_controls_store`` and its value is
-    applied when that page is opened (see the `set_control` action).
+    applied when that page is opened (see the `set_controls` action).
     """
     from vizro.models._controls import Filter, Parameter
 
@@ -123,15 +137,15 @@ def extract_control_targets(control: ControlType) -> list[ModelID]:
         control.targets.remove(target)
         targeted_controls.append(target)
 
-    # Deduplicate (order-preserving) so a control listed more than once does not generate duplicate set_control
-    # sync actions, using the same idiom as elsewhere in the codebase (e.g. `set_control._control_ids`).
+    # Deduplicate (order-preserving) so a control listed more than once does not generate duplicate set_controls
+    # sync actions, using the same idiom as elsewhere in the codebase (e.g. `set_controls._control_ids`).
     return list(dict.fromkeys(targeted_controls))
 
 
 def warn_ignored_control_sync_targets(control: ControlType, targeted_controls: list[ModelID]) -> None:
     """Warn when control-sync targets are dropped because the selector has explicit ``actions``.
 
-    A Filter/Parameter keeps a control target in sync by generating a default `set_control` action on its selector
+    A Filter/Parameter keeps a control target in sync by generating a default `set_controls` action on its selector
     (see `build_default_control_selector_actions`). When the selector's `actions` are set explicitly, that default chain
     is not generated, so any control ids listed in `targets` are extracted and removed but never turned into a sync,
     silently doing nothing. Warn so the user knows to wire the sync themselves.
@@ -139,7 +153,7 @@ def warn_ignored_control_sync_targets(control: ControlType, targeted_controls: l
     if targeted_controls:
         warnings.warn(
             f"Control '{control.id}' lists control target(s) {targeted_controls} in `targets`, but its selector has "
-            f"explicit `actions`, so these targets are not kept in sync automatically. Add a `set_control` action to "
+            f"explicit `actions`, so these targets are not kept in sync automatically. Add a `set_controls` action to "
             f"the selector's `actions` for each one to sync them, and remove them from `targets`.",
             UserWarning,
         )
@@ -154,19 +168,140 @@ def build_default_control_selector_actions(
     """Set a control selector's default action chain: sync the targeted controls, then refresh its targets.
 
     Filter and Parameter share this: on selector change they first push the new value to every control they keep in
-    sync (via a single `set_control` that targets them all), then refresh their own targets (via `update_targets`).
-    The `set_control` action runs first so the latest value is applied before the refresh.
+    sync (via a single `set_controls` that targets them all), then refresh their own targets (via `update_targets`).
+    The `set_controls` action runs first so the latest value is applied before the refresh.
     """
     # Local import to avoid a circular import between this module and vizro.actions.
-    from vizro.actions import set_control, update_targets
+    from vizro.actions import set_controls, update_targets
 
-    # One `set_control` drives every synced control at once (one callback, one notification) instead of one action
+    # One `set_controls` drives every synced control at once (one callback, one notification) instead of one action
     # per control. `targeted_controls` is already de-duplicated and order-preserving (see `extract_control_targets`).
     # `value` is omitted: a selector-driven sync ignores it and propagates the selector's own live value.
     selector.actions = [
-        *([set_control(control=targeted_controls)] if targeted_controls else []),
+        *([set_controls(controls=targeted_controls)] if targeted_controls else []),
         update_targets(id=update_targets_action_id, targets=targeted_figures),
     ]
+
+
+def get_sync_closure(source: ControlType) -> tuple[list[ModelID], list[ModelID]]:
+    """Resolve the full control-sync mesh reachable from ``source`` into a single set of controls and figures.
+
+    Returns ``(closure_controls, closure_figures)``:
+
+    * ``closure_controls`` - every control transitively kept in sync with ``source`` (a cycle-safe, order-preserving
+      traversal of the ``_synced_control_targets`` edges, excluding ``source`` itself). The mesh is only expanded
+      through *same-page* controls that run the generated default chain; a cross-page target, or a same-page target
+      with explicit ``actions`` (custom or ``[]``), is a terminal node whose own edges are not followed - its value is
+      still set, but its sync applies when its page opens / its own chain runs (see the `set_controls` action).
+    * ``closure_figures`` - the precise union of figure targets that must be refreshed: ``source``'s own figures plus
+      those of every *same-page* synced control that runs the default chain (a target with explicit ``actions`` is not
+      subsumed, so its figures are left to its own chain). Parameter targets use ``"<figure>.<argument>"`` notation, so
+      they are reduced to the figure id; Filter targets are already bare figure ids.
+
+    Together these let one `set_controls` set the whole mesh and one `update_targets` refresh every affected figure,
+    collapsing the mesh into two HTTP requests (see `finalize_control_sync_chains`).
+    """
+    source_page = model_manager._get_model_page(source)
+
+    closure_controls: list[ModelID] = []
+    # Subset of closure_controls that the collapsed action subsumes: same-page controls running the default chain.
+    # Tracked during the BFS so the page lookup runs once per control, and reused below to gather figures (only
+    # subsumed controls contribute figures; a terminal target's figures are left to its own chain).
+    subsumed_controls: list[ModelID] = []
+    seen: set[ModelID] = {source.id}
+    queue: deque[ModelID] = deque(source._synced_control_targets)
+    while queue:
+        control_id = queue.popleft()
+        if control_id in seen:
+            continue
+        seen.add(control_id)
+        closure_controls.append(control_id)
+        # Only expand the mesh through same-page controls that run the default chain; a cross-page target, or one with
+        # explicit actions, is terminal - its value is still set, but it is not subsumed (see docstring).
+        target_control = cast(ControlType, model_manager[control_id])
+        if (
+            model_manager._get_model_page(target_control) is source_page
+            and target_control._has_default_selector_actions
+        ):
+            subsumed_controls.append(control_id)
+            queue.extend(target_control._synced_control_targets)
+
+    closure_figures: list[ModelID] = []
+
+    def _add_figure_targets(control: ControlType) -> None:
+        for target in control.targets:
+            figure_id = cast(ModelID, target.partition(".")[0])
+            if figure_id and figure_id not in closure_figures:
+                closure_figures.append(figure_id)
+
+    _add_figure_targets(source)
+    for control_id in subsumed_controls:
+        _add_figure_targets(cast(ControlType, model_manager[control_id]))
+
+    return closure_controls, closure_figures
+
+
+def finalize_control_sync_chains() -> None:
+    """Collapse every same-page control-sync mesh into two HTTP requests.
+
+    During ``pre_build`` each synced control gets a default chain that targets only its *direct* sync targets and
+    figures (`build_default_control_selector_actions`). Setting a target's value then re-fires that target's own chain,
+    so a mesh cascades into many requests. This runs once after all controls are pre-built (so every control's figure
+    targets and ``_synced_control_targets`` are final) and rewrites each source's chain to cover the whole transitive
+    mesh at once:
+
+    * a single ``set_controls(controls=<all transitively-synced controls>, _stop_implicit_actions_chaining=True)`` sets
+      every mesh control and raises their guards so their own chains do not fire, and
+    * a single ``update_targets(targets=<precise figure union>)`` refreshes every affected figure.
+
+    The superseded per-control actions are removed from the model_manager first, otherwise their callbacks would still
+    be registered in ``Dashboard.build`` and reusing the ``update_targets`` id would raise ``DuplicateIDError``.
+    """
+    from vizro.actions import set_controls, update_targets
+    from vizro.models import Filter, Parameter
+
+    # Materialize before mutating: rebuilding the chains adds/removes models from the model_manager.
+    sources = [
+        control
+        for control in cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter)))
+        if control._synced_control_targets
+    ]
+
+    for source in sources:
+        closure_controls, closure_figures = get_sync_closure(source)
+
+        old_set_controls = next(
+            (action for action in source.selector.actions if isinstance(action, set_controls)), None
+        )
+        old_update_targets = next(
+            (action for action in source.selector.actions if isinstance(action, update_targets)), None
+        )
+        # A finalized source always has both: a non-empty `_synced_control_targets` means the default chain was built
+        # with a `set_controls` alongside its `update_targets`. Fail with a clear message (rather than a bare
+        # StopIteration) if that coupling ever drifts.
+        if old_set_controls is None or old_update_targets is None:
+            raise RuntimeError(
+                f"Cannot collapse the control-sync mesh for '{source.id}': its selector chain is missing the expected "
+                f"set_controls/update_targets actions."
+            )
+        update_targets_action_id = old_update_targets.id
+        del model_manager[old_set_controls.id]
+        del model_manager[old_update_targets.id]
+
+        # Reassigning selector.actions re-runs make_actions_chain (validate_assignment) so the new chain is wired.
+        build_default_control_selector_actions(
+            selector=source.selector,
+            targeted_controls=closure_controls,
+            targeted_figures=closure_figures,
+            update_targets_action_id=update_targets_action_id,
+        )
+
+        new_set_controls = next(action for action in source.selector.actions if isinstance(action, set_controls))
+        new_set_controls._stop_implicit_actions_chaining = True
+
+        # Newly created actions must run their own pre_build (mirrors Parameter.pre_build).
+        for action in source.selector.actions:
+            action.pre_build()
 
 
 def check_control_targets(control: ControlType) -> None:
@@ -199,7 +334,7 @@ def get_selector_default_value(selector: SelectorType) -> Any:  # noqa: PLR0911
         return selector.value
 
     if _is_numerical_or_date_selector(selector):
-        is_range = isinstance(selector, RangeSlider) or getattr(selector, "range", False)
+        is_range = _is_range_selector(selector)
         return [selector.min, selector.max] if is_range else selector.min
     elif _is_categorical_selector(selector):
         is_multi = isinstance(selector, Checklist) or getattr(selector, "multi", False)

@@ -149,7 +149,7 @@ class TestFilter:
             id="test_filter",
             column=["continent", "country"],
             targets=["scatter_chart"],
-            selector=vm.Cascader(id="country_filter", multi=True),
+            selector=vm.Cascader(id="country_filter", multi=True, full_path=False),
         )
         model_manager["test_page"].controls = [country_filter]
         country_filter.pre_build()
@@ -230,7 +230,7 @@ class TestFilter:
         continent_filter = vm.Filter(
             id="test_filter_continent", column="continent", selector=vm.Dropdown(id="continent_filter")
         )
-        pop_filter = vm.Filter(id="test_filter_pop", column="pop", selector=vm.RangeSlider(id="pop_filter"))
+        pop_filter = vm.Filter(id="test_filter_pop", column="pop", selector=vm.Slider(range=True, id="pop_filter"))
         model_manager["test_page"].controls = [continent_filter, pop_filter]
 
         # Adds a default _filter Action to the filter selector objects
@@ -262,7 +262,7 @@ class TestFilter:
             targets=["scatter_chart"],
             selector=vm.Dropdown(id="continent_filter"),
         )
-        pop_filter = vm.Filter(column="pop", targets=["scatter_chart"], selector=vm.RangeSlider(id="pop_filter"))
+        pop_filter = vm.Filter(column="pop", targets=["scatter_chart"], selector=vm.Slider(range=True, id="pop_filter"))
         model_manager["test_page"].controls = [continent_filter, pop_filter]
 
         # Adds a default _filter Action to the filter selector objects
@@ -304,7 +304,7 @@ class TestFilter:
             id="test_filter_pop",
             column="pop",
             targets=["scatter_chart", "box_chart"],
-            selector=vm.RangeSlider(id="pop_filter"),
+            selector=vm.Slider(range=True, id="pop_filter"),
         )
         model_manager["test_page"].controls = [continent_filter, pop_filter]
 
@@ -347,7 +347,7 @@ class TestFilter:
         pop_filter = vm.Filter(
             column="pop",
             targets=["scatter_chart"],
-            selector=vm.RangeSlider(id="pop_filter", actions=[vm.Action(function=identity_action_function())]),
+            selector=vm.Slider(range=True, id="pop_filter", actions=[vm.Action(function=identity_action_function())]),
         )
         model_manager["test_page"].controls = [continent_filter, pop_filter]
 

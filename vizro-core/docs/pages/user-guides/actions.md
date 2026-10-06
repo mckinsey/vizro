@@ -10,6 +10,7 @@ Actions control how your app responds to user input such as clicking a button or
 - [Graph and table interactions](graph-table-actions.md), for example to cross-filter.
 - [Show notifications](notification-actions.md), for example to provide user feedback.
 - [Refresh figures on demand](#refresh-figures-on-demand), for example to apply controls on a button click.
+- [Run actions when a page opens](page-actions.md), for example to greet the user or defer loading expensive data.
 
 A complete list of built-in actions in given in the [API documentation][vizro.actions]. We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions-tutorial.md) and an [explanation of how Vizro actions work](../explanation/actions-explanation.md).
 
@@ -123,9 +124,9 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
                 vm.Graph(
                     title="Click on a box to use that box's sex to filter table",
                     figure=px.box(tips, x="tip", y="sex"),
-                    actions=va.set_control(control="sex_filter", value="y"),
+                    actions=va.set_controls(controls=["sex_filter"], value="y"),
                 ),
-                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
+                vm.Table(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
             ],
             controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_table"])],  # (2)!
         )
@@ -134,8 +135,8 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
         Vizro().build(dashboard).run()
         ```
 
-        1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
-        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+        1. We give the `vm.Table` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
+        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_controls`.
 
     === "app.yaml"
 
@@ -145,8 +146,9 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
         pages:
           - components:
               - actions:
-                  - control: sex_filter
-                    type: set_control
+                  - controls:
+                      - sex_filter
+                    type: set_controls
                     value: y
                 figure:
                   _target_: box
@@ -159,7 +161,7 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
                   _target_: dash_ag_grid
                   data_frame: tips
                 id: tips_table
-                type: ag_grid
+                type: table
             controls:
               - column: sex
                 id: sex_filter

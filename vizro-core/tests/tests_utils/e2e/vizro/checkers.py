@@ -506,11 +506,25 @@ def check_table_ag_grid_time_values_equal(driver, table_id, col_id, time):
 def check_http_requests_count(
     page, http_requests_paths, requests_number, sleep=cnst.HTTP_TIMEOUT_SHORT, url_path="_dash-update-component"
 ):
+    def _count():
+        # http_requests_paths contains "_dash-update-component" paths with query parameters such as "?endId=...".
+        return Counter(path.split("?")[0] for path in http_requests_paths)[url_path]
+
+    # Phase 1 - wait for the expected requests to *arrive*. On a busy CI runner a request can land noticeably later
+    # than the fixed `sleep` window, so poll up to a generous deadline and stop as soon as the target is reached
+    # (or exceeded, which the assertion below flags). This removes the "too few requests within a short fixed wait"
+    # flakiness without weakening the exact-count check.
+    elapsed = 0
+    while _count() < requests_number and elapsed < cnst.HTTP_TIMEOUT_REACH:
+        page.wait_for_timeout(cnst.HTTP_POLL_INTERVAL)
+        elapsed += cnst.HTTP_POLL_INTERVAL
+
+    # Phase 2 - settle for `sleep` to make sure no *additional* requests arrive beyond the expected number. The
+    # "no additional http has occurred" checks reach the target immediately in phase 1, so they still wait out the
+    # full `sleep` window here to confirm the count stays put.
     page.wait_for_timeout(sleep)
-    # http_requests_paths now contains "_dash-update-component" paths with query parameters such as "?endId=..."
-    counts = Counter(path.split("?")[0] for path in http_requests_paths)
     assert_that(
-        counts[url_path],
+        _count(),
         equal_to(requests_number),
         reason=f"'{url_path}' requests should be equal to {requests_number}",
     )

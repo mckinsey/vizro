@@ -107,7 +107,10 @@ class TestOnPageLoad:
             selector=vm.Dropdown(id="continent_filter"),
         )
         pop_filter = vm.Filter(
-            id="test_filter_pop", column="pop", targets=["scatter_chart"], selector=vm.RangeSlider(id="pop_filter")
+            id="test_filter_pop",
+            column="pop",
+            targets=["scatter_chart"],
+            selector=vm.Slider(range=True, id="pop_filter"),
         )
         model_manager["test_page"].controls = [continent_filter, pop_filter]
 
@@ -163,7 +166,7 @@ class TestOnPageLoad:
             column="continent", targets=["scatter_chart", "box_chart"], selector=vm.Dropdown(id="continent_filter")
         )
         pop_filter = vm.Filter(
-            column="pop", targets=["scatter_chart", "box_chart"], selector=vm.RangeSlider(id="pop_filter")
+            column="pop", targets=["scatter_chart", "box_chart"], selector=vm.Slider(range=True, id="pop_filter")
         )
         model_manager["test_page"].controls = [continent_filter, pop_filter]
 

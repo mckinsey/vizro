@@ -458,7 +458,7 @@ describe("reset_controls", () => {
   // In practice, this cannot happen as this client-side callback is only defined
   // when there's at least one control on the page. But we test it for robustness.
   describe("when there are no controls on the current page", () => {
-    it("should return [null] (still triggers the OPL)", () => {
+    it("should return [null] (still triggers the controls-refresh action)", () => {
       const vizroControlsStore = {
         controlA: { originalValue: "A", pageId: "page-2" },
         controlB: { originalValue: "B", pageId: "page-3" },

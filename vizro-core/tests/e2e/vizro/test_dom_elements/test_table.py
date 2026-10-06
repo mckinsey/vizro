@@ -1,3 +1,5 @@
+# TODO[1.0.0]: delete this file. It tests the Dash-DataTable-backed pages (TABLE_PAGE / TABLE_INTERACTIONS_PAGE),
+#  whose dash_data_table backing is removed in 1.0.0.
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_graph_y_axis_value, check_table_rows_number
 from e2e.vizro.navigation import accordion_select, page_select, select_slider_value
