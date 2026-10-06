@@ -647,6 +647,13 @@
           "anyOf": [
             {
               "description": "Type of layout to place components on the page.",
+              "discriminator": {
+                "mapping": {
+                  "flex": "#/$defs/Flex",
+                  "grid": "#/$defs/Grid"
+                },
+                "propertyName": "type"
+              },
               "oneOf": [
                 {
                   "$ref": "#/$defs/Grid"
@@ -1793,6 +1800,13 @@
           "anyOf": [
             {
               "description": "Type of layout to place components on the page.",
+              "discriminator": {
+                "mapping": {
+                  "flex": "#/$defs/Flex",
+                  "grid": "#/$defs/Grid"
+                },
+                "propertyName": "type"
+              },
               "oneOf": [
                 {
                   "$ref": "#/$defs/Grid"

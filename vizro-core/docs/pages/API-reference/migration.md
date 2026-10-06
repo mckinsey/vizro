@@ -136,6 +136,23 @@ actions:
 
 Built-in actions already required their `type` (for example `type: export_data`), so they are unaffected, and Python configuration is unaffected because each action object already carries its `type`.
 
+## Layout `type` required in dict / YAML / JSON
+
+When a `layout` is configured as a dictionary (or in YAML/JSON), it must now declare an explicit `type`, like every other model. Previously a bare `layout` mapping omitted `type` and was implicitly treated as a [`Grid`][vizro.models.Grid]; that fallback has been removed.
+
+```yaml
+# Before (type omitted, implicitly treated as a grid):
+layout:
+  grid: [[0, 1], [2, 3]]
+
+# After:
+layout:
+  type: grid
+  grid: [[0, 1], [2, 3]]
+```
+
+Use `type: flex` to configure a [`Flex`][vizro.models.Flex] layout instead. Python configuration is unaffected because each layout object (`vm.Grid` or `vm.Flex`) already carries its `type`.
+
 ## `Cascader` `full_path` default
 
 The default of [`Cascader`][vizro.models.Cascader]'s `full_path` argument will change from `False` to `True` in Vizro 1.0.0. To keep the current behavior, set `full_path=False` explicitly.

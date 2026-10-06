@@ -16,11 +16,9 @@ import pydantic_core as cs
 from pydantic import (
     AfterValidator,
     BeforeValidator,
-    Discriminator,
     Field,
     ImportString,
     StrictBool,
-    Tag,
     TypeAdapter,
     ValidationError,
     ValidationInfo,
@@ -29,20 +27,6 @@ from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
-
-
-def _get_layout_discriminator(layout: Any) -> str | None:
-    """Helper function for callable discriminator used for LayoutType."""
-    # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
-    # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle that case.
-    if isinstance(layout, dict):
-        # If type is supplied then use that (like saying discriminator="type"). Otherwise default to "grid", which a
-        # bare `layout:` mapping (no explicit type) has always resolved to.
-        return layout.get("type", "grid")
-
-    # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
-    # union_tag_not_found error is raised.
-    return getattr(layout, "type", None)
 
 
 def _clean_module_string(module_string: str) -> str:
@@ -695,11 +679,8 @@ NavSelectorType = Annotated[
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
 
 LayoutType = Annotated[
-    Annotated["Grid", Tag("grid")] | Annotated["Flex", Tag("flex")],
-    Field(
-        discriminator=Discriminator(_get_layout_discriminator),
-        description="Type of layout to place components on the page.",
-    ),
+    "Grid | Flex",
+    Field(discriminator="type", description="Type of layout to place components on the page."),
 ]
 """Discriminated union. Type of layout to place components on the page:
 [`Grid`][vizro.models.Grid] or [`Flex`][vizro.models.Flex]."""
