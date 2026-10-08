@@ -771,6 +771,38 @@ class TestFilterFunctions:
         assert list(result_series) == [time(10, 0), time(11, 30)]
         assert list(result_value) == [time(10, 0), time(11, 30)]
 
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
+            # Datetime column stored as ISO strings rather than datetime64
+            (["2024-01-01T10:00", "2024-01-02T11:30"], ["2024-01-01T10:00"], [True, False]),
+            # Space-separated strings, as read from a CSV
+            (["2024-01-01 10:00:00", "2024-01-02 11:30:00"], ["2024-01-01 10:00:00"], [True, False]),
+            # Nulls and non-datetime strings do not match and do not raise
+            (["2024-01-01T10:00", None, "n/a"], ["2024-01-01T10:00"], [True, False, False]),
+            # Entries in different time zones do not raise
+            (
+                [pd.Timestamp("2024-01-01T10:00", tz="UTC"), pd.Timestamp("2024-01-01T10:00", tz="Asia/Tokyo")],
+                ["2024-01-01T10:00"],
+                [False, False],
+            ),
+            # HH:MM input strips seconds from a string column too
+            (
+                ["2024-01-01T10:00:15", "2024-01-01T10:00:45", "2024-01-01T11:00:00"],
+                ["2024-01-01T10:00"],
+                [True, True, False],
+            ),
+        ],
+    )
+    def test_filter_isin_datetime_strings(self, data, value, expected):
+        result = _filter_isin(pd.Series(data), value)
+        pd.testing.assert_series_equal(result, pd.Series(expected))
+
+    def test_filter_between_datetime_strings(self):
+        series = pd.Series(["2024-01-01T09:00", "2024-01-01T12:00", "2024-01-02T09:00"])
+        result = _filter_between(series, ["2024-01-01T08:00", "2024-01-01T13:00"])
+        pd.testing.assert_series_equal(result, pd.Series([True, True, False]))
+
     def test_coerce_temporal_datetime_tz_aware(self):
         """A tz-aware datetime series localizes the (naive) typed values to the series's timezone."""
         series = pd.Series(pd.to_datetime(["2024-01-01T10:00", "2024-01-02T14:30"]).tz_localize("US/Eastern"))
