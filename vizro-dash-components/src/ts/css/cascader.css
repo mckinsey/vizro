@@ -1,6 +1,7 @@
 /* Cascader-specific UI (columns, rows, search results). Trigger/panel chrome: dropdown-chrome.css */
 
 /* Base selectors before .dash-cascader-content > … (stylelint no-descending-specificity). */
+
 /* Holds column 0 only; deeper columns are pop-outs portaled elsewhere (.dash-cascader-column-flyout). */
 .dash-cascader-columns {
   box-sizing: border-box;

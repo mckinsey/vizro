@@ -35,7 +35,8 @@
 }
 
 /* Dropdown menu */
-.dash-dropdown-content {
+.dash-dropdown-content,
+.dash-cascader-column-flyout {
   background: var(--bs-dropdown-bg-color);
   border-radius: var(--bs-border-radius);
   box-shadow: none;

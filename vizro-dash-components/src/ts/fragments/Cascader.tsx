@@ -331,21 +331,38 @@ const CascaderFragment = ({
   // overflow-x/overflow-y forces the visible axis to become `auto`, silently turning the panel into
   // a real horizontal scroller that then jumps to follow focus). Portaling sidesteps that entirely.
   //
-  // Flyouts use `position: fixed`, so each one's `top`/`left` (flyoutRects[colIdx]) is computed in
+  // Flyouts use `position: fixed`, so each one's `top`/`left` (flyoutGeometry.rects[colIdx]) is computed in
   // viewport coordinates directly from the active row that opened it and the right edge of the
   // column before it — no relative/percentage math, no coordinate-space conversion.
   const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [flyoutRects, setFlyoutRects] = useState<
-    { top: number; left: number }[]
-  >([]);
+  // `width` tracks column 0 alongside `rects` (not a separate ResizeObserver) so a single set of
+  // triggers — column mount, content reposition, scroll (see below) — keeps both in sync; measuring
+  // width independently would need its own ref-callback/observer wiring to catch the same cases.
+  const [flyoutGeometry, setFlyoutGeometry] = useState<{
+    width?: number;
+    rects: { top: number; left: number }[];
+  }>({ rects: [] });
 
   const recomputeFlyoutRects = useCallback(() => {
     const rects: { top: number; left: number }[] = [];
     const col0Rect = columnRefs.current[0]?.getBoundingClientRect();
     if (!col0Rect) {
-      setFlyoutRects(rects);
+      setFlyoutGeometry({ rects });
       return;
     }
+    // Flyouts stack rightward from column 0 by default, each one offset by a further column width —
+    // with enough levels open that runs past the right edge of a normal-width viewport, and since
+    // these are `position: fixed`, no page scroll ever reaches them again. Decide once, for the whole
+    // currently-open chain, whether there's enough room to grow rightward; if not — and the left side
+    // has more room — flip the whole chain leftward instead, the way OS-style cascading menus do at a
+    // screen edge. (Comparing against the left side, not just checking whether it fits, matters: on
+    // a page with a left nav rail, neither side may fully fit a long chain, and flipping blindly would
+    // swap a merely-cramped placement for an even worse one.)
+    const colWidth = col0Rect.width;
+    const spaceRight = window.innerWidth - col0Rect.right;
+    const growLeft =
+      spaceRight < (columns.length - 1) * colWidth &&
+      col0Rect.left > spaceRight;
     for (let colIdx = 1; colIdx < columns.length; colIdx++) {
       const prevColumnEl = columnRefs.current[colIdx - 1];
       const rowEl = prevColumnEl?.querySelector<HTMLElement>(
@@ -366,31 +383,101 @@ const CascaderFragment = ({
           ? rowRect.top
           : rects[colIdx - 1].top +
             (rowRect.top - prevColumnEl.getBoundingClientRect().top);
+      const left = growLeft
+        ? col0Rect.left - colIdx * colWidth
+        : col0Rect.right + (colIdx - 1) * colWidth;
+      // Last-resort clamp: deep enough chains can still overflow both directions (e.g. the trigger
+      // sits near one edge of the viewport with a long tree open) — keep at least this column's own
+      // width on-screen rather than leaving it fully unreachable, even if that means overlapping a
+      // neighboring column.
       rects[colIdx] = {
         top,
-        left: col0Rect.right + (colIdx - 1) * col0Rect.width,
+        left: Math.max(0, Math.min(left, window.innerWidth - colWidth)),
       };
     }
-    setFlyoutRects(rects);
+    setFlyoutGeometry({ width: colWidth, rects });
   }, [columns, activePath]);
 
   useLayoutEffect(() => {
     recomputeFlyoutRects();
   }, [recomputeFlyoutRects]);
 
-  // Scrolling any column in the chain shifts every flyout anchored below it; re-measure on scroll so
-  // a pop-out doesn't visually detach from the row that opened it.
-  useEffect(() => {
-    const columnEls = columnRefs.current;
-    for (const el of columnEls) {
-      el?.addEventListener("scroll", recomputeFlyoutRects, { passive: true });
-    }
-    return () => {
-      for (const el of columnEls) {
-        el?.removeEventListener("scroll", recomputeFlyoutRects);
+  // Popover.Content (and these portaled flyouts) fully unmount/remount on close/reopen. Radix can
+  // mount Content in a later commit than the one that flips `isOpen`, so recomputeFlyoutRects's own
+  // useLayoutEffect may run while a column's ref is still null from the previous close — and an
+  // effect that attaches scroll listeners only to *today's* columnRefs would miss a reopen the same
+  // way, since its own deps (recomputeFlyoutRects, keyed on columns/activePath) don't necessarily
+  // change either. A column's ref callback firing with a non-null element is the one signal
+  // guaranteed to coincide with that column actually being in the DOM, so both the one-off recompute
+  // and the scroll listener live there instead of in effects. `stableRecompute` and the per-colIdx
+  // ref callbacks (cached here) must keep stable identities — recreating them every render would
+  // make React detach/reattach refs and listeners on every re-render, turning a recompute triggered
+  // from inside one into an infinite render loop.
+  const recomputeFlyoutRectsRef = useRef(recomputeFlyoutRects);
+  recomputeFlyoutRectsRef.current = recomputeFlyoutRects;
+  const stableRecompute = useRef(() =>
+    recomputeFlyoutRectsRef.current(),
+  ).current;
+
+  // Scrolling any column in the chain shifts every flyout anchored below it (including
+  // scrollIntoView calls that restore focus to a preselected path on open) — tracked per colIdx so
+  // the listener can be moved from the outgoing element to the incoming one on remount.
+  const columnScrollTargetsRef = useRef<Map<number, HTMLDivElement>>(new Map());
+
+  const columnRefCallbacks = useRef<
+    Map<number, (el: HTMLDivElement | null) => void>
+  >(new Map());
+  const getColumnRefCallback = useCallback(
+    (colIdx: number) => {
+      let cb = columnRefCallbacks.current.get(colIdx);
+      if (!cb) {
+        cb = (el: HTMLDivElement | null) => {
+          const prevScrollTarget = columnScrollTargetsRef.current.get(colIdx);
+          if (prevScrollTarget) {
+            prevScrollTarget.removeEventListener("scroll", stableRecompute);
+            columnScrollTargetsRef.current.delete(colIdx);
+          }
+          columnRefs.current[colIdx] = el;
+          if (el) {
+            el.addEventListener("scroll", stableRecompute, { passive: true });
+            columnScrollTargetsRef.current.set(colIdx, el);
+            recomputeFlyoutRectsRef.current();
+          }
+        };
+        columnRefCallbacks.current.set(colIdx, cb);
       }
-    };
-  }, [recomputeFlyoutRects]);
+      return cb;
+    },
+    [stableRecompute],
+  );
+
+  // Radix positions `.dash-cascader-content`'s *parent* — its own unstyled Popper wrapper div,
+  // `position: fixed` with an inline `transform: translate(...)` — asynchronously relative to
+  // React's commit, and it can re-render (and re-attach this ref) several times while doing so: an
+  // initial off-screen placeholder transform, then one or more corrections once it measures the
+  // anchor. Recomputing synchronously on every attach (mirroring the column ref callbacks above)
+  // fights this: our resulting state update feeds back into Radix's own measure-and-reposition
+  // pass, which re-renders and re-attaches this same ref, which recomputes again — an infinite
+  // loop. Deferring the eager recompute past the current paint (rAF) lets Radix's own positioning
+  // settle first; the observer stays for any correction that arrives even later.
+  const contentMutationObserverRef = useRef<MutationObserver | null>(null);
+  const setCascaderContentRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      cascaderContentRef.current = el as HTMLDivElement;
+      contentMutationObserverRef.current?.disconnect();
+      contentMutationObserverRef.current = null;
+      if (el?.parentElement) {
+        requestAnimationFrame(stableRecompute);
+        const observer = new MutationObserver(stableRecompute);
+        observer.observe(el.parentElement, {
+          attributes: true,
+          attributeFilter: ["style"],
+        });
+        contentMutationObserverRef.current = observer;
+      }
+    },
+    [stableRecompute],
+  );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: re-run on focusTick (bumped whenever a pending focus target is queued), not just when columns changes
   useEffect(() => {
@@ -830,7 +917,7 @@ const CascaderFragment = ({
 
       <Popover.Portal container={portalContainer}>
         <Popover.Content
-          ref={cascaderContentRef}
+          ref={setCascaderContentRef}
           className="dash-dropdown-content dash-cascader-content"
           align="start"
           // Wider than the shared dropdown chrome's default gap so the panel clearly reads as a
@@ -926,14 +1013,16 @@ const CascaderFragment = ({
         {portalContainer &&
           columns.slice(1).map((colOptions, i) => {
             const colIdx = i + 1;
-            // Render unconditionally, even before flyoutRects[colIdx] is measured (e.g. search
-            // navigates straight into a branch 2+ levels deep, adding several columns in one update:
-            // column colIdx's rect depends on column colIdx-1's DOM ref, which only exists once
-            // colIdx-1 itself has rendered — so gating this on an existing measurement would leave
-            // every level past the first stuck at colIdx-1's ref never mounting). The fallback
-            // position is corrected by recomputeFlyoutRects's useLayoutEffect before paint.
+            // Render unconditionally, even before flyoutGeometry.rects[colIdx] is measured (e.g.
+            // search navigates straight into a branch 2+ levels deep, adding several columns in one
+            // update: column colIdx's rect depends on column colIdx-1's DOM ref, which only exists
+            // once colIdx-1 itself has rendered — so gating this on an existing measurement would
+            // leave every level past the first stuck at colIdx-1's ref never mounting). The fallback
+            // position/width is corrected once column 0 and its chain of ancestor flyouts mount
+            // (ref callbacks), Radix finishes placing the content (MutationObserver), or scrolling
+            // shifts anything in the chain (scroll listeners) — see recomputeFlyoutRects above.
             return createPortal(
-              renderColumn(colOptions, colIdx, flyoutRects[colIdx]),
+              renderColumn(colOptions, colIdx, flyoutGeometry.rects[colIdx]),
               portalContainer,
               colOptions.map((o) => String(o.value)).join("|"),
             );
@@ -951,9 +1040,7 @@ const CascaderFragment = ({
     return (
       <div
         key={colOptions.map((o) => String(o.value)).join("|")}
-        ref={(el) => {
-          columnRefs.current[colIdx] = el;
-        }}
+        ref={getColumnRefCallback(colIdx)}
         data-col-idx={colIdx}
         className={[
           "dash-cascader-column",
@@ -965,7 +1052,7 @@ const CascaderFragment = ({
           isFlyout
             ? {
                 ...(flyoutRect ?? { top: 0, left: 0 }),
-                width: columnRefs.current[0]?.getBoundingClientRect().width,
+                width: flyoutGeometry.width,
                 maxHeight: contentMaxHeight,
               }
             : undefined

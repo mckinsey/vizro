@@ -600,7 +600,9 @@ def test_cascader_shorthand_nested_dict(dash_duo, full_path):
     dash_duo.wait_for_text_to_equal(
         ".dash-cascader-column[data-col-idx='2'] .dash-cascader-row:first-child .dash-cascader-row-label", "France"
     )
-    dash_duo.driver.find_elements("css selector", ".dash-cascader-column[data-col-idx='2'] .dash-cascader-row")[0].click()
+    dash_duo.driver.find_elements("css selector", ".dash-cascader-column[data-col-idx='2'] .dash-cascader-row")[
+        0
+    ].click()
     dash_duo.wait_for_text_to_equal("#out", "Europe/Western/France" if full_path else "France")
     assert dash_duo.get_logs() == []
 
@@ -652,7 +654,9 @@ def test_cascader_shorthand_numeric_leaves(dash_duo, full_path):
     dash_duo.wait_for_text_to_equal(
         ".dash-cascader-column[data-col-idx='1'] .dash-cascader-row:first-child .dash-cascader-row-label", "10"
     )
-    dash_duo.driver.find_elements("css selector", ".dash-cascader-column[data-col-idx='1'] .dash-cascader-row")[0].click()
+    dash_duo.driver.find_elements("css selector", ".dash-cascader-column[data-col-idx='1'] .dash-cascader-row")[
+        0
+    ].click()
     dash_duo.wait_for_text_to_equal("#out", "Series/10" if full_path else "10")
     assert dash_duo.get_logs() == []
 
@@ -673,7 +677,9 @@ def test_cascader_shorthand_multi_select(dash_duo, full_path):
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
     dash_duo.wait_for_element(".dash-cascader-row").click()  # Asia
-    checks = dash_duo.driver.find_elements("css selector", ".dash-cascader-column[data-col-idx='1'] .dash-cascader-checkbox")
+    checks = dash_duo.driver.find_elements(
+        "css selector", ".dash-cascader-column[data-col-idx='1'] .dash-cascader-checkbox"
+    )
     checks[0].click()  # Japan
     checks[1].click()  # China
     dash_duo.wait_for_text_to_equal("#out", "Asia/China | Asia/Japan" if full_path else "China | Japan")
@@ -1132,7 +1138,9 @@ def test_cascader_leaf_mode_multi_round_trip(dash_duo):
     dash_duo.wait_for_element("#c").click()
     col1 = dash_duo.driver.find_elements("css selector", ".dash-cascader-column[data-col-idx='0'] .dash-cascader-row")
     col1[1].click()  # Europe
-    checks = dash_duo.driver.find_elements("css selector", ".dash-cascader-column[data-col-idx='1'] .dash-cascader-checkbox")
+    checks = dash_duo.driver.find_elements(
+        "css selector", ".dash-cascader-column[data-col-idx='1'] .dash-cascader-checkbox"
+    )
     checks[0].click()  # uncheck France
     dash_duo.wait_for_text_to_equal("#out", "japan")
     assert dash_duo.get_logs() == []
@@ -1174,7 +1182,9 @@ def test_cascader_duplicate_leaf_labels_select_independently(dash_duo):
     dash_duo.wait_for_text_to_equal("#out", "North/Portland")
     # Portland under South is a distinct selection with a distinct path.
     dash_duo.wait_for_element("#c").click()
-    col1_rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column[data-col-idx='0'] .dash-cascader-row")
+    col1_rows = dash_duo.driver.find_elements(
+        "css selector", ".dash-cascader-column[data-col-idx='0'] .dash-cascader-row"
+    )
     col1_rows[1].click()  # South
     # "Austin" is unique to South's column, so wait on it to confirm the column switched.
     dash_duo.wait_for_text_to_equal(
@@ -1235,7 +1245,9 @@ def test_cascader_persistence_duplicate_leaves(dash_duo):
     app.callback(Output("out", "children"), Input("c", "value"))(_single_path_fmt)
     dash_duo.start_server(app)
     dash_duo.wait_for_element("#c").click()
-    col1_rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-column[data-col-idx='0'] .dash-cascader-row")
+    col1_rows = dash_duo.driver.find_elements(
+        "css selector", ".dash-cascader-column[data-col-idx='0'] .dash-cascader-row"
+    )
     col1_rows[1].click()  # South
     dash_duo.wait_for_text_to_equal(
         ".dash-cascader-column[data-col-idx='1'] .dash-cascader-row:nth-child(2) .dash-cascader-row-label", "Austin"
@@ -1276,7 +1288,9 @@ def test_cascader_boolean_leaves(dash_duo, full_path):
     dash_duo.wait_for_text_to_equal(
         ".dash-cascader-column[data-col-idx='1'] .dash-cascader-row:first-child .dash-cascader-row-label", "true"
     )
-    dash_duo.driver.find_elements("css selector", ".dash-cascader-column[data-col-idx='1'] .dash-cascader-row")[0].click()
+    dash_duo.driver.find_elements("css selector", ".dash-cascader-column[data-col-idx='1'] .dash-cascader-row")[
+        0
+    ].click()
     dash_duo.wait_for_text_to_equal("#out", "Flags/True" if full_path else "True")
     assert dash_duo.get_logs() == []
 
