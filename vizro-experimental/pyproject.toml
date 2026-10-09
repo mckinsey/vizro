@@ -15,7 +15,7 @@ classifiers = [
   "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
-  "vizro>=0.1.56",
+  "vizro>=1.0.0",
   # Temporary: vizro pulls flask-caching transitively, but vizro-experimental installs vizro from PyPI (which still
   # allows 2.5.0), so cap it directly here too. flask-caching 2.5.0 emits a spurious NullCache warning and drops
   # Python 3.10 support. Remove once flask-caching 2.5 is adopted. See flask 2.5 investigation issue.

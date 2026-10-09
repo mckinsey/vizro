@@ -15,9 +15,9 @@ classifiers = [
   "Programming Language :: Python :: 3.14"
 ]
 dependencies = [
+  "vizro>=1.0.0",
   "httpx>=0.28.1",
   "mcp[cli]>=2.0.0",
-  "vizro>=0.1.46",
   "click>=8.1.7",
   "pandas[html,parquet,excel]"
 ]
