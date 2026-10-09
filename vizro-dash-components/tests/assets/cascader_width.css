@@ -1,0 +1,7 @@
+/* Cascader tests don't wrap the component in a width-bounded container (unlike real usage, e.g. a
+ * dashboard filter sidebar), so an unconstrained trigger stretches to the full test page width. With
+ * pop-out levels anchored at the trigger's own width (no viewport collision detection, by design —
+ * see cascader.css), that pushes deeper flyouts off-screen. Cap it here to match realistic usage. */
+.dash-cascader-wrapper {
+  max-width: 280px;
+}

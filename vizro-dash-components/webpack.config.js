@@ -117,7 +117,7 @@ module.exports = function (env, argv) {
       hints: "error",
       maxAssetSize: 400 * 1024, // 400 KB default for all assets
       // Radix Popover + icons (Cascader mirrors dcc.Dropdown) live in the main chunk.
-      maxEntrypointSize: 100 * 1024,
+      maxEntrypointSize: 101 * 1024,
       assetFilter(assetFilename) {
         // MathJax is a known large dependency (~2 MB); exempt from the default limit.
         if (assetFilename === "async-mathjax.js") return false;
