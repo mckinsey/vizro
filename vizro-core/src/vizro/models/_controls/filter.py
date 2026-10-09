@@ -164,7 +164,12 @@ def _coerce_temporal(
     _is_time = value and all(_TIME_REGEX.match(str(v)) for v in value)
     # IMPORTANT: check _is_datetime before _is_date so that an ISO datetime string is not collapsed to a date.
     _is_datetime = not _is_time and value and all(_DATETIME_REGEX.match(str(v)) for v in value)
-    _is_date = not _is_time and not _is_datetime and is_datetime64_any_dtype(series)
+    # On a column of `datetime.date` objects the selected values arrive as date strings, as Dash serializes options.
+    _is_date = (
+        not _is_time
+        and not _is_datetime
+        and (is_datetime64_any_dtype(series) or pd.api.types.infer_dtype(series, skipna=True) == "date")
+    )
 
     if _is_time:
         if is_datetime64_any_dtype(series):
@@ -219,8 +224,9 @@ def _coerce_temporal(
     elif _is_date:
         # Date selector: convert date strings to datetime.date objects.
         value = pd.to_datetime(value).date
-        # Converting Timestamp to datetime.date
-        series = series.dt.date
+        if is_datetime64_any_dtype(series):
+            # Converting Timestamp to datetime.date
+            series = series.dt.date
 
     return series, value
 
