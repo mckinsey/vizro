@@ -100,7 +100,7 @@ The below example uses the Iris data saved to a file `iris.csv` in the same dire
 
         [![DataBasic]][databasic]
 
-The [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid] and [`Table`][vizro.models.Table] models all have an argument called `figure`. This accepts a function (in the [supply directly example](#supply-directly), `px.scatter`) that takes a pandas DataFrame as its first argument. The name of this argument is always `data_frame`. When configuring the dashboard using Python, it is optional to give the name of the argument: if you like, you could write `data_frame=iris` instead of `iris`.
+The [`Graph`][vizro.models.Graph] and [`Table`][vizro.models.Table] models all have an argument called `figure`. This accepts a function (in the [supply directly example](#supply-directly), `px.scatter`) that takes a pandas DataFrame as its first argument. The name of this argument is always `data_frame`. When configuring the dashboard using Python, it is optional to give the name of the argument: if you like, you could write `data_frame=iris` instead of `iris`.
 
 !!! note
 

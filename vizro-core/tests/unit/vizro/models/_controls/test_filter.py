@@ -1482,7 +1482,7 @@ class TestFilterPreBuildMethod:
         assert isinstance(filter.selector, expected_selector)
 
     def test_numerical_default_selector_is_range(self, managers_column_only_exists_in_some):
-        # Numerical columns default to a range slider, now Slider(range=True) since RangeSlider is deprecated.
+        # Numerical columns default to a range slider (Slider(range=True)).
         filter = vm.Filter(column="column_numerical")
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -1534,8 +1534,8 @@ class TestFilterPreBuildMethod:
         ],
     )
     def test_allowed_selectors_per_column_type(self, filtered_column, selector, managers_column_only_exists_in_some):
-        # Cascader needs full_path set explicitly until its default flips in 1.0.0 (avoids the default-change warning);
-        # the other selectors take no such argument.
+        # Pin the Cascader to leaf mode (full_path=False) so this allowed-selectors check stays focused on the selector
+        # type rather than the selection mode; the other selectors take no such argument.
         selector_kwargs = {"full_path": False} if selector is vm.Cascader else {}
         filter = vm.Filter(column=filtered_column, selector=selector(**selector_kwargs))
         model_manager["test_page"].controls = [filter]
@@ -2230,30 +2230,30 @@ class TestFilterHierarchicalColumn:
             # An empty/None selection matches no rows (a hierarchical filter with nothing selected has no path).
             (None, False, [False, False, False, False]),
             ([], True, [False, False, False, False]),
-            # A single path isolates one branch's leaf even when the leaf label is duplicated elsewhere.
+            # A single path-mode entry isolates one branch's leaf even when the leaf label is duplicated elsewhere.
             (["North", "Portland"], False, [True, False, False, False]),
             (["South", "Portland"], False, [False, False, True, False]),
-            # A list of paths ORs the matches together.
+            # A list of path-mode entries ORs the matches together.
             ([["North", "Portland"], ["South", "Austin"]], True, [True, False, False, True]),
-            # Legacy leaf-only values (pre-full-path Cascader, e.g. restored from session persistence) carry no
-            # branch context, so they match the leaf column alone. A unique leaf resolves to its one row; a
-            # duplicated leaf matches every branch (the ambiguity the full-path form was introduced to remove).
+            # Leaf-mode entries (a bare leaf value, as a full_path=False filter emits) carry no branch context,
+            # so they match the leaf column alone. A unique leaf resolves to its one row; a duplicated leaf
+            # matches every branch (the ambiguity path mode was introduced to remove).
             ("Salem", False, [False, True, False, False]),
             ("Portland", False, [True, False, True, False]),
             (["Salem", "Austin"], True, [False, True, False, True]),
-            # Empty/None entries within a multi selection are skipped; the remaining path still matches.
+            # Empty/None entries within a multi selection are skipped; the remaining path-mode entry still matches.
             ([[], ["South", "Austin"]], True, [False, False, False, True]),
         ],
         ids=[
             "none",
             "empty",
-            "single_north",
-            "single_south_duplicate_leaf",
-            "multi",
-            "legacy_single_unique_leaf",
-            "legacy_single_duplicate_leaf",
-            "legacy_multi_leaves",
-            "multi_skips_empty_entry",
+            "path_mode_single_north",
+            "path_mode_single_south_duplicate_leaf",
+            "path_mode_multi",
+            "leaf_mode_single_unique_leaf",
+            "leaf_mode_single_duplicate_leaf",
+            "leaf_mode_multi_leaves",
+            "path_mode_multi_skips_empty_entry",
         ],
     )
     def test_filter_hierarchical_isin(self, value, multi, expected):
@@ -2389,8 +2389,8 @@ class TestFilterHierarchicalColumn:
             "As": [date(2024, 3, 30)],
             "Eu": [date(2024, 1, 31), date(2024, 2, 29)],
         }
-        # Default selector is leaf mode: default value is the first branch's leaves (multi=True): the "As" branch.
-        assert f.selector.value == [date(2024, 3, 30)]
+        # Default selector is path mode (full_path=True): default value is the first branch's full path(s) (multi=True).
+        assert f.selector.value == [["As", date(2024, 3, 30)]]
 
     def test_hierarchical_call_recomputes_options(self, managers_hierarchical_page):
         # Filter.__call__ (runtime) rebuilds the Cascader with a freshly-computed options tree from the

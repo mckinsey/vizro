@@ -19,59 +19,59 @@ target_ag_grid_df = pd.DataFrame(
     }
 )
 
-set_control_ag_grid_cellclicked = vm.Page(
-    title=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_PAGE,
+set_controls_ag_grid_cellclicked = vm.Page(
+    title=cnst.SET_CONTROLS_AG_GRID_CELL_CLICKED_PAGE,
     layout=vm.Grid(grid=[[0, 1], [2, 3], [4, 4]]),
     components=[
         vm.Table(
-            title="set_control.value=column",
-            id=cnst.SET_CONTROL_AG_GRID_COLUMN_CLICKED_ID,
+            title="set_controls.value=column",
+            id=cnst.SET_CONTROLS_AG_GRID_COLUMN_CLICKED_ID,
             figure=dash_ag_grid(iris),
-            actions=set_controls(controls=["set_control_column"], value="column"),
+            actions=set_controls(controls=["set_controls_column"], value="column"),
         ),
         vm.Table(
-            title="set_control.value=cell",
-            id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_ID,
+            title="set_controls.value=cell",
+            id=cnst.SET_CONTROLS_AG_GRID_CELL_CLICKED_ID,
             figure=dash_ag_grid(iris),
-            actions=set_controls(controls=["set_control_cell"], value="cell"),
+            actions=set_controls(controls=["set_controls_cell"], value="cell"),
         ),
         vm.Table(
-            title="set_control.value=row",
-            id=cnst.SET_CONTROL_AG_GRID_ROW_CLICKED_ID,
+            title="set_controls.value=row",
+            id=cnst.SET_CONTROLS_AG_GRID_ROW_CLICKED_ID,
             figure=dash_ag_grid(iris),
-            actions=set_controls(controls=["set_control_row"], value="row"),
+            actions=set_controls(controls=["set_controls_row"], value="row"),
         ),
         vm.Table(
-            title="set_control.value=mixed",
-            id=cnst.SET_CONTROL_AG_GRID_MIXED_CLICKED_ID,
+            title="set_controls.value=mixed",
+            id=cnst.SET_CONTROLS_AG_GRID_MIXED_CLICKED_ID,
             figure=dash_ag_grid(iris),
             actions=[
-                set_controls(controls=["set_control_column"], value="column"),
-                set_controls(controls=["set_control_cell"], value="cell"),
+                set_controls(controls=["set_controls_column"], value="column"),
+                set_controls(controls=["set_controls_cell"], value="cell"),
             ],
         ),
         vm.Table(
             title="AG Grid Cell Clicked Target",
-            id=cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID,
+            id=cnst.SET_CONTROLS_AG_GRID_CELL_CLICKED_TARGET_ID,
             figure=dash_ag_grid(target_ag_grid_df),
         ),
     ],
     controls=[
         vm.Filter(
-            id="set_control_column",
+            id="set_controls_column",
             column="column_values",
-            targets=[cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID],
+            targets=[cnst.SET_CONTROLS_AG_GRID_CELL_CLICKED_TARGET_ID],
         ),
         vm.Filter(
-            id="set_control_cell",
+            id="set_controls_cell",
             column="cell_values",
-            targets=[cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID],
+            targets=[cnst.SET_CONTROLS_AG_GRID_CELL_CLICKED_TARGET_ID],
             selector=vm.Dropdown(),
         ),
         vm.Filter(
-            id="set_control_row",
+            id="set_controls_row",
             column="row_values",
-            targets=[cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_TARGET_ID],
+            targets=[cnst.SET_CONTROLS_AG_GRID_CELL_CLICKED_TARGET_ID],
             selector=vm.Dropdown(),
         ),
     ],

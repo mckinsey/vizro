@@ -35,7 +35,7 @@ IMPORTANT: Each step produces a spec file in the `spec/` directory to document r
 - **Colors**: For Plotly charts and KPI cards, do **not** add colors in code — Vizro template defaults apply automatically. Only add chart colors if `spec/3_visual_design.md` has an explicit `## Colors` section. For AG Grid cell styling (conditional formatting, heatmaps), use `from vizro.themes import palettes, colors` — never invent hex values. See **selecting-vizro-charts** skill.
 - **Data loading**: For dashboards needing data refresh (databases, APIs) or performance optimization, see the [data management guide](./references/data_management.md) for static vs dynamic data, caching, and best practices.
 - **KPI cards**: Use built-in `kpi_card` / `kpi_card_reference` in `Figure` model only. Never rebuild as custom charts (exception: dynamic text). See **selecting-vizro-charts** skill.
-- **Tables**: Use `vm.AgGrid` with `figure=dash_ag_grid(...)` only. Never `vm.Table` / Dash DataTable, never fake-table with Plotly. See [example_ag_grid.py](./references/examples/example_ag_grid.py) for the two canonical patterns and the Dash-AG-Grid / JS-AG-Grid knowledge mapping.
+- **Tables**: Use `vm.Table` with `figure=dash_ag_grid(...)` only. Never the Dash DataTable backing (`dash_data_table`, removed in Vizro 1.0.0), never fake-table with Plotly. See [example_ag_grid.py](./references/examples/example_ag_grid.py) for the two canonical patterns and the Dash-AG-Grid / JS-AG-Grid knowledge mapping.
 - **Interactions / actions**: For cross-filter, cross-highlight, drill-through, or data export, load the **wiring-vizro-actions** skill and follow the `## Interactions` section in `spec/2_interaction_ux.md`.
 
 ### REQUIRED OUTPUT: spec/4_implementation.md
@@ -77,7 +77,7 @@ Navigate the running dashboard to catch errors that code review alone cannot fin
 
     - Navigate to the dashboard URL (e.g., `http://localhost:8050`).
     - Visit every page and read the browser console for errors. Do not stop on the first error — record it and keep going.
-    - **If `app.py` contains any `actions=` (cross-filter, cross-highlight, drill-through, export), exercise each one in the same walk**: grep your app for `actions=` and for every match, click the corresponding source (a point on the scatter, a bar, a row in the AgGrid, the export Button, etc.). For each, record:
+    - **If `app.py` contains any `actions=` (cross-filter, cross-highlight, drill-through, export), exercise each one in the same walk**: grep your app for `actions=` and for every match, click the corresponding source (a point on the scatter, a bar, a row in the Table, the export Button, etc.). For each, record:
         - any browser console `Callback error updating ...` messages,
         - any network 500 response on `_dash-update-component`,
         - whether the action's intended effect actually happened (URL updated for `show_in_url=True`, target filter changed, highlight applied, file downloaded, etc.).
@@ -118,6 +118,6 @@ Copy the template from [assets/5_test_report.md](assets/5_test_report.md) to `sp
 | [data_management.md](./references/data_management.md)         | Static vs dynamic data, caching, databases, APIs        |
 | [custom_charts_guide.md](./references/custom_charts_guide.md) | Implementing custom `@capture("graph")` charts          |
 | [example_app.py](./references/examples/example_app.py)        | Starting template for dashboard implementation          |
-| [example_ag_grid.py](./references/examples/example_ag_grid.py) | Canonical AG Grid patterns — read BEFORE writing any `vm.AgGrid` |
+| [example_ag_grid.py](./references/examples/example_ag_grid.py) | Canonical AG Grid patterns — read BEFORE writing any `vm.Table` |
 | [validate_colors.py](./scripts/validate_colors.py)            | Automated check for hardcoded colors in app.py          |
 | [validate_aggregation.py](./scripts/validate_aggregation.py)  | Automated check for pre-aggregation in bar/line charts  |

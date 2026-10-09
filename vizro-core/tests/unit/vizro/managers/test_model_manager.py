@@ -99,15 +99,15 @@ class TestGetModels:
 
     def test_model_type_no_match_root_model_none(self):
         """model_type matches no type | root_model is None -> return empty list."""
-        # There is no AgGrid in the dashboard
-        result = [model.id for model in model_manager._get_models(model_type=vm.AgGrid)]
+        # There is no Table in the dashboard
+        result = [model.id for model in model_manager._get_models(model_type=vm.Table)]
 
         assert result == []
 
     def test_model_type_no_match_root_model_not_none(self, page_1):
         """model_type matches no type | root_model is page_1 -> return empty list."""
-        # There is no AgGrid in the page_1
-        result = [model.id for model in model_manager._get_models(model_type=vm.AgGrid, root_model=page_1)]
+        # There is no Table in the page_1
+        result = [model.id for model in model_manager._get_models(model_type=vm.Table, root_model=page_1)]
 
         assert result == []
 

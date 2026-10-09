@@ -7,7 +7,7 @@ description: Use this skill when designing or building Vizro dashboard layouts �
 
 ## Core Rules
 
-- Use `type: grid` (not `vm.Layout`). Recommended: **12 columns**, `row_min_height: "140px"`.
+- Use `type: grid` (not the removed `vm.Layout`). Recommended: **12 columns**, `row_min_height: "140px"`.
 - Use `-1` for empty cells. Every component must form a **perfect rectangle** in the grid.
 - Place 2–3 charts per row. Full-width only for time-series line charts.
 - **Modifying existing layouts**: Replicate the original structure and apply only the technical constraints below. See [layout-guidelines.md](references/layout-guidelines.md) for details.
@@ -37,7 +37,7 @@ description: Use this skill when designing or building Vizro dashboard layouts �
 | ------------- | ----------- | --------------------- |
 | 2–4 options   | RadioItems  | Region (N/S/E/W)      |
 | 5+ options    | Dropdown    | Category (many)       |
-| Numeric range | RangeSlider | Price ($0–$1000)      |
+| Numeric range | Slider(range=True) | Price ($0–$1000)      |
 | Single number | Slider      | Year (2020–2025)      |
 | Date          | DatePicker  | Order date            |
 | Multi-select  | Checklist   | Status (Active, etc.) |

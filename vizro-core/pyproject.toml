@@ -85,14 +85,14 @@ filterwarnings = [
   "ignore:HTTPResponse.getheader():DeprecationWarning",
   # Ignore this warning for firefox screenshot tests
   "ignore:get_logs always return None with webdrivers other than Chrome",
-  # Ignore dash_data_table deprecation warning
-  "ignore:(?s).*The dash_table.DataTable will be removed from the builtin dash components in a future major version:DeprecationWarning",
   # Ignore Dash's use of deprecated method (due to be removed in Python 3.16).
   "ignore:'asyncio.iscoroutinefunction' is deprecated:DeprecationWarning",
   # Ignore kedro warnings. Note you can't use kedro.*Warning as categories here since pytest would then import kedro#
   # and trigger the 3.14 error before it can be ignored.
   "ignore:`DataCatalog` has been deprecated and will be replaced by `KedroDataCatalog`",
-  "ignore:Kedro is not yet fully compatible with this Python version."
+  "ignore:Kedro is not yet fully compatible with this Python version.",
+  # Ignore omegaconf's deprecation of register_new_resolver(), emitted via kedro's OmegaConfigLoader.
+  "ignore:register_new_resolver\\(\\) is deprecated and will be removed in a future release.:UserWarning"
 ]
 markers = [
   "mobile_screenshots: marks tests for chrome mobile screenshots",

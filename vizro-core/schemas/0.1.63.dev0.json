@@ -84,102 +84,9 @@
           "default": "action",
           "title": "Type",
           "type": "string"
-        },
-        "inputs": {
-          "default": [],
-          "description": "List of inputs provided to the action function. Each input can be specified as\n            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.\n            \u2757Deprecated: `inputs` is deprecated and [will not exist in Vizro 1.0.0](\n            deprecations.md#action-model-inputs-argument).",
-          "items": {
-            "type": "string"
-          },
-          "title": "Inputs",
-          "type": "array"
         }
       },
       "title": "Action",
-      "type": "object"
-    },
-    "AgGrid": {
-      "additionalProperties": false,
-      "deprecated": true,
-      "description": "Deprecated wrapper for `dash_ag_grid.AgGrid`.\n\nDeprecated: use [`Table`][vizro.models.Table] with a `dash_ag_grid` figure\n(`vm.Table(figure=dash_ag_grid(...))`), which is functionally identical.\n\nAbstract: Usage documentation\n    [How to use an AgGrid](../user-guides/table.md#ag-grid)",
-      "properties": {
-        "id": {
-          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
-          "title": "Id",
-          "type": "string"
-        },
-        "type": {
-          "const": "ag_grid",
-          "default": "ag_grid",
-          "title": "Type",
-          "type": "string"
-        },
-        "title": {
-          "default": "",
-          "description": "Title of the `Table`",
-          "title": "Title",
-          "type": "string"
-        },
-        "header": {
-          "default": "",
-          "description": "Markdown text positioned below the `Table.title`. Follows the CommonMark specification. Ideal for adding supplementary information such as subtitles, descriptions, or additional context.",
-          "title": "Header",
-          "type": "string"
-        },
-        "footer": {
-          "default": "",
-          "description": "Markdown text positioned below the `Table`. Follows the CommonMark specification. Ideal for providing further details such as sources, disclaimers, or additional notes.",
-          "title": "Footer",
-          "type": "string"
-        },
-        "description": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/Tooltip"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
-        },
-        "actions": {
-          "default": [],
-          "items": {
-            "description": "Action.",
-            "oneOf": [
-              {
-                "$ref": "#/$defs/Action"
-              },
-              {
-                "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/set_controls"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
-              },
-              {
-                "$ref": "#/$defs/update_notification"
-              },
-              {
-                "$ref": "#/$defs/update_targets"
-              }
-            ]
-          },
-          "title": "Actions",
-          "type": "array"
-        }
-      },
-      "title": "AgGrid",
       "type": "object"
     },
     "Button": {
@@ -219,18 +126,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -326,18 +238,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -377,8 +294,8 @@
           "type": "string"
         },
         "full_path": {
-          "default": false,
-          "description": "How a selection is identified. In leaf mode (False, default) `value` is a bare leaf scalar (single-select) or a list of leaf scalars (multi-select), and leaf labels must be unique across the tree. In path mode (True) `value` is a full root-to-leaf path (single-select) or a list of paths (multi-select), so duplicate leaf labels across different branches are addressed unambiguously. This attribute is immutable once set. \u2757The default will change from `False` to `True` in Vizro 1.0.0; set `full_path` explicitly to keep the current behavior.",
+          "default": true,
+          "description": "How a selection is identified. In path mode (True, default) `value` is a full root-to-leaf path (single-select) or a list of paths (multi-select), so duplicate leaf labels across different branches are addressed unambiguously. In leaf mode (False) `value` is a bare leaf scalar (single-select) or a list of leaf scalars (multi-select), and leaf labels must be unique across the tree. This attribute is immutable once set.",
           "title": "Full Path",
           "type": "boolean"
         },
@@ -452,7 +369,7 @@
             }
           ],
           "default": null,
-          "description": "Selected value. With full_path=False (default): a leaf value (e.g. `'France'`), or a list of leaves when multi=True. With full_path=True: a root-to-leaf path (e.g. `['Europe', 'France']`), or a list of such paths when multi=True. Must be valid for `options`. If omitted, the first leaf/path is selected.",
+          "description": "Selected value. With full_path=True (default): a root-to-leaf path (e.g. `['Europe', 'France']`), or a list of such paths when multi=True. With full_path=False: a leaf value (e.g. `'France'`), or a list of leaves when multi=True. Must be valid for `options`. If omitted, the first leaf/path is selected.",
           "title": "Value"
         },
         "multi": {
@@ -483,18 +400,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -614,18 +536,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -668,7 +595,6 @@
             "description": "Component that makes up part of the layout on the page.",
             "discriminator": {
               "mapping": {
-                "ag_grid": "#/$defs/AgGrid",
                 "button": "#/$defs/Button",
                 "card": "#/$defs/Card",
                 "container": "#/$defs/Container",
@@ -681,9 +607,6 @@
               "propertyName": "type"
             },
             "oneOf": [
-              {
-                "$ref": "#/$defs/AgGrid"
-              },
               {
                 "$ref": "#/$defs/Button"
               },
@@ -724,15 +647,19 @@
           "anyOf": [
             {
               "description": "Type of layout to place components on the page.",
+              "discriminator": {
+                "mapping": {
+                  "flex": "#/$defs/Flex",
+                  "grid": "#/$defs/Grid"
+                },
+                "propertyName": "type"
+              },
               "oneOf": [
                 {
                   "$ref": "#/$defs/Grid"
                 },
                 {
                   "$ref": "#/$defs/Flex"
-                },
-                {
-                  "$ref": "#/$defs/Layout"
                 }
               ]
             },
@@ -963,18 +890,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -1099,18 +1031,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -1250,18 +1187,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -1303,18 +1245,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -1388,7 +1335,6 @@
                   "datetime_picker": "#/$defs/DateTimePicker",
                   "dropdown": "#/$defs/Dropdown",
                   "radio_items": "#/$defs/RadioItems",
-                  "range_slider": "#/$defs/RangeSlider",
                   "slider": "#/$defs/Slider",
                   "switch": "#/$defs/Switch",
                   "time_picker": "#/$defs/TimePicker"
@@ -1413,9 +1359,6 @@
                 },
                 {
                   "$ref": "#/$defs/RadioItems"
-                },
-                {
-                  "$ref": "#/$defs/RangeSlider"
                 },
                 {
                   "$ref": "#/$defs/Slider"
@@ -1540,18 +1483,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -1634,65 +1582,6 @@
       "type": "object"
     },
     "JsonValue": {},
-    "Layout": {
-      "additionalProperties": false,
-      "deprecated": true,
-      "properties": {
-        "id": {
-          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
-          "title": "Id",
-          "type": "string"
-        },
-        "type": {
-          "const": "legacy_layout",
-          "default": "legacy_layout",
-          "title": "Type",
-          "type": "string"
-        },
-        "grid": {
-          "description": "Grid specification to arrange components on screen.",
-          "items": {
-            "items": {
-              "type": "integer"
-            },
-            "type": "array"
-          },
-          "title": "Grid",
-          "type": "array"
-        },
-        "row_gap": {
-          "default": "24px",
-          "description": "Specifies the gap between rows. Allowed units: `px`, `rem`, `em`, or `%`.",
-          "pattern": "^\\d+(px|rem|em|%)$",
-          "title": "Row Gap",
-          "type": "string"
-        },
-        "col_gap": {
-          "default": "24px",
-          "description": "Specifies the gap between columns. Allowed units: `px`, `rem`, `em`, or `%`.",
-          "pattern": "^\\d+(px|rem|em|%)$",
-          "title": "Col Gap",
-          "type": "string"
-        },
-        "row_min_height": {
-          "default": "0px",
-          "description": "Minimum row height in px. Allowed units: `px`, `rem`, `em`, or `%`.",
-          "pattern": "^\\d+(px|rem|em|%)$",
-          "title": "Row Min Height",
-          "type": "string"
-        },
-        "col_min_width": {
-          "default": "0px",
-          "description": "Minimum column width in px. Allowed units: `px`, `rem`, `em`, or `%`.",
-          "pattern": "^\\d+(px|rem|em|%)$",
-          "title": "Col Min Width",
-          "type": "string"
-        }
-      },
-      "required": ["grid"],
-      "title": "Layout",
-      "type": "object"
-    },
     "NavBar": {
       "additionalProperties": false,
       "description": "Navigation bar to be used as a `nav_selector` for `Navigation`.\n\nAbstract: Usage documentation\n    [How to use the navigation bar](../user-guides/navigation.md#use-a-navigation-bar-with-icons)",
@@ -1860,7 +1749,6 @@
             "description": "Component that makes up part of the layout on the page.",
             "discriminator": {
               "mapping": {
-                "ag_grid": "#/$defs/AgGrid",
                 "button": "#/$defs/Button",
                 "card": "#/$defs/Card",
                 "container": "#/$defs/Container",
@@ -1873,9 +1761,6 @@
               "propertyName": "type"
             },
             "oneOf": [
-              {
-                "$ref": "#/$defs/AgGrid"
-              },
               {
                 "$ref": "#/$defs/Button"
               },
@@ -1915,15 +1800,19 @@
           "anyOf": [
             {
               "description": "Type of layout to place components on the page.",
+              "discriminator": {
+                "mapping": {
+                  "flex": "#/$defs/Flex",
+                  "grid": "#/$defs/Grid"
+                },
+                "propertyName": "type"
+              },
               "oneOf": [
                 {
                   "$ref": "#/$defs/Grid"
                 },
                 {
                   "$ref": "#/$defs/Flex"
-                },
-                {
-                  "$ref": "#/$defs/Layout"
                 }
               ]
             },
@@ -1986,18 +1875,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -2054,7 +1948,6 @@
               "datetime_picker": "#/$defs/DateTimePicker",
               "dropdown": "#/$defs/Dropdown",
               "radio_items": "#/$defs/RadioItems",
-              "range_slider": "#/$defs/RangeSlider",
               "slider": "#/$defs/Slider",
               "switch": "#/$defs/Switch",
               "time_picker": "#/$defs/TimePicker"
@@ -2079,9 +1972,6 @@
             },
             {
               "$ref": "#/$defs/RadioItems"
-            },
-            {
-              "$ref": "#/$defs/RangeSlider"
             },
             {
               "$ref": "#/$defs/Slider"
@@ -2196,18 +2086,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -2228,158 +2123,6 @@
         }
       },
       "title": "RadioItems",
-      "type": "object"
-    },
-    "RangeSlider": {
-      "additionalProperties": false,
-      "deprecated": true,
-      "description": "Deprecated numeric range selector. Use [`Slider`][vizro.models.Slider] with `range=True` instead.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nAbstract: Usage documentation\n    [How to use numerical selectors](../user-guides/selectors.md#numerical-selectors)",
-      "properties": {
-        "id": {
-          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
-          "title": "Id",
-          "type": "string"
-        },
-        "type": {
-          "const": "range_slider",
-          "default": "range_slider",
-          "title": "Type",
-          "type": "string"
-        },
-        "min": {
-          "anyOf": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Start value for slider.",
-          "title": "Min"
-        },
-        "max": {
-          "anyOf": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "End value for slider.",
-          "title": "Max"
-        },
-        "step": {
-          "anyOf": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Step-size for marks on slider.",
-          "title": "Step"
-        },
-        "marks": {
-          "anyOf": [
-            {
-              "additionalProperties": {
-                "type": "string"
-              },
-              "type": "object"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": {},
-          "description": "Marks to be displayed on slider.",
-          "title": "Marks"
-        },
-        "value": {
-          "anyOf": [
-            {
-              "items": {
-                "type": "number"
-              },
-              "maxItems": 2,
-              "minItems": 2,
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Default value: a `[start, end]` pair.",
-          "title": "Value"
-        },
-        "range": {
-          "const": true,
-          "default": true,
-          "description": "Boolean flag for displaying range slider.",
-          "title": "Range",
-          "type": "boolean"
-        },
-        "title": {
-          "default": "",
-          "description": "Title to be displayed.",
-          "title": "Title",
-          "type": "string"
-        },
-        "description": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/Tooltip"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description."
-        },
-        "actions": {
-          "default": [],
-          "items": {
-            "description": "Action.",
-            "oneOf": [
-              {
-                "$ref": "#/$defs/Action"
-              },
-              {
-                "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
-              },
-              {
-                "$ref": "#/$defs/set_controls"
-              },
-              {
-                "$ref": "#/$defs/show_notification"
-              },
-              {
-                "$ref": "#/$defs/update_notification"
-              },
-              {
-                "$ref": "#/$defs/update_targets"
-              }
-            ]
-          },
-          "title": "Actions",
-          "type": "array"
-        }
-      },
-      "title": "RangeSlider",
       "type": "object"
     },
     "Slider": {
@@ -2501,18 +2244,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -2578,18 +2326,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -2614,7 +2367,7 @@
     },
     "Table": {
       "additionalProperties": false,
-      "description": "Wrapper for a table figure to visualize tabular data in a dashboard.\n\nRenders a `dash_ag_grid.AgGrid` (recommended, via `dash_ag_grid`) or a `dash_table.DataTable` (deprecated, via\n`dash_data_table`) depending on the `figure` provided.\n\nAbstract: Usage documentation\n    [How to use tables](../user-guides/table.md)",
+      "description": "Wrapper for a table figure to visualize tabular data in a dashboard.\n\nRenders an interactive `dash_ag_grid.AgGrid` from the `dash_ag_grid` figure provided.\n\nAbstract: Usage documentation\n    [How to use tables](../user-guides/table.md)",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -2661,18 +2414,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -2840,18 +2598,23 @@
           "default": [],
           "items": {
             "description": "Action.",
+            "discriminator": {
+              "mapping": {
+                "action": "#/$defs/Action",
+                "export_data": "#/$defs/export_data",
+                "set_controls": "#/$defs/set_controls",
+                "show_notification": "#/$defs/show_notification",
+                "update_notification": "#/$defs/update_notification",
+                "update_targets": "#/$defs/update_targets"
+              },
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
               },
               {
                 "$ref": "#/$defs/export_data"
-              },
-              {
-                "$ref": "#/$defs/filter_interaction"
-              },
-              {
-                "$ref": "#/$defs/set_control"
               },
               {
                 "$ref": "#/$defs/set_controls"
@@ -2964,79 +2727,9 @@
       "title": "export_data",
       "type": "object"
     },
-    "filter_interaction": {
-      "additionalProperties": false,
-      "deprecated": true,
-      "description": "Filters targeted graph, tables and figures when a source graph or table is clicked.",
-      "properties": {
-        "id": {
-          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
-          "title": "Id",
-          "type": "string"
-        },
-        "type": {
-          "const": "filter_interaction",
-          "default": "filter_interaction",
-          "title": "Type",
-          "type": "string"
-        },
-        "targets": {
-          "default": [],
-          "description": "Target component IDs.",
-          "items": {
-            "type": "string"
-          },
-          "title": "Targets",
-          "type": "array"
-        }
-      },
-      "title": "filter_interaction",
-      "type": "object"
-    },
-    "set_control": {
-      "additionalProperties": false,
-      "deprecated": true,
-      "description": "Deprecated. Use [`set_controls`][vizro.actions.set_controls] with `controls` as a list of ids instead.",
-      "properties": {
-        "id": {
-          "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
-          "title": "Id",
-          "type": "string"
-        },
-        "type": {
-          "const": "set_control",
-          "default": "set_control",
-          "title": "Type",
-          "type": "string"
-        },
-        "value": {
-          "$ref": "#/$defs/JsonValue",
-          "default": null,
-          "description": "Value to take from the trigger and send to the target control(s). Its format depends on the triggering model (see the list above): for `Graph`/`AgGrid` it is an extraction directive (a column name or lookup) and is required; for `Figure`/`Card`/`Button` it is the literal value to set, and `value=None` resets the target control(s) to their default value. It may be omitted (defaults to `None`) only when a control's own selector syncs to another control, where `value` is ignored and the selector's live value is used instead."
-        },
-        "control": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            }
-          ],
-          "description": "Filter or Parameter component id(s) to be affected by the trigger. Provide a single id or a list of ids. Deprecated: use `set_controls` with `controls` instead.",
-          "title": "Control"
-        }
-      },
-      "required": ["control"],
-      "title": "set_control",
-      "type": "object"
-    },
     "set_controls": {
       "additionalProperties": false,
-      "description": "Sets the value of one or more controls, which then update their targets.\n\nAbstract: Usage documentation\n    [Graph and table interactions](../user-guides/graph-table-actions.md)\n\n`controls` is one or more control ids: pass a single id, or a list of ids to set several controls from a single\ntrigger (for example, one graph click that cross-filters multiple filters, or one selector that syncs several\ncontrols). A single id is normalized to a list internally. The same `value` is sent to every targeted control and\nis reshaped to each control's own selector.\n\nThe following Vizro models can be a source of `set_controls`:\n\n* [`AgGrid`][vizro.models.AgGrid]: triggers `set_controls` when `cellClicked` or `selectedRows` changes (for example\nafter a cell click or when the row selection changes). `value` can be:\n\n    * `\"cell\"`, `\"column\"`, or `\"row\"` to use the clicked cell's value, column id, or row id respectively.\n    * Any other string to treat as a column name, taking values from the selected row(s).\n* [`Graph`][vizro.models.Graph]: triggers `set_controls` when the user clicks on data in the graph. `value` is a\nstring that can be used in two ways to specify how to set `controls`:\n\n    * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.\n    * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the\n    trigger data [`clickData[\"points\"][0]`](https://dash.plotly.com/interactive-graphing). This is typically\n    useful for a positional variable, for example `\"x\"`, and does not require setting `custom_data`.\n\n* [`Figure`][vizro.models.Figure]: triggers `set_controls` when the user clicks on the figure. `value` specifies a\nliteral value to set `controls` to.\n* [`Button`][vizro.models.Button]: triggers `set_controls` when the user clicks on the button. `value` specifies a\nliteral value to set `controls` to.\n* [`Card`][vizro.models.Card]: triggers `set_controls` when the user clicks on the card. `value` specifies a\nliteral value to set `controls` to.\n\n`value` is required for `Graph` and `AgGrid` (it is the directive for what to extract from the click). For\n`Figure`, `Card`, and `Button` it is the literal to set, and `value=None` resets the target control(s) to their\ndefault value. `value` may be omitted only when a control's own selector syncs to another control (via that\ncontrol's `targets`): the sync uses the selector's live value and ignores `value`.\n\nExample: an AG Grid `Table` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Table(\n        figure=dash_ag_grid(iris),\n        actions=va.set_controls(controls=[\"target_control\"], value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger with `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_controls(controls=[\"target_control\"], value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger without `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.box(iris, x=\"species\", y=\"sepal_length\"),\n        actions=va.set_controls(controls=[\"target_control\"], value=\"x\"),\n    )\n    ```\n\nExample: `Figure` as trigger\n    ```python\n    import vizro.actions as va\n    from vizro.figures import kpi_card\n\n    vm.Figure(\n        figure=kpi_card(tips, value_column=\"tip\", title=\"Click KPI to set control to A\"),\n        actions=va.set_controls(controls=[\"target_control\"], value=\"A\"),\n    )\n    ```\n\nExample: `Button` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Button(\n        text=\"Click to set control to A\",\n        actions=va.set_controls(controls=[\"target_control\"], value=\"A\"),\n    )\n    ```\n\nExample: `Card` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Card(\n        title=\"Click Card to set control to A\",\n        actions=va.set_controls(controls=[\"target_control\"], value=\"A\"),\n    )\n    ```\n\nExample: target multiple controls at once\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_controls(controls=[\"target_control_1\", \"target_control_2\"], value=\"species\"),\n    )\n    ```\n\nExample: a control selector as trigger (no `value` needed)\n    A control's own selector can be the source. Here a bare `RadioItems` (whitelisted as a page component with\n    `add_type`) syncs its selected value to two filters. `value` is omitted: a selector sync sends the selector's\n    own live value, so there is nothing to specify.\n    ```python\n    import vizro.models as vm\n    import vizro.actions as va\n\n    vm.Page.add_type(\"components\", vm.RadioItems)  # allow a bare selector as a page component\n\n    vm.RadioItems(\n        options=[\"setosa\", \"versicolor\", \"virginica\"],\n        actions=va.set_controls(controls=[\"species_filter_1\", \"species_filter_2\"]),\n    )\n    ```",
+      "description": "Sets the value of one or more controls, which then update their targets.\n\nAbstract: Usage documentation\n    [Graph and table interactions](../user-guides/graph-table-actions.md)\n\n`controls` is one or more control ids: pass a single id, or a list of ids to set several controls from a single\ntrigger (for example, one graph click that cross-filters multiple filters, or one selector that syncs several\ncontrols). A single id is normalized to a list internally. The same `value` is sent to every targeted control and\nis reshaped to each control's own selector.\n\nThe following Vizro models can be a source of `set_controls`:\n\n* [`Table`][vizro.models.Table] (an AG Grid): triggers `set_controls` when `cellClicked` or `selectedRows` changes\n(for example after a cell click or when the row selection changes). `value` can be:\n\n    * `\"cell\"`, `\"column\"`, or `\"row\"` to use the clicked cell's value, column id, or row id respectively.\n    * Any other string to treat as a column name, taking values from the selected row(s).\n* [`Graph`][vizro.models.Graph]: triggers `set_controls` when the user clicks on data in the graph. `value` is a\nstring that can be used in two ways to specify how to set `controls`:\n\n    * Column from which to take the value. This requires you to set `custom_data` in the graph's `figure` function.\n    * String to [traverse a Box](https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots) that contains the\n    trigger data [`clickData[\"points\"][0]`](https://dash.plotly.com/interactive-graphing). This is typically\n    useful for a positional variable, for example `\"x\"`, and does not require setting `custom_data`.\n\n* [`Figure`][vizro.models.Figure]: triggers `set_controls` when the user clicks on the figure. `value` specifies a\nliteral value to set `controls` to.\n* [`Button`][vizro.models.Button]: triggers `set_controls` when the user clicks on the button. `value` specifies a\nliteral value to set `controls` to.\n* [`Card`][vizro.models.Card]: triggers `set_controls` when the user clicks on the card. `value` specifies a\nliteral value to set `controls` to.\n\n`value` is required for `Graph` and `Table` (it is the directive for what to extract from the click). For\n`Figure`, `Card`, and `Button` it is the literal to set, and `value=None` resets the target control(s) to their\ndefault value. `value` may be omitted only when a control's own selector syncs to another control (via that\ncontrol's `targets`): the sync uses the selector's live value and ignores `value`.\n\nExample: an AG Grid `Table` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Table(\n        figure=dash_ag_grid(iris),\n        actions=va.set_controls(controls=[\"target_control\"], value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger with `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_controls(controls=[\"target_control\"], value=\"species\"),\n    )\n    ```\n\nExample: `Graph` as trigger without `custom_data`\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.box(iris, x=\"species\", y=\"sepal_length\"),\n        actions=va.set_controls(controls=[\"target_control\"], value=\"x\"),\n    )\n    ```\n\nExample: `Figure` as trigger\n    ```python\n    import vizro.actions as va\n    from vizro.figures import kpi_card\n\n    vm.Figure(\n        figure=kpi_card(tips, value_column=\"tip\", title=\"Click KPI to set control to A\"),\n        actions=va.set_controls(controls=[\"target_control\"], value=\"A\"),\n    )\n    ```\n\nExample: `Button` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Button(\n        text=\"Click to set control to A\",\n        actions=va.set_controls(controls=[\"target_control\"], value=\"A\"),\n    )\n    ```\n\nExample: `Card` as trigger\n    ```python\n    import vizro.actions as va\n\n    vm.Card(\n        title=\"Click Card to set control to A\",\n        actions=va.set_controls(controls=[\"target_control\"], value=\"A\"),\n    )\n    ```\n\nExample: target multiple controls at once\n    ```python\n    import vizro.actions as va\n\n    vm.Graph(\n        figure=px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", custom_data=\"species\"),\n        actions=va.set_controls(controls=[\"target_control_1\", \"target_control_2\"], value=\"species\"),\n    )\n    ```\n\nExample: a control selector as trigger (no `value` needed)\n    A control's own selector can be the source. Here a bare `RadioItems` (whitelisted as a page component with\n    `add_type`) syncs its selected value to two filters. `value` is omitted: a selector sync sends the selector's\n    own live value, so there is nothing to specify.\n    ```python\n    import vizro.models as vm\n    import vizro.actions as va\n\n    vm.Page.add_type(\"components\", vm.RadioItems)  # allow a bare selector as a page component\n\n    vm.RadioItems(\n        options=[\"setosa\", \"versicolor\", \"virginica\"],\n        actions=va.set_controls(controls=[\"species_filter_1\", \"species_filter_2\"]),\n    )\n    ```",
       "properties": {
         "id": {
           "description": "ID to identify model. Must be unique throughout the whole dashboard. When no ID is chosen, ID will be automatically generated.",
@@ -3067,7 +2760,7 @@
         "value": {
           "$ref": "#/$defs/JsonValue",
           "default": null,
-          "description": "Value to take from the trigger and send to the target control(s). Its format depends on the triggering model (see the list above): for `Graph`/`AgGrid` it is an extraction directive (a column name or lookup) and is required; for `Figure`/`Card`/`Button` it is the literal value to set, and `value=None` resets the target control(s) to their default value. It may be omitted (defaults to `None`) only when a control's own selector syncs to another control, where `value` is ignored and the selector's live value is used instead."
+          "description": "Value to take from the trigger and send to the target control(s). Its format depends on the triggering model (see the list above): for `Graph`/`Table` it is an extraction directive (a column name or lookup) and is required; for `Figure`/`Card`/`Button` it is the literal value to set, and `value=None` resets the target control(s) to their default value. It may be omitted (defaults to `None`) only when a control's own selector syncs to another control, where `value` is ignored and the selector's live value is used instead."
         }
       },
       "required": ["controls"],

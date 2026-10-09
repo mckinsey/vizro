@@ -14,4 +14,4 @@ Vizro has a default styling to help users with no design experience get started.
 
 - **[Customize CSS](custom-css.md)**: Incorporate custom CSS to deviate from the default styling and create a unique appearance for your Vizro dashboard.
 
-- **[Customize your `component`](components.md)**: Change the appearance of components like the [Graph](graph.md), the [Table](table.md) and the [AgGrid](table.md), by passing extra arguments. Refer to the relevant user guide for more details.
+- **[Customize your `component`](components.md)**: Change the appearance of components like the [Graph](graph.md) and the [Table](table.md), by passing extra arguments. Refer to the relevant user guide for more details.

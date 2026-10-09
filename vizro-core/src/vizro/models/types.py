@@ -5,23 +5,20 @@ from __future__ import annotations
 # ruff: noqa: F821
 import functools
 import inspect
-import warnings
 from collections import OrderedDict
 from collections.abc import Callable
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, Protocol, TypeAlias, cast, runtime_checkable
+from typing import Annotated, Any, Literal, Protocol, TypeAlias, Union, cast, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import (
     AfterValidator,
     BeforeValidator,
-    Discriminator,
     Field,
     ImportString,
     StrictBool,
-    Tag,
     TypeAdapter,
     ValidationError,
     ValidationInfo,
@@ -30,52 +27,6 @@ from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
-
-
-def _get_layout_discriminator(layout: Any) -> str | None:
-    """Helper function for callable discriminator used for LayoutType."""
-    # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
-    # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle the legacy case.
-    if isinstance(layout, dict):
-        # If type is supplied then use that (like saying discriminator="type"). Otherwise, it's the legacy case where
-        # type is not specified, in which case we want to use vm.Layout, which has type="legacy_layout".
-        try:
-            return layout["type"]
-        except KeyError:
-            warnings.warn(
-                "`layout` without an explicit `type` specified will not work in Vizro 1.0.0. Specify `type: grid` for "
-                "your `layout`.",
-                FutureWarning,
-                stacklevel=3,
-            )
-            return "legacy_layout"
-
-    # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
-    # union_tag_not_found error is raised.
-    return getattr(layout, "type", None)
-
-
-def _get_action_discriminator(action: Any) -> str | None:
-    """Helper function for callable discriminator used for ActionType."""
-    # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
-    # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle the legacy case.
-    if isinstance(action, dict):
-        # If type is supplied then use that (like saying discriminator="type"). Otherwise, it's the legacy case where
-        # type is not specified, in which case we want to use vm.Action, which has type="action".
-        try:
-            return action["type"]
-        except KeyError:
-            warnings.warn(
-                "Action without an explicit `type` specified will not work in Vizro 1.0.0. Specify `type: action` for "
-                "a custom action or, for example, `type: export_data` for a built-in action.",
-                FutureWarning,
-                stacklevel=3,
-            )
-            return "action"
-
-    # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
-    # union_tag_not_found error is raised.
-    return getattr(action, "type", None)
 
 
 def _clean_module_string(module_string: str) -> str:
@@ -168,21 +119,12 @@ class _JsonSchemaExtraType(TypedDict):
     """Type that specifies the extra information needed to parse a CapturedCallable from JSON/YAML."""
 
     import_path: str
-    # A single accepted mode, or a collection of accepted modes (e.g. `Table` accepts both "ag_grid" and "table").
-    # TODO[1.0.0]: revert to `mode: str`. The tuple form exists only because `Table` accepts two backings; once Table
-    #  is AG-Grid-only there is a single accepted mode again.
-    mode: Union[str, tuple[str, ...]]
+    # The accepted capture mode for the model's figure, e.g. "ag_grid" for `Table`.
+    mode: str
 
 
 def _validate_captured_callable(cls, value: Any, info: ValidationInfo):
     """Reusable validator for the `figure` argument of Figure like models."""
-    # Bypass validation so that legacy vm.Action(function=filter_interaction(...)) and
-    # vm.Action(function=export_data(...)) work.
-    from vizro.actions import export_data, filter_interaction
-
-    if isinstance(value, (export_data, filter_interaction)):
-        return value
-
     try:
         allow_undefined_captured_callable: list[str] = TypeAdapter(list[str]).validate_python(
             info.context.get("allow_undefined_captured_callable", []) if info.context is not None else []
@@ -221,7 +163,7 @@ class CapturedCallable:
         """
         # Use this to declare the type of the attributes only once due to if clauses below.
         self.__function: Callable[..., Any] | str
-        self._mode: Literal["graph", "action", "table", "ag_grid", "figure"] | None
+        self._mode: Literal["graph", "action", "ag_grid", "figure"] | None
         self._model_example: str | None
 
         if callable(function):
@@ -342,7 +284,7 @@ class CapturedCallable:
     @classmethod
     def _validate_captured_callable(
         cls,
-        captured_callable_config: Union[dict[str, Any], _SupportsCapturedCallable, CapturedCallable],
+        captured_callable_config: dict[str, Any] | _SupportsCapturedCallable | CapturedCallable,
         json_schema_extra: _JsonSchemaExtraType,
         allow_undefined_captured_callable: list[str],
     ):
@@ -376,10 +318,10 @@ class CapturedCallable:
     @classmethod
     def _parse_json(
         cls,
-        captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, dict[str, Any]],
+        captured_callable_config: _SupportsCapturedCallable | CapturedCallable | dict[str, Any],
         json_schema_extra: _JsonSchemaExtraType,
         allow_undefined_captured_callable: list[str],
-    ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
+    ) -> CapturedCallable | _SupportsCapturedCallable:
         """Parses captured_callable_config specification from JSON/YAML.
 
         If captured_callable_config is already _SupportCapturedCallable or CapturedCallable then it just passes through
@@ -428,7 +370,7 @@ class CapturedCallable:
 
     @classmethod
     def _extract_from_attribute(
-        cls, captured_callable: Union[_SupportsCapturedCallable, CapturedCallable]
+        cls, captured_callable: _SupportsCapturedCallable | CapturedCallable
     ) -> CapturedCallable:
         """Extracts CapturedCallable from _SupportCapturedCallable (e.g. _DashboardReadyFigure).
 
@@ -443,30 +385,18 @@ class CapturedCallable:
         cls, captured_callable: CapturedCallable, json_schema_extra: _JsonSchemaExtraType
     ) -> CapturedCallable:
         """Checks captured_callable is right type and mode."""
-        from vizro.actions import export_data, filter_interaction
-
-        # Bypass validation so that legacy {"function": {"_target_": "filter_interaction"}} and
-        # {"function": {"_target_": "export_data"}} work.
-        if isinstance(captured_callable, (export_data, filter_interaction)):
-            return captured_callable
-
         expected_mode = json_schema_extra["mode"]
         import_path = json_schema_extra["import_path"]
-        # `mode` may be a single mode or a collection of accepted modes. Normalize to a tuple so the check and the
-        # error messages handle either (e.g. `Table` accepts both "ag_grid" and "table").
-        # TODO[1.0.0]: `mode` is always a single str once Table is AG-Grid-only; drop this tuple normalization and
-        #  compare `captured_callable._mode` against the scalar `expected_mode` directly.
-        expected_modes = (expected_mode,) if isinstance(expected_mode, str) else tuple(expected_mode)
-        allowed_decorators = " or ".join(f"@capture('{expected}')" for expected in expected_modes)
+        allowed_decorator = f"@capture('{expected_mode}')"
 
         if not isinstance(captured_callable, CapturedCallable):
             raise ValueError(
                 f"Invalid CapturedCallable. Supply a function imported from {import_path} or defined with "
-                f"decorator {allowed_decorators}."
+                f"decorator {allowed_decorator}."
             )
-        if (mode := captured_callable._mode) and mode not in expected_modes:
+        if (mode := captured_callable._mode) and mode != expected_mode:
             raise ValueError(
-                f"CapturedCallable was defined with @capture('{mode}') rather than {allowed_decorators} and so "
+                f"CapturedCallable was defined with @capture('{mode}') rather than {allowed_decorator} and so "
                 "is not compatible with the model."
             )
 
@@ -474,7 +404,7 @@ class CapturedCallable:
 
     @staticmethod
     def _format_args(
-        args_for_repr: Optional[Union[list[Any], tuple[Any, ...]]] = None, arguments: Optional[dict[str, Any]] = None
+        args_for_repr: Optional[list[Any] | tuple[Any, ...]] = None, arguments: Optional[dict[str, Any]] = None
     ) -> str:
         """Format arguments for string representation."""
         return ", ".join(
@@ -558,10 +488,6 @@ class capture:
         def graph_function(): ...
 
 
-        @capture("table")
-        def table_function(): ...
-
-
         @capture("ag_grid")
         def ag_grid_function(): ...
 
@@ -571,14 +497,13 @@ class capture:
         ```
     """
 
-    def __init__(self, mode: Literal["graph", "action", "table", "ag_grid", "figure"]):
+    def __init__(self, mode: Literal["graph", "action", "ag_grid", "figure"]):
         """Decorator to capture a function call."""
         # mode and model_example are used in later validations of the captured callable.
         self._mode = mode
         model_examples = {
             "graph": "vm.Graph(figure=...)",
             "action": "vm.Action(function=...)",
-            "table": "vm.Table(figure=...)",
             "ag_grid": "vm.Table(figure=...)",
             "figure": "vm.Figure(figure=...)",
         }
@@ -587,7 +512,7 @@ class capture:
     def __call__(self, func, /):
         """Produces a CapturedCallable or _DashboardReadyFigure.
 
-        mode="action" and mode="table" give a CapturedCallable, while mode="graph" gives a _DashboardReadyFigure that
+        mode="action" and mode="ag_grid" give a CapturedCallable, while mode="graph" gives a _DashboardReadyFigure that
         contains a CapturedCallable. In both cases, the CapturedCallable is based on func and the provided
         *args and **kwargs.
         """
@@ -653,12 +578,12 @@ class capture:
                 return captured_callable
 
             return wrapped
-        elif self._mode in ["table", "ag_grid", "figure"]:
+        elif self._mode in ["ag_grid", "figure"]:
 
             @functools.wraps(func)
             def wrapped(*args, **kwargs) -> CapturedCallable:
                 if "data_frame" not in inspect.signature(func).parameters:
-                    raise ValueError(f"{func.__name__} must have data_frame argument to use capture('table').")
+                    raise ValueError(f"{func.__name__} must have data_frame argument to use capture('{self._mode}').")
 
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
                 captured_callable._mode = self._mode
@@ -672,7 +597,7 @@ class capture:
 
             return wrapped
         raise ValueError(
-            "Valid modes of the capture decorator are @capture('graph'), @capture('action'), @capture('table'), "
+            "Valid modes of the capture decorator are @capture('graph'), @capture('action'), "
             "@capture('ag_grid') and @capture('figure')."
         )
 
@@ -708,15 +633,14 @@ OptionsType: TypeAlias = list[SingleValueType | _OptionsDictType]
 
 # All the below types rely on models and so must use ForwardRef (that is, "Checklist" rather than actual
 # Checklist class).
-# TODO[1.0.0]: drop `RangeSlider` from this union and from the docstring list below — the deprecated model is deleted.
 SelectorType = Annotated[
-    "Cascader | Checklist | DatePicker | DateTimePicker | Dropdown | RadioItems | RangeSlider | Slider | Switch | TimePicker",  # noqa: E501
+    "Cascader | Checklist | DatePicker | DateTimePicker | Dropdown | RadioItems | Slider | Switch | TimePicker",
     Field(discriminator="type", description="Selectors to be used inside a control."),
 ]
 """Discriminated union. Type of selector to be used inside a control: [`Cascader`][vizro.models.Cascader],
 [`Checklist`][vizro.models.Checklist], [`DatePicker`][vizro.models.DatePicker],
 [`DateTimePicker`][vizro.models.DateTimePicker], [`Dropdown`][vizro.models.Dropdown],
-[`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider],
+[`RadioItems`][vizro.models.RadioItems], [`Slider`][vizro.models.Slider],
 [`Switch`][vizro.models.Switch] or [`TimePicker`][vizro.models.TimePicker]."""
 
 _FormComponentType = Annotated[
@@ -732,7 +656,7 @@ ControlType = Annotated[
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    "AgGrid | Button | Card | Container | Figure | Graph | Text | Table | Tabs",
+    "Button | Card | Container | Figure | Graph | Text | Table | Tabs",
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",
@@ -741,8 +665,7 @@ ComponentType = Annotated[
 """Discriminated union. Type of component that makes up part of the layout on the page:
 [`Button`][vizro.models.Button], [`Card`][vizro.models.Card],[`Container`][vizro.models.Container],
 [`Figure`][vizro.models.Figure], [`Table`][vizro.models.Table], [`Graph`][vizro.models.Graph],
-[`Text`][vizro.models.Text], [`Tabs`][vizro.models.Tabs],
-or [`AgGrid`][vizro.models.AgGrid]."""
+[`Text`][vizro.models.Text] or [`Tabs`][vizro.models.Tabs]."""
 
 # TODO: ideally description would have json_schema_input_type=str | ModelID because of the ID/title ambiguity,
 #  but this requires pydantic >= 2.9.
@@ -756,11 +679,8 @@ NavSelectorType = Annotated[
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
 
 LayoutType = Annotated[
-    Annotated["Grid", Tag("grid")] | Annotated["Flex", Tag("flex")] | Annotated["Layout", Tag("legacy_layout")],
-    Field(
-        discriminator=Discriminator(_get_layout_discriminator),
-        description="Type of layout to place components on the page.",
-    ),
+    "Grid | Flex",
+    Field(discriminator="type", description="Type of layout to place components on the page."),
 ]
 """Discriminated union. Type of layout to place components on the page:
 [`Grid`][vizro.models.Grid] or [`Flex`][vizro.models.Flex]."""
@@ -768,20 +688,19 @@ LayoutType = Annotated[
 # JSONSchema should be skipped for private actions that are not part of the public API. `_on_page_load` is the
 # internal default action attached to every `Page`; it subclasses the public `update_targets`.
 ActionType = Annotated[
-    Annotated["Action", Tag("action")]
-    | Annotated["export_data", Tag("export_data")]
-    | Annotated["filter_interaction", Tag("filter_interaction")]
-    # TODO[1.0.0]: remove this line — the deprecated `set_control` action alias is deleted.
-    | Annotated["set_control", Tag("set_control")]
-    | Annotated["set_controls", Tag("set_controls")]
-    | Annotated["show_notification", Tag("show_notification")]
-    | Annotated["update_notification", Tag("update_notification")]
-    | Annotated["update_targets", Tag("update_targets")]
-    | SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
-    Field(discriminator=Discriminator(_get_action_discriminator), description="Action."),
+    Union[
+        "Action",
+        "export_data",
+        "set_controls",
+        "show_notification",
+        "update_notification",
+        "update_targets",
+        SkipJsonSchema["_on_page_load"],
+    ],
+    Field(discriminator="type", description="Action."),
 ]
-"""Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
-`filter_interaction`][vizro.models.filter_interaction]."""
+"""Discriminated union. Type of action: [`Action`][vizro.models.Action],
+[`export_data`][vizro.actions.export_data] or [`set_controls`][vizro.actions.set_controls]."""
 
 # TODO: ideally actions would have json_schema_input_type=list[ActionType] | ActionType attached to
 # the BeforeValidator, but this requires pydantic >= 2.9.
@@ -810,13 +729,10 @@ ActionNotificationType = Annotated[
 
 
 # Extra type groups used only for static type checking, not at runtime.
-FigureWithFilterInteractionType: TypeAlias = "Graph | Table | AgGrid"
-FigureType: TypeAlias = "Graph | Table | AgGrid | Figure"
+FigureType: TypeAlias = "Graph | Table | Figure"
 
 
 # TODO-AV2 A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
-# Remember filter_interaction won't be here in future.
 class _Controls(TypedDict):
     filters: list[Any]
     parameters: list[Any]
-    filter_interaction: list[dict[str, Any]]

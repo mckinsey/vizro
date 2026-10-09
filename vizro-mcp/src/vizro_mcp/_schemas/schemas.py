@@ -45,8 +45,8 @@ For more complex charts and those that require data manipulation, use the `custo
     )
 
 
-class AgGridEnhanced(vm.AgGrid):
-    """AgGrid model that uses dash-ag-grid to create the figure."""
+class TableEnhanced(vm.Table):
+    """Table model backed by a dash-ag-grid figure."""
 
     figure: dict[str, Any] = Field(
         description="""

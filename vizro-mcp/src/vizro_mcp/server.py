@@ -13,10 +13,10 @@ from pydantic import Field, ValidationError
 from vizro import Vizro
 
 from vizro_mcp._schemas import (
-    AgGridEnhanced,
     ChartPlan,
     FigureEnhanced,
     GraphEnhanced,
+    TableEnhanced,
 )
 from vizro_mcp._utils import (
     CHART_INSTRUCTIONS,
@@ -114,6 +114,23 @@ def get_model_json_schema(
     Returns:
         JSON schema of the requested Vizro model
     """
+    # Models and actions removed or renamed in Vizro 1.0.0: give migration guidance instead of a bare "not found".
+    removed_models = {
+        "AgGrid": "Table (with a dash_ag_grid figure)",
+        "RangeSlider": "Slider (with range=True)",
+        "Layout": "Grid",
+        "set_control": "set_controls",
+        "filter_interaction": "set_controls",
+    }
+    if model_name in removed_models:
+        return ModelJsonSchemaResults(
+            model_name=model_name,
+            json_schema={},
+            additional_info=(
+                f"Model '{model_name}' was removed in Vizro 1.0.0. Use {removed_models[model_name]} instead."
+            ),
+        )
+
     if not hasattr(vm, model_name):
         return ModelJsonSchemaResults(
             model_name=model_name,
@@ -123,8 +140,7 @@ def get_model_json_schema(
 
     modified_models = {
         "Graph": GraphEnhanced,
-        "AgGrid": AgGridEnhanced,
-        "Table": AgGridEnhanced,
+        "Table": TableEnhanced,
         "Figure": FigureEnhanced,
     }
 
@@ -134,13 +150,6 @@ def get_model_json_schema(
             json_schema=modified_models[model_name].model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
             additional_info="""LLM must remember to replace `$ref` with the actual config. Request the schema of
 that model if necessary. Do NOT forget to call `validate_dashboard_config` after each iteration.""",
-        )
-    deprecated_models = {"filter_interaction": "set_control", "Layout": "Grid"}
-    if model_name in deprecated_models:
-        return ModelJsonSchemaResults(
-            model_name=model_name,
-            json_schema={},
-            additional_info=f"Model '{model_name}' is deprecated. Use {deprecated_models[model_name]} instead.",
         )
 
     model_class = getattr(vm, model_name)

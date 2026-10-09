@@ -52,7 +52,7 @@ filters_page = vm.Page(
                                     ],
                                 ),
                                 vm.Button(
-                                    id=cnst.FILTERS_PAGE_SET_CONTROL_FILTER_BUTTON,
+                                    id=cnst.FILTERS_PAGE_SET_CONTROLS_FILTER_BUTTON,
                                     text="Set versicolor",
                                     actions=set_controls(
                                         controls=[cnst.RADIO_ITEMS_FILTER_CONTROL_ID], value="versicolor"

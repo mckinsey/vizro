@@ -9,9 +9,9 @@ description: Use this skill when adding cross-filter, cross-highlight, drill-thr
 
 All advanced interactions follow the same shape:
 
-1. A **source** component triggers `va.set_control` when the user clicks it. Practical sources are `vm.Graph` and `vm.AgGrid` — they carry click-data (column values from the clicked point/cell) that can drive a dynamic filter. (`vm.Figure`/`vm.Button`/`vm.Card` technically support `set_control` too, but only with a hardcoded literal `value`, so they are not useful for cross-filtering.)
-2. `set_control` writes a value into an intermediate **control** (`vm.Filter` or `vm.Parameter`) with an explicit `id`.
-3. The control updates **target** components. Filter/Parameter targets are data-bearing components: `vm.Graph`, `vm.AgGrid`, `vm.Figure`, `vm.Table`.
+1. A **source** component triggers `va.set_controls` when the user clicks it. Practical sources are `vm.Graph` and `vm.Table` — they carry click-data (column values from the clicked point/cell) that can drive a dynamic filter. (`vm.Figure`/`vm.Button`/`vm.Card` technically support `set_controls` too, but only with a hardcoded literal `value`, so they are not useful for cross-filtering.)
+2. `set_controls` writes a value into an intermediate **control** (`vm.Filter` or `vm.Parameter`) with an explicit `id`.
+3. The control updates **target** components. Filter/Parameter targets are data-bearing components: `vm.Graph`, `vm.Table`, `vm.Figure`, `vm.Table`.
 
 The control is always explicit — you do not connect components directly. This makes interactions composable (you can wire multiple sources to the same control, or one source to multiple controls).
 
@@ -20,17 +20,17 @@ The control is always explicit — you do not connect components directly. This 
 | Action | Purpose | Trigger |
 | --- | --- | --- |
 | `va.export_data()` | Download all on-page data as CSV (respects filters) | `vm.Button` |
-| `va.set_control(control=..., value=...)` | Set the value of a Filter or Parameter | `vm.Graph` or `vm.AgGrid` |
+| `va.set_controls(controls=..., value=...)` | Set the value of a Filter or Parameter | `vm.Graph` or `vm.Table` |
 
 `import vizro.actions as va`. Built-in actions are passed directly into `actions=` — wrapping them in `vm.Action` raises an error (deliberate: built-ins have their own predefined `inputs`/`outputs` and would conflict with `vm.Action`'s).
 
 ```python
 # Correct
 vm.Button(text="Export data", actions=va.export_data())
-vm.Graph(actions=va.set_control(control="region_filter", value="y"))
+vm.Graph(actions=va.set_controls(controls="region_filter", value="y"))
 
 # Wrong — raises an exception
-vm.Graph(actions=[vm.Action(function=va.set_control(...))])
+vm.Graph(actions=[vm.Action(function=va.set_controls(...))])
 ```
 
 ## Named interaction patterns
@@ -77,13 +77,13 @@ Use a chart or table as a Filter/Parameter source only when the user explicitly 
 
 ## Key gotchas
 
-- **`custom_data` for non-positional values**: When cross-filtering from a graph using a column that is not on a positional axis (`x`/`y`/`z`/`lat`/`lon`), add `custom_data="column"` to the figure and use `value="column"` in `set_control`. Otherwise the click does nothing.
+- **`custom_data` for non-positional values**: When cross-filtering from a graph using a column that is not on a positional axis (`x`/`y`/`z`/`lat`/`lon`), add `custom_data="column"` to the figure and use `value="column"` in `set_controls`. Otherwise the click does nothing.
 - **`visible=False` for cross-highlight**: When a Parameter is the highlight control, hide its selector — the highlight effect itself is the feedback. Also set `visible=False` on a cross-filter when the user explicitly requests it.
 - **`"NONE"` in highlight Parameter selector options**: Include `"NONE"` as the first option so the chart starts unhighlighted.
 - **`show_in_url=True` for cross-page**: Required on the target Filter. Without it, Vizro raises `ValueError` at build time and the app won't start.
 - **Back button + Flex layout for drill-through targets**: Pages that receive a drill-through must use `layout=vm.Flex(direction="column")` so the back button takes natural height (Grid would waste a full 140px+ row). Put remaining content in a `vm.Container` with its own `vm.Grid`.
 - **Header hint on interactive source**: Always add a short, action-oriented `header` (e.g. `header="Click a bar to filter by region"`) so users know the component is clickable.
-- **Don't use `filter_interaction`**: It is deprecated. Use `va.set_control` instead.
+- **Don't use `filter_interaction`**: It was removed in Vizro 1.0.0. Use `va.set_controls` instead.
 
 ## Quick code recipes
 
@@ -99,7 +99,7 @@ vm.Button(text="Export data", actions=va.export_data())
 vm.Graph(
     header="Click a bar to filter by region",
     figure=px.bar("data", x="value", y="region", orientation="h"),
-    actions=va.set_control(control="region_filter", value="y"),
+    actions=va.set_controls(controls="region_filter", value="y"),
 )
 vm.Filter(id="region_filter", column="region")
 ```
@@ -111,8 +111,8 @@ vm.Graph(
     header="Click a cell to filter the table below",
     figure=px.density_heatmap("appointments", x="day", y="time_slot"),
     actions=[
-        va.set_control(control="day_filter", value="x"),
-        va.set_control(control="time_filter", value="y"),
+        va.set_controls(controls="day_filter", value="x"),
+        va.set_controls(controls="time_filter", value="y"),
     ],
 )
 vm.Filter(id="day_filter", column="day", targets=["appointments_table"])
@@ -123,10 +123,10 @@ vm.Filter(id="time_filter", column="time_slot", targets=["appointments_table"])
 
 ```python
 # Source page
-vm.AgGrid(
+vm.Table(
     header="Click a row to view details",
     figure=dash_ag_grid("reps"),
-    actions=va.set_control(control="rep_filter", value="rep_name"),
+    actions=va.set_controls(controls="rep_filter", value="rep_name"),
 )
 
 # Target page

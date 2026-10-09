@@ -25,7 +25,7 @@ dash==4.0.0
     #   dash-mantine-components
     #   vizro
     #   vizro-dash-components
-dash-ag-grid==33.3.3
+dash-ag-grid==35.3.0
     # via vizro
 dash-bootstrap-components==2.0.4
     # via vizro
@@ -118,9 +118,9 @@ tzdata==2025.3
     # via pandas
 urllib3==2.6.2
     # via requests
-vizro==0.1.54
+vizro==0.1.62
     # via -r requirements.in
-vizro-dash-components==0.1.0
+vizro-dash-components==0.3.0
     # via vizro
 werkzeug==3.1.6
     # via

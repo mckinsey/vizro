@@ -3,7 +3,6 @@ from custom_actions.custom_actions import scatter_click_data_custom_action
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.actions import filter_interaction
 
 iris = px.data.iris()
 
@@ -22,10 +21,8 @@ filter_interactions_page = vm.Page(
                 custom_data=["species"],
             ),
             actions=[
-                filter_interaction(targets=[cnst.BOX_INTERACTIONS_ID]),
                 vm.Action(
-                    function=scatter_click_data_custom_action(),
-                    inputs=[f"{cnst.SCATTER_INTERACTIONS_ID}.clickData"],
+                    function=scatter_click_data_custom_action(f"{cnst.SCATTER_INTERACTIONS_ID}.clickData"),
                     outputs=[f"{cnst.CARD_INTERACTIONS_ID}"],
                 ),
             ],
