@@ -2230,30 +2230,30 @@ class TestFilterHierarchicalColumn:
             # An empty/None selection matches no rows (a hierarchical filter with nothing selected has no path).
             (None, False, [False, False, False, False]),
             ([], True, [False, False, False, False]),
-            # A single path isolates one branch's leaf even when the leaf label is duplicated elsewhere.
+            # A single path-mode entry isolates one branch's leaf even when the leaf label is duplicated elsewhere.
             (["North", "Portland"], False, [True, False, False, False]),
             (["South", "Portland"], False, [False, False, True, False]),
-            # A list of paths ORs the matches together.
+            # A list of path-mode entries ORs the matches together.
             ([["North", "Portland"], ["South", "Austin"]], True, [True, False, False, True]),
-            # Legacy leaf-only values (pre-full-path Cascader, e.g. restored from session persistence) carry no
-            # branch context, so they match the leaf column alone. A unique leaf resolves to its one row; a
-            # duplicated leaf matches every branch (the ambiguity the full-path form was introduced to remove).
+            # Leaf-mode entries (a bare leaf value, as a full_path=False filter emits) carry no branch context,
+            # so they match the leaf column alone. A unique leaf resolves to its one row; a duplicated leaf
+            # matches every branch (the ambiguity path mode was introduced to remove).
             ("Salem", False, [False, True, False, False]),
             ("Portland", False, [True, False, True, False]),
             (["Salem", "Austin"], True, [False, True, False, True]),
-            # Empty/None entries within a multi selection are skipped; the remaining path still matches.
+            # Empty/None entries within a multi selection are skipped; the remaining path-mode entry still matches.
             ([[], ["South", "Austin"]], True, [False, False, False, True]),
         ],
         ids=[
             "none",
             "empty",
-            "single_north",
-            "single_south_duplicate_leaf",
-            "multi",
-            "legacy_single_unique_leaf",
-            "legacy_single_duplicate_leaf",
-            "legacy_multi_leaves",
-            "multi_skips_empty_entry",
+            "path_mode_single_north",
+            "path_mode_single_south_duplicate_leaf",
+            "path_mode_multi",
+            "leaf_mode_single_unique_leaf",
+            "leaf_mode_single_duplicate_leaf",
+            "leaf_mode_multi_leaves",
+            "path_mode_multi_skips_empty_entry",
         ],
     )
     def test_filter_hierarchical_isin(self, value, multi, expected):

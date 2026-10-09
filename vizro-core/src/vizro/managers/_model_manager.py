@@ -44,7 +44,6 @@ class ModelManager:
 
     @_state_modifier
     def __delitem__(self, model_id: ModelID):
-        # Only required to handle legacy actions and could be removed when those are no longer needed.
         del self.__models[model_id]
 
     def __getitem__(self, model_id: ModelID) -> VizroBaseModel:

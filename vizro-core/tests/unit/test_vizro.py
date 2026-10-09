@@ -223,7 +223,6 @@ class TestActionLogDevtool:
 
 
 class TestRun:
-    @pytest.mark.filterwarnings("ignore:`AgGrid` is deprecated:FutureWarning")
     def test_run_block_with_undefined_captured_callables(self):
         dashboard_config = {
             "title": "Test dashboard",
