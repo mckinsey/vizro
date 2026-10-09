@@ -108,6 +108,31 @@ class TestKPICardReference:
         )
         assert_component_equal(result, expected)
 
+    def test_kpi_card_reference_negative_reference(self):
+        data_frame = pd.DataFrame({"Actual": [-50], "Reference": [-100]})
+        result = kpi_card_reference(data_frame=data_frame, value_column="Actual", reference_column="Reference")()
+        expected = dbc.Card(
+            [
+                dbc.CardHeader([html.H4("Sum Actual", className="card-kpi-title"), None], className="card-kpi-header"),
+                dbc.CardBody(["-50", None]),
+                dbc.CardFooter(
+                    [
+                        html.Span(
+                            [
+                                html.Span("arrow_circle_up", className="material-symbols-outlined"),
+                                html.Span("+50.0%"),
+                            ],
+                            className="card-kpi-delta-chip",
+                        ),
+                        html.Span("vs. reference (-100)", className="card-kpi-reference-text"),
+                    ],
+                    class_name="color-pos",
+                ),
+            ],
+            class_name="card-kpi",
+        )
+        assert_component_equal(result, expected)
+
     def test_kpi_card_reference_mandatory_delta_positive(self):
         result = kpi_card_reference(data_frame=df, value_column="Reference", reference_column="Actual")()
         expected = dbc.Card(
