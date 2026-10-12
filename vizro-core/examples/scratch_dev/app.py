@@ -97,7 +97,5 @@ dashboard = vm.Dashboard(
     ],
 )
 
-# Comment to retrigger the CI
-
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
