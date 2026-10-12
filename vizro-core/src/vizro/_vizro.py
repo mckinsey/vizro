@@ -5,7 +5,7 @@ import warnings
 from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path, PurePosixPath
-from typing import TYPE_CHECKING, Any, TypedDict, cast
+from typing import TYPE_CHECKING, Any, Self, TypedDict, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -14,7 +14,6 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback, 
 from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
 from packaging.version import parse
-from typing_extensions import Self
 
 import vizro
 from vizro._constants import VIZRO_ASSETS_PATH

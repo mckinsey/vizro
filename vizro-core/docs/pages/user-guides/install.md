@@ -16,7 +16,7 @@ If you prefer to work locally, this guide will walk you through installing Vizro
 
 Before installing Vizro, you'll need:
 
-- Python 3.10 or later
+- Python 3.11 or later
 - A virtual environment (recommended)
 
 **For Python installation and virtual environment setup, refer to:**

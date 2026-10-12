@@ -7,7 +7,7 @@ import time
 import warnings
 from collections import ChainMap
 from collections.abc import Callable, Collection, Iterable, Mapping
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pprint import pformat
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, cast
@@ -510,7 +510,7 @@ class _BaseAction(VizroBaseModel):
         A FAILED entry only reaches the logs panel when the error is handled with a notification; otherwise the
         caller re-raises `error_msg` (to avoid failing silently), which aborts the return and discards this `Patch()`.
         """
-        timestamp = datetime.now(tz=timezone.utc).strftime("%H:%M:%S.%f")[:-3]
+        timestamp = datetime.now(tz=UTC).strftime("%H:%M:%S.%f")[:-3]
         if error_msg is None:
             log_text = f"[{timestamp}] ===== Running action with id {self.id}, function {self._action_name} ====="
         else:
