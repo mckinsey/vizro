@@ -152,6 +152,13 @@
   color: var(--Dash-Fill-Interactive-Strong);
 }
 
+.dash-cascader-breadcrumb {
+  color: var(--Dash-Text-Weak);
+  flex-shrink: 0;
+  font-size: 0.875em;
+  white-space: nowrap;
+}
+
 /* No-results message */
 .dash-cascader-no-results {
   color: var(--Dash-Text-Disabled);

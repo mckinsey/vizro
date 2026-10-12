@@ -1223,7 +1223,7 @@ const CascaderFragment = ({
     return (
       <div className="dash-cascader-results">
         {searchResults.map((result) => {
-          const { option } = result;
+          const { option, breadcrumb } = result;
           const isLeafHit = result.kind === "leaf";
           const isSelected = isLeafHit && selectedSet.has(option.key);
           const rowKey =
@@ -1276,6 +1276,9 @@ const CascaderFragment = ({
                 />
               )}
               <span className="dash-cascader-row-label">{option.label}</span>
+              {breadcrumb && (
+                <span className="dash-cascader-breadcrumb">{breadcrumb}</span>
+              )}
             </div>
           );
         })}

@@ -1216,6 +1216,9 @@ def test_cascader_search_duplicate_leaf_labels_distinct_rows(dash_duo):
     dash_duo.wait_for_element(".dash-cascader-result-row")
     rows = dash_duo.driver.find_elements("css selector", ".dash-cascader-result-row")
     assert len(rows) == 2
+    # Breadcrumbs disambiguate the two otherwise-identical "Portland" rows by parent hierarchy.
+    breadcrumbs = {el.text for el in dash_duo.driver.find_elements("css selector", ".dash-cascader-breadcrumb")}
+    assert breadcrumbs == {"North", "South"}
     rows[0].click()  # Portland (North), the first search hit in tree order
     dash_duo.wait_for_text_to_equal("#out", "North/Portland")
 

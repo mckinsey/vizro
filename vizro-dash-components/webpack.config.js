@@ -116,8 +116,10 @@ module.exports = function (env, argv) {
     performance: {
       hints: "error",
       maxAssetSize: 400 * 1024, // 400 KB default for all assets
-      // Radix Popover + icons (Cascader mirrors dcc.Dropdown) live in the main chunk.
-      maxEntrypointSize: 101 * 1024,
+      // Radix Popover + icons (Cascader mirrors dcc.Dropdown) live in the main chunk. Bumped again
+      // to restore Cascader's search-result breadcrumbs (parent hierarchy hints), dropped by the
+      // flyout-column redesign but re-added as a bug fix — the prior 101 KB budget had no room left.
+      maxEntrypointSize: 102 * 1024,
       assetFilter(assetFilename) {
         // MathJax is a known large dependency (~2 MB); exempt from the default limit.
         if (assetFilename === "async-mathjax.js") return false;
