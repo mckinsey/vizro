@@ -12,11 +12,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Removed
 
-- Drop support for Python 3.10. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- Drop support for Python 3.10. ([#1888](https://github.com/mckinsey/vizro/pull/1888))
 
 ### Added
 
-- Add support for Python 3.15. ([#XXXX](https://github.com/mckinsey/vizro/pull/XXXX))
+- Add support for Python 3.15. ([#1888](https://github.com/mckinsey/vizro/pull/1888))
 <!--
 ### Changed
 
