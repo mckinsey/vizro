@@ -2,9 +2,15 @@
 
 /* Base selectors before .dash-cascader-content > … (stylelint no-descending-specificity). */
 
-/* Holds column 0 only; deeper columns are pop-outs portaled elsewhere (.dash-cascader-column-flyout). */
+/* Holds column 0 only; deeper columns are pop-outs portaled elsewhere (.dash-cascader-column-flyout).
+ * `display: flex` (even with a single child) is required so `.dash-cascader-column`'s
+ * `max-height: 100%` has a definite containing block to resolve against — without it, the column
+ * grows unbounded and the overflow gets clipped one level up by `.dash-cascader-content` instead,
+ * scrolling the search box and Select All/Deselect All bar out of view along with the list. */
 .dash-cascader-columns {
   box-sizing: border-box;
+  display: flex;
+  overflow: hidden;
 }
 
 /* Search results — flat list */

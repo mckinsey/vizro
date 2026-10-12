@@ -368,6 +368,11 @@ const CascaderFragment = ({
     const growLeft =
       spaceRight < (columns.length - 1) * colWidth &&
       col0Rect.left > spaceRight;
+    // Mirrors `contentMaxHeight`'s formula (a CSS string, not usable for arithmetic here) — the
+    // tallest a flyout can ever render, used below as the pre-mount fallback for its real height.
+    const maxHeightPx = maxHeight
+      ? Math.min(maxHeight, window.innerHeight - 100)
+      : window.innerHeight - 100;
     for (let colIdx = 1; colIdx < columns.length; colIdx++) {
       const prevColumnEl = columnRefs.current[colIdx - 1];
       const rowEl = prevColumnEl?.querySelector<HTMLElement>(
@@ -378,31 +383,49 @@ const CascaderFragment = ({
       // flow) rather than the previous flyout's own rect, since when several levels mount in the same
       // update (e.g. search navigating straight into a branch 2+ levels deep) the previous flyout may
       // still be rendering at this render's not-yet-corrected fallback position.
-      // `top` has the same problem for column >= 2: anchor to the already-computed correct top of
-      // colIdx - 1 (available from this same pass, processed in order) plus the row's offset *within*
-      // its column — that offset is correct regardless of the column's own absolute position, since
-      // both the row and its column share whatever position error the column currently has.
+      // `anchorTop` has the same problem for column >= 2: anchor to the already-computed correct top
+      // of colIdx - 1 (available from this same pass, processed in order) plus the row's offset
+      // *within* its column — that offset is correct regardless of the column's own absolute
+      // position, since both the row and its column share whatever position error the column
+      // currently has.
       const rowRect = rowEl.getBoundingClientRect();
-      const top =
-        (colIdx === 1
+      const anchorTop =
+        colIdx === 1
           ? rowRect.top
           : rects[colIdx - 1].top +
-            (rowRect.top - prevColumnEl.getBoundingClientRect().top)) -
-        FLYOUT_BORDER_WIDTH;
+            (rowRect.top - prevColumnEl.getBoundingClientRect().top);
+      // Flyouts grow downward from the anchor row by default — fine until a row opens one close
+      // enough to the viewport's bottom edge that the flyout would run past it, since (like the
+      // horizontal case) these are `position: fixed` and no page scroll ever reaches them. Flip
+      // upward (bottom-aligned to the row instead of top-aligned) when there's not enough room
+      // below *and* there's more room above, decided per level since rows at different depths in
+      // the same open chain can sit at very different heights. `flyoutHeight` prefers this flyout's
+      // own already-rendered height (from a previous pass) over the panel-wide cap, since real
+      // content shorter than that cap would otherwise make the flip decision overly conservative.
+      const flyoutHeight =
+        columnRefs.current[colIdx]?.getBoundingClientRect().height ||
+        maxHeightPx;
+      const rowBottom = anchorTop + rowRect.height;
+      const spaceBelow = window.innerHeight - anchorTop;
+      const spaceAbove = rowBottom;
+      const growUp = spaceBelow < flyoutHeight && spaceAbove > spaceBelow;
+      const top = growUp
+        ? rowBottom + FLYOUT_BORDER_WIDTH - flyoutHeight
+        : anchorTop - FLYOUT_BORDER_WIDTH;
       const left = growLeft
         ? col0Rect.left - colIdx * colWidth
         : col0Rect.right + (colIdx - 1) * colWidth;
-      // Last-resort clamp: deep enough chains can still overflow both directions (e.g. the trigger
+      // Last-resort clamp: deep enough chains can still overflow on either axis (e.g. the trigger
       // sits near one edge of the viewport with a long tree open) — keep at least this column's own
-      // width on-screen rather than leaving it fully unreachable, even if that means overlapping a
-      // neighboring column.
+      // width/height on-screen rather than leaving it fully unreachable, even if that means
+      // overlapping a neighboring column.
       rects[colIdx] = {
-        top,
+        top: Math.max(0, Math.min(top, window.innerHeight - flyoutHeight)),
         left: Math.max(0, Math.min(left, window.innerWidth - colWidth)),
       };
     }
     setFlyoutGeometry({ width: colWidth, rects });
-  }, [columns, activePath]);
+  }, [columns, activePath, maxHeight]);
 
   useLayoutEffect(() => {
     recomputeFlyoutRects();
@@ -578,7 +601,10 @@ const CascaderFragment = ({
       // Columns beyond the first are portaled outside e.currentTarget's (Popover.Content's) DOM
       // subtree (see recomputeFlyoutRects), so search from portalContainer — the real DOM ancestor
       // shared by content and every portaled flyout — instead. That also picks up the trigger
-      // button (a portalContainer sibling of content), so exclude it explicitly.
+      // button and its own descendants (e.g. the trigger's "clear selection" button, which matches
+      // `button:not([disabled])`), so exclude the whole trigger subtree, not just the trigger
+      // element itself — a descendant slipping through would still be in `portalContainer` but
+      // outside `Popover.Content`, where this handler is attached, trapping focus there once landed.
       // Select All / Deselect All are excluded from the vertical (up/down) flow: they form a
       // horizontal group navigated with Left/Right, and ArrowDown from them jumps to the options
       // (see handleActionKeyDown).
@@ -588,7 +614,7 @@ const CascaderFragment = ({
         ) as HTMLElement[]
       ).filter(
         (el) =>
-          el !== triggerRef.current &&
+          !triggerRef.current?.contains(el) &&
           !el.classList.contains("dash-dropdown-action-button"),
       );
 
