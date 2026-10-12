@@ -43,6 +43,10 @@
   padding-bottom: 4px;
 }
 
+.dash-cascader-column-flyout {
+  padding-bottom: 0;
+}
+
 /* Dropdown & Cascader Checkboxes */
 .dash-options-list-option-wrapper .dash-options-list-option-checkbox,
 .dash-cascader-row .dash-cascader-checkbox,

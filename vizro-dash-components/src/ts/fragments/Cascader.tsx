@@ -48,6 +48,11 @@ type CascaderValue = Path | Path[] | CascaderScalar | CascaderScalar[] | null;
 // Stable identity so path mode's `leafToPath` memo dep doesn't churn; path mode never reads it.
 const EMPTY_LEAF_TO_PATH: Map<string, CascaderPath> = new Map();
 
+// Flyouts are positioned by their outer box edge (`top`/`left`), but `.dash-cascader-column-flyout`
+// has a 1px border (cascader.css) inside that box, so the first row's content sits 1px below the
+// anchor row's top unless we shift the box up by the border width to compensate.
+const FLYOUT_BORDER_WIDTH = 1;
+
 export type CascaderLabels = {
   select_all?: string;
   deselect_all?: string;
@@ -379,10 +384,11 @@ const CascaderFragment = ({
       // both the row and its column share whatever position error the column currently has.
       const rowRect = rowEl.getBoundingClientRect();
       const top =
-        colIdx === 1
+        (colIdx === 1
           ? rowRect.top
           : rects[colIdx - 1].top +
-            (rowRect.top - prevColumnEl.getBoundingClientRect().top);
+            (rowRect.top - prevColumnEl.getBoundingClientRect().top)) -
+        FLYOUT_BORDER_WIDTH;
       const left = growLeft
         ? col0Rect.left - colIdx * colWidth
         : col0Rect.right + (colIdx - 1) * colWidth;
