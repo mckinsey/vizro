@@ -21,11 +21,11 @@ def scatter_with_clickmode_event(data_frame, **kwargs):
 
 
 cross_filter_multi_select_page = vm.Page(
-    title=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
+    title=cnst.SET_CONTROLS_MULTI_SELECT_PAGE,
     layout=vm.Grid(grid=[[0, 3], [1, 3], [2, 3]]),
     components=[
         vm.Graph(
-            id=cnst.SCATTER_SET_CONTROL_EVENT_SELECT,
+            id=cnst.SCATTER_SET_CONTROLS_EVENT_SELECT,
             figure=px.scatter(
                 iris,
                 x="sepal_length",
@@ -39,7 +39,7 @@ cross_filter_multi_select_page = vm.Page(
             ],
         ),
         vm.Graph(
-            id=cnst.SCATTER_SET_CONTROL_EVENT,
+            id=cnst.SCATTER_SET_CONTROLS_EVENT,
             figure=scatter_with_clickmode_event(
                 iris,
                 x="sepal_length",
@@ -53,7 +53,7 @@ cross_filter_multi_select_page = vm.Page(
             ],
         ),
         vm.Table(
-            id=cnst.TABLE_SET_CONTROL_MULTI_SELECT,
+            id=cnst.TABLE_SET_CONTROLS_MULTI_SELECT,
             figure=dash_ag_grid(iris_species_cycle),
             actions=[
                 set_controls(controls=["chl_filter"], value="species"),
@@ -61,7 +61,7 @@ cross_filter_multi_select_page = vm.Page(
             ],
         ),
         vm.Graph(
-            id=cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT,
+            id=cnst.BOX_SET_CONTROLS_TARGET_MULTI_SELECT,
             figure=px.box(
                 iris,
                 x="sepal_length",
@@ -74,38 +74,38 @@ cross_filter_multi_select_page = vm.Page(
         vm.Filter(
             id="chl_filter",
             column="species",
-            targets=[cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT],
-            selector=vm.Checklist(id=cnst.CHECKLIST_SET_CONTROL_MULTI_SELECT_FILTER),
+            targets=[cnst.BOX_SET_CONTROLS_TARGET_MULTI_SELECT],
+            selector=vm.Checklist(id=cnst.CHECKLIST_SET_CONTROLS_MULTI_SELECT_FILTER),
         ),
         vm.Filter(
             id="ri_filter",
             column="species",
-            targets=[cnst.BOX_SET_CONTROL_TARGET_MULTI_SELECT],
-            selector=vm.RadioItems(id=cnst.RADIOITEMS_SET_CONTROL_MULTI_SELECT_FILTER),
+            targets=[cnst.BOX_SET_CONTROLS_TARGET_MULTI_SELECT],
+            selector=vm.RadioItems(id=cnst.RADIOITEMS_SET_CONTROLS_MULTI_SELECT_FILTER),
         ),
     ],
 )
 
 
-button_card_trigger_set_control = vm.Page(
-    title=cnst.SET_CONTROL_BUTTON_CARD_PAGE,
+button_card_trigger_set_controls = vm.Page(
+    title=cnst.SET_CONTROLS_BUTTON_CARD_PAGE,
     components=[
         vm.Button(
-            id=cnst.SET_CONTROL_BUTTON_NONE,
+            id=cnst.SET_CONTROLS_BUTTON_NONE,
             actions=[
                 set_controls(controls=["chl_bc_filter"], value=None),
                 set_controls(controls=["ri_bc_filter"], value=None),
             ],
         ),
         vm.Button(
-            id=cnst.SET_CONTROL_BUTTON_EMPTY_LIST,
+            id=cnst.SET_CONTROLS_BUTTON_EMPTY_LIST,
             actions=[
                 set_controls(controls=["chl_bc_filter"], value=[]),
                 set_controls(controls=["ri_bc_filter"], value=[]),
             ],
         ),
         vm.Card(
-            id=cnst.SET_CONTROL_CARD_SINGLE_VALUE,
+            id=cnst.SET_CONTROLS_CARD_SINGLE_VALUE,
             text="Set to 'virginica'",
             actions=[
                 set_controls(controls=["chl_bc_filter"], value=["virginica"]),
@@ -113,7 +113,7 @@ button_card_trigger_set_control = vm.Page(
             ],
         ),
         vm.Card(
-            id=cnst.SET_CONTROL_CARD_MULTI_VALUE,
+            id=cnst.SET_CONTROLS_CARD_MULTI_VALUE,
             text="Set to 'virginica' and 'versicolor'",
             actions=[
                 set_controls(controls=["chl_bc_filter"], value=["virginica", "versicolor"]),
@@ -121,7 +121,7 @@ button_card_trigger_set_control = vm.Page(
             ],
         ),
         vm.Table(
-            id=cnst.TABLE_SET_CONTROL_BUTTON_CARD,
+            id=cnst.TABLE_SET_CONTROLS_BUTTON_CARD,
             figure=dash_ag_grid(iris_species_cycle),
         ),
     ],
@@ -129,21 +129,21 @@ button_card_trigger_set_control = vm.Page(
         vm.Filter(
             id="chl_bc_filter",
             column="species",
-            targets=[cnst.TABLE_SET_CONTROL_BUTTON_CARD],
-            selector=vm.Checklist(id=cnst.CHECKLIST_SET_CONTROL_BUTTON_CARD),
+            targets=[cnst.TABLE_SET_CONTROLS_BUTTON_CARD],
+            selector=vm.Checklist(id=cnst.CHECKLIST_SET_CONTROLS_BUTTON_CARD),
         ),
         vm.Filter(
             id="ri_bc_filter",
             column="species",
-            targets=[cnst.TABLE_SET_CONTROL_BUTTON_CARD],
-            selector=vm.RadioItems(id=cnst.RADIOITEMS_SET_CONTROL_BUTTON_CARD),
+            targets=[cnst.TABLE_SET_CONTROLS_BUTTON_CARD],
+            selector=vm.RadioItems(id=cnst.RADIOITEMS_SET_CONTROLS_BUTTON_CARD),
         ),
     ],
 )
 
 
-filtered_graph_aggrid_trigger_set_control = vm.Page(
-    title=cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE,
+filtered_graph_aggrid_trigger_set_controls = vm.Page(
+    title=cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROLS_PAGE,
     layout=vm.Grid(grid=[[0, 1]]),
     components=[
         vm.Tabs(
@@ -151,11 +151,11 @@ filtered_graph_aggrid_trigger_set_control = vm.Page(
                 vm.Container(
                     title="Graph",
                     controls=[
-                        vm.Filter(column="species", selector=vm.Checklist(id=cnst.CHECKLIST_FT_GRAPH_SET_CONTROL))
+                        vm.Filter(column="species", selector=vm.Checklist(id=cnst.CHECKLIST_FT_GRAPH_SET_CONTROLS))
                     ],
                     components=[
                         vm.Graph(
-                            id=cnst.FILTERED_SCATTER_TRIGGER_SET_CONTROL_ID,
+                            id=cnst.FILTERED_SCATTER_TRIGGER_SET_CONTROLS_ID,
                             figure=px.scatter(
                                 iris,
                                 x="sepal_width",
@@ -170,11 +170,11 @@ filtered_graph_aggrid_trigger_set_control = vm.Page(
                 vm.Container(
                     title="AgGrid",
                     controls=[
-                        vm.Filter(column="species", selector=vm.Checklist(id=cnst.CHECKLIST_FT_AGGRID_SET_CONTROL))
+                        vm.Filter(column="species", selector=vm.Checklist(id=cnst.CHECKLIST_FT_AGGRID_SET_CONTROLS))
                     ],
                     components=[
                         vm.Table(
-                            id=cnst.FILTERED_AGGRID_TRIGGER_SET_CONTROL_ID,
+                            id=cnst.FILTERED_AGGRID_TRIGGER_SET_CONTROLS_ID,
                             figure=dash_ag_grid(iris_species_cycle),
                             actions=set_controls(controls=["chl_ft_filter"], value="species"),
                         ),
@@ -189,17 +189,17 @@ filtered_graph_aggrid_trigger_set_control = vm.Page(
             id="chl_ft_filter",
             column="species",
             targets=[cnst.TARGETED_AGGRID_FROM_FILTERED_GRAPH],
-            selector=vm.Checklist(id=cnst.CHECKLIST_FILTERED_GRAPH_TARGET_AGGRID_SET_CONTROL),
+            selector=vm.Checklist(id=cnst.CHECKLIST_FILTERED_GRAPH_TARGET_AGGRID_SET_CONTROLS),
         ),
     ],
 )
 
 
-self_filter_set_control_page = vm.Page(
-    title=cnst.SELF_FILTER_SET_CONTROL_PAGE,
+self_filter_set_controls_page = vm.Page(
+    title=cnst.SELF_FILTER_SET_CONTROLS_PAGE,
     components=[
         vm.Graph(
-            id=cnst.SCATTER_SET_CONTROL_SELF_FILTER,
+            id=cnst.SCATTER_SET_CONTROLS_SELF_FILTER,
             figure=px.scatter(
                 iris,
                 x="sepal_length",
@@ -214,7 +214,7 @@ self_filter_set_control_page = vm.Page(
         vm.Filter(
             id="chl_self_filter",
             column="species",
-            selector=vm.Checklist(id=cnst.CHECKLIST_SET_CONTROL_SELF_FILTER),
+            selector=vm.Checklist(id=cnst.CHECKLIST_SET_CONTROLS_SELF_FILTER),
         ),
     ],
 )

@@ -2,17 +2,18 @@
 
 from typing import Literal
 
+import dash_ag_grid as dag
 import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.actions as va
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import dash_table, dcc, get_asset_url, html
+from dash import dcc, get_asset_url, html
 from vizro import Vizro
 from vizro.figures import kpi_card, kpi_card_reference
 from vizro.models.types import capture
-from vizro.tables import dash_ag_grid, dash_data_table
+from vizro.tables import dash_ag_grid
 
 iris = px.data.iris()
 tips = px.data.tips()
@@ -201,7 +202,7 @@ table = vm.Page(
     title="Table",
     components=[
         vm.Table(
-            figure=dash_data_table(data_frame=gapminder_2007),
+            figure=dash_ag_grid(data_frame=gapminder_2007),
             title="Gapminder Data Insights",
             header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
             footer="""SOURCE: **Plotly gapminder data set, 2024**""",
@@ -742,10 +743,14 @@ selectors = vm.Page(
         ),
         vm.Table(
             id="table-gapminder",
-            figure=dash_data_table(data_frame=gapminder_2007, page_size=10),
+            figure=dash_ag_grid(data_frame=gapminder_2007, dashGridOptions={"paginationPageSize": 10}),
             title="Gapminder Data",
         ),
-        vm.Table(id="table-tips", figure=dash_data_table(data_frame=tips, page_size=10), title="Tips Data"),
+        vm.Table(
+            id="table-tips",
+            figure=dash_ag_grid(data_frame=tips, dashGridOptions={"paginationPageSize": 10}),
+            title="Tips Data",
+        ),
         vm.Graph(
             id="graph-stocks",
             figure=px.line(stocks, x="date", y="GOOG", title="Stocks Data"),
@@ -1146,20 +1151,11 @@ custom_charts = vm.Page(
 
 
 # CUSTOM TABLE ------------------------------------------------------------------
-@capture("table")
+@capture("ag_grid")
 def my_custom_table(data_frame=None, chosen_columns: list[str] | None = None):
-    """Custom table with added logic to filter on chosen columns."""
-    columns = [{"name": i, "id": i} for i in chosen_columns]
-    defaults = {
-        "style_as_list_view": True,
-        "style_data": {"border_bottom": "1px solid var(--bs-border-color)", "height": "40px"},
-        "style_header": {
-            "border_bottom": "1px solid var(--bs-border-color-translucent)",
-            "border_top": "None",
-            "height": "32px",
-        },
-    }
-    return dash_table.DataTable(data=data_frame.to_dict("records"), columns=columns, **defaults)
+    """Custom AG Grid with added logic to filter on chosen columns."""
+    columns = [{"field": column} for column in chosen_columns]
+    return dag.AgGrid(rowData=data_frame.to_dict("records"), columnDefs=columns)
 
 
 custom_tables = vm.Page(
@@ -1167,7 +1163,7 @@ custom_tables = vm.Page(
     components=[
         vm.Table(
             id="custom_table",
-            title="Custom Dash DataTable",
+            title="Custom Dash AG Grid",
             figure=my_custom_table(
                 data_frame=gapminder_2007,
                 chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"],

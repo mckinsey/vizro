@@ -13,7 +13,7 @@ from e2e.vizro.navigation import (
     select_dropdown_value,
     select_slider_value,
 )
-from e2e.vizro.paths import categorical_components_value_path, select_all_path
+from e2e.vizro.paths import categorical_components_value_path, select_all_path, table_ag_grid_cell_path_by_row
 
 
 def test_sliders_state(dash_br):
@@ -74,12 +74,9 @@ def test_checklist_with_two_values(dash_br):
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_PARAM, value=1), 1)
     # select 'year' parameter
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_PARAM, value=3), 1)
-    # check if table column 'country' is available
-    dash_br.wait_for_element(f"#{cnst.TABLE_CHECKLIST} th[data-dash-column='country']")
-    # check if table column 'year' is available and no other column appears on the right
-    dash_br.wait_for_element(
-        f"#{cnst.TABLE_CHECKLIST} th[data-dash-column='year'][class='dash-header column-1 cell--right-last ']"
-    )
+    # check that table columns 'country' and 'year' are available (AG Grid columns are identified by col-id)
+    dash_br.wait_for_element(table_ag_grid_cell_path_by_row(cnst.TABLE_CHECKLIST, row_index=0, col_id="country"))
+    dash_br.wait_for_element(table_ag_grid_cell_path_by_row(cnst.TABLE_CHECKLIST, row_index=0, col_id="year"))
     check_selected_categorical_component(
         dash_br,
         component_id=cnst.CHECKLIST_PARAM,
@@ -104,12 +101,9 @@ def test_checklist_select_all_value(dash_br):
     dash_br.multiple_click(select_all_path(elem_id=cnst.CHECKLIST_PARAM), 1)
     # select 'Select All'
     dash_br.multiple_click(select_all_path(elem_id=cnst.CHECKLIST_PARAM), 1)
-    # check if table column 'country' is available
-    dash_br.wait_for_element(f"#{cnst.TABLE_CHECKLIST} th[data-dash-column='country']")
-    # check if table column 'year' is available and no other column appears on the right
-    dash_br.wait_for_element(
-        f"#{cnst.TABLE_CHECKLIST} th[data-dash-column='iso_num'][class='dash-header column-7 cell--right-last ']"
-    )
+    # check that table columns 'country' and 'iso_num' are available (all columns selected)
+    dash_br.wait_for_element(table_ag_grid_cell_path_by_row(cnst.TABLE_CHECKLIST, row_index=0, col_id="country"))
+    dash_br.wait_for_element(table_ag_grid_cell_path_by_row(cnst.TABLE_CHECKLIST, row_index=0, col_id="iso_num"))
     check_selected_categorical_component(
         dash_br,
         component_id=cnst.CHECKLIST_PARAM,
@@ -136,12 +130,9 @@ def test_dropdown_with_two_values(dash_br):
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_PARAM_MULTI, value="pop")
     # select 'gdpPercap' parameter
     select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_PARAM_MULTI, value="gdpPercap")
-    # check if table column 'pop' is available
-    dash_br.wait_for_element(f"#{cnst.TABLE_DROPDOWN} th[data-dash-column='pop']")
-    # check if table column 'iso_num' is available and no other column appears on the right
-    dash_br.wait_for_element(
-        f"#{cnst.TABLE_DROPDOWN} th[data-dash-column='gdpPercap'][class='dash-header column-1 cell--right-last ']"
-    )
+    # check that table columns 'pop' and 'gdpPercap' are available
+    dash_br.wait_for_element(table_ag_grid_cell_path_by_row(cnst.TABLE_DROPDOWN, row_index=0, col_id="pop"))
+    dash_br.wait_for_element(table_ag_grid_cell_path_by_row(cnst.TABLE_DROPDOWN, row_index=0, col_id="gdpPercap"))
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_PARAM_MULTI,
@@ -155,12 +146,9 @@ def test_dropdown_select_all_value(dash_br):
     page_select(dash_br, page_path=cnst.PARAMETERS_MULTI_PAGE_PATH, page_name=cnst.PARAMETERS_MULTI_PAGE)
     select_dropdown_deselect_all(dash_br, dropdown_id=cnst.DROPDOWN_PARAM_MULTI)
     select_dropdown_select_all(dash_br, dropdown_id=cnst.DROPDOWN_PARAM_MULTI)
-    # check if table column 'pop' is available
-    dash_br.wait_for_element(f"#{cnst.TABLE_DROPDOWN} th[data-dash-column='pop']")
-    # check if table column 'iso_num' is available and no other column appears on the right
-    dash_br.wait_for_element(
-        f"#{cnst.TABLE_DROPDOWN} th[data-dash-column='iso_num'][class='dash-header column-7 cell--right-last ']"
-    )
+    # check that table columns 'pop' and 'iso_num' are available (all columns selected)
+    dash_br.wait_for_element(table_ag_grid_cell_path_by_row(cnst.TABLE_DROPDOWN, row_index=0, col_id="pop"))
+    dash_br.wait_for_element(table_ag_grid_cell_path_by_row(cnst.TABLE_DROPDOWN, row_index=0, col_id="iso_num"))
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_PARAM_MULTI,

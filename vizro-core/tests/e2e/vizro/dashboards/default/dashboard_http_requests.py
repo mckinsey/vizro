@@ -8,12 +8,12 @@ from pages.conditional_notifications import conditional_notifications_page
 from pages.datetimepicker_pages import datetimepicker_range
 from pages.filters_inside_containters_page import filters_inside_containers_page
 from pages.page_actions_none_page import page_actions_none
-from pages.set_control_cross_filter_page import (
+from pages.set_controls_cross_filter_page import (
     cross_filter_ag_grid_page,
     cross_filter_graph_page,
 )
-from pages.set_control_drill_down import drill_down_graph_page
-from pages.set_control_drill_through import (
+from pages.set_controls_drill_down import drill_down_graph_page
+from pages.set_controls_drill_through import (
     drill_through_filter_ag_grid_source_page,
     drill_through_filter_ag_grid_target_page,
     drill_through_filter_graph_source_page,
@@ -21,9 +21,9 @@ from pages.set_control_drill_through import (
     drill_through_parameter_graph_source_page,
     drill_through_parameter_graph_target_page,
 )
-from pages.set_control_multi_select_pages import (
-    filtered_graph_aggrid_trigger_set_control,
-    self_filter_set_control_page,
+from pages.set_controls_multi_select_pages import (
+    filtered_graph_aggrid_trigger_set_controls,
+    self_filter_set_controls_page,
 )
 from pages.sync_controls_pages import (
     sync_cross_page_source_page,
@@ -39,7 +39,7 @@ from pages.update_targets_page import apply_controls_on_button_click_page
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import export_data, filter_interaction
+from vizro.actions import export_data
 from vizro.managers import data_manager
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
@@ -105,9 +105,9 @@ data_manager["dynamic_df_gapminder"] = lambda: df_gapminder
 
 
 @capture("action")
-def my_custom_action(t: int):
+def my_custom_action():
     """Custom action."""
-    sleep(t)
+    sleep(2)
 
 
 page_without_chart = vm.Page(
@@ -146,7 +146,7 @@ page_explicit_actions_chain = vm.Page(
             id=f"{cnst.PAGE_EXPLICIT_ACIONS_CHAIN}_button",
             actions=[
                 export_data(),
-                vm.Action(function=my_custom_action(t=2)),
+                vm.Action(function=my_custom_action()),
                 export_data(file_format="xlsx"),
             ],
         ),
@@ -193,70 +193,12 @@ page_implicit_actions_chain = vm.Page(
     ],
 )
 
-page_chart_with_filter_interaction = vm.Page(
-    title=cnst.PAGE_CHART_WITH_FILTER_INTERACTION,
-    components=[
-        vm.Graph(
-            figure=px.box(
-                df_gapminder,
-                x="continent",
-                y="lifeExp",
-                color="continent",
-                custom_data=["continent"],
-            ),
-            actions=filter_interaction(targets=[f"{cnst.PAGE_CHART_WITH_FILTER_INTERACTION}_graph_2"]),
-        ),
-        vm.Graph(
-            id=f"{cnst.PAGE_CHART_WITH_FILTER_INTERACTION}_graph_2",
-            figure=px.scatter(
-                df_gapminder,
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-            ),
-        ),
-    ],
-    controls=[
-        vm.Filter(column="continent", selector=vm.Dropdown()),
-    ],
-)
-
-page_ag_grid_with_filter_interaction = vm.Page(
-    title=cnst.PAGE_AG_GRID_WITH_FILTER_INTERACTION,
-    components=[
-        vm.Table(
-            id=f"{cnst.PAGE_AG_GRID_WITH_FILTER_INTERACTION}_grid",
-            figure=dash_ag_grid(data_frame=df_gapminder),
-            actions=filter_interaction(targets=[f"{cnst.PAGE_AG_GRID_WITH_FILTER_INTERACTION}_graph"]),
-        ),
-        vm.Graph(
-            id=f"{cnst.PAGE_AG_GRID_WITH_FILTER_INTERACTION}_graph",
-            figure=px.scatter(
-                df_gapminder,
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-            ),
-        ),
-    ],
-    controls=[
-        vm.Filter(
-            column="continent",
-            targets=[f"{cnst.PAGE_AG_GRID_WITH_FILTER_INTERACTION}_grid"],
-            selector=vm.Dropdown(),
-        ),
-    ],
-)
-
 page_dynamic_parametrisation = vm.Page(
     title=cnst.PAGE_DYNAMIC_PARAMETRISATION,
     components=[
         vm.Table(
             id=f"{cnst.PAGE_DYNAMIC_PARAMETRISATION}_grid",
             figure=dash_ag_grid(data_frame="dynamic_df_gapminder_arg"),
-            actions=[filter_interaction(targets=[f"{cnst.PAGE_DYNAMIC_PARAMETRISATION}_graph"])],
         ),
         vm.Graph(
             id=f"{cnst.PAGE_DYNAMIC_PARAMETRISATION}_graph",
@@ -371,8 +313,6 @@ dashboard = vm.Dashboard(
         page_with_one_chart,
         page_explicit_actions_chain,
         page_implicit_actions_chain,
-        page_chart_with_filter_interaction,
-        page_ag_grid_with_filter_interaction,
         page_dynamic_parametrisation,
         page_all_selectors,
         page_all_selectors_in_url,
@@ -387,8 +327,8 @@ dashboard = vm.Dashboard(
         drill_down_graph_page,
         ag_grid_interactions_page,
         filters_inside_containers_page,
-        filtered_graph_aggrid_trigger_set_control,
-        self_filter_set_control_page,
+        filtered_graph_aggrid_trigger_set_controls,
+        self_filter_set_controls_page,
         conditional_notifications_page,
         timepicker_range,
         datetimepicker_range,
