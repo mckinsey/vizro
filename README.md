@@ -189,21 +189,6 @@ Compatible with MCP-enabled LLM clients such as Cursor or Claude Desktop.
 
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro-mcp.gif" alt="Vizro MCP Demo" width="600">
 
-## [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
-
-**Use LLMs to generate charts and dashboards.**
-
-> **Vizro-AI is deprecated. Version 0.4.2 is the final release, and no further development or releases are planned. From version 0.4.0, Vizro-AI supports only chart generation. Use [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) instead to create Vizro charts and dashboards with the help of an LLM.**
-
-Vizro-AI is a separate package (called `vizro_ai`) that extends Vizro to incorporate LLMs. Use it to build interactive Vizro charts and dashboards, by simply describing what you need in plain English or other languages.
-
-Visit the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/) for more details.
-
-<picture>
-  <source srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif">
-  <img alt="Gif to demonstrate Vizro-AI" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai_fallback.png" width="600">
-</picture>
-
 ## Installation and first steps
 
 ```console
@@ -232,7 +217,7 @@ This repository is a monorepo containing the following packages:
 | Folder | Version | Documentation |
 | :----: | :-----: | :-----------: |
 | [vizro-core](https://github.com/mckinsey/vizro/tree/main/vizro-core) | [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro) | [Vizro Docs](https://vizro.readthedocs.io/en/stable/) |
-| [vizro-ai](https://github.com/mckinsey/vizro/tree/main/vizro-ai) (deprecated) | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/) |
+| [vizro-ai](https://github.com/mckinsey/vizro/tree/main/vizro-ai) | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/) |
 | [vizro-mcp](https://github.com/mckinsey/vizro/tree/main/vizro-mcp) | [![PyPI version](https://badge.fury.io/py/vizro-mcp.svg)](https://badge.fury.io/py/vizro-mcp) | [Vizro-MCP Docs](https://vizro.readthedocs.io/projects/vizro-mcp/) |
 
 ## Community and development
