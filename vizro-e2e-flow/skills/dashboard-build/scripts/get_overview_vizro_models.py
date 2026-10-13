@@ -32,7 +32,7 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
         vm.Container,
         vm.Tabs,
     ],
-    "dynamic components": [vm.Figure, vm.Graph, vm.AgGrid],
+    "dynamic components": [vm.Figure, vm.Graph, vm.Table],
     "layouts": [vm.Grid, vm.Flex],
     "controls": [vm.Filter, vm.Parameter],
     "selectors": [
@@ -41,7 +41,6 @@ MODEL_GROUPS: dict[str, list[type[HasNameAndDoc]]] = {
         vm.Checklist,
         vm.DatePicker,
         vm.Slider,
-        vm.RangeSlider,
         vm.Switch,
     ],
     "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],

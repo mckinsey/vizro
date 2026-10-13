@@ -135,11 +135,11 @@ def test_cascader_path_multi_select_filters_duplicate_leaves(dash_br):
     )
 
 
-def test_set_control_cascader_leaf_button_filters_ag_grid(dash_br):
-    """set_control from a button sets a leaf-mode Cascader filter and refreshes its target AgGrid."""
+def test_set_controls_cascader_leaf_button_filters_ag_grid(dash_br):
+    """set_controls from a button sets a leaf-mode Cascader filter and refreshes its target AgGrid."""
     _open_cascader_leaf_page(dash_br)
 
-    dash_br.multiple_click(button_id_path(btn_id=cnst.CASCADER_LEAF_SET_CONTROL_BUTTON_ID), 1, delay=0.1)
+    dash_br.multiple_click(button_id_path(btn_id=cnst.CASCADER_LEAF_SET_CONTROLS_BUTTON_ID), 1, delay=0.1)
 
     check_cascader_trigger_value(dash_br, cnst.CASCADER_LEAF_ID, "China")
     check_table_ag_grid_rows_number(dash_br, table_id=cnst.CASCADER_LEAF_AG_GRID_ID, expected_rows_num=1)
@@ -148,14 +148,14 @@ def test_set_control_cascader_leaf_button_filters_ag_grid(dash_br):
     )
 
 
-def test_set_control_cascader_leaf_ag_grid_filters_ag_grid(dash_br):
-    """set_control from an AgGrid sets a leaf-mode Cascader filter and refreshes its target AgGrid."""
+def test_set_controls_cascader_leaf_ag_grid_filters_ag_grid(dash_br):
+    """set_controls from an AgGrid sets a leaf-mode Cascader filter and refreshes its target AgGrid."""
     _open_cascader_leaf_page(dash_br)
 
     # Select Brazil on AgGrid
     dash_br.multiple_click(
         table_ag_grid_cell_path_by_row(
-            cnst.CASCADER_LEAF_SET_CONTROL_AG_GRID_SOURCE_ID, row_index=14, col_id="country"
+            cnst.CASCADER_LEAF_SET_CONTROLS_AG_GRID_SOURCE_ID, row_index=14, col_id="country"
         ),
         1,
     )

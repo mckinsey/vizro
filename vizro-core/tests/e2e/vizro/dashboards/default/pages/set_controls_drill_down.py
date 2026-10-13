@@ -14,7 +14,7 @@ def graph_with_dynamic_title(data_frame, title="ALL", **kwargs):
 
 
 drill_down_graph_page = vm.Page(
-    title=cnst.SET_CONTROL_DRILL_DOWN_GRAPH_PAGE,
+    title=cnst.SET_CONTROLS_DRILL_DOWN_GRAPH_PAGE,
     components=[
         vm.Graph(
             id=cnst.SCATTER_DRILL_DOWN_GRAPH_ID,

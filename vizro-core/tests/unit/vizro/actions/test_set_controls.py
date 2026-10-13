@@ -1,9 +1,8 @@
-"""Unit tests for the set_controls action and the deprecated set_control alias.
+"""Unit tests for the set_controls action.
 
 These tests cover the canonical set_controls API surface end-to-end: instantiation, pre_build validation, the callback
 function (same-page updates, cross-page sync, drill-through navigation), outputs, the range-value shaping helper, and
-the same-page control-sync mesh finalization that collapses a mesh into one set_controls + one update_targets. The
-deprecated `set_control` alias is tested separately in test_legacy_set_control.py.
+the same-page control-sync mesh finalization that collapses a mesh into one set_controls + one update_targets.
 """
 
 import re
@@ -54,41 +53,6 @@ class TestSetControlsInstantiation:
 
         assert set(action.notifications) == {"success", "error"}
         assert action.notifications["success"].text == "Controls updated."
-
-
-class TestSetControlDeprecatedAlias:
-    def test_set_control_is_subclass_of_set_controls(self):
-        assert issubclass(va.set_control, va.set_controls)
-
-    def test_set_control_emits_deprecation_warning(self):
-        with pytest.warns(FutureWarning, match="`set_control` is deprecated"):
-            va.set_control(control="filter_1")
-
-    @pytest.mark.filterwarnings("ignore:`set_control` is deprecated:FutureWarning")
-    def test_single_control_maps_to_controls_list(self):
-        action = va.set_control(control="filter_1")
-        # An instance of the deprecated alias is a `set_controls` (subclass identity), and the legacy `control` argument
-        # is still accepted and mapped onto the canonical `controls`.
-        assert isinstance(action, va.set_controls)
-        assert action.type == "set_control"
-        assert action.control == "filter_1"
-        assert action.controls == ["filter_1"]
-        # `value` remains optional on the alias, defaulting to None.
-        assert action.value is None
-
-    @pytest.mark.filterwarnings("ignore:`set_control` is deprecated:FutureWarning")
-    def test_list_control_maps_to_controls(self):
-        action = va.set_control(control=["filter_1", "filter_2"])
-        assert action.control == ["filter_1", "filter_2"]
-        assert action.controls == ["filter_1", "filter_2"]
-
-    @pytest.mark.filterwarnings("ignore:`set_control` is deprecated:FutureWarning")
-    def test_value_preserved_on_alias(self):
-        # A `value` passed to the deprecated alias is preserved as given (alongside the mapped `control`).
-        action = va.set_control(control="control_id", value="some_value")
-        assert action.control == "control_id"
-        assert action.controls == ["control_id"]
-        assert action.value == "some_value"
 
 
 @pytest.fixture
@@ -143,8 +107,7 @@ class TestControlSyncMeshFinalization:
         # mesh_f1 syncs mesh_f2 directly and mesh_f3 transitively (via mesh_f2). The mutual f1<->f2 edge does not loop:
         # f2->f1 points back at the source, which is excluded.
         set_controls_action, update_targets_action = model_manager["mesh_f1"].selector.actions
-        # The collapsed mesh action is the canonical (non-deprecated) `set_controls`, regardless of how the sync was
-        # declared - the internal machinery never emits the deprecated `set_control`.
+        # The collapsed mesh action is always the canonical `set_controls`, regardless of how the sync was declared.
         assert isinstance(set_controls_action, set_controls)
         assert set_controls_action.controls == ["mesh_f2", "mesh_f3"]
         # The flag suppresses each synced control's own chain (via its guard), so the mesh resolves in two requests.
@@ -303,7 +266,7 @@ class TestControlSyncExplicitActionTargetsPreserved:
 
 
 @pytest.fixture
-def managers_two_pages_for_set_controls(standard_px_chart, standard_ag_grid, standard_dash_table):
+def managers_two_pages_for_set_controls(standard_px_chart, standard_ag_grid):
     """Instantiates the model_manager and the data_manager with two pages."""
     vm.Page(
         id="test-page-1",
@@ -313,8 +276,8 @@ def managers_two_pages_for_set_controls(standard_px_chart, standard_ag_grid, sta
             vm.Graph(id="scatter_chart_1", figure=standard_px_chart),
             # An AG-Grid-backed Table is a valid set_controls trigger (its `_is_ag_grid` is True).
             vm.Table(id="ag_grid_1", figure=standard_ag_grid),
-            # A Dash DataTable-backed Table cannot source set_controls; used for the "unsupported parent" test.
-            vm.Table(id="table_1", figure=standard_dash_table),
+            # A second Table used only as a Filter target (not a set_controls source).
+            vm.Table(id="table_1", figure=standard_ag_grid),
         ],
         controls=[
             vm.Filter(
@@ -503,7 +466,6 @@ class TestNormalizeRangeValue:
         assert set_controls._normalize_range_value(value, reorder=reorder) == expected
 
 
-@pytest.mark.filterwarnings("ignore:The Dash DataTable backing:FutureWarning")
 @pytest.mark.usefixtures("managers_two_pages_for_set_controls")
 class TestSetControlsPreBuild:
     """Tests set_controls pre_build method."""
@@ -590,24 +552,6 @@ class TestSetControlsPreBuild:
         with pytest.raises(ValueError, match="has an empty `controls`"):
             action.pre_build()
 
-    def test_pre_build_parent_model_does_not_support_set_controls(self):
-        action = va.set_controls(controls=["filter_page_1"], value="Europe")
-
-        # Add action to the component that does not support set_controls (a Dash DataTable-backed Table)
-        model_manager["table_1"].actions = action
-
-        with pytest.raises(
-            ValueError,
-            match=re.escape(
-                "`set_controls` action was added to the model with ID `table_1`, "
-                "but this action can only be used with models that support it "
-                "(for example, Graph, AgGrid, Figure, and so on). "
-                "See all models that can source a `set_controls` at "
-                "https://vizro.readthedocs.io/en/stable/pages/API-reference/actions/#vizro.actions.set_controls"
-            ),
-        ):
-            action.pre_build()
-
     def test_pre_build_control_model_does_not_exist_in_model_manager(self):
         # Add action to relevant component and set invalid control
         action = va.set_controls(controls=["invalid_id"], value="Europe")
@@ -685,7 +629,7 @@ class TestSetControlsPreBuild:
 
     def test_pre_build_value_optional_for_button_trigger(self):
         # A Button/Card/Figure treats a missing `value` (None) as "reset the target to its default", so it is a valid
-        # build-time configuration - no guard error (unlike Graph/AgGrid above).
+        # build-time configuration - no guard error (unlike Graph/Table above).
         action = va.set_controls(controls=["filter_page_1"])  # no value -> reset on click
         model_manager["button_1"].actions = action
 
@@ -721,7 +665,6 @@ class TestSetControlsPreBuild:
         assert action._is_drill_through is True
 
 
-@pytest.mark.filterwarnings("ignore:The Dash DataTable backing:FutureWarning")
 @pytest.mark.usefixtures("managers_two_pages_for_set_controls")
 class TestSetControlsFunction:
     """Tests set_controls function."""
@@ -825,7 +768,7 @@ class TestSetControlsFunction:
             # so they always collapse to the spanning [min, max] regardless of the source kind.
             ("filter_page_1_range_slider", [1, 2, 3, 4], [1, 4]),
             # A two-element value from a non-selection-order source (here a Button) is kept in its given [start, end]
-            # slot order. Only AgGrid/Graph selections are reordered by magnitude - see the direct reorder=True cases
+            # slot order. Only AG Grid/Graph selections are reordered by magnitude - see the direct reorder=True cases
             # in test_normalize_range_value and the end-to-end test_function_range_reorders_for_selection_order_source.
             ("filter_page_1_range_slider", [2, 1], [2, 1]),
             # Single-value boolean control
@@ -1098,7 +1041,6 @@ class TestSetControlsFunction:
         assert result == [["Asia", "Europe"], no_update, True, no_update]
 
 
-@pytest.mark.filterwarnings("ignore:The Dash DataTable backing:FutureWarning")
 @pytest.mark.usefixtures("managers_two_pages_for_set_controls")
 class TestSetControlsOutputs:
     """Tests set_controls outputs."""

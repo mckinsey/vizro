@@ -5,7 +5,6 @@ import numpy as np
 from dash import html
 from numpy import ma
 from pydantic import AfterValidator, Field, PrivateAttr, ValidationInfo
-from typing_extensions import deprecated
 
 from vizro._constants import EMPTY_SPACE_CONST, GAP_DEFAULT
 from vizro.models import VizroBaseModel
@@ -244,12 +243,3 @@ class Grid(VizroBaseModel):
             id=self.id,
         )
         return component_container
-
-
-@deprecated(
-    "The `Layout` model has been renamed [`Grid`][vizro.models.Grid], and [`Layout` will not exist in Vizro 1.0.0]"
-    "(https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations/#layout-model).",
-    category=FutureWarning,
-)
-class Layout(Grid):
-    type: Literal["legacy_layout"] = "legacy_layout"  # type: ignore[assignment]

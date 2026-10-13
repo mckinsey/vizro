@@ -5,10 +5,10 @@ from typing import Any
 import pytest
 import vizro.models as vm
 from vizro_mcp._schemas import (
-    AgGridEnhanced,
     ChartPlan,
     FigureEnhanced,
     GraphEnhanced,
+    TableEnhanced,
 )
 from vizro_mcp._utils import IRIS
 from vizro_mcp._utils.utils import NoDefsGenerateJsonSchema
@@ -374,8 +374,7 @@ class TestGetModelJsonSchema:
         [
             # Enhanced models from vizro_mcp._schemas
             ("Graph", GraphEnhanced, "This is the plotly express figure to be displayed."),
-            ("AgGrid", AgGridEnhanced, "This is the ag-grid figure to be displayed."),
-            ("Table", AgGridEnhanced, "This is the ag-grid figure to be displayed."),
+            ("Table", TableEnhanced, "This is the ag-grid figure to be displayed."),
             ("Figure", FigureEnhanced, "This is the figure function to be displayed."),
         ],
     )
@@ -400,3 +399,20 @@ class TestGetModelJsonSchema:
         result = get_model_json_schema("NonExistentModel")
 
         assert result.additional_info == "Model 'NonExistentModel' not found in vizro.models"
+
+    @pytest.mark.parametrize(
+        "model_name, replacement",
+        [
+            ("AgGrid", "Table (with a dash_ag_grid figure)"),
+            ("RangeSlider", "Slider (with range=True)"),
+            ("Layout", "Grid"),
+            ("set_control", "set_controls"),
+            ("filter_interaction", "set_controls"),
+        ],
+    )
+    def test_removed_model(self, model_name: str, replacement: str) -> None:
+        """Models/actions removed in Vizro 1.0.0 return migration guidance instead of a schema."""
+        result = get_model_json_schema(model_name=model_name)
+
+        assert result.json_schema == {}
+        assert result.additional_info == f"Model '{model_name}' was removed in Vizro 1.0.0. Use {replacement} instead."
