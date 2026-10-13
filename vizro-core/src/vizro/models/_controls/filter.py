@@ -14,17 +14,14 @@ from pandas.api.types import is_bool_dtype, is_datetime64_any_dtype, is_numeric_
 from pydantic import Field, PrivateAttr, model_validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
-from vizro.actions import update_targets
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import (
-    Checklist,
     DatePicker,
-    DateTimePicker,
     Dropdown,
-    RangeSlider,
+    Slider,
     Switch,
     TimePicker,
 )
@@ -36,24 +33,31 @@ from vizro.models._components.form.cascader import (
 from vizro.models._controls._controls_utils import (
     SELECTORS,
     _is_categorical_selector,
-    _is_datetime_selector,
     _is_hierarchical_selector,
-    _is_numerical_or_date_selector,
+    _is_numerical_date_or_datetime_selector,
+    _is_range_selector,
+    build_default_control_selector_actions,
     check_control_targets,
+    extract_control_targets,
     get_control_parent,
     get_selector_default_value,
+    warn_ignored_control_sync_targets,
     warn_missing_id_for_url_control,
 )
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
 
-DEFAULT_SELECTORS = {
-    "numerical": RangeSlider,
+DEFAULT_SELECTORS: dict[str, Callable[..., SelectorType]] = {
+    # A numerical column defaults to a range slider, expressed as Slider(range=True).
+    "numerical": functools.partial(Slider, range=True),
     "categorical": Dropdown,
     "date": DatePicker,
     "datetime": DatePicker,
     "time": TimePicker,
     "boolean": Switch,
+    # A hierarchical column defaults to a path-mode Cascader (full_path=True, the Cascader default): auto-generated
+    # options can repeat leaf labels across branches, and path mode addresses each selection by its full
+    # root-to-leaf path unambiguously.
     "hierarchical": Cascader,
 }
 
@@ -126,7 +130,24 @@ def _to_dt_time(entry: Any) -> Any:
     return None
 
 
-def _coerce_temporal(
+def _to_timestamp(entry: Any) -> Any:
+    """Convert a single series entry to a `pd.Timestamp`, or to `NaT` if it carries no date and time.
+
+    The datetime counterpart of `_to_dt_time`: a datetime column may hold `datetime.datetime` objects or
+    "YYYY-MM-DD[T ]HH:MM[:SS]" strings rather than datetime64. Nulls and anything else become `NaT`, which matches
+    nothing.
+    """
+    if pd.isna(entry):
+        return pd.NaT
+    if isinstance(entry, dt_datetime):
+        return pd.Timestamp(entry)
+    if isinstance(entry, str) and _DATETIME_REGEX.match(entry):
+        with suppress(ValueError, TypeError):
+            return pd.Timestamp(entry)
+    return pd.NaT
+
+
+def _coerce_temporal(  # noqa: PLR0912
     series: pd.Series, value: list[Any], normalize_precision: bool = False
 ) -> tuple[pd.Series, list[Any]]:
     """If needed, coerce `series` and `value` to comparable temporal objects.
@@ -195,6 +216,14 @@ def _coerce_temporal(
         value_strs = [str(v) for v in value]
         value = list(pd.to_datetime(value_strs, format="ISO8601"))
 
+        if not is_datetime64_any_dtype(series):
+            # Coerce entry by entry so that Timestamps are compared against Timestamps rather than strings.
+            # Entries in different time zones cannot share one dtype, so such a column matches nothing.
+            try:
+                series = pd.to_datetime(series.map(_to_timestamp))
+            except ValueError:
+                series = pd.Series(pd.NaT, index=series.index, name=series.name)
+
         # If the series is tz-aware, localize the (naive) parsed values to its tz so comparisons don't raise.
         # Convention: the typed wall-clock time represents a moment in the series's own timezone.
         # nonexistent/ambiguous guard against DST-transition wall-clock times (e.g. the spring-forward gap
@@ -261,20 +290,21 @@ def _filter_between(series: pd.Series, value: list[float] | list[str | None]) ->
 
 
 def _filter_hierarchical_isin(df: pd.DataFrame, value: Any, *, multi: bool) -> pd.Series:
-    """Filter rows whose ordered path columns match any selected root-to-leaf path.
+    """Filter rows of a path-mode hierarchical filter against the selected entries.
 
-    `df` holds the hierarchical filter's path columns in root-to-leaf order (branch columns first, the leaf
-    column last). Each selected entry is either a full path (a list of node values from root to leaf) or a
-    legacy leaf-only value. A path is matched across all its columns, so duplicate leaf labels in different
-    branches filter independently.
+    Backs path-mode hierarchical filters (`Cascader.full_path=True`). `df` holds the filter's path columns in
+    root-to-leaf order (branch columns first, the leaf column last). Each selected entry is one of two shapes:
+
+    * A path-mode entry: a full root-to-leaf path (a list of node values from root to leaf). It is matched
+      across all its columns, so duplicate leaf labels in different branches filter independently.
+    * A leaf-mode entry: a bare leaf value with no branch context. It is matched against the leaf column alone,
+      exactly as a leaf-mode filter (`full_path=False`) matches. This is the pre-path-mode shape; it can still
+      reach a path-mode filter (for example a value persisted or set while the filter was in leaf mode), so both
+      shapes are accepted here. A leaf-mode entry cannot disambiguate a leaf label duplicated across branches.
 
     `multi` disambiguates the value shape (the Cascader emits one entry when `multi=False`, a list of entries
-    when `multi=True`): a flat list of scalars is a single path under `multi=False`, but a list of separate
-    legacy leaves under `multi=True`.
-
-    A legacy leaf-only value (from a pre-full-path Cascader, e.g. restored from session persistence after an
-    upgrade) carries no branch context, so it can only be matched against the leaf column alone, mirroring the
-    old behavior. Fresh selections always arrive as full paths.
+    when `multi=True`): a flat list of scalars is a single path-mode entry under `multi=False`, but a list of
+    separate leaf-mode entries under `multi=True`.
 
     Branch labels are compared as strings, because `_dataframe_path_to_cascader_options` builds the option tree
     with stringified branch keys. The leaf reuses `_filter_isin` so that temporal/boolean leaves which arrive
@@ -285,8 +315,8 @@ def _filter_hierarchical_isin(df: pd.DataFrame, value: Any, *, multi: bool) -> p
     """
     if not value:
         return pd.Series(False, index=df.index)
-    # multi=False: `value` is a single entry (one path or one legacy leaf).
-    # multi=True: `value` is a list of entries (paths and/or legacy leaves).
+    # multi=False: `value` is a single entry (one path-mode or one leaf-mode entry).
+    # multi=True: `value` is a list of entries (path-mode and/or leaf-mode).
     entries = (value if isinstance(value, (list, tuple)) else [value]) if multi else [value]
     leaf_column = df.columns[-1]
     mask = pd.Series(False, index=df.index)
@@ -294,9 +324,10 @@ def _filter_hierarchical_isin(df: pd.DataFrame, value: Any, *, multi: bool) -> p
         if entry is None or (isinstance(entry, (list, tuple)) and not len(entry)):
             continue
         if not isinstance(entry, (list, tuple)):
-            # Legacy leaf-only value: no branch context, so match the leaf column alone.
+            # Leaf-mode entry: a bare leaf value with no branch context, so match the leaf column alone.
             mask |= _filter_isin(df[leaf_column], [entry])
             continue
+        # Path-mode entry: match each segment against its column, root to leaf; all must match (AND).
         row_matches = pd.Series(True, index=df.index)
         for position, (column, segment) in enumerate(zip(df.columns, entry)):
             is_leaf = position == len(entry) - 1
@@ -425,6 +456,15 @@ class Filter(VizroBaseModel):
     _column_type: Literal["hierarchical", "numerical", "categorical", "date", "datetime", "time", "boolean"] = (
         PrivateAttr()
     )
+    # Direct control-sync targets (other Filter/Parameter ids this control keeps in sync), stashed here when the
+    # default sync chain is built so the post-pre_build finalization (see `finalize_control_sync_chains`) can compute
+    # the transitive mesh even though `extract_control_targets` removes them from `targets` in place.
+    _synced_control_targets: list[ModelID] = PrivateAttr(default_factory=list)
+    # True only when the selector runs the framework-generated default action chain (i.e. `actions` was not set
+    # explicitly). Finalization may subsume such a control into another control's collapsed sync (guard its chain and
+    # fold its figures into the union). A control with explicit `actions` (custom or `[]`) has this False and is kept
+    # as a plain sync target - its value is set but its own chain is left to run (or not) as configured.
+    _has_default_selector_actions: bool = PrivateAttr(default=False)
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
@@ -491,7 +531,14 @@ class Filter(VizroBaseModel):
             eagerly_raise_column_not_found_error=True,
         )
 
-        if (column_type := self._validate_column_type(targeted_data)) != self._column_type:
+        # "date" and "datetime" share the same underlying datetime64 dtype; which one _validate_column_type reports
+        # depends on the *values* (whether any row carries a time-of-day), so it can legitimately flip across data
+        # reloads - e.g. a datetime column whose reloaded subset happens to be all-midnight now reads as "date". That
+        # is not a schema change, so tolerate it (a DateTimePicker/DatePicker filter still renders and filters fine);
+        # any other type change is genuine drift and must still raise.
+        _temporal_types = {"date", "datetime"}
+        column_type = self._validate_column_type(targeted_data)
+        if column_type != self._column_type and not {column_type, self._column_type} <= _temporal_types:
             raise ValueError(
                 f"{self._single_filter_column} has changed type from {self._column_type} to {column_type}. "
                 "A filtered column cannot change type while the dashboard is running."
@@ -502,7 +549,10 @@ class Filter(VizroBaseModel):
 
         if _is_categorical_selector(selector):
             selector_call_obj = selector(options=self._get_options(targeted_data, current_value))
-        elif _is_numerical_or_date_selector(selector):
+        elif _is_numerical_date_or_datetime_selector(selector):
+            # DateTimePicker joins the numerical/date selectors here: only its date portion is dynamic, and
+            # selector.__call__(min, max) rebuilds it with the refreshed date bounds (min/max are coerced to
+            # dates inside). The always-static time portion is unaffected.
             _min, _max = self._get_min_max(targeted_data, current_value)
             selector_call_obj = selector(min=_min, max=_max)
         elif _is_hierarchical_selector(selector):
@@ -523,6 +573,10 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):  # noqa: PLR0912
+        # Split control targets (used to sync this filter with another control) out of self.targets; they are
+        # validated and handled differently to the figure targets that remain.
+        targeted_controls = extract_control_targets(control=self)
+
         # If it's a page filter, validate that targets are present on the page where the filter is defined.
         # If it's a container filter, validate that targets are present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
@@ -573,7 +627,9 @@ class Filter(VizroBaseModel):
         # Note: min or max = 0 are falsey but must not be treated as "not set".
         if (
             self._column_type in _DYNAMIC_COLUMN_TYPES
-            and not isinstance(self.selector, (TimePicker, DateTimePicker))
+            # TimePicker stays static (a time-of-day has no min/max bounds to derive from data). DateTimePicker
+            # is dynamic through its date portion only; its time portion is likewise always the full day.
+            and not isinstance(self.selector, TimePicker)
             and not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None
@@ -586,7 +642,7 @@ class Filter(VizroBaseModel):
                     break
 
         # TimePicker always has a default min/max specified so no need to handle it here.
-        if _is_numerical_or_date_selector(self.selector) or _is_datetime_selector(self.selector):
+        if _is_numerical_date_or_datetime_selector(self.selector):
             _min, _max = self._get_min_max(targeted_data)
             # Note that manually set self.selector.min/max = 0 are Falsey and should not be overwritten.
             if self.selector.min is None:
@@ -607,9 +663,7 @@ class Filter(VizroBaseModel):
         # locals) so the filtering logic can always be reapplied when the targets are refreshed, independently of
         # the selector's actions. Note self.column is deliberately left untouched: it holds the user-provided config
         # and is relied on elsewhere (e.g. _validate_column_type, _get_options) to detect hierarchical filters.
-        if isinstance(self.selector, RangeSlider) or (
-            isinstance(self.selector, (DatePicker, TimePicker, DateTimePicker)) and self.selector.range
-        ):
+        if _is_range_selector(self.selector):
             self._filter_function = _filter_between
             self._filter_column = self._single_filter_column
         elif _is_hierarchical_selector(self.selector) and self.selector.full_path:
@@ -632,7 +686,22 @@ class Filter(VizroBaseModel):
         # default. The filter value is still applied whenever its targets are refreshed by something else (e.g. a
         # Button running update_targets).
         if "actions" not in self.selector.model_fields_set:
-            self.selector.actions = [update_targets(id=f"{FILTER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
+            # Stash the direct control-sync targets so the post-pre_build finalization can compute the transitive mesh
+            # (they are removed from self.targets by extract_control_targets above). Only stashed on the auto-built
+            # path: explicit selector actions (else branch) intentionally drop control targets.
+            self._synced_control_targets = targeted_controls
+            # Mark this as running the generated default chain so finalization may subsume it (see the attribute doc).
+            self._has_default_selector_actions = True
+            build_default_control_selector_actions(
+                selector=self.selector,
+                targeted_controls=targeted_controls,
+                targeted_figures=self.targets,
+                update_targets_action_id=f"{FILTER_ACTION_PREFIX}_{self.id}",
+            )
+        else:
+            # Explicit selector actions bypass the default sync chain, so any control targets were stripped without
+            # generating a set_controls. Warn rather than silently drop them.
+            warn_ignored_control_sync_targets(self, targeted_controls)
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
@@ -655,12 +724,16 @@ class Filter(VizroBaseModel):
         if not self._dynamic:
             return html.Div(id=self.id, children=selector_build_obj, hidden=not self.visible)
 
-        # Temporarily hide the selector during the filter reloading process. Other components, such as the title,
-        # remain visible because of the configuration: overlay_style={"visibility": "visible"} in dcc.Loading.
-        # If the selector is a Checklist with show_select_all=True, then hide the select all checkbox too.
-        selector_build_obj[selector.id].className = "invisible"
-        if isinstance(selector, Checklist) and selector.show_select_all:
-            selector_build_obj[f"{selector.id}_select_all"].className = "invisible"
+        # Temporarily hide the selector's visible component(s) during the filter reloading process. Other components,
+        # such as the title, remain visible because of the configuration: overlay_style={"visibility": "visible"} in
+        # dcc.Loading. Each selector knows which of its built components form its visible surface (e.g. a Checklist may
+        # add a select-all box, and a DateTimePicker's selector.id is a non-visual proxy dcc.Store whose inputs live in
+        # a wrapper Div), so it exposes them via _dynamic_reload_hidden_ids; default to the selector's own id. Append
+        # (rather than overwrite) "invisible" so any layout className on the target is preserved.
+        for hidden_id in getattr(selector, "_dynamic_reload_hidden_ids", [selector.id]):
+            component = selector_build_obj[hidden_id]
+            existing_class = getattr(component, "className", "") or ""
+            component.className = f"{existing_class} invisible".strip()
 
         # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
         #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().

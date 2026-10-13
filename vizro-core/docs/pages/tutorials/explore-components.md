@@ -89,13 +89,13 @@ A [`Page`][vizro.models.Page] model is the foundation of any Vizro dashboard. It
 
 ### 3.1. Add a table
 
-To start, let's get an overview of the data by displaying it in a table using [`AgGrid`](../user-guides/table/#ag-grid). These steps create a page and add a table to it:
+To start, let's get an overview of the data by displaying it in a [`Table`](../user-guides/table.md). These steps create a page and add a table to it:
 
 1. Import the necessary packages and load the dataset.
 1. Create a [`Page`][vizro.models.Page] and set its `title` to `"Data"`.
-1. Add an [`AgGrid`][vizro.models.AgGrid] component to the `components` list.
-1. Use the [`dash_ag_grid`][vizro.tables.dash_ag_grid] function inside the `figure` argument of `AgGrid`.
-1. Provide details about the data source in the `footer` argument of `AgGrid`.
+1. Add a [`Table`][vizro.models.Table] component to the `components` list.
+1. Use the [`dash_ag_grid`][vizro.tables.dash_ag_grid] function inside the `figure` argument of `Table`.
+1. Provide details about the data source in the `footer` argument of `Table`.
 1. Add the newly created page to the list of `pages` in the [Dashboard][vizro.models.Dashboard] model.
 
 !!! example "First Page"
@@ -115,7 +115,7 @@ To start, let's get an overview of the data by displaying it in a table using [`
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -136,7 +136,7 @@ To start, let's get an overview of the data by displaying it in a table using [`
 
 After running your code (either locally or on PyCafe), you can now view the dashboard (on `localhost:8050` if you ran it locally, or on the right part of the screen if you are using PyCafe).
 
-Take a moment to explore the data in the table. You can sort, filter, and search within the `AgGrid` columns to better understand the dataset.
+Take a moment to explore the data in the table. You can sort, filter, and search within the table columns to better understand the dataset.
 
 In the top-right corner of the dashboard, you'll notice a toggle to switch between dark and light themes. Try it out!
 
@@ -175,7 +175,7 @@ These steps add an export data button:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -203,9 +203,9 @@ Notice there is extra blank space below the button. In this step, you’ll learn
 
 Vizro supports two layouts: [`Grid`](../user-guides/layouts.md#grid-layout) and [`Flex`](../user-guides/layouts.md#flex-layout). To understand the differences between them, check out our [guide on layouts](../user-guides/layouts.md#layout-options-grid-and-flex).
 
-By default, Vizro uses the `Grid` layout, which arranges components in the order they appear inside `components` and gives them equal space. However, in our case, we want the `Button` and `AgGrid` to only take up the space they need — not equal space.
+By default, Vizro uses the `Grid` layout, which arranges components in the order they appear inside `components` and gives them equal space. However, in our case, we want the `Button` and `Table` to only take up the space they need — not equal space.
 
-To achieve this, we'll switch to the `Flex` layout and set a `height` for the `AgGrid`, as the default is `400px` otherwise.
+To achieve this, we'll switch to the `Flex` layout and set a `height` for the `Table`, as the default is `400px` otherwise.
 
 1. In the `layout` argument of the `Page`, use the [`Flex`][vizro.models.Flex] layout model via `layout = vm.Flex()`
 1. Specify `style= {"height": "600px"}` inside the `dash_ag_grid`, as it would otherwise default to `400px`.
@@ -235,7 +235,7 @@ To achieve this, we'll switch to the `Flex` layout and set a `height` for the `A
             title="Data",
             layout=vm.Flex(),
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips, style= {"height": "600px"}),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -303,7 +303,7 @@ These steps add a histogram to the page:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -394,7 +394,7 @@ These steps add two KPI cards to the second page:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -490,7 +490,7 @@ These steps place the two histograms in separate tabs:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -605,7 +605,7 @@ Run the code below to apply the layout to the dashboard page:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -702,7 +702,7 @@ These steps add a filter to the dashboard:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -764,7 +764,7 @@ These steps add a filter to the dashboard:
 
         [![SecondPage5]][secondpage5]
 
-You'll see that a [`Dropdown`][vizro.models.Dropdown] is selected by default for categorical data, while a [`RangeSlider`][vizro.models.RangeSlider] is used for numerical data. Also, filters are applied to all components on the page.
+You'll see that a [`Dropdown`][vizro.models.Dropdown] is selected by default for categorical data, while a range [`Slider`][vizro.models.Slider] (`Slider(range=True)`) is used for numerical data. Also, filters are applied to all components on the page.
 
 If you want to apply a filter to specific components only, check out [How to use filters](../user-guides/filters.md).
 
@@ -841,7 +841,7 @@ These steps should feel familiar, as they add three charts to the new page.
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -969,7 +969,7 @@ Run the code below to apply the layout to the dashboard page:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -1097,7 +1097,7 @@ These steps add a parameter to the dashboard:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -1242,7 +1242,7 @@ For more information on when to create a custom chart, check out [How to create 
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -1396,7 +1396,7 @@ Your directory structure should look like this:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.
@@ -1546,7 +1546,7 @@ The following steps create a navigation bar:
         first_page = vm.Page(
             title="Data",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     figure=dash_ag_grid(tips),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
                     Practical Data Analysis: Case Studies in Business Statistics.

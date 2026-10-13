@@ -1,78 +1,103 @@
-"""Scratch app for testing conditional notifications on built-in actions.
+"""Scratch dev app: one page per new/canonical API introduced in this pre-stable release.
 
-Built-in actions get sensible default notifications that are not configurable through a public field. Error
-messages are action-specific but never leak *why* something failed.
+Each page exercises exactly one new API so it can be QA'd in isolation:
 
-What to look for while testing manually:
-  * Filter / Parameter change -> no toast (silent refresh)            [update_targets]
-  * "Apply controls"          -> no toast on success                  [update_targets]
-  * Click a bar               -> "Control updated." (success)         [set_control]
-  * "Export data"             -> "Exporting data..." then "Data exported." (progress -> success) [export_data]
-  * Any failure               -> action-specific error toast (no reason shown to the end user)
+1. Slider(range=True)          - the merged range selector (replaces the deprecated RangeSlider).
+2. set_controls               - the canonical action taking a list of control ids (replaces set_control).
+3. Table(figure=dash_ag_grid) - the recommended AG Grid (replaces the deprecated AgGrid model).
+4. Cascader(full_path=...)    - hierarchical selector with explicit full_path (default flips to True in 1.0.0).
+
+Run with `hatch run example` from the vizro-core directory.
 """
 
 import vizro.actions as va
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.tables import dash_ag_grid
 
-df = px.data.iris()
-SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
+# ---------------------------------------------------------------------------------------------------------------------
+# Data
+# ---------------------------------------------------------------------------------------------------------------------
+iris = px.data.iris()
+gapminder = px.data.gapminder()
+gapminder_2007 = gapminder[gapminder["year"] == 2007]
 
 
-page = vm.Page(
-    id="builtin_notifications",
-    title="Built-in action notifications",
-    layout=vm.Flex(),
+# ---------------------------------------------------------------------------------------------------------------------
+# 1. Slider(range=True) - replaces the deprecated RangeSlider.
+# ---------------------------------------------------------------------------------------------------------------------
+page_slider_range = vm.Page(
+    title="Slider(range=True)",
     components=[
-        vm.Graph(
-            id="source_graph",
-            title="Click a bar to set the species filter (set_control)",
-            figure=px.bar(
-                df,
-                x="species",
-                y="sepal_length",
-                color="species",
-                color_discrete_map=SPECIES_COLORS,
-                custom_data="species",
-            ),
-            # set_control: on success shows "Control updated.", on failure shows "Setting the control failed."
-            actions=va.set_control(control="species_filter", value="species"),
-        ),
-        vm.Container(
-            layout=vm.Flex(direction="row"),
-            components=[
-                # export_data: shows "Exporting data..." (progress) then "Data exported." (success); on failure
-                # shows "Exporting data failed."
-                vm.Button(text="Export data", actions=va.export_data(targets=["target_graph"])),
-                # update_targets on a button: no success toast; on failure shows "Updating figures failed."
-                vm.Button(text="Apply controls", actions=va.update_targets(targets=["target_graph"])),
-            ],
-        ),
-        vm.Graph(
-            id="target_graph",
-            title="Target graph (filtered / parameterized / exported)",
-            figure=px.scatter(
-                df,
-                x="sepal_length",
-                y="sepal_width",
-                color="species",
-                color_discrete_map=SPECIES_COLORS,
-            ),
-        ),
+        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
     ],
     controls=[
-        # Filter change auto-runs update_targets -> silent refresh (no toast).
-        vm.Filter(id="species_filter", column="species", targets=["target_graph"]),
-        # Parameter change auto-runs update_targets -> silent refresh (no toast).
-        vm.Parameter(
-            targets=["target_graph.x"],
-            selector=vm.RadioItems(options=["sepal_length", "sepal_width"], title="X axis"),
+        vm.Filter(column="sepal_length", selector=vm.Slider(range=True, title="Sepal length range")),
+    ],
+)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# 2. set_controls - canonical action; `controls` is a list of ids. Click a point to set the continent filter.
+# ---------------------------------------------------------------------------------------------------------------------
+page_set_controls = vm.Page(
+    title="set_controls",
+    components=[
+        vm.Graph(
+            figure=px.scatter(gapminder_2007, x="gdpPercap", y="lifeExp", color="continent", custom_data="continent"),
+            actions=va.set_controls(controls=["continent_filter"], value="continent"),
+        ),
+        vm.Graph(figure=px.box(gapminder_2007, x="continent", y="lifeExp", color="continent")),
+    ],
+    controls=[
+        vm.Filter(id="continent_filter", column="continent", selector=vm.Dropdown()),
+    ],
+)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# 3. Table(figure=dash_ag_grid(...)) - the recommended AG Grid, replacing the deprecated AgGrid model.
+# ---------------------------------------------------------------------------------------------------------------------
+page_ag_grid = vm.Page(
+    title="Table (dash_ag_grid)",
+    components=[
+        vm.Table(title="Gapminder 2007", figure=dash_ag_grid(gapminder_2007)),
+    ],
+    controls=[
+        vm.Filter(column="continent"),
+    ],
+)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# 4. Cascader with explicit full_path - hierarchical selector (path mode becomes the default in 1.0.0).
+# ---------------------------------------------------------------------------------------------------------------------
+page_cascader = vm.Page(
+    title="Cascader(full_path)",
+    components=[
+        vm.Graph(figure=px.scatter(gapminder_2007, x="gdpPercap", y="lifeExp", color="continent")),
+    ],
+    controls=[
+        vm.Filter(
+            column=["continent", "country"],
+            selector=vm.Cascader(full_path=True, multi=True, title="Continent → country (path mode)"),
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+
+dashboard = vm.Dashboard(
+    title="New APIs scratch",
+    pages=[
+        page_slider_range,
+        page_set_controls,
+        page_ag_grid,
+        page_cascader,
+    ],
+)
+
+# Minor comment to retrigger the CI
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

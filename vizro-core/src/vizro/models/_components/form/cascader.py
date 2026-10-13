@@ -6,7 +6,7 @@ from typing import Annotated, Any, Literal, cast
 import dash_bootstrap_components as dbc
 import vizro_dash_components as vdc
 from dash import html
-from pydantic import BeforeValidator, Field, PrivateAttr, TypeAdapter, model_validator
+from pydantic import BeforeValidator, Field, JsonValue, PrivateAttr, TypeAdapter, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
@@ -232,13 +232,12 @@ class Cascader(VizroBaseModel):
 
     type: Literal["cascader"] = "cascader"
     full_path: bool = Field(
-        default=False,
+        default=True,
         frozen=True,
-        description="How a selection is identified. In leaf mode (False, default) `value` is a bare leaf scalar "
-        "(single-select) or a list of leaf scalars (multi-select), and leaf labels must be unique across the tree. "
-        "In path mode (True) `value` is a full root-to-leaf path (single-select) or a list of paths (multi-select), "
-        "so duplicate leaf labels across different branches are addressed unambiguously. This attribute is "
-        "immutable once set.",
+        description="How a selection is identified. In path mode (True, default) `value` is a full root-to-leaf path "
+        "(single-select) or a list of paths (multi-select), so duplicate leaf labels across different branches are "
+        "addressed unambiguously. In leaf mode (False) `value` is a bare leaf scalar (single-select) or a list of leaf "
+        "scalars (multi-select), and leaf labels must be unique across the tree. This attribute is immutable once set.",
     )
     options: Annotated[
         dict[str, Any],
@@ -253,10 +252,10 @@ class Cascader(VizroBaseModel):
         Field(
             default=None,
             validate_default=True,
-            description="Selected value. With full_path=False (default): a leaf value (e.g. `'France'`), or a list "
-            "of leaves when multi=True. With full_path=True: a root-to-leaf path (e.g. `['Europe', 'France']`), or "
-            "a list of such paths when multi=True. Must be valid for `options`. If omitted, the first "
-            "leaf/path is selected.",
+            description="Selected value. With full_path=True (default): a root-to-leaf path (e.g. "
+            "`['Europe', 'France']`), or a list of such paths when multi=True. With full_path=False: a leaf value "
+            "(e.g. `'France'`), or a list of leaves when multi=True. Must be valid for `options`. If omitted, the "
+            "first leaf/path is selected.",
         ),
     ]
     multi: bool = Field(default=True, description="Whether to enable selection of multiple values")
@@ -338,6 +337,11 @@ underlying component may change in the future.""",
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.value"}
+
+    @staticmethod
+    def _get_value_from_trigger(value: JsonValue, trigger: JsonValue) -> JsonValue:
+        """Return the given `trigger` without modification."""
+        return trigger
 
     def __call__(self, options):
         # Fill the first-leaf/path default when unset (mirrors Dropdown). Otherwise pass the stored value straight

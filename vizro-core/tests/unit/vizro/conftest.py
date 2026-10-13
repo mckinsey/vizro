@@ -8,10 +8,9 @@ from dash import State
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import filter_interaction
 from vizro.figures import kpi_card
 from vizro.models.types import capture
-from vizro.tables import dash_ag_grid, dash_data_table
+from vizro.tables import dash_ag_grid
 
 
 @pytest.fixture
@@ -91,13 +90,20 @@ def ag_grid_with_id(gapminder):
 
 
 @pytest.fixture
-def standard_dash_table(gapminder):
-    return dash_data_table(data_frame=gapminder)
+def dash_ag_grid_with_arguments(gapminder):
+    return dash_ag_grid(data_frame=gapminder, defaultColDef={"resizable": False, "sortable": False})
 
 
 @pytest.fixture
+def dash_ag_grid_with_str_dataframe():
+    return dash_ag_grid(data_frame="gapminder")
+
+
+# `Table` is AG-Grid-only from 1.0.0. This fixture previously returned a Dash DataTable; it now returns an AG Grid
+# figure with a distinct underlying id so that tests needing two separate table figures keep working.
+@pytest.fixture
 def dash_data_table_with_id(gapminder):
-    return dash_data_table(id="underlying_table_id", data_frame=gapminder)
+    return dash_ag_grid(id="underlying_table_id", data_frame=gapminder)
 
 
 @pytest.fixture
@@ -190,53 +196,6 @@ def page_actions_builtin_controls(standard_px_chart):
             "parameters": [
                 State("parameter_selector", "value"),
             ],
-            "filter_interaction": [],
-        }
-    }
-
-
-@pytest.fixture
-def page_actions_builtin_controls_legacy(standard_px_chart):
-    """Instantiates managers with one page that contains filter, parameter, and filter_interaction actions.
-
-    This legacy version includes filter_interaction.
-    """
-    vm.Page(
-        title="title",
-        components=[
-            vm.Graph(
-                id="graph_1",
-                figure=standard_px_chart,
-                actions=[filter_interaction(id="graph_filter_interaction", targets=["graph_2"])],
-            ),
-            vm.Graph(id="graph_2", figure=standard_px_chart),
-        ],
-        controls=[
-            vm.Filter(id="filter", column="continent", selector=vm.Dropdown(id="filter_selector")),
-            vm.Parameter(
-                id="parameter",
-                targets=["graph_1.x"],
-                selector=vm.Checklist(
-                    id="parameter_selector",
-                    options=["lifeExp", "gdpPercap", "pop"],
-                ),
-            ),
-        ],
-    )
-
-    Vizro._pre_build()
-
-    return {
-        "_controls": {
-            "filters": [
-                State("filter_selector", "value"),
-            ],
-            "parameters": [
-                State("parameter_selector", "value"),
-            ],
-            "filter_interaction": [
-                {"clickData": State("graph_1", "clickData"), "modelID": State("graph_1", "id")},
-            ],
         }
     }
 
@@ -270,7 +229,7 @@ def manager_for_testing_actions_output_input_prop(ag_grid_with_id):
         title="My first dashboard",
         components=[
             MockCardWithNoActionProps(id="known_model_with_no_default_props", text="My Card"),
-            vm.AgGrid(id="known_ag_grid_id", figure=ag_grid_with_id),
+            vm.Table(id="known_ag_grid_id", figure=ag_grid_with_id),
         ],
         controls=[vm.Filter(column="continent", selector=vm.Dropdown(id="known_dropdown_filter_id"))],
     )

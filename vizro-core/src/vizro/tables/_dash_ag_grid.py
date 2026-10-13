@@ -50,7 +50,7 @@ _DATA_TYPE_DEFINITIONS = {
 
 @capture("ag_grid")
 def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
-    """Implementation of `dash_ag_grid.AgGrid` with sensible defaults to be used in [`AgGrid`][vizro.models.AgGrid].
+    """Implementation of `dash_ag_grid.AgGrid` with sensible defaults to be used in [`Table`][vizro.models.Table].
 
     Abstract: Usage documentation
         [How to use AG Grid](../user-guides/table.md#ag-grid)
@@ -69,7 +69,7 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
         import vizro.models as vm
         from vizro.tables import dash_ag_grid
 
-        vm.AgGrid(figure=dash_ag_grid(...))
+        vm.Table(figure=dash_ag_grid(...))
         ```
     """
     defaults = {

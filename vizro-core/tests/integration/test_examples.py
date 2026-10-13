@@ -42,7 +42,6 @@ examples_path = Path(__file__).parents[2] / "examples"
 # Ignore as it doesn't affect the test run
 @pytest.mark.filterwarnings("ignore::pytest.PytestUnhandledThreadExceptionWarning")
 @pytest.mark.filterwarnings("ignore:unclosed file:ResourceWarning")
-@pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning")
 @pytest.mark.filterwarnings("ignore:Discarding nonzero nanoseconds in conversion:UserWarning")
 # The `features` examples do add_type, which ideally we would clean up afterwards to restore vizro.models to
 # its previous state. Since we don't currently do this, `hatch run test` fails.

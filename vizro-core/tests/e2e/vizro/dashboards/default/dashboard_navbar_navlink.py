@@ -1,7 +1,7 @@
 import e2e.vizro.constants as cnst
+from pages.ag_grid_page import ag_grid_page
 from pages.datepicker_page import datepicker_page
 from pages.kpi_indicators_page import kpi_indicators_page
-from pages.table_page import table_page
 
 import vizro.models as vm
 from vizro import Vizro
@@ -9,7 +9,7 @@ from vizro import Vizro
 dashboard = vm.Dashboard(
     title="Vizro dashboard for integration testing",
     pages=[
-        table_page,
+        ag_grid_page,
         kpi_indicators_page,
         datepicker_page,
     ],
@@ -20,7 +20,7 @@ dashboard = vm.Dashboard(
                     pages={
                         # configured accordion here to see that it is not shown with one page inside
                         cnst.AG_GRID_ACCORDION: [
-                            cnst.TABLE_PAGE,
+                            cnst.TABLE_AG_GRID_PAGE,
                         ],
                     },
                     icon="Arrow Back IOS",

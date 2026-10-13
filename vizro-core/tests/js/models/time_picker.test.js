@@ -188,7 +188,7 @@ describe("update_range_time_picker_store", () => {
       ];
     });
 
-    test("should push both Store values into the pickers and raise the guard", () => {
+    test("should push both Store values into the pickers WITHOUT touching the guard", () => {
       const result = update_range_time_picker_store(
         ["09:00", "17:00"],
         "10:00",
@@ -197,14 +197,12 @@ describe("update_range_time_picker_store", () => {
       );
 
       expect(result).toEqual([dash_clientside.no_update, "09:00", "17:00"]);
-      expect(dash_clientside.set_props).toHaveBeenCalledTimes(1);
-      expect(dash_clientside.set_props).toHaveBeenCalledWith(
-        "tp-1_guard_actions_chain",
-        { data: true },
-      );
+      // The sync callback must NOT raise the guard: whoever wrote the Store owns it (URL sync and reset
+      // raise it themselves; set_control deliberately leaves it down so the target chain fires).
+      expect(dash_clientside.set_props).not.toHaveBeenCalled();
     });
 
-    test("should propagate null Store values to the pickers and still raise the guard", () => {
+    test("should propagate null Store values to the pickers without touching the guard", () => {
       const result = update_range_time_picker_store(
         [null, null],
         "10:00",
@@ -213,10 +211,7 @@ describe("update_range_time_picker_store", () => {
       );
 
       expect(result).toEqual([dash_clientside.no_update, null, null]);
-      expect(dash_clientside.set_props).toHaveBeenCalledWith(
-        "tp-1_guard_actions_chain",
-        { data: true },
-      );
+      expect(dash_clientside.set_props).not.toHaveBeenCalled();
     });
 
     test("should propagate an asymmetric [null, value] Store tuple to the pickers", () => {
@@ -228,6 +223,44 @@ describe("update_range_time_picker_store", () => {
       );
 
       expect(result).toEqual([dash_clientside.no_update, null, "17:00"]);
+    });
+  });
+
+  describe("idempotence: a picker edit that already matches the Store", () => {
+    beforeEach(() => {
+      global.dash_clientside.callback_context.triggered = [
+        { prop_id: "tp-1-start.value" },
+      ];
+    });
+
+    test("should return no_update when the pair already equals the Store (no echo write)", () => {
+      // This is the internal round-trip after an external write pushes Store values into the pickers.
+      // Because the callback no longer raises the guard, echoing the identical value back could
+      // re-trigger the actions chain, so we must skip the write.
+      const result = update_range_time_picker_store(
+        ["10:00", "18:00"],
+        "10:00",
+        "18:00",
+        "tp-1",
+      );
+
+      expect(result).toBe(dash_clientside.no_update);
+      expect(dash_clientside.set_props).not.toHaveBeenCalled();
+    });
+
+    test("should still write when a genuine edit differs from the Store", () => {
+      const result = update_range_time_picker_store(
+        ["10:00", "18:00"],
+        "10:00",
+        "19:00",
+        "tp-1",
+      );
+
+      expect(result).toEqual([
+        ["10:00", "19:00"],
+        dash_clientside.no_update,
+        dash_clientside.no_update,
+      ]);
     });
   });
 });

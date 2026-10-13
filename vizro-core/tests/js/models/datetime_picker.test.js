@@ -87,8 +87,10 @@ describe("update_range_datetime_picker_store", () => {
     });
 
     test("should emit date-only strings when both times are cleared", () => {
+      // Store previously held times; clearing both times is a genuine change (differs from the Store),
+      // so it writes through the idempotence check.
       const result = update_range_datetime_picker_store(
-        ["2026-01-01", "2026-12-31"],
+        ["2026-01-01T10:00", "2026-12-31T18:00"],
         "2026-01-01",
         "2026-12-31",
         "",
@@ -201,7 +203,7 @@ describe("update_range_datetime_picker_store", () => {
       ];
     });
 
-    test("should split each Store entry into date/time and raise the guard", () => {
+    test("should split each Store entry into date/time WITHOUT touching the guard", () => {
       const result = update_range_datetime_picker_store(
         ["2026-01-01T10:00", "2026-12-31T18:00"],
         "2026-06-15",
@@ -219,11 +221,9 @@ describe("update_range_datetime_picker_store", () => {
         "10:00",
         "18:00",
       ]);
-      expect(dash_clientside.set_props).toHaveBeenCalledTimes(1);
-      expect(dash_clientside.set_props).toHaveBeenCalledWith(
-        "dtp-1_guard_actions_chain",
-        { data: true },
-      );
+      // The sync callback must NOT raise the guard: whoever wrote the Store owns it (URL sync and reset
+      // raise it themselves; set_control deliberately leaves it down so the target chain fires).
+      expect(dash_clientside.set_props).not.toHaveBeenCalled();
     });
 
     test("should return empty-string times for date-only Store entries", () => {
@@ -243,10 +243,7 @@ describe("update_range_datetime_picker_store", () => {
         "",
         "",
       ]);
-      expect(dash_clientside.set_props).toHaveBeenCalledWith(
-        "dtp-1_guard_actions_chain",
-        { data: true },
-      );
+      expect(dash_clientside.set_props).not.toHaveBeenCalled();
     });
 
     test("should accept a space separator (Mantine style) as well as T", () => {
@@ -268,7 +265,7 @@ describe("update_range_datetime_picker_store", () => {
       ]);
     });
 
-    test("should propagate null Store entries as [null, ''] and still raise the guard", () => {
+    test("should propagate null Store entries as [null, ''] without touching the guard", () => {
       const result = update_range_datetime_picker_store(
         [null, null],
         "2026-06-15",
@@ -279,10 +276,7 @@ describe("update_range_datetime_picker_store", () => {
       );
 
       expect(result).toEqual([dash_clientside.no_update, null, null, "", ""]);
-      expect(dash_clientside.set_props).toHaveBeenCalledWith(
-        "dtp-1_guard_actions_chain",
-        { data: true },
-      );
+      expect(dash_clientside.set_props).not.toHaveBeenCalled();
     });
 
     test("should fall back to [null, null] when Store data is not an array", () => {
@@ -296,6 +290,49 @@ describe("update_range_datetime_picker_store", () => {
       );
 
       expect(result).toEqual([dash_clientside.no_update, null, null, "", ""]);
+    });
+  });
+
+  describe("idempotence: a sub-component edit that already matches the Store", () => {
+    beforeEach(() => {
+      global.dash_clientside.callback_context.triggered = [
+        { prop_id: "dtp-1-date-start.value" },
+      ];
+    });
+
+    test("should return no_update when the recomputed pair equals the Store (no echo write)", () => {
+      // Internal round-trip after an external write. As the callback no longer raises the guard,
+      // echoing the identical value back could re-trigger the actions chain, so we skip the write.
+      const result = update_range_datetime_picker_store(
+        ["2026-01-01T10:00", "2026-12-31T18:00"],
+        "2026-01-01",
+        "2026-12-31",
+        "10:00",
+        "18:00",
+        "dtp-1",
+      );
+
+      expect(result).toBe(dash_clientside.no_update);
+      expect(dash_clientside.set_props).not.toHaveBeenCalled();
+    });
+
+    test("should still write when a genuine edit differs from the Store", () => {
+      const result = update_range_datetime_picker_store(
+        ["2026-01-01T10:00", "2026-12-31T18:00"],
+        "2026-01-01",
+        "2026-12-31",
+        "10:00",
+        "19:00",
+        "dtp-1",
+      );
+
+      expect(result).toEqual([
+        ["2026-01-01T10:00", "2026-12-31T19:00"],
+        dash_clientside.no_update,
+        dash_clientside.no_update,
+        dash_clientside.no_update,
+        dash_clientside.no_update,
+      ]);
     });
   });
 });
@@ -431,7 +468,7 @@ describe("update_single_datetime_picker_store", () => {
       ];
     });
 
-    test("should split the Store value into date/time and raise the guard", () => {
+    test("should split the Store value into date/time WITHOUT touching the guard", () => {
       const result = update_single_datetime_picker_store(
         "2026-06-15T08:00",
         "2026-01-01",
@@ -444,11 +481,9 @@ describe("update_single_datetime_picker_store", () => {
         "2026-06-15",
         "08:00",
       ]);
-      expect(dash_clientside.set_props).toHaveBeenCalledTimes(1);
-      expect(dash_clientside.set_props).toHaveBeenCalledWith(
-        "dtp-1_guard_actions_chain",
-        { data: true },
-      );
+      // The sync callback must NOT raise the guard: whoever wrote the Store owns it (URL sync and reset
+      // raise it themselves; set_control deliberately leaves it down so the target chain fires).
+      expect(dash_clientside.set_props).not.toHaveBeenCalled();
     });
 
     test("should return an empty-string time for a date-only Store value", () => {
@@ -462,7 +497,7 @@ describe("update_single_datetime_picker_store", () => {
       expect(result).toEqual([dash_clientside.no_update, "2026-06-15", ""]);
     });
 
-    test("should propagate a null Store value as [null, ''] and still raise the guard", () => {
+    test("should propagate a null Store value as [null, ''] without touching the guard", () => {
       const result = update_single_datetime_picker_store(
         null,
         "2026-01-01",
@@ -471,10 +506,42 @@ describe("update_single_datetime_picker_store", () => {
       );
 
       expect(result).toEqual([dash_clientside.no_update, null, ""]);
-      expect(dash_clientside.set_props).toHaveBeenCalledWith(
-        "dtp-1_guard_actions_chain",
-        { data: true },
+      expect(dash_clientside.set_props).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("idempotence: a sub-component edit that already matches the Store", () => {
+    beforeEach(() => {
+      global.dash_clientside.callback_context.triggered = [
+        { prop_id: "dtp-1-date.value" },
+      ];
+    });
+
+    test("should return no_update when the recomputed value equals the Store (no echo write)", () => {
+      const result = update_single_datetime_picker_store(
+        "2026-06-15T08:00",
+        "2026-06-15",
+        "08:00",
+        "dtp-1",
       );
+
+      expect(result).toBe(dash_clientside.no_update);
+      expect(dash_clientside.set_props).not.toHaveBeenCalled();
+    });
+
+    test("should still write when a genuine edit differs from the Store", () => {
+      const result = update_single_datetime_picker_store(
+        "2026-06-15T08:00",
+        "2026-06-15",
+        "09:00",
+        "dtp-1",
+      );
+
+      expect(result).toEqual([
+        "2026-06-15T09:00",
+        dash_clientside.no_update,
+        dash_clientside.no_update,
+      ]);
     });
   });
 });

@@ -20,17 +20,17 @@ All advanced interactions follow **Source → Control → Target**:
 ```
 [Source]                [Control]                  [Target(s)]
  Graph     --click-->    Filter (id=...)            Graph
- AgGrid                  or Parameter      ---->    AgGrid
-          va.set_control(control=..., value=...)    Figure
-                          (visible=True/False)      Table
+ Table                   or Parameter      ---->    Table
+          va.set_controls(controls=..., value=...)    Figure
+                          (visible=True/False)
 ```
 
-- **Sources** (for cross-filter / cross-highlight): `Graph` and `AgGrid` — both carry click-data (column values from the clicked point/cell). `Figure`, `Button`, and `Card` technically accept `actions=va.set_control(...)` but only with a hardcoded `value`, so they don't help with dynamic filtering.
-- **Targets** (anything a Filter/Parameter can target): `Graph`, `AgGrid`, `Figure`, `Table` — the data-bearing components.
+- **Sources** (for cross-filter / cross-highlight): `Graph` and `Table` — both carry click-data (column values from the clicked point/cell). `Figure`, `Button`, and `Card` technically accept `actions=va.set_controls(...)` but only with a hardcoded `value`, so they don't help with dynamic filtering.
+- **Targets** (anything a Filter/Parameter can target): `Graph`, `Table`, `Figure` — the data-bearing components.
 - The control is **always explicit** with an `id`. You never connect source to target directly.
-- The source uses `va.set_control` (a built-in action). The control then drives the target.
+- The source uses `va.set_controls` (a built-in action). The control then drives the target.
 - Targets are inferred from the control: a Filter's `targets` (or its container scope), a Parameter's `targets`.
-- This shape composes: multiple sources can write to the same control; one source can chain multiple `set_control` calls.
+- This shape composes: multiple sources can write to the same control; one source can chain multiple `set_controls` calls.
 
 ## Pattern 1: Hierarchical Drill-Down (cross-page)
 
@@ -135,7 +135,7 @@ Page 1 (Overview) ──click rep row──> sets rep_filter (show_in_url=True)
 - Type: cross-page-drill-through
 - Pattern: Hierarchical Drill-Down
 - Trigger: click row in "Sales Reps" table
-- Source: Sales Reps (AgGrid)
+- Source: Sales Reps (Table)
 - Source value: "rep_name"
 - Control id: rep_filter
 - Control type: filter
@@ -168,18 +168,18 @@ page_overview = vm.Page(
             id="pipeline_by_region",
             header="Click a bar to filter by region",
             figure=px.bar("pipeline", x="pipeline_value", y="region", orientation="h"),
-            actions=va.set_control(control="region_filter", value="y"),
+            actions=va.set_controls(controls="region_filter", value="y"),
         ),
         vm.Container(
             title="Rep Breakdown",
             variant="filled",
             components=[
                 vm.Graph(id="rep_pipeline", figure=px.bar("reps", x="pipeline", y="rep", orientation="h")),
-                vm.AgGrid(
+                vm.Table(
                     id="reps_table",
                     header="Click a row to view rep details",
                     figure=dash_ag_grid("reps"),
-                    actions=va.set_control(control="rep_filter", value="rep_name"),
+                    actions=va.set_controls(controls="rep_filter", value="rep_name"),
                 ),
             ],
             controls=[vm.Filter(id="region_filter", column="region")],  # scoped to container
@@ -199,7 +199,7 @@ page_detail = vm.Page(
             components=[
                 vm.Graph(id="stage_chart", figure=px.bar("deals", x="value", y="stage", orientation="h")),
                 vm.Graph(id="timeline", figure=px.line("deals", x="date", y="value")),
-                vm.AgGrid(id="deals_table", figure=dash_ag_grid("deals")),
+                vm.Table(id="deals_table", figure=dash_ag_grid("deals")),
             ],
         ),
         vm.Button(text="Export data", actions=va.export_data()),
@@ -311,7 +311,7 @@ page = vm.Page(
             id="tenure_chart",
             header="Click a bar to filter by department",
             figure=px.bar("employees_agg", x="avg_tenure", y="department", orientation="h"),
-            actions=va.set_control(control="dept_filter", value="y"),
+            actions=va.set_controls(controls="dept_filter", value="y"),
         ),
         vm.Container(
             title="Employee Detail",
@@ -319,7 +319,7 @@ page = vm.Page(
             components=[
                 vm.Graph(id="comp_dist", figure=px.histogram("employees", x="compensation")),
                 vm.Graph(id="perf", figure=px.box("employees", x="department", y="rating")),
-                vm.AgGrid(id="emp_table", figure=dash_ag_grid("employees")),
+                vm.Table(id="emp_table", figure=dash_ag_grid("employees")),
             ],
             controls=[vm.Filter(id="dept_filter", column="department")],
         ),
@@ -438,7 +438,7 @@ def bump_chart_with_highlight(data_frame, highlight_country=None):
     return fig
 ```
 
-**Page wiring** — source bar fires `set_control` on a hidden Parameter that targets the bump chart's `highlight_country`:
+**Page wiring** — source bar fires `set_controls` on a hidden Parameter that targets the bump chart's `highlight_country`:
 
 ```python
 import vizro.actions as va
@@ -452,7 +452,7 @@ page = vm.Page(
             id="life_exp_bar",
             header="Click a bar to highlight that country in the chart",
             figure=px.bar("gapminder_2007", x="lifeExp", y="country", orientation="h"),
-            actions=va.set_control(control="highlight_country_param", value="y"),
+            actions=va.set_controls(controls="highlight_country_param", value="y"),
         ),
         vm.Graph(
             id="bump_chart",
@@ -476,7 +476,7 @@ page = vm.Page(
 | --- | --- | --- |
 | Parameter (not Filter) | Required | We are changing a chart argument, not data. Data should NOT be filtered out — context matters |
 | `visible=False` | Required | The highlight effect itself is the visual feedback |
-| `"NONE"` in selector options | Required | First option becomes the "no highlight" target. Vizro restores it on any clear path: clicking the same bar a second time (Plotly's default `clickmode="event+select"` deselects → `set_control` sees `None` → resets to first option) or the "Reset controls" button. Without it, both paths would restore to whichever option is first alphabetically. |
+| `"NONE"` in selector options | Required | First option becomes the "no highlight" target. Vizro restores it on any clear path: clicking the same bar a second time (Plotly's default `clickmode="event+select"` deselects → `set_controls` sees `None` → resets to first option) or the "Reset controls" button. Without it, both paths would restore to whichever option is first alphabetically. |
 | Custom chart required | Yes | Built-in `px.bar`/`px.line` cannot express "highlight one trace" — needs `@capture("graph")` with `highlight_X` arg |
 
 ---
@@ -563,11 +563,11 @@ page = vm.Page(
             header="Click a cell to filter the appointments below",
             figure=px.density_heatmap("appointments", x="day", y="time_slot"),
             actions=[
-                va.set_control(control="day_filter", value="x"),
-                va.set_control(control="time_filter", value="y"),
+                va.set_controls(controls="day_filter", value="x"),
+                va.set_controls(controls="time_filter", value="y"),
             ],
         ),
-        vm.AgGrid(id="appointments_table", figure=dash_ag_grid("appointments")),
+        vm.Table(id="appointments_table", figure=dash_ag_grid("appointments")),
     ],
     controls=[
         vm.Filter(id="day_filter", column="day", targets=["appointments_table"]),
@@ -646,7 +646,7 @@ page = vm.Page(
     title="Transactions",
     components=[
         vm.Graph(figure=...),
-        vm.AgGrid(figure=...),
+        vm.Table(figure=...),
         vm.Button(text="Export data", actions=va.export_data()),
     ],
 )
@@ -668,12 +668,12 @@ Users need visible cues that a component is interactive.
 
 ### Source hints (`header`)
 
-Add a short, action-oriented `header` on any Graph/AgGrid with `actions=`:
+Add a short, action-oriented `header` on any Graph/Table with `actions=`:
 
 ```python
 # Good — short, action-oriented
 vm.Graph(header="Click a bar to filter by region", ...)
-vm.AgGrid(header="Click a row to view rep details", ...)
+vm.Table(header="Click a row to view rep details", ...)
 
 # Bad — verbose, vague
 vm.Graph(header="This chart supports interactive cross-filtering capabilities", ...)
@@ -709,10 +709,10 @@ vm.Button(text="Export data", actions=va.export_data())
 
 | Mistake | Symptom | Fix |
 | --- | --- | --- |
-| Forgetting `custom_data` on graph cross-filter | Click does nothing when filter column is not on a positional axis (`x`/`y`/`z`/`lat`/`lon`) | Add `custom_data="column"` to the figure and use `value="column"` in `set_control`. For a custom `@capture("graph")` function the signature must also accept `custom_data` (`def my_chart(data_frame, custom_data, **kwargs)`) — otherwise the callback fires a 500 |
-| Forgetting `id` on Filter / Parameter | `set_control` can't reference the control | Add explicit `id="my_filter"` |
+| Forgetting `custom_data` on graph cross-filter | Click does nothing when filter column is not on a positional axis (`x`/`y`/`z`/`lat`/`lon`) | Add `custom_data="column"` to the figure and use `value="column"` in `set_controls`. For a custom `@capture("graph")` function the signature must also accept `custom_data` (`def my_chart(data_frame, custom_data, **kwargs)`) — otherwise the callback fires a 500 |
+| Forgetting `id` on Filter / Parameter | `set_controls` can't reference the control | Add explicit `id="my_filter"` |
 | Forgetting `id` on target component | Filter / Parameter `targets` can't reach it | Add explicit `id="my_chart"` |
-| Using deprecated `filter_interaction` | Deprecation warning or unexpected behavior | Use `va.set_control` instead |
+| Using removed `filter_interaction` | Not available in Vizro 1.0.0 | Use `va.set_controls` instead |
 | Forgetting `show_in_url=True` for cross-page | `ValueError` at build time (app won't start) | Add `show_in_url=True` on the target page's Filter |
 | Forgetting `"NONE"` in highlight Parameter options | Chart starts in an unexpected highlighted state | Include `"NONE"` as the first option |
 | Missing `header` hint on interactive source | User doesn't know the chart/table is clickable | Add `header="Click a bar to..."` |

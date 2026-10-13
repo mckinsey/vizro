@@ -236,3 +236,14 @@ class TestBuildMethod:
             ],
         )
         assert_component_equal(date_picker, expected_datepicker)
+
+
+class TestDatePickerGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""
+
+    @pytest.mark.parametrize("trigger", ["2024-01-01", ["2024-01-01", "2024-12-31"], None])
+    def test_get_value_from_trigger_returns_trigger(self, trigger):
+        # A selector already holds the value to propagate, so _get_value_from_trigger ignores `value` and returns the
+        # raw trigger value unchanged (this is what powers syncing controls that target another control).
+        date_picker = vm.DatePicker()
+        assert date_picker._get_value_from_trigger(value="ignored", trigger=trigger) == trigger

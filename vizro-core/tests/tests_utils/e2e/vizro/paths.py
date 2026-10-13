@@ -44,6 +44,14 @@ def kpi_card_path():
     return ".card-body"
 
 
+def kpi_sparkline_card_path():
+    return ".card-kpi-sparkline .card-body span:nth-of-type(2)"
+
+
+def kpi_sparkline_graph_path():
+    return ".card-kpi-sparkline-graph .main-svg"
+
+
 def select_all_path(elem_id):
     """Select All option path for checklist."""
     return f"input[id='{elem_id}_select_all']"

@@ -2,7 +2,7 @@ from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
@@ -92,6 +92,19 @@ underlying component may change in the future.""",
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.value"}
+
+    @property
+    def _dynamic_reload_hidden_ids(self) -> list[str]:
+        """Component id(s) a dynamic `Filter` hides while reloading (see `Filter.build`).
+
+        The checklist itself plus, when shown, its separate 'Select All' checkbox.
+        """
+        return [self.id, *([f"{self.id}_select_all"] if self.show_select_all else [])]
+
+    @staticmethod
+    def _get_value_from_trigger(value: JsonValue, trigger: JsonValue) -> JsonValue:
+        """Return the given `trigger` without modification."""
+        return trigger
 
     def __call__(self, options):
         dict_options, value = get_dict_options_and_value(options=options, value=self.value, multi=True)

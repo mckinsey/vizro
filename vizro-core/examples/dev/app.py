@@ -2,17 +2,18 @@
 
 from typing import Literal
 
+import dash_ag_grid as dag
 import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.actions as va
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import dash_table, dcc, get_asset_url, html
+from dash import dcc, get_asset_url, html
 from vizro import Vizro
 from vizro.figures import kpi_card, kpi_card_reference
 from vizro.models.types import capture
-from vizro.tables import dash_ag_grid, dash_data_table
+from vizro.tables import dash_ag_grid
 
 iris = px.data.iris()
 tips = px.data.tips()
@@ -137,7 +138,6 @@ home = vm.Page(
                 * Dropdown
                 * Checklist
                 * RadioItems
-                * RangeSlider
                 * Slider
                 * DatePicker
                 """,
@@ -189,7 +189,7 @@ graphs = vm.Page(
 ag_grid = vm.Page(
     title="AG Grid",
     components=[
-        vm.AgGrid(
+        vm.Table(
             figure=dash_ag_grid(data_frame=gapminder_2007, dashGridOptions={"pagination": True}),
             title="Gapminder Data Insights",
             header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
@@ -202,7 +202,7 @@ table = vm.Page(
     title="Table",
     components=[
         vm.Table(
-            figure=dash_data_table(data_frame=gapminder_2007),
+            figure=dash_ag_grid(data_frame=gapminder_2007),
             title="Gapminder Data Insights",
             header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
             footer="""SOURCE: **Plotly gapminder data set, 2024**""",
@@ -557,7 +557,8 @@ tooltip = vm.Page(
         ),
         vm.Filter(
             column="sepal_width",
-            selector=vm.RangeSlider(
+            selector=vm.Slider(
+                range=True,
                 title="Sepal Width",
                 description="""
                     Use the slider to filter flowers by sepal width.
@@ -685,7 +686,7 @@ filters = vm.Page(
         vm.Filter(
             column="petal_length",
             targets=["scatter_chart2"],
-            selector=vm.RangeSlider(),
+            selector=vm.Slider(range=True),
         ),
     ],
 )
@@ -735,18 +736,21 @@ selectors = vm.Page(
         * Dropdown (**categorical** multi and single option selector)
         * Checklist (**categorical** multi option selector only)
         * RadioItems (**categorical** single option selector only)
-        * RangeSlider (**numerical** multi option selector only)
-        * Slider (**numerical** single option selector only)
+        * Slider (**numerical** single option selector, or a range selector with `range=True`)
         * DatePicker(**temporal** multi and single option selector)
 
         """
         ),
         vm.Table(
             id="table-gapminder",
-            figure=dash_data_table(data_frame=gapminder_2007, page_size=10),
+            figure=dash_ag_grid(data_frame=gapminder_2007, dashGridOptions={"paginationPageSize": 10}),
             title="Gapminder Data",
         ),
-        vm.Table(id="table-tips", figure=dash_data_table(data_frame=tips, page_size=10), title="Tips Data"),
+        vm.Table(
+            id="table-tips",
+            figure=dash_ag_grid(data_frame=tips, dashGridOptions={"paginationPageSize": 10}),
+            title="Tips Data",
+        ),
         vm.Graph(
             id="graph-stocks",
             figure=px.line(stocks, x="date", y="GOOG", title="Stocks Data"),
@@ -756,7 +760,7 @@ selectors = vm.Page(
         vm.Filter(
             targets=["table-gapminder"],
             column="lifeExp",
-            selector=vm.RangeSlider(title="Range Slider (Gapminder - lifeExp)", step=1, marks=None),
+            selector=vm.Slider(range=True, title="Range Slider (Gapminder - lifeExp)", step=1, marks=None),
         ),
         vm.Filter(
             targets=["table-gapminder"],
@@ -1026,7 +1030,7 @@ set_controls_action_cross_filter = vm.Page(
             figure=px.scatter(iris, x="petal_length", y="sepal_length", color="species", custom_data="species"),
             header="💡 Select one or more points to filter the histogram below "
             "(use Box Select or Lasso Select to select multiple points)",
-            actions=va.set_control(value="species", control="species-filter"),
+            actions=va.set_controls(value="species", controls=["species-filter"]),
         ),
         vm.Graph(
             id="histogram_chart",
@@ -1048,7 +1052,7 @@ set_controls_action_cross_parameter = vm.Page(
             ),
             header="💡 Click any bar to highlight that country in the bump chart "
             "(use Shift + click to add/remove bars)",
-            actions=va.set_control(control="highlight_parameter", value="y"),
+            actions=va.set_controls(controls=["highlight_parameter"], value="y"),
         ),
         vm.Graph(
             id="bump_chart",
@@ -1147,20 +1151,11 @@ custom_charts = vm.Page(
 
 
 # CUSTOM TABLE ------------------------------------------------------------------
-@capture("table")
+@capture("ag_grid")
 def my_custom_table(data_frame=None, chosen_columns: list[str] | None = None):
-    """Custom table with added logic to filter on chosen columns."""
-    columns = [{"name": i, "id": i} for i in chosen_columns]
-    defaults = {
-        "style_as_list_view": True,
-        "style_data": {"border_bottom": "1px solid var(--bs-border-color)", "height": "40px"},
-        "style_header": {
-            "border_bottom": "1px solid var(--bs-border-color-translucent)",
-            "border_top": "None",
-            "height": "32px",
-        },
-    }
-    return dash_table.DataTable(data=data_frame.to_dict("records"), columns=columns, **defaults)
+    """Custom AG Grid with added logic to filter on chosen columns."""
+    columns = [{"field": column} for column in chosen_columns]
+    return dag.AgGrid(rowData=data_frame.to_dict("records"), columnDefs=columns)
 
 
 custom_tables = vm.Page(
@@ -1168,7 +1163,7 @@ custom_tables = vm.Page(
     components=[
         vm.Table(
             id="custom_table",
-            title="Custom Dash DataTable",
+            title="Custom Dash AG Grid",
             figure=my_custom_table(
                 data_frame=gapminder_2007,
                 chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"],
@@ -1190,7 +1185,7 @@ custom_tables = vm.Page(
 
 # CUSTOM COMPONENTS -------------------------------------------------------------
 # 1. Extend existing components
-class TooltipNonCrossRangeSlider(vm.RangeSlider):
+class TooltipNonCrossRangeSlider(vm.Slider):
     """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
 
     type: Literal["other_range_slider"] = "other_range_slider"
@@ -1245,7 +1240,7 @@ custom_components = vm.Page(
         vm.Filter(
             column="sepal_length",
             targets=["for_custom_chart"],
-            selector=TooltipNonCrossRangeSlider(title="Custom component based on extension"),
+            selector=TooltipNonCrossRangeSlider(range=True, title="Custom component based on extension"),
         )
     ],
 )

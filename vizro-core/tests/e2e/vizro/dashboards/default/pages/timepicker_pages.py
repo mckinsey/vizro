@@ -36,7 +36,7 @@ dff = pd.DataFrame(
 
 timepicker_range = vm.Page(
     title=cnst.TIMEPICKER_RANGE_PAGE,
-    components=[vm.AgGrid(id=cnst.TIMEPICKER_RANGE_AG_GRID_ID, figure=dash_ag_grid(data_frame=dff))],
+    components=[vm.Table(id=cnst.TIMEPICKER_RANGE_AG_GRID_ID, figure=dash_ag_grid(data_frame=dff))],
     controls=[
         vm.Filter(column="datetime_utc"),
         vm.Filter(
@@ -60,7 +60,7 @@ timepicker_range = vm.Page(
 
 timepicker_single = vm.Page(
     title=cnst.TIMEPICKER_SINGLE_PAGE,
-    components=[vm.AgGrid(id=cnst.TIMEPICKER_SINGLE_AG_GRID_ID, figure=dash_ag_grid(data_frame=dff))],
+    components=[vm.Table(id=cnst.TIMEPICKER_SINGLE_AG_GRID_ID, figure=dash_ag_grid(data_frame=dff))],
     controls=[
         vm.Filter(column="datetime_utc"),
         vm.Filter(

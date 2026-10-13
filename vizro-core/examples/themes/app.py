@@ -44,7 +44,6 @@ vm.Container.add_type("components", vm.Dropdown)
 vm.Container.add_type("components", vm.RadioItems)
 vm.Container.add_type("components", vm.Checklist)
 vm.Container.add_type("components", vm.Slider)
-vm.Container.add_type("components", vm.RangeSlider)
 vm.Container.add_type("components", vm.DatePicker)
 vm.Container.add_type("components", vm.Text)
 vm.Container.add_type("components", vm.Card)
@@ -155,7 +154,7 @@ form = vm.Page(
             layout=vm.Flex(gap="30px"),
             components=[
                 vm.Slider(min=0, max=10, step=1, title="Slider"),
-                vm.RangeSlider(min=0, max=10, step=1, title="Range Slider"),
+                vm.Slider(range=True, min=0, max=10, step=1, title="Range Slider"),
                 vm.DatePicker(title="Date Picker", min="2025-01-01", max="2025-01-31"),
                 vm.Container(
                     title="Buttons",
@@ -251,7 +250,7 @@ sankey_page = vm.Page(
 ag_grid = vm.Page(
     title="AG Grid",
     components=[
-        vm.AgGrid(
+        vm.Table(
             figure=dash_ag_grid(data_frame=gapminder_2007, dashGridOptions={"pagination": True}),
             title="Gapminder Data Insights",
             header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",

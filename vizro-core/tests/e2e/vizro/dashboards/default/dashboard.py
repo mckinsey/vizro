@@ -21,9 +21,11 @@ from pages.datetimepicker_pages import (
 )
 from pages.dynamic_data_page import dynamic_data_df_parameter_page, dynamic_data_page
 from pages.dynamic_filters_pages import (
+    dynamic_filters_cascader_page,
     dynamic_filters_categorical_page,
     dynamic_filters_datepicker_page,
     dynamic_filters_numerical_page,
+    dynamic_filters_temporal_page,
 )
 from pages.export_action_page import export_action_page
 from pages.extras_page import extras_page
@@ -33,6 +35,7 @@ from pages.filters_inside_containters_page import filters_inside_containers_page
 from pages.filters_page import filters_page
 from pages.homepage import homepage
 from pages.kpi_indicators_page import kpi_indicators_page
+from pages.kpi_sparkline_page import kpi_sparkline_page
 from pages.layout_pages import (
     buttons_page,
     layout_flex_with_all_params_and_card,
@@ -44,14 +47,14 @@ from pages.layout_pages import (
 from pages.notifications_page import static_notifications_page
 from pages.parameters_multi_page import parameters_multi_page
 from pages.parameters_page import parameters_page
-from pages.set_control_ag_grid_cellclicked import set_control_ag_grid_cellclicked
-from pages.set_control_cross_filter_page import (
+from pages.set_controls_ag_grid_cellclicked import set_controls_ag_grid_cellclicked
+from pages.set_controls_cross_filter_page import (
     cross_filter_ag_grid_page,
     cross_filter_card_graph_page,
     cross_filter_graph_page,
 )
-from pages.set_control_drill_down import drill_down_graph_page
-from pages.set_control_drill_through import (
+from pages.set_controls_drill_down import drill_down_graph_page
+from pages.set_controls_drill_through import (
     drill_through_filter_ag_grid_source_page,
     drill_through_filter_ag_grid_target_page,
     drill_through_filter_graph_source_page,
@@ -59,21 +62,27 @@ from pages.set_control_drill_through import (
     drill_through_parameter_graph_source_page,
     drill_through_parameter_graph_target_page,
 )
-from pages.set_control_multi_select_pages import (
-    button_card_trigger_set_control,
+from pages.set_controls_multi_select_pages import (
+    button_card_trigger_set_controls,
     cross_filter_multi_select_page,
-    filtered_graph_aggrid_trigger_set_control,
-    self_filter_set_control_page,
+    filtered_graph_aggrid_trigger_set_controls,
+    self_filter_set_controls_page,
 )
-from pages.set_control_non_categorical_controls_page import (
-    set_control_non_categorical_ag_grid,
-    set_control_non_categorical_datetimepicker_ag_grid,
-    set_control_non_categorical_graph,
-    set_control_non_categorical_timepicker_graph,
+from pages.set_controls_non_categorical_controls_page import (
+    set_controls_non_categorical_ag_grid,
+    set_controls_non_categorical_datetimepicker_ag_grid,
+    set_controls_non_categorical_graph,
+    set_controls_non_categorical_timepicker_graph,
 )
 from pages.switch_control_page import switch_control_page
-from pages.table_interactions_page import table_interactions_page
-from pages.table_page import table_page
+from pages.sync_controls_pages import (
+    sync_cross_page_source_page,
+    sync_cross_page_target_page,
+    sync_drill_through_source_page,
+    sync_drill_through_target_page,
+    sync_hidden_parameter_page,
+    sync_multiple_controls_same_page,
+)
 from pages.timepicker_pages import timepicker_parameter, timepicker_range, timepicker_single
 from pages.vizro_url_and_download_page import vizro_url_and_download_page
 
@@ -91,18 +100,19 @@ dashboard = vm.Dashboard(
         filter_interactions_page,
         switch_control_page,
         kpi_indicators_page,
+        kpi_sparkline_page,
         export_action_page,
         datepicker_page,
         datepicker_parameters_page,
         ag_grid_page,
         ag_grid_interactions_page,
-        table_page,
-        table_interactions_page,
         dynamic_data_page,
         dynamic_data_df_parameter_page,
         dynamic_filters_categorical_page,
         dynamic_filters_numerical_page,
         dynamic_filters_datepicker_page,
+        dynamic_filters_temporal_page,
+        dynamic_filters_cascader_page,
         custom_components_page,
         filter_and_param_page,
         container_variants_page,
@@ -132,14 +142,14 @@ dashboard = vm.Dashboard(
         static_notifications_page,
         conditional_notifications_page,
         cross_filter_multi_select_page,
-        button_card_trigger_set_control,
-        filtered_graph_aggrid_trigger_set_control,
-        self_filter_set_control_page,
-        set_control_ag_grid_cellclicked,
-        set_control_non_categorical_graph,
-        set_control_non_categorical_ag_grid,
-        set_control_non_categorical_timepicker_graph,
-        set_control_non_categorical_datetimepicker_ag_grid,
+        button_card_trigger_set_controls,
+        filtered_graph_aggrid_trigger_set_controls,
+        self_filter_set_controls_page,
+        set_controls_ag_grid_cellclicked,
+        set_controls_non_categorical_graph,
+        set_controls_non_categorical_ag_grid,
+        set_controls_non_categorical_timepicker_graph,
+        set_controls_non_categorical_datetimepicker_ag_grid,
         timepicker_range,
         timepicker_single,
         timepicker_parameter,
@@ -149,6 +159,12 @@ dashboard = vm.Dashboard(
         datetimepicker_range_url,
         cascader_leaf_page,
         cascader_path_page,
+        sync_hidden_parameter_page,
+        sync_multiple_controls_same_page,
+        sync_cross_page_source_page,
+        sync_cross_page_target_page,
+        sync_drill_through_source_page,
+        sync_drill_through_target_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -161,6 +177,7 @@ dashboard = vm.Dashboard(
                 cnst.FILTER_INTERACTIONS_PAGE,
                 cnst.SWITCH_CONTROL_PAGE,
                 cnst.KPI_INDICATORS_PAGE,
+                cnst.KPI_SPARKLINE_PAGE,
                 cnst.EXPORT_PAGE,
                 cnst.CUSTOM_COMPONENTS_PAGE,
                 cnst.FILTER_AND_PARAM_PAGE,
@@ -181,9 +198,15 @@ dashboard = vm.Dashboard(
                 cnst.CASCADER_LEAF_PAGE,
                 cnst.CASCADER_PATH_PAGE,
             ],
+            cnst.SYNC_CONTROLS_ACCORDION: [
+                cnst.SYNC_HIDDEN_PARAMETER_PAGE,
+                cnst.SYNC_MULTIPLE_CONTROLS_SAME_PAGE,
+                cnst.SYNC_CROSS_PAGE_SOURCE_PAGE,
+                cnst.SYNC_CROSS_PAGE_TARGET_PAGE,
+                cnst.SYNC_DRILL_THROUGH_SOURCE_PAGE,
+                cnst.SYNC_DRILL_THROUGH_TARGET_PAGE,
+            ],
             cnst.AG_GRID_ACCORDION: [
-                cnst.TABLE_PAGE,
-                cnst.TABLE_INTERACTIONS_PAGE,
                 cnst.TABLE_AG_GRID_PAGE,
                 cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
             ],
@@ -193,6 +216,8 @@ dashboard = vm.Dashboard(
                 cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
                 cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
                 cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
+                cnst.DYNAMIC_FILTERS_TEMPORAL_PAGE,
+                cnst.DYNAMIC_FILTERS_CASCADER_PAGE,
             ],
             cnst.CONTAINER_ACCORDION: [cnst.CONTAINER_VARIANTS_PAGE],
             cnst.LAYOUT_ACCORDION: [
@@ -207,30 +232,30 @@ dashboard = vm.Dashboard(
                 cnst.COLLAPSIBLE_CONTAINERS_FLEX,
             ],
             cnst.ACTIONS_ACCORDION: [
-                cnst.SET_CONTROL_GRAPH_CROSS_FILTER_PAGE,
-                cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_PAGE,
-                cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_PAGE,
-                cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_SOURCE,
-                cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_TARGET,
-                cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE,
-                cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_TARGET,
-                cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_SOURCE,
-                cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_TARGET,
-                cnst.SET_CONTROL_DRILL_DOWN_GRAPH_PAGE,
+                cnst.SET_CONTROLS_GRAPH_CROSS_FILTER_PAGE,
+                cnst.SET_CONTROLS_TABLE_AG_GRID_CROSS_FILTER_PAGE,
+                cnst.SET_CONTROLS_CARD_GRAPH_CROSS_FILTER_PAGE,
+                cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_GRAPH_SOURCE,
+                cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_GRAPH_TARGET,
+                cnst.SET_CONTROLS_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE,
+                cnst.SET_CONTROLS_DRILL_THROUGH_PARAMETER_GRAPH_TARGET,
+                cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_AG_GRID_SOURCE,
+                cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_AG_GRID_TARGET,
+                cnst.SET_CONTROLS_DRILL_DOWN_GRAPH_PAGE,
                 cnst.ACTION_MODEL_FIELD_SHORTCUT_PAGE,
                 cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
                 cnst.ACTION_CONTROL_SHORTCUT_PAGE,
                 cnst.STATIC_NOTIFICATIONS_PAGE,
                 cnst.CONDITIONAL_NOTIFICATIONS_PAGE,
-                cnst.SET_CONTROL_MULTI_SELECT_PAGE,
-                cnst.SET_CONTROL_BUTTON_CARD_PAGE,
-                cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE,
-                cnst.SELF_FILTER_SET_CONTROL_PAGE,
-                cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_PAGE,
-                cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_PAGE_TITLE,
-                cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_PAGE_TITLE,
-                cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_PAGE_TITLE,
-                cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_PAGE_TITLE,
+                cnst.SET_CONTROLS_MULTI_SELECT_PAGE,
+                cnst.SET_CONTROLS_BUTTON_CARD_PAGE,
+                cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROLS_PAGE,
+                cnst.SELF_FILTER_SET_CONTROLS_PAGE,
+                cnst.SET_CONTROLS_AG_GRID_CELL_CLICKED_PAGE,
+                cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_PAGE_TITLE,
+                cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_PAGE_TITLE,
+                cnst.SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_PAGE_TITLE,
+                cnst.SET_CONTROLS_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_PAGE_TITLE,
             ],
         }
     ),
