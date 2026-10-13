@@ -165,7 +165,8 @@ def kpi_card_reference(  # noqa: PLR0913
     title = title or f"{agg_func} {value_column}".title()
     value, reference = data_frame[[value_column, reference_column]].agg(agg_func)
     delta = value - reference
-    delta_relative = delta / reference if reference else math.nan
+    # Divided by the magnitude so that the sign of delta_relative matches the sign of delta.
+    delta_relative = delta / abs(reference) if reference else math.nan
     pos_color, neg_color = ("color-neg", "color-pos") if reverse_color else ("color-pos", "color-neg")
     footer_class = pos_color if delta > 0 else neg_color if delta < 0 else ""
 
@@ -285,7 +286,7 @@ def kpi_sparkline_card(  # noqa: PLR0913
     trend_df = data_frame[[x_column, value_column]].sort_values(x_column)
     trend_values = trend_df[value_column]
     delta = trend_values.iloc[-1] - trend_values.iloc[0] if len(trend_values) > 1 else 0
-    delta_relative = delta / trend_values.iloc[0] if len(trend_values) > 1 and trend_values.iloc[0] else math.nan
+    delta_relative = delta / abs(trend_values.iloc[0]) if len(trend_values) > 1 and trend_values.iloc[0] else math.nan
     pos_color, neg_color = ("color-neg", "color-pos") if reverse_color else ("color-pos", "color-neg")
     delta_class = pos_color if delta > 0 else neg_color if delta < 0 else ""
     delta_icon = "arrow_circle_up" if delta > 0 else "arrow_circle_down" if delta < 0 else "arrow_circle_right"

@@ -130,7 +130,24 @@ def _to_dt_time(entry: Any) -> Any:
     return None
 
 
-def _coerce_temporal(
+def _to_timestamp(entry: Any) -> Any:
+    """Convert a single series entry to a `pd.Timestamp`, or to `NaT` if it carries no date and time.
+
+    The datetime counterpart of `_to_dt_time`: a datetime column may hold `datetime.datetime` objects or
+    "YYYY-MM-DD[T ]HH:MM[:SS]" strings rather than datetime64. Nulls and anything else become `NaT`, which matches
+    nothing.
+    """
+    if pd.isna(entry):
+        return pd.NaT
+    if isinstance(entry, dt_datetime):
+        return pd.Timestamp(entry)
+    if isinstance(entry, str) and _DATETIME_REGEX.match(entry):
+        with suppress(ValueError, TypeError):
+            return pd.Timestamp(entry)
+    return pd.NaT
+
+
+def _coerce_temporal(  # noqa: PLR0912
     series: pd.Series, value: list[Any], normalize_precision: bool = False
 ) -> tuple[pd.Series, list[Any]]:
     """If needed, coerce `series` and `value` to comparable temporal objects.
@@ -164,7 +181,12 @@ def _coerce_temporal(
     _is_time = value and all(_TIME_REGEX.match(str(v)) for v in value)
     # IMPORTANT: check _is_datetime before _is_date so that an ISO datetime string is not collapsed to a date.
     _is_datetime = not _is_time and value and all(_DATETIME_REGEX.match(str(v)) for v in value)
-    _is_date = not _is_time and not _is_datetime and is_datetime64_any_dtype(series)
+    # On a column of `datetime.date` objects the selected values arrive as date strings, as Dash serializes options.
+    _is_date = (
+        not _is_time
+        and not _is_datetime
+        and (is_datetime64_any_dtype(series) or pd.api.types.infer_dtype(series, skipna=True) == "date")
+    )
 
     if _is_time:
         if is_datetime64_any_dtype(series):
@@ -199,6 +221,14 @@ def _coerce_temporal(
         value_strs = [str(v) for v in value]
         value = list(pd.to_datetime(value_strs, format="ISO8601"))
 
+        if not is_datetime64_any_dtype(series):
+            # Coerce entry by entry so that Timestamps are compared against Timestamps rather than strings.
+            # Entries in different time zones cannot share one dtype, so such a column matches nothing.
+            try:
+                series = pd.to_datetime(series.map(_to_timestamp))
+            except ValueError:
+                series = pd.Series(pd.NaT, index=series.index, name=series.name)
+
         # If the series is tz-aware, localize the (naive) parsed values to its tz so comparisons don't raise.
         # Convention: the typed wall-clock time represents a moment in the series's own timezone.
         # nonexistent/ambiguous guard against DST-transition wall-clock times (e.g. the spring-forward gap
@@ -219,8 +249,9 @@ def _coerce_temporal(
     elif _is_date:
         # Date selector: convert date strings to datetime.date objects.
         value = pd.to_datetime(value).date
-        # Converting Timestamp to datetime.date
-        series = series.dt.date
+        if is_datetime64_any_dtype(series):
+            # Converting Timestamp to datetime.date
+            series = series.dt.date
 
     return series, value
 

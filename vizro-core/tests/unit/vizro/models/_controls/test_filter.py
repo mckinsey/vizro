@@ -520,6 +520,34 @@ class TestFilterFunctions:
     @pytest.mark.parametrize(
         "data, value, expected",
         [
+            ([date(2024, 1, 1), date(2024, 1, 5)], ["2024-01-01"], [True, False]),
+            ([date(2024, 1, 1), None, date(2024, 1, 5)], ["2024-01-01", "2024-01-05"], [True, False, True]),
+        ],
+    )
+    def test_filter_isin_date_objects(self, data, value, expected):
+        """A column of datetime.date objects is filtered by the date strings that Dash sends back."""
+        result = _filter_isin(pd.Series(data), value)
+        pd.testing.assert_series_equal(result, pd.Series(expected))
+
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
+            (
+                [date(2024, 1, 1), date(2024, 1, 5), date(2024, 1, 10)],
+                ["2024-01-01", "2024-01-05"],
+                [True, True, False],
+            ),
+            ([date(2024, 1, 1), None, date(2024, 1, 10)], ["2024-01-01", "2024-01-10"], [True, False, True]),
+        ],
+    )
+    def test_filter_between_date_objects(self, data, value, expected):
+        """A column of datetime.date objects is filtered by a range of date strings, both ends included."""
+        result = _filter_between(pd.Series(data), value)
+        pd.testing.assert_series_equal(result, pd.Series(expected))
+
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
             # Time series filtered by HH:MM:SS value
             (
                 [time(9, 0, 0), time(10, 0, 0), time(11, 0, 0)],
@@ -770,6 +798,68 @@ class TestFilterFunctions:
         result_series, result_value = _coerce_temporal(series, ["10:00", "11:30"])
         assert list(result_series) == [time(10, 0), time(11, 30)]
         assert list(result_value) == [time(10, 0), time(11, 30)]
+
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
+            # Datetime column stored as ISO strings rather than datetime64
+            (["2024-01-01T10:00", "2024-01-02T11:30"], ["2024-01-01T10:00"], [True, False]),
+            # Space-separated strings, as read from a CSV
+            (["2024-01-01 10:00:00", "2024-01-02 11:30:00"], ["2024-01-01 10:00:00"], [True, False]),
+            # Nulls and non-datetime strings do not match and do not raise
+            (["2024-01-01T10:00", None, "n/a"], ["2024-01-01T10:00"], [True, False, False]),
+            # Entries in different time zones do not raise
+            (
+                [pd.Timestamp("2024-01-01T10:00", tz="UTC"), pd.Timestamp("2024-01-01T10:00", tz="Asia/Tokyo")],
+                ["2024-01-01T10:00"],
+                [False, False],
+            ),
+            # HH:MM input strips seconds from a string column too
+            (
+                ["2024-01-01T10:00:15", "2024-01-01T10:00:45", "2024-01-01T11:00:00"],
+                ["2024-01-01T10:00"],
+                [True, True, False],
+            ),
+        ],
+    )
+    def test_filter_isin_datetime_strings(self, data, value, expected):
+        result = _filter_isin(pd.Series(data), value)
+        pd.testing.assert_series_equal(result, pd.Series(expected))
+
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
+            # Datetime column stored as ISO strings rather than datetime64
+            (
+                ["2024-01-01T09:00", "2024-01-01T12:00", "2024-01-02T09:00"],
+                ["2024-01-01T08:00", "2024-01-01T13:00"],
+                [True, True, False],
+            ),
+            # Space-separated strings, as read from a CSV
+            (
+                ["2024-01-01 09:00:00", "2024-01-01 12:00:00", "2024-01-02 09:00:00"],
+                ["2024-01-01T08:00", "2024-01-01T13:00"],
+                [True, True, False],
+            ),
+            # Nulls and non-datetime strings do not match and do not raise
+            (["2024-01-01T09:00", None, "n/a"], ["2024-01-01T08:00", "2024-01-01T13:00"], [True, False, False]),
+            # Entries in different time zones do not raise
+            (
+                [pd.Timestamp("2024-01-01T10:00", tz="UTC"), pd.Timestamp("2024-01-01T10:00", tz="Asia/Tokyo")],
+                ["2024-01-01T08:00", "2024-01-01T13:00"],
+                [False, False],
+            ),
+            # A range keeps the seconds of a string column, so an entry past an HH:MM end does not match
+            (
+                ["2024-01-01T10:00:15", "2024-01-01T10:30:45", "2024-01-01T11:00:00"],
+                ["2024-01-01T10:00", "2024-01-01T10:30"],
+                [True, False, False],
+            ),
+        ],
+    )
+    def test_filter_between_datetime_strings(self, data, value, expected):
+        result = _filter_between(pd.Series(data), value)
+        pd.testing.assert_series_equal(result, pd.Series(expected))
 
     def test_coerce_temporal_datetime_tz_aware(self):
         """A tz-aware datetime series localizes the (naive) typed values to the series's timezone."""
