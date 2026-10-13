@@ -147,7 +147,7 @@ def _to_timestamp(entry: Any) -> Any:
     return pd.NaT
 
 
-def _coerce_temporal(
+def _coerce_temporal(  # noqa: PLR0912
     series: pd.Series, value: list[Any], normalize_precision: bool = False
 ) -> tuple[pd.Series, list[Any]]:
     """If needed, coerce `series` and `value` to comparable temporal objects.
@@ -218,9 +218,11 @@ def _coerce_temporal(
 
         if not is_datetime64_any_dtype(series):
             # Coerce entry by entry so that Timestamps are compared against Timestamps rather than strings.
-            # Entries in different time zones cannot share one dtype, so such a column is left as it is.
-            with suppress(ValueError):
+            # Entries in different time zones cannot share one dtype, so such a column matches nothing.
+            try:
                 series = pd.to_datetime(series.map(_to_timestamp))
+            except ValueError:
+                series = pd.Series(pd.NaT, index=series.index, name=series.name)
 
         # If the series is tz-aware, localize the (naive) parsed values to its tz so comparisons don't raise.
         # Convention: the typed wall-clock time represents a moment in the series's own timezone.
