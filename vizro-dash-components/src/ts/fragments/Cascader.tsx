@@ -1098,7 +1098,13 @@ const CascaderFragment = ({
             return createPortal(
               renderColumn(colOptions, colIdx, flyoutGeometry.rects[colIdx]),
               portalContainer,
-              colOptions.map((o) => String(o.value)).join("|"),
+              // Prefixed with colIdx: a value-only key can collide across sibling portals when a
+              // valid tree reuses the same option values at different depths/branches, since each
+              // open level maps to its own portal within this same list. colIdx is unique and
+              // stable per slot in the chain. The content suffix is kept so switching branches at
+              // the same depth still remounts (e.g. resetting that column's scroll position)
+              // instead of patching the same instance in place.
+              `${colIdx}:${colOptions.map((o) => String(o.value)).join("|")}`,
             );
           })}
       </>

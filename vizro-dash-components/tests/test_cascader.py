@@ -1450,3 +1450,182 @@ def test_cascader_options_change_prunes_invalid_selection(dash_duo, full_path):
     dash_duo.wait_for_element("#btn").click()
     dash_duo.wait_for_text_to_equal("#out", "europe/france" if full_path else "france")
     assert dash_duo.get_logs() == []
+
+
+# --- Flyout positioning / viewport behavior ---
+#
+# `Emulation.setDeviceMetricsOverride` (CDP) is used instead of `driver.set_window_size` to size the
+# viewport: `set_window_size` sets the *browser window*, and the gap between that and the resulting
+# `window.innerHeight` varies by platform/Chrome build (observed ~143px of unaccounted-for chrome in
+# one headless setup) — these tests need an exact `innerHeight`/`innerWidth` to engineer specific
+# "not enough room" geometry, which CDP's device metrics override gives directly and portably.
+
+OPTIONS_MANY_LEAVES_UNDER_PARENT = [
+    {
+        "label": "Parent",
+        "value": "parent",
+        "children": [{"label": f"Item {i}", "value": f"item{i}"} for i in range(10)],
+    },
+]
+
+OPTIONS_DUPLICATE_VALUE_ADJACENT_DEPTHS = [
+    {
+        "label": "Root",
+        "value": "root",
+        "children": [
+            {
+                "label": "Dup Level 1",
+                "value": "dup",
+                "children": [
+                    {"label": "Dup Level 2", "value": "dup"},
+                ],
+            },
+        ],
+    },
+]
+
+
+def _set_viewport(dash_duo, width, height):
+    dash_duo.driver.execute_cdp_cmd(
+        "Emulation.setDeviceMetricsOverride",
+        {"width": width, "height": height, "deviceScaleFactor": 1, "mobile": False},
+    )
+
+
+def test_cascader_flyout_aligns_with_active_row(dash_duo):
+    """A flyout's first row renders flush with the top of the row that opened it."""
+    app = _app(Cascader(id="c", options=OPTIONS_3LEVEL))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-column[data-col-idx='0'] .dash-cascader-row").click()
+    dash_duo.wait_for_element(".dash-cascader-column[data-col-idx='1']")
+    anchor_row = dash_duo.driver.find_element(
+        "css selector", ".dash-cascader-column[data-col-idx='0'] .dash-cascader-row"
+    )
+    flyout_first_row = dash_duo.driver.find_element(
+        "css selector", ".dash-cascader-column[data-col-idx='1'] .dash-cascader-row"
+    )
+    anchor_top, flyout_row_top = dash_duo.driver.execute_script(
+        "return [arguments[0].getBoundingClientRect().top, arguments[1].getBoundingClientRect().top];",
+        anchor_row,
+        flyout_first_row,
+    )
+    assert abs(anchor_top - flyout_row_top) < 1
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_flyout_flips_upward_when_no_room_below(dash_duo):
+    """A flyout anchored near the viewport bottom flips upward instead of running past the edge."""
+    app = _app(
+        html.Div(
+            [
+                html.Div(style={"height": "95px"}),
+                Cascader(id="c", options=OPTIONS_MANY_LEAVES_UNDER_PARENT),
+            ]
+        )
+    )
+    dash_duo.start_server(app)
+    _set_viewport(dash_duo, 900, 260)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-column[data-col-idx='0'] .dash-cascader-row").click()
+    dash_duo.wait_for_element(".dash-cascader-column[data-col-idx='1']")
+    anchor_row = dash_duo.driver.find_element(
+        "css selector", ".dash-cascader-column[data-col-idx='0'] .dash-cascader-row"
+    )
+    flyout = dash_duo.driver.find_element("css selector", ".dash-cascader-column[data-col-idx='1']")
+    anchor_rect, flyout_rect, viewport_height = dash_duo.driver.execute_script(
+        "return [arguments[0].getBoundingClientRect(), arguments[1].getBoundingClientRect(), window.innerHeight];",
+        anchor_row,
+        flyout,
+    )
+    # Flipped upward: the flyout's top sits above the anchor row's top, and it stays fully on-screen.
+    assert flyout_rect["top"] < anchor_rect["top"]
+    assert flyout_rect["bottom"] <= viewport_height + 1
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_flyout_anchors_to_row_when_neither_direction_fits(dash_duo):
+    """A flyout taller than the room available both above and below stays anchored to its row."""
+    app = _app(
+        html.Div(
+            [
+                html.Div(style={"height": "95px"}),
+                Cascader(id="c", options=OPTIONS_MANY_LEAVES_UNDER_PARENT, maxHeight=1000),
+            ]
+        )
+    )
+    dash_duo.start_server(app)
+    _set_viewport(dash_duo, 900, 340)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-column[data-col-idx='0'] .dash-cascader-row").click()
+    dash_duo.wait_for_element(".dash-cascader-column[data-col-idx='1']")
+    anchor_row = dash_duo.driver.find_element(
+        "css selector", ".dash-cascader-column[data-col-idx='0'] .dash-cascader-row"
+    )
+    flyout = dash_duo.driver.find_element("css selector", ".dash-cascader-column[data-col-idx='1']")
+    anchor_rect, flyout_rect, viewport_height = dash_duo.driver.execute_script(
+        "return [arguments[0].getBoundingClientRect(), arguments[1].getBoundingClientRect(), window.innerHeight];",
+        anchor_row,
+        flyout,
+    )
+    # Confirm the scenario is genuinely cramped in both directions before asserting the fallback.
+    assert viewport_height - anchor_rect["top"] < flyout_rect["height"]
+    assert anchor_rect["bottom"] < flyout_rect["height"]
+    # Anchored to the row (within the 1px border correction), not detached/pinned near the top.
+    assert abs(flyout_rect["top"] - anchor_rect["top"]) < 2
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_flyout_repositions_correctly_after_close_and_reopen(dash_duo):
+    """Reopening and re-expanding after closing recomputes flyout position fresh, not a stale offset."""
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.webdriver.support.ui import WebDriverWait
+
+    app = _app(
+        html.Div(
+            [
+                html.Div("outside", id="outside"),
+                Cascader(id="c", options=OPTIONS_3LEVEL),
+            ]
+        )
+    )
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-column[data-col-idx='0'] .dash-cascader-row").click()
+    dash_duo.wait_for_element(".dash-cascader-column[data-col-idx='1']")
+    dash_duo.find_element("#outside").click()
+    WebDriverWait(dash_duo.driver, 3).until(
+        EC.invisibility_of_element_located((By.CSS_SELECTOR, ".dash-cascader-content"))
+    )
+    # Reopen: `activePath` isn't reset by closing, so the branch is already expanded — no re-click
+    # needed (clicking the already-active row again would toggle it closed instead). The flyout
+    # must still align with the freshly (re)rendered anchor row.
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-column[data-col-idx='1']")
+    anchor_row = dash_duo.driver.find_element(
+        "css selector", ".dash-cascader-column[data-col-idx='0'] .dash-cascader-row"
+    )
+    flyout_first_row = dash_duo.driver.find_element(
+        "css selector", ".dash-cascader-column[data-col-idx='1'] .dash-cascader-row"
+    )
+    anchor_top, flyout_row_top = dash_duo.driver.execute_script(
+        "return [arguments[0].getBoundingClientRect().top, arguments[1].getBoundingClientRect().top];",
+        anchor_row,
+        flyout_first_row,
+    )
+    assert abs(anchor_top - flyout_row_top) < 1
+    assert dash_duo.get_logs() == []
+
+
+def test_cascader_duplicate_value_different_depths_no_duplicate_portal_keys(dash_duo):
+    """Portal keys must include colIdx so reused option values at different depths don't collide."""
+    app = _app(Cascader(id="c", options=OPTIONS_DUPLICATE_VALUE_ADJACENT_DEPTHS))
+    dash_duo.start_server(app)
+    dash_duo.wait_for_element("#c").click()
+    dash_duo.wait_for_element(".dash-cascader-column[data-col-idx='0'] .dash-cascader-row").click()  # Root
+    dash_duo.wait_for_element(".dash-cascader-column[data-col-idx='1'] .dash-cascader-row").click()  # Dup Level 1
+    dash_duo.wait_for_element(".dash-cascader-column[data-col-idx='2']")
+    dash_duo.wait_for_text_to_equal(".dash-cascader-column[data-col-idx='1'] .dash-cascader-row-label", "Dup Level 1")
+    dash_duo.wait_for_text_to_equal(".dash-cascader-column[data-col-idx='2'] .dash-cascader-row-label", "Dup Level 2")
+    assert dash_duo.get_logs() == []
