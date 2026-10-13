@@ -10,7 +10,7 @@
 
 #### Vizro is a low-code toolkit for building high-quality data visualization apps
 
-[![Python version](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Fmckinsey%2Fvizro%2Frefs%2Fheads%2Fmain%2Fvizro-core%2Fpyproject.toml)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.txt) [![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
+[![Python version](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Fmckinsey%2Fvizro%2Frefs%2Fheads%2Fmain%2Fvizro-core%2Fpyproject.toml)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro) [![Downloads](https://static.pepy.tech/badge/vizro)](https://pepy.tech/projects/vizro) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.txt) [![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
 
 [Documentation](https://vizro.readthedocs.io/en/stable/) | [Get Started](https://vizro.readthedocs.io/en/stable/pages/tutorials/quickstart-tutorial/)
 
@@ -229,11 +229,11 @@ If you are an AI agent or LLM building Vizro apps, start with the [Vizro for LLM
 
 This repository is a monorepo containing the following packages:
 
-|           Folder           |                                            Version                                            |                                   Documentation                                   |
-| :------------------------: | :-------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------: |
-| [vizro-core](./vizro-core) |     [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)     |               [Vizro Docs](https://vizro.readthedocs.io/en/stable/)               |
-|   [vizro-ai](./vizro-ai)   |  [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai)  |         [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/)          |
-|  [vizro-mcp](./vizro-mcp)  | [![PyPI version](https://badge.fury.io/py/vizro-mcp.svg)](https://badge.fury.io/py/vizro-mcp) | [Vizro-MCP Docs](https://vizro.readthedocs.io/projects/vizro-mcp/) |
+| Folder | Version | Documentation |
+| :----: | :-----: | :-----------: |
+| [vizro-core](https://github.com/mckinsey/vizro/tree/main/vizro-core) | [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro) | [Vizro Docs](https://vizro.readthedocs.io/en/stable/) |
+| [vizro-ai](https://github.com/mckinsey/vizro/tree/main/vizro-ai) (deprecated) | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/) |
+| [vizro-mcp](https://github.com/mckinsey/vizro/tree/main/vizro-mcp) | [![PyPI version](https://badge.fury.io/py/vizro-mcp.svg)](https://badge.fury.io/py/vizro-mcp) | [Vizro-MCP Docs](https://vizro.readthedocs.io/projects/vizro-mcp/) |
 
 ## Community and development
 
