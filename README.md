@@ -193,7 +193,7 @@ Compatible with MCP-enabled LLM clients such as Cursor or Claude Desktop.
 
 **Use LLMs to generate charts and dashboards.**
 
-> **Vizro-AI is deprecated. Version 0.4.2 is the final release, and no further development or releases are planned. Use [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) instead to create Vizro charts and dashboards with the help of an LLM.**
+> **Vizro-AI is deprecated. Version 0.4.2 is the final release, and no further development or releases are planned. From version 0.4.0, Vizro-AI supports only chart generation. Use [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) instead to create Vizro charts and dashboards with the help of an LLM.**
 
 Vizro-AI is a separate package (called `vizro_ai`) that extends Vizro to incorporate LLMs. Use it to build interactive Vizro charts and dashboards, by simply describing what you need in plain English or other languages.
 
