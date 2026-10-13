@@ -7,7 +7,7 @@ from dash import Output, ctx, dcc
 from pydantic import Field
 
 from vizro.actions._abstract_action import _AbstractAction
-from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
+from vizro.actions._actions_utils import _apply_filter_controls, _get_unfiltered_data
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models._models_utils import _log_call
@@ -79,7 +79,9 @@ class export_data(_AbstractAction):
         outputs = {}
 
         for target, unfiltered_data in _get_unfiltered_data(ctds["parameters"], self.targets).items():
-            filtered_data = _apply_filters(unfiltered_data, ctds["filters"], ctds["filter_interaction"], target)
+            filtered_data = _apply_filter_controls(
+                data_frame=unfiltered_data, ctds_filter=ctds["filters"], target=target
+            )
             writer = getattr(filtered_data, writers[self.file_format])
             outputs[f"download_dataframe_{target}"] = dcc.send_data_frame(
                 writer=writer, filename=f"{target}.{self.file_format}", index=False

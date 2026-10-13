@@ -77,7 +77,6 @@ class update_targets(_AbstractAction):
         return _get_modified_page_figures(
             ctds_filter=ctx.args_grouping["external"]["_controls"]["filters"],
             ctds_parameter=ctx.args_grouping["external"]["_controls"]["parameters"],
-            ctds_filter_interaction=ctx.args_grouping["external"]["_controls"]["filter_interaction"],
             targets=self.targets,
         )
 

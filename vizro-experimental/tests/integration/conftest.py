@@ -41,7 +41,7 @@ def _wait_ready(url: str, timeout: float = 30.0) -> None:
             with urlopen(url, timeout=1) as resp:
                 if resp.status == 200:
                     return
-        except OSError:  # noqa: PERF203 — readiness poll: catch is the natural loop shape
+        except OSError:
             time.sleep(0.2)
     raise TimeoutError(f"Dash app at {url} did not become ready within {timeout}s")
 

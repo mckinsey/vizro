@@ -1,3 +1,5 @@
+import re
+
 import numpy as np
 import pytest
 from asserts import assert_component_equal
@@ -181,6 +183,27 @@ class TestSharedGridHelpers:
     def test_set_grid_invalid(self, model_with_layout):
         with pytest.raises(ValidationError, match=r"Number of page and grid components need to be the same."):
             model_with_layout(title="Title", components=[vm.Button()], layout=vm.Grid(grid=[[0, 1]]))
+
+    def test_set_grid_from_dict_with_type(self, model_with_layout):
+        model = model_with_layout(
+            title="Title", components=[vm.Button(), vm.Button()], layout={"type": "grid", "grid": [[0, 1]]}
+        )
+        assert isinstance(model.layout, vm.Grid)
+        assert model.layout.grid == [[0, 1]]
+
+    def test_set_layout_dict_without_type_raises(self, model_with_layout):
+        # A layout specified as a dict / in YAML / JSON must declare an explicit `type`, consistent with every other
+        # discriminated union (components, controls, actions). There is no implicit default to `grid`.
+        with pytest.raises(ValidationError, match="Unable to extract tag using discriminator 'type'"):
+            model_with_layout(title="Title", components=[vm.Button(), vm.Button()], layout={"grid": [[0, 1]]})
+
+    def test_set_layout_dict_invalid_type_raises(self, model_with_layout):
+        with pytest.raises(
+            ValidationError, match=re.escape("'type' does not match any of the expected tags: 'grid', 'flex'")
+        ):
+            model_with_layout(
+                title="Title", components=[vm.Button(), vm.Button()], layout={"type": "invalid", "grid": [[0, 1]]}
+            )
 
 
 class TestGridBuild:

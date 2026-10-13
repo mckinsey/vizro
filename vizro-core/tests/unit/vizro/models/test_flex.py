@@ -31,6 +31,11 @@ class TestFlexInstantiation:
         with pytest.raises(ValidationError, match="1 validation error for Flex"):
             vm.Flex(gap=test_unit)
 
+    def test_set_flex_from_dict_with_type(self, model_with_layout):
+        model = model_with_layout(title="Title", components=[vm.Button()], layout={"type": "flex", "direction": "row"})
+        assert isinstance(model.layout, vm.Flex)
+        assert model.layout.direction == "row"
+
 
 class TestFlexBuild:
     def test_flex_build_default(self):

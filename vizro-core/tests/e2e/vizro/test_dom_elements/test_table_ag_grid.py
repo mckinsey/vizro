@@ -1,11 +1,7 @@
 import e2e.vizro.constants as cnst
-from e2e.vizro.checkers import check_graph_y_axis_value, check_table_ag_grid_rows_number
+from e2e.vizro.checkers import check_table_ag_grid_rows_number
 from e2e.vizro.navigation import accordion_select, page_select, select_slider_value
-from e2e.vizro.paths import (
-    categorical_components_value_path,
-    table_ag_grid_cell_path_by_row,
-    table_ag_grid_cell_value_path,
-)
+from e2e.vizro.paths import categorical_components_value_path, table_ag_grid_cell_value_path
 
 
 def test_filters(dash_br):
@@ -42,24 +38,3 @@ def test_filters(dash_br):
 
     # check that number of rows with data is 14
     check_table_ag_grid_rows_number(dash_br, table_id=cnst.TABLE_AG_GRID_ID, expected_rows_num=14)
-
-
-def test_interactions(dash_br):
-    """Test filter interaction between ag_grid and line graph."""
-    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
-    page_select(
-        dash_br,
-        page_name=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
-    )
-
-    # check if column 'country' is available
-    dash_br.wait_for_element(
-        table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_INTERACTIONS_ID, row_index=0, col_id="country")
-    )
-
-    # click on Bosnia and Herzegovina country
-    dash_br.multiple_click(
-        table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_INTERACTIONS_ID, row_index=3, col_id="country"),
-        1,
-    )
-    check_graph_y_axis_value(dash_br, graph_id=cnst.LINE_AG_GRID_INTERACTIONS_ID, tick_index="3", value="6000")

@@ -9,7 +9,7 @@ include = [
 [envs.all]
 
 [[envs.all.matrix]]
-python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+python = ["3.11", "3.12", "3.13", "3.14", "3.15"]
 
 [envs.changelog]
 dependencies = ["scriv"]
@@ -96,7 +96,7 @@ serve = "zensical serve --open {args}"
 
 [envs.lower-bounds]
 extra-dependencies = ["pydantic-ai-slim==1.56.0"]
-python = "3.10"
+python = "3.11"
 
 [version]
 path = "src/vizro_ai/__init__.py"

@@ -1,13 +1,13 @@
 from .schemas import (
-    AgGridEnhanced,
     ChartPlan,
     FigureEnhanced,
     GraphEnhanced,
+    TableEnhanced,
 )
 
 __all__ = [
-    "AgGridEnhanced",
     "ChartPlan",
     "FigureEnhanced",
     "GraphEnhanced",
+    "TableEnhanced",
 ]

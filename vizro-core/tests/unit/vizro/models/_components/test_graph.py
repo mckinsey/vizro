@@ -263,14 +263,6 @@ class TestDunderMethodsGraph:
         assert action._trigger == "graph-id_action_trigger.data"
 
 
-class TestAttributesGraph:
-    # Testing at this low implementation level as mocking callback contexts skips checking for creation of these objects
-    def test_graph_filter_interaction_attributes(self, standard_px_chart):
-        graph = vm.Graph(figure=standard_px_chart)
-        assert hasattr(graph, "_filter_interaction_input")
-        assert "modelID" in graph._filter_interaction_input
-
-
 class TestProcessGraphDataFrame:
     def test_process_figure_data_frame_str_df(self, standard_px_chart_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
