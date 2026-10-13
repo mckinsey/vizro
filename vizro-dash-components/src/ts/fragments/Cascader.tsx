@@ -53,6 +53,11 @@ const EMPTY_LEAF_TO_PATH: Map<string, CascaderPath> = new Map();
 // anchor row's top unless we shift the box up by the border width to compensate.
 const FLYOUT_BORDER_WIDTH = 1;
 
+// When a deep enough chain runs out of room in both directions, more than one flyout can clamp to
+// the exact same screen position — this is the stair-step nudge applied to each one after the
+// first so it still peeks out from behind, rather than being fully hidden underneath.
+const OVERLAP_STACK_OFFSET = 8;
+
 export type CascaderLabels = {
   select_all?: string;
   deselect_all?: string;
@@ -408,21 +413,58 @@ const CascaderFragment = ({
       const rowBottom = anchorTop + rowRect.height;
       const spaceBelow = window.innerHeight - anchorTop;
       const spaceAbove = rowBottom;
-      const growUp = spaceBelow < flyoutHeight && spaceAbove > spaceBelow;
-      const top = growUp
-        ? rowBottom + FLYOUT_BORDER_WIDTH - flyoutHeight
-        : anchorTop - FLYOUT_BORDER_WIDTH;
+      const topUp = rowBottom + FLYOUT_BORDER_WIDTH - flyoutHeight;
+      // Only flip if doing so actually lands fully on-screen (`topUp >= 0`) — otherwise the flyout
+      // is taller than *either* gap, and flipping would just swap "cut off at the bottom" for
+      // "detached from the row entirely, pinned to the top of the screen" once clamped below. Fall
+      // through to the default (grow down from the row) instead: worst case its tail runs past the
+      // viewport's bottom edge, but it still visibly opens from the option the user picked.
+      const growUp =
+        spaceBelow < flyoutHeight && spaceAbove > spaceBelow && topUp >= 0;
+      const top = growUp ? topUp : anchorTop - FLYOUT_BORDER_WIDTH;
       const left = growLeft
         ? col0Rect.left - colIdx * colWidth
         : col0Rect.right + (colIdx - 1) * colWidth;
-      // Last-resort clamp: deep enough chains can still overflow on either axis (e.g. the trigger
-      // sits near one edge of the viewport with a long tree open) — keep at least this column's own
-      // width/height on-screen rather than leaving it fully unreachable, even if that means
-      // overlapping a neighboring column.
-      rects[colIdx] = {
-        top: Math.max(0, Math.min(top, window.innerHeight - flyoutHeight)),
-        left: Math.max(0, Math.min(left, window.innerWidth - colWidth)),
-      };
+      // Clamp the lower bound only — `top` is already >= 0 by construction (the row it anchors to
+      // is on-screen, and `growUp` is only chosen when its own position is too), so this just
+      // guards float rounding. Deliberately NOT clamping an upper bound here: doing so could pull
+      // the flyout's top away from the anchor row when `flyoutHeight` is large relative to the
+      // viewport, reintroducing the same "detached from the clicked option" problem `topUp >= 0`
+      // above prevents for the flip case — the one place that still needs a horizontal-only
+      // last-resort clamp is `left` below, since there's no anchor-preserving fallback on that axis.
+      let clampedTop = Math.max(0, top);
+      let clampedLeft = Math.max(
+        0,
+        Math.min(left, window.innerWidth - colWidth),
+      );
+      // That clamp can land several consecutive levels on the exact same position (every ideal
+      // position past the edge clamps to the same ceiling). When this one would fully coincide
+      // with the previous, already-placed flyout, step it diagonally instead so it still peeks out
+      // from behind — later levels already paint on top of earlier ones (same z-index, later in
+      // DOM/portal order), so the step reads as an ordinary stack with the active (deepest) level
+      // on top, rather than one flyout fully hiding another.
+      const prevRect = rects[colIdx - 1];
+      if (
+        prevRect &&
+        Math.abs(clampedLeft - prevRect.left) < 1 &&
+        Math.abs(clampedTop - prevRect.top) < 1
+      ) {
+        clampedLeft = Math.max(
+          0,
+          Math.min(
+            prevRect.left + OVERLAP_STACK_OFFSET,
+            window.innerWidth - colWidth,
+          ),
+        );
+        clampedTop = Math.max(
+          0,
+          Math.min(
+            prevRect.top + OVERLAP_STACK_OFFSET,
+            window.innerHeight - flyoutHeight,
+          ),
+        );
+      }
+      rects[colIdx] = { top: clampedTop, left: clampedLeft };
     }
     setFlyoutGeometry({ width: colWidth, rects });
   }, [columns, activePath, maxHeight]);
