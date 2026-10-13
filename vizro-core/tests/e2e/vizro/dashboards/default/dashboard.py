@@ -47,14 +47,14 @@ from pages.layout_pages import (
 from pages.notifications_page import static_notifications_page
 from pages.parameters_multi_page import parameters_multi_page
 from pages.parameters_page import parameters_page
-from pages.set_control_ag_grid_cellclicked import set_control_ag_grid_cellclicked
-from pages.set_control_cross_filter_page import (
+from pages.set_controls_ag_grid_cellclicked import set_controls_ag_grid_cellclicked
+from pages.set_controls_cross_filter_page import (
     cross_filter_ag_grid_page,
     cross_filter_card_graph_page,
     cross_filter_graph_page,
 )
-from pages.set_control_drill_down import drill_down_graph_page
-from pages.set_control_drill_through import (
+from pages.set_controls_drill_down import drill_down_graph_page
+from pages.set_controls_drill_through import (
     drill_through_filter_ag_grid_source_page,
     drill_through_filter_ag_grid_target_page,
     drill_through_filter_graph_source_page,
@@ -62,17 +62,17 @@ from pages.set_control_drill_through import (
     drill_through_parameter_graph_source_page,
     drill_through_parameter_graph_target_page,
 )
-from pages.set_control_multi_select_pages import (
-    button_card_trigger_set_control,
+from pages.set_controls_multi_select_pages import (
+    button_card_trigger_set_controls,
     cross_filter_multi_select_page,
-    filtered_graph_aggrid_trigger_set_control,
-    self_filter_set_control_page,
+    filtered_graph_aggrid_trigger_set_controls,
+    self_filter_set_controls_page,
 )
-from pages.set_control_non_categorical_controls_page import (
-    set_control_non_categorical_ag_grid,
-    set_control_non_categorical_datetimepicker_ag_grid,
-    set_control_non_categorical_graph,
-    set_control_non_categorical_timepicker_graph,
+from pages.set_controls_non_categorical_controls_page import (
+    set_controls_non_categorical_ag_grid,
+    set_controls_non_categorical_datetimepicker_ag_grid,
+    set_controls_non_categorical_graph,
+    set_controls_non_categorical_timepicker_graph,
 )
 from pages.switch_control_page import switch_control_page
 from pages.sync_controls_pages import (
@@ -83,11 +83,6 @@ from pages.sync_controls_pages import (
     sync_hidden_parameter_page,
     sync_multiple_controls_same_page,
 )
-
-# TODO[1.0.0]: remove these two Dash-DataTable page imports (and their entries in the pages list and the
-#  AG_GRID_ACCORDION nav below) when dash_data_table e2e coverage is deleted.
-from pages.table_interactions_page import table_interactions_page
-from pages.table_page import table_page
 from pages.timepicker_pages import timepicker_parameter, timepicker_range, timepicker_single
 from pages.vizro_url_and_download_page import vizro_url_and_download_page
 
@@ -111,9 +106,6 @@ dashboard = vm.Dashboard(
         datepicker_parameters_page,
         ag_grid_page,
         ag_grid_interactions_page,
-        # TODO[1.0.0]: remove table_page + table_interactions_page (Dash DataTable pages) - see import note above.
-        table_page,
-        table_interactions_page,
         dynamic_data_page,
         dynamic_data_df_parameter_page,
         dynamic_filters_categorical_page,
@@ -150,14 +142,14 @@ dashboard = vm.Dashboard(
         static_notifications_page,
         conditional_notifications_page,
         cross_filter_multi_select_page,
-        button_card_trigger_set_control,
-        filtered_graph_aggrid_trigger_set_control,
-        self_filter_set_control_page,
-        set_control_ag_grid_cellclicked,
-        set_control_non_categorical_graph,
-        set_control_non_categorical_ag_grid,
-        set_control_non_categorical_timepicker_graph,
-        set_control_non_categorical_datetimepicker_ag_grid,
+        button_card_trigger_set_controls,
+        filtered_graph_aggrid_trigger_set_controls,
+        self_filter_set_controls_page,
+        set_controls_ag_grid_cellclicked,
+        set_controls_non_categorical_graph,
+        set_controls_non_categorical_ag_grid,
+        set_controls_non_categorical_timepicker_graph,
+        set_controls_non_categorical_datetimepicker_ag_grid,
         timepicker_range,
         timepicker_single,
         timepicker_parameter,
@@ -215,9 +207,6 @@ dashboard = vm.Dashboard(
                 cnst.SYNC_DRILL_THROUGH_TARGET_PAGE,
             ],
             cnst.AG_GRID_ACCORDION: [
-                # TODO[1.0.0]: remove TABLE_PAGE + TABLE_INTERACTIONS_PAGE (Dash DataTable pages) from this nav.
-                cnst.TABLE_PAGE,
-                cnst.TABLE_INTERACTIONS_PAGE,
                 cnst.TABLE_AG_GRID_PAGE,
                 cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
             ],
@@ -243,30 +232,30 @@ dashboard = vm.Dashboard(
                 cnst.COLLAPSIBLE_CONTAINERS_FLEX,
             ],
             cnst.ACTIONS_ACCORDION: [
-                cnst.SET_CONTROL_GRAPH_CROSS_FILTER_PAGE,
-                cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_PAGE,
-                cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_PAGE,
-                cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_SOURCE,
-                cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_TARGET,
-                cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE,
-                cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_TARGET,
-                cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_SOURCE,
-                cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_TARGET,
-                cnst.SET_CONTROL_DRILL_DOWN_GRAPH_PAGE,
+                cnst.SET_CONTROLS_GRAPH_CROSS_FILTER_PAGE,
+                cnst.SET_CONTROLS_TABLE_AG_GRID_CROSS_FILTER_PAGE,
+                cnst.SET_CONTROLS_CARD_GRAPH_CROSS_FILTER_PAGE,
+                cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_GRAPH_SOURCE,
+                cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_GRAPH_TARGET,
+                cnst.SET_CONTROLS_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE,
+                cnst.SET_CONTROLS_DRILL_THROUGH_PARAMETER_GRAPH_TARGET,
+                cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_AG_GRID_SOURCE,
+                cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_AG_GRID_TARGET,
+                cnst.SET_CONTROLS_DRILL_DOWN_GRAPH_PAGE,
                 cnst.ACTION_MODEL_FIELD_SHORTCUT_PAGE,
                 cnst.ACTION_AG_GRID_UNDERLYING_ID_SHORTCUT_PAGE,
                 cnst.ACTION_CONTROL_SHORTCUT_PAGE,
                 cnst.STATIC_NOTIFICATIONS_PAGE,
                 cnst.CONDITIONAL_NOTIFICATIONS_PAGE,
-                cnst.SET_CONTROL_MULTI_SELECT_PAGE,
-                cnst.SET_CONTROL_BUTTON_CARD_PAGE,
-                cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE,
-                cnst.SELF_FILTER_SET_CONTROL_PAGE,
-                cnst.SET_CONTROL_AG_GRID_CELL_CLICKED_PAGE,
-                cnst.SET_CONTROL_NON_CATEGORICAL_GRAPH_PAGE_TITLE,
-                cnst.SET_CONTROL_NON_CATEGORICAL_AG_GRID_PAGE_TITLE,
-                cnst.SET_CONTROL_NON_CATEGORICAL_TIMEPICKER_GRAPH_PAGE_TITLE,
-                cnst.SET_CONTROL_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_PAGE_TITLE,
+                cnst.SET_CONTROLS_MULTI_SELECT_PAGE,
+                cnst.SET_CONTROLS_BUTTON_CARD_PAGE,
+                cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROLS_PAGE,
+                cnst.SELF_FILTER_SET_CONTROLS_PAGE,
+                cnst.SET_CONTROLS_AG_GRID_CELL_CLICKED_PAGE,
+                cnst.SET_CONTROLS_NON_CATEGORICAL_GRAPH_PAGE_TITLE,
+                cnst.SET_CONTROLS_NON_CATEGORICAL_AG_GRID_PAGE_TITLE,
+                cnst.SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER_GRAPH_PAGE_TITLE,
+                cnst.SET_CONTROLS_NON_CATEGORICAL_DATETIMEPICKER_AG_GRID_PAGE_TITLE,
             ],
         }
     ),

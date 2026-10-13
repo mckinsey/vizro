@@ -5,7 +5,7 @@ import warnings
 from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path, PurePosixPath
-from typing import TYPE_CHECKING, Any, TypedDict, cast
+from typing import TYPE_CHECKING, Any, Self, TypedDict, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -14,7 +14,6 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback, 
 from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
 from packaging.version import parse
-from typing_extensions import Self
 
 import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
@@ -330,7 +329,7 @@ Provide a valid import path for these in your dashboard configuration."""
                 model.pre_build()
 
         # All controls are now pre-built (figure targets and control-sync edges are final), so collapse each same-page
-        # control-sync mesh into a single set_control + update_targets (two HTTP requests). This must run after both
+        # control-sync mesh into a single set_controls + update_targets (two HTTP requests). This must run after both
         # loops above because it needs every synced control's finalized targets. See finalize_control_sync_chains.
         finalize_control_sync_chains()
 

@@ -42,7 +42,6 @@ def ctx_filter_continent(request):
         "args_grouping": {
             "external": {
                 "_controls": {
-                    "filter_interaction": [],
                     "filters": [
                         CallbackTriggerDict(
                             id="continent_filter",
@@ -69,7 +68,6 @@ def ctx_filter_continent_and_pop(request):
         "args_grouping": {
             "external": {
                 "_controls": {
-                    "filter_interaction": [],
                     "filters": [
                         CallbackTriggerDict(
                             id="continent_filter",
@@ -158,7 +156,6 @@ class TestFilter:
             "args_grouping": {
                 "external": {
                     "_controls": {
-                        "filter_interaction": [],
                         "filters": [
                             CallbackTriggerDict(
                                 id="country_filter",

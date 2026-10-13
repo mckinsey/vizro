@@ -10,12 +10,12 @@ const RANGE_PICKER_END_SUFFIX = "-end.value";
  *
  * Two directions:
  *  - A picker changed -> push both picker values into the Store; leave pickers alone.
- *  - The Store changed externally (URL sync on page load, reset button, set_control, custom action) ->
+ *  - The Store changed externally (URL sync on page load, reset button, set_controls, custom action) ->
  *    push both Store values back into the pickers. This callback deliberately does NOT touch the
  *    guard: whoever wrote the Store owns it. URL sync and reset raise the guard themselves before
- *    writing, so the chain stays suppressed; set_control leaves it down on purpose so the target
+ *    writing, so the chain stays suppressed; set_controls leaves it down on purpose so the target
  *    control's actions chain (its update_targets) fires. Raising the guard here would conflate the two
- *    and silently swallow set_control-driven updates (vizro-internal#2973).
+ *    and silently swallow set_controls-driven updates (vizro-internal#2973).
  *
  * @param {Array|null}  store_data   - Current [start, end] tuple stored in the dcc.Store proxy.
  * @param {string|null} start_val    - Current value of the start picker.
@@ -66,7 +66,7 @@ function update_range_time_picker_store(
     ];
   }
 
-  // The Store changed externally (URL load, reset, set_control, custom action) -> push both Store
+  // The Store changed externally (URL load, reset, set_controls, custom action) -> push both Store
   // values into the pickers. Do NOT raise the guard here (see the docstring): the writer owns it.
   // Guard a non-array store the same way the DateTimePicker callbacks do (e.g. a crafted URL param
   // encoding JSON null, or blocked sessionStorage), so a null store can't throw when dereferenced.

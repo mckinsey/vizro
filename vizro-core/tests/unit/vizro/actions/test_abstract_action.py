@@ -110,7 +110,6 @@ class TestAbstractActionInstantiation:
         assert hasattr(action, "function")
         assert action.outputs == []
 
-        assert not action._legacy
         assert action._transformed_inputs == {}
         assert action._transformed_outputs == []
         assert_component_equal(
@@ -131,7 +130,6 @@ class TestAbstractActionInstantiation:
         assert hasattr(action, "function")
         assert action.outputs == []
 
-        assert not action._legacy
         assert action._transformed_inputs == {}
         assert action._transformed_outputs == []
         assert_component_equal(action._dash_components, [dcc.Store(id="action-id_finished")])
@@ -187,7 +185,6 @@ class TestAbstractActionInputs:
                     "_controls": {
                         "filters": [State("known_dropdown_filter_id", "value")],
                         "parameters": [],
-                        "filter_interaction": [],
                     },
                     "_trigger": State("trigger", "property"),
                 },
@@ -288,19 +285,6 @@ class TestAbstractActionInputs:
 
 class TestBuiltinRuntimeArgs:
     """Test the actual values of the runtime args are correct in a real scenario."""
-
-    @pytest.mark.filterwarnings("ignore:`filter_interaction` is deprecated:FutureWarning")
-    def test_builtin_runtime_arg_controls_legacy(self, page_actions_builtin_controls_legacy):
-        action = action_with_builtin_runtime_args()
-
-        # Mock private attribute set by parent component's validation, not Action's.
-        action._first_in_chain_trigger = action._trigger = "trigger.property"
-        expected_transformed_input = {
-            **page_actions_builtin_controls_legacy,
-            "_trigger": State("trigger", "property"),
-        }
-
-        assert action._transformed_inputs == expected_transformed_input
 
     def test_builtin_runtime_arg_controls(self, page_actions_builtin_controls):
         action = action_with_builtin_runtime_args()

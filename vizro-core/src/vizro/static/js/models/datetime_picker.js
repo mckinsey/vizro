@@ -44,12 +44,12 @@ function _split_iso(value) {
  *  - A sub-component changed -> recompute the [start_iso, end_iso] tuple and push it into the Store;
  *    leave sub-components alone. If either date is missing the partial state is ignored (Store keeps
  *    its previous valid value) so the actions chain doesn't oscillate while the user is mid-edit.
- *  - The Store changed externally (URL sync on page load, reset button, set_control, custom action)
+ *  - The Store changed externally (URL sync on page load, reset button, set_controls, custom action)
  *    -> split each Store entry into a date and time and push them into the sub-components. This does
  *    NOT touch the guard: whoever wrote the Store owns it. URL sync and reset raise the guard
- *    themselves before writing so the chain stays suppressed; set_control leaves it down on purpose
+ *    themselves before writing so the chain stays suppressed; set_controls leaves it down on purpose
  *    so the target control's actions chain (its update_targets) fires. Raising the guard here would
- *    conflate the two and silently swallow set_control-driven updates (vizro-internal#2973).
+ *    conflate the two and silently swallow set_controls-driven updates (vizro-internal#2973).
  */
 function update_range_datetime_picker_store(
   store_data,
@@ -108,7 +108,7 @@ function update_range_datetime_picker_store(
   }
 
   // Store changed externally -> push values into the sub-components. Do NOT raise the guard here
-  // (see the docstring): the writer owns it, so set_control-driven updates reach the target's chain.
+  // (see the docstring): the writer owns it, so set_controls-driven updates reach the target's chain.
   const store = Array.isArray(store_data) ? store_data : [null, null];
   const [start_date, start_time] = _split_iso(store[0]);
   const [end_date, end_time] = _split_iso(store[1]);
@@ -158,7 +158,7 @@ function update_single_datetime_picker_store(
   }
 
   // Store changed externally -> push values into the sub-components. Do NOT raise the guard here
-  // (see the docstring): the writer owns it, so set_control-driven updates reach the target's chain.
+  // (see the docstring): the writer owns it, so set_controls-driven updates reach the target's chain.
   const [date, time] = _split_iso(store_data);
   return [dash_clientside.no_update, date, time];
 }

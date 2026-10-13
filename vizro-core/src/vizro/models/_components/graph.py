@@ -1,9 +1,8 @@
 import logging
 import warnings
 from contextlib import suppress
-from typing import Annotated, Any, Literal, cast
+from typing import Annotated, Any, Literal
 
-import pandas as pd
 import vizro_dash_components as vdc
 from box import Box, BoxList
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
@@ -13,9 +12,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, field_va
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro._vizro_utils import _set_defaults_nested
-from vizro.actions import filter_interaction
-from vizro.actions._actions_utils import CallbackTriggerDict
-from vizro.managers import data_manager, model_manager
+from vizro.managers import data_manager
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import (
@@ -27,7 +24,6 @@ from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import (
     ActionsType,
     CapturedCallable,
-    ModelID,
     MultiValueType,
     _IdProperty,
     _validate_captured_callable,
@@ -197,7 +193,7 @@ underlying component may change in the future.""",
 
         # No "guard" component needed for vm.Graph. The reason is that vm.Graph has never been recreated after it's
         # built. Only that updates is its "figure" property after the build method.
-        # Guard components are only for components (e.g. AgGrid, dynamic Filter) that get fully recreated.
+        # Guard components are only for components (e.g. Table, dynamic Filter) that get fully recreated.
         return fig
 
     # Convenience wrapper/syntactic sugar.
@@ -206,54 +202,6 @@ underlying component may change in the future.""",
         if arg_name == "type":
             return self.type
         return self.figure[arg_name]
-
-    # Interaction methods
-    @property
-    def _filter_interaction_input(self):
-        """Required properties when using `filter_interaction`."""
-        return {
-            "clickData": State(component_id=self.id, component_property="clickData"),
-            "modelID": State(component_id=self.id, component_property="id"),  # required, to determine triggered model
-        }
-
-    def _filter_interaction(
-        self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: dict[str, CallbackTriggerDict]
-    ) -> pd.DataFrame:
-        """Function to be carried out for `filter_interaction`."""
-        # data_frame is the DF of the target, that is, the data to be filtered, hence we cannot get the DF from
-        # this model
-        ctd_click_data = ctd_filter_interaction["clickData"]
-        if not ctd_click_data["value"]:
-            return data_frame
-
-        source_graph_id: ModelID = ctd_click_data["id"]
-        source_graph = cast(Graph, model_manager[source_graph_id])
-
-        try:
-            custom_data_columns = source_graph["custom_data"]
-        except KeyError as exc:
-            raise KeyError(
-                f"Missing 'custom_data' for the source graph with id {source_graph_id}. "
-                "Ensure that `custom_data` is an argument of the custom chart function, and that the relevant entry is "
-                "then passed to the underlying plotly function. When configuring the custom chart in `vm.Graph`, "
-                "ensure that `custom_data` is passed. Example usage: "
-                "vm.Graph(figure=my_custom_chart(df, custom_data=['column_1'], actions=[...]))"
-            ) from exc
-
-        customdata = ctd_click_data["value"]["points"][0]["customdata"]
-
-        for action in source_graph.actions:
-            # TODO-AV2 A 1: simplify this as in
-            #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
-            #  Potentially this function would move to the filter_interaction action. That will be removed so
-            #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
-            #  new interaction functionality anyway.
-            if not isinstance(action, filter_interaction) or target not in action.targets:
-                continue
-            for custom_data_idx, column in enumerate(custom_data_columns):
-                data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]
-
-        return data_frame
 
     def _optimise_fig_layout_for_dashboard(self, fig):
         """Post layout updates to visually enhance charts used inside dashboard."""

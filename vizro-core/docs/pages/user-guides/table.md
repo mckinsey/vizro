@@ -1,5 +1,5 @@
 ---
-description: "Choose between AG Grid and Dash DataTable, format number, date, and string columns, disable pagination, resize columns, and apply sticky headers and styling."
+description: "Use `Table` with a `dash_ag_grid` figure to display tabular data: format number, date, and string columns, disable pagination, resize columns, and apply sticky headers and styling."
 ---
 
 # How to use tables
@@ -8,25 +8,21 @@ This guide shows you how to visualize tables in Vizro.
 
 !!! tip "When to use this"
 
-    Use `Table` to display tabular data. Prefer an [AG Grid](#ag-grid) figure (recommended) unless you specifically need the [Dash DataTable](#dash-datatable). For Plotly charts use [`Graph`](graph.md), for KPI tiles use a [`kpi_card` figure](figure.md#key-performance-indicator-kpi-cards), and for any other reactive Dash component use [`Figure`](figure.md).
+    Use [`Table`](#ag-grid) to display tabular data. For Plotly charts use [`Graph`](graph.md), for KPI tiles use a [`kpi_card` figure](figure.md#key-performance-indicator-kpi-cards), and for any other reactive Dash component use [`Figure`](figure.md).
 
-**API reference:** [`Table`][vizro.models.Table] (and the deprecated [`AgGrid`][vizro.models.AgGrid])
+**API reference:** [`Table`][vizro.models.Table]
 
-There are two ways to visualize tables in Vizro, using either [AG Grid](#ag-grid) or [Dash DataTable](#dash-datatable). In general, [AG Grid](#ag-grid) is Vizro's recommended table implementation, but sometimes it may make sense to use the [Dash DataTable](#dash-datatable) instead.
+Vizro visualizes tabular data using [AG Grid](#ag-grid), via the [`Table`][vizro.models.Table] model with a `dash_ag_grid` figure.
 
-## Choose between AG Grid and Dash DataTable
+!!! note "Migrating from earlier versions"
 
-Vizro provides a single [`Table`][vizro.models.Table] model for tabular data. You choose the underlying grid by the `figure` you pass it: `dash_ag_grid` for a [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) (recommended) or `dash_data_table` for a [Dash DataTable](https://dash.plotly.com/datatable).
-
-AG Grid offers more advanced features out-of-the-box, is more customizable, and ships a powerful enterprise version, so it is Vizro's recommended table implementation.
-
-**Deprecated:** The separate [`AgGrid`][vizro.models.AgGrid] model and the Dash DataTable backing (`dash_data_table`) are deprecated and will be removed in Vizro 1.0.0, where `Table` will support only a `dash_ag_grid` figure. Replace `vm.AgGrid(figure=dash_ag_grid(...))` with `vm.Table(figure=dash_ag_grid(...))`. See the [migration notes](../API-reference/deprecations.md#aggrid-model).
+    `Table` now supports only a `dash_ag_grid` figure. The separate `AgGrid` model and the Dash DataTable backing (`dash_data_table`) have been removed: replace `vm.AgGrid(figure=dash_ag_grid(...))` with `vm.Table(figure=dash_ag_grid(...))`, and any `dash_data_table` figure with `dash_ag_grid`. See the [migration guide](../API-reference/migration.md#aggrid-model).
 
 ## AG Grid
 
 [AG Grid](https://www.ag-grid.com/) is an interactive table/grid component designed for viewing, editing, and exploring large datasets. It is Vizro's recommended table implementation.
 
-Vizro's AG Grid, created with `vm.Table(figure=dash_ag_grid(...))`, is based on the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid), which is in turn based on the original [Javascript implementation](https://www.ag-grid.com/).
+The Vizro [`Table`][vizro.models.Table] model, with a `dash_ag_grid` figure, is based on the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid), which is in turn based on the original [Javascript implementation](https://www.ag-grid.com/).
 
 !!! note "More examples of AG Grid"
 
@@ -34,9 +30,9 @@ Vizro's AG Grid, created with `vm.Table(figure=dash_ag_grid(...))`, is based on 
 
 ### Basic usage
 
-To add an AG Grid to your page, do the following:
+To add a [`Table`][vizro.models.Table] with a `dash_ag_grid` figure to your page, do the following:
 
-1. Insert a [`Table`][vizro.models.Table] model into the `components` argument of the [`Page`][vizro.models.Page] model.
+1. Insert the [`Table`][vizro.models.Table] model into the `components` argument of the [`Page`][vizro.models.Page] model.
 1. Enter the `dash_ag_grid` function under the `figure` argument (imported via `from vizro.tables import dash_ag_grid`).
 
 The Vizro version of this AG Grid differs in one way from the original Dash AG Grid: it requires the user to pass a pandas DataFrame as the source of data. As explained in [our guide to using data in Vizro](data.md), this must be entered under the argument `data_frame`. Most other [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments. Note that some defaults are set for some arguments (for example, for `columnDefs`) to help with styling and usability. Sometimes a parameter may not work because it requires a callback to function. In that case you can try [creating a custom AG Grid callable](custom-tables.md).
@@ -213,7 +209,7 @@ In the example below we select and format some columns of the gapminder data.
 
 #### Dates
 
-For the [`Table`][vizro.models.Table] to sort and filter dates correctly, the date must either be of string format `yyyy-mm-dd` (see [Dash AG Grid docs](https://dash.plotly.com/dash-ag-grid/date-filters#example:-date-filter)) or a pandas datetime object. Any pandas datetime column will be transformed into the `yyyy-mm-dd` format automatically.
+For the [`Table`][vizro.models.Table] model to sort and filter dates correctly, the date must either be of string format `yyyy-mm-dd` (see [Dash AG Grid docs](https://dash.plotly.com/dash-ag-grid/date-filters#example:-date-filter)) or a pandas datetime object. Any pandas datetime column will be transformed into the `yyyy-mm-dd` format automatically.
 
 #### Objects and strings
 
@@ -221,13 +217,13 @@ No specific formatting is available for custom objects and strings, however you 
 
 ### Resizing columns
 
-The [`Table`][vizro.models.Table] provides automatic column sizing options through the `columnSize` property. This feature allows you to control how columns are sized within the grid to optimize the display of your data.
+The [`Table`][vizro.models.Table] model provides automatic column sizing options through the `columnSize` property. This feature allows you to control how columns are sized within the grid to optimize the display of your data.
 
 You can configure column sizing by setting the `columnSize` parameter in your `dash_ag_grid` function call. By default, the `columnSize` is set to `responsiveSizeToFit` within the `vm.Table`. The available options are:
 
 - **`autoSize`**: Automatically adjusts column widths to fit their content. This is particularly useful when you have varying content lengths and want each column to be sized appropriately for readability.
 
-- **`sizeToFit`**: Resizes all columns proportionally to fill the entire width of the grid container. This ensures no horizontal scrolling is needed and the grid uses all available space.
+- **`sizeToFit`**: Resizes all columns proportionally to fill the entire width of the grid container. This ensures no horizontal scrolling is needed and AG Grid uses all available space.
 
 - **`responsiveSizeToFit`**: Combines `sizeToFit` with automatic readjustment of the columns' widths when the grid container or columns change (such as when the browser window is resized or when filters are applied).
 
@@ -472,212 +468,6 @@ If your dashboard contains multiple AG Grids, you can scope this CSS to a specif
 
     This approach works reliably only when the `Table` is positioned in the non-scrollable page.
 
-## Dash DataTable
-
-**Deprecated:** The Dash DataTable backing (`dash_data_table`) is deprecated and will be removed in Vizro 1.0.0. Use `vm.Table(figure=dash_ag_grid(...))` ([AG Grid](#ag-grid)) instead. See the [migration notes](../API-reference/deprecations.md#dash-datatable-backing).
-
-Similar to AG Grid, the [Dash DataTable](https://dash.plotly.com/datatable) is an interactive table/grid component designed for viewing, editing, and exploring large datasets.
-
-In general, we recommend using [AG Grid](#ag-grid) for tables unless you have a particular reason to prefer Dash DataTable.
-
-The Vizro [`Table`][vizro.models.Table] model is based on the [Dash DataTable](https://dash.plotly.com/datatable).
-
-!!! note "More examples of Dash DataTable"
-
-    If you would like to see more examples on what can be done with Dash DataTable, head to the [Dash DataTable](https://dash.plotly.com/datatable) documentation. Almost anything you see there is possible in Vizro by [creating a custom Dash DataTable callable](custom-tables.md).
-
-### Basic usage
-
-To add a [`Table`][vizro.models.Table] model to your page, do the following:
-
-1. Insert the [`Table`][vizro.models.Table] model into the `components` argument of the [`Page`][vizro.models.Page] model.
-1. Enter the `dash_data_table` function under the `figure` argument (imported via `from vizro.tables import dash_data_table`).
-
-The Vizro version of this table differs in one way from the original table: it requires the user to pass a pandas DataFrame as the source of data. As explained in [our guide to using data in Vizro](data.md), this must be entered under the argument `data_frame`.
-
-All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as keyword arguments. Note that we are setting some defaults for some arguments to help with styling.
-
-!!! example "Dash DataTable"
-
-    === "app.py"
-
-        ```{.python pycafe-link hl_lines="11"}
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.tables import dash_data_table
-
-        df = px.data.gapminder().query("year == 2007")
-
-        page = vm.Page(
-            title="Example of a Dash DataTable",
-            components=[
-                vm.Table(title="Dash DataTable", figure=dash_data_table(data_frame=df)),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - figure:
-                  _target_: dash_data_table
-                  data_frame: gapminder_2007
-                title: Dash DataTable
-                type: table
-            title: Example of a Dash DataTable
-        ```
-
-    === "Result"
-
-        The dashboard renders the "Dash DataTable" example.
-
-        [![Table]][table]
-
-### Styling and changing the Dash DataTable
-
-As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as keyword arguments. Below you can find an example of a styled table where some conditional formatting is applied. There are many more ways to alter the table beyond this showcase.
-
-!!! example "Styled Dash DataTable"
-
-    === "app.py"
-
-        ```{.python pycafe-link hl_lines="8-15 17-37 39 48-52"}
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.tables import dash_data_table
-
-        df = px.data.gapminder().query("year == 2007")
-
-        column_definitions = [
-            {"name": "country", "id": "country", "type": "text", "editable": False},
-            {"name": "continent", "id": "continent", "type": "text"},
-            {"name": "year", "id": "year", "type": "datetime"},
-            {"name": "lifeExp", "id": "lifeExp", "type": "numeric"},
-            {"name": "pop", "id": "pop", "type": "numeric"},
-            {"name": "gdpPercap", "id": "gdpPercap", "type": "numeric"},
-        ]
-
-        style_data_conditional = [
-            {
-                "if": {
-                    "column_id": "year",
-                },
-                "backgroundColor": "dodgerblue",
-                "color": "white",
-            },
-            {"if": {"filter_query": "{lifeExp} < 55", "column_id": "lifeExp"}, "backgroundColor": "#85144b", "color": "white"},
-            {
-                "if": {"filter_query": "{gdpPercap} > 10000", "column_id": "gdpPercap"},
-                "backgroundColor": "green",
-                "color": "white",
-            },
-            {"if": {"column_type": "text"}, "textAlign": "left"},
-            {
-                "if": {"state": "active"},
-                "backgroundColor": "rgba(0, 116, 217, 0.3)",
-                "border": "1px solid rgb(0, 116, 217)",
-            },
-        ]
-
-        style_header_conditional = [{"if": {"column_type": "text"}, "textAlign": "left"}]
-
-        page = vm.Page(
-            title="Example of a styled Dash DataTable",
-            components=[
-                vm.Table(
-                    title="Styled table",
-                    figure=dash_data_table(
-                        data_frame=df,
-                        columns=column_definitions,
-                        sort_action="native",
-                        editable=True,
-                        style_data_conditional=style_data_conditional,
-                        style_header_conditional=style_header_conditional,
-                    ),
-                ),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - figure:
-                  _target_: dash_data_table
-                  data_frame: gapminder_2007
-                  sort_action: native
-                  editable: true
-                  columns:
-                    - name: country
-                      id: country
-                      type: text
-                      editable: false
-                    - name: continent
-                      id: continent
-                      type: text
-                    - name: year
-                      id: year
-                      type: datetime
-                    - name: lifeExp
-                      id: lifeExp
-                      type: numeric
-                    - name: pop
-                      id: pop
-                      type: numeric
-                    - name: gdpPercap
-                      id: gdpPercap
-                      type: numeric
-                  style_data_conditional:
-                    - if:
-                        column_id: year
-                      backgroundColor: dodgerblue
-                      color: white
-                    - if:
-                        filter_query: '{lifeExp} < 55'
-                        column_id: lifeExp
-                      backgroundColor: '#85144b'
-                      color: white
-                    - if:
-                        filter_query: '{gdpPercap} > 10000'
-                        column_id: gdpPercap
-                      backgroundColor: green
-                      color: white
-                    - if:
-                        column_type: text
-                      textAlign: left
-                    - if:
-                        state: active
-                      backgroundColor: rgba(0, 116, 217, 0.3)
-                      border: 1px solid rgb(0, 116, 217)
-                type: table
-            title: Dash DataTable
-
-        ```
-
-    === "Result"
-
-        The dashboard renders the "Styled Dash DataTable" example.
-
-        [![Table2]][table2]
-
-If the available arguments are not sufficient, there is always the option to create a [custom Dash DataTable](custom-tables.md).
-
 ## Add additional text
 
 The [`Table`][vizro.models.Table] model accepts `title`, `header`, `footer` and `description` arguments. These are useful for providing additional context on the table.
@@ -687,9 +477,9 @@ The [`Table`][vizro.models.Table] model accepts `title`, `header`, `footer` and 
 - **footer**: Accepts [Markdown text](https://markdown-guide.readthedocs.io/), commonly used for citing data sources, providing information on the last update, or adding disclaimers.
 - **description**: Displayed as an icon that opens a tooltip containing [Markdown text](https://markdown-guide.readthedocs.io/) when hovered over. You can provide a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
-### Formatted AgGrid
+### Formatted AG Grid
 
-!!! example "Formatted AgGrid"
+!!! example "Formatted AG Grid"
 
     === "app.py"
 
@@ -703,7 +493,7 @@ The [`Table`][vizro.models.Table] model accepts `title`, `header`, `footer` and 
         gapminder_2007 = px.data.gapminder().query("year == 2007")
 
         page = vm.Page(
-            title="Formatted AgGrid",
+            title="Formatted AG Grid",
             components=[
                 vm.Table(
                     figure=dash_ag_grid(data_frame=gapminder_2007, dashGridOptions={"pagination": True}),
@@ -745,85 +535,17 @@ The [`Table`][vizro.models.Table] model accepts `title`, `header`, `footer` and 
 
                   It helps reveal broad global trends, such as how health and wealth have improved in many regions, although progress hasn’t been even across all countries.
                 type: table
-            title: Formatted AgGrid
+            title: Formatted AG Grid
         ```
 
     === "Result"
 
-        The dashboard renders the "Formatted AgGrid" example.
+        The dashboard renders the "Formatted AG Grid" example.
 
         [![FormattedGrid]][formattedgrid]
-
-### Formatted DataTable
-
-!!! example "Formatted DataTable"
-
-    === "app.py"
-
-        ```{.python pycafe-link hl_lines="13-20"}
-
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.tables import dash_data_table
-
-        gapminder_2007 = px.data.gapminder().query("year == 2007")
-
-        page = vm.Page(
-            title="Formatted DataTable",
-            components=[
-                vm.Table(
-                    figure=dash_data_table(data_frame=gapminder_2007),
-                    title="Gapminder Data Insights",
-                    header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
-                    footer="""SOURCE: **Plotly gapminder data set, 2024**""",
-                    description="""
-                        The Gapminder dataset tracks the development of countries over time using indicators like life expectancy, income per person, and population size.
-
-                        It helps reveal broad global trends, such as how health and wealth have improved in many regions, although progress hasn’t been even across all countries.
-                    """,
-                )
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - figure:
-                  _target_: dash_data_table
-                  data_frame: gapminder_2007
-                title: Gapminder Data Insights
-                header: |
-                  #### An Interactive Exploration of Global Health, Wealth, and Population
-                footer: |
-                  SOURCE: **Plotly gapminder data set, 2024**
-                description: |
-                  The Gapminder dataset tracks the development of countries over time using indicators like life expectancy, income per person, and population size.
-
-                  It helps reveal broad global trends, such as how health and wealth have improved in many regions, although progress hasn’t been even across all countries.
-                type: table
-            title: Formatted DataTable
-        ```
-
-    === "Result"
-
-        The dashboard renders the "Formatted DataTable" example.
-
-        [![FormattedTable]][formattedtable]
 
 [aggrid]: ../../assets/user_guides/table/aggrid.png
 [aggrid2]: ../../assets/user_guides/table/formatted_aggrid.png
 [aggrid3]: ../../assets/user_guides/table/styled_aggrid.png
 [aggridcolumnsize]: ../../assets/user_guides/table/aggrid_columnSize.png
 [formattedgrid]: ../../assets/user_guides/components/formatted_aggrid.png
-[formattedtable]: ../../assets/user_guides/components/formatted_table.png
-[table]: ../../assets/user_guides/table/table.png
-[table2]: ../../assets/user_guides/table/styled_table.png

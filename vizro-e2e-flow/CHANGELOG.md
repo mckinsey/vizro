@@ -1,4 +1,11 @@
 
+<a id='changelog-0.1.8'></a>
+# 0.1.8 — 2026-10-06
+
+## Changed
+
+- Update skills, examples, and evals to the Vizro 1.0.0 API: `Table` (with a `dash_ag_grid` figure) replaces `AgGrid`, `Slider(range=True)` replaces `RangeSlider`, `set_controls` replaces `set_control`/`filter_interaction`, and `Grid` replaces `Layout`. ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
 <a id='changelog-0.1.7'></a>
 # 0.1.7 — 2026-06-02
 

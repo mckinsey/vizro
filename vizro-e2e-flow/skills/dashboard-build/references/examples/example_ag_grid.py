@@ -3,7 +3,7 @@
 Source: https://vizro.readthedocs.io/en/stable/pages/user-guides/table/
         https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-tables/
 
-Vizro AG Grid = ``vm.AgGrid`` model + the ``dash_ag_grid`` factory from
+Vizro AG Grid = ``vm.Table`` model + the ``dash_ag_grid`` factory from
 ``vizro.tables``. It wraps Dash AG Grid (https://dash.plotly.com/dash-ag-grid),
 so treat those docs as authoritative for kwargs (``columnDefs``,
 ``defaultColDef``, ``dashGridOptions``, ``columnSize``, ``cellStyle``,
@@ -11,7 +11,8 @@ so treat those docs as authoritative for kwargs (``columnDefs``,
 hex.
 
 Do NOT use:
-  - ``vm.Table`` / Dash DataTable — AG Grid is the only table component.
+  - Dash DataTable backing (``dash_data_table``) — removed in Vizro 1.0.0;
+    ``vm.Table`` now renders only an AG Grid.
   - Plotly-as-table (``px.imshow`` annotated, heatmap-with-text, etc.). The
     only lighter alternatives are KPI cards or a bar chart.
   - JS-only AG Grid features (event handlers like ``onCellClicked``, server-
@@ -27,12 +28,9 @@ Two patterns:
      (see ``writing-vizro-yaml/references/yaml-reference.md`` ``heatmap_grid``).
 
 When you go custom, return a raw ``dash_ag_grid.AgGrid(...)`` and pass
-``dashGridOptions={...}`` plus ``className="ag-theme-vizro"`` explicitly.
-The built-in factory sets those up; a raw ``AgGrid`` doesn't, and
-``vm.AgGrid.__call__`` runs ``figure.dashGridOptions.setdefault(...)`` on
-every code path — without the kwarg the attribute doesn't exist and the
-page-load callback crashes with
-``AttributeError: 'AgGrid' object has no attribute 'dashGridOptions'``.
+``dashGridOptions={...}`` plus ``className="ag-theme-vizro"`` explicitly so the
+grid picks up Vizro theming — the built-in ``dash_ag_grid`` factory sets these
+up for you, a raw ``AgGrid`` does not.
 """
 
 import vizro.models as vm
@@ -80,7 +78,7 @@ column_defs = [
 drop_in_page = vm.Page(
     title="Sales table",
     components=[
-        vm.AgGrid(
+        vm.Table(
             id="sales_table",
             title="Country GDP detail",
             figure=dash_ag_grid(
@@ -118,7 +116,7 @@ def column_picker_grid(chosen_columns: list[str], data_frame=None):
 custom_page = vm.Page(
     title="Sales table — column picker",
     components=[
-        vm.AgGrid(
+        vm.Table(
             id="custom_ag_grid",
             title="Pick columns to display",
             figure=column_picker_grid(

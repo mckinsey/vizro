@@ -72,7 +72,7 @@ class Figure(VizroBaseModel):
     @_log_call
     def build(self):
         return dcc.Loading(
-            # Refer to the vm.AgGrid build method for details on why we return the
+            # Refer to the vm.Table build method for details on why we return the
             # html.Div(id=self.id) instead of actual figure object with the original data_frame.
             # Optimally, we would like to provide id=self.id directly here such that we can target the CSS
             # of the children via ID as well, but the `id` doesn't seem to be passed on to the loading component.

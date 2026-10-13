@@ -4,7 +4,7 @@ import e2e.vizro.constants as cnst
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro.tables import dash_ag_grid, dash_data_table
+from vizro.tables import dash_ag_grid
 
 tips = px.data.tips()
 
@@ -93,12 +93,10 @@ layout_flex_with_direction_param_and_graph = vm.Page(
     ],
 )
 
-# TODO[1.0.0]: this page uses dash_data_table (removed in 1.0.0). Switch it to dash_ag_grid and drop `dash_data_table`
-#  from the import at the top of this file (keep dash_ag_grid). Also drop the golden test_flex_layout_gap_and_table.
 layout_flex_with_gap_param_and_table = vm.Page(
     title=cnst.LAYOUT_FLEX_GAP_AND_TABLE,
     layout=vm.Flex(gap="40px"),
-    components=[vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"})) for i in range(3)],
+    components=[vm.Table(figure=dash_ag_grid(tips, style={"width": 1000})) for i in range(3)],
 )
 
 layout_flex_with_wrap_param_and_ag_grid = vm.Page(

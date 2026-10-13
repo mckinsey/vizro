@@ -23,15 +23,13 @@ Vizro's grammar of dashboards is defined by a small set of Pydantic models in `v
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [`Grid`][vizro.models.Grid]    | Default row/column grid layout. See the [layouts user guide](../user-guides/layouts.md#grid-layout).                                             |
 | [`Flex`][vizro.models.Flex]    | Flexible-box layout for responsive arrangements. See the [layouts user guide](../user-guides/layouts.md#flex-layout).                            |
-| [`Layout`][vizro.models.Layout] | Deprecated alias for `Grid`. See the [deprecations page](deprecations.md). Prefer `Grid` in new code.                                             |
 
 ### Visualization components
 
 | Model                              | Purpose                                                                                                                                       |
 | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`Graph`][vizro.models.Graph]      | Renders a Plotly Express chart or a [custom Plotly figure](../user-guides/custom-charts.md). See the [graph user guide](../user-guides/graph.md). |
-| [`Table`][vizro.models.Table]      | Renders a Dash DataTable. See the [table user guide](../user-guides/table.md#dash-datatable).                                                 |
-| [`AgGrid`][vizro.models.AgGrid]    | Renders a Dash AG Grid (recommended default for tabular data). See the [table user guide](../user-guides/table.md#ag-grid).                    |
+| [`Table`][vizro.models.Table]      | Renders a Dash AG Grid. See the [table user guide](../user-guides/table.md#ag-grid).                                                          |
 | [`Figure`][vizro.models.Figure]    | Renders any reactive Dash component (including [KPI card figures](../user-guides/figure.md#key-performance-indicator-kpi-cards)).             |
 
 ### Text and interactive components
@@ -62,7 +60,6 @@ Selectors are the input widgets used inside `Filter.selector` and `Parameter.sel
 | [`RadioItems`][vizro.models.RadioItems] | Single-select radio-button group.                                                    |
 | [`Switch`][vizro.models.Switch]         | Boolean toggle (default for boolean data).                                           |
 | [`Slider`][vizro.models.Slider]         | Numeric slider: a single value, or a range with `range=True` (default for numerical data). |
-| [`RangeSlider`][vizro.models.RangeSlider] | Deprecated — use [`Slider`][vizro.models.Slider] with `range=True`.                   |
 | [`DatePicker`][vizro.models.DatePicker] | Date or date-range picker (default for temporal data).                               |
 | [`TimePicker`][vizro.models.TimePicker] | Time or time-range picker.                                                           |
 | [`DateTimePicker`][vizro.models.DateTimePicker] | Combined date-and-time (or date-and-time-range) picker for `datetime` columns.       |
