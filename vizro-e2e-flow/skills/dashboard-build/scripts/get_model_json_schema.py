@@ -70,8 +70,8 @@ are needed (e.g. trendline):
     )
 
 
-class AgGridEnhanced(vm.AgGrid):
-    """AgGrid model that uses dash-ag-grid to create the figure."""
+class TableEnhanced(vm.Table):
+    """Table model backed by a dash-ag-grid figure."""
 
     figure: dict[str, Any] = Field(
         description="""
@@ -113,6 +113,21 @@ def get_model_json_schema(  # noqa: PLR0911
     Returns:
         JSON schema of the requested Vizro model/figure/action
     """
+    # Models and actions removed or renamed in Vizro 1.0.0: give migration guidance instead of a bare "not found".
+    removed_models = {
+        "AgGrid": "Table (with a dash_ag_grid figure)",
+        "RangeSlider": "Slider (with range=True)",
+        "Layout": "Grid",
+        "set_control": "set_controls",
+        "filter_interaction": "set_controls",
+    }
+    if model_name in removed_models:
+        return ModelJsonSchemaResults(
+            model_name=model_name,
+            json_schema={},
+            additional_info=(f"'{model_name}' was removed in Vizro 1.0.0. Use {removed_models[model_name]} instead."),
+        )
+
     # Check in vizro.models first
     if hasattr(vm, model_name):
         namespace = vm
@@ -134,8 +149,7 @@ def get_model_json_schema(  # noqa: PLR0911
 
     modified_models = {
         "Graph": GraphEnhanced,
-        "AgGrid": AgGridEnhanced,
-        "Table": AgGridEnhanced,
+        "Table": TableEnhanced,
         "Figure": FigureEnhanced,
     }
 
@@ -146,14 +160,6 @@ def get_model_json_schema(  # noqa: PLR0911
             additional_info="""LLM must remember to replace `$ref` with the actual config. Request the schema of
 that model if necessary.""",
         )
-    deprecated_models = {"filter_interaction": "set_control", "Layout": "Grid"}
-    if model_name in deprecated_models:
-        return ModelJsonSchemaResults(
-            model_name=model_name,
-            json_schema={},
-            additional_info=f"Model '{model_name}' is deprecated. Use {deprecated_models[model_name]} instead.",
-        )
-
     model_class = getattr(namespace, model_name)
     if model_name in {"Grid", "Flex"}:
         return ModelJsonSchemaResults(

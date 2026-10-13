@@ -112,36 +112,6 @@ def test_implicit_actions_chain(page, http_requests_paths):
 
 
 @http_requests
-def test_chart_with_filter_interaction(page, http_requests_paths):
-    # open the page (2 http)
-    page.locator(f"a[href='/{cnst.PAGE_CHART_WITH_FILTER_INTERACTION}']").click()
-    check_http_requests_count(page, http_requests_paths, 2)
-
-    # filter interaction between charts (1 http)
-    element = page.locator(".box").nth(1)
-    box = element.bounding_box()
-    page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
-    check_http_requests_count(page, http_requests_paths, 3)
-
-    # checking that no additional http has occurred
-    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
-
-
-@http_requests
-def test_ag_grid_with_filter_interaction(page, http_requests_paths):
-    # open the page (2 http)
-    page.locator(f"a[href='/{cnst.PAGE_AG_GRID_WITH_FILTER_INTERACTION}']").click()
-    check_http_requests_count(page, http_requests_paths, 2)
-
-    # filter interaction between af grid and chart (1 http)
-    page.get_by_role("gridcell", name="Europe").nth(0).click()
-    check_http_requests_count(page, http_requests_paths, 3)
-
-    # checking that no additional http has occurred
-    check_http_requests_count(page, http_requests_paths, 3, sleep=cnst.HTTP_TIMEOUT_LONG)
-
-
-@http_requests
 def test_dynamic_parametrisation(page, http_requests_paths):
     # open the page (2 http)
     page.locator(f"a[href='/{cnst.PAGE_DYNAMIC_PARAMETRISATION}']").click()
@@ -203,15 +173,15 @@ def test_all_selectors_in_url(page, http_requests_paths):
 
 
 @http_requests
-def test_set_control_cross_filter_graph(page, http_requests_paths):
-    """Page with set_control action for graph working as cross filter."""
+def test_set_controls_cross_filter_graph(page, http_requests_paths):
+    """Page with set_controls action for graph working as cross filter."""
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.SET_CONTROL_GRAPH_CROSS_FILTER_PAGE}']").click()
+    page.locator(f"a[href='/{cnst.SET_CONTROLS_GRAPH_CROSS_FILTER_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
     # cross-filter between charts (2 http)
     # here we have 2 http requests because implicit actions chain happens
-    # and set_control implicitly triggers the filter_action
+    # and set_controls implicitly triggers the filter_action
     # https://vizro.readthedocs.io/en/stable/pages/tutorials/custom-actions-tutorial/#implicit-actions-chain
     element = page.locator('path[class="point plotly-customdata"]').nth(20)
     box = element.bounding_box()
@@ -223,15 +193,15 @@ def test_set_control_cross_filter_graph(page, http_requests_paths):
 
 
 @http_requests
-def test_set_control_cross_filter_ag_grid(page, http_requests_paths):
-    """Page with set_control action for ag_grid working as cross filter."""
+def test_set_controls_cross_filter_ag_grid(page, http_requests_paths):
+    """Page with set_controls action for ag_grid working as cross filter."""
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_PAGE}']").click()
+    page.locator(f"a[href='/{cnst.SET_CONTROLS_TABLE_AG_GRID_CROSS_FILTER_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
     # cross-filter between ag grid and chart (2 http)
     # here we have 2 http requests because implicit actions chain happens
-    # and set_control implicitly triggers the filter_action
+    # and set_controls implicitly triggers the filter_action
     # https://vizro.readthedocs.io/en/stable/pages/tutorials/custom-actions-tutorial/#implicit-actions-chain
     page.get_by_role("gridcell", name="Europe").nth(0).click()
     check_http_requests_count(page, http_requests_paths, 4)
@@ -242,13 +212,13 @@ def test_set_control_cross_filter_ag_grid(page, http_requests_paths):
 
 @http_requests
 def test_drill_through_filter_graph(page, http_requests_paths):
-    """Page with set_control action for filter graph on the different page."""
+    """Page with set_controls action for filter graph on the different page."""
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.SET_CONTROL_DRILL_THROUGH_FILTER_GRAPH_SOURCE}']").click()
+    page.locator(f"a[href='/{cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_GRAPH_SOURCE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
     # filter drill_through between charts (3 http)
-    # here we have 3 http requests because one is for set_control action
+    # here we have 3 http requests because one is for set_controls action
     # and two are for on page load that happens while opening a targeted page
     element = page.locator('path[class="point plotly-customdata"]').nth(20)
     box = element.bounding_box()
@@ -261,13 +231,13 @@ def test_drill_through_filter_graph(page, http_requests_paths):
 
 @http_requests
 def test_drill_through_parameter_graph(page, http_requests_paths):
-    """Page with set_control action for parametrize graph on the different page."""
+    """Page with set_controls action for parametrize graph on the different page."""
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.SET_CONTROL_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE}']").click()
+    page.locator(f"a[href='/{cnst.SET_CONTROLS_DRILL_THROUGH_PARAMETER_GRAPH_SOURCE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
     # parameter drill_through between charts (3 http)
-    # here we have 3 http requests because one is for set_control action
+    # here we have 3 http requests because one is for set_controls action
     # and two are for on_page_load that happens while opening a targeted page
     element = page.locator('path[class="point plotly-customdata"]').nth(20)
     box = element.bounding_box()
@@ -280,13 +250,13 @@ def test_drill_through_parameter_graph(page, http_requests_paths):
 
 @http_requests
 def test_drill_through_filter_ag_grid(page, http_requests_paths):
-    """Page with set_control action for ag_grid filter graph on the different page."""
+    """Page with set_controls action for ag_grid filter graph on the different page."""
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.SET_CONTROL_DRILL_THROUGH_FILTER_AG_GRID_SOURCE}']").click()
+    page.locator(f"a[href='/{cnst.SET_CONTROLS_DRILL_THROUGH_FILTER_AG_GRID_SOURCE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
     # filter drill_through between charts (3 http)
-    # here we have 3 http requests because one is for set_control action
+    # here we have 3 http requests because one is for set_controls action
     # and two are for on page load that happens while opening a targeted page
     page.get_by_role("gridcell", name="versicolor").nth(0).click()
     check_http_requests_count(page, http_requests_paths, 5)
@@ -297,13 +267,14 @@ def test_drill_through_filter_ag_grid(page, http_requests_paths):
 
 @http_requests
 def test_drill_down_graph(page, http_requests_paths):
-    """Page with set_control action applied for the same graph as chain actions."""
+    """Page with set_controls action applied for the same graph as chain actions."""
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.SET_CONTROL_DRILL_DOWN_GRAPH_PAGE}']").click()
+    page.locator(f"a[href='/{cnst.SET_CONTROLS_DRILL_DOWN_GRAPH_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
     # filter drill_down for the same chart (4 http)
-    # here we have 4 http requests because implicit actions chain triggered twice (two set_control actions in the chain)
+    # here we have 4 http requests because the implicit actions chain is triggered twice
+    # (two set_controls actions in the chain)
     # https://vizro.readthedocs.io/en/stable/pages/tutorials/custom-actions-tutorial/#implicit-actions-chain
     element = page.locator('path[class="point plotly-customdata"]').nth(20)
     box = element.bounding_box()
@@ -343,18 +314,18 @@ def test_reset_controls_page(page, http_requests_paths):
 
 
 @http_requests
-def test_filtered_graph_does_not_trigger_set_control(page, http_requests_paths):
+def test_filtered_graph_does_not_trigger_set_controls(page, http_requests_paths):
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE}']").click()
+    page.locator(f"a[href='/{cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROLS_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # set_control - click on the scatter point to filter the aggrid (2 http)
+    # set_controls - click on the scatter point to filter the aggrid (2 http)
     element = page.locator('path[class="point plotly-customdata"]').nth(20)
     box = element.bounding_box()
     page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
     check_http_requests_count(page, http_requests_paths, 4)
 
-    # unselect all in checklist that filters a set_control source graph (1 http)
+    # unselect all in checklist that filters a set_controls source graph (1 http)
     page.get_by_text("Select All").nth(1).click()
     check_http_requests_count(page, http_requests_paths, 5, sleep=3000)
 
@@ -363,20 +334,20 @@ def test_filtered_graph_does_not_trigger_set_control(page, http_requests_paths):
 
 
 @http_requests
-def test_filtered_aggrid_does_not_trigger_set_control(page, http_requests_paths):
+def test_filtered_aggrid_does_not_trigger_set_controls(page, http_requests_paths):
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROL_PAGE}']").click()
+    page.locator(f"a[href='/{cnst.FILTERED_GRAPH_OR_AGGRID_NOT_TRIGGER_SET_CONTROLS_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
     # change page tab - click on the aggrid tab (0 http)
     page.locator("a", has_text="AgGrid").nth(1).click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # set_control - click on the versicolor row in aggrid (2 http)
+    # set_controls - click on the versicolor row in aggrid (2 http)
     page.get_by_role("gridcell", name="versicolor").nth(0).click()
     check_http_requests_count(page, http_requests_paths, 4)
 
-    # unselect all in checklist that filters a set_control source ag_grid (1 http)
+    # unselect all in checklist that filters a set_controls source ag_grid (1 http)
     page.get_by_text("Select All").nth(0).click()
     check_http_requests_count(page, http_requests_paths, 5, sleep=3000)
 
@@ -387,10 +358,10 @@ def test_filtered_aggrid_does_not_trigger_set_control(page, http_requests_paths)
 @http_requests
 def test_self_filtered_graph(page, http_requests_paths):
     # open the page (2 http)
-    page.locator(f"a[href='/{cnst.SELF_FILTER_SET_CONTROL_PAGE}']").click()
+    page.locator(f"a[href='/{cnst.SELF_FILTER_SET_CONTROLS_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # set_control - click on the scatter point to filter the same graph (2 http)
+    # set_controls - click on the scatter point to filter the same graph (2 http)
     element = page.locator('path[class="point plotly-customdata"]').nth(20)
     box = element.bounding_box()
     page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
@@ -588,7 +559,7 @@ def test_sync_hidden_parameter(page, http_requests_paths):
     page.locator(f"a[href='/{cnst.SYNC_HIDDEN_PARAMETER_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # select filter (2 http: a single `set_control` sets the parameter and raises its guard so the parameter's own
+    # select filter (2 http: a single `set_controls` sets the parameter and raises its guard so the parameter's own
     # chain does not fire, then a single `update_targets` refreshes the figures shared by the filter and parameter).
     # The mesh always resolves in two requests, no matter how many controls/figures it spans.
     page.get_by_text("versicolor").nth(0).click()
@@ -604,7 +575,7 @@ def test_sync_multiple_controls_same_page(page, http_requests_paths):
     page.locator(f"a[href='/{cnst.SYNC_MULTIPLE_CONTROLS_SAME_PAGE}']").click()
     check_http_requests_count(page, http_requests_paths, 2)
 
-    # select 'versicolor' on the first filter (2 http: one `set_control` sets the whole transitive mesh - the other two
+    # select 'versicolor' on the first filter (2 http: one `set_controls` sets the whole transitive mesh - the other two
     # filters - and raises their guards so their own chains do not fire, then one `update_targets` refreshes all three
     # graphs). The mesh always resolves in two requests, no matter how many controls/figures it spans.
     page.locator(f"div[id='{cnst.SYNC_MULTIPLE_CONTROLS_RADIO_ITEMS_1_ID}'] div:nth-of-type(2) input").click()

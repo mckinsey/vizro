@@ -9,10 +9,15 @@ include = [
 [envs.all]
 
 [[envs.all.matrix]]
-python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+python = ["3.11", "3.12", "3.13", "3.14", "3.15"]
 
 [envs."all.py3.14"]
 # Make sys.warnoptions non-empty so that Kedro doesn't turn its Python 3.14 warning into an error.
+# This means we can ignore it like others in tool.pytest.ini_options.filterwarnings.
+env-vars = {PYTHONWARNINGS = "default"}
+
+[envs."all.py3.15"]
+# Make sys.warnoptions non-empty so that Kedro doesn't turn its Python 3.15 warning into an error.
 # This means we can ignore it like others in tool.pytest.ini_options.filterwarnings.
 env-vars = {PYTHONWARNINGS = "default"}
 
@@ -205,10 +210,10 @@ extra-dependencies = [
   "plotly==5.24.0",
   "pydantic==2.7.0",
   "pandas==2.0.0",
-  "numpy==1.23.0",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
+  "numpy==1.23.2",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
   "kedro==0.19.9"
 ]
-python = "3.10"
+python = "3.11"
 
 [publish.index]
 disable = true

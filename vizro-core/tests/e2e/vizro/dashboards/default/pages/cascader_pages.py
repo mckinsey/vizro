@@ -69,13 +69,13 @@ cascader_leaf_page = vm.Page(
             figure=dash_ag_grid(data_frame=_gapminder),
         ),
         vm.Table(
-            id=cnst.CASCADER_LEAF_SET_CONTROL_AG_GRID_SOURCE_ID,
-            title="set_control source",
+            id=cnst.CASCADER_LEAF_SET_CONTROLS_AG_GRID_SOURCE_ID,
+            title="set_controls source",
             figure=dash_ag_grid(data_frame=_gapminder),
             actions=set_controls(controls=[cnst.CASCADER_LEAF_FILTER_CONTROL_ID], value="country"),
         ),
         vm.Button(
-            id=cnst.CASCADER_LEAF_SET_CONTROL_BUTTON_ID,
+            id=cnst.CASCADER_LEAF_SET_CONTROLS_BUTTON_ID,
             text="Show China",
             actions=set_controls(controls=[cnst.CASCADER_LEAF_FILTER_CONTROL_ID], value="China"),
         ),

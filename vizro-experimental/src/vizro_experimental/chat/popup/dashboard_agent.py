@@ -288,7 +288,7 @@ def _gather_dashboard_context() -> dict[str, Any]:
             raw_path = getattr(page, "path", "") or ""
             pages[page.id] = {"title": page.title, "path": f"{base_pathname}{raw_path}", "components": []}
 
-    for comp_type in [vm.Graph, vm.Table, vm.AgGrid, vm.Figure]:
+    for comp_type in [vm.Graph, vm.Table, vm.Figure]:
         try:
             models = list(model_manager._get_models(comp_type))
         except Exception:  # noqa: S112  # introspection: any failure means "no models of this type"
