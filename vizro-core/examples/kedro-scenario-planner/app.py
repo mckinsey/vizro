@@ -112,13 +112,13 @@ page = vm.Page(
         vm.Container(
             title="Load & explore existing scenarios",
             components=[
-                vm.AgGrid(
+                vm.Table(
                     id="scenario_table",
                     figure=dash_ag_grid(
                         "scenario_results",
                         dashGridOptions={"rowSelection": {"mode": "singleRow"}},
                     ),
-                    actions=va.set_control(control="scenario_name_param", value="scenario_name"),
+                    actions=va.set_controls(controls=["scenario_name_param"], value="scenario_name"),
                 ),
                 vm.Button(
                     text="Load Scenario",

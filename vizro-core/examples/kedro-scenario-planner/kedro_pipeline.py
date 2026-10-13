@@ -117,10 +117,14 @@ def run_scenario(scenario_name: str, region: str, categories: list[str], min_ord
 
     catalog = build_static_catalog()
     existing_results = catalog.load("scenario_results")
-    if not existing_results.empty and scenario_name in existing_results["scenario_name"].astype(str).to_numpy():
-        raise Exception(
-            f"A scenario named '{scenario_name}' already exists. Choose a different name.", "duplicate_name"
-        )
+    if not existing_results.empty:
+        existing_names = existing_results["scenario_name"].astype(str)
+        # Compare normalized filenames too, since distinct names (e.g. "foo/bar" and "foo_bar") can map to the
+        # same breakdown CSV.
+        if scenario_name in existing_names.to_numpy() or safe_name in existing_names.map(secure_filename).to_numpy():
+            raise Exception(
+                f"A scenario named '{scenario_name}' already exists. Choose a different name.", "duplicate_name"
+            )
 
     orders = catalog.load("orders")
     matching_orders = orders[
@@ -142,9 +146,11 @@ def run_scenario(scenario_name: str, region: str, categories: list[str], min_ord
     BREAKDOWN_DIR.mkdir(parents=True, exist_ok=True)
     _register_dataset(catalog, "breakdown", CSVDataset(filepath=str(BREAKDOWN_DIR / f"{safe_name}.csv")))
 
+    # Register `kpi_row` up front: depending on the Kedro version, the runner may work on a copy of the catalog,
+    # so unregistered "free" outputs would not be available in this catalog after the run.
+    _register_dataset(catalog, "kpi_row", MemoryDataset())
+
     SequentialRunner().run(build_pipeline(), catalog)
-    # Load explicitly rather than using the runner's return value: depending on the Kedro version,
-    # a "free" pipeline output may come back as the loaded data or as the dataset object itself.
     kpi_row = catalog.load("kpi_row")
 
     updated_results = pd.concat([existing_results, kpi_row], ignore_index=True)
