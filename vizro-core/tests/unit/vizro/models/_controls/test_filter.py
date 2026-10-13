@@ -520,6 +520,34 @@ class TestFilterFunctions:
     @pytest.mark.parametrize(
         "data, value, expected",
         [
+            ([date(2024, 1, 1), date(2024, 1, 5)], ["2024-01-01"], [True, False]),
+            ([date(2024, 1, 1), None, date(2024, 1, 5)], ["2024-01-01", "2024-01-05"], [True, False, True]),
+        ],
+    )
+    def test_filter_isin_date_objects(self, data, value, expected):
+        """A column of datetime.date objects is filtered by the date strings that Dash sends back."""
+        result = _filter_isin(pd.Series(data), value)
+        pd.testing.assert_series_equal(result, pd.Series(expected))
+
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
+            (
+                [date(2024, 1, 1), date(2024, 1, 5), date(2024, 1, 10)],
+                ["2024-01-01", "2024-01-05"],
+                [True, True, False],
+            ),
+            ([date(2024, 1, 1), None, date(2024, 1, 10)], ["2024-01-01", "2024-01-10"], [True, False, True]),
+        ],
+    )
+    def test_filter_between_date_objects(self, data, value, expected):
+        """A column of datetime.date objects is filtered by a range of date strings, both ends included."""
+        result = _filter_between(pd.Series(data), value)
+        pd.testing.assert_series_equal(result, pd.Series(expected))
+
+    @pytest.mark.parametrize(
+        "data, value, expected",
+        [
             # Time series filtered by HH:MM:SS value
             (
                 [time(9, 0, 0), time(10, 0, 0), time(11, 0, 0)],
