@@ -421,7 +421,7 @@ def _parse_datetime_hh_mm(datetime_str):
 
 def _parse_ag_grid_cell_datetime(text):
     """Parse a datetime from an AgGrid cell display string."""
-    return datetime.fromisoformat(text.replace("Z", "+00:00")).replace(second=0, microsecond=0)
+    return datetime.fromisoformat(text).replace(second=0, microsecond=0)
 
 
 def check_table_ag_grid_datetime_values_in_range(driver, table_id, col_id, start_datetime, end_datetime):

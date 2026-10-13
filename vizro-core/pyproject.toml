@@ -8,11 +8,11 @@ authors = [
 ]
 classifiers = [
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: 3.14"
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15"
 ]
 dependencies = [
   "dash>=4,<5",
@@ -26,7 +26,7 @@ dependencies = [
   # TODO: When updating to `>=2.10`, search code for `pydantic>=2.10.0` or
   # `pydantic>=2.9` to find all occurrences ready for this change
   "pydantic>=2.7.0",
-  # Cap <2.5 for now: flask-caching 2.5.0 emits a spurious NullCache warning and requires Python>=3.11 (we support 3.10).
+  # Cap <2.5 for now: flask-caching 2.5.0 emits a spurious NullCache warning.
   "flask_caching>=2,<2.5",
   "wrapt>=1",
   "black",
@@ -39,7 +39,7 @@ dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 
 [project.optional-dependencies]
 kedro = [

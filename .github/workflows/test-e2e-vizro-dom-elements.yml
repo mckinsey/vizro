@@ -17,7 +17,7 @@ on:
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
-  PYTHON_VERSION: "3.13"
+  PYTHON_VERSION: "3.14"
 
 jobs:
   test-e2e-vizro-dom-elements:
@@ -30,10 +30,10 @@ jobs:
         group: [1, 2, 3]
         label: [upper bounds, lower bounds]
         include:
-          - python-version: "3.13"
-            hatch-env: all.py3.13
+          - python-version: "3.14"
+            hatch-env: all.py3.14
             label: upper bounds
-          - python-version: "3.10"
+          - python-version: "3.11"
             hatch-env: lower-bounds
             label: lower bounds
 
