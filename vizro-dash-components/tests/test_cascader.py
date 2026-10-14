@@ -95,6 +95,18 @@ def _app(layout):
     return app
 
 
+def _clear_search(dash_duo):
+    """Empty the search input with real key presses.
+
+    Selenium's `.clear()` doesn't trigger React's onChange on a controlled input, so the component's search
+    state would keep the old text.
+    """
+    from selenium.webdriver.common.keys import Keys
+
+    search = dash_duo.find_element(".dash-dropdown-search")
+    search.send_keys(Keys.BACKSPACE * len(search.get_attribute("value")))
+
+
 # --- Mode-aware value builders and formatters ---
 
 
@@ -438,7 +450,7 @@ def test_cascader_search_filters_results(dash_duo):
     ]
     assert "Japan" in result_labels
 
-    dash_duo.find_element(".dash-dropdown-search").clear()
+    _clear_search(dash_duo)
     dash_duo.wait_for_element(".dash-dropdown-search").send_keys("asi")
     dash_duo.wait_for_element(".dash-cascader-result-row-branch")
     branch_labels = [
@@ -726,7 +738,7 @@ def test_cascader_option_search_field_used_for_filtering(dash_duo):
     ]
     assert "Japan" in labels
     # "japan" does NOT match (search field replaces label matching)
-    dash_duo.find_element(".dash-dropdown-search").clear()
+    _clear_search(dash_duo)
     dash_duo.wait_for_element(".dash-dropdown-search").send_keys("japan")
     import time
 
@@ -734,7 +746,7 @@ def test_cascader_option_search_field_used_for_filtering(dash_duo):
     results = dash_duo.driver.find_elements("css selector", ".dash-cascader-result-row")
     assert len(results) == 0
 
-    dash_duo.find_element(".dash-dropdown-search").clear()
+    _clear_search(dash_duo)
     dash_duo.wait_for_element(".dash-dropdown-search").send_keys("east-region")
     dash_duo.wait_for_element(".dash-cascader-result-row-branch").click()
     dash_duo.wait_for_element(".dash-cascader-columns")
