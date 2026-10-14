@@ -33,9 +33,7 @@ Call [`add_chat_popup`][vizro_experimental.chat.popup.popup.add_chat_popup] afte
             pages=[
                 vm.Page(
                     title="Iris",
-                    components=[
-                        vm.Graph(figure=px.scatter("iris", x="sepal_width", y="sepal_length"))
-                    ],
+                    components=[vm.Graph(figure=px.scatter("iris", x="sepal_width", y="sepal_length"))],
                 )
             ]
         )
