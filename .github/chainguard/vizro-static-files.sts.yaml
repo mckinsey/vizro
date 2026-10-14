@@ -1,0 +1,6 @@
+issuer: https://token.actions.githubusercontent.com
+subject_pattern: 'repo:mckinsey(@[0-9]+)?/vizro(@[0-9]+)?:.*'
+
+permissions:
+  contents: write
+  pull_requests: write

@@ -1,8 +1,5 @@
 name: github-repo-stats
 
-permissions:
-  contents: read
-
 on:
   schedule:
     # Run this once per day, towards the end of the day for keeping the most
@@ -12,10 +9,20 @@ on:
 
 jobs:
   github-repo-stats:
-    runs-on: ubuntu-latest
+    runs-on: gh-larger-linux-mini
+    permissions:
+      contents: read
+      id-token: write
     steps:
+      - name: Get GitHub token from pp-octo-sts.cf.platform.mckinsey.cloud
+        uses: McK-Internal/octo-sts-action@v1
+        id: octo-sts
+        with:
+          domain: pp-octo-sts.cf.platform.mckinsey.cloud
+          scope: ${{ github.repository }}
+          identity: vizro-repo-stats
       - name: Run GitHub repo stats
         # Use latest release.
         uses: jgehrcke/github-repo-stats@RELEASE
         with:
-          ghtoken: ${{ secrets.VIZRO_SVC_PAT }}
+          ghtoken: ${{ steps.octo-sts.outputs.token }}
