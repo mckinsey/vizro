@@ -53,6 +53,7 @@ warn_untyped_fields = true
 
 [tool.ruff]
 line-length = 120
+target-version = "py311"
 
 [tool.ruff.format]
 docstring-code-format = true

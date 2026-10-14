@@ -30,7 +30,7 @@ if TYPE_CHECKING:
     from vizro.models import Page
 
 SELECTORS: dict[str, tuple[type, ...]] = {
-    "numerical": (Slider,),  # Slider(range=True) supersedes the deprecated RangeSlider (a Slider subclass).
+    "numerical": (Slider,),  # A numerical range filter is a Slider with range=True.
     "categorical": (Checklist, Dropdown, RadioItems),
     "date": (DatePicker,),
     "datetime": (DateTimePicker,),

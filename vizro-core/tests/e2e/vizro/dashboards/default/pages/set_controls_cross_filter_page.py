@@ -10,10 +10,10 @@ gapminder = px.data.gapminder()
 
 
 cross_filter_graph_page = vm.Page(
-    title=cnst.SET_CONTROL_GRAPH_CROSS_FILTER_PAGE,
+    title=cnst.SET_CONTROLS_GRAPH_CROSS_FILTER_PAGE,
     components=[
         vm.Graph(
-            id=cnst.SCATTER_SET_CONTROL_CROSS_FILTER_ID,
+            id=cnst.SCATTER_SET_CONTROLS_CROSS_FILTER_ID,
             figure=px.scatter(
                 iris,
                 x="sepal_length",
@@ -24,7 +24,7 @@ cross_filter_graph_page = vm.Page(
             actions=set_controls(controls=["filter_interactions"], value="species"),
         ),
         vm.Graph(
-            id=cnst.BOX_SET_CONTROL_CROSS_FILTER_ID,
+            id=cnst.BOX_SET_CONTROLS_CROSS_FILTER_ID,
             figure=px.box(
                 iris,
                 x="sepal_length",
@@ -37,22 +37,22 @@ cross_filter_graph_page = vm.Page(
         vm.Filter(
             id="filter_interactions",
             column="species",
-            targets=[cnst.BOX_SET_CONTROL_CROSS_FILTER_ID],
-            selector=vm.Dropdown(id=cnst.DROPDOWN_SET_CONTROL_CROSS_FILTER),
+            targets=[cnst.BOX_SET_CONTROLS_CROSS_FILTER_ID],
+            selector=vm.Dropdown(id=cnst.DROPDOWN_SET_CONTROLS_CROSS_FILTER),
         )
     ],
 )
 
 cross_filter_ag_grid_page = vm.Page(
-    title=cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_PAGE,
+    title=cnst.SET_CONTROLS_TABLE_AG_GRID_CROSS_FILTER_PAGE,
     components=[
         vm.Container(
             components=[
                 vm.Table(
-                    id=cnst.SET_CONTROL_TABLE_AG_GRID_CROSS_FILTER_ID,
+                    id=cnst.SET_CONTROLS_TABLE_AG_GRID_CROSS_FILTER_ID,
                     title="Table Country",
                     figure=dash_ag_grid(
-                        id="set_control_ag_grid_table_country",
+                        id="set_controls_ag_grid_table_country",
                         data_frame=gapminder[gapminder["year"] == 2007],
                     ),
                     actions=set_controls(controls=["filter_continent"], value="continent"),
@@ -63,7 +63,7 @@ cross_filter_ag_grid_page = vm.Page(
         vm.Container(
             components=[
                 vm.Graph(
-                    id=cnst.SET_CONTROL_LINE_AG_GRID_CROSS_FILTER_ID,
+                    id=cnst.SET_CONTROLS_LINE_AG_GRID_CROSS_FILTER_ID,
                     figure=px.line(
                         gapminder,
                         title="Line Country",
@@ -80,7 +80,7 @@ cross_filter_ag_grid_page = vm.Page(
         vm.Filter(
             id="filter_continent",
             column="continent",
-            targets=[cnst.SET_CONTROL_LINE_AG_GRID_CROSS_FILTER_ID],
+            targets=[cnst.SET_CONTROLS_LINE_AG_GRID_CROSS_FILTER_ID],
             selector=vm.RadioItems(options=["Europe", "Africa", "Americas"], value="Africa"),
         ),
     ],
@@ -88,10 +88,10 @@ cross_filter_ag_grid_page = vm.Page(
 
 
 cross_filter_card_graph_page = vm.Page(
-    title=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_PAGE,
+    title=cnst.SET_CONTROLS_CARD_GRAPH_CROSS_FILTER_PAGE,
     components=[
         vm.Card(
-            id=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_CARD_ID,
+            id=cnst.SET_CONTROLS_CARD_GRAPH_CROSS_FILTER_CARD_ID,
             text="Continent to choose: Oceania",
             actions=set_controls(controls=["card-filter"], value="Oceania"),
         ),
@@ -110,7 +110,7 @@ cross_filter_card_graph_page = vm.Page(
             id="card-filter",
             column="continent",
             targets=["box-card-graph-id"],
-            selector=vm.RadioItems(id=cnst.SET_CONTROL_CARD_GRAPH_CROSS_FILTER_CONTOL_ID),
+            selector=vm.RadioItems(id=cnst.SET_CONTROLS_CARD_GRAPH_CROSS_FILTER_CONTOL_ID),
         )
     ],
 )

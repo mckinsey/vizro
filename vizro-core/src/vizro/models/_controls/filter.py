@@ -48,17 +48,17 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
 
 DEFAULT_SELECTORS: dict[str, Callable[..., SelectorType]] = {
-    # A numerical column defaults to a range slider, now expressed as Slider(range=True) rather than the
-    # deprecated RangeSlider so that auto-selected filters do not emit a deprecation warning.
+    # A numerical column defaults to a range slider, expressed as Slider(range=True).
     "numerical": functools.partial(Slider, range=True),
     "categorical": Dropdown,
     "date": DatePicker,
     "datetime": DatePicker,
     "time": TimePicker,
     "boolean": Switch,
-    # Set full_path explicitly so an auto-selected hierarchical filter does not emit the full_path default-change
-    # warning and keeps the current (leaf-mode) behavior. TODO[1.0.0]: revisit when the full_path default flips to True.
-    "hierarchical": functools.partial(Cascader, full_path=False),
+    # A hierarchical column defaults to a path-mode Cascader (full_path=True, the Cascader default): auto-generated
+    # options can repeat leaf labels across branches, and path mode addresses each selection by its full
+    # root-to-leaf path unambiguously.
+    "hierarchical": Cascader,
 }
 
 # This disallowed selectors for each column type map is based on the discussion at the following link:
@@ -130,7 +130,24 @@ def _to_dt_time(entry: Any) -> Any:
     return None
 
 
-def _coerce_temporal(
+def _to_timestamp(entry: Any) -> Any:
+    """Convert a single series entry to a `pd.Timestamp`, or to `NaT` if it carries no date and time.
+
+    The datetime counterpart of `_to_dt_time`: a datetime column may hold `datetime.datetime` objects or
+    "YYYY-MM-DD[T ]HH:MM[:SS]" strings rather than datetime64. Nulls and anything else become `NaT`, which matches
+    nothing.
+    """
+    if pd.isna(entry):
+        return pd.NaT
+    if isinstance(entry, dt_datetime):
+        return pd.Timestamp(entry)
+    if isinstance(entry, str) and _DATETIME_REGEX.match(entry):
+        with suppress(ValueError, TypeError):
+            return pd.Timestamp(entry)
+    return pd.NaT
+
+
+def _coerce_temporal(  # noqa: PLR0912
     series: pd.Series, value: list[Any], normalize_precision: bool = False
 ) -> tuple[pd.Series, list[Any]]:
     """If needed, coerce `series` and `value` to comparable temporal objects.
@@ -164,7 +181,12 @@ def _coerce_temporal(
     _is_time = value and all(_TIME_REGEX.match(str(v)) for v in value)
     # IMPORTANT: check _is_datetime before _is_date so that an ISO datetime string is not collapsed to a date.
     _is_datetime = not _is_time and value and all(_DATETIME_REGEX.match(str(v)) for v in value)
-    _is_date = not _is_time and not _is_datetime and is_datetime64_any_dtype(series)
+    # On a column of `datetime.date` objects the selected values arrive as date strings, as Dash serializes options.
+    _is_date = (
+        not _is_time
+        and not _is_datetime
+        and (is_datetime64_any_dtype(series) or pd.api.types.infer_dtype(series, skipna=True) == "date")
+    )
 
     if _is_time:
         if is_datetime64_any_dtype(series):
@@ -199,6 +221,14 @@ def _coerce_temporal(
         value_strs = [str(v) for v in value]
         value = list(pd.to_datetime(value_strs, format="ISO8601"))
 
+        if not is_datetime64_any_dtype(series):
+            # Coerce entry by entry so that Timestamps are compared against Timestamps rather than strings.
+            # Entries in different time zones cannot share one dtype, so such a column matches nothing.
+            try:
+                series = pd.to_datetime(series.map(_to_timestamp))
+            except ValueError:
+                series = pd.Series(pd.NaT, index=series.index, name=series.name)
+
         # If the series is tz-aware, localize the (naive) parsed values to its tz so comparisons don't raise.
         # Convention: the typed wall-clock time represents a moment in the series's own timezone.
         # nonexistent/ambiguous guard against DST-transition wall-clock times (e.g. the spring-forward gap
@@ -219,8 +249,9 @@ def _coerce_temporal(
     elif _is_date:
         # Date selector: convert date strings to datetime.date objects.
         value = pd.to_datetime(value).date
-        # Converting Timestamp to datetime.date
-        series = series.dt.date
+        if is_datetime64_any_dtype(series):
+            # Converting Timestamp to datetime.date
+            series = series.dt.date
 
     return series, value
 
@@ -265,20 +296,21 @@ def _filter_between(series: pd.Series, value: list[float] | list[str | None]) ->
 
 
 def _filter_hierarchical_isin(df: pd.DataFrame, value: Any, *, multi: bool) -> pd.Series:
-    """Filter rows whose ordered path columns match any selected root-to-leaf path.
+    """Filter rows of a path-mode hierarchical filter against the selected entries.
 
-    `df` holds the hierarchical filter's path columns in root-to-leaf order (branch columns first, the leaf
-    column last). Each selected entry is either a full path (a list of node values from root to leaf) or a
-    legacy leaf-only value. A path is matched across all its columns, so duplicate leaf labels in different
-    branches filter independently.
+    Backs path-mode hierarchical filters (`Cascader.full_path=True`). `df` holds the filter's path columns in
+    root-to-leaf order (branch columns first, the leaf column last). Each selected entry is one of two shapes:
+
+    * A path-mode entry: a full root-to-leaf path (a list of node values from root to leaf). It is matched
+      across all its columns, so duplicate leaf labels in different branches filter independently.
+    * A leaf-mode entry: a bare leaf value with no branch context. It is matched against the leaf column alone,
+      exactly as a leaf-mode filter (`full_path=False`) matches. This is the pre-path-mode shape; it can still
+      reach a path-mode filter (for example a value persisted or set while the filter was in leaf mode), so both
+      shapes are accepted here. A leaf-mode entry cannot disambiguate a leaf label duplicated across branches.
 
     `multi` disambiguates the value shape (the Cascader emits one entry when `multi=False`, a list of entries
-    when `multi=True`): a flat list of scalars is a single path under `multi=False`, but a list of separate
-    legacy leaves under `multi=True`.
-
-    A legacy leaf-only value (from a pre-full-path Cascader, e.g. restored from session persistence after an
-    upgrade) carries no branch context, so it can only be matched against the leaf column alone, mirroring the
-    old behavior. Fresh selections always arrive as full paths.
+    when `multi=True`): a flat list of scalars is a single path-mode entry under `multi=False`, but a list of
+    separate leaf-mode entries under `multi=True`.
 
     Branch labels are compared as strings, because `_dataframe_path_to_cascader_options` builds the option tree
     with stringified branch keys. The leaf reuses `_filter_isin` so that temporal/boolean leaves which arrive
@@ -289,8 +321,8 @@ def _filter_hierarchical_isin(df: pd.DataFrame, value: Any, *, multi: bool) -> p
     """
     if not value:
         return pd.Series(False, index=df.index)
-    # multi=False: `value` is a single entry (one path or one legacy leaf).
-    # multi=True: `value` is a list of entries (paths and/or legacy leaves).
+    # multi=False: `value` is a single entry (one path-mode or one leaf-mode entry).
+    # multi=True: `value` is a list of entries (path-mode and/or leaf-mode).
     entries = (value if isinstance(value, (list, tuple)) else [value]) if multi else [value]
     leaf_column = df.columns[-1]
     mask = pd.Series(False, index=df.index)
@@ -298,9 +330,10 @@ def _filter_hierarchical_isin(df: pd.DataFrame, value: Any, *, multi: bool) -> p
         if entry is None or (isinstance(entry, (list, tuple)) and not len(entry)):
             continue
         if not isinstance(entry, (list, tuple)):
-            # Legacy leaf-only value: no branch context, so match the leaf column alone.
+            # Leaf-mode entry: a bare leaf value with no branch context, so match the leaf column alone.
             mask |= _filter_isin(df[leaf_column], [entry])
             continue
+        # Path-mode entry: match each segment against its column, root to leaf; all must match (AND).
         row_matches = pd.Series(True, index=df.index)
         for position, (column, segment) in enumerate(zip(df.columns, entry)):
             is_leaf = position == len(entry) - 1
@@ -673,7 +706,7 @@ class Filter(VizroBaseModel):
             )
         else:
             # Explicit selector actions bypass the default sync chain, so any control targets were stripped without
-            # generating a set_control. Warn rather than silently drop them.
+            # generating a set_controls. Warn rather than silently drop them.
             warn_ignored_control_sync_targets(self, targeted_controls)
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).

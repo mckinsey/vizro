@@ -98,13 +98,12 @@ use the per-model files listed below.
 - [Table functions](https://vizro.readthedocs.io/en/stable/pages/API-reference/table-callables.md): Table callable functions API reference
 - [Figure functions](https://vizro.readthedocs.io/en/stable/pages/API-reference/figure-callables.md): Figure callable functions API reference
 - [Kedro integration](https://vizro.readthedocs.io/en/stable/pages/API-reference/kedro-integration.md): Kedro integration API reference
-- [Deprecations](https://vizro.readthedocs.io/en/stable/pages/API-reference/deprecations.md): Deprecations
+- [Migration](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration.md): Migration
 
 ## PER-MODEL API REFERENCE
 
 - [Accordion](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/accordion.md): `vizro.models.Accordion` API reference
 - [Action](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/action.md): `vizro.models.Action` API reference
-- [AgGrid](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/ag-grid.md): `vizro.models.AgGrid` API reference
 - [Button](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/button.md): `vizro.models.Button` API reference
 - [Card](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/card.md): `vizro.models.Card` API reference
 - [Cascader](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/cascader.md): `vizro.models.Cascader` API reference
@@ -120,14 +119,12 @@ use the per-model files listed below.
 - [Flex](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/flex.md): `vizro.models.Flex` API reference
 - [Graph](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/graph.md): `vizro.models.Graph` API reference
 - [Grid](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/grid.md): `vizro.models.Grid` API reference
-- [Layout](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/layout.md): `vizro.models.Layout` API reference
 - [NavBar](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/nav-bar.md): `vizro.models.NavBar` API reference
 - [NavLink](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/nav-link.md): `vizro.models.NavLink` API reference
 - [Navigation](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/navigation.md): `vizro.models.Navigation` API reference
 - [Page](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/page.md): `vizro.models.Page` API reference
 - [Parameter](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/parameter.md): `vizro.models.Parameter` API reference
 - [RadioItems](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/radio-items.md): `vizro.models.RadioItems` API reference
-- [RangeSlider](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/range-slider.md): `vizro.models.RangeSlider` API reference
 - [Slider](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/slider.md): `vizro.models.Slider` API reference
 - [Switch](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/switch.md): `vizro.models.Switch` API reference
 - [Table](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/table.md): `vizro.models.Table` API reference
