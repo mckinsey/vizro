@@ -108,7 +108,7 @@ To add a [`Tabs`][vizro.models.Tabs] model to your page, do the following:
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
-          components:
+          - components:
             - type: tabs
               title: Tabs Title
               tabs:
@@ -143,7 +143,7 @@ To add a [`Tabs`][vizro.models.Tabs] model to your page, do the following:
                         y: lifeExp
                         size: pop
                         color: continent
-          title: Tabs
+            title: Tabs
         ```
 
     === "Result"
@@ -234,7 +234,7 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
-          components:
+          - components:
             - type: tabs
               title: Tabs Title
               description: |
@@ -273,7 +273,7 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
                         y: lifeExp
                         size: pop
                         color: continent
-          title: Tabs
+            title: Tabs
         ```
 
     === "Result"

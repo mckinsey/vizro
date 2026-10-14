@@ -65,8 +65,8 @@ To display a notification, call [`show_notification`][vizro.actions.show_notific
               - type: button
                 text: Show notification
                 actions:
-                  type: show_notification
-                  text: This is a default notification!
+                  - type: show_notification
+                    text: This is a default notification!
             title: Basic notification
         ```
 
@@ -130,11 +130,11 @@ By default, notifications use the capitalized variant name as the title (e.g., "
               - type: button
                 text: Download data
                 actions:
-                  type: show_notification
-                  title: Download Complete
-                  text: Your data has been exported successfully
-                  variant: success
-                  icon: download
+                  - type: show_notification
+                    title: Download Complete
+                    text: Your data has been exported successfully
+                    variant: success
+                    icon: download
             title: Custom notification
         ```
 
@@ -209,21 +209,21 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
               - type: button
                 text: Quick message (2s)
                 actions:
-                  type: show_notification
-                  text: This will disappear quickly
-                  auto_close: 2000
+                  - type: show_notification
+                    text: This will disappear quickly
+                    auto_close: 2000
               - type: button
                 text: Long message (10s)
                 actions:
-                  type: show_notification
-                  text: This message stays longer to ensure you see it
-                  auto_close: 10000
+                  - type: show_notification
+                    text: This message stays longer to ensure you see it
+                    auto_close: 10000
               - type: button
                 text: Manual close
                 actions:
-                  type: show_notification
-                  text: Click the X to close this notification
-                  auto_close: false
+                  - type: show_notification
+                    text: Click the X to close this notification
+                    auto_close: false
             title: Auto-close settings
             layout:
               type: flex
@@ -292,18 +292,18 @@ You can update an existing notification with the [`update_notification`][vizro.a
               - type: button
                 text: Start process
                 actions:
-                  type: show_notification
-                  id: process_status
-                  text: Processing started...
-                  variant: progress
+                  - type: show_notification
+                    id: process_status
+                    text: Processing started...
+                    variant: progress
               - type: button
                 text: Complete process
                 actions:
-                  type: update_notification
-                  notification: process_status
-                  title: Complete
-                  text: Processing finished successfully!
-                  variant: success
+                  - type: update_notification
+                    notification: process_status
+                    title: Complete
+                    text: Processing finished successfully!
+                    variant: success
             title: Update notification example
             layout:
               type: flex
