@@ -1009,6 +1009,22 @@ class TestFilterStaticMethods:
                     datetime(2024, 1, 3),
                 ],
             ),
+            (
+                [
+                    [
+                        pd.Timestamp("2024-01-01", tz="US/Eastern"),
+                    ]
+                ],
+                [
+                    "2024-01-02",
+                    "2024-01-03",
+                ],
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 1, 2),
+                    datetime(2024, 1, 3),
+                ],
+            ),
         ],
     )
     def test_get_options_with_current_value(self, data_columns, current_value, expected):
@@ -1138,6 +1154,33 @@ class TestFilterStaticMethods:
                 (
                     datetime(2024, 1, 1, 10, 0),
                     datetime(2024, 1, 3),
+                ),
+            ),
+            (
+                [
+                    [
+                        pd.Timestamp("2024-01-01", tz="US/Eastern"),
+                        pd.Timestamp("2024-01-02", tz="US/Eastern"),
+                    ]
+                ],
+                [
+                    "2024-01-03",
+                    "2024-01-04",
+                ],
+                (
+                    datetime(2024, 1, 1),
+                    datetime(2024, 1, 4),
+                ),
+            ),
+            (
+                [
+                    [pd.Timestamp("2024-01-02T10:00", tz="UTC")],
+                    [pd.Timestamp("2024-01-02T10:00", tz="Asia/Tokyo")],
+                ],
+                "2024-01-01",
+                (
+                    datetime(2024, 1, 1),
+                    datetime(2024, 1, 2, 10, 0),
                 ),
             ),
             ([[1], []], 2, (1, 2)),
