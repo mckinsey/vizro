@@ -139,14 +139,14 @@ If you would like to specify your dashboard configuration through YAML then you 
         ```yaml hl_lines="5"
         pages:
           - components:
-              figure:
-                _target_: box
-                data_frame: iris # (1)!
-                x: species
-                y: petal_width
-                color: species
-              type: graph
-              title: Static data example
+              - figure:
+                  _target_: box
+                  data_frame: iris # (1)!
+                  x: species
+                  y: petal_width
+                  color: species
+                type: graph
+            title: Static data example
         ```
 
         1. Refer to the `"iris"` data source in the data manager.
