@@ -240,9 +240,10 @@ def kpi_sparkline_card(  # noqa: PLR0913
             string where any of the below placeholders can be used.
 
             - value: `value_column` aggregated by `agg_func`.
-            - delta: Difference between the last and first `value_column` entry once sorted by `x_column`.
-            - delta_relative: Relative difference between the last and first `value_column` entry once sorted
-                by `x_column`.
+            - delta: Difference between the last and first non-missing `value_column` entry once sorted by
+                `x_column`.
+            - delta_relative: Relative difference between the last and first non-missing `value_column` entry
+                once sorted by `x_column`.
 
             **Common examples include:**
 
@@ -285,8 +286,12 @@ def kpi_sparkline_card(  # noqa: PLR0913
 
     trend_df = data_frame[[x_column, value_column]].sort_values(x_column)
     trend_values = trend_df[value_column]
-    delta = trend_values.iloc[-1] - trend_values.iloc[0] if len(trend_values) > 1 else 0
-    delta_relative = delta / abs(trend_values.iloc[0]) if len(trend_values) > 1 and trend_values.iloc[0] else math.nan
+    # The trend runs between the first and last values present.
+    present_values = trend_values.dropna()
+    delta = present_values.iloc[-1] - present_values.iloc[0] if len(present_values) > 1 else 0
+    delta_relative = (
+        delta / abs(present_values.iloc[0]) if len(present_values) > 1 and present_values.iloc[0] else math.nan
+    )
     pos_color, neg_color = ("color-neg", "color-pos") if reverse_color else ("color-pos", "color-neg")
     delta_class = pos_color if delta > 0 else neg_color if delta < 0 else ""
     delta_icon = "arrow_circle_up" if delta > 0 else "arrow_circle_down" if delta < 0 else "arrow_circle_right"

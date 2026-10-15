@@ -827,6 +827,8 @@ class Filter(VizroBaseModel):
         # By default, DatePicker produces inputs in the following format: "YYYY-MM-DD".
         # "ISO8601" is used to enable the conversion process for custom DatePicker components and custom formats.
         if targeted_data.apply(is_datetime64_any_dtype).all():
+            # The current value is naive, so compare in each column's wall-clock time.
+            targeted_data = targeted_data.apply(lambda column: column.dt.tz_localize(None))
             with suppress(ValueError):
                 current_value = pd.to_datetime(current_value, format="ISO8601")
 
@@ -853,6 +855,8 @@ class Filter(VizroBaseModel):
         # By default, DatePicker produces inputs in the following format: "YYYY-MM-DD".
         # "ISO8601" is used to enable the conversion process for custom DatePicker components and custom formats.
         if targeted_data.apply(is_datetime64_any_dtype).all():
+            # The current value is naive, so compare in each column's wall-clock time.
+            targeted_data = targeted_data.apply(lambda column: column.dt.tz_localize(None))
             with suppress(ValueError):
                 current_value = pd.to_datetime(current_value, format="ISO8601")
 

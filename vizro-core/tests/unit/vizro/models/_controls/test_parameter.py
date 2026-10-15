@@ -155,6 +155,16 @@ class TestPreBuildMethod:
         assert parameter.selector.title == title
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
+    def test_set_title_from_several_targets_in_target_order(self):
+        parameter = Parameter(
+            targets=["scatter_chart.y", "bar_chart.y", "scatter_chart.x", "bar_chart.color", "scatter_chart.size"],
+            selector=vm.Dropdown(options=["lifeExp", "pop"]),
+        )
+        model_manager["test_page"].controls = [parameter]
+        parameter.pre_build()
+        assert parameter.selector.title == "y, x, color, size"
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs")
     def test_set_target_wrapped_parameter_valid(self, MockControlWrapper):
         parameter = Parameter(targets=["scatter_chart.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
         model_manager["test_page"].controls = [MockControlWrapper(control=parameter)]
