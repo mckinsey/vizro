@@ -236,7 +236,7 @@ To add a hierarchical filter to your page:
 
         The dashboard renders the "Hierarchical Filter" example.
 
-        ![](../../assets/user_guides/filters/hierarchical_filter.gif)
+        ![](../../assets/user_guides/control/hierarchical_filter.gif)
 
 ## Change selector
 
