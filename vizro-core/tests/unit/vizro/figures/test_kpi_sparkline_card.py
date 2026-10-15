@@ -16,6 +16,7 @@ df = pd.DataFrame(
         "Flat": [5, 5, 5],  # sorted by Date: 5, 5, 5 -> flat trend, sum = 15
         "ZeroStart": [10, 0, 5],  # sorted by Date: 0, 5, 10 -> increasing trend, first value is 0
         "NegativeStart": [-10, -30, -20],  # sorted by Date: -30, -20, -10 -> increasing trend from a negative start
+        "MissingStart": [20, None, 10],  # sorted by Date: NaN, 10, 20 -> increasing trend once NaN is skipped
     }
 )
 
@@ -187,6 +188,26 @@ class TestKPISparklineCard:
             figure=_expected_sparkline_figure("NegativeStart", "area"),
         )
         assert_component_equal(result, expected)
+
+    def test_kpi_sparkline_card_missing_start(self):
+        result = kpi_sparkline_card(
+            data_frame=df, value_column="MissingStart", x_column="Date", value_format="{value} ({delta_relative:+.1%})"
+        )()
+        expected = _expected_card(
+            header=dbc.CardHeader(
+                [html.H4("Sum Missingstart", className="card-kpi-title"), None], className="card-kpi-header"
+            ),
+            value_text="30.0 (+100.0%)",
+            delta_class="color-pos",
+            delta_icon="arrow_circle_up",
+            figure=_expected_sparkline_figure("MissingStart", "area"),
+        )
+        assert_component_equal(result, expected)
+
+    def test_kpi_sparkline_card_missing_start_nullable_integer(self):
+        data_frame = pd.DataFrame({"Date": [1, 2, 3], "Actual": pd.array([None, 10, 20], dtype="Int64")})
+        result = kpi_sparkline_card(data_frame=data_frame, value_column="Actual", x_column="Date")()
+        assert result.children[1].children[0].children == "arrow_circle_up"
 
     def test_value_format_missing_placeholder(self):
         with pytest.raises(
