@@ -318,6 +318,6 @@ You can update an existing notification with the [`update_notification`][vizro.a
 
 [autoclosenotification]: ../../assets/user_guides/notification_actions/auto_close_notification.gif
 [basicnotification]: ../../assets/user_guides/notification_actions/basic_notification.gif
-[customnotification]: ../../assets/user_guides/notification_actions/custom_notification.png
+[customnotification]: ../../assets/user_guides/notification_actions/custom_notification.gif
 [exportnotification]: ../../assets/user_guides/notification_actions/export_notification.gif
 [updatenotification]: ../../assets/user_guides/notification_actions/update_notification.gif
