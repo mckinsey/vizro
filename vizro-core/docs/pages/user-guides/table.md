@@ -99,7 +99,7 @@ By default, pagination is enabled in AG Grid to improve performance and usabilit
         df = px.data.gapminder()
 
         page = vm.Page(
-            title="Dash AG Grid with pagination",
+            title="Dash AG Grid without pagination",
             components=[vm.Table(figure=dash_ag_grid(data_frame=df, dashGridOptions={"pagination": False}))]
         )
 
