@@ -114,7 +114,8 @@ If you would like to specify your dashboard configuration through YAML then you 
 
     === "app.py"
 
-        ```py hl_lines="9"
+        ```py hl_lines="10"
+        from pathlib import Path
         import yaml
 
         from vizro import Vizro
@@ -126,7 +127,7 @@ If you would like to specify your dashboard configuration through YAML then you 
         data_manager["iris"] = pd.read_csv("iris.csv") # (1)!
 
         dashboard = yaml.safe_load(Path("dashboard.yaml").read_text(encoding="utf-8"))
-        dashboard = Dashboard(**dashboard)
+        dashboard = vm.Dashboard(**dashboard)
 
         Vizro().build(dashboard).run()
         ```
@@ -138,14 +139,14 @@ If you would like to specify your dashboard configuration through YAML then you 
         ```yaml hl_lines="5"
         pages:
           - components:
-              figure:
-                _target_: box
-                data_frame: iris # (1)!
-                x: species
-                y: petal_width
-                color: species
-              type: graph
-              title: Static data example
+              - figure:
+                  _target_: box
+                  data_frame: iris # (1)!
+                  x: species
+                  y: petal_width
+                  color: species
+                type: graph
+            title: Static data example
         ```
 
         1. Refer to the `"iris"` data source in the data manager.

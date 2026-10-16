@@ -282,14 +282,15 @@ For more advanced column sizing configurations, you can use the `columnSizeOptio
                 type: table
             controls:
               - selector:
+                  options:
                     # Automatically adjusts column widths
-                  options: [{value: autoSize, label: autoSize},
-                    # Resizes all columns proportionally
-                     {value:responsiveSizeToFit: null, label: responsiveSizeToFit},
+                    - {value: autoSize, label: autoSize}
                     # Combines `sizeToFit` with automatic readjustment of the columns' widths
-                     {value:sizeToFit: null, label: sizeToFit},
+                    - {value: responsiveSizeToFit, label: responsiveSizeToFit}
+                    # Resizes all columns proportionally
+                    - {value: sizeToFit, label: sizeToFit}
                     # Maintains the default column widths
-                     {value: NONE, label:None: null}]
+                    - {value: NONE, label: None}
                   value: responsiveSizeToFit
                   title: Select ColumnSize
                   type: radio_items
