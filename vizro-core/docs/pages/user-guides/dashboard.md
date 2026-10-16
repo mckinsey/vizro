@@ -66,11 +66,7 @@ To create a dashboard:
                 },
                 {
                     "type": "graph",
-                    "figure": px.histogram(
-                        df,
-                        x="sepal_width",
-                        color="species"
-                    ),
+                    "figure": px.histogram(df, x="sepal_width", color="species"),
                 },
             ],
             "controls": [

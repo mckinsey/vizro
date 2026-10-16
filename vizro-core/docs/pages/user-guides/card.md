@@ -284,10 +284,10 @@ An image ALT text offers a description to your image and serves as a text placeh
         from vizro import Vizro
 
         page = vm.Page(
-             title="Placing Images",
-             components=[
-                 vm.Card(
-                     text="""
+            title="Placing Images",
+            components=[
+                vm.Card(
+                    text="""
                      ### My card with image!
 
                      ![continent](assets/images/continents/africa.svg)
@@ -298,9 +298,9 @@ An image ALT text offers a description to your image and serves as a text placeh
 
                       Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
                  """,
-                 ),
-             ],
-         )
+                ),
+            ],
+        )
 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
@@ -370,8 +370,8 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
             title="Styling Images",
             layout=vm.Flex(),  # (1)!
             components=[
-               vm.Card(
-                     text="""
+                vm.Card(
+                    text="""
                      ### My card with image!
 
                      ![](assets/images/continents/europe.svg#my-image)
@@ -382,8 +382,8 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
 
                       Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
                  """
-               ),
-            ]
+                ),
+            ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -451,11 +451,11 @@ To float an image for example to the right of the text, use the `src` attribute 
         from vizro import Vizro
 
         page = vm.Page(
-             title="Floating Images",
-             layout=vm.Flex(),  # (1)!
-             components=[
-                 vm.Card(
-                     text="""
+            title="Floating Images",
+            layout=vm.Flex(),  # (1)!
+            components=[
+                vm.Card(
+                    text="""
                      ### My card with floating image!
 
                      ![](assets/images/continents/europe.svg#my-image)
@@ -472,8 +472,8 @@ To float an image for example to the right of the text, use the `src` attribute 
 
                      Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
                  """,
-                 ),
-             ],
+                ),
+            ],
         )
 
         dashboard = vm.Dashboard(pages=[page])

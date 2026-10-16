@@ -71,9 +71,7 @@ A [`ChatAction`][vizro_experimental.chat.ChatAction]'s `generate_response` can r
                                     value="chart",
                                     children=[
                                         dmc.AccordionControl("Interactive Chart"),
-                                        dmc.AccordionPanel(
-                                            dcc.Graph(figure=fig, style={"height": "400px", "width": "600px"})
-                                        ),
+                                        dmc.AccordionPanel(dcc.Graph(figure=fig, style={"height": "400px", "width": "600px"})),
                                     ],
                                 ),
                                 dmc.AccordionItem(
