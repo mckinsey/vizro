@@ -285,16 +285,22 @@ In a hierarchical [`Filter`][vizro.models.Filter], path mode matches every level
                 type: filter
                 selector:
                   type: cascader
-                  options: options
+                  options:
+                    Asia: [Japan, India]
+                    Europe: [France, Germany, Norway]
+                  full_path: false
               - column:
                   - continent
                   - country
                 type: filter
                 selector:
                   type: cascader
-                  options: options
+                  options:
+                    Asia: [Japan, India]
+                    Europe: [France, Germany, Norway]
                   multi: false
                   value: France
+                  full_path: false
             title: Gapminder 2007
         ```
 
