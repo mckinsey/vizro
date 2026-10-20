@@ -11,6 +11,55 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.63'></a>
+# 0.1.63 — 2026-10-20
+
+## Removed
+
+- Remove the `RangeSlider` model. Use `Slider` with `range=True` instead. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#rangeslider-model). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove the `Layout` model. Use `Grid` instead. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#layout-model). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove the `AgGrid` model and the Dash `DataTable` backing for `Table` (`dash_data_table`). `Table` now renders only a `dash_ag_grid` figure: use `vm.Table(figure=dash_ag_grid(...))`. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#aggrid-model). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove the `set_control` action. Use `set_controls`, whose `controls` argument accepts a single id or a list of ids. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#set_control-action). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove the `filter_interaction` action. Use the more powerful and flexible `set_controls` instead. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#filter_interaction). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove the `Action` model's `inputs` argument. Pass references to runtime inputs directly as arguments of `function`. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#action-model-inputs-argument). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove support for passing static arguments to a custom action. All arguments must now be runtime inputs. Define any static values directly in the function body instead. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#static-argument-for-custom-action). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove support for using the `Action` model to wrap a built-in action. Call the built-in action directly, for example `actions=va.export_data(...)`. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#action-model-for-built-in-action). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove the fallback that let an action specified as a dictionary or in YAML/JSON omit its `type`. Every action must now declare an explicit `type` (for example `type: action` for a custom action, or `type: export_data` for a built-in action), consistent with all other models. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#action-type-required-in-dict-yaml-json). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove the fallback that let a layout specified as a dictionary or in YAML/JSON omit its `type`. Every layout must now declare an explicit `type` (`type: grid` for a `Grid` or `type: flex` for a `Flex`), consistent with all other models. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#layout-type-required-in-dict-yaml-json). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Drop support for Python 3.10. ([#1888](https://github.com/mckinsey/vizro/pull/1888))
+
+## Added
+
+- Add support for Python 3.15. ([#1888](https://github.com/mckinsey/vizro/pull/1888))
+
+## Changed
+
+- The default of `Cascader.full_path` is now `True` (path-mode). Set `full_path=False` explicitly to keep the previous leaf-mode behavior. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#cascader-full_path-default). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+## Fixed
+
+- Fix filters on a datetime column stored as strings rather than `datetime64`, which matched no rows. ([#1882](https://github.com/mckinsey/vizro/pull/1882))
+
+- Fix categorical filters on a column of `datetime.date` objects, which matched no rows. ([#1884](https://github.com/mckinsey/vizro/pull/1884))
+
+- Fix the sign of `delta_relative` in `kpi_card_reference` and `kpi_sparkline_card` when the reference is negative. ([#1886](https://github.com/mckinsey/vizro/pull/1886))
+
+- Fix dynamic date filters on timezone-aware datetime columns. ([#1891](https://github.com/mckinsey/vizro/pull/1891))
+
+- Fix the order of the default title of a `Parameter` with several targets. ([#1893](https://github.com/mckinsey/vizro/pull/1893))
+
+- Fix `kpi_sparkline_card` when the first or last value is missing. ([#1895](https://github.com/mckinsey/vizro/pull/1895))
+
 <a id='changelog-0.1.62'></a>
 # 0.1.62 — 2026-10-02
 
