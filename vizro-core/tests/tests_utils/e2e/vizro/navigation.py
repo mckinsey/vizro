@@ -329,9 +329,12 @@ def select_cascader_path_playwright(page, cascader_id, path_labels, *, multi=Fal
     """Traverse a Cascader tree and select the terminal path using Playwright."""
     page.locator(f"button[id='{cascader_id}']").click()
     page.wait_for_selector(".dash-cascader-content")
+    # Columns beyond the first are now portaled out of `.dash-cascader-columns` as flyouts, so they are
+    # no longer DOM siblings and `:nth-child` can't address them. Each column carries a stable, 0-based
+    # `data-col-idx` instead (column_index here is 1-based).
     for column_index, label in enumerate(path_labels, start=1):
         is_leaf = column_index == len(path_labels)
-        column = page.locator(f".dash-cascader-column:nth-child({column_index})")
+        column = page.locator(f".dash-cascader-column[data-col-idx='{column_index - 1}']")
         rows = column.locator(".dash-cascader-row")
         for i in range(rows.count()):
             row = rows.nth(i)
@@ -344,7 +347,7 @@ def select_cascader_path_playwright(page, cascader_id, path_labels, *, multi=Fal
         else:
             raise ValueError(f"Cascader row '{label}' not found in column {column_index}")
         if not is_leaf:
-            page.wait_for_selector(f".dash-cascader-column:nth-child({column_index + 1}) .dash-cascader-row")
+            page.wait_for_selector(f".dash-cascader-column[data-col-idx='{column_index}'] .dash-cascader-row")
     page.locator("body").click()
 
 
@@ -438,8 +441,11 @@ def close_cascader(driver):
 
 def _click_cascader_row_by_label(driver, column_index, label, *, multi=False):
     """Click a Cascader row (or its leaf checkbox in multi mode) matching `label` in the given column."""
+    # Flyout columns (index > 0) are portaled out of `.dash-cascader-columns`, so they are no longer
+    # DOM siblings; address columns by their stable, 0-based `data-col-idx` instead of `:nth-child`
+    # (column_index here is 1-based).
     rows = driver.driver.find_elements(
-        By.CSS_SELECTOR, f".dash-cascader-column:nth-child({column_index}) .dash-cascader-row"
+        By.CSS_SELECTOR, f".dash-cascader-column[data-col-idx='{column_index - 1}'] .dash-cascader-row"
     )
     for row in rows:
         label_elem = row.find_element(By.CSS_SELECTOR, ".dash-cascader-row-label")
