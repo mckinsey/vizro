@@ -1,3 +1,26 @@
+
+<a id='changelog-0.1.5'></a>
+# 0.1.5 — 2026-10-21
+
+## Removed
+
+- Drop support for Python 3.10. ([#1888](https://github.com/mckinsey/vizro/pull/1888))
+
+## Added
+
+- Added an `llms.txt` index of the documentation, advertised from the docs home page and via a machine-readable `<link>` tag in every page's `<head>`. ([#1762](https://github.com/mckinsey/vizro/pull/1762))
+
+- Add support for Python 3.15. ([#1888](https://github.com/mckinsey/vizro/pull/1888))
+
+## Changed
+
+- Bump `mcp` dependency to `>=2.0.0`. ([#1842](https://github.com/mckinsey/vizro/pull/1842))
+
+- Migrate to the Vizro 1.0.0 API: `Table` (with a `dash_ag_grid` figure) replaces the removed `AgGrid`, `Slider(range=True)` replaces `RangeSlider`, and `set_controls` replaces `set_control`. `get_model_json_schema` now returns migration guidance for models and actions removed in 1.0.0. ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+## Fixed
+
+- Fix `validate_dashboard_config` for local data files on Windows. ([#1897](https://github.com/mckinsey/vizro/pull/1897))
 <a id='changelog-0.1.4'></a>
 
 # 0.1.4 — 2026-02-04
