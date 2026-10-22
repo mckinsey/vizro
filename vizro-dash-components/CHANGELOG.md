@@ -1,4 +1,15 @@
 
+<a id='changelog-0.3.1'></a>
+# 0.3.1 — 2026-10-20
+
+## Removed
+
+- Drop support for Python 3.10. ([#1888](https://github.com/mckinsey/vizro/pull/1888))
+
+## Added
+
+- Add support for Python 3.15. ([#1888](https://github.com/mckinsey/vizro/pull/1888))
+
 <a id='changelog-0.3.0'></a>
 # 0.3.0 — 2026-07-29
 

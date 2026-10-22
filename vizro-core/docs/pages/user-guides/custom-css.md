@@ -257,7 +257,7 @@ It's essential to understand the relationship between the targeted CSS class or 
 
         ```css
         /* Apply styling to parent */
-        .card:has(#custom-card) {
+        #custom-card {
             background-color: white;
         }
 
