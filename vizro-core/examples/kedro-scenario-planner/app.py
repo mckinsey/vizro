@@ -1,5 +1,7 @@
 """Vizro dashboard that parametrizes, runs and explores a Kedro pipeline."""
 
+from functools import cached_property
+
 import vizro.actions as va
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -36,6 +38,22 @@ def run_kedro_scenario(scenario_name, region, categories, min_order_value):
         f"(avg ${result['avg_order_value']:,.0f} per order)."
     )
     return message, ("success", message)
+
+
+@capture("action")
+def validate_load_scenario(selected_rows):
+    """Raises an exception if no scenario is selected in the table."""
+    if not selected_rows:
+        raise Exception("Select a scenario in the table first.", "no_selection")
+
+
+class set_controls_with_no_notifications(va.set_controls):
+    """Selecting a table row sets a hidden control, so a "Controls updated." notification would only confuse."""
+
+    @cached_property
+    def notifications(self):
+        """Disables the default success and error notifications of `set_controls`."""
+        return {"success": None, "error": None}
 
 
 vm.Container.add_type("components", UserInput)
@@ -105,7 +123,8 @@ page = vm.Page(
                 vm.Text(id="pipeline_status", text="Configure a scenario and click 'Run scenario'."),
             ],
             layout=vm.Grid(
-                grid=[[0, 0, 1, 2], [0, 0, 1, 2], [3, 3, 1, 2], [3, 3, 1, 2], [5, 5, 5, -1], [4, -1, -1, -1]]
+                grid=[[0, 0, 1, 2], [0, 0, 1, 2], [3, 3, 1, 2], [3, 3, 1, 2], [5, 5, 5, -1], [4, -1, -1, -1]],
+                row_gap="20px",
             ),
             variant="outlined",
         ),
@@ -118,11 +137,17 @@ page = vm.Page(
                         "scenario_results",
                         dashGridOptions={"rowSelection": {"mode": "singleRow"}},
                     ),
-                    actions=va.set_controls(controls=["scenario_name_param"], value="scenario_name"),
+                    actions=set_controls_with_no_notifications(controls=["scenario_name_param"], value="scenario_name"),
                 ),
                 vm.Button(
                     text="Load Scenario",
-                    actions=va.update_targets(targets=["revenue_chart", "orders_chart"]),
+                    actions=[
+                        vm.Action(
+                            function=validate_load_scenario(selected_rows="scenario_table.selectedRows"),
+                            notifications={"no_selection": "{error_msg}"},
+                        ),
+                        va.update_targets(targets=["revenue_chart", "orders_chart"]),
+                    ],
                 ),
             ],
             layout=vm.Grid(grid=[[0], [0], [1]]),

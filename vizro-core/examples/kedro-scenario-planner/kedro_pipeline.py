@@ -6,6 +6,7 @@ scenario appends one row to `scenario_results` (the Vizro AgGrid's dynamic data 
 writes a per-scenario breakdown CSV (a Vizro dynamic data source parametrized by scenario name).
 """
 
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -150,6 +151,7 @@ def run_scenario(scenario_name: str, region: str, categories: list[str], min_ord
     # so unregistered "free" outputs would not be available in this catalog after the run.
     _register_dataset(catalog, "kpi_row", MemoryDataset())
 
+    time.sleep(2)  # Simulate a long-running pipeline so the progress notification is visible.
     SequentialRunner().run(build_pipeline(), catalog)
     kpi_row = catalog.load("kpi_row")
 
