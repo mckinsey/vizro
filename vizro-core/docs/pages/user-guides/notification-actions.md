@@ -1,3 +1,7 @@
+---
+description: "Show toast notifications with `show_notification` (variants, custom title/icon, auto-close, chaining) and modify them in place with `update_notification`."
+---
+
 # How to use actions to show notifications
 
 This guide shows you how to display notifications and alerts in your dashboard to provide feedback to users about their interactions with the UI.
@@ -61,12 +65,14 @@ To display a notification, call [`show_notification`][vizro.actions.show_notific
               - type: button
                 text: Show notification
                 actions:
-                  type: show_notification
-                  text: This is a default notification!
+                  - type: show_notification
+                    text: This is a default notification!
             title: Basic notification
         ```
 
     === "Result"
+
+        The dashboard renders the "Basic notification" example.
 
         [![BasicNotification]][basicnotification]
 
@@ -124,15 +130,17 @@ By default, notifications use the capitalized variant name as the title (e.g., "
               - type: button
                 text: Download data
                 actions:
-                  type: show_notification
-                  title: Download Complete
-                  text: Your data has been exported successfully
-                  variant: success
-                  icon: download
+                  - type: show_notification
+                    title: Download Complete
+                    text: Your data has been exported successfully
+                    variant: success
+                    icon: download
             title: Custom notification
         ```
 
     === "Result"
+
+        The dashboard renders the "Custom content" example.
 
         [![CustomNotification]][customnotification]
 
@@ -201,21 +209,21 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
               - type: button
                 text: Quick message (2s)
                 actions:
-                  type: show_notification
-                  text: This will disappear quickly
-                  auto_close: 2000
+                  - type: show_notification
+                    text: This will disappear quickly
+                    auto_close: 2000
               - type: button
                 text: Long message (10s)
                 actions:
-                  type: show_notification
-                  text: This message stays longer to ensure you see it
-                  auto_close: 10000
+                  - type: show_notification
+                    text: This message stays longer to ensure you see it
+                    auto_close: 10000
               - type: button
                 text: Manual close
                 actions:
-                  type: show_notification
-                  text: Click the X to close this notification
-                  auto_close: false
+                  - type: show_notification
+                    text: Click the X to close this notification
+                    auto_close: false
             title: Auto-close settings
             layout:
               type: flex
@@ -224,74 +232,9 @@ By default, notifications auto-dismiss after 4 seconds (4000 milliseconds). You 
 
     === "Result"
 
+        The dashboard renders the "Auto-close settings" example.
+
         [![AutoCloseNotification]][autoclosenotification]
-
-### Chain with other actions
-
-Notifications can be chained with other actions to provide user feedback. For example, you can display a success notification after [exporting data](data-actions.md#export-data) to confirm the action completed. [Actions in the `actions` list run sequentially](actions.md#multiple-actions), and the notification will display after the export action completes successfully.
-
-!!! example "Notification with export"
-
-    === "app.py"
-
-        ```{.python pycafe-link hl_lines="15-22"}
-        import vizro.actions as va
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-
-        df = px.data.iris()
-
-        page = vm.Page(
-            title="Export with notification",
-            layout=vm.Flex(),
-            components=[
-                vm.Graph(figure=px.histogram(df, x="sepal_length")),
-                vm.Button(
-                    text="Export data",
-                    actions=[
-                        va.export_data(),
-                        va.show_notification(
-                            text="Data exported successfully!",
-                            variant="success",
-                            icon="download",
-                        ),
-                    ],
-                ),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - components:
-              - type: graph
-                figure:
-                  _target_: histogram
-                  x: sepal_length
-              - type: button
-                text: Export data
-                actions:
-                  - type: export_data
-                  - type: show_notification
-                    text: Data exported successfully!
-                    variant: success
-                    icon: download
-            title: Export with notification
-            layout:
-              type: flex
-        ```
-
-    === "Result"
-
-        [![ExportNotification]][exportnotification]
 
 ## Update existing notification
 
@@ -349,18 +292,18 @@ You can update an existing notification with the [`update_notification`][vizro.a
               - type: button
                 text: Start process
                 actions:
-                  type: show_notification
-                  id: process_status
-                  text: Processing started...
-                  variant: progress
+                  - type: show_notification
+                    id: process_status
+                    text: Processing started...
+                    variant: progress
               - type: button
                 text: Complete process
                 actions:
-                  type: update_notification
-                  notification: process_status
-                  title: Complete
-                  text: Processing finished successfully!
-                  variant: success
+                  - type: update_notification
+                    notification: process_status
+                    title: Complete
+                    text: Processing finished successfully!
+                    variant: success
             title: Update notification example
             layout:
               type: flex
@@ -369,10 +312,12 @@ You can update an existing notification with the [`update_notification`][vizro.a
 
     === "Result"
 
+        The dashboard renders the "Update notification" example.
+
         [![UpdateNotification]][updatenotification]
 
 [autoclosenotification]: ../../assets/user_guides/notification_actions/auto_close_notification.gif
 [basicnotification]: ../../assets/user_guides/notification_actions/basic_notification.gif
-[customnotification]: ../../assets/user_guides/notification_actions/custom_notification.png
+[customnotification]: ../../assets/user_guides/notification_actions/custom_notification.gif
 [exportnotification]: ../../assets/user_guides/notification_actions/export_notification.gif
 [updatenotification]: ../../assets/user_guides/notification_actions/update_notification.gif

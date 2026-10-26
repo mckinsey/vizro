@@ -1,10 +1,14 @@
+---
+description: "Contribute to Vizro: GitHub Codespaces setup, local development with Hatch, PR review requirements, and the code of conduct."
+---
+
 # Contributing
 
 Contributions of all experience levels are welcome! There are many ways to contribute, and we appreciate any help: it doesn't have to be a pull request (PR) on our code. You can also [report a bug](faq.md#how-can-i-report-a-bug), [request a feature](faq.md#how-can-i-request-a-feature), or [ask and answer community questions](faq.md#i-still-have-a-question-where-can-i-ask-it). Before making significant changes to Vizro code, you should first use [GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution.
 
 Our development follows a standard [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow). To be merged, your PR must meet all the following requirements:
 
-- two approving reviews (including a code owner)
+- one approving review
 - Continuous Integration (CI) checks pass
 - code is up-to-date with `main`
 
@@ -79,7 +83,7 @@ This enables you to run, for example, `hr lint` instead of `hatch run lint`. On 
 
 By default, this command runs the dashboard configured in `vizro-core/examples/scratch_dev/app.py`. This dashboard is used as a temporary "scratch" playground during development. It's the perfect place to show, or test out, a new feature you're developing.
 
-You can run any example in `vizro-core/examples` or its subdirectories by running `hatch run example <example_path>`, where `<example_path>` is the path to the directory containing the `app.py` file relative to `vizro-core/examples`. For example, `hatch run example dev` runs a dashboard located at `vizro-core/examples/dev/app.py`. This dashboard demonstrates a full set of Vizro features and is also [hosted on Hugging Face](https://huggingface.co/spaces/vizro/demo-features).
+You can run any example in `vizro-core/examples` or its subdirectories by passing its path (relative to `vizro-core/examples`) as an argument. For example, `hatch run example dev` runs the dashboard located at `vizro-core/examples/dev/app.py`. This dashboard demonstrates a full set of Vizro features and is also [hosted on Hugging Face](https://huggingface.co/spaces/vizro/demo-features).
 
 Examples are run with the following settings:
 
@@ -120,10 +124,10 @@ Tests are handled using [pytest](https://docs.pytest.org/) and arguments are pas
 hatch run test-unit --last-failed
 ```
 
-In CI, we test across multiple Python versions and also [check for code coverage](https://coverage.readthedocs.io/). If required, you can also run this locally. For example, to run unit tests with Python 3.13 and check for code coverage, you would run:
+In CI, we test across multiple Python versions and also [check for code coverage](https://coverage.readthedocs.io/). If required, you can also run this locally. For example, to run unit tests with Python 3.14 and check for code coverage, you would run:
 
 ```console
-hatch run all.py3.13:test-unit-coverage
+hatch run all.py3.14:test-unit-coverage
 ```
 
 In addition to running unit tests with code coverage, CI also performs the following checks:

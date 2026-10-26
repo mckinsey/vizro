@@ -2,7 +2,7 @@ import e2e.vizro.constants as cnst
 import pandas as pd
 
 import vizro.models as vm
-from vizro.actions import set_control
+from vizro.actions import set_controls
 from vizro.figures import kpi_card, kpi_card_reference
 
 kpi_df = pd.DataFrame(
@@ -99,7 +99,7 @@ kpi_indicators_page = vm.Page(
                 title="Icon III",
                 agg_func="median",
             ),
-            actions=set_control(control="kpi_filter", value="B"),
+            actions=set_controls(controls=["kpi_filter"], value="B"),
         ),
         # Style 4: Reference value and reverse coloring
         vm.Figure(
@@ -120,7 +120,7 @@ kpi_indicators_page = vm.Page(
                 title="Ref. Value (neg-reverse)",
                 reverse_color=True,
             ),
-            actions=set_control(control="kpi_filter", value="C"),
+            actions=set_controls(controls=["kpi_filter"], value="C"),
         ),
     ],
     controls=[

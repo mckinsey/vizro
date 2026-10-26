@@ -11,6 +11,7 @@ from vizro.actions import export_data, show_notification, update_notification
 from vizro.models import Action, Button, VizroBaseModel
 from vizro.models.types import (
     CapturedCallable,
+    _coerce_actions_to_list,
     _coerce_to_list,
     _normalize_action_notifications,
     _validate_captured_callable,
@@ -431,16 +432,26 @@ class TestCoerceActionsAndOutputsType:
         ],
     )
     def test_coerce_actions_type(self, actions_input):
-        """Test that _coerce_to_list works correctly for actions (preserves lists only)."""
-        result = _coerce_to_list(actions_input)
+        """Test that _coerce_actions_to_list works correctly for actions (preserves lists only)."""
+        result = _coerce_actions_to_list(actions_input)
         expected = actions_input if isinstance(actions_input, list) else [actions_input]
         assert result == expected
+
+    def test_coerce_actions_type_none(self):
+        """Test that _coerce_actions_to_list treats None as "no actions", unlike _coerce_to_list."""
+        assert _coerce_actions_to_list(None) == []
 
     def test_coerce_actions_type_integration(self):
         """Test that single actions work with actual components."""
         action = export_data()
         button = Button(actions=action)
         assert button.actions == [action]
+
+    def test_coerce_actions_type_none_integration(self):
+        """Test that actions=None works with actual components and is equivalent to actions=[]."""
+        button = Button(actions=None)
+        assert button.actions == []
+        assert "actions" in button.model_fields_set
 
     @pytest.mark.parametrize(
         "output, expected_output",

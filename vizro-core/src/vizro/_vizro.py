@@ -5,7 +5,7 @@ import warnings
 from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path, PurePosixPath
-from typing import TYPE_CHECKING, Any, TypedDict, cast
+from typing import TYPE_CHECKING, Any, Self, TypedDict, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -14,7 +14,6 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback, 
 from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
 from packaging.version import parse
-from typing_extensions import Self
 
 import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
@@ -70,7 +69,7 @@ class Vizro:
         """Initialize a Vizro app.
 
         Abstract: Usage documentation
-            [How to run or deploy a dashboard](user-guides/run-deploy/#advanced-dockerfile-configuration)
+            [How to run or deploy a dashboard](../user-guides/run-deploy.md#advanced-dockerfile-configuration)
 
         Keyword Arguments:
             **kwargs: Arbitrary keyword arguments passed through to `Dash`, for example `assets_folder`,
@@ -152,7 +151,7 @@ class Vizro:
         """Builds the `dashboard`.
 
         Abstract: Usage documentation
-            [How to create a dashboard](user-guides/dashboard.md)
+            [How to create a dashboard](../user-guides/dashboard.md)
 
         Args:
             dashboard (Dashboard): configured dashboard model.
@@ -201,7 +200,7 @@ class Vizro:
                 arguments
 
         Abstract: Usage documentation
-            [How to develop in Python script](user-guides/run-deploy.md#develop-in-python-script)
+            [How to develop in Python script](../user-guides/run-deploy.md#develop-in-python-script)
         """
         data_manager._frozen_state = True
         model_manager._frozen_state = True
@@ -290,7 +289,7 @@ Provide a valid import path for these in your dashboard configuration."""
         )
         # Log control resets. Registered once globally (not per page) since reset-button and vizro_logs_store are
         # shared ids. Matches the action log format ("=====" wrapping and HH:MM:SS.mmm timestamp) for consistency;
-        # any on-page-load actions the reset triggers afterwards produce their own "=====" entries. optional=True
+        # the reset-controls refresh action the button triggers afterwards produces its own "=====" entry. optional=True
         # no-ops this when there are no controls (reset-button absent). A plain array assignment is used because
         # clientside callbacks can't use Patch();
         clientside_callback(
@@ -307,6 +306,8 @@ Provide a valid import path for these in your dashboard configuration."""
     @staticmethod
     def _pre_build():
         """Runs pre_build method on all models in the model_manager."""
+        from vizro.models._controls._controls_utils import finalize_control_sync_chains
+
         # Note that a pre_build method can itself add a model, for example an Action, to the model manager. We need to
         # iterate through set(model_manager) rather than model_manager itself or we loop through something that
         # changes size.
@@ -326,6 +327,11 @@ Provide a valid import path for these in your dashboard configuration."""
             model = model_manager[model_id]
             if hasattr(model, "pre_build") and not isinstance(model, Filter):
                 model.pre_build()
+
+        # All controls are now pre-built (figure targets and control-sync edges are final), so collapse each same-page
+        # control-sync mesh into a single set_controls + update_targets (two HTTP requests). This must run after both
+        # loops above because it needs every synced control's finalized targets. See finalize_control_sync_chains.
+        finalize_control_sync_chains()
 
     def __call__(self, environ: WSGIEnvironment, start_response: StartResponse) -> Iterable[bytes]:
         """Implements WSGI application interface.

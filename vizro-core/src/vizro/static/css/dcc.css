@@ -21,24 +21,30 @@
 }
 
 .dash-dropdown-search-container {
-  background: var(--bs-dropdown-bg);
-  border: 1px solid var(--bs-border-color);
+  background: var(--bs-dropdown-bg-color);
+  border: none;
   border-radius: var(--bs-border-radius);
-  margin: 4px 8px;
+  margin: 2px;
   padding: 2px 4px;
+  top: 0;
 }
 
 .dash-dropdown-search-container:focus-within {
-  border-color: var(--bs-focus-ring-color);
+  border: 1px solid var(--bs-focus-ring-color);
   outline: none;
 }
 
 /* Dropdown menu */
-.dash-dropdown-content {
-  background: var(--bs-dropdown-bg);
+.dash-dropdown-content,
+.dash-cascader-column-flyout {
+  background: var(--bs-dropdown-bg-color);
   border-radius: var(--bs-border-radius);
   box-shadow: none;
   padding-bottom: 4px;
+}
+
+.dash-cascader-column-flyout {
+  padding-bottom: 0;
 }
 
 /* Dropdown & Cascader Checkboxes */
@@ -173,18 +179,6 @@
 .dropdown-plain.focus {
   border-bottom: 1px solid var(--bs-focus-ring-color);
   box-shadow: none;
-}
-
-#right-side .dash-dropdown {
-  background: var(--bs-primary-bg-subtle);
-}
-
-#right-side .dash-dropdown-content {
-  background: var(--bs-primary-bg-subtle);
-}
-
-#right-side .dash-dropdown-search-container {
-  background: var(--bs-primary-bg-subtle);
 }
 
 /* SLIDER / RANGE SLIDER  ------------------------------------------------------------ */

@@ -40,7 +40,7 @@ custom_components_page = vm.Page(
         vm.Filter(
             column="sepal_length",
             targets=[cnst.SCATTER_CUSTOM_COMPONENTS_ID],
-            selector=RangeSliderNonCross(id=cnst.CUSTOM_RANGE_SLIDER_ID, step=1.0),
+            selector=RangeSliderNonCross(range=True, id=cnst.CUSTOM_RANGE_SLIDER_ID, step=1.0),
         ),
     ],
 )

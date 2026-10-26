@@ -347,7 +347,7 @@ def complete_dashboard():
             vm.Card(text="Foo"),
             vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
             vm.Graph(figure=chart(data_frame="iris")),
-            vm.AgGrid(figure=dash_ag_grid(data_frame="iris")),
+            vm.Table(figure=dash_ag_grid(data_frame="iris")),
             vm.Figure(
                 figure=kpi_card(
                     data_frame="iris",
@@ -515,7 +515,7 @@ model = vm.Dashboard(
                     figure=px.bar(data_frame="iris", x="sepal_width", y="sepal_length")
                 ),
                 vm.Graph(figure=chart(data_frame="iris")),
-                vm.AgGrid(figure=vt.dash_ag_grid(data_frame="iris")),
+                vm.Table(figure=vt.dash_ag_grid(data_frame="iris")),
                 vm.Figure(
                     figure=vf.kpi_card(
                         data_frame="iris",

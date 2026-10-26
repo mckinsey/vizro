@@ -1,10 +1,9 @@
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, Self
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
 from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, model_validator
 from pydantic.json_schema import SkipJsonSchema
-from typing_extensions import Self
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._models_utils import _log_call, make_actions_chain, validate_icon
@@ -16,7 +15,7 @@ class Button(VizroBaseModel):
     """Button that can trigger actions or navigate.
 
     Abstract: Usage documentation
-        [How to use buttons](user-guides/button.md)
+        [How to use buttons](../user-guides/button.md)
 
     """
 

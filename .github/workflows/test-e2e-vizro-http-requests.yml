@@ -17,7 +17,7 @@ on:
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
-  PYTHON_VERSION: "3.13"
+  PYTHON_VERSION: "3.14"
 
 jobs:
   test-e2e-vizro-http-requests:
@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install Hatch
@@ -34,6 +34,8 @@ jobs:
         run: |
           hatch run pip install playwright
           hatch run playwright install --with-deps chromium
+      - name: Show dependency tree
+        run: hatch run pip tree
       - name: Run tests
         run: |
           hatch run test-e2e-vizro-http-requests

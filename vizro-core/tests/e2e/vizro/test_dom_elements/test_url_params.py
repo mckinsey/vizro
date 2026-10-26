@@ -4,9 +4,13 @@ from e2e.asserts import decode_url_params, encode_url_params, get_url_params, pa
 from e2e.vizro.checkers import check_selected_categorical_component, check_selected_dropdown
 from e2e.vizro.navigation import (
     accordion_select,
+    clear_cascader_multi,
     clear_dropdown,
     page_select,
+    select_cascader_path,
     select_dropdown_value,
+    select_range_datetime_picker_value,
+    select_range_time_picker_value,
     select_slider_value,
 )
 from e2e.vizro.paths import (
@@ -263,6 +267,109 @@ def test_url_params_encoding_and_page_refresh_datepicker(dash_br):
     # check url params still the same
     url_params_dict = get_url_params(dash_br)
     assert_that(url_params_dict, equal_to(enc_data))
+
+
+def test_url_params_encoding_and_page_refresh_timepicker(dash_br):
+    """Verifies that URL params for timepicker are correctly encoded and restored after a page refresh."""
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.TIMEPICKER_RANGE_PAGE,
+        page_path=cnst.TIMEPICKER_RANGE_PAGE_PATH,
+    )
+    # only the time_hh_mm_ss range filter has show_in_url=True on the timepicker range page
+    select_range_time_picker_value(
+        dash_br,
+        elem_id=cnst.TIMEPICKER_TIME_HH_MM_SS_RANGE_ID,
+        start_hour="10",
+        start_minute="43",
+        end_hour="10",
+        end_minute="44",
+    )
+    # range TimePicker values are serialized as ["HH:MM", "HH:MM"] in the URL
+    selected_params = {cnst.TIMEPICKER_TIME_HH_MM_SS_RANGE_FILTER_CONTROL_ID: ["10:43", "10:44"]}
+    enc_data = encode_url_params(selected_params, apply_on_keys=cnst.TIMEPICKER_TIME_HH_MM_SS_RANGE_FILTER_CONTROL_ID)
+    url_params_dict = get_url_params(dash_br)
+    assert_that(url_params_dict, equal_to(enc_data))
+    # refresh the page
+    dash_br.driver.refresh()
+    # check url params still the same
+    url_params_dict = get_url_params(dash_br)
+    assert_that(url_params_dict, equal_to(enc_data))
+
+
+def test_url_params_encoding_and_page_refresh_datetimepicker(dash_br):
+    """Verifies that URL params for datetimepicker are correctly encoded and restored after a page refresh."""
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.DATETIMEPICKER_RANGE_URL_PAGE,
+        page_path=cnst.DATETIMEPICKER_RANGE_URL_PAGE_PATH,
+        graph_check=False,
+    )
+    # only the datetime_utc url range filter has show_in_url=True on the datetimepicker range url page
+    select_range_datetime_picker_value(
+        dash_br,
+        elem_id=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_URL_ID,
+        start=("2026-06-10", "04", "34"),
+        end=("2026-06-10", "05", "00"),
+    )
+    # range DateTimePicker values are serialized as ["YYYY-MM-DDTHH:MM", "YYYY-MM-DDTHH:MM"] in the URL
+    selected_params = {
+        cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_FILTER_CONTROL_ID: ["2026-06-10T04:34", "2026-06-10T05:00"]
+    }
+    enc_data = encode_url_params(
+        selected_params, apply_on_keys=cnst.DATETIMEPICKER_DATETIME_UTC_RANGE_FILTER_CONTROL_ID
+    )
+    url_params_dict = get_url_params(dash_br)
+    assert_that(url_params_dict, equal_to(enc_data))
+    # refresh the page
+    dash_br.driver.refresh()
+    # check url params still the same
+    url_params_dict = get_url_params(dash_br)
+    assert_that(url_params_dict, equal_to(enc_data))
+
+
+def test_url_params_encoding_and_page_refresh_cascader_leaf_multi(dash_br):
+    """Verifies multi leaf-mode Cascader URL params are encoded and restored after refresh."""
+    accordion_select(dash_br, accordion_name=cnst.CASCADER_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.CASCADER_LEAF_PAGE,
+        page_path=cnst.CASCADER_LEAF_PAGE_PATH,
+        graph_check=False,
+    )
+    clear_cascader_multi(dash_br, cnst.CASCADER_LEAF_MULTI_ID)
+    select_cascader_path(dash_br, cnst.CASCADER_LEAF_MULTI_ID, ["Americas", "South", "Brazil"], multi=True)
+    select_cascader_path(dash_br, cnst.CASCADER_LEAF_MULTI_ID, ["Asia", "South", "Japan"], multi=True)
+
+    selected_params = {cnst.CASCADER_LEAF_MULTI_FILTER_CONTROL_ID: ["Brazil", "Japan"]}
+    enc_data = encode_url_params(selected_params, apply_on_keys=cnst.CASCADER_LEAF_MULTI_FILTER_CONTROL_ID)
+    assert_that(get_url_params(dash_br), equal_to(enc_data))
+    dash_br.driver.refresh()
+    assert_that(get_url_params(dash_br), equal_to(enc_data))
+
+
+def test_url_params_encoding_and_page_refresh_cascader_path_multi(dash_br):
+    """Verifies multi path-mode Cascader URL params are encoded and restored after refresh."""
+    accordion_select(dash_br, accordion_name=cnst.CASCADER_ACCORDION)
+    page_select(
+        dash_br,
+        page_name=cnst.CASCADER_PATH_PAGE,
+        page_path=cnst.CASCADER_PATH_PAGE_PATH,
+        graph_check=False,
+    )
+    clear_cascader_multi(dash_br, cnst.CASCADER_PATH_MULTI_ID)
+    select_cascader_path(dash_br, cnst.CASCADER_PATH_MULTI_ID, ["Oregon", "Portland"], multi=True)
+    select_cascader_path(dash_br, cnst.CASCADER_PATH_MULTI_ID, ["Maine", "Portland"], multi=True)
+
+    selected_params = {
+        cnst.CASCADER_PATH_MULTI_FILTER_CONTROL_ID: [["Oregon", "Portland"], ["Maine", "Portland"]],
+    }
+    enc_data = encode_url_params(selected_params, apply_on_keys=cnst.CASCADER_PATH_MULTI_FILTER_CONTROL_ID)
+    assert_that(get_url_params(dash_br), equal_to(enc_data))
+    dash_br.driver.refresh()
+    assert_that(get_url_params(dash_br), equal_to(enc_data))
 
 
 def test_url_params_encoding_and_page_refresh_switch(dash_br):

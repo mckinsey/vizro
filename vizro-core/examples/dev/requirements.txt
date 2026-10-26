@@ -10,7 +10,7 @@ blinker==1.9.0
     # via flask
 cachelib==0.13.0
     # via flask-caching
-certifi==2025.11.12
+certifi==2026.10.19
     # via requests
 charset-normalizer==3.4.4
     # via requests
@@ -25,7 +25,7 @@ dash==4.0.0
     #   dash-mantine-components
     #   vizro
     #   vizro-dash-components
-dash-ag-grid==33.3.3
+dash-ag-grid==35.3.0
     # via vizro
 dash-bootstrap-components==2.0.4
     # via vizro
@@ -102,8 +102,6 @@ requests==2.33.0
     # via dash
 retrying==1.4.2
     # via dash
-setuptools==82.0.1
-    # via dash
 six==1.17.0
     # via python-dateutil
 typing-extensions==4.15.0
@@ -116,13 +114,13 @@ typing-inspection==0.4.2
     # via pydantic
 tzdata==2025.3
     # via pandas
-urllib3==2.6.2
+urllib3==2.8.0
     # via requests
-vizro==0.1.54
+vizro==0.1.62
     # via -r requirements.in
-vizro-dash-components==0.1.0
+vizro-dash-components==0.3.0
     # via vizro
-werkzeug==3.1.6
+werkzeug==3.1.9
     # via
     #   dash
     #   flask

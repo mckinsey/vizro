@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
 ### Cascader
 
-Hierarchical cascading dropdown inspired by [Ant Design Cascader](https://ant.design/components/cascader) and [`fac.AntdCascader`](https://fac.feffery.tech/AntdCascader). Users navigate a tree of options via side-by-side panels and select leaves (each returned as its full root-to-leaf path). Supports single-select and multi-select. It accepts all the same arguments as [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown) (for example `className`, `style`, `clearable`, `searchable`, `search_value`, `placeholder`, `disabled`, `multi`, `optionHeight`, `maxHeight`, `debounce`, `closeOnSelect`, `labels`, and persistence props) and is built to visually match it. Use `help(vdc.Cascader)` for the full list.
+Hierarchical cascading dropdown inspired by [Ant Design Cascader](https://ant.design/components/cascader) and [`fac.AntdCascader`](https://fac.feffery.tech/AntdCascader). Users navigate a tree of options via side-by-side panels and select leaves. Supports single-select and multi-select, and two value modes selected by `full_path` (see [`value` format](#value-format) below). It accepts all the same arguments as [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown) (for example `className`, `style`, `clearable`, `searchable`, `search_value`, `placeholder`, `disabled`, `multi`, `optionHeight`, `maxHeight`, `debounce`, `closeOnSelect`, `labels`, and persistence props) and is built to visually match it. Use `help(vdc.Cascader)` for the full list.
 
 #### `options` format
 
@@ -58,7 +58,12 @@ Hierarchical cascading dropdown inspired by [Ant Design Cascader](https://ant.de
     - `dcc.Dropdown`: a list of dicts, each with `label` and `value`, plus optional keys such as `disabled` and `search`.
     - `vdc.Cascader`: a list of dicts, each with `label` and `value`, plus optional keys such as `disabled` and `search`. Parents also have `children`, a list of child dicts; leaves omit `children`.
 
-The `vdc.Cascader` component’s `value` is the full root-to-leaf **path**: a list of node `value`s from the root down to the selected leaf, for example `["Europe", "France", "Paris"]`. When `multi=True` it is a list of such paths, for example `[["Europe", "France", "Paris"], ["Asia", "Japan", "Tokyo"]]`. Because paths are used, duplicate leaf labels in different branches (for example a `"Portland"` under both `"Oregon"` and `"Maine"`) are addressed unambiguously.
+#### `value` format
+
+The shape of `value` depends on the `full_path` prop (default `False`):
+
+- **Leaf mode (`full_path=False`, default)**: `value` is the bare leaf scalar, for example `"Paris"`; when `multi=True` it is a list of leaf scalars, for example `["Paris", "Tokyo"]`. Leaf `value`s must be unique across the whole tree — a duplicate leaf `value` under two branches is ambiguous in this mode (the component logs a console error). This is a constraint on `value`, not `label`: two leaves may share a `label` as long as their `value`s differ.
+- **Path mode (`full_path=True`)**: `value` is the full root-to-leaf **path**: a list of node `value`s from the root down to the selected leaf, for example `["Europe", "France", "Paris"]`; when `multi=True` it is a list of such paths, for example `[["Europe", "France", "Paris"], ["Asia", "Japan", "Tokyo"]]`. Because paths are used, duplicate leaf `value`s in different branches (for example a `"Portland"` under both `"Oregon"` and `"Maine"`) are addressed unambiguously.
 
 ```python
 from dash import Dash, Input, Output, html
@@ -115,8 +120,9 @@ app.layout = [
 
 @app.callback(Output("out", "children"), Input("regions", "value"))
 def show(value):
-    # `value` is the full path, for example ["Asia", "Japan", "Tokyo"].
-    return f"Selected path: {value!r}"
+    # Default leaf mode: `value` is the bare leaf, for example "Tokyo".
+    # Pass full_path=True to get the full path instead, for example ["Asia", "Japan", "Tokyo"].
+    return f"Selected: {value!r}"
 
 
 if __name__ == "__main__":

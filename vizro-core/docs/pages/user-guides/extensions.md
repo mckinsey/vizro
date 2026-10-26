@@ -1,3 +1,7 @@
+---
+description: "Four ways to extend Vizro: model customizations (`@capture`), raw Dash callbacks and components, CSS overrides, and React.js customizations."
+---
+
 # How to extend and customize Vizro dashboards
 
 At its simplest, Vizro enables low-code configuration, but you can also customize it to go beyond its default capabilities by incorporating any Dash component, Dash callback, or Plotly chart.
@@ -20,7 +24,7 @@ You can create custom chart functions in Vizro by wrapping Plotly chart code ins
 
 ### [Custom tables](custom-tables.md)
 
-If the available arguments for the [`dash_ag_grid`][vizro.tables.dash_ag_grid] or [`dash_data_table`][vizro.tables.dash_data_table] models are insufficient, you can create a custom Dash AG Grid or Dash DataTable.
+If the available arguments for the [`dash_ag_grid`][vizro.tables.dash_ag_grid] figure are insufficient, you can create a custom Dash AG Grid.
 
 ### [Custom components](custom-components.md)
 
@@ -131,7 +135,7 @@ You can use this method when you want to check if the dashboard configuration is
                 "title": "Page 1",
                 "components": [
                     {
-                        "type": "ag_grid",
+                        "type": "table",
                         "figure": {"_target_": "llm_generated_grid", "data_frame": "iris"},
                     },
                 ],

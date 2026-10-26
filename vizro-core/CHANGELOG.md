@@ -11,6 +11,145 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-1.0.0'></a>
+# 1.0.0 — 2026-10-20
+
+## Removed
+
+- Remove the `RangeSlider` model. Use `Slider` with `range=True` instead. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#rangeslider-model). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove the `Layout` model. Use `Grid` instead. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#layout-model). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove the `AgGrid` model and the Dash `DataTable` backing for `Table` (`dash_data_table`). `Table` now renders only a `dash_ag_grid` figure: use `vm.Table(figure=dash_ag_grid(...))`. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#aggrid-model). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove the `set_control` action. Use `set_controls`, whose `controls` argument accepts a single id or a list of ids. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#set_control-action). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove the `filter_interaction` action. Use the more powerful and flexible `set_controls` instead. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#filter_interaction). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove the `Action` model's `inputs` argument. Pass references to runtime inputs directly as arguments of `function`. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#action-model-inputs-argument). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove support for passing static arguments to a custom action. All arguments must now be runtime inputs. Define any static values directly in the function body instead. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#static-argument-for-custom-action). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove support for using the `Action` model to wrap a built-in action. Call the built-in action directly, for example `actions=va.export_data(...)`. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#action-model-for-built-in-action). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove the fallback that let an action specified as a dictionary or in YAML/JSON omit its `type`. Every action must now declare an explicit `type` (for example `type: action` for a custom action, or `type: export_data` for a built-in action), consistent with all other models. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#action-type-required-in-dict-yaml-json). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Remove the fallback that let a layout specified as a dictionary or in YAML/JSON omit its `type`. Every layout must now declare an explicit `type` (`type: grid` for a `Grid` or `type: flex` for a `Flex`), consistent with all other models. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#layout-type-required-in-dict-yaml-json). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+- Drop support for Python 3.10. ([#1888](https://github.com/mckinsey/vizro/pull/1888))
+
+## Added
+
+- Add support for Python 3.15. ([#1888](https://github.com/mckinsey/vizro/pull/1888))
+
+## Changed
+
+- The default of `Cascader.full_path` is now `True` (path-mode). Set `full_path=False` explicitly to keep the previous leaf-mode behavior. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/#cascader-full_path-default). ([#1877](https://github.com/mckinsey/vizro/pull/1877))
+
+## Fixed
+
+- Fix filters on a datetime column stored as strings rather than `datetime64`, which matched no rows. ([#1882](https://github.com/mckinsey/vizro/pull/1882))
+
+- Fix categorical filters on a column of `datetime.date` objects, which matched no rows. ([#1884](https://github.com/mckinsey/vizro/pull/1884))
+
+- Fix the sign of `delta_relative` in `kpi_card_reference` and `kpi_sparkline_card` when the reference is negative. ([#1886](https://github.com/mckinsey/vizro/pull/1886))
+
+- Fix dynamic date filters on timezone-aware datetime columns. ([#1891](https://github.com/mckinsey/vizro/pull/1891))
+
+- Fix the order of the default title of a `Parameter` with several targets. ([#1893](https://github.com/mckinsey/vizro/pull/1893))
+
+- Fix `kpi_sparkline_card` when the first or last value is missing. ([#1895](https://github.com/mckinsey/vizro/pull/1895))
+
+<a id='changelog-0.1.62'></a>
+# 0.1.62 — 2026-10-02
+
+## Added
+
+- `Slider` now accepts `range=True` to render a two-handle range slider, replacing `RangeSlider`. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+- Add the `set_controls` action, which sets one or more controls from `controls` (a single id or a list of ids). It replaces `set_control`. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+- `Table` now renders an interactive Dash AG Grid when given a `dash_ag_grid` figure (`vm.Table(figure=dash_ag_grid(...))`). This replaces `AgGrid`. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+## Deprecated
+
+- `RangeSlider` is deprecated and will be removed in Vizro `1.0.0`. Use `Slider` with `range=True` instead. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+- `set_control` is deprecated and will be removed in Vizro `1.0.0`. Use `set_controls` with `controls` as a list of ids instead. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+- The default of `Cascader.full_path` will change from `False` to `True` in Vizro `1.0.0`. Set `full_path` explicitly to avoid a change in behavior. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+- `AgGrid` is deprecated and will be removed in Vizro `1.0.0`. Use `Table` with a `dash_ag_grid` figure instead (`vm.Table(figure=dash_ag_grid(...))`). ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+- The Dash DataTable backing for `Table` (via `dash_data_table`) is deprecated and will be removed in Vizro `1.0.0`. Use a `dash_ag_grid` figure instead. ([#1869](https://github.com/mckinsey/vizro/pull/1869))
+
+<a id='changelog-0.1.61'></a>
+# 0.1.61 — 2026-10-01
+
+## Highlights ✨
+
+- Keep controls in sync: a `Filter` or `Parameter` can now list another control's `id` in its `targets` so that changing one control automatically applies the same value to the other. The synced control can be on the same page or on a different page, making it possible to build dashboard-wide "global controls". See the [user guide on syncing controls](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls/#sync-controls) for more details. ([#1723](https://github.com/mckinsey/vizro/pull/1723))
+
+- Introduce the public `update_targets` action to refresh a page's figures and dynamic filters on demand, for example to apply controls together on a `Button` click. See the [user guide on applying controls with a button](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls/#apply-controls-with-a-button) for more details. ([#1538](https://github.com/mckinsey/vizro/pull/1538))
+
+## Added
+
+- Drill-through (a `set_control` triggered from a figure or component such as `Graph`, `AgGrid`, `Button` or `Card`) can now target a control on a different page without that control needing `show_in_url=True`. ([#1723](https://github.com/mckinsey/vizro/pull/1723))
+
+- The `set_control` action can now target multiple controls at once: pass a list of control ids to `control`. A single action sets them all (one callback and one confirmation notification). ([#1723](https://github.com/mckinsey/vizro/pull/1723))
+
+- Built-in actions now show default notifications: `export_data` shows a progress notification that is replaced by a success notification when the file is ready, and `set_control` confirms with a success notification. Any failure shows an action-specific error notification. ([#1843](https://github.com/mckinsey/vizro/pull/1843))
+
+- Add `kpi_sparkline_card` figure to display a KPI value alongside a trend sparkline chart. ([#1866](https://github.com/mckinsey/vizro/pull/1866))
+
+- Add optional `units` argument to `kpi_card` and `kpi_card_reference` to display a unit label (for example `"%"` or `"kg"`) after the value. ([#1854](https://github.com/mckinsey/vizro/pull/1854))
+
+- Add optional `size` argument to `kpi_card` and `kpi_card_reference` to control the card's size (`"compact"`, `"default"` or `"large"`). ([#1854](https://github.com/mckinsey/vizro/pull/1854))
+
+- Enable the date portion of `DateTimePicker` to update dynamically when used in a [dynamic filter](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#filters): its `min` and `max` now refresh to the overall date range found in the data on every reload, like `DatePicker`. The time-of-day portion remains static. ([#1872](https://github.com/mckinsey/vizro/pull/1872))
+
+- Added agent-friendly Markdown versions of the documentation, including per-page files, a full documentation bundle, and individual model API references. ([#1857](https://github.com/mckinsey/vizro/pull/1857))
+
+## Changed
+
+- Redesigned dashboard navigation UI with updated positions for the reset controls, collapse, and theme toggle buttons. ([#1806](https://github.com/mckinsey/vizro/pull/1806))
+
+- Syncing controls on the same page now always resolves in exactly two HTTP requests, no matter how many controls and figures are in the sync mesh, instead of cascading into extra requests per synced control. ([#1868](https://github.com/mckinsey/vizro/pull/1868))
+
+## Fixed
+
+- Fix that defined `Page.actions` are now respected and run when the page opens, instead of being silently replaced by the automatic on-page-load refresh. Include `va.update_targets()` in the chain to keep refreshing figures, or set `actions=[]` to disable the automatic refresh (for example to defer loading expensive data). See [more examples of actions when page loads](https://vizro.readthedocs.io/en/stable/pages/user-guides/page-actions.md). ([#1863](https://github.com/mckinsey/vizro/pull/1863))
+
+- Fix that setting a `Filter` / `Parameter` selector's `actions=None` opts out of the default "refresh on change" behavior instead of being overwritten with it. The control's value is still applied whenever its targets are refreshed by something else (for example a `Button` running `update_targets`). See the [user guide on applying controls with a button](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls/#apply-controls-with-a-button) for more details. ([#1538](https://github.com/mckinsey/vizro/pull/1538))
+
+- Fixed `set_control` targeting a `TimePicker(range=True)` or `DateTimePicker(range=True)` control so it now triggers that control's actions (e.g. its `update_targets`), matching every other selector. ([#1723](https://github.com/mckinsey/vizro/pull/1723))
+
+- Fix time filters raising on a time-of-day column that is not `datetime64`, such as one holding `datetime.time` objects or `"HH:MM"` strings, or containing nulls. ([#1837](https://github.com/mckinsey/vizro/pull/1837))
+
+- Fix `Slider` and `RangeSlider` raising a `TypeError` when `step` and `max` are set without `min`. ([#1838](https://github.com/mckinsey/vizro/pull/1838))
+
+- Building a single-select selector (`RadioItems`, or `Dropdown(multi=False)`) with no options no longer raises `IndexError`. ([#1849](https://github.com/mckinsey/vizro/pull/1849))
+
+<a id='changelog-0.1.60'></a>
+# 0.1.60 — 2026-07-30
+
+## Highlights ✨
+
+- Introduce `DateTimePicker` as a new selector for `Filter` and `Parameter`. See the [user guide on selectors](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/) for more details. ([#1805](https://github.com/mckinsey/vizro/pull/1805))
+
+## Added
+
+- Add Vizro actions log to Dash DevTools debug panel when `debug=True`. ([#1782](https://github.com/mckinsey/vizro/pull/1782))
+
+- `Cascader` filters update automatically when underlying dynamic data changes. ([#1788](https://github.com/mckinsey/vizro/pull/1788))
+
+- `Cascader` gains a `full_path` attribute (default `full_path=False`, leaf mode). Set `full_path=True` on `Cascader` to enable path mode: a selection becomes a full root-to-leaf path (single-select) or a list of paths (multi-select), allowing duplicate leaf labels across branches. ([#1793](https://github.com/mckinsey/vizro/pull/1793))
+
+
+## Changed
+
+- Update vizro-bootstrap stylesheet based on QBDS token updates. ([#1779](https://github.com/mckinsey/vizro/pull/1779))
+
 <a id='changelog-0.1.59'></a>
 # 0.1.59 — 2026-06-18
 

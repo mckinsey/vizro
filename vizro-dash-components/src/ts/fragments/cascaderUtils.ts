@@ -113,6 +113,129 @@ export function serializePath(path: CascaderPath): string {
   return JSON.stringify(path);
 }
 
+/** A leaf scalar value (the wire form of a selection in leaf mode). */
+export type CascaderScalar = string | number | boolean;
+
+/**
+ * Stable serialization of a single leaf scalar, usable as a Map/Set key. Typed
+ * (`1` and `"1"`, `true` and `"true"` serialize differently) so leaf identity is exact.
+ */
+export function serializeLeaf(leaf: unknown): string {
+  return JSON.stringify(leaf);
+}
+
+/**
+ * Map each leaf's scalar `value` to its full root-to-leaf `path`. Used by leaf mode
+ * (`full_path=false`) to resolve a bare leaf on the wire back to its internal path.
+ * Only unambiguous when leaf values are unique (see `findDuplicateLeafValues`): a later
+ * duplicate overwrites an earlier one (last-wins), matching the component's degrade-not-crash policy.
+ */
+export function buildLeafToPath(
+  options: CascaderOption[],
+): Map<string, CascaderPath> {
+  const map = new Map<string, CascaderPath>();
+  for (const leaf of collectAllLeaves(options)) {
+    map.set(serializeLeaf(leaf.value), leaf.path);
+  }
+  return map;
+}
+
+/**
+ * Leaf `value`s that appear on more than one leaf (in tree order of the first repeat).
+ * Leaf mode requires unique leaf values; the component logs (does not throw) when this is non-empty.
+ */
+export function findDuplicateLeafValues(
+  options: CascaderOption[],
+): CascaderScalar[] {
+  const seen = new Set<string>();
+  const duplicates: CascaderScalar[] = [];
+  for (const leaf of collectAllLeaves(options)) {
+    const key = serializeLeaf(leaf.value);
+    if (seen.has(key)) {
+      duplicates.push(leaf.value);
+    } else {
+      seen.add(key);
+    }
+  }
+  return duplicates;
+}
+
+/**
+ * OUTPUT boundary: convert the internal selection (always a list of paths) into the wire `value`.
+ * - `full_path=true`: pass paths through unchanged — a list of paths (multi) or a single path / `null` (single).
+ * - `full_path=false`: emit bare leaf scalars — a list of leaves (multi) or a single leaf / `null` (single).
+ */
+export function toWire(
+  paths: CascaderPath[],
+  multi: boolean,
+  fullPath: boolean,
+): CascaderPath | CascaderPath[] | CascaderScalar | CascaderScalar[] | null {
+  const leafOf = (path: CascaderPath): CascaderScalar => path[path.length - 1];
+  if (multi) {
+    return fullPath ? paths : paths.map(leafOf);
+  }
+  if (paths.length === 0) return null;
+  return fullPath ? paths[0] : leafOf(paths[0]);
+}
+
+/** True if `x` is a scalar node/leaf value (string, number, or boolean). */
+function isScalar(x: unknown): x is CascaderScalar {
+  return (
+    typeof x === "string" || typeof x === "number" || typeof x === "boolean"
+  );
+}
+
+/**
+ * True if `x` is a well-formed single path: a non-empty array of scalar node values (the
+ * root-to-leaf sequence of `value`s — mostly ancestor values, with only the last a leaf — not a
+ * nested array/object). Guards `fromWire`'s path-mode branch against malformed `value`s, e.g. a
+ * bare single path passed where a list of paths is expected, so they are dropped rather than
+ * misinterpreted (an array of scalars would otherwise be read as if each scalar were its own path).
+ */
+function isValidPath(x: unknown): x is CascaderPath {
+  return Array.isArray(x) && x.length > 0 && x.every(isScalar);
+}
+
+/**
+ * INPUT boundary: normalize an incoming wire `value` into the internal list-of-paths form.
+ * - `full_path=true`: `value` must already carry paths (a single path or a list of paths); entries
+ *   that are not well-formed paths (see `isValidPath`) are dropped. This validates path SHAPE, not
+ *   existence in the current tree — well-shaped but nonexistent paths are pruned separately when
+ *   `options` change (see the pruning effect in Cascader.tsx).
+ * - `full_path=false`: `value` carries leaf scalars; each is resolved to its path via `leafToPath`,
+ *   and any leaf absent from the tree is dropped.
+ *
+ * Tolerant by design: a malformed or unresolvable entry is dropped (multi) or yields no selection
+ * (single), so a stale persisted value of the wrong shape degrades gracefully rather than crashing.
+ */
+export function fromWire(
+  value: unknown,
+  leafToPath: Map<string, CascaderPath>,
+  multi: boolean,
+  fullPath: boolean,
+): CascaderPath[] {
+  if (value === null || value === undefined) return [];
+  if (fullPath) {
+    if (multi) {
+      return Array.isArray(value)
+        ? (value as unknown[]).filter(isValidPath)
+        : [];
+    }
+    return isValidPath(value) ? [value] : [];
+  }
+  // Leaf mode: resolve each bare leaf scalar to its full path.
+  const resolve = (leaf: unknown): CascaderPath | undefined =>
+    leafToPath.get(serializeLeaf(leaf));
+  if (multi) {
+    if (!Array.isArray(value)) return [];
+    return (value as unknown[])
+      .map(resolve)
+      .filter((p): p is CascaderPath => p !== undefined);
+  }
+  const path = resolve(value);
+  return path ? [path] : [];
+}
+
 /**
  * Walk `options` following `activePath` and return each column's items.
  * Column 0 is always the root. Column N is children of activePath[N-1] in column N-1.

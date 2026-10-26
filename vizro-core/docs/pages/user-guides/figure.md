@@ -1,8 +1,18 @@
+---
+description: "Render arbitrary reactive Dash components inside a `Figure`, and use built-in `kpi_card`, `kpi_card_reference` and `kpi_sparkline_card` for KPI tiles with aggregation, delta references and trend sparklines."
+---
+
 # How to use figures
 
 This guide shows you how to add any [Dash component](https://dash.plotly.com/#open-source-component-libraries) that needs to be reactive to [controls](controls.md) such as [filters](filters.md) and [parameters](parameters.md). If you want to add a static Dash component to your page, use [custom components](custom-components.md) instead.
 
-[`Figure`][vizro.models.Figure] provides a flexible foundation for all types of reactive Dash components in Vizro. The [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] and [`AgGrid`][vizro.models.AgGrid] models are specific implementations of `Figure`. They serve as intuitive shortcuts, embedding behaviors and interactions specific to their purposes.
+!!! tip "When to use this"
+
+    Choose `Figure` to render an arbitrary Dash component that must react to controls. Prefer the specific reactive shortcuts when they fit: [`Graph`](graph.md) for a Plotly chart, [`Table`](table.md) for tabular data, or a built-in [KPI card figure](#key-performance-indicator-kpi-cards) for KPI tiles. If your Dash component does not need to react to controls, use [custom components](custom-components.md) instead.
+
+**API reference:** [`Figure`][vizro.models.Figure]
+
+[`Figure`][vizro.models.Figure] provides a flexible foundation for all types of reactive Dash components in Vizro. The [`Graph`][vizro.models.Graph] and [`Table`][vizro.models.Table] models are specific implementations of `Figure`. They serve as intuitive shortcuts, embedding behaviors and interactions specific to their purposes.
 
 If these more specific models already achieve what you need then they should be used in preference to the more generic `Figure`. Remember that it is possible to supply [custom charts](custom-charts.md) to `Graph` and [custom tables](custom-tables.md) to `Table`.
 
@@ -10,12 +20,13 @@ There are already a few figure functions you can reuse, see the section on [KPI 
 
 - [`kpi_card`][vizro.figures.kpi_card]
 - [`kpi_card_reference`][vizro.figures.kpi_card_reference]
+- [`kpi_sparkline_card`][vizro.figures.kpi_sparkline_card]
 
 The following flowchart shows what you need to consider when choosing which model to use:
 
 ```mermaid
 graph TD
-  first["`Does your desired component exist in Vizro, for example, Graph, Table or AgGrid?`"]
+  first["`Does your desired component exist in Vizro, for example, Graph or Table?`"]
   specific-component([Use the specific component])
   second["`Does your component need to be reactive to controls?`"]
   second-static([Use custom components])
@@ -102,15 +113,19 @@ To add a `Figure` to your page:
 
     === "Result"
 
+        The dashboard renders the "Use existing figure functions" example.
+
         [![Figure]][figure]
 
 ### Key Performance Indicator (KPI) cards
 
-A KPI card is a dynamic card that can display a single value, but optionally, can also include a title, icon, and reference value. It is a common visual component to display key metrics in a dashboard. Vizro comes with two built-in KPI card functions:
+A KPI card is a dynamic card that can display a single value, but optionally, can also include a title, icon, and reference value. It is a common visual component to display key metrics in a dashboard. Vizro comes with three built-in KPI card functions:
 
 - [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card): A KPI card that shows a single value found by performing an aggregation function (by default, `sum`) over a specified column. Required arguments are `data_frame` and `value_column`.
 
 - [`kpi_card_with_reference`](../API-reference/figure-callables.md#vizro.figures.kpi_card_reference): A KPI card that shows a single value and a delta comparison to a reference value found by performing an aggregation function (by default, `sum`) over the specified columns. Required arguments are `data_frame`, `value_column` and `reference_column`.
+
+- [`kpi_sparkline_card`](../API-reference/figure-callables.md#vizro.figures.kpi_sparkline_card): A KPI card that shows a single value found by performing an aggregation function (by default, `sum`) over a specified column, together with a trend indicator icon and a sparkline chart of the underlying series. Required arguments are `data_frame`, `value_column` and `x_column`.
 
 As described in the [API reference](../API-reference/figure-callables.md) and illustrated in the below example, these functions have several arguments to customize your KPI cards. If you require a level of customization that cannot be done with the built-in functions then you can create a [custom figure](custom-figures.md).
 
@@ -289,7 +304,113 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
 
     === "Result"
 
+        The dashboard renders the "KPI card variations" example.
+
         [![KPICards]][kpicards]
+
+### KPI sparkline cards
+
+[`kpi_sparkline_card`](../API-reference/figure-callables.md#vizro.figures.kpi_sparkline_card) extends `kpi_card` with a trend indicator icon next to the value and a small trend chart (a "sparkline") in the footer of the card, plotted from `value_column` ordered by `x_column`. The icon indicates whether the series is trending up or down, based on comparing the first and last values once sorted by `x_column`. The sparkline itself is always rendered in the default Vizro chart color, regardless of trend direction. You can:
+
+- switch between a filled area chart and a plain line with `chart_type` (`"area"` by default, or `"line"`)
+- invert which direction counts as positive with `reverse_color`, exactly as for `kpi_card_reference`
+- reference `delta` and `delta_relative` (both derived from the same first/last comparison) inside `value_format`, in addition to `value`, to show the trend alongside the headline number
+
+!!! example "KPI sparkline card variations"
+
+    === "app.py"
+
+        ```{.py hl_lines="19 25 31"}
+        import pandas as pd
+        import vizro.models as vm
+        from vizro import Vizro
+        from vizro.figures import kpi_sparkline_card  # (1)!
+
+        df_kpi_sparkline = pd.DataFrame(
+            {
+                "Date": pd.date_range("2024-01-01", periods=6, freq="MS"),
+                "Rising": [100, 88, 55, 92, 140, 170],  # last value higher than first -> positive trend
+                "Falling": [180, 140, 122, 135, 108, 100],  # last value lower than first -> negative trend
+                "Steady": [120, 125, 118, 130, 122, 120],  # last value equal to first -> neutral trend
+            }
+        )
+
+        example_sparkline_cards = [
+            kpi_sparkline_card(
+                data_frame=df_kpi_sparkline,
+                value_column="Rising",
+                x_column="Date",  # (3)!
+                title="KPI sparkline (positive trend)",
+            ),
+            kpi_sparkline_card(
+                data_frame=df_kpi_sparkline,
+                value_column="Falling",
+                x_column="Date",
+                title="KPI sparkline (negative trend)",
+            ),
+            kpi_sparkline_card(
+                data_frame=df_kpi_sparkline,
+                value_column="Steady",
+                x_column="Date",
+                title="KPI sparkline (neutral trend)",
+            ),
+        ]
+
+        page = vm.Page(
+            title="KPI sparkline cards",
+            layout=vm.Flex(direction="row", wrap=True),  # (2)!
+            components=[vm.Figure(figure=figure) for figure in example_sparkline_cards],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. For more information, refer to the API reference for [`kpi_sparkline_card`][vizro.figures.kpi_sparkline_card].
+        1. We use a [`Flex`](../user-guides/layouts.md#flex-layout) layout with `direction=row` and `wrap=True` to allow KPI cards to wrap to the next line when needed.
+        1. `x_column` determines the chronological/sequential order of the data. It's used both to draw the sparkline's x-axis and to compute the trend direction, which is based on comparing the first and last `value_column` entries once sorted by `x_column`.
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: kpi_sparkline_card
+                  data_frame: df_kpi_sparkline
+                  value_column: Rising
+                  x_column: Date
+                  title: KPI sparkline (positive trend)
+                type: figure
+              - figure:
+                  _target_: kpi_sparkline_card
+                  data_frame: df_kpi_sparkline
+                  value_column: Falling
+                  x_column: Date
+                  title: KPI sparkline (negative trend)
+                type: figure
+              - figure:
+                  _target_: kpi_sparkline_card
+                  data_frame: df_kpi_sparkline
+                  value_column: Steady
+                  x_column: Date
+                  title: KPI sparkline (neutral trend)
+                type: figure
+            layout:
+              direction: row
+              wrap: true
+              type: flex
+            title: KPI sparkline cards
+        ```
+
+    === "Result"
+
+        The dashboard renders the "KPI sparkline card variations" example.
+
+        [![KPISparklineCards]][kpisparklinecards]
 
 [figure]: ../../assets/user_guides/figure/figure.png
 [kpicards]: ../../assets/user_guides/figure/kpi_cards.png
+[kpisparklinecards]: ../../assets/user_guides/figure/kpi_sparkline_cards.png

@@ -33,12 +33,14 @@ jobs:
             hatch-env: all.py3.13
           - python-version: "3.14"
             hatch-env: all.py3.14
+          - python-version: "3.15"
+            hatch-env: all.py3.15
 
     steps:
       - uses: actions/checkout@v7
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 

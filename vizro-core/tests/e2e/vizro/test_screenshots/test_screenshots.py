@@ -11,11 +11,14 @@ from e2e.vizro.navigation import (
     hover_over_element_by_xpath_selenium,
     page_select,
     select_dropdown_select_all,
+    select_dropdown_value,
 )
 from e2e.vizro.paths import (
     button_id_path,
     dropdown_id_path,
     kpi_card_path,
+    kpi_sparkline_card_path,
+    kpi_sparkline_graph_path,
     nav_card_link_path,
     scatter_point_path,
     switch_path_using_filter_control_id,
@@ -53,6 +56,17 @@ def test_kpi_indicators_page_theme_switch(dash_br):
 
 
 @image_assertion
+def test_kpi_sparkline_page(dash_br):
+    page_select(dash_br, page_name=cnst.KPI_SPARKLINE_PAGE, graph_check=False)
+
+    dash_br.wait_for_text_to_equal(kpi_sparkline_card_path(), cnst.KPI_SPARKLINE_GOOG_VALUE)
+    dash_br.wait_for_element(kpi_sparkline_graph_path())
+
+    select_dropdown_value(dash_br, dropdown_id=cnst.DROPDOWN_FILTER_KPI_SPARKLINE_PAGE, value="2019")
+    dash_br.wait_for_text_to_equal(kpi_sparkline_card_path(), cnst.KPI_SPARKLINE_GOOG_VALUE_2019)
+
+
+@image_assertion
 def test_homepage(dash_br):
     graph_load_waiter(dash_br)
 
@@ -66,33 +80,6 @@ def test_ag_grid_page(dash_br):
     )
     # check if column 'country' is available
     dash_br.wait_for_element(table_ag_grid_cell_path_by_row(cnst.TABLE_AG_GRID_ID, row_index=0, col_id="country"))
-
-
-@image_assertion
-def test_table_page(dash_br):
-    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
-    page_select(
-        dash_br,
-        page_name=cnst.TABLE_PAGE,
-        graph_check=False,
-    )
-    # check if country Albania is available
-    dash_br.wait_for_text_to_equal(
-        f"div[id='{cnst.TABLE_ID}'] tr:nth-of-type(2) div[class='unfocused selectable dash-cell-value']", "Albania"
-    )
-
-
-@image_assertion
-def test_table_interactions_page(dash_br):
-    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
-    page_select(
-        dash_br,
-        page_name=cnst.TABLE_INTERACTIONS_PAGE,
-    )
-    # click on Bosnia and Herzegovina country
-    dash_br.multiple_click(
-        f"div[id='{cnst.TABLE_INTERACTIONS_ID}'] tr:nth-of-type(5) div[class='unfocused selectable dash-cell-value']", 1
-    )
 
 
 @image_assertion
@@ -211,21 +198,6 @@ def test_flex_layout_direction_and_graph_theme_switch(dash_br):
     )
     # switch theme to dark (delay is needed to fully load the layout)
     dash_br.multiple_click(theme_toggle_path(), 1, delay=1.5)
-
-
-@image_assertion
-def test_flex_layout_gap_and_table(dash_br):
-    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
-    page_select(
-        dash_br,
-        page_name=cnst.LAYOUT_FLEX_GAP_AND_TABLE,
-        graph_check=False,
-    )
-
-    # check if Total_bill 16.99 is available
-    dash_br.wait_for_text_to_equal(
-        "div[class='dash-table-container'] tr:nth-of-type(2) div[class='unfocused selectable dash-cell-value']", "16.99"
-    )
 
 
 @image_assertion
@@ -488,29 +460,29 @@ def test_notifications_page_dark_theme(dash_br):
 
 @pytest.mark.chrome_screenshots
 @image_assertion
-def test_set_control_multi_select_page(dash_br):
+def test_set_controls_multi_select_page(dash_br):
     """Testing set control multi select interactions page."""
     accordion_select(dash_br, accordion_name=cnst.ACTIONS_ACCORDION)
     page_select(
         dash_br,
-        page_name=cnst.SET_CONTROL_MULTI_SELECT_PAGE,
+        page_name=cnst.SET_CONTROLS_MULTI_SELECT_PAGE,
     )
 
     # click on the scatter point to check that the rest of the chart is dimmed
     dash_br.click_at_coord_fractions(
-        scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT_SELECT, point_number=21, trace_index=1), 0, 0
+        scatter_point_path(cnst.SCATTER_SET_CONTROLS_EVENT_SELECT, point_number=21, trace_index=1), 0, 0
     )
 
     # click on the scatter point to check that the rest of the chart is not changed
-    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROL_EVENT, point_number=21), 0, 0)
+    dash_br.click_at_coord_fractions(scatter_point_path(cnst.SCATTER_SET_CONTROLS_EVENT, point_number=21), 0, 0)
 
     # click on the aggrid checkbox
-    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROL_MULTI_SELECT, row_index=2), 1)
+    dash_br.multiple_click(table_ag_grid_checkbox_path_by_row(cnst.TABLE_SET_CONTROLS_MULTI_SELECT, row_index=2), 1)
 
 
 @image_assertion
-def test_aggrid_click_without_set_control(dash_br):
-    """Testing aggrid cell click without set_control action."""
+def test_aggrid_click_without_set_controls(dash_br):
+    """Testing aggrid cell click without set_controls action."""
     accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
     page_select(
         dash_br,

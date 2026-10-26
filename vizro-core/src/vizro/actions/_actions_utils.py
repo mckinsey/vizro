@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
 from copy import deepcopy
 from typing import Any, Literal, TypedDict, cast
 
@@ -11,10 +10,8 @@ import pandas as pd
 from vizro._constants import NONE_OPTION
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName
-from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models.types import (
     FigureType,
-    FigureWithFilterInteractionType,
     ModelID,
     MultiValueType,
     SelectorType,
@@ -22,11 +19,6 @@ from vizro.models.types import (
 )
 
 ValidatedNoneValueType = SingleValueType | MultiValueType | None | list[None] | list[SingleValueType]
-
-
-# TODO-AV2 A 2: go through and finish tidying bits that weren't already. Potentially there won't be much code left here
-#  at all. Think about where it should live so it might become public in future. Is it just apply_controls and helper
-#  functions for that? Do we want public vizro.actions.utils/helpers?
 
 
 class CallbackTriggerDict(TypedDict):
@@ -61,59 +53,21 @@ def _apply_filter_controls(
 
     Returns: filtered DataFrame.
     """
-    from vizro.actions._filter_action import _filter
+    # Takes in just one target, so dataframe is filtered repeatedly for every target that uses it.
+    # Potentially this could be de-duplicated but it's not so important since filtering is a relatively fast
+    # operation (compared to data loading).
+    from vizro.models import Filter
+    from vizro.models._controls._controls_utils import get_selector_parent_control
 
     for ctd in ctds_filter:
+        selector_id = ctd["id"]
+        parent_filter = cast(Filter, get_selector_parent_control(selector=model_manager[selector_id]))
+        if target not in parent_filter.targets:
+            continue
+
         selector_value = ctd["value"]
-        selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
-        selector_actions = cast(SelectorType, model_manager[ctd["id"]]).actions
-
-        for action in selector_actions:
-            # TODO-AV2 A 1: simplify this as in
-            #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
-            if not isinstance(action, _filter) or target not in action.targets:
-                continue
-
-            mask = action.filter_function(data_frame[action.column], selector_value)
-            data_frame = data_frame[mask]
-
-    return data_frame
-
-
-def _get_triggered_model(input_component_id: str) -> FigureType:
-    # Goes directly from input_component_id to the model (like AgGrid).
-    for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS)):
-        if hasattr(model, "_inner_component_id") and model._inner_component_id == input_component_id:
-            return model
-    raise KeyError(f"No triggered Vizro model found for {input_component_id=}.")
-
-
-def _apply_filter_interaction(
-    data_frame: pd.DataFrame, ctds_filter_interaction: list[dict[str, CallbackTriggerDict]], target: ModelID
-) -> pd.DataFrame:
-    """Applies filters from a filter_interaction.
-
-    This will be removed in future when filter interactions are implemented using controls.
-
-    Args:
-        data_frame: unfiltered DataFrame.
-        ctds_filter_interaction: structure containing CallbackTriggerDict for filter interactions.
-        target: id of targeted Figure.
-
-    Returns: filtered DataFrame.
-    """
-    # The filter_interaction model actually contains the id we require in its _parent_model field.
-    # We could use that if we had the action_id available here. Alternatively we could explicitly pass the
-    # input_component_id as a state and then use _get_triggered_model to look up the parent model. Both these methods
-    # would mean we can remove modelID from the states, but given that filter_interaction will be removed it's not worth
-    # rewriting now.
-    for ctd_filter_interaction in ctds_filter_interaction:
-        triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
-        data_frame = cast(FigureWithFilterInteractionType, triggered_model)._filter_interaction(
-            data_frame=data_frame,
-            target=target,
-            ctd_filter_interaction=ctd_filter_interaction,
-        )
+        mask = parent_filter._filter_function(data_frame[parent_filter._filter_column], selector_value)
+        data_frame = data_frame[mask]
 
     return data_frame
 
@@ -175,7 +129,8 @@ def _get_parametrized_config(
     Returns: keyword-argument dictionary.
 
     """
-    from vizro.actions._parameter_action import _parameter
+    from vizro.models import Parameter
+    from vizro.models._controls._controls_utils import get_selector_parent_control
 
     if data_frame:
         # This entry is inserted (but will always be empty) even for static data so that the load/_multi_load calls
@@ -189,44 +144,20 @@ def _get_parametrized_config(
         del config["data_frame"]
 
     for ctd in ctds_parameter:
-        # TODO: needs to be refactored so that it is independent of implementation details
-        parameter_value = _validate_selector_value_none(ctd["value"])  # type: ignore[arg-type]
-        selector_actions = cast(SelectorType, model_manager[ctd["id"]]).actions
+        selector_id = ctd["id"]
+        selector_value = _validate_selector_value_none(ctd["value"])  # type: ignore[arg-type]
 
-        for action in selector_actions:
-            # TODO-AV2 A 1: simplify this as in
-            #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
-            #  Potentially this function would move to the filter_interaction action. That will be removed so
-            #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
-            #  new interaction functionality anyway.
-            if not isinstance(action, _parameter):
-                continue
+        parent_parameter = cast(Parameter, get_selector_parent_control(selector=model_manager[selector_id]))
 
-            for dot_separated_string in _get_target_dot_separated_strings(action.targets, target, data_frame):
-                config = _update_nested_figure_properties(
-                    figure_config=config, dot_separated_string=dot_separated_string, value=parameter_value
-                )
+        for dot_separated_string in _get_target_dot_separated_strings(parent_parameter.targets, target, data_frame):
+            config = _update_nested_figure_properties(
+                figure_config=config, dot_separated_string=dot_separated_string, value=selector_value
+            )
 
     return config
 
 
 # Helper functions used in pre-defined actions ----
-def _apply_filters(
-    data: pd.DataFrame,
-    ctds_filter: list[CallbackTriggerDict],
-    ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
-    target: ModelID,
-):
-    # Takes in just one target, so dataframe is filtered repeatedly for every target that uses it.
-    # Potentially this could be de-duplicated but it's not so important since filtering is a relatively fast
-    # operation (compared to data loading).
-    filtered_data = _apply_filter_controls(data_frame=data, ctds_filter=ctds_filter, target=target)
-    filtered_data = _apply_filter_interaction(
-        data_frame=filtered_data, ctds_filter_interaction=ctds_filter_interaction, target=target
-    )
-    return filtered_data
-
-
 def _get_unfiltered_data(
     ctds_parameter: list[CallbackTriggerDict], targets: list[ModelID]
 ) -> dict[ModelID, pd.DataFrame]:
@@ -246,12 +177,8 @@ def _get_unfiltered_data(
     return dict(zip(targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
 
 
-# TODO-AV2 A 2: rename this, make sure it could become public in future but don't make public yet. Probably take in
-#  controls + filter_interaction only once have worked out structure of filters/parameters. Then make public once
-#  have removed filter_interaction.
 def _get_modified_page_figures(
     ctds_filter: list[CallbackTriggerDict],
-    ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
     ctds_parameter: list[CallbackTriggerDict],
     targets: list[ModelID],
 ) -> dict[ModelID, Any]:
@@ -261,19 +188,33 @@ def _get_modified_page_figures(
 
     control_targets = []
     figure_targets = []
-    for target in targets:
+    # dict.fromkeys dedupes while preserving order. A Parameter targeting several arguments of the same figure
+    # (e.g. Parameter(targets=["g.x", "g.y"])) produces update_targets(targets=["g", "g"]), and the dynamic-filter
+    # linkage can repeat a figure too; each figure must be rebuilt only once.
+    for target in dict.fromkeys(targets):
         if isinstance(model_manager[target], Filter):
             control_targets.append(target)
         else:
             figure_targets.append(target)
 
-    target_to_data_frame = _get_unfiltered_data(ctds_parameter=ctds_parameter, targets=figure_targets)
+    # A dynamic filter target recalculates its selector options from its own targets' (figures') data, so that data
+    # must be loaded even when those figures aren't themselves being refreshed (e.g. a Button that targets only the
+    # filter). We load data for those figures but only emit them as outputs when they're figure_targets.
+    data_targets = list(figure_targets)
+    for control_target in control_targets:
+        for filter_figure_target in cast(Filter, model_manager[control_target]).targets:
+            if filter_figure_target not in data_targets:
+                data_targets.append(filter_figure_target)
+
+    target_to_data_frame = _get_unfiltered_data(ctds_parameter=ctds_parameter, targets=data_targets)
 
     # TODO: the structure here would be nicer if we could get just the ctds for a single target at one time,
     #  so you could do apply_filters on a target a pass only the ctds relevant for that target.
     #  Consider restructuring ctds to a more convenient form to make this possible.
-    for target, unfiltered_data in target_to_data_frame.items():
-        filtered_data = _apply_filters(unfiltered_data, ctds_filter, ctds_filter_interaction, target)
+    for target in figure_targets:
+        filtered_data = _apply_filter_controls(
+            data_frame=target_to_data_frame[target], ctds_filter=ctds_filter, target=target
+        )
         outputs[target] = cast(FigureType, model_manager[target])(
             data_frame=filtered_data,
             **_get_parametrized_config(ctds_parameter=ctds_parameter, target=target, data_frame=False),

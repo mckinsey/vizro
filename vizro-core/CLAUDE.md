@@ -2,6 +2,34 @@
 
 `vizro-core` contains all code for the core Vizro framework.
 
+## For AI agents and LLMs building Vizro apps
+
+If you are an AI agent or LLM writing Python (or YAML / JSON) that uses the `vizro` package to build a dashboard, **your primary reference is the [Vizro for LLMs cheatsheet](https://vizro.readthedocs.io/en/stable/pages/for-llms/)**. It is a single page covering:
+
+- The minimum runnable app.
+- The `vizro.models` index (every public model, one-liner, link to guide).
+- The `vizro.actions` index (built-in actions).
+- Selector auto-selection rules for `Filter`.
+- The `@capture` decorator matrix.
+- Features that only work in Python (not YAML / JSON).
+- Top errors and their fixes.
+
+Additional resources for authoring agents:
+
+- [`docs/llms.txt`](docs/llms.txt) — curated `/llms.txt`-standard index of the full documentation.
+- Every documentation page has a clean Markdown twin. Remove the trailing `/` from its canonical URL and append `.md`;
+  use `/index.md` for the documentation root. No custom request header is needed.
+- Content negotiation is also available by sending `Accept: text/markdown, text/html;q=0.9`. Always include the HTML
+  fallback because upstream conversion returns HTTP 406 for pages over 2 MB.
+- [`llms-full.txt`](https://vizro.readthedocs.io/en/stable/llms-full.txt) bundles the narrative documentation and user
+  guides in one request, excluding the API reference.
+- Per-model API files such as
+  [`graph.md`](https://vizro.readthedocs.io/en/stable/pages/API-reference/models/graph.md) provide targeted reference
+  for individual `vizro.models` classes without loading the combined Models page. All files are listed in `llms.txt`.
+- Published JSON Schemas per Vizro version: <https://github.com/mckinsey/vizro/tree/main/vizro-core/schemas>.
+
+The rest of this file is for agents **contributing to `vizro-core` itself**.
+
 ## Development
 
 ### Working Directory
@@ -13,6 +41,7 @@
 - `hatch run example` - Run the scratch dev example on port 8050 (hot-reloads)
 - `hatch run example scratch_dev/yaml_version` - Run the scratch_dev yaml example on port 8050 (hot-reloads)
 - `hatch run example dev` - Run the feature example dashboard on port 8050 (hot-reloads)
+- `hatch run example kedro-scenario-planner` - Run the Kedro pipeline + Vizro dashboard demo on port 8050 (hot-reloads)
 
 ## Project Architecture
 

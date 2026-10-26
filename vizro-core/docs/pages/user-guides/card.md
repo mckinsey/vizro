@@ -1,6 +1,16 @@
+---
+description: "Configure `Card` text, header and footer, embedded images, theme-aware icons, navigation tiles, KPI cards, tooltips, action triggers, and `extra`."
+---
+
 # How to use cards
 
 This guide shows you how to use cards in your dashboard.
+
+!!! tip "When to use this"
+
+    Choose `Card` to display Markdown text that needs to stand out (a bordered, attention-drawing callout) or to act as a [navigation tile](#create-a-navigation-card). For plain Markdown text with no styling, use [`Text`](text.md); for KPI tiles use a [KPI card figure](figure.md#key-performance-indicator-kpi-cards); to trigger an [action](actions.md) or navigate, use [`Button`](button.md).
+
+**API reference:** [`Card`][vizro.models.Card]
 
 !!! note "Card and Text components"
 
@@ -47,8 +57,8 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
         pages:
           - components:
               - text: |
+                  ### Card Title
                   Commodi repudiandae consequuntur voluptatum.
-                title: Card Title
                 type: card
             layout:
               type: flex
@@ -56,6 +66,8 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
         ```
 
     === "Result"
+
+        The dashboard renders the "Card" example.
 
         [![Card]][card]
 
@@ -160,6 +172,7 @@ The [`Card`][vizro.models.Card] uses the [`vdc.Markdown` component](https://gith
                   #### Header level 4 <h4>
                 type: card
               - text: |
+                  ### Paragraphs
                   Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
                   Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
@@ -167,33 +180,37 @@ The [`Card`][vizro.models.Card] uses the [`vdc.Markdown` component](https://gith
                   Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
 
                   Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-                title: Paragraphs
                 type: card
               - text: |
+                  ### Block Quotes
+
                   >
                   > A block quote is a long quotation, indented to create a separate block of text.
                   >
-                title: Block Quotes
                 type: card
               - text: |
+                  ### Lists
+
                   * Item A
                     * Sub Item 1
                     * Sub Item 2
                   * Item B
-                title: Lists
                 type: card
               - text: |
+                  ### Emphasis
+
                   This word will be *italic*
 
                   This word will be **bold**
 
                   This word will be _**bold and italic**_
-                title: Emphasis
                 type: card
             title: Customizing Text
         ```
 
     === "Result"
+
+        The dashboard renders the "Card using markdown" example.
 
         [![CardText]][cardtext]
 
@@ -240,6 +257,8 @@ You can now add a header and footer to your [`Card`][vizro.models.Card] by using
         ```
 
     === "Result"
+
+        The dashboard renders the "Card with header and footer" example.
 
         [![CardHeaderFooter]][cardheaderfooter]
 
@@ -297,6 +316,8 @@ An image ALT text offers a description to your image and serves as a text placeh
         pages:
           - components:
               - text: |
+                  ### My card with image!
+
                   ![continent](assets/images/continents/africa.svg)
 
                   Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
@@ -304,12 +325,13 @@ An image ALT text offers a description to your image and serves as a text placeh
                   Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
 
                   Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-                title: My card with image!
                 type: card
             title: Placing Images
         ```
 
     === "Result"
+
+        The dashboard renders the "Card with image" example.
 
         [![CardImageDefault]][cardimagedefault]
 
@@ -380,6 +402,8 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
         pages:
           - components:
               - text: |
+                  ### My card with image!
+
                   ![](assets/images/continents/europe.svg#my-image)
 
                   Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
@@ -387,7 +411,6 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
                   Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
 
                   Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-                title: My card with image!
                 type: card
             layout:
               type: flex
@@ -395,6 +418,8 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
         ```
 
     === "Result"
+
+        The dashboard renders the "Card with styled image" example.
 
         [![CardImageStyled]][cardimagestyled]
 
@@ -467,6 +492,8 @@ To float an image for example to the right of the text, use the `src` attribute 
         pages:
           - components:
               - text: |
+                  ### My card with floating image!
+
                   ![](assets/images/continents/europe.svg#my-image)
 
                   Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
@@ -480,7 +507,6 @@ To float an image for example to the right of the text, use the `src` attribute 
                   Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
 
                   Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-                title: My card with floating image!
                 type: card
             layout:
               type: flex
@@ -488,6 +514,8 @@ To float an image for example to the right of the text, use the `src` attribute 
         ```
 
     === "Result"
+
+        The dashboard renders the "Card with floating image" example.
 
         [![CardImageFloating]][cardimagefloating]
 
@@ -598,6 +626,8 @@ To create a navigation card:
 
     === "Result"
 
+        The dashboard renders the "Navigation Card" example.
+
         [![NavCard]][navcard]
 
 If you now click on the card area, you should automatically be redirected to the relevant `href`.
@@ -665,11 +695,13 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) to the `
 
     === "Result"
 
+        The dashboard renders the "Card with a tooltip" example.
+
         [![CardInfoIcon]][cardinfoicon]
 
 ## Trigger an action with a card
 
-The example below shows how to use the [set_control action][vizro.actions.set_control] to filter another Graph or Table when a [`Card`][vizro.models.Card] is clicked.
+The example below shows how to use the [set_controls action][vizro.actions.set_controls] to filter another Graph or Table when a [`Card`][vizro.models.Card] is clicked.
 
 !!! example "Action triggered by card"
 
@@ -686,9 +718,9 @@ The example below shows how to use the [set_control action][vizro.actions.set_co
         page = vm.Page(
             title="Action triggered by a card",
             components=[
-                vm.Card(text="Filter: Setosa", actions=va.set_control(control="filter-id-1", value="setosa")),
-                vm.Card(text="Filter: Virginica", actions=va.set_control(control="filter-id-1", value="virginica")),
-                vm.Card(text="Filter: Versicolor", actions=va.set_control(control="filter-id-1", value="versicolor")),
+                vm.Card(text="Filter: Setosa", actions=va.set_controls(controls=["filter-id-1"], value="setosa")),
+                vm.Card(text="Filter: Virginica", actions=va.set_controls(controls=["filter-id-1"], value="virginica")),
+                vm.Card(text="Filter: Versicolor", actions=va.set_controls(controls=["filter-id-1"], value="versicolor")),
                 vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
             ],
             controls=[vm.Filter(id="filter-id-1", column="species")],
@@ -707,41 +739,43 @@ The example below shows how to use the [set_control action][vizro.actions.set_co
         pages:
           - components:
               - type: card
-                text: Filter: Setosa
+                text: "Filter: Setosa"
                 actions:
-                  - type: set_control
+                  - type: set_controls
+                    controls: [filter-id-1]
                     value: setosa
               - type: card
-                text: Filter: Viriginica
+                text: "Filter: Virginica"
                 actions:
-                  - type: set_control
+                  - type: set_controls
+                    controls: [filter-id-1]
                     value: virginica
               - type: card
-                text: Filter: Versicolor
+                text: "Filter: Versicolor"
                 actions:
-                  - type: set_control
+                  - type: set_controls
+                    controls: [filter-id-1]
                     value: versicolor
               - type: graph
                 figure:
                   _target_: scatter
+                  data_frame: iris
                   x: sepal_width
                   y: sepal_length
                   color: species
-              - type: button
-                text: Export data
-                actions:
-                  - type: export_data
             controls:
               - type: filter
                 id: filter-id-1
                 column: species
             layout:
-              - type: grid
-                grid: [[0, 1, 2], [3, 3, 3], [3, 3, 3]]
+              type: grid
+              grid: [[0, 1, 2], [3, 3, 3], [3, 3, 3]]
             title: Action triggered by a card
         ```
 
     === "Result"
+
+        The dashboard renders the "Action triggered by card" example.
 
         ![](../../assets/user_guides/components/actions-card-trigger.gif)
 
@@ -792,6 +826,8 @@ An example use would be to specify a fixed `Card` height and width. For this, yo
         ```
 
     === "Result"
+
+        The dashboard renders the "Card with limited height" example.
 
         [![CardStyle]][cardstyle]
 

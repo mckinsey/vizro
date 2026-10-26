@@ -1,51 +1,22 @@
-from typing import Any, Literal
+from typing import Literal
 
-from dash import ctx
-from pydantic import Field
-
-import vizro.models as vm
-from vizro.actions._abstract_action import _AbstractAction
-from vizro.actions._actions_utils import _get_modified_page_figures
+from vizro.actions._update_targets import update_targets
 from vizro.managers import model_manager
-from vizro.models.types import ModelID, _Controls
 
 
-# TODO-AV2 A 3: rename _on_page_load if desired and make public. Similarly for other built-in actions.
-# Think about how to handle filter_function that is not JSON serialisable.
-class _on_page_load(_AbstractAction):
-    type: Literal["_on_page_load"] = "_on_page_load"
+class _on_page_load(update_targets):
+    """Refreshes the page's figures when the page is opened (or reloaded).
 
-    targets: list[ModelID] = Field(description="Target component IDs.")
+    Identical to [`update_targets`][vizro.actions.update_targets] except that it also writes a page-loaded header to
+    the DevTools action log. It is the default action attached to a `Page` and is not intended to be used directly.
+    """
 
-    def function(self, _controls: _Controls) -> dict[ModelID, Any]:
-        """Applies controls to charts on page once the page is opened (or refreshed).
-
-        Returns:
-            Dict mapping target chart ids to modified figures, for example, {"my_scatter": Figure(...)}.
-
-        """
-        # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
-        # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
-        # See https://github.com/mckinsey/vizro/pull/880
-        return _get_modified_page_figures(
-            ctds_filter=ctx.args_grouping["external"]["_controls"]["filters"],
-            ctds_parameter=ctx.args_grouping["external"]["_controls"]["parameters"],
-            ctds_filter_interaction=ctx.args_grouping["external"]["_controls"]["filter_interaction"],
-            targets=self.targets,
-        )
-
-    @property
-    def outputs(self):  # type: ignore[override]
-        # Special handling for vm.Filter as otherwise the filter's default action output would alter the selector value.
-        return {
-            target: f"{target}.selector" if isinstance(model_manager[target], vm.Filter) else target
-            for target in self.targets
-        }
+    type: Literal["_on_page_load"] = "_on_page_load"  # type: ignore[assignment]
 
     @property
     def _log_header(self) -> str:
         # Prepended to this action's DevTools log entry so a page (re)load stands out above the action line. Note this
-        # also fires on refresh and after a control reset, since both re-run the on-page-load action - hence "loaded"
-        # rather than "opened".
+        # also fires on browser refresh (the page re-renders and re-runs the on-page-load action) - hence "loaded"
+        # rather than "opened". A controls reset does not run this action; it runs the dedicated reset-controls refresh.
         page = model_manager._get_model_page(self)
         return f'\n=== Page "{page.title}" loaded ===\n'

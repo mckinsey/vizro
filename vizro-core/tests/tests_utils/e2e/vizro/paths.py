@@ -1,5 +1,5 @@
 def theme_toggle_path():
-    return "#theme-selector"
+    return "#theme-toggle"
 
 
 def switch_path_using_filter_control_id(filter_control_id):
@@ -44,6 +44,14 @@ def kpi_card_path():
     return ".card-body"
 
 
+def kpi_sparkline_card_path():
+    return ".card-kpi-sparkline .card-body span:nth-of-type(2)"
+
+
+def kpi_sparkline_graph_path():
+    return ".card-kpi-sparkline-graph .main-svg"
+
+
 def select_all_path(elem_id):
     """Select All option path for checklist."""
     return f"input[id='{elem_id}_select_all']"
@@ -51,6 +59,14 @@ def select_all_path(elem_id):
 
 def dropdown_id_path(dropdown_id):
     return f"button[id='{dropdown_id}']"
+
+
+def cascader_trigger_value_path(cascader_id):
+    return f"{dropdown_id_path(cascader_id)} .dash-dropdown-value"
+
+
+def cascader_clear_path(cascader_id):
+    return f"{dropdown_id_path(cascader_id)} .dash-dropdown-clear"
 
 
 def dropdown_select_all_path(dropdown_id):

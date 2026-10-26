@@ -9,10 +9,15 @@ include = [
 [envs.all]
 
 [[envs.all.matrix]]
-python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+python = ["3.11", "3.12", "3.13", "3.14", "3.15"]
 
 [envs."all.py3.14"]
 # Make sys.warnoptions non-empty so that Kedro doesn't turn its Python 3.14 warning into an error.
+# This means we can ignore it like others in tool.pytest.ini_options.filterwarnings.
+env-vars = {PYTHONWARNINGS = "default"}
+
+[envs."all.py3.15"]
+# Make sys.warnoptions non-empty so that Kedro doesn't turn its Python 3.15 warning into an error.
 # This means we can ignore it like others in tool.pytest.ini_options.filterwarnings.
 env-vars = {PYTHONWARNINGS = "default"}
 
@@ -46,6 +51,8 @@ dependencies = [
   "pixelmatch",
   "playwright",
   "kaleido",
+  "beautifulsoup4>=4.13.0",
+  "markdownify>=1.2.0",
   # seaborn and scikit-learn are needed for tests of kedro integration on real project.
   # We don't use kedro-datasets since it can lower our versions of important dependencies like plotly where
   # we want to be testing the latest.
@@ -132,21 +139,27 @@ test-unit-coverage = [
 dependencies = [
   "zensical>=0.0.36",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
-  "mkdocstrings[python]>=1.0.2",
+  "mkdocstrings[python]>=1.0.6",
   "griffe-warnings-deprecated",
   "linkchecker",
   "mkdocs-pycafe",
   "griffe-pydantic",
   "PyGithub",
-  "playwright"
+  "playwright",
+  "beautifulsoup4>=4.13.0",
+  "markdownify>=1.2.0"
 ]
 installer = "uv"
 template = "docs"  # Can't be detached = true since griffe_extensions:DynamicallyInspect needs vizro to be importable.
 
 [envs.docs.scripts]
+agent-markdown-check = "python ../tools/emit_agent_markdown.py --site-dir=site --exclude=pages/components_compendium/index.html --canary=pages/API-reference/models/index.html --agent-docs=\"Index: https://vizro.readthedocs.io/en/stable/llms.txt; full documentation: https://vizro.readthedocs.io/en/stable/llms-full.txt\" --bundle=llms-full.txt --bundle-exclude-prefix=pages/API-reference --split-models-page=pages/API-reference/models/index.html --split-models-namespace=vizro.models --url-placeholder=https://vizro.readthedocs.io/en/stable/ --check"
 build = [
   "zensical build --clean",
-  "python ../tools/stamp_llms_txt.py --placeholder=https://vizro.readthedocs.io/en/stable/ --site-dir=site"
+  "python ../tools/emit_agent_markdown.py --site-dir=site --exclude=pages/components_compendium/index.html --canary=pages/API-reference/models/index.html --agent-docs=\"Index: https://vizro.readthedocs.io/en/stable/llms.txt; full documentation: https://vizro.readthedocs.io/en/stable/llms-full.txt\" --bundle=llms-full.txt --bundle-exclude-prefix=pages/API-reference --split-models-page=pages/API-reference/models/index.html --split-models-namespace=vizro.models --url-placeholder=https://vizro.readthedocs.io/en/stable/",
+  "python tools/check_llms_txt.py",
+  "python ../tools/stamp_llms_txt.py --placeholder=https://vizro.readthedocs.io/en/stable/ --site-dir=site --filename=llms.txt --filename=llms-full.txt",
+  "python ../tools/strip_html_leading_whitespace.py --site-dir=site"
 ]
 # Disable warnings on the linkcheck so that HTTP redirects are accepted. We could ignore only that warning and specify
 # more advanced settings using a linkcheckerrc config file.
@@ -161,6 +174,7 @@ logo-check = "grep -q 'logo_watermark_extended.svg' docs/pages/user-guides/insta
 pip = '"{env:HATCH_UV}" pip {args}'
 pycafe-links = "../tools/pycafe/docs_links_filtering.sh"
 serve = "zensical serve --open {args}"
+serve-markdown = ["build", "python -m http.server {args:8000} --directory site"]
 
 [envs.examples]
 # TODO: once the visual-vocabulary dashboard has moved out of this repo, this environment should be removed fully and
@@ -175,7 +189,9 @@ dependencies = [
   "black==24.4.2",
   "isort==5.13.2",
   "plotly==6.0.0",  # to leverage new MapLibre features in visual-vocabulary,
-  "pycirclize>=1.4.0"  # for chord diagram sector allocation and link geometry
+  "pycirclize>=1.4.0",  # for chord diagram sector allocation and link geometry
+  "kedro>=0.19.9",  # for the kedro-scenario-planner example
+  "kedro-datasets"  # for the kedro-scenario-planner example
 ]
 installer = "uv"
 scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
@@ -188,18 +204,18 @@ VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.lower-bounds]
 extra-dependencies = [
-  "dash==4.0.0",
+  "dash==4.1.0",
   "dash-bootstrap-components==2.0.0",
   "dash-ag-grid==34.3.0",
   "dash-mantine-components==2.0.0",
-  "vizro-dash-components==0.1.1",
+  "vizro-dash-components==0.3.0",
   "plotly==5.24.0",
   "pydantic==2.7.0",
   "pandas==2.0.0",
-  "numpy==1.23.0",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
+  "numpy==1.23.2",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
   "kedro==0.19.9"
 ]
-python = "3.10"
+python = "3.11"
 
 [publish.index]
 disable = true

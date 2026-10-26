@@ -33,14 +33,14 @@ categories:
         image: assets/images/charts.png
         highlight_lines: "10-16"
         featured:
-          title: Filter by Time-of-day
-          image: assets/images/timepicker_highlight.gif
+          title: Filter by Date and Time
+          image: assets/images/datetimepicker_highlight.gif
           description: |
-            The new <b>TimePicker</b> selector lets users filter by time-of-day, either as a
-            single time or as a time range. Use it together with the DatePicker to slice your
-            data by both date and time.
-          link_text: View TimePicker
-          link_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#timepicker
+            The new <b>DateTimePicker</b> selector lets users filter by both date and
+            time-of-day in a single control, either as a single date-time or as a
+            date-time range spanning multiple days.
+          link_text: View DateTimePicker
+          link_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#temporal-selectors
         code: |
           import vizro.plotly.express as px
           from vizro import Vizro
@@ -90,9 +90,20 @@ categories:
 
           Vizro().build(vm.Dashboard(pages=[page])).run()
 
-      - id: aggrid
-        name: AgGrid
-        aliases: [table, grid, ag grid, ag-grid, dash_ag_grid, datatable]
+      - id: table
+        name: Table
+        aliases:
+          [
+            table,
+            grid,
+            ag grid,
+            ag-grid,
+            dash_ag_grid,
+            datatable,
+            aggrid,
+            vm.Table,
+            vm.AgGrid,
+          ]
         docs_url: https://vizro.readthedocs.io/en/stable/pages/user-guides/table/
         image: assets/images/aggrid.png
         highlight_lines: "11-13"
@@ -107,7 +118,7 @@ categories:
           page = vm.Page(
               title="Default Dash AG Grid",
               components=[
-                  vm.AgGrid(
+                  vm.Table(
                       figure=dash_ag_grid(data_frame=df)
                   )
               ]
@@ -530,7 +541,18 @@ categories:
 
           - id: slider
             name: Slider
-            aliases: [range input, single slider, numeric, vm.Slider]
+            aliases:
+              [
+                range input,
+                single slider,
+                range slider,
+                min max,
+                interval,
+                two-handle,
+                numeric,
+                vm.Slider,
+                vm.RangeSlider,
+              ]
             image: assets/images/slider.png
             code: |
               controls=[
@@ -542,23 +564,6 @@ categories:
                           value=2
                       ),
                   ),
-              ]
-
-          - id: rangeslider
-            name: RangeSlider
-            aliases:
-              [range slider, min max, interval, two-handle, vm.RangeSlider]
-            image: assets/images/rangeslider.png
-            code: |
-              controls=[
-                  vm.Filter(
-                      column="lifeExp",
-                      selector=vm.RangeSlider(
-                          title="Range Slider (Gapminder - lifeExp)",
-                          step=1,
-                          marks=None
-                      ),
-                  )
               ]
 
           - id: datepicker
@@ -629,6 +634,42 @@ categories:
                   ),
               ]
 
+          - id: datetimepicker
+            name: "DateTimePicker (single date-time)"
+            aliases: [datetime, date time, timestamp, single datetime]
+            image: assets/images/datetimepicker.png
+            code: |
+              controls=[
+                  vm.Filter(
+                      column="datetime",
+                      selector=vm.DateTimePicker(
+                          title="Date-time Picker (single)",
+                          range=False,
+                      )
+                  ),
+              ]
+
+          - id: datetimerangepicker
+            name: "DateTimePicker (date-time range)"
+            aliases:
+              [
+                datetime range,
+                date time range,
+                from to,
+                period,
+                DateTimeRangePicker,
+              ]
+            image: assets/images/datetimerangepicker.png
+            code: |
+              controls=[
+                  vm.Filter(
+                      column="datetime",
+                      selector=vm.DateTimePicker(
+                          title="Date-time Picker (range)",
+                      )
+                  ),
+              ]
+
           - id: switch
             name: Switch
             aliases: [toggle, boolean, on off, checkbox switch, vm.Switch]
@@ -645,13 +686,14 @@ categories:
             name: Cascader
             aliases:
               [hierarchical, tree, nested, cascading, hierarchy, vm.Cascader]
-            image: assets/images/cascader.png # TODO: add screenshot
+            image: assets/images/cascader.png
             code: |
               controls=[
                   vm.Filter(
                       column=["continent", "country"],
                       selector=vm.Cascader(
                           title="Continent",
+                          full_path=True,
                           options={
                               "Asia": ["Japan", "India"],
                               "Europe": ["West", "North"],
@@ -698,7 +740,7 @@ categories:
 
           Vizro().build(vm.Dashboard(pages=[page])).run()
 
-      - id: set-control
+      - id: setcontrols
         name: "Graph & table interactions"
         aliases:
           [
@@ -709,6 +751,7 @@ categories:
             interaction,
             drill,
             drill down,
+            set_controls,
             set_control,
             linked,
             click filter,
@@ -726,7 +769,7 @@ categories:
         description: |
           In Vizro, interactions between components are enabled through an explicitly defined
           intermediate control. Cross-filtering, cross-parameter updates, and cross-highlighting
-          all use the <b>set_control</b> action, providing a flexible and powerful way to link
+          all use the <b>set_controls</b> action, providing a flexible and powerful way to link
           components.
         code: |
           import vizro.plotly.express as px
@@ -740,12 +783,12 @@ categories:
           page = vm.Page(
               title="Cross-filter from table to graph",
               components=[
-                  vm.AgGrid(
+                  vm.Table(
                       title="""Click on a row to use that row's
                       sex to filter graph""",
                       figure=dash_ag_grid(tips),
-                      actions=va.set_control(
-                          control="sex_filter", value="sex"
+                      actions=va.set_controls(
+                          controls="sex_filter", value="sex"
                       ),
                   ),
                   vm.Graph(
@@ -823,22 +866,22 @@ demos:
     platform_class: platform-pycafe
 
   - title: Visual Vocabulary
-    url: https://huggingface.co/spaces/vizro/demo-visual-vocabulary
+    url: https://py.cafe/app/vizro-official/vizro-visual-vocabulary
     image: assets/images/visual_vocabulary.png
-    platform: Hugging Face
-    platform_class: platform-huggingface
+    platform: PyCafe
+    platform_class: platform-pycafe
 
   - title: BI Dashboard
-    url: https://huggingface.co/spaces/vizro/BI-dashboard
+    url: https://py.cafe/app/vizro-official/vizro-BI-dashboard
     image: assets/images/bi_dashboard.png
-    platform: Hugging Face
-    platform_class: platform-huggingface
+    platform: PyCafe
+    platform_class: platform-pycafe
 
   - title: Call Center Dashboard
-    url: https://huggingface.co/spaces/vizro/call-center-dashboard
+    url: https://py.cafe/vizro-official/vizro-call-center-dashboard
     image: assets/images/call_center_dashboard.png
-    platform: Hugging Face
-    platform_class: platform-huggingface
+    platform: PyCafe
+    platform_class: platform-pycafe
 
   - title: KPI Dashboard
     url: https://huggingface.co/spaces/vizro/demo-kpi

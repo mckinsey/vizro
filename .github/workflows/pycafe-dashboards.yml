@@ -16,7 +16,7 @@ defaults:
   run:
     working-directory: vizro-core
 env:
-  PYTHON_VERSION: "3.13"
+  PYTHON_VERSION: "3.14"
 
 jobs:
   create-status:
@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install Hatch

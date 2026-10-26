@@ -9,28 +9,54 @@ import React, {
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 import "../css/dropdown-chrome.css";
 import "../css/cascader.css";
 import { ChevronRightIcon } from "./CascaderIcons";
 import {
   buildColumns,
+  buildLeafToPath,
   type CascaderOption,
   type CascaderOptionsRaw,
   type CascaderPath,
+  type CascaderScalar,
   collectAllLeaves,
   collectLeaves,
+  findDuplicateLeafValues,
+  fromWire,
   normalizeOptions,
   parentCheckState,
   searchOptions,
   serializePath,
+  toWire,
 } from "./cascaderUtils";
 
 /** A single root-to-leaf selection: the sequence of node `value`s (see cascaderUtils). */
 type Path = CascaderPath;
+
+/**
+ * The wire `value`: a list of paths / single path (`full_path=true`), or a list of leaf
+ * scalars / single leaf scalar (`full_path=false`), or null. Normalized internally via `fromWire`.
+ */
+type CascaderValue = Path | Path[] | CascaderScalar | CascaderScalar[] | null;
+
+// Stable identity so path mode's `leafToPath` memo dep doesn't churn; path mode never reads it.
+const EMPTY_LEAF_TO_PATH: Map<string, CascaderPath> = new Map();
+
+// Flyouts are positioned by their outer box edge (`top`/`left`), but `.dash-cascader-column-flyout`
+// has a 1px border (cascader.css) inside that box, so the first row's content sits 1px below the
+// anchor row's top unless we shift the box up by the border width to compensate.
+const FLYOUT_BORDER_WIDTH = 1;
+
+// When a deep enough chain runs out of room in both directions, more than one flyout can clamp to
+// the exact same screen position — this is the stair-step nudge applied to each one after the
+// first so it still peeks out from behind, rather than being fully hidden underneath.
+const OVERLAP_STACK_OFFSET = 8;
 
 export type CascaderLabels = {
   select_all?: string;
@@ -56,7 +82,8 @@ export type CascaderProps = {
   id?: string;
   setProps?: (props: Record<string, unknown>) => void;
   options: CascaderOptionsRaw;
-  value?: Path | Path[] | null;
+  value?: CascaderValue;
+  full_path?: boolean;
   multi?: boolean;
   searchable?: boolean;
   clearable?: boolean;
@@ -80,6 +107,7 @@ const CascaderFragment = ({
   setProps,
   options: optionsRaw,
   value,
+  full_path = false,
   multi = false,
   searchable = true,
   clearable = true,
@@ -109,6 +137,28 @@ const CascaderFragment = ({
     [labelsProp],
   );
   const options = useMemo(() => normalizeOptions(optionsRaw), [optionsRaw]);
+
+  // Leaf → path lookup for the leaf-mode (full_path=false) wire boundary. Path mode never reads it,
+  // so skip building the per-leaf Map there. (The tree is still walked in path mode for
+  // `allLeafPathsSet` and `pool`; this only avoids the extra Map allocation.)
+  const leafToPath = useMemo(
+    () => (full_path ? EMPTY_LEAF_TO_PATH : buildLeafToPath(options)),
+    [options, full_path],
+  );
+
+  // Leaf mode requires unique leaf values (a leaf is the wire identity). Duplicates make the
+  // leaf→path resolution ambiguous, so warn loudly (last-wins) rather than crash. Path mode is fine.
+  useEffect(() => {
+    if (full_path) return;
+    const duplicates = findDuplicateLeafValues(options);
+    if (duplicates.length > 0) {
+      console.error(
+        `vdc.Cascader: leaf mode (full_path=false) requires unique leaf values, but found ` +
+          `duplicates: ${duplicates.map(String).join(", ")}. Selections may be ambiguous; ` +
+          `set full_path=true to address leaves by their full path.`,
+      );
+    }
+  }, [options, full_path]);
 
   const [isOpen, setIsOpen] = useState(false);
   const [activePath, setActivePath] = useState<number[]>([]);
@@ -167,8 +217,8 @@ const CascaderFragment = ({
   );
   const prevAllLeafPathsRef = useRef(allLeafPathsSet);
   useEffect(() => {
-    // On an options change, drop any selected path that no longer terminates on
-    // a leaf (identity is the serialized path, so duplicate labels are safe).
+    // On an options change, drop any selection that no longer terminates on a current leaf.
+    // Normalize the wire value to internal paths (mode-aware), prune, then re-encode to the wire.
     if (
       prevAllLeafPathsRef.current === allLeafPathsSet ||
       searchValue ||
@@ -179,27 +229,31 @@ const CascaderFragment = ({
       return;
     }
     prevAllLeafPathsRef.current = allLeafPathsSet;
+    if (multi && !Array.isArray(value)) {
+      // A non-array value is invalid in multi mode; reset to an empty selection.
+      setProps?.({ value: [] });
+      return;
+    }
+    const paths = fromWire(value, leafToPath, multi, full_path);
+    const cleaned = paths.filter((p) => allLeafPathsSet.has(serializePath(p)));
     if (multi) {
-      if (Array.isArray(value)) {
-        const paths = value as Path[];
-        const cleaned = paths.filter((p) =>
-          allLeafPathsSet.has(serializePath(p)),
-        );
-        if (cleaned.length !== paths.length) {
-          setProps?.({ value: cleaned });
-        }
-      } else {
-        // A non-array value is invalid in multi mode; reset to an empty selection.
-        setProps?.({ value: [] });
+      const cleanedWire = toWire(cleaned, multi, full_path);
+      // fromWire drops unresolved leaves in leaf mode, so compare the re-encoded wire to the input.
+      if (JSON.stringify(cleanedWire) !== JSON.stringify(value)) {
+        setProps?.({ value: cleanedWire });
       }
-    } else if (
-      !Array.isArray(value) ||
-      value.length === 0 ||
-      !allLeafPathsSet.has(serializePath(value as Path))
-    ) {
+    } else if (cleaned.length === 0) {
       setProps?.({ value: null });
     }
-  }, [allLeafPathsSet, value, multi, searchValue, setProps]);
+  }, [
+    allLeafPathsSet,
+    value,
+    multi,
+    searchValue,
+    setProps,
+    leafToPath,
+    full_path,
+  ]);
 
   const finalizeClose = useCallback(() => {
     pendingSearchRef.current = "";
@@ -231,31 +285,39 @@ const CascaderFragment = ({
   );
 
   useEffect(() => {
-    if (isOpen && searchable) {
-      requestAnimationFrame(() => searchRef.current?.focus());
-    }
+    if (!isOpen) return;
+    requestAnimationFrame(() => {
+      if (searchable) {
+        searchRef.current?.focus();
+      } else {
+        // No search input to receive focus, so focus the panel itself. It is not in the panel's
+        // focusable list, so `handlePanelKeyDown` treats it as index -1 and ArrowDown moves to the
+        // first option (rather than the keystroke being lost on the still-focused trigger).
+        cascaderContentRef.current?.focus();
+      }
+    });
   }, [isOpen, searchable]);
 
+  // OUTPUT seam: `next` is always the selection in internal path form; `toWire` encodes it to the
+  // active wire shape (leaf scalars when full_path=false, paths when true) before emitting.
   const emitValue = useCallback(
-    (next: unknown) => {
+    (next: Path[]) => {
+      const wire = toWire(next, multi, full_path) as typeof value;
       if (debounce) {
-        setLocalValue(next as typeof value);
+        setLocalValue(wire);
       } else {
-        setLocalValue(next as typeof value);
-        setProps?.({ value: next });
+        setLocalValue(wire);
+        setProps?.({ value: wire });
       }
     },
-    [debounce, setProps],
+    [debounce, setProps, multi, full_path],
   );
 
-  const selectedPaths: Path[] = useMemo(() => {
-    const v = localValue;
-    if (v === null || v === undefined) return [];
-    // multi: value is a list of paths; single: value is one path.
-    if (multi) return Array.isArray(v) ? (v as Path[]) : [];
-    // A single path must be a non-empty array; treat [] as no selection.
-    return Array.isArray(v) && v.length > 0 ? [v as Path] : [];
-  }, [localValue, multi]);
+  // INPUT seam: normalize the wire `localValue` into internal path form (mode-aware).
+  const selectedPaths: Path[] = useMemo(
+    () => fromWire(localValue, leafToPath, multi, full_path),
+    [localValue, leafToPath, multi, full_path],
+  );
 
   const selectedKeys = useMemo(
     () => selectedPaths.map(serializePath),
@@ -272,17 +334,231 @@ const CascaderFragment = ({
     [options, activePath],
   );
 
+  // Each column beyond the first is rendered as a pop-out (see renderColumns) portaled outside
+  // `.dash-cascader-content` — its `overflow: hidden` (needed so column 0's own list scrolls without
+  // a second scrollbar) would otherwise clip a same-level sibling that tried to escape it, and CSS
+  // doesn't allow "clipped on one axis, visible on the other" on a single element (a mixed
+  // overflow-x/overflow-y forces the visible axis to become `auto`, silently turning the panel into
+  // a real horizontal scroller that then jumps to follow focus). Portaling sidesteps that entirely.
+  //
+  // Flyouts use `position: fixed`, so each one's `top`/`left` (flyoutGeometry.rects[colIdx]) is computed in
+  // viewport coordinates directly from the active row that opened it and the right edge of the
+  // column before it — no relative/percentage math, no coordinate-space conversion.
+  const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
+  // `width` tracks column 0 alongside `rects` (not a separate ResizeObserver) so a single set of
+  // triggers — column mount, content reposition, scroll (see below) — keeps both in sync; measuring
+  // width independently would need its own ref-callback/observer wiring to catch the same cases.
+  const [flyoutGeometry, setFlyoutGeometry] = useState<{
+    width?: number;
+    rects: { top: number; left: number }[];
+  }>({ rects: [] });
+
+  const recomputeFlyoutRects = useCallback(() => {
+    const rects: { top: number; left: number }[] = [];
+    const col0Rect = columnRefs.current[0]?.getBoundingClientRect();
+    if (!col0Rect) {
+      setFlyoutGeometry({ rects });
+      return;
+    }
+    // Flyouts stack rightward from column 0 by default, each one offset by a further column width —
+    // with enough levels open that runs past the right edge of a normal-width viewport, and since
+    // these are `position: fixed`, no page scroll ever reaches them again. Decide once, for the whole
+    // currently-open chain, whether there's enough room to grow rightward; if not — and the left side
+    // has more room — flip the whole chain leftward instead, the way OS-style cascading menus do at a
+    // screen edge. (Comparing against the left side, not just checking whether it fits, matters: on
+    // a page with a left nav rail, neither side may fully fit a long chain, and flipping blindly would
+    // swap a merely-cramped placement for an even worse one.)
+    const colWidth = col0Rect.width;
+    const spaceRight = window.innerWidth - col0Rect.right;
+    const growLeft =
+      spaceRight < (columns.length - 1) * colWidth &&
+      col0Rect.left > spaceRight;
+    // Mirrors `contentMaxHeight`'s formula (a CSS string, not usable for arithmetic here) — the
+    // tallest a flyout can ever render, used below as the pre-mount fallback for its real height.
+    const maxHeightPx = maxHeight
+      ? Math.min(maxHeight, window.innerHeight - 100)
+      : window.innerHeight - 100;
+    for (let colIdx = 1; colIdx < columns.length; colIdx++) {
+      const prevColumnEl = columnRefs.current[colIdx - 1];
+      const rowEl = prevColumnEl?.querySelector<HTMLElement>(
+        `[data-row-index="${activePath[colIdx - 1]}"]`,
+      );
+      if (!prevColumnEl || !rowEl) continue;
+      // `left` is derived purely from column 0's rect (always correctly positioned — it's in normal
+      // flow) rather than the previous flyout's own rect, since when several levels mount in the same
+      // update (e.g. search navigating straight into a branch 2+ levels deep) the previous flyout may
+      // still be rendering at this render's not-yet-corrected fallback position.
+      // `anchorTop` has the same problem for column >= 2: anchor to the already-computed correct top
+      // of colIdx - 1 (available from this same pass, processed in order) plus the row's offset
+      // *within* its column — that offset is correct regardless of the column's own absolute
+      // position, since both the row and its column share whatever position error the column
+      // currently has.
+      const rowRect = rowEl.getBoundingClientRect();
+      const anchorTop =
+        colIdx === 1
+          ? rowRect.top
+          : rects[colIdx - 1].top +
+            (rowRect.top - prevColumnEl.getBoundingClientRect().top);
+      // Flyouts grow downward from the anchor row by default — fine until a row opens one close
+      // enough to the viewport's bottom edge that the flyout would run past it, since (like the
+      // horizontal case) these are `position: fixed` and no page scroll ever reaches them. Flip
+      // upward (bottom-aligned to the row instead of top-aligned) when there's not enough room
+      // below *and* there's more room above, decided per level since rows at different depths in
+      // the same open chain can sit at very different heights. `flyoutHeight` prefers this flyout's
+      // own already-rendered height (from a previous pass) over the panel-wide cap, since real
+      // content shorter than that cap would otherwise make the flip decision overly conservative.
+      const flyoutHeight =
+        columnRefs.current[colIdx]?.getBoundingClientRect().height ||
+        maxHeightPx;
+      const rowBottom = anchorTop + rowRect.height;
+      const spaceBelow = window.innerHeight - anchorTop;
+      const spaceAbove = rowBottom;
+      const topUp = rowBottom + FLYOUT_BORDER_WIDTH - flyoutHeight;
+      // Only flip if doing so actually lands fully on-screen (`topUp >= 0`) — otherwise the flyout
+      // is taller than *either* gap, and flipping would just swap "cut off at the bottom" for
+      // "detached from the row entirely, pinned to the top of the screen" once clamped below. Fall
+      // through to the default (grow down from the row) instead: worst case its tail runs past the
+      // viewport's bottom edge, but it still visibly opens from the option the user picked.
+      const growUp =
+        spaceBelow < flyoutHeight && spaceAbove > spaceBelow && topUp >= 0;
+      const top = growUp ? topUp : anchorTop - FLYOUT_BORDER_WIDTH;
+      const left = growLeft
+        ? col0Rect.left - colIdx * colWidth
+        : col0Rect.right + (colIdx - 1) * colWidth;
+      // Clamp the lower bound only — `top` is already >= 0 by construction (the row it anchors to
+      // is on-screen, and `growUp` is only chosen when its own position is too), so this just
+      // guards float rounding. Deliberately NOT clamping an upper bound here: doing so could pull
+      // the flyout's top away from the anchor row when `flyoutHeight` is large relative to the
+      // viewport, reintroducing the same "detached from the clicked option" problem `topUp >= 0`
+      // above prevents for the flip case — the one place that still needs a horizontal-only
+      // last-resort clamp is `left` below, since there's no anchor-preserving fallback on that axis.
+      let clampedTop = Math.max(0, top);
+      let clampedLeft = Math.max(
+        0,
+        Math.min(left, window.innerWidth - colWidth),
+      );
+      // That clamp can land several consecutive levels on the exact same position (every ideal
+      // position past the edge clamps to the same ceiling). When this one would fully coincide
+      // with the previous, already-placed flyout, step it diagonally instead so it still peeks out
+      // from behind — later levels already paint on top of earlier ones (same z-index, later in
+      // DOM/portal order), so the step reads as an ordinary stack with the active (deepest) level
+      // on top, rather than one flyout fully hiding another.
+      const prevRect = rects[colIdx - 1];
+      if (
+        prevRect &&
+        Math.abs(clampedLeft - prevRect.left) < 1 &&
+        Math.abs(clampedTop - prevRect.top) < 1
+      ) {
+        clampedLeft = Math.max(
+          0,
+          Math.min(
+            prevRect.left + OVERLAP_STACK_OFFSET,
+            window.innerWidth - colWidth,
+          ),
+        );
+        clampedTop = Math.max(
+          0,
+          Math.min(
+            prevRect.top + OVERLAP_STACK_OFFSET,
+            window.innerHeight - flyoutHeight,
+          ),
+        );
+      }
+      rects[colIdx] = { top: clampedTop, left: clampedLeft };
+    }
+    setFlyoutGeometry({ width: colWidth, rects });
+  }, [columns, activePath, maxHeight]);
+
+  useLayoutEffect(() => {
+    recomputeFlyoutRects();
+  }, [recomputeFlyoutRects]);
+
+  // Popover.Content (and these portaled flyouts) fully unmount/remount on close/reopen. Radix can
+  // mount Content in a later commit than the one that flips `isOpen`, so recomputeFlyoutRects's own
+  // useLayoutEffect may run while a column's ref is still null from the previous close — and an
+  // effect that attaches scroll listeners only to *today's* columnRefs would miss a reopen the same
+  // way, since its own deps (recomputeFlyoutRects, keyed on columns/activePath) don't necessarily
+  // change either. A column's ref callback firing with a non-null element is the one signal
+  // guaranteed to coincide with that column actually being in the DOM, so both the one-off recompute
+  // and the scroll listener live there instead of in effects. `stableRecompute` and the per-colIdx
+  // ref callbacks (cached here) must keep stable identities — recreating them every render would
+  // make React detach/reattach refs and listeners on every re-render, turning a recompute triggered
+  // from inside one into an infinite render loop.
+  const recomputeFlyoutRectsRef = useRef(recomputeFlyoutRects);
+  recomputeFlyoutRectsRef.current = recomputeFlyoutRects;
+  const stableRecompute = useRef(() =>
+    recomputeFlyoutRectsRef.current(),
+  ).current;
+
+  // Scrolling any column in the chain shifts every flyout anchored below it (including
+  // scrollIntoView calls that restore focus to a preselected path on open) — tracked per colIdx so
+  // the listener can be moved from the outgoing element to the incoming one on remount.
+  const columnScrollTargetsRef = useRef<Map<number, HTMLDivElement>>(new Map());
+
+  const columnRefCallbacks = useRef<
+    Map<number, (el: HTMLDivElement | null) => void>
+  >(new Map());
+  const getColumnRefCallback = useCallback(
+    (colIdx: number) => {
+      let cb = columnRefCallbacks.current.get(colIdx);
+      if (!cb) {
+        cb = (el: HTMLDivElement | null) => {
+          const prevScrollTarget = columnScrollTargetsRef.current.get(colIdx);
+          if (prevScrollTarget) {
+            prevScrollTarget.removeEventListener("scroll", stableRecompute);
+            columnScrollTargetsRef.current.delete(colIdx);
+          }
+          columnRefs.current[colIdx] = el;
+          if (el) {
+            el.addEventListener("scroll", stableRecompute, { passive: true });
+            columnScrollTargetsRef.current.set(colIdx, el);
+            recomputeFlyoutRectsRef.current();
+          }
+        };
+        columnRefCallbacks.current.set(colIdx, cb);
+      }
+      return cb;
+    },
+    [stableRecompute],
+  );
+
+  // Radix positions `.dash-cascader-content`'s *parent* — its own unstyled Popper wrapper div,
+  // `position: fixed` with an inline `transform: translate(...)` — asynchronously relative to
+  // React's commit, and it can re-render (and re-attach this ref) several times while doing so: an
+  // initial off-screen placeholder transform, then one or more corrections once it measures the
+  // anchor. Recomputing synchronously on every attach (mirroring the column ref callbacks above)
+  // fights this: our resulting state update feeds back into Radix's own measure-and-reposition
+  // pass, which re-renders and re-attaches this same ref, which recomputes again — an infinite
+  // loop. Deferring the eager recompute past the current paint (rAF) lets Radix's own positioning
+  // settle first; the observer stays for any correction that arrives even later.
+  const contentMutationObserverRef = useRef<MutationObserver | null>(null);
+  const setCascaderContentRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      cascaderContentRef.current = el as HTMLDivElement;
+      contentMutationObserverRef.current?.disconnect();
+      contentMutationObserverRef.current = null;
+      if (el?.parentElement) {
+        requestAnimationFrame(stableRecompute);
+        const observer = new MutationObserver(stableRecompute);
+        observer.observe(el.parentElement, {
+          attributes: true,
+          attributeFilter: ["style"],
+        });
+        contentMutationObserverRef.current = observer;
+      }
+    },
+    [stableRecompute],
+  );
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: re-run on focusTick (bumped whenever a pending focus target is queued), not just when columns changes
   useEffect(() => {
     const pending = pendingFocusRef.current;
     if (!pending) return;
     pendingFocusRef.current = null;
-    const root = cascaderContentRef.current;
-    if (!root) return;
-    const columnEls = root.querySelectorAll<HTMLElement>(
-      ".dash-cascader-column",
-    );
-    const columnEl = columnEls[pending.colIdx];
+    // Columns beyond the first are portaled outside cascaderContentRef's DOM subtree (see
+    // recomputeFlyoutRects), so look them up via columnRefs (populated for every column,
+    // portaled or not) rather than querying the content node's real DOM descendants.
+    const columnEl = columnRefs.current[pending.colIdx];
     if (!columnEl) return;
     // In single-select mode the row itself is focusable (.dash-cascader-kbd-row);
     // in multi-select mode only its checkbox is, so fall back to that.
@@ -326,9 +602,9 @@ const CascaderFragment = ({
   );
 
   const clearSelection = useCallback(() => {
-    const next = multi ? [] : null;
-    emitValue(next);
-  }, [multi, emitValue]);
+    // Empty selection; toWire encodes it as [] (multi) or null (single) in either mode.
+    emitValue([]);
+  }, [emitValue]);
 
   const handleClearSearch = useCallback(
     (e: MouseEvent) => {
@@ -364,9 +640,25 @@ const CascaderFragment = ({
 
       const focusableSelector =
         'input[type="search"], input:not([disabled]), button:not([disabled]), .dash-cascader-kbd-row';
-      const focusableElements = e.currentTarget.querySelectorAll(
-        focusableSelector,
-      ) as NodeListOf<HTMLElement>;
+      // Columns beyond the first are portaled outside e.currentTarget's (Popover.Content's) DOM
+      // subtree (see recomputeFlyoutRects), so search from portalContainer — the real DOM ancestor
+      // shared by content and every portaled flyout — instead. That also picks up the trigger
+      // button and its own descendants (e.g. the trigger's "clear selection" button, which matches
+      // `button:not([disabled])`), so exclude the whole trigger subtree, not just the trigger
+      // element itself — a descendant slipping through would still be in `portalContainer` but
+      // outside `Popover.Content`, where this handler is attached, trapping focus there once landed.
+      // Select All / Deselect All are excluded from the vertical (up/down) flow: they form a
+      // horizontal group navigated with Left/Right, and ArrowDown from them jumps to the options
+      // (see handleActionKeyDown).
+      const focusableElements = (
+        Array.from(
+          portalContainer?.querySelectorAll(focusableSelector) ?? [],
+        ) as HTMLElement[]
+      ).filter(
+        (el) =>
+          !triggerRef.current?.contains(el) &&
+          !el.classList.contains("dash-dropdown-action-button"),
+      );
 
       if (focusableElements.length === 0) {
         return;
@@ -374,7 +666,7 @@ const CascaderFragment = ({
 
       e.preventDefault();
 
-      const currentIndex = Array.from(focusableElements).indexOf(
+      const currentIndex = focusableElements.indexOf(
         document.activeElement as HTMLElement,
       );
       let nextIndex = -1;
@@ -407,13 +699,10 @@ const CascaderFragment = ({
       if (nextIndex > -1) {
         focusableElements[nextIndex].focus();
         if (nextIndex === 0) {
-          const root = cascaderContentRef.current;
-          if (root) {
-            for (const el of root.querySelectorAll(
-              ".dash-cascader-column, .dash-cascader-results",
-            )) {
-              (el as HTMLElement).scrollTop = 0;
-            }
+          for (const el of portalContainer?.querySelectorAll(
+            ".dash-cascader-column, .dash-cascader-results",
+          ) ?? []) {
+            (el as HTMLElement).scrollTop = 0;
           }
         } else {
           focusableElements[nextIndex].scrollIntoView({
@@ -421,6 +710,36 @@ const CascaderFragment = ({
             block: "nearest",
           });
         }
+      }
+    },
+    [portalContainer],
+  );
+
+  // Keyboard nav for the Select All / Deselect All action buttons: Left/Right move within the
+  // horizontal group, ArrowDown leaves the group and focuses the first option below.
+  const handleActionKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      const root = cascaderContentRef.current;
+      if (!root) return;
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        e.stopPropagation();
+        const buttons = Array.from(
+          root.querySelectorAll<HTMLElement>(".dash-dropdown-action-button"),
+        );
+        const next =
+          buttons[
+            buttons.indexOf(e.currentTarget) + (e.key === "ArrowRight" ? 1 : -1)
+          ];
+        next?.focus();
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        e.stopPropagation();
+        root
+          .querySelector<HTMLElement>(
+            '.dash-cascader-column .dash-cascader-kbd-row, .dash-cascader-column input[type="checkbox"]:not([disabled])',
+          )
+          ?.focus();
       }
     },
     [],
@@ -435,10 +754,13 @@ const CascaderFragment = ({
           : [...selectedPaths, path];
         emitValue(next);
       } else {
-        localValueRef.current = path;
-        valueRef.current = path;
-        setLocalValue(path);
-        setProps?.({ value: path });
+        // OUTPUT seam: single-select commits immediately (even under debounce). Encode to the wire
+        // shape and keep the refs in sync so finalizeClose sees the committed value this tick.
+        const wire = toWire([path], multi, full_path) as typeof value;
+        localValueRef.current = wire;
+        valueRef.current = wire;
+        setLocalValue(wire);
+        setProps?.({ value: wire });
       }
       if (shouldCloseOnSelect) {
         finalizeClose();
@@ -446,6 +768,7 @@ const CascaderFragment = ({
     },
     [
       multi,
+      full_path,
       selectedSet,
       selectedPaths,
       selectedKeys,
@@ -645,6 +968,16 @@ const CascaderFragment = ({
                 type="button"
                 className="dash-dropdown-clear"
                 onClick={() => clearSelection()}
+                onKeyDown={(e) => {
+                  // When the clear button is focused, Enter/Space clears the selection. Stop the
+                  // event so it does not bubble to the trigger, whose handler would otherwise open
+                  // the panel instead of clearing.
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    clearSelection();
+                  }
+                }}
                 title={labels.clear_selection}
                 aria-label={labels.clear_selection}
               >
@@ -658,12 +991,23 @@ const CascaderFragment = ({
 
       <Popover.Portal container={portalContainer}>
         <Popover.Content
-          ref={cascaderContentRef}
+          ref={setCascaderContentRef}
           className="dash-dropdown-content dash-cascader-content"
           align="start"
-          sideOffset={5}
+          // Wider than the shared dropdown chrome's default gap so the panel clearly reads as a
+          // separate floating popup rather than an extension of the trigger.
+          sideOffset={8}
+          tabIndex={-1}
           onOpenAutoFocus={(e) => e.preventDefault()}
           onKeyDown={handlePanelKeyDown}
+          // Flyout columns (colIdx > 0) are portaled into portalContainer directly, alongside — not
+          // inside — this content node (see recomputeFlyoutRects), so Radix's own DOM-containment
+          // check would otherwise treat a click on one as "outside" and dismiss the panel.
+          onPointerDownOutside={(e) => {
+            if (portalContainer?.contains(e.target as Node)) {
+              e.preventDefault();
+            }
+          }}
           style={{ maxHeight: contentMaxHeight }}
         >
           {searchable && (
@@ -712,6 +1056,7 @@ const CascaderFragment = ({
                 type="button"
                 className="dash-dropdown-action-button"
                 onClick={handleSelectAll}
+                onKeyDown={handleActionKeyDown}
               >
                 {labels.select_all}
               </button>
@@ -720,6 +1065,7 @@ const CascaderFragment = ({
                   type="button"
                   className="dash-dropdown-action-button"
                   onClick={handleDeselectAll}
+                  onKeyDown={handleActionKeyDown}
                 >
                   {labels.deselect_all}
                 </button>
@@ -734,135 +1080,182 @@ const CascaderFragment = ({
 
   function renderColumns() {
     return (
-      <div className="dash-cascader-columns">
-        {columns.map((colOptions, colIdx) => (
-          <div
-            key={colOptions.map((o) => String(o.value)).join("|")}
-            className="dash-cascader-column"
-          >
-            {colOptions.map((opt, rowIdx) => {
-              const isActive = activePath[colIdx] === rowIdx;
-              const isLeafNode = !opt.children || opt.children.length === 0;
-              const isSelected = selectedSet.has(opt.key);
+      <>
+        <div className="dash-cascader-columns">
+          {renderColumn(columns[0], 0)}
+        </div>
+        {portalContainer &&
+          columns.slice(1).map((colOptions, i) => {
+            const colIdx = i + 1;
+            // Render unconditionally, even before flyoutGeometry.rects[colIdx] is measured (e.g.
+            // search navigates straight into a branch 2+ levels deep, adding several columns in one
+            // update: column colIdx's rect depends on column colIdx-1's DOM ref, which only exists
+            // once colIdx-1 itself has rendered — so gating this on an existing measurement would
+            // leave every level past the first stuck at colIdx-1's ref never mounting). The fallback
+            // position/width is corrected once column 0 and its chain of ancestor flyouts mount
+            // (ref callbacks), Radix finishes placing the content (MutationObserver), or scrolling
+            // shifts anything in the chain (scroll listeners) — see recomputeFlyoutRects above.
+            return createPortal(
+              renderColumn(colOptions, colIdx, flyoutGeometry.rects[colIdx]),
+              portalContainer,
+              // Prefixed with colIdx: a value-only key can collide across sibling portals when a
+              // valid tree reuses the same option values at different depths/branches, since each
+              // open level maps to its own portal within this same list. colIdx is unique and
+              // stable per slot in the chain. The content suffix is kept so switching branches at
+              // the same depth still remounts (e.g. resetting that column's scroll position)
+              // instead of patching the same instance in place.
+              `${colIdx}:${colOptions.map((o) => String(o.value)).join("|")}`,
+            );
+          })}
+      </>
+    );
+  }
 
-              if (isLeafNode) {
-                const kbdRow = !multi && !opt.disabled;
-                return (
-                  // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style option row
-                  <div
-                    key={opt.key}
-                    className={[
-                      "dash-cascader-row",
-                      isSelected && !multi ? "selected" : "",
-                      opt.disabled ? "disabled" : "",
-                      kbdRow ? "dash-cascader-kbd-row" : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    style={rowStyle}
-                    tabIndex={kbdRow ? 0 : undefined}
-                    data-row-index={rowIdx}
-                    onClick={() => !opt.disabled && handleLeafClick(opt)}
-                    onKeyDown={(e) => {
-                      if (opt.disabled) return;
-                      // Space is left to the native checkbox toggle in multi mode
-                      // (handling it here too would double-toggle); Enter has no
-                      // native effect on a checkbox, so it's always ours to handle.
-                      if (e.key === "Enter" || (kbdRow && e.key === " ")) {
-                        e.preventDefault();
-                        handleLeafClick(opt);
-                      } else if (e.key === "ArrowLeft" && colIdx > 0) {
-                        e.preventDefault();
-                        handleArrowLeft(colIdx);
-                      }
-                    }}
-                  >
-                    {multi && (
-                      <input
-                        type="checkbox"
-                        className="dash-cascader-checkbox"
-                        checked={isSelected}
-                        disabled={opt.disabled}
-                        onChange={() => handleLeafClick(opt)}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    )}
-                    <span className="dash-cascader-row-label">{opt.label}</span>
-                  </div>
-                );
+  function renderColumn(
+    colOptions: CascaderOption[],
+    colIdx: number,
+    flyoutRect?: { top: number; left: number },
+  ) {
+    const isFlyout = colIdx > 0;
+    return (
+      <div
+        key={colOptions.map((o) => String(o.value)).join("|")}
+        ref={getColumnRefCallback(colIdx)}
+        data-col-idx={colIdx}
+        className={[
+          "dash-cascader-column",
+          isFlyout ? "dash-cascader-column-flyout" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        style={
+          isFlyout
+            ? {
+                ...(flyoutRect ?? { top: 0, left: 0 }),
+                width: flyoutGeometry.width,
+                maxHeight: contentMaxHeight,
               }
+            : undefined
+        }
+      >
+        {colOptions.map((opt, rowIdx) => {
+          const isActive = activePath[colIdx] === rowIdx;
+          const isLeafNode = !opt.children || opt.children.length === 0;
+          const isSelected = selectedSet.has(opt.key);
 
-              const checkState = multi
-                ? parentCheckState(opt, selectedSet)
-                : undefined;
-              const kbdRow = !multi && !opt.disabled;
-              return (
-                // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style parent row
-                <div
-                  key={opt.key}
-                  className={[
-                    "dash-cascader-row",
-                    isActive ? "active" : "",
-                    opt.disabled ? "disabled" : "",
-                    kbdRow ? "dash-cascader-kbd-row" : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  style={rowStyle}
-                  tabIndex={kbdRow ? 0 : undefined}
-                  data-row-index={rowIdx}
-                  onClick={() =>
-                    !opt.disabled && handleParentClick(colIdx, rowIdx)
+          if (isLeafNode) {
+            const kbdRow = !multi && !opt.disabled;
+            return (
+              // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style option row
+              <div
+                key={opt.key}
+                className={[
+                  "dash-cascader-row",
+                  isSelected && !multi ? "selected" : "",
+                  opt.disabled ? "disabled" : "",
+                  kbdRow ? "dash-cascader-kbd-row" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                style={rowStyle}
+                tabIndex={kbdRow ? 0 : undefined}
+                data-row-index={rowIdx}
+                onClick={() => !opt.disabled && handleLeafClick(opt)}
+                onKeyDown={(e) => {
+                  if (opt.disabled) return;
+                  // Space is left to the native checkbox toggle in multi mode
+                  // (handling it here too would double-toggle); Enter has no
+                  // native effect on a checkbox, so it's always ours to handle.
+                  if (e.key === "Enter" || (kbdRow && e.key === " ")) {
+                    e.preventDefault();
+                    handleLeafClick(opt);
+                  } else if (e.key === "ArrowLeft" && colIdx > 0) {
+                    e.preventDefault();
+                    handleArrowLeft(colIdx);
                   }
-                  onKeyDown={(e) => {
-                    if (opt.disabled) return;
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      if (multi) {
-                        setParentSelection(opt);
-                      } else {
-                        handleParentClick(colIdx, rowIdx);
-                      }
-                    } else if (kbdRow && e.key === " ") {
-                      e.preventDefault();
-                      handleParentClick(colIdx, rowIdx);
-                    } else if (e.key === "ArrowRight") {
-                      e.preventDefault();
-                      handleArrowRight(colIdx, rowIdx);
-                    } else if (e.key === "ArrowLeft" && colIdx > 0) {
-                      e.preventDefault();
-                      handleArrowLeft(colIdx);
-                    }
-                  }}
-                >
-                  {multi && (
-                    <input
-                      type="checkbox"
-                      className="dash-cascader-checkbox"
-                      checked={checkState === "checked"}
-                      ref={(el) => {
-                        if (el)
-                          el.indeterminate = checkState === "indeterminate";
-                      }}
-                      disabled={opt.disabled}
-                      onChange={(e) => handleParentCheckbox(opt, e)}
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  )}
-                  <span className="dash-cascader-row-label">{opt.label}</span>
-                  <ChevronRightIcon
-                    className={[
-                      "dash-cascader-chevron",
-                      isActive ? "dash-cascader-chevron-expanded" : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
+                }}
+              >
+                {multi && (
+                  <input
+                    type="checkbox"
+                    className="dash-cascader-checkbox"
+                    checked={isSelected}
+                    disabled={opt.disabled}
+                    onChange={() => handleLeafClick(opt)}
+                    onClick={(e) => e.stopPropagation()}
                   />
-                </div>
-              );
-            })}
-          </div>
-        ))}
+                )}
+                <span className="dash-cascader-row-label">{opt.label}</span>
+              </div>
+            );
+          }
+
+          const checkState = multi
+            ? parentCheckState(opt, selectedSet)
+            : undefined;
+          const kbdRow = !multi && !opt.disabled;
+          return (
+            // biome-ignore lint/a11y/noStaticElementInteractions: listbox-style parent row
+            <div
+              key={opt.key}
+              className={[
+                "dash-cascader-row",
+                isActive ? "active" : "",
+                opt.disabled ? "disabled" : "",
+                kbdRow ? "dash-cascader-kbd-row" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              style={rowStyle}
+              tabIndex={kbdRow ? 0 : undefined}
+              data-row-index={rowIdx}
+              onClick={() => !opt.disabled && handleParentClick(colIdx, rowIdx)}
+              onKeyDown={(e) => {
+                if (opt.disabled) return;
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  if (multi) {
+                    setParentSelection(opt);
+                  } else {
+                    handleParentClick(colIdx, rowIdx);
+                  }
+                } else if (kbdRow && e.key === " ") {
+                  e.preventDefault();
+                  handleParentClick(colIdx, rowIdx);
+                } else if (e.key === "ArrowRight") {
+                  e.preventDefault();
+                  handleArrowRight(colIdx, rowIdx);
+                } else if (e.key === "ArrowLeft" && colIdx > 0) {
+                  e.preventDefault();
+                  handleArrowLeft(colIdx);
+                }
+              }}
+            >
+              {multi && (
+                <input
+                  type="checkbox"
+                  className="dash-cascader-checkbox"
+                  checked={checkState === "checked"}
+                  ref={(el) => {
+                    if (el) el.indeterminate = checkState === "indeterminate";
+                  }}
+                  disabled={opt.disabled}
+                  onChange={(e) => handleParentCheckbox(opt, e)}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              )}
+              <span className="dash-cascader-row-label">{opt.label}</span>
+              <ChevronRightIcon
+                className={[
+                  "dash-cascader-chevron",
+                  isActive ? "dash-cascader-chevron-expanded" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              />
+            </div>
+          );
+        })}
       </div>
     );
   }

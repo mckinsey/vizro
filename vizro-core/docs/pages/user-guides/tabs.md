@@ -1,6 +1,16 @@
+---
+description: "Use `Tabs` to let users switch between multiple `Container`s that share the same screen space, and add a tooltip to the tab strip."
+---
+
 # How to use tabs
 
 This guide shows you how to use the [`Tabs`][vizro.models.Tabs] model, which organize and separate groups of related content in a dashboard, letting users switch between different sections or views.
+
+!!! tip "When to use this"
+
+    Choose `Tabs` to let users switch between several [`Container`s](container.md) that share the same screen space. To group components into a single visible section, use a [`Container`](container.md) directly; to arrange components on the page as a whole, use [`Page.layout`](layouts.md).
+
+**API reference:** [`Tabs`][vizro.models.Tabs]
 
 They are essentially a way of putting multiple [`Container`][vizro.models.Container] models in the same screen space, and letting the user switch between them. A [`Container`](../user-guides/container.md) enables the grouping of page components into sections and subsections. The [`Tabs`][vizro.models.Tabs] model is based on the underlying Dash component [`dbc.Tabs`](https://www.dash-bootstrap-components.com/docs/components/tabs/).
 
@@ -98,7 +108,7 @@ To add a [`Tabs`][vizro.models.Tabs] model to your page, do the following:
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
-          components:
+          - components:
             - type: tabs
               title: Tabs Title
               tabs:
@@ -133,10 +143,12 @@ To add a [`Tabs`][vizro.models.Tabs] model to your page, do the following:
                         y: lifeExp
                         size: pop
                         color: continent
-          title: Tabs
+            title: Tabs
         ```
 
     === "Result"
+
+        The dashboard renders the "Tabs" example.
 
         [![Tabs]][tabs]
 
@@ -222,7 +234,7 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
-          components:
+          - components:
             - type: tabs
               title: Tabs Title
               description: |
@@ -261,10 +273,12 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
                         y: lifeExp
                         size: pop
                         color: continent
-          title: Tabs
+            title: Tabs
         ```
 
     === "Result"
+
+        The dashboard renders the "Tabs with tooltip" example.
 
         [![TabsInfoIcon]][tabsinfoicon]
 

@@ -8,14 +8,18 @@ authors = [
 ]
 classifiers = [
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: 3.14"
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15"
 ]
 dependencies = [
-  "vizro>=0.1.56",
+  "vizro>=1.0.0",
+  # Temporary: vizro pulls flask-caching transitively, but vizro-experimental installs vizro from PyPI (which still
+  # allows 2.5.0), so cap it directly here too. flask-caching 2.5.0 emits a spurious NullCache warning.
+  # Remove once flask-caching 2.5 is adopted. See flask 2.5 investigation issue.
+  "flask-caching>=2,<2.5",
   "dash-extensions>=1.0.0",
   "dash-iconify>=0.1.2"
 ]
@@ -24,7 +28,7 @@ dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro-experimental"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 
 [project.optional-dependencies]
 # Needed to use add_chat_popup() with the default auto-agent.

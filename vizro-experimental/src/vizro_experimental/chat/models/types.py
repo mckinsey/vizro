@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Literal, TypeAlias, TypedDict
-
-from typing_extensions import NotRequired
+from typing import Any, Literal, NotRequired, TypeAlias, TypedDict
 
 Role: TypeAlias = Literal["user", "assistant"]
 

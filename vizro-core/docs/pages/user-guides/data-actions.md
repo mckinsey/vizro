@@ -1,3 +1,7 @@
+---
+description: "Trigger `export_data` from a button to download every graph, table, and figure on the current page, respecting active filters and dynamic-data parameters."
+---
+
 # How to use actions to handle data
 
 ## Export data
@@ -39,20 +43,21 @@ To download data from your dashboard, you can use the [`export_data` action][viz
               - type: graph
                 figure:
                   _target_: histogram
+                  data_frame: iris
                   x: sepal_length
               - type: button
                 text: Export data
                 actions:
                   - type: export_data
-          - controls:
+            controls:
               - type: filter
                 column: species
-            layout:
-              type: flex
             title: Action triggered by a button
         ```
 
     === "Result"
+
+        The dashboard renders the "Export data action" example.
 
         [![ExportData]][exportdata]
 
@@ -60,4 +65,4 @@ When you click the "Export data" button, the data for all graphs, tables and fig
 
 Exported data includes the effect of [controls](controls.md) such as [filters](filters.md) and [dynamic data parameters](parameters.md#dynamic-data-parameters). Modifications from the chart, table or figure itself are not included (for example, AG Grid filters, graph zoom and data transformations performed inside a [custom chart functions](custom-charts.md)).
 
-[exportdata]: ../../assets/user_guides/actions/actions_export.png
+[exportdata]: ../../assets/user_guides/actions/actions_export.gif

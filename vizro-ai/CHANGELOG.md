@@ -11,6 +11,13 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.4.2'></a>
+# 0.4.2 — 2026-08-10
+
+## Deprecated
+
+- `vizro-ai` is deprecated. Version `0.4.2` is the final release, and `import vizro_ai` now emits a `DeprecationWarning` pointing to [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) and [Vizro-e2e-flow](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow/). See [DEPRECATION.md](https://github.com/mckinsey/vizro/blob/main/vizro-ai/DEPRECATION.md) for details.
+
 <a id='changelog-0.4.1'></a>
 # 0.4.1 — 2026-07-02
 

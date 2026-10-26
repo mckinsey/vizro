@@ -1,3 +1,7 @@
+---
+description: "Categorical, numerical, temporal, boolean, and hierarchical selectors for `Filter` and `Parameter`, plus styled dropdowns, tooltips, and `extra`."
+---
+
 # How to use selectors
 
 This guide highlights different selectors that can be used in a dashboard. Selectors do not serve a purpose on their own, but they enable you to change how the input is given to other models, for example, the [`Filter`][vizro.models.Filter] or the [`Parameter`][vizro.models.Parameter] model.
@@ -86,18 +90,19 @@ You can customize two predefined dropdown styles that can be customized using th
 
     === "Result"
 
+        The dashboard renders the "Styled dropdowns" example.
+
         [![Dropdown]][dropdown]
 
 ## Numerical selectors
 
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
-- [`Slider`][vizro.models.Slider] based on [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider)
-- [`RangeSlider`][vizro.models.RangeSlider] based on [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider)
+- [`Slider`][vizro.models.Slider] (single value, or a range with `range=True`) based on [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) (or [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) when `range=True`)
 
 !!! note "Using float values and `step` with an integer value"
 
-    When configuring the [`Slider`][vizro.models.Slider] and the [`RangeSlider`][vizro.models.RangeSlider] with float values, and using `step` with an integer value, you may notice unexpected behavior, such as the drag value being outside its indicated marks. To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size as needed.
+    When configuring the [`Slider`][vizro.models.Slider] (in either single-value or `range=True` mode) with float values, and using `step` with an integer value, you may notice unexpected behavior, such as the drag value being outside its indicated marks. To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size as needed.
 
 ## Temporal selectors
 
@@ -105,17 +110,83 @@ For more information, refer to the API reference of the selector, or the documen
 
 - [`DatePicker`][vizro.models.DatePicker] based on [`dmc.DatePickerInput`](https://www.dash-mantine-components.com/components/datepickerinput)
 - [`TimePicker`][vizro.models.TimePicker] based on [`dmc.TimePicker`](https://www.dash-mantine-components.com/components/timepicker)
+- [`DateTimePicker`][vizro.models.DateTimePicker] based on [`dmc.DatePickerInput`](https://www.dash-mantine-components.com/components/datepickerinput) combined with [`dmc.TimePicker`](https://www.dash-mantine-components.com/components/timepicker)
 
-Use [`DatePicker`][vizro.models.DatePicker] for `date` columns and [`TimePicker`][vizro.models.TimePicker] for `time` columns. For `datetime` columns either selector can be used while [`DatePicker`][vizro.models.DatePicker] is set as the default filter's selector.
+All mentioned temporal selectors show a range picker by default (`range=True`). Set `range=False` for a single selection.
+
+Which temporal selector to use depends on the target column type:
+
+- `date` columns: use [`DatePicker`][vizro.models.DatePicker].
+- `time` columns: use [`TimePicker`][vizro.models.TimePicker].
+- `datetime` columns: use [`DatePicker`][vizro.models.DatePicker] to filter by calendar date only, or [`DateTimePicker`][vizro.models.DateTimePicker] to filter by both date **and** time. [`DatePicker`][vizro.models.DatePicker] remains the default filter selector for `datetime` columns, so set `selector=vm.DateTimePicker()` explicitly when you need time-of-day precision.
 
 !!! note
 
     - [`DatePicker`][vizro.models.DatePicker]: provide `min`, `max` and `value` as `"yyyy-mm-dd"` strings or `datetime` objects (for example, `datetime.datetime(2024, 1, 1)`). For target columns, use `df["date"] = pd.to_datetime(df["date"])` to get a `datetime64` column.
     - [`TimePicker`][vizro.models.TimePicker]: provide `value` as `"HH:MM"` or `"HH:MM:SS"` strings or `datetime.time` objects (for example, `datetime.time(10, 30)`). For target columns, use `df["time"] = pd.to_datetime(df["time"]).time` to get a column of `datetime.time` objects.
+    - [`DateTimePicker`][vizro.models.DateTimePicker]: works on `datetime` columns only. Provide `min` and `max` as `"yyyy-mm-dd"` strings or `datetime` objects to bound the *date* portion of the picker, and `value` as ISO datetime strings (for example, `"2024-01-01T09:00"` or `"2024-01-01 09:00:00"`) or `datetime` objects. For target columns, use `df["datetime"] = pd.to_datetime(df["datetime"])` to get a `datetime64` column.
 
 !!! note "Time ranges that cross midnight"
 
     When the [`TimePicker`][vizro.models.TimePicker] start time is later than the end time (for example, `["21:00", "06:00"]`), the range is interpreted as wrapping around midnight. Rows are included if their time falls within `["21:00", "23:59:59.999999"]` **or** `["00:00", "06:00"]`.
+
+!!! note "Clearing the time in a `DateTimePicker`"
+
+    Each [`DateTimePicker`][vizro.models.DateTimePicker] input pairs a date field with a clearable time field. When the time portion is cleared (shown as `--:--`), the value falls back to a date-only string and the filter treats it as the whole day: start-of-day (`00:00:00`) for the start of a range and end-of-day (`23:59:59`) for the end. Clearing the time therefore widens the filter to cover the full day rather than disabling it — matching the behavior of a plain [`DatePicker`][vizro.models.DatePicker].
+
+!!! example "DateTimePicker"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="14-15"}
+        import pandas as pd
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        df = px.data.stocks()
+        # Add a deterministic time-of-day component so the column is a true `datetime` (not just `date`).
+        df["date"] = pd.to_datetime(df["date"]) + pd.to_timedelta(df.index % 24, unit="h")
+
+        page = vm.Page(
+            title="Filter by date and time",
+            components=[
+                vm.Graph(figure=px.line(df, x="date", y="GOOG")),
+            ],
+            controls=[
+                vm.Filter(column="date", selector=vm.DateTimePicker(title="Date and time range")),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: line
+                  data_frame: stocks
+                  x: date
+                  y: GOOG
+                type: graph
+            controls:
+              - column: date
+                selector:
+                  type: datetime_picker
+                  title: Date and time range
+                type: filter
+            title: Filter by date and time
+        ```
+
+    === "Result"
+
+        [![Datetimepicker]][datetimepicker]
 
 ## Boolean selectors
 
@@ -138,12 +209,18 @@ options = {
 }
 ```
 
-By default, `value` is set according to the first group at the top of the tree:
+By default, a selection is identified by its full root-to-leaf **path** and `value` is set according to the first group at the top of the tree:
 
-- If `multi=False`, by default `value` is the _first_ leaf listed under the first group. Here the first group is `Asia`, and its first country is `Japan`, so `value="Japan"`.
-- If `multi=True`, by default `value` is _all_ leaves listed under the first group. Here the first group is `Asia`, so `value=["Japan", "India"]`.
+- If `multi=False`, by default `value` is the _first_ path under the first group. Here the first group is `Asia` and its first country is `Japan`, so `value=["Asia", "Japan"]`.
+- If `multi=True`, by default `value` is _all_ paths under the first group. Here the first group is `Asia`, so `value=[["Asia", "Japan"], ["Asia", "India"]]`.
 
-You can pick a different starting selection by setting `value` on [`Cascader`][vizro.models.Cascader].
+You can pick a different starting selection by setting `value` on [`Cascader`][vizro.models.Cascader]. In this default **path mode** (`full_path=True`), each selection is a full root-to-leaf path, so the same leaf label appearing under different branches (for example a city name shared by two countries) is addressed unambiguously.
+
+!!! note "Selecting by bare leaf with `full_path=False`"
+
+    If every leaf label is unique across the whole tree, you can set `full_path=False` on the [`Cascader`][vizro.models.Cascader] to switch to **leaf mode**. A selection is then identified by its bare **leaf** value instead of a full path, so `value="Japan"` for single-select, or `value=["Japan", "India"]` for multi-select. Leaf mode is also required when the control is a target of [`set_controls`](actions.md), because a single chart click supplies a leaf value that cannot be reconstructed into a full root-to-leaf path (path mode does not support setting the control from a chart click).
+
+In a hierarchical [`Filter`][vizro.models.Filter], path mode matches every level of a selected path against the corresponding column, so every path in `options` must be exactly as deep as `Filter.column` is long. Leaf mode instead matches rows on the last column of `Filter.column` (like a flat filter on the leaf), and `options` may be arbitrarily deep. (A [`Parameter`][vizro.models.Parameter] does not match against columns, so it accepts arbitrarily nested trees in either mode.)
 
 !!! example "Hierarchical selector multi vs single"
 
@@ -158,7 +235,7 @@ You can pick a different starting selection by setting `value` on [`Cascader`][v
 
         options = {
             "Asia": ["Japan", "India"],
-            "Europe": {"West": ["France", "Germany"], "North": ["Norway"]},
+            "Europe": ["France", "Germany", "Norway"],
         }
 
         page = vm.Page(
@@ -176,8 +253,8 @@ You can pick a different starting selection by setting `value` on [`Cascader`][v
                 ),
             ],
             controls=[
-                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options)),
-                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, multi=False, value="France"))
+                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, full_path=False)),
+                vm.Filter(column=["continent", "country"], selector=vm.Cascader(options=options, multi=False, value="France", full_path=False))
             ],
         )
 
@@ -208,20 +285,28 @@ You can pick a different starting selection by setting `value` on [`Cascader`][v
                 type: filter
                 selector:
                   type: cascader
-                  options: options
+                  options:
+                    Asia: [Japan, India]
+                    Europe: [France, Germany, Norway]
+                  full_path: false
               - column:
                   - continent
                   - country
                 type: filter
                 selector:
                   type: cascader
-                  options: options
+                  options:
+                    Asia: [Japan, India]
+                    Europe: [France, Germany, Norway]
                   multi: false
                   value: France
+                  full_path: false
             title: Gapminder 2007
         ```
 
     === "Result"
+
+        The dashboard renders the "Hierarchical selector multi vs single" example.
 
         ![](../../assets/user_guides/selectors/hierarchical_selectors.gif)
 
@@ -296,6 +381,8 @@ You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a str
 
     === "Result"
 
+        The dashboard renders the "Selectors with tooltip" example.
+
         [![InfoIconSelector]][infoiconselector]
 
 ## The `extra` argument
@@ -365,8 +452,11 @@ An example would be to make the [`RadioItem`][vizro.models.RadioItems] display i
 
     === "Result"
 
+        The dashboard renders the "Inline Radio Items" example.
+
         [![InlineRadio]][inlineradio]
 
+[datetimepicker]: ../../assets/user_guides/selectors/datetimepicker.gif
 [dropdown]: ../../assets/user_guides/selectors/dropdown.png
 [infoiconselector]: ../../assets/user_guides/selectors/info_icon_selector.png
 [inlineradio]: ../../assets/user_guides/selectors/inlineradio.png

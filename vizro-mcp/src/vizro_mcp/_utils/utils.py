@@ -169,7 +169,7 @@ def get_python_code_and_preview_link(
 
     # Prepare data loading code
     data_loading_code = "\n".join(
-        f'data_manager["{info.file_name}"] = {info.read_function_string}("{info.file_path_or_url}")'
+        f"data_manager[{info.file_name!r}] = {info.read_function_string}({info.file_path_or_url!r})"
         for info in data_infos
     )
 
@@ -180,7 +180,8 @@ def get_python_code_and_preview_link(
     # Replace everything between the markers with our data loading code
     pattern = re.compile(f"{data_manager_start_marker}.*?{data_manager_end_marker}", re.DOTALL)
     replacement = f"{data_manager_start_marker}\n{data_loading_code}\n\n{data_manager_end_marker}"
-    python_code = pattern.sub(replacement, python_code)
+    # A callable is inserted verbatim, so Windows backslashes are not read as escapes.
+    python_code = pattern.sub(lambda _: replacement, python_code)
 
     # Add final run line
     python_code += "\n\nVizro().build(model).run()"

@@ -11,8 +11,9 @@ pydantic_logger = griffe.get_logger("griffe_pydantic_docs_cleaner")
 class DynamicallyInspect(griffe.Extension):
     """An extension to dynamically inspect just a few specific paths.
 
-    This is needed so that documentation for vizro.figures.kpi_card and vizro.figures.kpi_card_reference can be
-    generated correctly. Based on https://mkdocstrings.github.io/griffe/guide/users/how-to/selectively-inspect/.
+    This is needed so that documentation for the capture()-wrapped functions in vizro.figures (kpi_card,
+    kpi_card_reference, kpi_sparkline_card) can be generated correctly. Based on
+    https://mkdocstrings.github.io/griffe/guide/users/how-to/selectively-inspect/.
 
     See https://github.com/mkdocstrings/griffe/issues/385 for additional context.
     """

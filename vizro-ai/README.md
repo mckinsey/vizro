@@ -1,5 +1,8 @@
 <h1 align="center">Vizro-AI</h1>
 
+> [!WARNING]
+> **Vizro-AI is deprecated.** Version 0.4.2 is the final release; no further development or releases are planned. Use [Vizro-e2e-flow](https://github.com/mckinsey/vizro/tree/main/vizro-e2e-flow/) or [Vizro-MCP](https://vizro.readthedocs.io/projects/vizro-mcp/) instead for AI-assisted chart and dashboard creation. See [DEPRECATION.md](./DEPRECATION.md) for details.
+
 <div align="center" markdown="1">
 
 [![Python version](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Fmckinsey%2Fvizro%2Frefs%2Fheads%2Fmain%2Fvizro-ai%2Fpyproject.toml)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro_ai.svg)](https://badge.fury.io/py/vizro_ai) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md) [![Documentation](https://readthedocs.org/projects/vizro-ai/badge/?version=latest)](https://vizro-ai.readthedocs.io/) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)

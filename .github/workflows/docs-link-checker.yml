@@ -12,7 +12,7 @@ on:
   workflow_dispatch: # Allow for running this manually.
 
 env:
-  PYTHON_VERSION: "3.13"
+  PYTHON_VERSION: "3.14"
 
 jobs:
   link-check:
@@ -21,16 +21,12 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Hatch
         run: pip install hatch
-
-      - name: Check vizro-core llms.txt references
-        working-directory: ./vizro-core
-        run: python tools/check_llms_txt.py
 
       - name: Check vizro-core docs links
         working-directory: ./vizro-core

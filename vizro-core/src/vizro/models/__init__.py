@@ -5,15 +5,14 @@ from ._base import VizroBaseModel  # noqa: I001
 from ._tooltip import Tooltip
 from ._action import Action
 from ._components import Card, Container, Graph, Text, Table, Tabs, Figure, ControlGroup
-from ._components import AgGrid
 from ._components.form import (
     Button,
     Cascader,
     Checklist,
     DatePicker,
+    DateTimePicker,
     Dropdown,
     RadioItems,
-    RangeSlider,
     Slider,
     Switch,
     TimePicker,
@@ -24,14 +23,13 @@ from ._navigation.navigation import Navigation
 from ._navigation.nav_bar import NavBar
 from ._navigation.nav_link import NavLink
 from ._dashboard import Dashboard
-from ._grid import Layout, Grid
+from ._grid import Grid
 from ._page import Page
 from ._flex import Flex
 
 __all__ = [
     "Accordion",
     "Action",
-    "AgGrid",
     "Button",
     "Card",
     "Cascader",
@@ -40,20 +38,19 @@ __all__ = [
     "ControlGroup",
     "Dashboard",
     "DatePicker",
+    "DateTimePicker",
     "Dropdown",
     "Figure",
     "Filter",
     "Flex",
     "Graph",
     "Grid",
-    "Layout",
     "NavBar",
     "NavLink",
     "Navigation",
     "Page",
     "Parameter",
     "RadioItems",
-    "RangeSlider",
     "Slider",
     "Switch",
     "Table",
@@ -67,10 +64,15 @@ __all__ = [
 # To resolve ForwardRefs we need to import a few more things that are not part of the vizro.models namespace.
 # We rebuild all the models even if it's not strictly necessary so that if pydantic changes how model_rebuild works
 # we won't end up with unresolved references.
-from vizro.actions import export_data, filter_interaction, set_control, show_notification, update_notification
-from vizro.actions._filter_action import _filter
+
+from vizro.actions import (
+    export_data,
+    set_controls,
+    show_notification,
+    update_notification,
+    update_targets,
+)
 from vizro.actions._on_page_load import _on_page_load
-from vizro.actions._parameter_action import _parameter
 
 from ._components.form._text_area import TextArea
 from ._components.form._user_input import UserInput

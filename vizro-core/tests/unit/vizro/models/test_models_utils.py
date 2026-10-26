@@ -46,11 +46,7 @@ class TestSharedValidators:
             ),
             (
                 "standard_ag_grid",
-                "A callable of mode `ag_grid` has been provided. Please wrap it inside `vm.AgGrid(figure=...)`",
-            ),
-            (
-                "standard_dash_table",
-                "A callable of mode `table` has been provided. Please wrap it inside `vm.Table(figure=...)`",
+                "A callable of mode `ag_grid` has been provided. Please wrap it inside `vm.Table(figure=...)`",
             ),
             (
                 "standard_kpi_card",
@@ -66,7 +62,7 @@ class TestSharedValidators:
         with pytest.raises(
             ValidationError,
             match=re.escape(
-                "'type' does not match any of the expected tags: 'ag_grid', 'button', 'card', 'container', 'figure', "
+                "'type' does not match any of the expected tags: 'button', 'card', 'container', 'figure', "
                 "'graph', 'text', 'table', 'tabs'"
             ),
         ):

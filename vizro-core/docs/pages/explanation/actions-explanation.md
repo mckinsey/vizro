@@ -1,3 +1,7 @@
+---
+description: "Conceptual model behind Vizro actions: how they wrap Dash callbacks, resolve inputs and outputs, and chain sequentially or run in parallel."
+---
+
 # Actions
 
 Actions control how your app responds to user input such as clicking a button or a point on a graph. Vizro provides [built-in actions](../user-guides/actions.md) and also enables you to write your own [custom actions](../user-guides/custom-actions.md).

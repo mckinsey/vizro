@@ -5,7 +5,7 @@ from typing import Annotated, Any, Literal, cast
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, JsonValue, PrivateAttr, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
@@ -44,7 +44,7 @@ class TimePicker(VizroBaseModel):
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
 
     Abstract: Usage documentation
-        [How to use temporal selectors](user-guides/selectors.md#temporal-selectors)
+        [How to use temporal selectors](../user-guides/selectors.md#temporal-selectors)
 
     Example:
         ```python
@@ -123,6 +123,11 @@ underlying component may change in the future.""",
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": f"{self.id}.{'data' if self.range else 'value'}"}
 
+    @staticmethod
+    def _get_value_from_trigger(value: JsonValue, trigger: JsonValue) -> JsonValue:
+        """Return the given `trigger` without modification."""
+        return trigger
+
     @_log_call
     def build(self):
         description = self.description.build().children if self.description else [None]
@@ -135,7 +140,11 @@ underlying component may change in the future.""",
             else None
         )
 
-        defaults: dict[str, Any] = {"debounce": True}
+        defaults: dict[str, Any] = {
+            "debounce": True,
+            "persistence": True,
+            "persistence_type": "session",
+        }
         if self.range:
             # Add the clientside callback only for range TimePicker
             self._update_range_time_picker_store()

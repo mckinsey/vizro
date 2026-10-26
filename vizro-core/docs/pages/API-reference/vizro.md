@@ -1,3 +1,7 @@
+---
+description: "Reference for the `Vizro` class: `build()` to assemble a `Dashboard`, `run()` for local development, and `dash` to access the underlying Dash app."
+---
+
 # Vizro
 
 <!-- vale off -->

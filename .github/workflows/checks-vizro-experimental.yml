@@ -20,7 +20,7 @@ on:
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
-  PYTHON_VERSION: "3.13"
+  PYTHON_VERSION: "3.14"
 
 jobs:
   checks-vizro-experimental:
@@ -33,7 +33,7 @@ jobs:
           fetch-depth: 2
 
       - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 

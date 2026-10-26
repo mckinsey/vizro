@@ -1,3 +1,7 @@
+---
+description: "Extend an existing Vizro model or subclass `VizroBaseModel` to wrap any Dash component, wire it to actions, and enable persistence."
+---
+
 # How to create custom components
 
 The number of [built-in Vizro models][vizro.models] is deliberately kept quite small to enable quick and easy configuration of a dashboard. However, Vizro is also extensible, so that you can modify any model or create an entirely new one. This guide shows you how to do so.
@@ -18,7 +22,7 @@ In general, you can create a custom component based on a Dash component from [an
 To create a custom component:
 
 1. Subclass the relevant model:
-    * To extend an existing model such as [`RangeSlider`][vizro.models.RangeSlider], subclass it.
+    * To extend an existing model such as [`Slider`][vizro.models.Slider], subclass it.
     * To create a new component, subclass [`VizroBaseModel`][vizro.models.VizroBaseModel].
 1. Write the subclass:
     * To extend an existing model you could, for example, add or change model fields or override the `build` method.
@@ -34,29 +38,29 @@ We will refer back to these steps in the examples below.
 You may want to use this strategy to:
 
 - Extend an existing component, for example to add a button to a [`Card`](../user-guides/card.md).
-- Change default configuration of a Dash component set by a Vizro model, for example to set `allowCross=False` in [`RangeSlider`][vizro.models.RangeSlider].
+- Change default configuration of a Dash component set by a Vizro model, for example to set `allowCross=False` in a range [`Slider`][vizro.models.Slider] (`Slider(range=True)`).
 - Change the fields of a models, for example to change the `title` field from `Optional` to have a default.
 
 You can extend an existing component by subclassing the component you want to modify. Remember that when subclassing a component you have access to all fields of its parent model, but you can choose to overwrite any field or method or define entirely new ones.
 
-In this example, we modify the [`RangeSlider`][vizro.models.RangeSlider] model so that
+In this example, we modify a range [`Slider`][vizro.models.Slider] (`Slider(range=True)`) so that
 one slider handle cannot cross the other, and to have a permanent tooltip showing the current value. It is often easier to call `super()` and modify the result when overriding a complex method
 such as the `build` method instead of writing it from scratch.
 
 In this case, the general three steps translate into:
 
-1. Subclass [`RangeSlider`][vizro.models.RangeSlider]:
+1. Subclass [`Slider`][vizro.models.Slider]:
 
 ```py
 import vizro.models as vm
 
-class TooltipNonCrossRangeSlider(vm.RangeSlider):
+class TooltipNonCrossRangeSlider(vm.Slider):
 ```
 
-2. Modify the component by changing the underlying parent's `dcc.RangeSlider` Dash component in the `build` method:
+2. Modify the component by changing the parent `Slider`'s underlying `dcc.RangeSlider` Dash component (rendered because `range=True`) in the `build` method:
 
 ```py
-class TooltipNonCrossRangeSlider(vm.RangeSlider):
+class TooltipNonCrossRangeSlider(vm.Slider):
     def build(self):
         ...
         allowCross=False,
@@ -69,7 +73,7 @@ These lines are highlighted in the example below. They are the only material cha
     - define a new type:
 
 ```py
-class TooltipNonCrossRangeSlider(vm.RangeSlider):
+class TooltipNonCrossRangeSlider(vm.Slider):
     type: Literal["other_range_slider"] = "other_range_slider"
     ...
 ```
@@ -92,7 +96,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
         iris = px.data.iris()
 
 
-        class TooltipNonCrossRangeSlider(vm.RangeSlider):
+        class TooltipNonCrossRangeSlider(vm.Slider):
             """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
 
             type: Literal["other_range_slider"] = "other_range_slider"  # (1)!
@@ -119,11 +123,11 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
                 vm.Filter(
                     column="sepal_length",
                     targets=["for_custom_chart"],
-                    selector=TooltipNonCrossRangeSlider(),
+                    selector=TooltipNonCrossRangeSlider(range=True),
                 ),
                 vm.Parameter(
                     targets=["for_custom_chart.range_x"],
-                    selector=TooltipNonCrossRangeSlider(title="Select x-axis range", min=0, max=10),  # (8)!
+                    selector=TooltipNonCrossRangeSlider(range=True, title="Select x-axis range", min=0, max=10),  # (8)!
                 ),
             ],
         )
@@ -136,7 +140,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
         1.  Here we provide a new type for the new component, so it can be distinguished in the discriminated union.
         2.  Here we override the `build` method by altering the output of `super().build()`. Alternatively one could copy the source code of the build method and alter it directly.
         3.  `range_slider_build_obj[self.id]` then fetches the underlying [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) object.
-        4.  This change prevents the `RangeSlider` from crossing itself when moving the handle.
+        4.  This change prevents the range slider handles from crossing when moving them.
         5.  This change displays the tooltip below the handle.
         6.  **Remember!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `TooltipNonCrossRangeSlider` will be inserted into the `selector` argument of the `Filter` model, and thus must be added as an allowed type.
         7.  **Remember!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `TooltipNonCrossRangeSlider` will be inserted into the `selector` argument of the `Parameter` model, and thus must be added as an allowed type.
@@ -147,6 +151,9 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "Example based on existing component" example.
+
         [![CustomComponent1]][CustomComponent1]
 
     [CustomComponent1]: ../../assets/user_guides/custom_components/custom-components0.png
@@ -189,7 +196,7 @@ class Rating(vm.VizroBaseModel):
             )
     ```
 
-    1. In this example, for simplicity we use [`html.Div`](https://dash.plotly.com/dash-html-components/Div) to provide the outer container. You could also use [`html.Fieldset`](https://dash.plotly.com/dash-html-components/fieldset), which is specifically designed for grouping a form legend with a set of controls.
+    1. In this example, for simplicity we use [`html.Div`](https://dash.plotly.com/dash-html-components/div) to provide the outer container. You could also use [`html.Fieldset`](https://dash.plotly.com/dash-html-components/fieldset), which is specifically designed for grouping a form legend with a set of controls.
     1. This is not the core component but we will later [address it with an action](#model-fields-as-input-and-output), so it must have an `id` set. We prefix its `id` with `self.id`.
     1. This is the core component, and so it has `id=self.id`.
 
@@ -259,6 +266,8 @@ Here is the full code for `Rating` and a simple app containing it.
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "New component creation" example.
 
         ![](../../assets/user_guides/custom_components/custom-components1.png)
 
@@ -333,6 +342,8 @@ It is then immediately possible to [address the properties of Dash components](c
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "Use custom component Dash properties as an action output" example.
 
         ![](../../assets/user_guides/custom_components/custom-components2.png)
 
@@ -430,6 +441,8 @@ This enables you to replace in your dashboard configuration all action input and
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "Use custom component model ID as an action output" example.
 
         ![](../../assets/user_guides/custom_components/custom-components2.png)
 
@@ -542,6 +555,8 @@ This enables you to replace in your dashboard configuration all references to `o
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "Use custom component model field as an action output" example.
 
         ![](../../assets/user_guides/custom_components/custom-components3.png)
 
@@ -689,6 +704,8 @@ A full example is given below.
         # Custom components are currently only possible via Python configuration
         ```
     === "Result"
+
+        The dashboard renders the "Trigger actions with a custom component" example.
 
         ![](../../assets/user_guides/custom_components/custom-components4.png)
 

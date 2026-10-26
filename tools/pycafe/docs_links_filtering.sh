@@ -14,6 +14,8 @@ playwright install --with-deps chromium
 # grep -vE '^https://py.cafe/?$'
 # grep -vE '^https://py.cafe/docs/apps/vizro/?$'
 # grep -vE '^https://py.cafe/logo.png'
+# grep -vE '^https://py.cafe/docs/how#limitations-of-pycafe$'
+# grep -vE '^https://py.cafe/vizro-official/?$'
 # here we're excluding this patterns from the grep
 # -v: Invert match
 # ^: Anchors the match to the start of the line.
@@ -25,4 +27,6 @@ docs/* | \
 sort -u | \
 grep -vE '^https://py.cafe/?$' | \
 grep -vE '^https://py.cafe/docs/apps/vizro/?$' | \
-grep -vE '^https://py.cafe/logo.png')
+grep -vE '^https://py.cafe/logo.png' | \
+grep -vE '^https://py.cafe/docs/how#limitations-of-pycafe$' | \
+grep -vE '^https://py.cafe/vizro-official/?$')

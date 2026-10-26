@@ -5,15 +5,18 @@ from dash import dcc, html
 from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
-from vizro.actions._parameter_action import _parameter
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._controls._controls_utils import (
     _is_categorical_selector,
+    _is_datetime_selector,
     _is_hierarchical_selector,
     _is_numerical_or_date_selector,
+    build_default_control_selector_actions,
     check_control_targets,
+    extract_control_targets,
     get_selector_default_value,
+    warn_ignored_control_sync_targets,
     warn_missing_id_for_url_control,
 )
 from vizro.models._models_utils import _log_call
@@ -22,10 +25,13 @@ from vizro.models.types import ModelID, SelectorType, _IdProperty
 
 def check_dot_notation(target):
     if "." not in target:
-        raise ValueError(
-            f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>"
-        )
-    elif target.split(".")[1] == "figure":
+        return target
+
+    # Use the first argument segment (not the full remainder) so that nested addressing like
+    # "<component>.figure.<arg>" is rejected too, not only the exact "<component>.figure".
+    targeted_argument = target.split(".")[1]
+
+    if targeted_argument == "figure":
         raise ValueError(
             f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>. "
             "Arguments of the CapturedCallable function can be targeted directly, and not via <.figure.>."
@@ -34,6 +40,9 @@ def check_dot_notation(target):
 
 
 def check_data_frame_as_target_argument(target):
+    if "." not in target:
+        return target
+
     targeted_argument = target.split(".", 1)[1]
     if targeted_argument.startswith("data_frame") and targeted_argument.count(".") != 1:
         raise ValueError(
@@ -41,13 +50,17 @@ def check_data_frame_as_target_argument(target):
             "<target_component>.data_frame.<dynamic_data_argument>"
         )
     # TODO: Add validation: Make sure the target data_frame is _DynamicData.
+
     return target
 
 
 def check_duplicate_parameter_target(targets):
-    all_targets = targets.copy()
+    # Only figure-argument targets (in "<component>.<argument>" dot notation) must be unique across parameters. Bare
+    # ids are control-sync targets (another control kept in sync) that multiple parameters may legitimately share, so
+    # they are excluded from the duplicate check.
+    all_targets = [target for target in targets if "." in target]
     for param in cast(Iterable[Parameter], model_manager._get_models(Parameter)):
-        all_targets.extend(param.targets)
+        all_targets.extend(target for target in param.targets if "." in target)
     duplicate_targets = {item for item in all_targets if all_targets.count(item) > 1}
     if duplicate_targets:
         raise ValueError(f"Duplicate parameter targets {duplicate_targets} found.")
@@ -58,7 +71,7 @@ class Parameter(VizroBaseModel):
     """Alter the arguments supplied to any `targets`.
 
     Abstract: Usage documentation
-        [How to use parameters](user-guides/parameters.md)
+        [How to use parameters](../user-guides/parameters.md)
 
     Example:
         ```python
@@ -95,6 +108,15 @@ class Parameter(VizroBaseModel):
     )
 
     _selector_properties: set[str] = PrivateAttr(set())
+    # Direct control-sync targets (other Filter/Parameter ids this control keeps in sync), stashed here when the
+    # default sync chain is built so the post-pre_build finalization (see `finalize_control_sync_chains`) can compute
+    # the transitive mesh even though `extract_control_targets` removes them from `targets` in place.
+    _synced_control_targets: list[ModelID] = PrivateAttr(default_factory=list)
+    # True only when the selector runs the framework-generated default action chain (i.e. `actions` was not set
+    # explicitly). Finalization may subsume such a control into another control's collapsed sync (guard its chain and
+    # fold its figures into the union). A control with explicit `actions` (custom or `[]`) has this False and is kept
+    # as a plain sync target - its value is set but its own chain is left to run (or not) as configured.
+    _has_default_selector_actions: bool = PrivateAttr(default=False)
 
     @model_validator(mode="after")
     def check_id_set_for_url_control(self):
@@ -131,10 +153,38 @@ class Parameter(VizroBaseModel):
         }
 
     @_log_call
-    def pre_build(self):
+    def pre_build(self):  # noqa: PLR0912
+        # Split control targets (used to sync this parameter with another control) out of self.targets; they are
+        # validated and handled differently to the figure-argument targets that remain.
+        targeted_controls = extract_control_targets(control=self)
+
+        # Every remaining (figure) target must use the "<target_component>.<target_argument>" dot notation. This is
+        # only checked now (not in the check_dot_notation validator) because that validator has to let bare control
+        # ids through so they can be recognized as control targets above.
+        for target in self.targets:
+            if "." not in target:
+                raise ValueError(
+                    f"Invalid target {target}. Targets must be supplied in the form "
+                    f"<target_component>.<target_argument>"
+                )
+
+        # A Parameter must have at least one figure target: its value is applied to figures only through its
+        # "<target_component>.<target_argument>" targets, so a Parameter with no figure target has no argument to
+        # apply its value to and cannot work. This mirrors the pre-syncing behavior where such a target was rejected
+        # by check_dot_notation; it is enforced here because control targets (which are now allowed and extracted
+        # above) could otherwise leave a Parameter with only control targets and no figure target.
+        if not self.targets:
+            raise ValueError(
+                f"Parameter '{self.id}' must have at least one target in the form "
+                f"<target_component>.<target_argument>. A Parameter that targets only other controls has no argument "
+                f"to apply its value to."
+            )
+
         check_control_targets(control=self)
 
-        if _is_numerical_or_date_selector(self.selector) and (self.selector.min is None or self.selector.max is None):
+        if (_is_numerical_or_date_selector(self.selector) or _is_datetime_selector(self.selector)) and (
+            self.selector.min is None or self.selector.max is None
+        ):
             raise TypeError(f"{self.selector.type} requires the arguments 'min' and 'max' when used within Parameter.")
         elif (
             _is_categorical_selector(self.selector) or _is_hierarchical_selector(self.selector)
@@ -144,7 +194,8 @@ class Parameter(VizroBaseModel):
         self.selector.value = get_selector_default_value(self.selector)
 
         if not self.selector.title:
-            self.selector.title = ", ".join({target.rsplit(".")[-1] for target in self.targets})
+            # Ordered dedupe: a set's order changes between processes.
+            self.selector.title = ", ".join(dict.fromkeys(target.rsplit(".")[-1] for target in self.targets))
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.
@@ -153,7 +204,11 @@ class Parameter(VizroBaseModel):
         if selector_inner_component_properties := getattr(self.selector, "_inner_component_properties", None):
             self._selector_properties = set(selector_inner_component_properties) - set(html.Div().available_properties)
 
-        if not self.selector.actions:
+        # Check model_fields_set (not falsiness) so an explicit `selector=X(actions=None)` or `selector=X(actions=[])`
+        # is honored as "do nothing on selector change" rather than being replaced by the default. The parameter
+        # value is still applied whenever its targets are refreshed by something else (e.g. a Button running
+        # update_targets).
+        if "actions" not in self.selector.model_fields_set:
             from vizro.models import Filter
 
             page_dynamic_filters = [
@@ -179,9 +234,30 @@ class Parameter(VizroBaseModel):
 
             # Extending `self.targets` with `filter_targets` instead of redefining it to avoid triggering the
             # pydantic validator like `check_dot_notation` on the `self.targets` again.
-            # We do the update to ensure that `self.targets` is consistent with the targets passed to `_parameter`.
+            # We do the update to ensure that `self.targets` is consistent with the target ids passed to update_targets.
             self.targets.extend(list(filter_targets))
-            self.selector.actions = [_parameter(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
+            targets_ids = [target.partition(".")[0] for target in self.targets]
+
+            # Stash the direct control-sync targets so the post-pre_build finalization can compute the transitive mesh
+            # (they are removed from self.targets by extract_control_targets above). Only stashed on the auto-built
+            # path: explicit selector actions (else branch) intentionally drop control targets.
+            self._synced_control_targets = targeted_controls
+            # Mark this as running the generated default chain so finalization may subsume it (see the attribute doc).
+            self._has_default_selector_actions = True
+            build_default_control_selector_actions(
+                selector=self.selector,
+                targeted_controls=targeted_controls,
+                targeted_figures=targets_ids,
+                update_targets_action_id=f"{PARAMETER_ACTION_PREFIX}_{self.id}",
+            )
+            # Prebuild the generated actions here (unlike Filter, which is prebuilt preemptively in `Vizro._pre_build`).
+            # All newly created models within other model's pre_build method have to run their own pre_build method.
+            for action in self.selector.actions:
+                action.pre_build()
+        else:
+            # Explicit selector actions bypass the default sync chain, so any control targets were stripped without
+            # generating a set_controls. Warn rather than silently drop them.
+            warn_ignored_control_sync_targets(self, targeted_controls)
 
     @_log_call
     def build(self):

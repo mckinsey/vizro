@@ -79,6 +79,9 @@ class TestDatePickerInstantiation:
             # `datetime` objects with a time component are coerced to pure dates by `_coerce_to_date`.
             (datetime(2024, 1, 1, 10, 10, 10), datetime(2024, 2, 1, 20), date(2024, 1, 1), date(2024, 2, 1)),
             (datetime(2024, 1, 1, 0, 0, 0, 123456), datetime(2024, 2, 1), date(2024, 1, 1), date(2024, 2, 1)),
+            # ISO datetime strings with a time part are coerced to date the same way (T and space separators).
+            ("2024-01-01T10:00", "2024-02-01T20:00", date(2024, 1, 1), date(2024, 2, 1)),
+            ("2024-01-01 10:00:30", "2024-02-01 20:00", date(2024, 1, 1), date(2024, 2, 1)),
         ],
     )
     def test_valid_min_max(self, min, max, expected_min, expected_max):
@@ -233,3 +236,14 @@ class TestBuildMethod:
             ],
         )
         assert_component_equal(date_picker, expected_datepicker)
+
+
+class TestDatePickerGetValueFromTrigger:
+    """Tests _get_value_from_trigger models method."""
+
+    @pytest.mark.parametrize("trigger", ["2024-01-01", ["2024-01-01", "2024-12-31"], None])
+    def test_get_value_from_trigger_returns_trigger(self, trigger):
+        # A selector already holds the value to propagate, so _get_value_from_trigger ignores `value` and returns the
+        # raw trigger value unchanged (this is what powers syncing controls that target another control).
+        date_picker = vm.DatePicker()
+        assert date_picker._get_value_from_trigger(value="ignored", trigger=trigger) == trigger

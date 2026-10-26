@@ -62,7 +62,10 @@ _InnerPageContentType = TypedDict(
         "page-header": html.Div,
         "page-components": html.Div,
         "nav-bar": dbc.Navbar,
-        "nav-control-panel": html.Div,
+        "nav-panel": html.Div,
+        "control-panel": html.Div,
+        "collapse-icon-outer": html.Div,
+        "reset-button-container": html.Div,
     },
 )
 
@@ -91,7 +94,7 @@ class Dashboard(VizroBaseModel):
     """Dashboard that is supplied to [`Vizro.build`][vizro.Vizro.build].
 
     Abstract: Usage documentation
-        [How to create a dashboard](user-guides/dashboard.md)
+        [How to create a dashboard](../user-guides/dashboard.md)
 
     """
 
@@ -165,8 +168,15 @@ class Dashboard(VizroBaseModel):
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
             # This currently doesn't do anything, but we need to define an Output such that the callback is triggered.
             Output("dashboard-container", "className"),
-            Input("theme-selector", "value"),
+            Input("theme-selector", "data"),
             hidden=True,
+        )
+        clientside_callback(
+            "function(n, current) { return !current; }",
+            Output("theme-selector", "data"),
+            Input("theme-toggle", "n_clicks"),
+            State("theme-selector", "data"),
+            prevent_initial_call=True,
         )
         left_side_div_present = any([len(self.pages) > 1, self.pages[0].controls])
         if left_side_div_present:
@@ -174,13 +184,27 @@ class Dashboard(VizroBaseModel):
                 ClientsideFunction(namespace="dashboard", function_name="collapse_nav_panel"),
                 [
                     Output("collapse-left-side", "is_open"),
-                    Output("collapse-icon", "style"),
                     Output("collapse-tooltip", "children"),
+                    Output("collapse-icon", "children"),
                 ],
                 Input("collapse-icon", "n_clicks"),
                 State("collapse-left-side", "is_open"),
                 hidden=True,
             )
+
+        # Controls that are the target of a cross-page `set_controls` - i.e. a control synced from another page, or a
+        # drill-through target. Only these have their value restored from the store when a page is opened; every other
+        # control keeps its usual per-page behavior and resets when you navigate away. A single `set_controls` can
+        # target several controls across several pages, so collect every cross-page target it lists.
+        # `_cross_page_controls` is set in set_controls.pre_build, which has run by now. Fetching by the base
+        # `set_controls` also covers the deprecated `set_controls` subclass.
+        from vizro.actions import set_controls
+
+        cross_page_target_ids = {
+            control_id
+            for action in cast(Iterable[set_controls], model_manager._get_models(set_controls))
+            for control_id in getattr(action, "_cross_page_controls", [])
+        }
 
         layout = html.Div(
             id="dashboard-container",
@@ -193,13 +217,28 @@ class Dashboard(VizroBaseModel):
                         "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
                     },
                 ),
+                # Holds every control's state so controls can be synced across pages (see set_controls) and reset.
+                # `currentValue` is kept up to date clientside as controls change and by cross-page set_controls. On
+                # page open it is applied only to controls with `crossPageTarget=True` (targets of a cross-page
+                # set_controls), so unrelated controls keep their usual per-page behavior. `showInURL` mirrors
+                # control.show_in_url so the clientside sync callback knows which controls to write into the URL
+                # query string.
+                # storage_type="session" so synced values also survive a full browser refresh within the session.
                 dcc.Store(
                     id="vizro_controls_store",
                     data={
-                        control.id: {"originalValue": control.selector.value, "pageId": page.id}
+                        control.id: {
+                            "currentValue": control.selector.value,
+                            "originalValue": control.selector.value,
+                            "pageId": page.id,
+                            "selectorId": control.selector.id,
+                            "showInURL": control.show_in_url,
+                            "crossPageTarget": control.id in cross_page_target_ids,
+                        }
                         for page in self.pages
                         for control in cast(Iterable[ControlType], model_manager._get_models((Filter, Parameter), page))
                     },
+                    storage_type="session",
                 ),
                 dash.page_container,
             ],
@@ -336,19 +375,49 @@ class Dashboard(VizroBaseModel):
             hidden=_all_hidden(header_right_content),
         )
 
-        # Show reset button with the icon in the control panel when both page controls and control panel exist.
-        if has_page_controls and not control_panel_hidden:
-            icon = html.Span("reset_settings", className="material-symbols-outlined tooltip-icon")
-            text = html.Span("Reset controls", className="btn-text")
-
-            control_panel.children.append(
-                dbc.Button(id="reset-button", children=[icon, text], color="link"),
-            )
-
-        nav_control_panel_content = [nav_panel, control_panel]
-        nav_control_panel = html.Div(
-            id="nav-control-panel", children=nav_control_panel_content, hidden=_all_hidden(nav_control_panel_content)
+        reset_button_outer = html.Div(
+            id="reset-button-container",
+            children=[
+                dbc.Button(
+                    id="reset-button",
+                    children=[
+                        html.Span("sync", className="material-symbols-outlined tooltip-icon"),
+                        html.Span("Reset all", className="btn-text"),
+                    ],
+                    color="link",
+                )
+                if has_page_controls and not control_panel_hidden
+                else None
+            ],
+            hidden=not has_page_controls or control_panel_hidden,
         )
+
+        collapse_icon_outer = html.Div(
+            children=[
+                html.Span(
+                    id="collapse-icon",
+                    children="left_panel_close",
+                    className="material-symbols-outlined",
+                    role="button",
+                    tabIndex=0,
+                    title="Toggle menu",
+                    **{"aria-label": "Toggle menu"},
+                ),
+                dbc.Tooltip(
+                    id="collapse-tooltip",
+                    children="Hide Menu",
+                    placement="right",
+                    target="collapse-icon",
+                ),
+            ],
+            id="collapse-icon-outer",
+            hidden=_all_hidden([nav_panel, control_panel]),
+        )
+
+        # When nav-bar is absent, insert the collapse icon into header_controls directly
+        nav_bar_is_side = not _all_hidden([nav_bar]) and not self._is_top_navigation
+        if not nav_bar_is_side:
+            header_controls.children.insert(-1, collapse_icon_outer)
 
         return html.Div(
             [
@@ -357,7 +426,10 @@ class Dashboard(VizroBaseModel):
                 page_header,
                 page_components,
                 nav_bar,
-                nav_control_panel,
+                nav_panel,
+                control_panel,
+                collapse_icon_outer if nav_bar_is_side else None,
+                reset_button_outer,
             ]
         )
 
@@ -377,28 +449,27 @@ class Dashboard(VizroBaseModel):
         page_header = inner_page["page-header"]
         page_components = inner_page["page-components"]
         nav_bar = inner_page["nav-bar"]
-        nav_control_panel = inner_page["nav-control-panel"]
+        nav_panel = inner_page["nav-panel"]
+        control_panel = inner_page["control-panel"]
         right_side = html.Div(id="right-side", children=[page_header, page_components])
+        reset_button = inner_page["reset-button-container"]
+
+        left_side_inner = html.Div(id="left-side-inner", children=[nav_panel, control_panel])
 
         collapse_left_side = dbc.Collapse(
             id="collapse-left-side",
-            children=html.Div(id="left-side", children=[nav_control_panel]),
+            children=html.Div(
+                id="left-side",
+                className="no-nav" if _all_hidden([nav_panel]) else "",
+                children=[left_side_inner, reset_button],
+                hidden=_all_hidden([nav_panel, control_panel]),
+            ),
             is_open=True,
             dimension="width",
         )
-        collapse_icon_outer = html.Div(
-            children=[
-                html.Span(id="collapse-icon", children="keyboard_arrow_left", className="material-symbols-outlined"),
-                dbc.Tooltip(
-                    id="collapse-tooltip",
-                    children="Hide Menu",
-                    placement="right",
-                    target="collapse-icon",
-                ),
-            ],
-            id="collapse-icon-outer",
-            hidden=_all_hidden([nav_control_panel]),
-        )
+        collapse_icon_outer = inner_page["collapse-icon-outer"]
+        nav_bar_is_side = not _all_hidden([nav_bar]) and not self._is_top_navigation
+
         header = html.Div(
             id="header",
             children=[header_left, header_right],
@@ -412,7 +483,8 @@ class Dashboard(VizroBaseModel):
                 nav_bar,
                 right_side,
                 collapse_left_side,
-                collapse_icon_outer,
+                collapse_icon_outer if nav_bar_is_side else None,
+                reset_button,
             ]
         )
 
@@ -429,15 +501,18 @@ class Dashboard(VizroBaseModel):
         collapse_left_side = outer_page["collapse-left-side"]
         collapse_icon_outer = outer_page["collapse-icon-outer"]
         right_side = outer_page["right-side"]
-
-        # Build header
         header = outer_page["header"]
+
+        nav_bar_is_side = not _all_hidden([nav_bar]) and not self._is_top_navigation
+        nav_bar_section = (
+            html.Div(id="nav-bar-wrapper", children=[nav_bar, collapse_icon_outer]) if nav_bar_is_side else nav_bar
+        )
 
         page_main = html.Div(
             id="page-main",
-            children=[nav_bar, collapse_left_side, collapse_icon_outer, right_side]
+            children=[nav_bar_section, collapse_left_side, right_side]
             if not self._is_top_navigation
-            else [collapse_left_side, collapse_icon_outer, right_side],
+            else [collapse_left_side, right_side],
         )
 
         page_main_outer = html.Div(
@@ -462,12 +537,11 @@ class Dashboard(VizroBaseModel):
         error_404_svg = base64.b64encode((VIZRO_ASSETS_PATH / "images/error_404.svg").read_bytes()).decode("utf-8")
         return html.Div(
             [
-                # Theme switch is added such that the 404 page has the same theme as the user-selected one.
-                dbc.Switch(
+                # Theme store is added such that the 404 page has the same theme as the user-selected one.
+                dcc.Store(
                     id="theme-selector",
-                    value=self.theme == "vizro_light",
-                    persistence=True,
-                    persistence_type="session",
+                    data=self.theme == "vizro_light",
+                    storage_type="session",
                 ),
                 html.Img(src=f"data:image/svg+xml;base64,{error_404_svg}"),
                 html.H3("This page could not be found."),
@@ -500,14 +574,21 @@ class Dashboard(VizroBaseModel):
         reset_controls_button = dbc.Button(
             id="reset-button",
             children=[
-                html.Span("reset_settings", className="material-symbols-outlined tooltip-icon"),
+                html.Span("sync", className="material-symbols-outlined tooltip-icon"),
                 dbc.Tooltip(children="Reset all page controls", target="reset-button"),
             ],
             color="link",
             class_name="btn-circular",
         )
-        theme_switch = dbc.Switch(
-            id="theme-selector", value=self.theme == "vizro_light", persistence=True, persistence_type="session"
+        theme_store = dcc.Store(id="theme-selector", data=self.theme == "vizro_light", storage_type="session")
+        theme_toggle = html.Button(
+            html.Span("contrast", className="material-symbols-outlined"),
+            id="theme-toggle",
+            className="btn-theme-toggle",
+            n_clicks=0,
+            type="button",
+            title="Toggle theme",
+            **{"aria-label": "Toggle theme"},
         )
 
         return html.Div(
@@ -515,7 +596,8 @@ class Dashboard(VizroBaseModel):
             children=[
                 action_progress_indicator,
                 reset_controls_button if has_page_controls and control_panel_hidden else None,
-                theme_switch,
+                theme_store,
+                theme_toggle,
             ],
         )
 

@@ -1,3 +1,7 @@
+---
+description: "Attach built-in actions with `import vizro.actions as va`, trigger them from buttons or graphs, and chain multiple actions on a single trigger."
+---
+
 # How to use actions
 
 Actions control how your app responds to user input such as clicking a button or a point on a graph. If an action is not built into Vizro then you can [write your own custom action](custom-actions.md). In these guides we show how to use built-in actions across a range of areas:
@@ -5,6 +9,8 @@ Actions control how your app responds to user input such as clicking a button or
 - [Handle data](data-actions.md), for example to export data.
 - [Graph and table interactions](graph-table-actions.md), for example to cross-filter.
 - [Show notifications](notification-actions.md), for example to provide user feedback.
+- [Refresh figures on demand](#refresh-figures-on-demand), for example to apply controls on a button click.
+- [Run actions when a page opens](page-actions.md), for example to greet the user or defer loading expensive data.
 
 A complete list of built-in actions in given in the [API documentation][vizro.actions]. We also have an in-depth [tutorial on writing your own action](../tutorials/custom-actions-tutorial.md) and an [explanation of how Vizro actions work](../explanation/actions-explanation.md).
 
@@ -70,20 +76,21 @@ Here is an example action that uses the [`export_data` action](data-actions.md#e
               - type: graph
                 figure:
                   _target_: histogram
+                  data_frame: iris
                   x: sepal_length
               - type: button
                 text: Export data
                 actions:
                   - type: export_data
-          - controls:
+            controls:
               - type: filter
                 column: species
-            layout:
-              type: flex
             title: Action triggered by a button
         ```
 
     === "Result"
+
+        The dashboard renders the "Action triggered by button" example.
 
         [![ExportData]][exportdata]
 
@@ -116,9 +123,9 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
                 vm.Graph(
                     title="Click on a box to use that box's sex to filter table",
                     figure=px.box(tips, x="tip", y="sex"),
-                    actions=va.set_control(control="sex_filter", value="y"),
+                    actions=va.set_controls(controls=["sex_filter"], value="y"),
                 ),
-                vm.AgGrid(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
+                vm.Table(id="tips_table", figure=dash_ag_grid(tips)),  # (1)!
             ],
             controls=[vm.Filter(id="sex_filter", column="sex", targets=["tips_table"])],  # (2)!
         )
@@ -127,8 +134,8 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
         Vizro().build(dashboard).run()
         ```
 
-        1. We give the `vm.AgGrid` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
-        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_control`.
+        1. We give the `vm.Table` an `id` so that it can be targeted explicitly by `vm.Filter(id="sex_filter")`.
+        1. We give the `vm.Filter` an `id` so that it can be set explicitly by `va.set_controls`.
 
     === "app.yaml"
 
@@ -138,8 +145,9 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
         pages:
           - components:
               - actions:
-                  - control: sex_filter
-                    type: set_control
+                  - controls:
+                      - sex_filter
+                    type: set_controls
                     value: y
                 figure:
                   _target_: box
@@ -152,7 +160,7 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
                   _target_: dash_ag_grid
                   data_frame: tips
                 id: tips_table
-                type: ag_grid
+                type: table
             controls:
               - column: sex
                 id: sex_filter
@@ -164,7 +172,28 @@ Here is an example that [performs a cross-filter](graph-table-actions.md#cross-f
 
     === "Result"
 
+        The dashboard renders the "Cross-filter from graph to table" example.
+
         ![](../../assets/user_guides/graph_table_actions/cross_filter_from_graph_2.gif)
+
+## Refresh figures on demand
+
+The [`update_targets`][vizro.actions.update_targets] action re-runs the charts, tables, figures and dynamic filters on a page against the current values of the page's [filters and parameters](controls.md). It is the same mechanism Vizro uses to refresh a page when it loads or when a control changes, exposed so that you can trigger it yourself, for example from a [`Button`][vizro.models.Button].
+
+Call it with no arguments to refresh every figure on the page (and recompute the options of any [dynamic filters](data.md#filters)), or pass `targets` to refresh only specific components:
+
+```python
+import vizro.actions as va
+import vizro.models as vm
+
+# Refresh every figure on the page
+vm.Button(text="Refresh", actions=va.update_targets())
+
+# Refresh only the chosen components
+vm.Button(text="Refresh chart", actions=va.update_targets(targets=["my_graph"]))
+```
+
+A common use is to let a user adjust several controls and apply them all at once: set each control's selector `actions=None` so it does not refresh on change, then apply them together with an `update_targets` button. See [apply controls with a button](controls.md#apply-controls-with-a-button) for a complete example.
 
 ## Multiple actions
 
@@ -185,4 +214,4 @@ actions = [
 ]
 ```
 
-[exportdata]: ../../assets/user_guides/actions/actions_export.png
+[exportdata]: ../../assets/user_guides/actions/actions_export.gif

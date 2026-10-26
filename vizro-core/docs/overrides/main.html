@@ -8,9 +8,29 @@
   rel="stylesheet"
 />
 <link
-  rel="alternate"
-  type="text/markdown"
+  rel="describedby"
   title="llms.txt"
   href="{{ 'llms.txt' | url }}"
 />
+{% if page %}
+  <link
+    rel="alternate"
+    type="text/markdown"
+    title="{{ page.title }} as Markdown"
+    href="{{ (page.url ~ 'index.md') | url }}"
+  />
+{% endif %}
+{# Open Graph / Twitter card metadata so link previews (Slack, LinkedIn, Teams, ...) render an image. #}
+{% set og_image = "https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" %}
+{% if page and page.title and page.title != config.site_name %}
+  {% set og_title = page.title ~ " - " ~ config.site_name %}
+{% else %}
+  {% set og_title = config.site_name %}
+{% endif %}
+<meta property="og:type" content="website" />
+<meta property="og:title" content="{{ og_title }}" />
+<meta property="og:description" content="{{ page.meta.description if page and page.meta and page.meta.description else config.site_description }}" />
+<meta property="og:image" content="{{ og_image }}" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="{{ og_image }}" />
 {% endblock %}

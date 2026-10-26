@@ -1,23 +1,24 @@
 import importlib.util
 from collections.abc import Iterable
+from functools import cached_property
 from typing import Any, Literal, cast
 
 from dash import Output, ctx, dcc
 from pydantic import Field
 
 from vizro.actions._abstract_action import _AbstractAction
-from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
+from vizro.actions._actions_utils import _apply_filter_controls, _get_unfiltered_data
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, ModelID, _Controls
+from vizro.models.types import FigureType, ModelID, _Controls, _normalize_action_notifications
 
 
 class export_data(_AbstractAction):
     """Exports data of target charts, tables and figures.
 
     Abstract: Usage documentation
-        [How to export data](user-guides/data-actions.md#export-data)
+        [How to export data](../user-guides/data-actions.md#export-data)
 
     Example:
         ```python
@@ -78,7 +79,9 @@ class export_data(_AbstractAction):
         outputs = {}
 
         for target, unfiltered_data in _get_unfiltered_data(ctds["parameters"], self.targets).items():
-            filtered_data = _apply_filters(unfiltered_data, ctds["filters"], ctds["filter_interaction"], target)
+            filtered_data = _apply_filter_controls(
+                data_frame=unfiltered_data, ctds_filter=ctds["filters"], target=target
+            )
             writer = getattr(filtered_data, writers[self.file_format])
             outputs[f"download_dataframe_{target}"] = dcc.send_data_frame(
                 writer=writer, filename=f"{target}.{self.file_format}", index=False
@@ -114,3 +117,11 @@ class export_data(_AbstractAction):
             dcc.Download(id={"type": "download_dataframe", "action_id": self.id, "target_id": target})
             for target in self.targets
         ]
+
+    @cached_property
+    def notifications(self):  # type: ignore[override]
+        # cached_property used because the progress/success/error notifications carry auto-generated ids,
+        # and the success/error `update_notification` replaces the progress notification by matching that id.
+        return _normalize_action_notifications(
+            {"progress": "Exporting data...", "success": "Data exported.", "error": "Exporting data failed."}
+        )

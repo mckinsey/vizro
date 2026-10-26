@@ -14,7 +14,7 @@ ag_grid_page = vm.Page(
             title=cnst.TABLE_AG_GRID_CONTAINER,
             layout=vm.Grid(grid=[[0, 1]], col_gap="0px"),
             components=[
-                vm.AgGrid(
+                vm.Table(
                     description=cnst.AG_GRID_TOOLTIP_TEXT,
                     id=cnst.TABLE_AG_GRID_ID,
                     title="Equal Title One",
@@ -46,7 +46,9 @@ ag_grid_page = vm.Page(
         vm.Filter(
             column="pop",
             targets=[cnst.TABLE_AG_GRID_ID],
-            selector=vm.RangeSlider(id=cnst.RANGESLIDER_AGGRID_FILTER, step=1000000.0, min=1000000, max=10000000),
+            selector=vm.Slider(
+                range=True, id=cnst.RANGESLIDER_AGGRID_FILTER, step=1000000.0, min=1000000, max=10000000
+            ),
         ),
     ],
 )

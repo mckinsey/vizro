@@ -98,7 +98,8 @@ extras_page = vm.Page(
         ),
         vm.Filter(
             column="sepal_length",
-            selector=vm.RangeSlider(
+            selector=vm.Slider(
+                range=True,
                 description=vm.Tooltip(
                     text=cnst.RANGESLIDER_TOOLTIP_TEXT,
                     icon=cnst.RANGESLIDER_TOOLTIP_ICON,

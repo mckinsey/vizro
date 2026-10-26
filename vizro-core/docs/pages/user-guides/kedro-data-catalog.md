@@ -1,3 +1,7 @@
+---
+description: "Install the Kedro extra, create or reuse a Kedro Data Catalog, and register its datasets (including dataset factories) with Vizro's `data_manager`."
+---
+
 # How to integrate Vizro with the Kedro Data Catalog
 
 This page describes how to integrate Vizro with [Kedro](https://docs.kedro.org/en/stable/), an open-source Python framework to create reproducible, maintainable, and modular data science code. Vizro provides a convenient way to visualize Pandas datasets registered in a [Kedro Data Catalog](https://docs.kedro.org/en/stable/catalog-data/data_catalog/).

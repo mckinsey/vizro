@@ -2,7 +2,7 @@
 
 In this guide you'll learn how to set up the prerequisites needed for Vizro-AI, and how to install it. You'll also find out how to verify the Vizro-AI installation succeeded, find the version of Vizro-AI, and learn how to update it.
 
-Vizro-AI supports macOS, Linux, and Windows. It works with Python 3.10 and later. You can specify the version of Python to use with Vizro-AI when you set up a virtual environment.
+Vizro-AI supports macOS, Linux, and Windows. It works with Python 3.11 and later. You can specify the version of Python to use with Vizro-AI when you set up a virtual environment.
 
 ## Set up a virtual environment
 

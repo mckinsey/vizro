@@ -1,3 +1,7 @@
+---
+description: "Choose between `Grid` (row/column) and `Flex` (flexible box) on a `Page` or `Container`, and see alternative approaches like tabs and containers."
+---
+
 # How to change the layout of your page
 
 The [`Page`][vizro.models.Page] and [`Container`][vizro.models.Container] models accept a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the `layout` with:
@@ -7,7 +11,7 @@ The [`Page`][vizro.models.Page] and [`Container`][vizro.models.Container] models
 
 !!! note
 
-    The `Grid` model used to be called `Layout`, and the name `Layout` will no longer exist in Vizro 0.2.0. See our [full list of deprecations and breaking changes](../API-reference/deprecations.md).
+    The `Grid` model used to be called `Layout`, and the name `Layout` no longer exists as of Vizro 1.0.0. See our [full list of deprecations and breaking changes](../API-reference/migration.md).
 
 ## Layout options: Grid and Flex
 
@@ -54,6 +58,8 @@ The `layout` argument enables you to choose between two layout models: [`Grid`][
         ```
 
     === "Result"
+
+        The dashboard renders the default layout.
 
         [![Layout]][layout]
 
@@ -146,6 +152,8 @@ This defines a single row that occupies the entire width and height, divided int
         ```
 
     === "Result"
+
+        The dashboard renders the "Grid Arrangement - Basic Example" example.
 
         [![Grid]][grid]
 
@@ -282,6 +290,8 @@ The `Grid` provides full control over the arrangement of top-level components wi
 
     === "Result"
 
+        The dashboard renders the "Grid Arrangement - Advanced Example" example.
+
         [![GridAdv]][gridadv]
 
 ### Cheatsheet - grid examples
@@ -363,6 +373,8 @@ grid = [[0, 1, -1], [0, 2, -1]]
 
     === "Result"
 
+        The dashboard renders the "Adding Empty Spaces" example.
+
         [![GridEmpty]][gridempty]
 
 ### Control the scroll behavior
@@ -440,6 +452,8 @@ By default, the grid fits all charts/components on the screen. This can lead to 
         ```
 
     === "Result"
+
+        The dashboard renders the "Activate Scrolling" example.
 
         [![GridScroll]][gridscroll]
 
@@ -606,6 +620,8 @@ In this example, there isn’t enough space to fit all three graphs in a single 
 
     === "Result"
 
+        The dashboard renders the "Flex - advanced example" example.
+
         [![FlexAdvanced]][flexadvanced]
 
 ### Align and position flex items
@@ -673,6 +689,8 @@ Common properties you can pass through `extra` include:
 
     === "Result"
 
+        The dashboard renders the "Flex with justify and align" example.
+
         [![FlexExtra]][flexextra]
 
 The cards are distributed with equal space between them (`justify="space-between"`) and are stretched to fill the container height (`align="stretch"`).
@@ -691,8 +709,7 @@ You can achieve this by:
 The syntax for setting `width` and `height` varies between components. Refer to the component's documentation for the correct syntax and usage, such as:
 
 - `Graph`: See the documentation on [Plotly - Adjust Graph Size in Python](https://plotly.com/python/setting-graph-size/). For example, `vm.Graph(figure=px.violin(..., width=300))`.
-- `AgGrid`: See the documentation on [Dash - Change Grid Size](https://dash.plotly.com/dash-ag-grid/grid-size). For example, `vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 1000}))`.
-- `DataTable`: See the documentation on [Dash - Setting Table Height](https://dash.plotly.com/datatable/height#setting-table-height-with-vertical-scroll). For example, `vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"}))`.
+- `Table`: See the documentation on [Dash - Change Grid Size](https://dash.plotly.com/dash-ag-grid/grid-size). For example, `vm.Table(figure=dash_ag_grid(tips, style={"width": 1000}))`.
 - `Card`: See our documentation on [Card - The extra argument](https://vizro.readthedocs.io/en/stable/pages/user-guides/card/#the-extra-argument). For example, `vm.Card(..., extra={"style": {"height": "200px"}})`.
 
 We will reuse the example from the previous section, but this time we set `width=400` within the Plotly function to control the graph width. This changes how many graphs can fit on a single row, as reducing the width allows more graphs to fit before wrapping to the next line. To see the difference in results, compare the screenshots from this section with those in the previous one.
@@ -775,6 +792,8 @@ We will reuse the example from the previous section, but this time we set `width
 
     === "Result"
 
+        The dashboard renders the "Change the width for Graph" example.
+
         [![FlexItemSizeArg]][flexitemsizearg]
 
 #### Change size via CSS
@@ -824,6 +843,8 @@ Each item within the `Flex` layout is wrapped in a `<div class="flex-item">`, wh
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/flex-items-cards-width">Run and edit this code in PyCafe</a></b>
 
     === "Result"
+
+        The dashboard renders the "Change the width of all flex items with CSS" example.
 
         [![FlexItemSizeCSS]][flexitemsizecss]
 
@@ -875,6 +896,8 @@ For example, in the layout below, we use the [`Grid`](#grid-layout) layout to ar
         ```
 
     === "Result"
+
+        The dashboard renders the "Grid with Flex container" example.
 
         [![FlexGridCombined]][flexgridcombined]
 
