@@ -84,7 +84,7 @@ class TestTabsBuildMethod:
         # Test title and description
         assert_component_equal(result.children[0].children, [html.Span("Tabs Title", id="tabs-id_title"), None])
 
-        # We want to test the children created in the Tabs.build but not e.g. the
+        # We want to test the children created in the Tabs.build but not, for example, the
         # vm.Container.build() as it's tested elsewhere already
         assert_component_equal(
             result["tabs-id"].children, [dbc.Tab(label="Title-1"), dbc.Tab(label="Title-2")], keys_to_strip={"children"}
@@ -133,7 +133,7 @@ class TestTabsBuildMethod:
             result.children[0].children, [html.Span("Tabs Title", id="tabs-id_title"), *expected_description]
         )
 
-        # We want to test the children created in the Tabs.build but not e.g. the
+        # We want to test the children created in the Tabs.build but not, for example, the
         # vm.Container.build() as it's tested elsewhere already
         assert_component_equal(
             result["tabs-id"].children, [dbc.Tab(label="Title-1"), dbc.Tab(label="Title-2")], keys_to_strip={"children"}

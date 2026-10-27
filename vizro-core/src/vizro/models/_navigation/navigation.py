@@ -38,8 +38,8 @@ class Navigation(VizroBaseModel):
         nav_selector = cast(NavSelectorType, self.nav_selector).build(active_page_id=active_page_id)
 
         if "nav-bar" not in nav_selector:
-            # e.g. nav_selector is Accordion and nav_selector.build returns single html.Div with id="nav-panel".
-            # This will make it match the case e.g. nav_selector is NavBar and nav_selector.build returns html.Div
+            # For example, nav_selector is Accordion and nav_selector.build returns single html.Div with id="nav-panel".
+            # This will make it match when nav_selector is NavBar and nav_selector.build returns html.Div
             # containing children with id="nav-bar" and id="nav-panel"
             nav_selector = html.Div(children=[dbc.Navbar(id="nav-bar", className="d-none invisible"), nav_selector])
 

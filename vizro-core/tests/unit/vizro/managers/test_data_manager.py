@@ -20,7 +20,7 @@ from vizro.managers._data_manager import _DynamicData, _StaticData
 # tests should use freezer.tick() to advance time. This is very similar to the fixture in the pytest-freezegun package.
 # This makes it possible to test with realistic timeouts that flask-caching can handle well. Otherwise we
 # test with very low timeouts and time.sleep(1), and this is flaky since flask-caching is not designed to
-# handle such small intervals (e.g. it rounds times to the nearest second).
+# handle such small intervals (for example, it rounds times to the nearest second).
 # We use tick=True so that time continues to pass between directly consecutive calls to a load function. This makes the
 # behavior in tests as close as possible to real world.
 @pytest.fixture

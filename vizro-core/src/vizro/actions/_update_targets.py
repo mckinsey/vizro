@@ -68,7 +68,7 @@ class update_targets(_AbstractAction):
         """Recreates the targeted figures by applying the page's controls.
 
         Returns:
-            Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
+            Dict mapping target chart ids to modified figures, for example, {"my_scatter": Figure(...)}.
 
         """
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This

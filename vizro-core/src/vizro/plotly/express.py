@@ -1,7 +1,7 @@
 """Functionality to enable drop-in replacement that wraps plotly express figures.
 
 Makes them compatible with the dashboard when you do `import vizro.plotly.express as px`.
-Only plotly figures are wrapped; everything else is passed through unmodified, e.g. px.data.
+Only plotly figures are wrapped; everything else is passed through unmodified, for example, px.data.
 """
 
 from typing import Any

@@ -16,7 +16,7 @@ def make_chart_card(page: vm.Page | IncompletePage) -> vm.Card:
     Returns: card with svg icon, linked to the right page if page is complete.
 
     """
-    # There's one SVG per chart title, so that e.g. pages distribution-butterfly and deviation-butterfly, which both
+    # There's one SVG per chart title. For example, pages distribution-butterfly and deviation-butterfly, which both
     # have title "Butterfly", correspond to butterfly.svg.
     # Incomplete pages have page.path = "" so won't be linked to here.
     svg_name = page.title.lower().replace(" ", "-")
@@ -39,7 +39,7 @@ def make_homepage_container(chart_group: ChartGroup) -> vm.Container:
     Returns: container with cards for each chart in chart_group.
 
     """
-    # Pages are sorted in title's alphabetical order and deduplicated so that e.g. pages distribution-butterfly and
+    # Pages are sorted in title's alphabetical order and deduplicated. For example, pages distribution-butterfly and
     # deviation-butterfly, which both have title "Butterfly", correspond to a single card.
     return vm.Container(
         title=chart_group.name,
@@ -91,10 +91,10 @@ homepage = vm.Page(
 )
 
 # TODO: consider whether each chart group should have its own individual homepage,
-# e.g. at http://localhost:8050/deviation/. This could just repeat the content of the tab from the homepage and would
+# For example, at http://localhost:8050/deviation/. This could repeat the content of the tab from the homepage and would
 # work nicely with the hierarchical navigation.
 dashboard = vm.Dashboard(
-    # ALL_CHART_GROUP.pages has duplicated pages, e.g. both distribution-butterfly and deviation-butterfly.
+    # ALL_CHART_GROUP.pages has duplicated pages, for example, both distribution-butterfly and deviation-butterfly.
     title="Visual vocabulary",
     pages=[homepage, *ALL_CHART_GROUP.pages],
     navigation=vm.Navigation(

@@ -100,7 +100,7 @@ def make_actions_chain(self):
     action_triggers property, which needs the parent model instance. Hence, it must be done as a model validator.
 
     This runs after model_post_init so that self._inner_component_id will have already been set correctly in
-    Table. Even though it's a model validator it is also run on assignment e.g. selector.actions = ...
+    Table. Even though it's a model validator, it also runs on assignment, such as `selector.actions = ...`.
     """
     model_action_trigger = self._action_triggers["__default__"]
 

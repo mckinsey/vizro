@@ -348,7 +348,7 @@ gridplot_page = vm.Page(
             Use a grid plot when you need to compare distributions, trends, or relationships across multiple
             groups while preserving a consistent visual structure. The grid layout makes it easy to spot patterns
             that would be difficult to see in a single aggregated chart. Grid plots are particularly effective
-            when faceting by two dimensions (e.g., time and category), as the row and column arrangement guides
+            when faceting by two dimensions (for example, time and category), as the row and column arrangement guides
             the viewer's eye toward meaningful comparisons.
         """
         ),

@@ -20,10 +20,10 @@ class _AbstractAction(_BaseAction, abc.ABC):
     When subclassing, you can optionally define model fields. These can be either static or runtime arguments and
     define the configuration that a user specifies to use the action:
 
-      * static arguments, e.g. `file_format = "csv"`, are fixed upfront and do not change depending on the state of the
+      * static arguments, such as `file_format = "csv"`, are fixed upfront and do not change with the state of the
       dashboard.
       * runtime arguments depend on the state of the running dashboard on the user's screen. These correspond to Dash
-      States, e.g. `country="dropdown.value"` becomes `State("dropdown", "value")`.
+      States, for example, `country="dropdown.value"` becomes `State("dropdown", "value")`.
     """
 
     # Note this model itself cannot have any fields (aside from `id` that comes from `VizroBaseModel`) or that field
@@ -36,10 +36,10 @@ class _AbstractAction(_BaseAction, abc.ABC):
         This is always called using keyword-arguments so cannot have positional-only arguments.
 
         Any static arguments should not go explicitly in the function signature but instead be accessed through
-        `self`, e.g. `self.file_format`.
+        `self`, for example, `self.file_format`.
 
         Any runtime arguments that were defined as model fields must go explicitly in the function signature,
-        e.g. `country`.
+        for example, `country`.
 
         In addition to the runtime arguments specified as model fields, you can also use the following built-in
         arguments:
@@ -65,7 +65,7 @@ class _AbstractAction(_BaseAction, abc.ABC):
         #  supply a dictionary ID but in future will probably change to use a single built-in vizro_download component.
         #  See https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
         #
-        # We should probably not build in behavior here e.g. to generate outputs automatically from certain reserved
+        # We should probably not build in behavior here. For example, generating outputs automatically from reserved
         # arguments since this would only work well for class-based actions and not @capture("action") ones. Instead
         # the code that does make_outputs_from_targets would be put into a reusable function.
         pass

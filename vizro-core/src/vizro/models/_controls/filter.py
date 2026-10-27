@@ -63,7 +63,7 @@ DEFAULT_SELECTORS: dict[str, Callable[..., SelectorType]] = {
 
 # This disallowed selectors for each column type map is based on the discussion at the following link:
 # See https://github.com/mckinsey/vizro/pull/319#discussion_r1524888171
-# Really numerical data should also disallow SELECTORS["boolean"], but we allow it so that a column
+# Really numerical data should also disallow SELECTORS["boolean"], but we enable it so that a column
 # of 0s and 1s can be interpreted as boolean data. We could modify the detection of data type in
 # validate_column_type to check for this case, but this would mean checking actual data values. This is
 # something we should avoid at least until we have moved to narwhals since maybe it's an unnecessary
@@ -96,7 +96,7 @@ _TIME_REGEX = re.compile(r"^\d{2}:\d{2}(:\d{2})?$")
 _DATETIME_REGEX = re.compile(r"^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(:\d{2})?$")
 # Pure ISO date — emitted by DateTimePicker when the time portion is cleared.
 _DATE_ONLY_REGEX = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-_TIME_PARTS_HH_MM = 2  # "HH:MM".split(":") → 2 parts, i.e. no seconds in format
+_TIME_PARTS_HH_MM = 2  # "HH:MM".split(":") → 2 parts, that is, no seconds in format
 _RANGE_VALUE_LEN = 2  # Range filters always carry exactly [start, end].
 
 # Column types whose filter options/bounds can update when the underlying data source is dynamic.
@@ -289,7 +289,7 @@ def _filter_between(series: pd.Series, value: list[float] | list[str | None]) ->
     # If needed, coerce series and value to comparable time or date objects based on value format.
     series, value = _coerce_temporal(series=series, value=value, normalize_precision=False)
 
-    # Handle time-of-day ranges that cross midnight: e.g. [21:00, 06:00] means time >= 21:00 OR time <= 06:00.
+    # Handle time-of-day ranges that cross midnight: for example, [21:00, 06:00] means time >= 21:00 OR time <= 06:00.
     if isinstance(value[0], dt_time) and value[0] > value[1]:
         return (series >= value[0]) | (series <= value[1])
     return series.between(value[0], value[1], inclusive="both")
@@ -601,7 +601,7 @@ class Filter(VizroBaseModel):
         ]
 
         # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a
-        #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
+        #  dataframe parameter, the default value is used when pre-build the filter, for example, to find the targets,
         #  column type (and hence selector) and initial values. There are three ways to handle this:
         #  1. (Current approach) - Propagate {} and use only default arguments value in the dynamic data function.
         #  2. Propagate values from the model_manager and relax the limitation of requiring argument default values.

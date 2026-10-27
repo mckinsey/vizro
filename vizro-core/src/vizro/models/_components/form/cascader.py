@@ -23,7 +23,7 @@ _LEAF_ADAPTER: TypeAdapter[SingleValueType] = TypeAdapter(SingleValueType)
 
 
 def _coerce_cascader_leaf_scalar(item: Any) -> Any:
-    """Coerce a leaf to `SingleValueType` so it matches how `value` gets validated (e.g. Timestamp → date)."""
+    """Coerce a leaf to `SingleValueType` so it matches how `value` gets validated (for example, Timestamp → date)."""
     try:
         return _LEAF_ADAPTER.validate_python(item)
     except Exception as exc:
@@ -52,11 +52,11 @@ def _walk_cascader_branch(node: Any, *, path: str) -> None:
         )
 
 
-# Options are not a uniform recursive dict[str, T] (e.g. JSON-style trees): branch nodes are dict[str, …] but
+# Options are not a uniform recursive dict[str, T] (for example, JSON-style trees): branch nodes are dict[str, …] but
 # leaves are list[scalar], so the shape is dict[str, dict[str, …] | list[SingleValueType]]. A forward-ref union
 # can express that in Pydantic, but we still need imperative validation for rules a single type does not capture:
 # root must be a non-empty dict (not a list), leaf lists must be non-empty, every leaf item must match
-# SingleValueType, and the tree must contain at least one leaf. The same helpers (e.g. walking the tree and
+# SingleValueType, and the tree must contain at least one leaf. The same helpers (for example, walking the tree and
 # collecting leaves in depth-first order) are required elsewhere anyway.
 #
 # This validator is mode-agnostic (structure only); the leaf-mode duplicate-leaf restriction is enforced later in
