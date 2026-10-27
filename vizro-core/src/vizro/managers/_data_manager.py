@@ -174,7 +174,7 @@ class DataManager:
             # Note that for kedro>=0.19.9 we use lambda: catalog.load(dataset_name) rather than dataset.load so the
             # bound method case no longer arises when using kedro integration.
             # It's important the __qualname__ is the same across all workers, so use the data source name rather than
-            # The repr method includes the ID of the instance, so it would only work if gunicorn is
+            # its repr, which includes the instance ID and would only work if gunicorn is
             # running with --preload.
             # __module__ is also required in flask_caching.utils.function_namespace and not defined for partial
             # functions in some versions of Python.

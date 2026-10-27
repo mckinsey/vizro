@@ -437,7 +437,7 @@ def _pio_templates_default():
 
     This is to ensure that in a Jupyter Notebook captured charts look the same as when they're in the dashboard. When
     the context manager exits, the global theme is reverted to keep things clean. For example, you could
-    you could compare a captured vs. non-captured chart in the same Python session).
+    compare a captured vs. non-captured chart in the same Python session.
 
     This works even if users have tweaked the templates, so long as pio.templates has been updated correctly and you
     refer to template by name rather than trying to take from vizro.themes.
