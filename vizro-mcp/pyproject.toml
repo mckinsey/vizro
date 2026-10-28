@@ -58,6 +58,10 @@ filterwarnings = [
   "error",
   # Selenium 4.2.0 (pinned by dash[testing]'s selenium<=4.2.0 cap) requires urllib3[secure], which
   # forces urllib3 1.26.x and installs the urllib3-secure-extra marker, making urllib3 warn on import.
-  "ignore:'urllib3\\[secure\\]' extra is deprecated:DeprecationWarning"
+  "ignore:'urllib3\\[secure\\]' extra is deprecated:DeprecationWarning",
+  # dash.testing.plugin registers an old-style hookimpl (pytest.mark.tryfirst) that pytest 9 flags
+  # as PytestRemovedIn10Warning during plugin load. Third-party plugin issue, not ours; match by
+  # message so it stays robust across pytest versions (the warning category is pytest-9-only).
+  "ignore:The hookimpl"
 ]
 pythonpath = ["src"]
