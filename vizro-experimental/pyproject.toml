@@ -74,6 +74,9 @@ addopts = [
 ]
 filterwarnings = [
   "error",
+  # Selenium 4.2.0 (pinned by dash[testing]'s selenium<=4.2.0 cap) requires urllib3[secure], which
+  # forces urllib3 1.26.x and installs the urllib3-secure-extra marker, making urllib3 warn on import.
+  "ignore:'urllib3\\[secure\\]' extra is deprecated:DeprecationWarning",
   # Python 3.13's deprecation of asyncio.get_event_loop() trips PydanticAI's
   # sync streaming helper (it catches RuntimeError but not the DeprecationWarning).
   # The fallback path still creates a fresh loop correctly; only the warning is noise.

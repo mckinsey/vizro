@@ -55,6 +55,9 @@ addopts = [
   "--import-mode=importlib"
 ]
 filterwarnings = [
-  "error"
+  "error",
+  # Selenium 4.2.0 (pinned by dash[testing]'s selenium<=4.2.0 cap) requires urllib3[secure], which
+  # forces urllib3 1.26.x and installs the urllib3-secure-extra marker, making urllib3 warn on import.
+  "ignore:'urllib3\\[secure\\]' extra is deprecated:DeprecationWarning"
 ]
 pythonpath = ["src"]

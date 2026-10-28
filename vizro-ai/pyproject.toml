@@ -55,6 +55,9 @@ source_pkgs = ["vizro_ai"]
 [tool.pytest.ini_options]
 filterwarnings = [
   "error",
+  # Selenium 4.2.0 (pinned by dash[testing]'s selenium<=4.2.0 cap) requires urllib3[secure], which
+  # forces urllib3 1.26.x and installs the urllib3-secure-extra marker, making urllib3 warn on import.
+  "ignore:'urllib3\\[secure\\]' extra is deprecated:DeprecationWarning",
   # Package deprecation notice emitted on every `import vizro_ai`. Must use a message pattern
   # (not `::vizro_ai.VizroAIDeprecationWarning`) and stay above the safeguard ignore below: resolving
   # a dotted warning class imports vizro_ai, which re-triggers this warning before its own filter is
