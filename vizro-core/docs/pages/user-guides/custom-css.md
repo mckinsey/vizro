@@ -109,19 +109,20 @@ To overwrite any global CSS property, you need to target the element selector an
         from vizro import Vizro
 
         page = vm.Page(
-                title="Changing the header color",
-                components=[
-                    vm.Card(
-                        text="""
+            title="Changing the header color",
+            components=[
+                vm.Card(
+                    text="""
 
                             # This is an <h1> tag
 
                             ## This is an <h2> tag
 
                             ###### This is an <h6> tag
-                        """)
-                    ],
+                        """
                 )
+            ],
+        )
 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
@@ -182,15 +183,10 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
         from vizro import Vizro
 
         page_one = vm.Page(
-            id="page-with-hidden-title",
-            title="Page with hidden title",
-            components=[vm.Card(text="""# Placeholder""")]
+            id="page-with-hidden-title", title="Page with hidden title", components=[vm.Card(text="""# Placeholder""")]
         )
 
-        page_two = vm.Page(
-            title="Page with shown title",
-            components=[vm.Card(text="""# Placeholder""")]
-        )
+        page_two = vm.Page(title="Page with shown title", components=[vm.Card(text="""# Placeholder""")])
 
         dashboard = vm.Dashboard(pages=[page_one, page_two])
         Vizro().build(dashboard).run()
@@ -281,8 +277,8 @@ It's essential to understand the relationship between the targeted CSS class or 
             title="Changing the card color",
             components=[
                 vm.Card(id="custom-card", text="""Lorem ipsum dolor sit amet consectetur adipisicing elit."""),
-                vm.Card(text="""Lorem ipsum dolor sit amet consectetur adipisicing elit.""")
-                     ],
+                vm.Card(text="""Lorem ipsum dolor sit amet consectetur adipisicing elit."""),
+            ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
