@@ -28,8 +28,9 @@ from vizro.models.types import capture
 import pandas as pd
 import plotly.graph_objects as go
 
+
 @capture("graph")
-def minimal_example(data_frame:pd.DataFrame=None):
+def minimal_example(data_frame: pd.DataFrame = None):
     return go.Figure()
 ```
 
