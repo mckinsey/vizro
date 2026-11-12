@@ -159,7 +159,7 @@ All the colors that make up the palettes and our color system are available thro
         import vizro.plotly.express as px
 
         df = px.data.tips()
-        px.density_heatmap(df, x="total_bill", y="tip", color_continuous_scale=palettes.sequential_red)
+        px.density_heatmap(df, x="total_bill", y="tip", color_continuous_scale=palettes.sequential_pink)
         ```
 
     === "Diverging palette"
@@ -171,7 +171,7 @@ All the colors that make up the palettes and our color system are available thro
 
         # Create data with positive and negative values
         data = np.random.randn(20, 20)
-        px.imshow(data, color_continuous_scale=palettes.diverging_red_cyan, color_continuous_midpoint=0)
+        px.imshow(data, color_continuous_scale=palettes.diverging_pink_blue, color_continuous_midpoint=0)
         ```
 
     === "Single color"

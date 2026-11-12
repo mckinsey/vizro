@@ -48,6 +48,7 @@ To create a dashboard:
         ```py
         import vizro.plotly.express as px
         from vizro import Vizro
+        from vizro.models import Dashboard
 
         df = px.data.iris()
 
@@ -81,6 +82,7 @@ To create a dashboard:
         }
 
         dashboard = {"pages": [page]}
+        dashboard = Dashboard(**dashboard)
         Vizro().build(dashboard).run()
         ```
 

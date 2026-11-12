@@ -194,7 +194,8 @@ class Parameter(VizroBaseModel):
         self.selector.value = get_selector_default_value(self.selector)
 
         if not self.selector.title:
-            self.selector.title = ", ".join({target.rsplit(".")[-1] for target in self.targets})
+            # Ordered dedupe: a set's order changes between processes.
+            self.selector.title = ", ".join(dict.fromkeys(target.rsplit(".")[-1] for target in self.targets))
 
         # A set of properties unique to selector (inner object) that are not present in html.Div (outer build wrapper).
         # Creates _action_outputs and _action_inputs for forwarding properties to the underlying selector.

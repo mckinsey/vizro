@@ -182,7 +182,7 @@ heatmap_page = vm.Page(
             #### When should I use it?
 
             Use a heatmap chart to visualize time patterns and identify trends between two variables.
-            Typically, the x-axis represents time intervals (e.g., hours, days, months), while the y-axis represents
+            Typically, the x-axis represents time intervals, such as hours, days, or months, while the y-axis represents
             categories or different variables. By observing color changes across the grid, you can easily spot
             patterns and correlations.
         """

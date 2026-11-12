@@ -35,11 +35,16 @@
 }
 
 /* Dropdown menu */
-.dash-dropdown-content {
+.dash-dropdown-content,
+.dash-cascader-column-flyout {
   background: var(--bs-dropdown-bg-color);
   border-radius: var(--bs-border-radius);
   box-shadow: none;
   padding-bottom: 4px;
+}
+
+.dash-cascader-column-flyout {
+  padding-bottom: 0;
 }
 
 /* Dropdown & Cascader Checkboxes */

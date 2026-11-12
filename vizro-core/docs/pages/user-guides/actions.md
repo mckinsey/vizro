@@ -76,16 +76,15 @@ Here is an example action that uses the [`export_data` action](data-actions.md#e
               - type: graph
                 figure:
                   _target_: histogram
+                  data_frame: iris
                   x: sepal_length
               - type: button
                 text: Export data
                 actions:
                   - type: export_data
-          - controls:
+            controls:
               - type: filter
                 column: species
-            layout:
-              type: flex
             title: Action triggered by a button
         ```
 

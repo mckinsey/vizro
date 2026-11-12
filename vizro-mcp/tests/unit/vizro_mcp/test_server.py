@@ -273,6 +273,33 @@ class TestValidateModelConfig:
         assert result.pycafe_url is not None
         assert result.pycafe_url.startswith("https://py.cafe/snippet/vizro/v1?c=")
 
+    def test_local_windows_path(self) -> None:
+        """Test that a local Windows path is written into the python code as a valid string literal."""
+        dashboard_config = {
+            "pages": [
+                {
+                    "title": "Sales",
+                    "components": [
+                        {"type": "graph", "figure": {"_target_": "bar", "data_frame": "sales", "x": "a", "y": "b"}}
+                    ],
+                }
+            ]
+        }
+        data_info = DFMetaData(
+            file_name="sales",
+            file_path_or_url=r"C:\Users\name\data\sales.csv",
+            file_location_type="local",
+            read_function_string="pd.read_csv",
+        )
+
+        result = validate_dashboard_config(
+            dashboard_config=dashboard_config, data_infos=[data_info], custom_charts=[], auto_open=False
+        )
+
+        assert result.valid is True
+        assert r'data_manager["sales"] = pd.read_csv("C:\\Users\\name\\data\\sales.csv")' in result.python_code
+        assert result.pycafe_url is None
+
     def test_validation_error(self, valid_dashboard_config: dict[str, Any], iris_metadata: DFMetaData) -> None:
         """Test validation error for an invalid dashboard configuration."""
         # Create an invalid config by removing a required field

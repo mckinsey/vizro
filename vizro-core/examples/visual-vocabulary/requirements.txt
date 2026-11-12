@@ -16,7 +16,7 @@ blinker==1.9.0
     # via flask
 cachelib==0.13.0
     # via flask-caching
-certifi==2025.11.12
+certifi==2026.10.19
     # via requests
 charset-normalizer==3.4.4
     # via requests
@@ -101,7 +101,7 @@ pandas==2.3.3
     #   vizro
 pathspec==1.0.4
     # via black
-pillow==12.2.0
+pillow==13.0.0
     # via matplotlib
 platformdirs==4.5.1
     # via black

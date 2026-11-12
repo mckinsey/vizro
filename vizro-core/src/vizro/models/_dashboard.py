@@ -51,7 +51,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
-# (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
+# (such as html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
 # this type is used, the object is actually still a dash.development.base_component.Component, but this makes it easier
 # to see what contract the component fulfills by making the expected keys explicit.
 _InnerPageContentType = TypedDict(

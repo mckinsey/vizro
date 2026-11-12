@@ -57,8 +57,8 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
         pages:
           - components:
               - text: |
+                  ### Card Title
                   Commodi repudiandae consequuntur voluptatum.
-                title: Card Title
                 type: card
             layout:
               type: flex
@@ -172,6 +172,7 @@ The [`Card`][vizro.models.Card] uses the [`vdc.Markdown` component](https://gith
                   #### Header level 4 <h4>
                 type: card
               - text: |
+                  ### Paragraphs
                   Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
                   Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
@@ -179,28 +180,30 @@ The [`Card`][vizro.models.Card] uses the [`vdc.Markdown` component](https://gith
                   Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
 
                   Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-                title: Paragraphs
                 type: card
               - text: |
+                  ### Block Quotes
+
                   >
                   > A block quote is a long quotation, indented to create a separate block of text.
                   >
-                title: Block Quotes
                 type: card
               - text: |
+                  ### Lists
+
                   * Item A
                     * Sub Item 1
                     * Sub Item 2
                   * Item B
-                title: Lists
                 type: card
               - text: |
+                  ### Emphasis
+
                   This word will be *italic*
 
                   This word will be **bold**
 
                   This word will be _**bold and italic**_
-                title: Emphasis
                 type: card
             title: Customizing Text
         ```
@@ -313,6 +316,8 @@ An image ALT text offers a description to your image and serves as a text placeh
         pages:
           - components:
               - text: |
+                  ### My card with image!
+
                   ![continent](assets/images/continents/africa.svg)
 
                   Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
@@ -320,7 +325,6 @@ An image ALT text offers a description to your image and serves as a text placeh
                   Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
 
                   Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-                title: My card with image!
                 type: card
             title: Placing Images
         ```
@@ -398,6 +402,8 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
         pages:
           - components:
               - text: |
+                  ### My card with image!
+
                   ![](assets/images/continents/europe.svg#my-image)
 
                   Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
@@ -405,7 +411,6 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
                   Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
 
                   Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-                title: My card with image!
                 type: card
             layout:
               type: flex
@@ -487,6 +492,8 @@ To float an image for example to the right of the text, use the `src` attribute 
         pages:
           - components:
               - text: |
+                  ### My card with floating image!
+
                   ![](assets/images/continents/europe.svg#my-image)
 
                   Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
@@ -500,7 +507,6 @@ To float an image for example to the right of the text, use the `src` attribute 
                   Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
 
                   Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-                title: My card with floating image!
                 type: card
             layout:
               type: flex
@@ -733,19 +739,19 @@ The example below shows how to use the [set_controls action][vizro.actions.set_c
         pages:
           - components:
               - type: card
-                text: Filter: Setosa
+                text: "Filter: Setosa"
                 actions:
                   - type: set_controls
                     controls: [filter-id-1]
                     value: setosa
               - type: card
-                text: Filter: Viriginica
+                text: "Filter: Virginica"
                 actions:
                   - type: set_controls
                     controls: [filter-id-1]
                     value: virginica
               - type: card
-                text: Filter: Versicolor
+                text: "Filter: Versicolor"
                 actions:
                   - type: set_controls
                     controls: [filter-id-1]
@@ -753,20 +759,17 @@ The example below shows how to use the [set_controls action][vizro.actions.set_c
               - type: graph
                 figure:
                   _target_: scatter
+                  data_frame: iris
                   x: sepal_width
                   y: sepal_length
                   color: species
-              - type: button
-                text: Export data
-                actions:
-                  - type: export_data
             controls:
               - type: filter
                 id: filter-id-1
                 column: species
             layout:
-              - type: grid
-                grid: [[0, 1, 2], [3, 3, 3], [3, 3, 3]]
+              type: grid
+              grid: [[0, 1, 2], [3, 3, 3], [3, 3, 3]]
             title: Action triggered by a card
         ```
 

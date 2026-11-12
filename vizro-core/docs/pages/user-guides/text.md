@@ -137,7 +137,7 @@ The [`Text`][vizro.models.Text] model uses the[`vdc.Markdown` component](https:/
         # See yaml_version example
         pages:
           - components:
-              - title: Customizing Text
+              - type: text
                 text: |
                   # Header level 1 <h1>
 
@@ -175,6 +175,7 @@ The [`Text`][vizro.models.Text] model uses the[`vdc.Markdown` component](https:/
                   This word will be **bold**
 
                   This word will be _**bold and italic**_
+            title: Customizing Text
         ```
 
     === "Result"

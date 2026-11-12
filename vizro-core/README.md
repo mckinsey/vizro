@@ -10,9 +10,9 @@
 
 #### Vizro is a low-code toolkit for building high-quality data visualization apps
 
-[![Python version](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Fmckinsey%2Fvizro%2Frefs%2Fheads%2Fmain%2Fvizro-core%2Fpyproject.toml)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md) [![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
+[![Python version](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Fmckinsey%2Fvizro%2Frefs%2Fheads%2Fmain%2Fvizro-core%2Fpyproject.toml)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro) [![Downloads](https://static.pepy.tech/badge/vizro)](https://pepy.tech/projects/vizro) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.txt) [![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
 
-[Documentation](https://vizro.readthedocs.io/en/stable/) | [Get Started](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/)
+[Documentation](https://vizro.readthedocs.io/en/stable/) | [Get Started](https://vizro.readthedocs.io/en/stable/pages/tutorials/quickstart-tutorial/)
 
 <picture>
   <source srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_spash_teaser.gif">
@@ -99,13 +99,13 @@ Explore a few live demos to see different Vizro dashboards in action:
 <table>
   <tr>
     <td align="center" valign="top" width="33%">
-      <a href="https://py.cafe/vizro-official/vizro-iris-analysis" target="_blank" rel="noopener noreferrer">
+      <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard" target="_blank" rel="noopener noreferrer">
         <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/basic_dashboard.png" alt="Basic Dashboard" width="100%">
       </a>
       <br>
       <strong>Basic Dashboard</strong>
       <br>
-      <a href="https://py.cafe/vizro-official/vizro-iris-analysis" target="_blank" rel="noopener noreferrer">Try it live</a>
+      <a href="https://huggingface.co/spaces/vizro/demo-first-dashboard" target="_blank" rel="noopener noreferrer">Try it live</a>
     </td>
     <td align="center" valign="top" width="33%">
       <a href="https://py.cafe/app/vizro-official/vizro-visual-vocabulary" target="_blank" rel="noopener noreferrer">
@@ -167,15 +167,15 @@ The Vizro framework underpins the entire Vizro toolkit. It is a Python package (
 
 Visit the [documentation](https://vizro.readthedocs.io/en/stable/) for more details.
 
-## [Vizro visual vocabulary](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/)
+## [Vizro visual vocabulary](https://py.cafe/app/vizro-official/vizro-visual-vocabulary)
 
 **Chart examples.**
 
 The visual vocabulary helps you to decide which chart type to use for your requirements, and offers sample code to create these charts with Plotly or embed them into a Vizro dashboard.
 
-Visit the [visual vocabulary](https://py.cafe/app/vizro-official/vizro-visual-vocabulary/) to search for charts or get inspiration.
+Visit the [visual vocabulary](https://py.cafe/app/vizro-official/vizro-visual-vocabulary) to search for charts or get inspiration.
 
-<a href="https://py.cafe/app/vizro-official/vizro-visual-vocabulary/">
+<a href="https://py.cafe/app/vizro-official/vizro-visual-vocabulary">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png" width="600">
 </a>
 
@@ -189,21 +189,6 @@ Compatible with MCP-enabled LLM clients such as Cursor or Claude Desktop.
 
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro-mcp.gif" alt="Vizro MCP Demo" width="600">
 
-## [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
-
-**Use LLMs to generate charts and dashboards.**
-
-> **Vizro-AI dashboard generation is no longer actively developed and is superseded by [Vizro-MCP](https://github.com/mckinsey/vizro/tree/main/vizro-mcp). Vizro-AI supports only chart generation from version 0.4.0.**
-
-Vizro-AI is a separate package (called `vizro_ai`) that extends Vizro to incorporate LLMs. Use it to build interactive Vizro charts and dashboards, by simply describing what you need in plain English or other languages.
-
-Visit the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/) for more details.
-
-<picture>
-  <source srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif">
-  <img alt="Gif to demonstrate Vizro-AI" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai_fallback.png" width="600">
-</picture>
-
 ## Installation and first steps
 
 ```console
@@ -212,7 +197,9 @@ pip install vizro
 
 See the [installation guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for more information.
 
-The [get started documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/first-dashboard/) explains how to create your first dashboard.
+The [get started documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/quickstart-tutorial/) explains how to create your first dashboard.
+
+> **Upgrading from a 0.1.x release?** Vizro 1.0.0 is the first stable release and introduces some breaking changes. See the [migration guide](https://vizro.readthedocs.io/en/stable/pages/API-reference/migration/) to update your existing dashboards.
 
 ## For AI agents and LLMs
 
@@ -227,11 +214,11 @@ If you are an AI agent or LLM building Vizro apps, start with the [Vizro for LLM
 
 This repository is a monorepo containing the following packages:
 
-|           Folder           |                                            Version                                            |                                   Documentation                                   |
-| :------------------------: | :-------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------: |
-| [vizro-core](./vizro-core) |     [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)     |               [Vizro Docs](https://vizro.readthedocs.io/en/stable/)               |
-|   [vizro-ai](./vizro-ai)   |  [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai)  |         [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/)          |
-|  [vizro-mcp](./vizro-mcp)  | [![PyPI version](https://badge.fury.io/py/vizro-mcp.svg)](https://badge.fury.io/py/vizro-mcp) | [Vizro-MCP Docs](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) |
+| Folder | Version | Documentation |
+| :----: | :-----: | :-----------: |
+| [vizro-core](https://github.com/mckinsey/vizro/tree/main/vizro-core) | [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro) | [Vizro Docs](https://vizro.readthedocs.io/en/stable/) |
+| [vizro-ai](https://github.com/mckinsey/vizro/tree/main/vizro-ai) | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/) |
+| [vizro-mcp](https://github.com/mckinsey/vizro/tree/main/vizro-mcp) | [![PyPI version](https://badge.fury.io/py/vizro-mcp.svg)](https://badge.fury.io/py/vizro-mcp) | [Vizro-MCP Docs](https://vizro.readthedocs.io/projects/vizro-mcp/) |
 
 ## Community and development
 

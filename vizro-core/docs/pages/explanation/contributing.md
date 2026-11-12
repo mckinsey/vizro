@@ -8,7 +8,7 @@ Contributions of all experience levels are welcome! There are many ways to contr
 
 Our development follows a standard [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow). To be merged, your PR must meet all the following requirements:
 
-- two approving reviews (including a code owner)
+- one approving review
 - Continuous Integration (CI) checks pass
 - code is up-to-date with `main`
 

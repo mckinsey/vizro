@@ -201,7 +201,7 @@ diverging_yellow_blue = [
 # These are necessarily the same for dark and light themes.
 # For plotly express plots, some colors are taken from the template's palettes and stored in
 # fig.data rather than fig.layout. This means they cannot be changed consistently by post-fig
-# updates to fig.layout.template (e.g. in the clientside callback we currently use).
+# updates to fig.layout.template (for example, in the clientside callback we currently use).
 palettes = SimpleNamespace(
     qualitative=qualitative,
     sequential=sequential_blue,

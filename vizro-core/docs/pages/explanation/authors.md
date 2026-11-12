@@ -6,7 +6,7 @@ description: "Roll call of the current and previous Vizro core team members and 
 
 <!-- vale off -->
 
-[Alexey Snigir](https://github.com/l0uden), [Antony Milne](https://github.com/antonymilne), [Dan Dumitriu](https://github.com/dandumitriu1), [Huong Li Nguyen](https://github.com/huong-li-nguyen), [Jo Stichbury](https://github.com/stichbury), [Joseph Perkins](https://github.com/Joseph-Perkins), [Lingyi Zhang](https://github.com/lingyielia), [Maximilian Schulz](https://github.com/maxschulz-COL), [Nadija Graca](https://github.com/nadijagraca), and [Petar Pejovic](https://github.com/petar-qb)
+[Alexey Snigir](https://github.com/l0uden), [Antony Milne](https://github.com/antonymilne), [Dan Dumitriu](https://github.com/dandumitriu1), [Huong Li Nguyen](https://github.com/huong-li-nguyen), [Jo Stichbury](https://github.com/stichbury), [Joseph Perkins](https://github.com/Joseph-Perkins), [Lingyi Zhang](https://github.com/lingyielia), [Maximilian Schulz](https://github.com/maxschulz-COL), [Nadija Graca](https://github.com/nadijagraca), [Petar Pejovic](https://github.com/petar-qb), and [Stephanie Kaiser](https://github.com/stephkaiser).
 
 ## Previous team members and code contributors
 

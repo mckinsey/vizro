@@ -253,7 +253,7 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
-          - title: Variant: filled
+          - title: "Variant: filled"
             components:
               - type: container
                 title: Container I
@@ -277,7 +277,7 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
                       y: sepal_length
                       color: species
                 variant: filled
-          - title: Variant: outlined
+          - title: "Variant: outlined"
             components:
               - type: container
                 title: Container I

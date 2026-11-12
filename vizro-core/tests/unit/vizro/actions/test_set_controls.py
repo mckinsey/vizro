@@ -728,7 +728,7 @@ class TestSetControlsFunction:
     )
     def test_function_trigger_returns_no_update(self, same_page_controls, cross_page_controls):
         # Add action to an AG-Grid-backed Table as it returns no_update if set_controls value is a key from the
-        # CELL_CLICKED_MAPPING (e.g. "column"), and trigger does not contain "cellClicked"
+        # CELL_CLICKED_MAPPING (for example, "column"), and trigger does not contain "cellClicked"
         action = va.set_controls(controls=["filter_page_1"], value="column")
         model_manager["ag_grid_1"].actions = action
 

@@ -146,7 +146,7 @@ underlying component may change in the future.""",
             lookup = f"customdata[{index}]"
         except (KeyError, ValueError):
             # Treat the value as a box lookup string, as https://github.com/cdgriffith/Box/wiki/Types-of-Boxes#box-dots
-            # This works for e.g. value="x" or value="customdata[0]".
+            # This works for values such as value="x" or value="customdata[0]".
             lookup = value
 
         unique_points = set()
@@ -156,8 +156,8 @@ underlying component may change in the future.""",
                 if isinstance(val := point[lookup], Box):
                     raise KeyError
 
-                # Certain grouped charts (e.g. pie charts) return custom data as a list of single-item lists
-                # (e.g. [["setosa"], ["setosa"]]). Since all values are identical, flatten to a single value to avoid
+                # Certain grouped charts (for example, pie charts) return custom data as a list of single-item lists
+                # (for example, [["setosa"], ["setosa"]]). Since all values are identical, flatten them to avoid
                 # returning a nested object.
                 unique_points.add(val[0] if isinstance(val, list) else val)
         except (KeyError, IndexError, TypeError):
@@ -193,7 +193,7 @@ underlying component may change in the future.""",
 
         # No "guard" component needed for vm.Graph. The reason is that vm.Graph has never been recreated after it's
         # built. Only that updates is its "figure" property after the build method.
-        # Guard components are only for components (e.g. Table, dynamic Filter) that get fully recreated.
+        # Guard components are only for components (for example, Table, dynamic Filter) that get fully recreated.
         return fig
 
     # Convenience wrapper/syntactic sugar.
