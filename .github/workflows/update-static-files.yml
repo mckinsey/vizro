@@ -13,21 +13,19 @@ env:
 
 jobs:
   update-static-files:
-    runs-on: gh-larger-linux-mini
+    runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
     steps:
-      - name: Get GitHub token from pp-octo-sts.cf.platform.mckinsey.cloud
-        uses: McK-Internal/octo-sts-action@v1
-        id: octo-sts
+      - name: Generate GitHub App token
+        uses: actions/create-github-app-token@v3
+        id: app-token
         with:
-          domain: pp-octo-sts.cf.platform.mckinsey.cloud
-          scope: ${{ github.repository }}
-          identity: vizro-static-files
+          client-id: ${{ secrets.VIZRO_SVC_APP_CLIENT_ID }}
+          private-key: ${{ secrets.VIZRO_SVC_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v7
         with:
-          token: ${{ steps.octo-sts.outputs.token }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Set up Python ${{ matrix.config.python-version }}
         uses: actions/setup-python@v7
@@ -64,4 +62,4 @@ jobs:
           sudo apt-get install -y gh
           gh pr create -B main -H bot/update-static-files --title "[Bot] Update static files" --body "Automated update of static files"
         env:
-          GITHUB_TOKEN: ${{ steps.octo-sts.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
