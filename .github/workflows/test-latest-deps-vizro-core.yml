@@ -1,0 +1,151 @@
+name: Latest dependency tests for Vizro
+
+# CI only runs on push and PR, so a breaking release of Dash, Plotly, Pydantic etc. could go unnoticed until the next PR.
+# This runs the tests weekly against the newest versions of dependencies allowed by pyproject.toml and opens (or
+# updates) a single GitHub issue, plus a Slack message, if they fail. A failure may be a new upstream warning rather
+# than a crash, since pytest runs with filterwarnings = error.
+
+permissions:
+  contents: read
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # run every Monday at 06:00 UTC, after the Sunday update-static-files job
+  workflow_dispatch: # helps to run this job manually from GitHub Actions UI
+    inputs:
+      simulate_failure:
+        description: "Fail on purpose to test the issue and Slack notification"
+        type: boolean
+        default: false
+
+env:
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+  UPSTREAM_COMPAT_LABEL: "Upstream compat :link:"
+
+jobs:
+  unit:
+    name: unit on Py${{ matrix.python-version }}
+    if: github.repository == 'mckinsey/vizro'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: vizro-core
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Show dependency tree
+        run: hatch run all.py${{ matrix.python-version }}:pip tree
+
+      # Compare this against the artifact from the last green run to see which dependency changed.
+      - name: Save installed versions
+        run: hatch run all.py${{ matrix.python-version }}:pip freeze > freeze.txt
+
+      - name: Upload installed versions
+        uses: actions/upload-artifact@v7
+        with:
+          name: freeze-unit-py${{ matrix.python-version }}
+          path: vizro-core/freeze.txt
+
+      - name: Simulate failure
+        if: inputs.simulate_failure
+        run: exit 1
+
+      - name: Run unit tests
+        run: hatch run all.py${{ matrix.python-version }}:test-unit
+
+  integration:
+    name: integration on Py3.14
+    if: github.repository == 'mckinsey/vizro'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: vizro-core
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Show dependency tree
+        run: hatch run all.py3.14:pip tree
+
+      - name: Save installed versions
+        run: hatch run all.py3.14:pip freeze > freeze.txt
+
+      - name: Upload installed versions
+        uses: actions/upload-artifact@v7
+        with:
+          name: freeze-integration-py3.14
+          path: vizro-core/freeze.txt
+
+      - name: Run integration tests
+        run: hatch run all.py3.14:test-integration
+
+  notify:
+    name: notify on failure
+    needs: [unit, integration]
+    if: failure()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Open or update GitHub issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh label create "$UPSTREAM_COMPAT_LABEL" --color FBCA04 \
+            --description "CI failure caused by a new release of an upstream dependency" || true
+
+          existing=$(gh issue list --label "$UPSTREAM_COMPAT_LABEL" --state open --json number --jq '.[0].number // empty')
+
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "Scheduled latest-dependency tests failed again: $RUN_URL"
+          else
+            gh issue create \
+              --title "Scheduled latest-dependency tests are failing" \
+              --label "$UPSTREAM_COMPAT_LABEL" --label "Needs triage :mag:" \
+              --body "The weekly latest-dependency tests failed: $RUN_URL
+
+          This may be a new upstream release, or just a new upstream warning, since pytest runs with \`filterwarnings = error\`.
+
+          To investigate:
+          1. Download the \`freeze-*\` artifacts from the failing run and from the last green run, and diff them to find the dependency that changed.
+          2. Check the code that relies on private upstream APIs: \`vizro-core/src/vizro/_vizro.py\` (\`Vizro._reset\`) and \`vizro-core/src/vizro/plotly/express.py\`.
+          3. Fix or cap the dependency in \`vizro-core/pyproject.toml\`, and close this issue once the workflow is green again."
+          fi
+
+      - name: Send custom JSON data to Slack
+        # used pinned commit hash for security reasons
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
+        continue-on-error: true
+        with:
+          payload: |
+            {
+              "text": "Scheduled latest-dependency tests for vizro-core failed\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
