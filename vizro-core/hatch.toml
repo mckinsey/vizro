@@ -39,6 +39,7 @@ dependencies = [
   "pytest-order",
   "freezegun>=1.5.0",
   "dash[testing]",
+  "dash-mantine-components>=2.0.0,<3",
   "chromedriver-autoinstaller>=0.6.4",
   "toml",
   "pyyaml",
