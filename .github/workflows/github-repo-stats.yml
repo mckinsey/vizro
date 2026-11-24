@@ -1,21 +1,22 @@
 name: github-repo-stats
 
-permissions:
-  contents: read
-
 on:
-  schedule:
-    # Run this once per day, towards the end of the day for keeping the most
-    # recent data point most meaningful (hours are interpreted in UTC).
-    - cron: "0 23 * * *"
   workflow_dispatch: # Allow for running this manually.
 
 jobs:
   github-repo-stats:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
+      - name: Generate GitHub App token
+        uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ vars.VIZRO_SVC_APP_CLIENT_ID }}
+          private-key: ${{ secrets.VIZRO_SVC_APP_PRIVATE_KEY }}
       - name: Run GitHub repo stats
         # Use latest release.
         uses: jgehrcke/github-repo-stats@RELEASE
         with:
-          ghtoken: ${{ secrets.VIZRO_SVC_PAT }}
+          ghtoken: ${{ steps.app-token.outputs.token }}
