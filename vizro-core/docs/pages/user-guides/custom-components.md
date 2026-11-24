@@ -63,8 +63,8 @@ class TooltipNonCrossRangeSlider(vm.Slider):
 class TooltipNonCrossRangeSlider(vm.Slider):
     def build(self):
         ...
-        allowCross=False,
-        tooltip={"placement": "bottom", "always_visible": True}
+        allowCross = (False,)
+        tooltip = {"placement": "bottom", "always_visible": True}
 ```
 These lines are highlighted in the example below. They are the only material change to the original `build` method.
 
