@@ -11,6 +11,13 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-1.0.1'></a>
+# 1.0.1 — 2026-11-24
+
+## Fixed
+
+- Fix blank page on a fresh install by capping `dash-mantine-components<3`. ([#1913](https://github.com/mckinsey/vizro/pull/1913))
+
 <a id='changelog-1.0.0'></a>
 # 1.0.0 — 2026-10-20
 
