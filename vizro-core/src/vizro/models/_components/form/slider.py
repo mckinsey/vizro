@@ -50,8 +50,8 @@ class Slider(VizroBaseModel):
         Field(default={}, description="Marks to be displayed on slider.", validate_default=True),
     ]
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for value field
-    value: Annotated[  # type: ignore[valid-type]
-        float | conlist(float, min_length=2, max_length=2) | None,
+    value: Annotated[
+        float | conlist(float, min_length=2, max_length=2) | None,  # type: ignore[valid-type]
         AfterValidator(validate_range_value),
         Field(
             default=None,
