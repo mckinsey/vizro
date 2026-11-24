@@ -17,7 +17,7 @@ classifiers = [
 ]
 dependencies = [
   "dash>=4,<5",
-  "dash-mantine-components>=2.0.0"
+  "dash-mantine-components>=2.0.0,<3"
 ]
 description = "Vizro Dash Components are used by the Vizro framework but can be used in a pure Dash app"
 dynamic = ["version"]

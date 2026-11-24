@@ -18,6 +18,7 @@ from e2e.vizro.checkers import (
 )
 from e2e.vizro.navigation import (
     accordion_select,
+    hover_over_and_click_by_css_selector_selenium,
     hover_over_element_by_css_selector_selenium,
     modifier_click,
     page_select,
@@ -176,8 +177,8 @@ def test_set_controls_cross_filter_graph_non_categorical_timepicker(dash_br):
     )
 
     # 19:00 selected in scatter graph, check that timepicker value changed accordingly
-    dash_br.click_at_coord_fractions(
-        scatter_point_path(cnst.SCATTER_SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER, point_number=2), 0, 0
+    hover_over_and_click_by_css_selector_selenium(
+        dash_br.driver, scatter_point_path(cnst.SCATTER_SET_CONTROLS_NON_CATEGORICAL_TIMEPICKER, point_number=2)
     )
     # 20:00 selected in scatter graph, check that timepicker value changed accordingly
     modifier_click(
