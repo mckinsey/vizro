@@ -96,11 +96,19 @@ jobs:
     if: |
       needs.check-version.outputs.new_release == 'True'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
+      - name: Generate GitHub App token
+        uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ secrets.VIZRO_SVC_APP_CLIENT_ID }}
+          private-key: ${{ secrets.VIZRO_SVC_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-          token: ${{ secrets.VIZRO_SVC_PAT }}
+          token: ${{ steps.app-token.outputs.token }}
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
