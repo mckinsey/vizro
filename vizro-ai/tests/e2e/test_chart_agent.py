@@ -16,7 +16,7 @@ df = px.data.gapminder()
 POSSIBLE_CHART = ["px.bar", "go.Bar", "add_bar"]
 
 model = OpenAIChatModel(
-    "gpt-5-nano-2025-08-07",
+    "gpt-6-luna",
     provider=OpenAIProvider(base_url=os.getenv("OPENAI_API_BASE"), api_key=os.getenv("OPENAI_API_KEY")),
 )
 

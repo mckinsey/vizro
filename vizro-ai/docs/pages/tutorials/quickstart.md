@@ -106,7 +106,7 @@ Let's create a chart to illustrate the GDP per capita trends for each continent 
 
         # Set up the LLM model
         model = OpenAIChatModel(
-            "gpt-5-nano-2025-08-07",  # (1)!
+            "gpt-6-luna",  # (1)!
             provider=OpenAIProvider(api_key="your-api-key-here"),
         )
 

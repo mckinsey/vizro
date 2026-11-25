@@ -110,7 +110,7 @@ from pydantic_ai.providers.openai import OpenAIProvider
 load_dotenv()  # Loads .env from current directory or parent directories
 
 model = OpenAIChatModel(
-    "gpt-5-nano-2025-08-07",
+    "gpt-6-luna",
     provider=OpenAIProvider(api_key=os.getenv("OPENAI_API_KEY")),
 )
 ```

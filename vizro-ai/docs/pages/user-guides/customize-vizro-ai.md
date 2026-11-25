@@ -28,7 +28,7 @@ import plotly.express as px
 
 # Set up the model
 model = OpenAIChatModel(
-    "gpt-5-nano-2025-08-07",
+    "gpt-6-luna",
     provider=OpenAIProvider(api_key="your-api-key-here"),
 )
 
@@ -47,7 +47,7 @@ For custom base URLs (for example, Azure OpenAI or custom endpoints):
 
 ```py
 model = OpenAIChatModel(
-    "gpt-5-nano-2025-08-07",
+    "gpt-6-luna",
     provider=OpenAIProvider(
         base_url="your-base-url-here",
         api_key="your-api-key-here",
@@ -82,7 +82,7 @@ from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.openai import OpenAIProvider
 
 model = OpenAIChatModel(
-    "gpt-5-nano-2025-08-07",
+    "gpt-6-luna",
     provider=OpenAIProvider(api_key="your-api-key-here"),
     temperature=0.7,  # Adjust creativity (0-1)
     max_tokens=2000,  # Maximum response length
@@ -104,7 +104,7 @@ Once the environment variable is set, you can use `OpenAIChatModel` with just th
 ```py
 from pydantic_ai.models.openai import OpenAIChatModel
 
-model = OpenAIChatModel("gpt-5-nano-2025-08-07")
+model = OpenAIChatModel("gpt-6-luna")
 ```
 
 By default, the `OpenAIChatModel` uses the `OpenAIProvider` with the `base_url` set to `https://api.openai.com/v1`.

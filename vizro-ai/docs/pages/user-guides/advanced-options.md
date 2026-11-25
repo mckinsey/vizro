@@ -25,7 +25,7 @@ This guide shows you how to use the [`chart_agent`][vizro_ai.agents.chart_agent]
     from vizro_ai.agents import chart_agent
 
     model = OpenAIChatModel(
-        "gpt-5-nano-2025-08-07",
+        "gpt-6-luna",
         provider=OpenAIProvider(api_key="your-api-key-here"),
     )
     df = px.data.gapminder()
