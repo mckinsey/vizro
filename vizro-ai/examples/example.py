@@ -5,7 +5,7 @@ import os
 import logfire
 import plotly.express as px
 from dotenv import load_dotenv
-from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.models.openai import OpenAIResponsesModel
 from pydantic_ai.providers.openai import OpenAIProvider
 from vizro_ai.agents import chart_agent
 
@@ -17,7 +17,7 @@ if os.getenv("LOGFIRE_TOKEN"):
     logfire.instrument_pydantic_ai()
 
 # User can configure model, including usage limits etc
-model = OpenAIChatModel(
+model = OpenAIResponsesModel(
     "gpt-6-luna",
     provider=OpenAIProvider(base_url=os.getenv("OPENAI_BASE_URL"), api_key=os.getenv("OPENAI_API_KEY")),
 )

@@ -21,13 +21,13 @@ pip install "vizro_ai[openai]"
 Then set up the model:
 
 ```py
-from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.models.openai import OpenAIResponsesModel
 from pydantic_ai.providers.openai import OpenAIProvider
 from vizro_ai.agents import chart_agent
 import plotly.express as px
 
 # Set up the model
-model = OpenAIChatModel(
+model = OpenAIResponsesModel(
     "gpt-6-luna",
     provider=OpenAIProvider(api_key="your-api-key-here"),
 )
@@ -46,7 +46,7 @@ You can also set the API key via environment variable `OPENAI_API_KEY` (see [Usi
 For custom base URLs (for example, Azure OpenAI or custom endpoints):
 
 ```py
-model = OpenAIChatModel(
+model = OpenAIResponsesModel(
     "gpt-6-luna",
     provider=OpenAIProvider(
         base_url="your-base-url-here",
@@ -54,6 +54,10 @@ model = OpenAIChatModel(
     ),
 )
 ```
+
+!!! note "Reasoning models require the Responses API"
+
+    OpenAI reasoning models such as `gpt-6-luna` do not support function tools together with reasoning on the Chat Completions API. Because `chart_agent` uses structured output (which relies on function tools), use [`OpenAIResponsesModel`](https://ai.pydantic.dev/models/openai/) instead of `OpenAIChatModel`.
 
 To use OpenAI with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. [Check the OpenAI models and pricing on their website](https://platform.openai.com/docs/models). Before using a model, please review OpenAI's guidelines on risk mitigation to understand potential model limitations and best practices. [See the OpenAI site for more details on responsible usage](https://platform.openai.com/docs/guides/safety-best-practices).
 
@@ -75,17 +79,23 @@ pip install pydantic-ai-slim[bedrock]
 
 ### Custom model parameters
 
-You can customize model parameters when instantiating models. For example, with OpenAI you can set temperature and other parameters:
+You can customize model behavior via model settings. For example, with OpenAI reasoning models you can control the reasoning effort:
 
 ```py
-from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.models.openai import OpenAIResponsesModel, OpenAIResponsesModelSettings
 from pydantic_ai.providers.openai import OpenAIProvider
 
-model = OpenAIChatModel(
+model = OpenAIResponsesModel(
     "gpt-6-luna",
     provider=OpenAIProvider(api_key="your-api-key-here"),
-    temperature=0.7,  # Adjust creativity (0-1)
-    max_tokens=2000,  # Maximum response length
+)
+settings = OpenAIResponsesModelSettings(openai_reasoning_effort="low")  # low | medium | high
+
+result = chart_agent.run_sync(
+    model=model,
+    model_settings=settings,
+    user_prompt="Create a bar chart",
+    deps=df,
 )
 ```
 
@@ -99,15 +109,15 @@ export OPENAI_API_KEY='your-api-key'
 
 You can set them in your `.env` file using `python-dotenv` (see the [installation guide](install.md) for more details) or export them in your terminal.
 
-Once the environment variable is set, you can use `OpenAIChatModel` with just the model name:
+Once the environment variable is set, you can use `OpenAIResponsesModel` with just the model name:
 
 ```py
-from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.models.openai import OpenAIResponsesModel
 
-model = OpenAIChatModel("gpt-6-luna")
+model = OpenAIResponsesModel("gpt-6-luna")
 ```
 
-By default, the `OpenAIChatModel` uses the `OpenAIProvider` with the `base_url` set to `https://api.openai.com/v1`.
+By default, the `OpenAIResponsesModel` uses the `OpenAIProvider` with the `base_url` set to `https://api.openai.com/v1`.
 
 ## What model to choose?
 

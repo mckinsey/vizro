@@ -104,12 +104,12 @@ Then load the `.env` file and use the API key in your model configuration:
 ```python
 import os
 from dotenv import load_dotenv
-from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.models.openai import OpenAIResponsesModel
 from pydantic_ai.providers.openai import OpenAIProvider
 
 load_dotenv()  # Loads .env from current directory or parent directories
 
-model = OpenAIChatModel(
+model = OpenAIResponsesModel(
     "gpt-6-luna",
     provider=OpenAIProvider(api_key=os.getenv("OPENAI_API_KEY")),
 )

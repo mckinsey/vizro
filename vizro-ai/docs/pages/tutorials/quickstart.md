@@ -100,12 +100,12 @@ Let's create a chart to illustrate the GDP per capita trends for each continent 
         ```py
         # Import required modules
         import plotly.express as px
-        from pydantic_ai.models.openai import OpenAIChatModel
+        from pydantic_ai.models.openai import OpenAIResponsesModel
         from pydantic_ai.providers.openai import OpenAIProvider
         from vizro_ai.agents import chart_agent
 
         # Set up the LLM model
-        model = OpenAIChatModel(
+        model = OpenAIResponsesModel(
             "gpt-6-luna",  # (1)!
             provider=OpenAIProvider(api_key="your-api-key-here"),
         )
