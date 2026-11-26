@@ -21,12 +21,11 @@ on:
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
-  UPSTREAM_COMPAT_LABEL: "Upstream compat :link:"
+  UPSTREAM_COMPAT_LABEL: "compat-upstream"
 
 jobs:
   unit:
     name: unit on Py${{ matrix.python-version }}
-    if: github.repository == 'mckinsey/vizro'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -38,6 +37,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v7
@@ -69,7 +70,6 @@ jobs:
 
   integration:
     name: integration on Py3.14
-    if: github.repository == 'mckinsey/vizro'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -77,6 +77,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Set up Python 3.14
         uses: actions/setup-python@v7
@@ -141,6 +143,8 @@ jobs:
       - name: Send custom JSON data to Slack
         # used pinned commit hash for security reasons
         uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
+        # always() so Slack is still sent if the issue step above fails. The job itself only runs when tests failed.
+        if: always()
         continue-on-error: true
         with:
           payload: |
