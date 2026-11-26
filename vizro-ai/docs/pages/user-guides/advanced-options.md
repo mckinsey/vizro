@@ -20,12 +20,12 @@ This guide shows you how to use the [`chart_agent`][vizro_ai.agents.chart_agent]
 
     ```py
     import plotly.express as px
-    from pydantic_ai.models.openai import OpenAIChatModel
+    from pydantic_ai.models.openai import OpenAIResponsesModel
     from pydantic_ai.providers.openai import OpenAIProvider
     from vizro_ai.agents import chart_agent
 
-    model = OpenAIChatModel(
-        "gpt-5-nano-2025-08-07",
+    model = OpenAIResponsesModel(
+        "gpt-6-luna",
         provider=OpenAIProvider(api_key="your-api-key-here"),
     )
     df = px.data.gapminder()
