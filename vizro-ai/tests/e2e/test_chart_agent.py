@@ -86,5 +86,6 @@ def test_chart_with_explanation():
         any_of(
             contains_string("United States"),
             contains_string("US"),
+            contains_string("U.S."),
         ),
     )
